@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, Activity, Maximize2, Dumbbell, Brain, CheckCircle2 } from 'lucide-react';
+import { ArrowLeft, Activity, Maximize2, Dumbbell, Brain, CheckCircle2, Info } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import { useQuery } from '@tanstack/react-query';
+import { base44 } from '@/api/base44Client';
+import ExerciseModal from './ExerciseModal';
 
 const STEPS = [
   { key: 'mobilisation', title: 'Mobilisation', icon: Activity, color: 'cyan', description: 'Gelenk-Freiheit' },
@@ -14,10 +17,31 @@ const STEPS = [
 export default function TriplePath({ goal, onBack }) {
   const [currentStep, setCurrentStep] = useState(0);
   const [completedSteps, setCompletedSteps] = useState([]);
+  const [selectedExercise, setSelectedExercise] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   
   const step = STEPS[currentStep];
   const nameKey = `${step.key}_name`;
   const instructionKey = `${step.key}_instruction`;
+  
+  // Fetch all exercises
+  const { data: exercises = [] } = useQuery({
+    queryKey: ['exercises'],
+    queryFn: () => base44.entities.Exercise.list()
+  });
+  
+  // Find matching exercise by name
+  const currentExerciseName = goal[nameKey];
+  const exerciseInfo = exercises.find(ex => 
+    ex.name.toLowerCase() === currentExerciseName?.toLowerCase()
+  );
+  
+  const openExerciseModal = () => {
+    if (exerciseInfo) {
+      setSelectedExercise(exerciseInfo);
+      setIsModalOpen(true);
+    }
+  };
   
   const handleComplete = () => {
     if (!completedSteps.includes(currentStep)) {
@@ -114,10 +138,21 @@ export default function TriplePath({ goal, onBack }) {
               >
                 <step.icon className={`w-6 h-6 text-${step.color}-400`} />
               </div>
-              <div>
-                <h3 className={`text-xl font-bold text-${step.color}-400`}>
-                  {goal[nameKey]}
-                </h3>
+              <div className="flex-1">
+                <div className="flex items-center gap-2">
+                  <h3 className={`text-xl font-bold text-${step.color}-400`}>
+                    {goal[nameKey]}
+                  </h3>
+                  {exerciseInfo && (
+                    <button
+                      onClick={openExerciseModal}
+                      className="w-8 h-8 rounded-lg glass hover:glass-cyan border border-cyan-500/30 flex items-center justify-center transition-all group"
+                      title="Details zur Übung"
+                    >
+                      <Info className="w-4 h-4 text-slate-400 group-hover:text-cyan-400" />
+                    </button>
+                  )}
+                </div>
                 <p className="text-xs text-slate-400">{step.description}</p>
               </div>
             </div>
@@ -145,6 +180,13 @@ export default function TriplePath({ goal, onBack }) {
           </Card>
         </motion.div>
       </AnimatePresence>
+      
+      {/* Exercise Modal */}
+      <ExerciseModal
+        exercise={selectedExercise}
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+      />
       
       {/* Completion */}
       {allCompleted && (
