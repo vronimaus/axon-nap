@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, AlertCircle, CheckCircle2 } from 'lucide-react';
+import { X, AlertCircle, CheckCircle2, Image as ImageIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 export default function ExerciseModal({ exercise, isOpen, onClose }) {
@@ -40,6 +40,21 @@ export default function ExerciseModal({ exercise, isOpen, onClose }) {
             className="fixed inset-4 md:inset-auto md:left-1/2 md:top-1/2 md:-translate-x-1/2 md:-translate-y-1/2 md:max-w-2xl md:w-full z-50"
           >
             <div className="glass border border-cyan-500/30 rounded-3xl p-6 md:p-8 max-h-[90vh] overflow-y-auto shadow-2xl">
+              {/* Image */}
+              <div className="mb-6 rounded-2xl overflow-hidden bg-slate-800/50 border border-slate-600">
+                {exercise.image_url ? (
+                  <img 
+                    src={exercise.image_url} 
+                    alt={exercise.name}
+                    className="w-full h-64 object-cover"
+                  />
+                ) : (
+                  <div className="w-full h-64 flex items-center justify-center">
+                    <ImageIcon className="w-16 h-16 text-slate-600" />
+                  </div>
+                )}
+              </div>
+
               {/* Header */}
               <div className="flex items-start justify-between mb-6">
                 <div className="flex-1">
