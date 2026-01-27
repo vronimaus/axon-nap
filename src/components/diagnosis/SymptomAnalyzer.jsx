@@ -18,83 +18,104 @@ export default function SymptomAnalyzer({ onAnalysisComplete }) {
       const result = await base44.integrations.Core.InvokeLLM({
         prompt: `Du bist ein Experte für Faszialketten nach Thomas Myers und Z-Health Neuro-Athletik.
 
-Analysiere diese Symptombeschreibung und identifiziere:
+AUFGABE: Analysiere die Symptombeschreibung in 5 Schritten:
 
-1. Betroffene Körperregionen
-2. Involvierte Faszialketten (aus: SBL, SFL, LL, SPL, AL, FL, DFL)
-3. Wahrscheinlichkeit Hardware vs. Software Problem
-4. Positionsabhängigkeit oder Bewegungsabhängigkeit
+SCHRITT 1 - EXTRAKTION DER VARIABLEN:
+- Region: Wo tritt der Schmerz auf? (z.B. Nacken, Schulter, Rhomboideen, LWS, Hüfte)
+- Trigger-Position: Was verschlimmert es? (z.B. "Liegen auf der linken Seite", "Sitzen", "Kopf nach links")
+- Relief-Position: Was verbessert es? (z.B. "Kopf nach rechts drehen", "Aufstehen", "Bein anwinkeln")
+- Seite: Links, rechts oder beidseitig?
 
-KRITISCHE LOGIK FÜR LAGERUNGSABHÄNGIGE SCHMERZEN:
-- Wenn Schmerz durch KOMPRESSION (Liegen auf Seite) auftritt → Priorisiere Laterallinie (LL)
-- Wenn Schmerz in Rhomboideen/zwischen Schulterblättern zieht → Priorisiere Spirallinie (SPL)
-- Wenn KOPFBEWEGUNG zur Gegenseite den Schmerz reduziert → Neuraler Fokus (Software-Problem 80%+)
-  → Empfehle Visual-Drills (Sakkaden/Blick) zur schmerzfreien Seite
-- Wenn Schmerz positionsabhängig ist → Software-Wahrscheinlichkeit höher (HWS/Vestibulär/Plexus)
+SCHRITT 2 - ANATOMISCHE INTERPRETATION (LOGIK-REGELN):
+- Wenn Kompression (Liegen auf Seite) schmerzt → Priorisiere Laterallinie (LL) + Nervendynamik (Plexus Brachialis bei Arm/Schulter)
+- Wenn Schmerz diagonal zieht (Rhomboideen, zwischen Schulterblättern) → Priorisiere Spirallinie (SPL)
+- Wenn Kopfdrehung zur GEGENSEITE Erleichterung bringt → Priorisiere Neuro-Software (HWS-Entlastung, Vestibulär) ÜBER Hardware
+- Wenn Schmerz bei Bewegung auftritt → Priorisiere Hardware-Tests
+- Wenn Schmerz positionsabhängig ist → Software-Wahrscheinlichkeit höher (70%+)
 
-BEISPIEL-MUSTER: "Schmerz links beim Liegen auf linker Seite, besser bei Kopf nach rechts"
-→ Analyse: LL (Kompression) + SPL (Rhomboideen) + Software (HWS-Nerven)
-→ Empfehlung: Primär Neuro-Drills (Visual-Sakkaden nach rechts), sekundär Hardware-Tests
+SCHRITT 3 - DYNAMISCHE HYPOTHESE:
+Formuliere in 2-3 Sätzen eine klare Erklärung, WAS anatomisch/neuronal passiert.
+Beispiel: "Deine Beschreibung deutet auf eine Kompression der linken Laterallinie und eine neuronale Enge der Halswirbelsäule hin. Da die Rotation nach rechts hilft, ist dein Gehirn in dieser Richtung 'sicher' und kann die Spannung besser regulieren."
+
+SCHRITT 4 - DIAGNOSE-VORSCHLAG:
+Schlage 2-3 konkrete Tests vor (Hardware UND Software), die am besten passen.
+Format: "Ketten-Code: Test-Name (Begründung)"
+Beispiel: 
+- "LL: Seitneigung zur schmerzhaften Seite (testet Kompression)"
+- "SPL: Scapula-Adduktion (testet Rhomboideen-Spannung)"
+- "Software: Visual-Sakkaden nach RECHTS (zur schmerzfreien Zone)"
+
+SCHRITT 5 - SAFETY CHECK (RED FLAGS):
+Suche nach Warnsignalen: Taubheit, Kribbeln, Kraftverlust, Schwindel mit Sehstörungen, ausstrahlende Schmerzen bis in die Hand/Fuß.
+Wenn gefunden → Flag setzen mit klarer Warnung.
 
 Symptombeschreibung:
 "${description}"
 
-Gib eine präzise Einschätzung mit funktionaler Begründung.`,
+Führe alle 5 Schritte durch und gib eine präzise, strukturierte Analyse.`,
         response_json_schema: {
           type: "object",
           properties: {
-            affected_regions: {
+            step1_extraction: {
+              type: "object",
+              properties: {
+                region: { type: "string", description: "Schmerzregion" },
+                trigger_position: { type: "string", description: "Was verschlimmert es" },
+                relief_position: { type: "string", description: "Was verbessert es" },
+                side: { type: "string", enum: ["links", "rechts", "beidseitig"], description: "Betroffene Seite" }
+              }
+            },
+            step2_interpretation: {
+              type: "object",
+              properties: {
+                compression_detected: { type: "boolean" },
+                diagonal_pain: { type: "boolean" },
+                head_rotation_relief: { type: "boolean" },
+                movement_dependent: { type: "boolean" },
+                position_dependent: { type: "boolean" }
+              }
+            },
+            step3_hypothesis: {
+              type: "string",
+              description: "2-3 Sätze Erklärung, was anatomisch/neuronal passiert"
+            },
+            step4_test_recommendations: {
               type: "array",
-              items: { type: "string" },
-              description: "Körperregionen (z.B. Nacken, Schulter, Rücken)"
+              items: {
+                type: "object",
+                properties: {
+                  chain_code: { type: "string" },
+                  test_type: { type: "string", enum: ["hardware", "software"] },
+                  test_name: { type: "string" },
+                  reasoning: { type: "string" }
+                }
+              }
+            },
+            step5_red_flags: {
+              type: "object",
+              properties: {
+                flags_detected: { type: "boolean" },
+                warning_message: { type: "string" },
+                specific_flags: { type: "array", items: { type: "string" } }
+              }
             },
             primary_chains: {
               type: "array",
               items: { type: "string" },
-              description: "Haupt-Faszialketten (Codes: SBL, SFL, LL, SPL, AL, FL, DFL)"
+              description: "Haupt-Faszialketten (Codes)"
             },
             secondary_chains: {
               type: "array",
-              items: { type: "string" },
-              description: "Sekundäre Ketten"
+              items: { type: "string" }
             },
-            hardware_probability: {
-              type: "number",
-              description: "0-100 Wahrscheinlichkeit für Hardware-Problem"
-            },
-            software_probability: {
-              type: "number",
-              description: "0-100 Wahrscheinlichkeit für Software-Problem"
-            },
-            reasoning: {
-              type: "string",
-              description: "Begründung der Analyse"
-            },
-            key_findings: {
-              type: "array",
-              items: { type: "string" },
-              description: "Wichtigste Erkenntnisse aus der Beschreibung"
-            },
-            recommended_priority: {
-              type: "string",
-              description: "Welche Kette sollte zuerst getestet werden"
-            },
-            positional_dependency: {
-              type: "object",
-              properties: {
-                is_positional: { type: "boolean" },
-                trigger_position: { type: "string" },
-                relief_position: { type: "string" },
-                recommended_drill: { type: "string" }
-              }
-            },
+            hardware_probability: { type: "number" },
+            software_probability: { type: "number" },
             test_strategy: {
               type: "string",
-              enum: ["software_first", "hardware_first", "mixed"],
-              description: "Welche Tests sollten priorisiert werden"
+              enum: ["software_first", "hardware_first", "mixed"]
             }
           },
-          required: ["affected_regions", "primary_chains", "hardware_probability", "software_probability", "reasoning"]
+          required: ["step3_hypothesis", "step4_test_recommendations", "step5_red_flags", "primary_chains", "hardware_probability", "software_probability"]
         }
       });
 
@@ -174,33 +195,100 @@ Gib eine präzise Einschätzung mit funktionaler Begründung.`,
           animate={{ opacity: 1, y: 0 }}
           className="space-y-4"
         >
-          {/* Reasoning */}
-          <div className="glass rounded-2xl p-6">
-            <h4 className="text-sm font-semibold text-cyan-400 mb-3">🧠 Analyse-Ergebnis</h4>
-            <p className="text-sm text-slate-300 leading-relaxed">{analysis.reasoning}</p>
-          </div>
+          {/* Red Flags Warning */}
+          {analysis.step5_red_flags?.flags_detected && (
+            <div className="glass rounded-2xl p-6 border-2 border-red-500/50 bg-red-500/10">
+              <h4 className="text-sm font-semibold text-red-400 mb-3 flex items-center gap-2">
+                ⚠️ Warnsignale erkannt
+              </h4>
+              <p className="text-sm text-red-300 mb-3 font-semibold">
+                {analysis.step5_red_flags.warning_message}
+              </p>
+              {analysis.step5_red_flags.specific_flags && (
+                <ul className="space-y-1">
+                  {analysis.step5_red_flags.specific_flags.map((flag, idx) => (
+                    <li key={idx} className="text-xs text-red-200 flex items-start gap-2">
+                      <span className="text-red-400">•</span>
+                      <span>{flag}</span>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          )}
 
-          {/* Positional Dependency */}
-          {analysis.positional_dependency?.is_positional && (
-            <div className="glass-purple rounded-2xl p-6 border border-purple-500/30">
-              <h4 className="text-sm font-semibold text-purple-400 mb-3">📍 Lagerungsabhängigkeit erkannt</h4>
-              <div className="space-y-2 text-sm text-slate-300">
-                {analysis.positional_dependency.trigger_position && (
-                  <p>
-                    <span className="text-purple-400 font-semibold">Trigger:</span> {analysis.positional_dependency.trigger_position}
-                  </p>
-                )}
-                {analysis.positional_dependency.relief_position && (
-                  <p>
-                    <span className="text-green-400 font-semibold">Besserung:</span> {analysis.positional_dependency.relief_position}
-                  </p>
-                )}
-                {analysis.positional_dependency.recommended_drill && (
-                  <div className="mt-3 p-3 bg-purple-500/10 rounded-lg border border-purple-500/20">
-                    <p className="text-xs text-purple-400 font-semibold mb-1">Empfohlener Visual-Drill:</p>
-                    <p className="text-sm">{analysis.positional_dependency.recommended_drill}</p>
+          {/* Extraction Results */}
+          {analysis.step1_extraction && (
+            <div className="glass rounded-2xl p-6">
+              <h4 className="text-sm font-semibold text-cyan-400 mb-3">📋 Extrahierte Informationen</h4>
+              <div className="grid grid-cols-2 gap-3 text-sm">
+                <div>
+                  <span className="text-slate-400">Region:</span>
+                  <span className="text-slate-200 ml-2 font-medium">{analysis.step1_extraction.region}</span>
+                </div>
+                {analysis.step1_extraction.side && (
+                  <div>
+                    <span className="text-slate-400">Seite:</span>
+                    <span className="text-slate-200 ml-2 font-medium">{analysis.step1_extraction.side}</span>
                   </div>
                 )}
+                {analysis.step1_extraction.trigger_position && (
+                  <div className="col-span-2">
+                    <span className="text-slate-400">Trigger:</span>
+                    <span className="text-slate-200 ml-2">{analysis.step1_extraction.trigger_position}</span>
+                  </div>
+                )}
+                {analysis.step1_extraction.relief_position && (
+                  <div className="col-span-2">
+                    <span className="text-green-400">Besserung:</span>
+                    <span className="text-slate-200 ml-2">{analysis.step1_extraction.relief_position}</span>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* Hypothesis */}
+          <div className="glass-cyan rounded-2xl p-6 border border-cyan-500/30">
+            <h4 className="text-sm font-semibold text-cyan-400 mb-3">🧠 Hypothese</h4>
+            <p className="text-sm text-slate-300 leading-relaxed">{analysis.step3_hypothesis}</p>
+          </div>
+
+          {/* Test Recommendations */}
+          {analysis.step4_test_recommendations && analysis.step4_test_recommendations.length > 0 && (
+            <div className="glass rounded-2xl p-6">
+              <h4 className="text-sm font-semibold text-cyan-400 mb-4">🎯 Empfohlene Tests</h4>
+              <div className="space-y-3">
+                {analysis.step4_test_recommendations.map((rec, idx) => (
+                  <div key={idx} className={`p-3 rounded-xl border ${
+                    rec.test_type === 'software' 
+                      ? 'bg-purple-500/10 border-purple-500/30' 
+                      : 'bg-cyan-500/10 border-cyan-500/30'
+                  }`}>
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-1">
+                          <span className={`text-xs font-bold px-2 py-0.5 rounded ${
+                            rec.test_type === 'software' 
+                              ? 'bg-purple-500 text-white' 
+                              : 'bg-cyan-500 text-slate-900'
+                          }`}>
+                            {rec.chain_code}
+                          </span>
+                          <span className="text-sm font-semibold text-slate-200">{rec.test_name}</span>
+                        </div>
+                        <p className="text-xs text-slate-400 ml-2">{rec.reasoning}</p>
+                      </div>
+                      <span className={`text-xs px-2 py-1 rounded-lg font-medium ${
+                        rec.test_type === 'software' 
+                          ? 'bg-purple-500/20 text-purple-300' 
+                          : 'bg-cyan-500/20 text-cyan-300'
+                      }`}>
+                        {rec.test_type === 'software' ? 'Neuro' : 'Hardware'}
+                      </span>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
           )}
@@ -218,21 +306,6 @@ Gib eine präzise Einschätzung mit funktionaler Begründung.`,
                 {analysis.test_strategy === 'hardware_first' && 'Strukturelle Tests werden priorisiert. Faszien/Gewebe steht im Fokus.'}
                 {analysis.test_strategy === 'mixed' && 'Sowohl Hardware- als auch Software-Tests sind relevant.'}
               </p>
-            </div>
-          )}
-
-          {/* Key Findings */}
-          {analysis.key_findings && analysis.key_findings.length > 0 && (
-            <div className="glass rounded-2xl p-6">
-              <h4 className="text-sm font-semibold text-cyan-400 mb-3">🔍 Wichtige Erkenntnisse</h4>
-              <ul className="space-y-2">
-                {analysis.key_findings.map((finding, idx) => (
-                  <li key={idx} className="text-sm text-slate-300 flex items-start gap-2">
-                    <span className="text-cyan-500 mt-0.5">•</span>
-                    <span>{finding}</span>
-                  </li>
-                ))}
-              </ul>
             </div>
           )}
 
