@@ -87,16 +87,16 @@ export default function NeuroDrill({
         animate={{ opacity: 1, y: 0 }}
         className="space-y-6"
       >
-        <Card className="p-6 border-0 shadow-xl glass" style={{ background: 'linear-gradient(135deg, rgba(236, 253, 245, 0.8) 0%, rgba(255, 255, 255, 0.7) 100%)' }}>
+        <Card className="p-6 border-0 shadow-xl glass border border-emerald-500/30">
           <div className="text-center py-8">
-            <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Zap className="w-8 h-8 text-emerald-600" />
+            <div className="w-16 h-16 bg-emerald-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Zap className="w-8 h-8 text-emerald-400" />
             </div>
-            <h3 className="text-xl font-bold text-slate-800 mb-2">
+            <h3 className="text-xl font-bold text-emerald-400 mb-2">
               Kein Neuro-Drill erforderlich
             </h3>
-            <p className="text-slate-600">
-              Der Hardware-Test für <strong>{chain.name_de}</strong> war unauffällig.
+            <p className="text-slate-300">
+              Der Hardware-Test für <strong className="text-cyan-400">{chain.name_de}</strong> war unauffällig.
               Wir überspringen den Neuro-Drill für diese Kette.
             </p>
           </div>
@@ -125,16 +125,16 @@ export default function NeuroDrill({
     >
       {/* Progress */}
       <div className="flex items-center justify-between mb-2">
-        <span className="text-sm text-slate-500">
+        <span className="text-sm text-slate-400">
           Neuro-Drill {chainIndex + 1} von {totalChains}
         </span>
         <div className="flex gap-1">
           {Array.from({ length: totalChains }).map((_, i) => (
             <div
               key={i}
-              className={`h-1.5 w-8 rounded-full transition-all ${
-                i < chainIndex ? 'bg-purple-600' : 
-                i === chainIndex ? 'bg-purple-400' : 'bg-slate-200'
+              className={`h-2 w-8 rounded-full transition-all ${
+                i < chainIndex ? 'bg-gradient-to-r from-purple-500 to-purple-600 neuro-glow-purple' : 
+                i === chainIndex ? 'bg-purple-400' : 'bg-slate-700'
               }`}
             />
           ))}
@@ -148,8 +148,8 @@ export default function NeuroDrill({
             <Brain className="w-6 h-6" />
           </div>
           <div className="flex-1">
-            <h3 className="text-xl font-bold text-slate-800">{chain.neuro_marker}</h3>
-            <p className="text-sm text-slate-500 mt-1">
+            <h3 className="text-xl font-bold text-purple-400">{chain.neuro_marker}</h3>
+            <p className="text-sm text-slate-300 mt-1">
               Neuro-Drill für: {chain.name_de}
             </p>
           </div>
@@ -159,20 +159,20 @@ export default function NeuroDrill({
       {/* Drill Instructions */}
       <Card className="p-6 border-0 shadow-xl glass">
         <div className="flex items-center gap-2 mb-4">
-          <Zap className="w-5 h-5 text-purple-600" />
-          <h4 className="font-semibold text-slate-800">Anleitung</h4>
+          <Zap className="w-5 h-5 text-purple-400" />
+          <h4 className="font-semibold text-purple-400">Anleitung</h4>
         </div>
         
-        <div className="bg-purple-50 rounded-xl p-4 mb-4">
-          <p className="text-slate-700 leading-relaxed">
+        <div className="glass-purple rounded-2xl p-4 mb-4 border border-purple-500/30">
+          <p className="text-slate-300 leading-relaxed">
             {chain.neuro_instruction}
           </p>
         </div>
         
         {/* Video Placeholder */}
-        <div className="bg-gradient-to-br from-slate-100 to-slate-50 rounded-xl h-40 flex items-center justify-center border-2 border-dashed border-slate-200">
-          <div className="text-center text-slate-400">
-            <Brain className="w-10 h-10 mx-auto mb-2 opacity-50" />
+        <div className="glass rounded-2xl h-40 flex items-center justify-center border border-purple-500/20">
+          <div className="text-center text-slate-500">
+            <Brain className="w-10 h-10 mx-auto mb-2 opacity-50 text-purple-400" />
             <span className="text-sm">Video-Anleitung (Coming Soon)</span>
           </div>
         </div>
@@ -181,16 +181,16 @@ export default function NeuroDrill({
           <div className="mt-6 text-center">
             <Button
               onClick={() => setDrillCompleted(true)}
-              className="bg-purple-600 hover:bg-purple-700 gap-2"
+              className="bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 gap-2 text-white shadow-lg shadow-purple-500/30 neuro-glow-purple"
             >
-              <RotateCcw className="w-4 h-4" />
+              <RotateCcw className="w-5 h-5" />
               Drill durchgeführt – Jetzt Re-Test
             </Button>
           </div>
         ) : (
           <div className="mt-6">
-            <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-4">
-              <p className="text-sm text-amber-800 font-medium">
+            <div className="glass-purple border border-purple-500/30 rounded-2xl p-4 mb-4">
+              <p className="text-sm text-purple-300 font-medium">
                 🔄 Führe jetzt den Hardware-Test "{chain.test_name}" erneut durch und bewerte die Veränderung:
               </p>
             </div>

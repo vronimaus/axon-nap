@@ -73,16 +73,16 @@ export default function HardwareTest({
     >
       {/* Progress */}
       <div className="flex items-center justify-between mb-2">
-        <span className="text-sm text-slate-500">
+        <span className="text-sm text-slate-400">
           Hardware-Test {chainIndex + 1} von {totalChains}
         </span>
         <div className="flex gap-1">
           {Array.from({ length: totalChains }).map((_, i) => (
             <div
               key={i}
-              className={`h-1.5 w-8 rounded-full transition-all ${
-                i < chainIndex ? 'bg-blue-600' : 
-                i === chainIndex ? 'bg-blue-400' : 'bg-slate-200'
+              className={`h-2 w-8 rounded-full transition-all ${
+                i < chainIndex ? 'bg-gradient-to-r from-cyan-500 to-cyan-600 neuro-glow' : 
+                i === chainIndex ? 'bg-cyan-400' : 'bg-slate-700'
               }`}
             />
           ))}
@@ -99,8 +99,8 @@ export default function HardwareTest({
             {chain.code}
           </div>
           <div className="flex-1">
-            <h3 className="text-xl font-bold text-slate-800">{chain.name_de}</h3>
-            <p className="text-sm text-slate-500 mt-1">{chain.description}</p>
+            <h3 className="text-xl font-bold text-cyan-400">{chain.name_de}</h3>
+            <p className="text-sm text-slate-300 mt-1">{chain.description}</p>
           </div>
         </div>
       </Card>
@@ -108,15 +108,15 @@ export default function HardwareTest({
       {/* Test Card */}
       <Card className="p-6 border-0 shadow-xl glass">
         <div className="flex items-center justify-between mb-4">
-          <h4 className="font-semibold text-slate-800 flex items-center gap-2">
-            <Play className="w-4 h-4 text-blue-600" />
+          <h4 className="font-semibold text-cyan-400 flex items-center gap-2">
+            <Play className="w-4 h-4 text-cyan-400" />
             Test: {chain.test_name}
           </h4>
           <Button
             variant="ghost"
             size="sm"
             onClick={() => setShowInstructions(!showInstructions)}
-            className="text-slate-500"
+            className="text-slate-400 hover:text-cyan-400 hover:bg-cyan-500/10"
           >
             {showInstructions ? 'Ausblenden' : 'Anleitung zeigen'}
           </Button>
@@ -130,15 +130,15 @@ export default function HardwareTest({
               exit={{ height: 0, opacity: 0 }}
               className="overflow-hidden"
             >
-              <div className="bg-blue-50 rounded-xl p-4 mb-4">
-                <p className="text-slate-700 leading-relaxed">
+              <div className="glass-cyan rounded-2xl p-4 mb-4 border border-cyan-500/30">
+                <p className="text-slate-300 leading-relaxed">
                   {chain.test_instruction}
                 </p>
               </div>
               
-              <div className="bg-amber-50 rounded-xl p-4 border border-amber-100">
-                <p className="text-sm text-amber-800">
-                  <span className="font-semibold">Positiver Befund: </span>
+              <div className="glass-cyan rounded-2xl p-4 border border-cyan-500/30">
+                <p className="text-sm text-cyan-300">
+                  <span className="font-semibold text-cyan-400">Positiver Befund: </span>
                   {chain.test_positive_indicator}
                 </p>
               </div>
@@ -147,9 +147,9 @@ export default function HardwareTest({
         </AnimatePresence>
         
         {/* Image Placeholder */}
-        <div className="mt-4 bg-gradient-to-br from-slate-100 to-slate-50 rounded-xl h-40 flex items-center justify-center border-2 border-dashed border-slate-200">
-          <div className="text-center text-slate-400">
-            <Play className="w-10 h-10 mx-auto mb-2 opacity-50" />
+        <div className="mt-4 glass rounded-2xl h-40 flex items-center justify-center border border-cyan-500/20">
+          <div className="text-center text-slate-500">
+            <Play className="w-10 h-10 mx-auto mb-2 opacity-50 text-cyan-400" />
             <span className="text-sm">Video-Anleitung (Coming Soon)</span>
           </div>
         </div>
