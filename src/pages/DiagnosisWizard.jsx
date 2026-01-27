@@ -214,7 +214,7 @@ export default function DiagnosisWizard() {
           <div className="glass rounded-2xl px-6 py-4">
             <div className="flex items-center gap-2">
               {['Symptom', 'Hardware', 'Software', 'Ergebnis'].map((label, index) => (
-                <React.Fragment key={label}>
+                <div key={label} className="flex items-center gap-2">
                   <div className={`flex items-center gap-2 ${index <= currentStep ? 'text-cyan-400' : 'text-slate-600'}`}>
                     <div className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold transition-all ${
                       index < currentStep ? 'bg-gradient-to-br from-cyan-500 to-cyan-600 text-slate-900 neuro-glow' :
@@ -228,7 +228,7 @@ export default function DiagnosisWizard() {
                   {index < 3 && (
                     <div className={`w-8 h-1 rounded-full ${index < currentStep ? 'bg-gradient-to-r from-cyan-500 to-purple-500' : 'bg-slate-700'}`} />
                   )}
-                </React.Fragment>
+                </div>
               ))}
             </div>
           </div>
