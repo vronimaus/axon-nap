@@ -163,12 +163,22 @@ export default function TriplePath({ goal, onBack }) {
               </p>
             </div>
             
-            {/* Video Placeholder */}
-            <div className={`glass rounded-2xl h-48 flex items-center justify-center border border-slate-700 mb-6`}>
-              <div className="text-center text-slate-600">
-                <step.icon className={`w-12 h-12 mx-auto mb-2 opacity-30 text-${step.color}-400`} />
-                <span className="text-sm text-slate-500">Video-Anleitung (Coming Soon)</span>
-              </div>
+            {/* Exercise Image or Placeholder */}
+            <div className={`glass rounded-2xl overflow-hidden border border-slate-700 mb-6`}>
+              {exerciseInfo?.image_url ? (
+                <img 
+                  src={exerciseInfo.image_url} 
+                  alt={currentExerciseName}
+                  className="w-full h-64 object-contain bg-black"
+                />
+              ) : (
+                <div className="h-48 flex items-center justify-center">
+                  <div className="text-center text-slate-600">
+                    <step.icon className={`w-12 h-12 mx-auto mb-2 opacity-30 text-${step.color}-400`} />
+                    <span className="text-sm text-slate-500">Bild wird geladen...</span>
+                  </div>
+                </div>
+              )}
             </div>
             
             <Button
