@@ -178,9 +178,18 @@ export default function DiagnosisWizard() {
     const needsFootFilter = data.analysis?.step1_extraction?.region && 
       standingRegions.some(region => data.analysis.step1_extraction.region.toLowerCase().includes(region));
     
+    // Check if breath module is needed
+    const breathRegions = ['hals_nacken', 'lws', 'rumpf', 'systemisch'];
+    const needsBreathFilter = data.analysis?.step1_extraction?.region && 
+      breathRegions.some(region => data.analysis.step1_extraction.region.toLowerCase().includes(region));
+    
+    setNeedsFootCheck(needsFootFilter);
+    setNeedsBreathCheck(needsBreathFilter);
+    
     if (needsFootFilter) {
-      setNeedsFootCheck(true);
       setCurrentStep(STEPS.FOOT_CHECK);
+    } else if (needsBreathFilter) {
+      setCurrentStep(STEPS.BREATH_CHECK);
     } else {
       setCurrentStep(STEPS.HARDWARE);
     }
