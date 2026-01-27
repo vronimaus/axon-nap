@@ -19,15 +19,27 @@ export default function SymptomAnalyzer({ onAnalysisComplete }) {
         prompt: `Du bist ein Experte für Faszialketten nach Thomas Myers und Z-Health Neuro-Athletik.
 
 Analysiere diese Symptombeschreibung und identifiziere:
+
 1. Betroffene Körperregionen
 2. Involvierte Faszialketten (aus: SBL, SFL, LL, SPL, AL, FL, DFL)
 3. Wahrscheinlichkeit Hardware vs. Software Problem
 4. Positionsabhängigkeit oder Bewegungsabhängigkeit
 
+KRITISCHE LOGIK FÜR LAGERUNGSABHÄNGIGE SCHMERZEN:
+- Wenn Schmerz durch KOMPRESSION (Liegen auf Seite) auftritt → Priorisiere Laterallinie (LL)
+- Wenn Schmerz in Rhomboideen/zwischen Schulterblättern zieht → Priorisiere Spirallinie (SPL)
+- Wenn KOPFBEWEGUNG zur Gegenseite den Schmerz reduziert → Neuraler Fokus (Software-Problem 80%+)
+  → Empfehle Visual-Drills (Sakkaden/Blick) zur schmerzfreien Seite
+- Wenn Schmerz positionsabhängig ist → Software-Wahrscheinlichkeit höher (HWS/Vestibulär/Plexus)
+
+BEISPIEL-MUSTER: "Schmerz links beim Liegen auf linker Seite, besser bei Kopf nach rechts"
+→ Analyse: LL (Kompression) + SPL (Rhomboideen) + Software (HWS-Nerven)
+→ Empfehlung: Primär Neuro-Drills (Visual-Sakkaden nach rechts), sekundär Hardware-Tests
+
 Symptombeschreibung:
 "${description}"
 
-Gib eine klare Einschätzung mit Begründung.`,
+Gib eine präzise Einschätzung mit funktionaler Begründung.`,
         response_json_schema: {
           type: "object",
           properties: {
@@ -66,6 +78,20 @@ Gib eine klare Einschätzung mit Begründung.`,
             recommended_priority: {
               type: "string",
               description: "Welche Kette sollte zuerst getestet werden"
+            },
+            positional_dependency: {
+              type: "object",
+              properties: {
+                is_positional: { type: "boolean" },
+                trigger_position: { type: "string" },
+                relief_position: { type: "string" },
+                recommended_drill: { type: "string" }
+              }
+            },
+            test_strategy: {
+              type: "string",
+              enum: ["software_first", "hardware_first", "mixed"],
+              description: "Welche Tests sollten priorisiert werden"
             }
           },
           required: ["affected_regions", "primary_chains", "hardware_probability", "software_probability", "reasoning"]
@@ -153,6 +179,47 @@ Gib eine klare Einschätzung mit Begründung.`,
             <h4 className="text-sm font-semibold text-cyan-400 mb-3">🧠 Analyse-Ergebnis</h4>
             <p className="text-sm text-slate-300 leading-relaxed">{analysis.reasoning}</p>
           </div>
+
+          {/* Positional Dependency */}
+          {analysis.positional_dependency?.is_positional && (
+            <div className="glass-purple rounded-2xl p-6 border border-purple-500/30">
+              <h4 className="text-sm font-semibold text-purple-400 mb-3">📍 Lagerungsabhängigkeit erkannt</h4>
+              <div className="space-y-2 text-sm text-slate-300">
+                {analysis.positional_dependency.trigger_position && (
+                  <p>
+                    <span className="text-purple-400 font-semibold">Trigger:</span> {analysis.positional_dependency.trigger_position}
+                  </p>
+                )}
+                {analysis.positional_dependency.relief_position && (
+                  <p>
+                    <span className="text-green-400 font-semibold">Besserung:</span> {analysis.positional_dependency.relief_position}
+                  </p>
+                )}
+                {analysis.positional_dependency.recommended_drill && (
+                  <div className="mt-3 p-3 bg-purple-500/10 rounded-lg border border-purple-500/20">
+                    <p className="text-xs text-purple-400 font-semibold mb-1">Empfohlener Visual-Drill:</p>
+                    <p className="text-sm">{analysis.positional_dependency.recommended_drill}</p>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* Test Strategy */}
+          {analysis.test_strategy && (
+            <div className="glass rounded-2xl p-6">
+              <h4 className="text-sm font-semibold text-cyan-400 mb-3">
+                {analysis.test_strategy === 'software_first' ? '🧠 Software-Fokus' : 
+                 analysis.test_strategy === 'hardware_first' ? '🔧 Hardware-Fokus' : 
+                 '⚖️ Mixed-Ansatz'}
+              </h4>
+              <p className="text-sm text-slate-300">
+                {analysis.test_strategy === 'software_first' && 'Neuro-Drills werden priorisiert. HWS/Nervensystem steht im Fokus.'}
+                {analysis.test_strategy === 'hardware_first' && 'Strukturelle Tests werden priorisiert. Faszien/Gewebe steht im Fokus.'}
+                {analysis.test_strategy === 'mixed' && 'Sowohl Hardware- als auch Software-Tests sind relevant.'}
+              </p>
+            </div>
+          )}
 
           {/* Key Findings */}
           {analysis.key_findings && analysis.key_findings.length > 0 && (
