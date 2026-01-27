@@ -18,54 +18,89 @@ export default function SymptomAnalyzer({ onAnalysisComplete }) {
       const result = await base44.integrations.Core.InvokeLLM({
         prompt: `Du bist ein Experte für Faszialketten nach Thomas Myers und Z-Health Neuro-Athletik.
 
-AUFGABE: Analysiere die Symptombeschreibung in 5 Schritten:
+AUFGABE: Analysiere die Symptombeschreibung mit detektivischem Reasoning in 6 Schritten:
 
 SCHRITT 1 - EXTRAKTION DER VARIABLEN:
 - Region: Wo tritt der Schmerz auf? (z.B. Nacken, Schulter, Rhomboideen, LWS, Hüfte)
 - Trigger-Position: Was verschlimmert es? (z.B. "Liegen auf der linken Seite", "Sitzen", "Kopf nach links")
 - Relief-Position: Was verbessert es? (z.B. "Kopf nach rechts drehen", "Aufstehen", "Bein anwinkeln")
 - Seite: Links, rechts oder beidseitig?
+- Auftrittskontext: Stehen/Gehen oder Liegen/Sitzen?
 
-SCHRITT 2 - ANATOMISCHE INTERPRETATION (LOGIK-REGELN):
-- Wenn Kompression (Liegen auf Seite) schmerzt → Priorisiere Laterallinie (LL) + Nervendynamik (Plexus Brachialis bei Arm/Schulter)
-- Wenn Schmerz diagonal zieht (Rhomboideen, zwischen Schulterblättern) → Priorisiere Spirallinie (SPL)
-- Wenn Kopfdrehung zur GEGENSEITE Erleichterung bringt → Priorisiere Neuro-Software (HWS-Entlastung, Vestibulär) ÜBER Hardware
-- Wenn Schmerz bei Bewegung auftritt → Priorisiere Hardware-Tests
-- Wenn Schmerz positionsabhängig ist → Software-Wahrscheinlichkeit höher (70%+)
+SCHRITT 2 - HIERARCHISCHE FILTER (PRE-SCREENING):
+FILTER A (Fundament): Tritt Schmerz beim Stehen/Gehen auf? → Flag "needs_foot_check" = true
+FILTER B (Sicherheit): Gibt es Hinweise auf Stress/hohes Schmerzniveau? → Flag "needs_breath_work" = true
 
-SCHRITT 3 - DYNAMISCHE HYPOTHESE:
-Formuliere in 2-3 Sätzen eine klare Erklärung, WAS anatomisch/neuronal passiert.
-Beispiel: "Deine Beschreibung deutet auf eine Kompression der linken Laterallinie und eine neuronale Enge der Halswirbelsäule hin. Da die Rotation nach rechts hilft, ist dein Gehirn in dieser Richtung 'sicher' und kann die Spannung besser regulieren."
+SCHRITT 3 - REASONING-ENGINE (Differential-Fragen):
 
-SCHRITT 4 - DIAGNOSE-VORSCHLAG:
-Schlage 2-3 konkrete Tests vor (Hardware UND Software), die am besten passen.
-Format: "Ketten-Code: Test-Name (Begründung)"
-Beispiel: 
-- "LL: Seitneigung zur schmerzhaften Seite (testet Kompression)"
-- "SPL: Scapula-Adduktion (testet Rhomboideen-Spannung)"
-- "Software: Visual-Sakkaden nach RECHTS (zur schmerzfreien Zone)"
+A. NACKEN & SCHULTER:
+- Tritt Schmerz bei Drehung auf? → Spirallinie (SPL), Augen-Fokus
+- Tritt Schmerz bei Neigung auf? → Laterallinie (LL), Gleichgewicht
+- Blockiert Blick nach hinten? → Teste Kiefer-Vorschub (Trigeminus vs. SFL)
 
-SCHRITT 5 - SAFETY CHECK (RED FLAGS):
-Suche nach Warnsignalen: Taubheit, Kribbeln, Kraftverlust, Schwindel mit Sehstörungen, ausstrahlende Schmerzen bis in die Hand/Fuß.
-Wenn gefunden → Flag setzen mit klarer Warnung.
+B. RÜCKEN & LWS:
+- Schmerz bei Vorbeuge? → SBL (Hardware/Spannung)
+- Schmerz bei Rückbeuge? → SFL/DFL (Software-Schutz/Hüftbeuger)
+
+C. KNIE & HÜFTE:
+- Schmerz beim Treppensteigen aufwärts? → SFL (Kraft/Zug)
+- Schmerz beim Treppensteigen abwärts? → SBL (Stabilität/Hüfte)
+
+SCHRITT 4 - ANATOMISCHE INTERPRETATION (LOGIK-REGELN):
+- Kompression schmerzt → Priorisiere Laterallinie (LL) + Nervendynamik
+- Schmerz diagonal → Spirallinie (SPL)
+- Kopfdrehung zur GEGENSEITE hilft → Software-Schutz (70%+)
+- Bewegungsabhängig → Hardware-Tests
+- Positionsabhängig → Software-Wahrscheinlichkeit höher
+
+SCHRITT 5 - DYNAMISCHE HYPOTHESE:
+Formuliere in 2-3 Sätzen: "Dein Gehirn schützt aktuell [Region]. Wir testen, ob es ein strukturelles (Hardware) oder neuronales (Software) Sicherheitsproblem ist."
+
+SCHRITT 6 - SAFETY CHECK (RED FLAGS):
+Warnsignale: Taubheit, Kribbeln, Kraftverlust, Schwindel mit Sehstörungen, ausstrahlende Schmerzen.
 
 Symptombeschreibung:
 "${description}"
 
-Führe alle 5 Schritte durch und gib eine präzise, strukturierte Analyse.`,
+Führe alle 6 Schritte durch und gib eine präzise, detektivische Analyse.`,
         response_json_schema: {
           type: "object",
           properties: {
             step1_extraction: {
               type: "object",
               properties: {
-                region: { type: "string", description: "Schmerzregion" },
-                trigger_position: { type: "string", description: "Was verschlimmert es" },
-                relief_position: { type: "string", description: "Was verbessert es" },
-                side: { type: "string", enum: ["links", "rechts", "beidseitig"], description: "Betroffene Seite" }
+                region: { type: "string" },
+                trigger_position: { type: "string" },
+                relief_position: { type: "string" },
+                side: { type: "string", enum: ["links", "rechts", "beidseitig"] },
+                context: { type: "string", enum: ["stehen_gehen", "liegen_sitzen", "gemischt"] }
               }
             },
-            step2_interpretation: {
+            step2_filters: {
+              type: "object",
+              properties: {
+                needs_foot_check: { type: "boolean", description: "Schmerz beim Stehen/Gehen?" },
+                needs_breath_work: { type: "boolean", description: "Stress/hohes Schmerzniveau?" },
+                filter_reasoning: { type: "string" }
+              }
+            },
+            step3_reasoning: {
+              type: "object",
+              properties: {
+                differential_questions: {
+                  type: "array",
+                  items: {
+                    type: "object",
+                    properties: {
+                      question: { type: "string" },
+                      interpretation: { type: "string" }
+                    }
+                  }
+                },
+                pattern_detected: { type: "string", description: "Drehung/Neigung/Vorbeuge/etc." }
+              }
+            },
+            step4_interpretation: {
               type: "object",
               properties: {
                 compression_detected: { type: "boolean" },
@@ -75,11 +110,19 @@ Führe alle 5 Schritte durch und gib eine präzise, strukturierte Analyse.`,
                 position_dependent: { type: "boolean" }
               }
             },
-            step3_hypothesis: {
+            step5_hypothesis: {
               type: "string",
-              description: "2-3 Sätze Erklärung, was anatomisch/neuronal passiert"
+              description: "User-friendly Erklärung mit Gehirn-Schutz-Kontext"
             },
-            step4_test_recommendations: {
+            step6_red_flags: {
+              type: "object",
+              properties: {
+                flags_detected: { type: "boolean" },
+                warning_message: { type: "string" },
+                specific_flags: { type: "array", items: { type: "string" } }
+              }
+            },
+            test_recommendations: {
               type: "array",
               items: {
                 type: "object",
@@ -91,18 +134,9 @@ Führe alle 5 Schritte durch und gib eine präzise, strukturierte Analyse.`,
                 }
               }
             },
-            step5_red_flags: {
-              type: "object",
-              properties: {
-                flags_detected: { type: "boolean" },
-                warning_message: { type: "string" },
-                specific_flags: { type: "array", items: { type: "string" } }
-              }
-            },
             primary_chains: {
               type: "array",
-              items: { type: "string" },
-              description: "Haupt-Faszialketten (Codes)"
+              items: { type: "string" }
             },
             secondary_chains: {
               type: "array",
@@ -115,7 +149,7 @@ Führe alle 5 Schritte durch und gib eine präzise, strukturierte Analyse.`,
               enum: ["software_first", "hardware_first", "mixed"]
             }
           },
-          required: ["step3_hypothesis", "step4_test_recommendations", "step5_red_flags", "primary_chains", "hardware_probability", "software_probability"]
+          required: ["step5_hypothesis", "test_recommendations", "step6_red_flags", "primary_chains", "hardware_probability", "software_probability"]
         }
       });
 
@@ -196,17 +230,17 @@ Führe alle 5 Schritte durch und gib eine präzise, strukturierte Analyse.`,
           className="space-y-4"
         >
           {/* Red Flags Warning */}
-          {analysis.step5_red_flags?.flags_detected && (
+          {analysis.step6_red_flags?.flags_detected && (
             <div className="glass rounded-2xl p-6 border-2 border-red-500/50 bg-red-500/10">
               <h4 className="text-sm font-semibold text-red-400 mb-3 flex items-center gap-2">
                 ⚠️ Warnsignale erkannt
               </h4>
               <p className="text-sm text-red-300 mb-3 font-semibold">
-                {analysis.step5_red_flags.warning_message}
+                {analysis.step6_red_flags.warning_message}
               </p>
-              {analysis.step5_red_flags.specific_flags && (
+              {analysis.step6_red_flags.specific_flags && (
                 <ul className="space-y-1">
-                  {analysis.step5_red_flags.specific_flags.map((flag, idx) => (
+                  {analysis.step6_red_flags.specific_flags.map((flag, idx) => (
                     <li key={idx} className="text-xs text-red-200 flex items-start gap-2">
                       <span className="text-red-400">•</span>
                       <span>{flag}</span>
@@ -214,6 +248,45 @@ Führe alle 5 Schritte durch und gib eine präzise, strukturierte Analyse.`,
                   ))}
                 </ul>
               )}
+            </div>
+          )}
+
+          {/* Hierarchical Filters */}
+          {analysis.step2_filters && (
+            <div className="glass-cyan rounded-2xl p-6 border border-cyan-500/30">
+              <h4 className="text-sm font-semibold text-cyan-400 mb-3">🔍 Vorschalt-Filter</h4>
+              <div className="space-y-2 text-sm">
+                {analysis.step2_filters.needs_foot_check && (
+                  <div className="flex items-start gap-2">
+                    <span className="text-cyan-400">✓</span>
+                    <span className="text-slate-300">Fuß-Sensorik-Check empfohlen (Fundament)</span>
+                  </div>
+                )}
+                {analysis.step2_filters.needs_breath_work && (
+                  <div className="flex items-start gap-2">
+                    <span className="text-purple-400">✓</span>
+                    <span className="text-slate-300">Atmungs-Regulation empfohlen (Sicherheit)</span>
+                  </div>
+                )}
+                {analysis.step2_filters.filter_reasoning && (
+                  <p className="text-xs text-slate-400 mt-2 italic">{analysis.step2_filters.filter_reasoning}</p>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* Reasoning Questions */}
+          {analysis.step3_reasoning?.differential_questions && analysis.step3_reasoning.differential_questions.length > 0 && (
+            <div className="glass-purple rounded-2xl p-6 border border-purple-500/30">
+              <h4 className="text-sm font-semibold text-purple-400 mb-3">🕵️ Detektiv-Fragen</h4>
+              <div className="space-y-3">
+                {analysis.step3_reasoning.differential_questions.map((q, idx) => (
+                  <div key={idx} className="bg-slate-800/50 rounded-xl p-3">
+                    <p className="text-sm text-slate-200 font-medium mb-1">{q.question}</p>
+                    <p className="text-xs text-slate-400">{q.interpretation}</p>
+                  </div>
+                ))}
+              </div>
             </div>
           )}
 
@@ -250,16 +323,19 @@ Führe alle 5 Schritte durch und gib eine präzise, strukturierte Analyse.`,
 
           {/* Hypothesis */}
           <div className="glass-cyan rounded-2xl p-6 border border-cyan-500/30">
-            <h4 className="text-sm font-semibold text-cyan-400 mb-3">🧠 Hypothese</h4>
-            <p className="text-sm text-slate-300 leading-relaxed">{analysis.step3_hypothesis}</p>
+            <h4 className="text-sm font-semibold text-cyan-400 mb-3">🧠 Was passiert in deinem Körper?</h4>
+            <p className="text-sm text-slate-300 leading-relaxed">{analysis.step5_hypothesis}</p>
+            <p className="text-xs text-slate-500 mt-3 italic">
+              💡 Dein Gehirn schützt diesen Bereich aktuell. Wir versuchen jetzt, ein Sicherheitssignal zu senden.
+            </p>
           </div>
 
           {/* Test Recommendations */}
-          {analysis.step4_test_recommendations && analysis.step4_test_recommendations.length > 0 && (
+          {analysis.test_recommendations && analysis.test_recommendations.length > 0 && (
             <div className="glass rounded-2xl p-6">
               <h4 className="text-sm font-semibold text-cyan-400 mb-4">🎯 Empfohlene Tests</h4>
               <div className="space-y-3">
-                {analysis.step4_test_recommendations.map((rec, idx) => (
+                {analysis.test_recommendations.map((rec, idx) => (
                   <div key={idx} className={`p-3 rounded-xl border ${
                     rec.test_type === 'software' 
                       ? 'bg-purple-500/10 border-purple-500/30' 

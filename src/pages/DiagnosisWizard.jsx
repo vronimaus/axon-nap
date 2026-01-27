@@ -173,15 +173,9 @@ export default function DiagnosisWizard() {
     setHardwareResults({});
     setSoftwareResults({});
     
-    // Check if foot filter is needed based on affected regions
-    const standingRegions = ['ruecken', 'knie', 'huefte', 'hals_nacken', 'lws', 'beine', 'fuss'];
-    const needsFootFilter = data.analysis?.step1_extraction?.region && 
-      standingRegions.some(region => data.analysis.step1_extraction.region.toLowerCase().includes(region));
-    
-    // Check if breath module is needed
-    const breathRegions = ['hals_nacken', 'lws', 'rumpf', 'systemisch'];
-    const needsBreathFilter = data.analysis?.step1_extraction?.region && 
-      breathRegions.some(region => data.analysis.step1_extraction.region.toLowerCase().includes(region));
+    // Use AI-determined filters from step2_filters
+    const needsFootFilter = data.analysis?.step2_filters?.needs_foot_check || false;
+    const needsBreathFilter = data.analysis?.step2_filters?.needs_breath_work || false;
     
     setNeedsFootCheck(needsFootFilter);
     setNeedsBreathCheck(needsBreathFilter);
