@@ -125,7 +125,7 @@ export default function DiagnosisChat() {
                         className={`max-w-[80%] rounded-2xl px-4 py-3 ${
                           msg.role === 'user'
                             ? 'bg-gradient-to-br from-cyan-500 to-cyan-600 text-white'
-                            : 'glass-cyan border border-cyan-500/30'
+                            : 'bg-slate-800 border border-slate-700 text-slate-100'
                         }`}
                       >
                         {msg.role === 'user' ? (
@@ -135,30 +135,30 @@ export default function DiagnosisChat() {
                             className="text-sm prose prose-sm prose-invert max-w-none [&>*:first-child]:mt-0 [&>*:last-child]:mb-0"
                             components={{
                               p: ({ children }) => (
-                                <p className="my-1 leading-relaxed text-slate-200">{children}</p>
+                                <p className="my-1 leading-relaxed text-slate-100">{children}</p>
                               ),
                               ul: ({ children }) => (
-                                <ul className="my-2 ml-4 list-disc text-slate-200">{children}</ul>
+                                <ul className="my-2 ml-4 list-disc text-slate-100">{children}</ul>
                               ),
                               ol: ({ children }) => (
-                                <ol className="my-2 ml-4 list-decimal text-slate-200">{children}</ol>
+                                <ol className="my-2 ml-4 list-decimal text-slate-100">{children}</ol>
                               ),
                               li: ({ children }) => (
-                                <li className="my-0.5 text-slate-200">{children}</li>
+                                <li className="my-0.5 text-slate-100">{children}</li>
                               ),
                               strong: ({ children }) => (
-                                <strong className="font-semibold text-cyan-400">{children}</strong>
+                                <strong className="font-semibold text-cyan-300">{children}</strong>
                               ),
                               em: ({ children }) => (
-                                <em className="italic text-purple-400">{children}</em>
+                                <em className="italic text-purple-300">{children}</em>
                               ),
                               code: ({ inline, children }) =>
                                 inline ? (
-                                  <code className="px-1 py-0.5 rounded bg-slate-800 text-cyan-400 text-xs">
+                                  <code className="px-1 py-0.5 rounded bg-slate-900 text-cyan-300 text-xs">
                                     {children}
                                   </code>
                                 ) : (
-                                  <code className="block bg-slate-800 rounded p-2 text-xs text-slate-300">
+                                  <code className="block bg-slate-900 rounded p-2 text-xs text-slate-200">
                                     {children}
                                   </code>
                                 ),
