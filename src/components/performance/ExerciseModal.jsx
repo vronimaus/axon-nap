@@ -74,8 +74,8 @@ export default function ExerciseModal({ exercise, isOpen, onClose }) {
                 <h3 className="text-sm font-semibold text-slate-500 uppercase tracking-wide mb-3">
                   Ausführung
                 </h3>
-                <div className="bg-slate-800/50 rounded-2xl p-4 border border-slate-700">
-                  <p className="text-slate-300 leading-relaxed whitespace-pre-line">
+                <div className="bg-[#333333] rounded-2xl p-4 border border-slate-600">
+                  <p className="text-white leading-relaxed whitespace-pre-line">
                     {exercise.description}
                   </p>
                 </div>
@@ -90,9 +90,9 @@ export default function ExerciseModal({ exercise, isOpen, onClose }) {
                   </h3>
                   <div className="space-y-2">
                     {exercise.cues.map((cue, index) => (
-                      <div key={index} className="flex items-start gap-3 bg-slate-800/50 rounded-xl p-3 border border-purple-500/20">
+                      <div key={index} className="flex items-start gap-3 bg-[#333333] rounded-xl p-3 border border-purple-500/20">
                         <CheckCircle2 className="w-5 h-5 text-purple-400 flex-shrink-0 mt-0.5" />
-                        <p className="text-slate-300 text-sm">{cue}</p>
+                        <p className="text-white text-sm">{cue}</p>
                       </div>
                     ))}
                   </div>
