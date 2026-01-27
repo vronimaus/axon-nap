@@ -1,12 +1,13 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { Activity, LayoutDashboard, Compass } from 'lucide-react';
+import { Activity, LayoutDashboard, Compass, Trophy } from 'lucide-react';
 
 export default function Layout({ children, currentPageName }) {
   const navItems = [
     { name: 'Dashboard', icon: LayoutDashboard, page: 'Dashboard' },
-    { name: 'Diagnose', icon: Compass, page: 'DiagnosisWizard' }
+    { name: 'Diagnose', icon: Compass, page: 'DiagnosisWizard' },
+    { name: 'Performance', icon: Trophy, page: 'Performance' }
   ];
   
   return (
