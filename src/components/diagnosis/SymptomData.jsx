@@ -1,3 +1,45 @@
+// Lagerungsabhängige Symptome (spezielle Kategorie für positionsabhängige Schmerzen)
+export const POSITIONAL_SYMPTOMS = [
+  {
+    id: 'POS_NECK_SHOULDER_01',
+    cluster: 'hals_nacken',
+    label: 'Lagerungsabhängiger Nacken-Schulter-Schmerz',
+    description: 'Schmerz in Rhomboideen/Schulter beim Liegen auf der betroffenen Seite, Besserung durch Kopfrotation zur Gegenseite',
+    prio_chain: 'SPL',
+    secondary_chains: ['LL', 'AL'],
+    analysis: {
+      mechanical_cause: 'Kompression der Laterallinie (LL) + Zugspannung der Spirallinie (SPL)',
+      neural_cause: 'Engpass im Plexus Brachialis oder mechanische Irritation der HWS-Nervenwurzeln',
+      trigger_side: 'ipsilateral',
+      relief_side: 'contralateral_rotation',
+      software_priority: 85
+    },
+    recommended_drill: 'Sakkaden zur schmerzfreien Seite (aktiviert die Nackenmuskulatur der Gegenseite)',
+    hardware_tests: ['Seitneigung des Kopfes zur schmerzhaften Seite', 'Aktive Scapula-Adduktion'],
+    recommendation: 'Software-Fokus: HWS-Entlastung und visuelles Training zur schmerzfreien Seite. Hardware-Fokus: Release der vorderen Armlinie (AL)',
+    drill: 'Visual Saccades'
+  },
+  {
+    id: 'POS_HIP_LEG_01',
+    cluster: 'huefte',
+    label: 'Lagerungsabhängiger Hüft-/Beinschmerz',
+    description: 'Schmerz in der Hüfte beim Liegen auf der Seite, Besserung durch Beinposition-Änderung',
+    prio_chain: 'LL',
+    secondary_chains: ['SBL', 'FL'],
+    analysis: {
+      mechanical_cause: 'Kompression der Laterallinie (LL) im Hüftbereich',
+      neural_cause: 'N. ischiadicus Irritation oder TFL-Kompression',
+      trigger_side: 'ipsilateral',
+      relief_side: 'neutral_position',
+      software_priority: 70
+    },
+    recommended_drill: 'Balance-Drills einbeinig zur Stabilisierung',
+    hardware_tests: ['Seitliche Hüftabduktion', 'TFL-Palpation'],
+    recommendation: 'Mixed: Hardware-Release der IT-Band/TFL-Region + Balance-Training',
+    drill: 'Balance Stand'
+  }
+];
+
 // Vollständige Symptom-Liste mit 30 Einträgen
 export const ALL_SYMPTOMS = [
   {id: "S1", cluster: "kopf_kiefer", label: "Kiefersperre / Zähneknirschen", prio_chain: "DFL", drill: "Trigeminus-Release"},
@@ -43,8 +85,8 @@ export const SYMPTOM_CLUSTERS = {
   hals_nacken: {
     label: "Hals & Nacken",
     icon: "move",
-    symptoms: ALL_SYMPTOMS.filter(s => s.cluster === "hals_nacken"),
-    triggered_chains: ["SBL", "DFL", "SPL"]
+    symptoms: [...ALL_SYMPTOMS.filter(s => s.cluster === "hals_nacken"), ...POSITIONAL_SYMPTOMS.filter(s => s.cluster === "hals_nacken")],
+    triggered_chains: ["SBL", "DFL", "SPL", "LL", "AL"]
   },
   schulter_arm: {
     label: "Schulter & Arm",
@@ -73,7 +115,7 @@ export const SYMPTOM_CLUSTERS = {
   huefte: {
     label: "Hüfte & Becken",
     icon: "target",
-    symptoms: ALL_SYMPTOMS.filter(s => s.cluster === "huefte"),
+    symptoms: [...ALL_SYMPTOMS.filter(s => s.cluster === "huefte"), ...POSITIONAL_SYMPTOMS.filter(s => s.cluster === "huefte")],
     triggered_chains: ["DFL", "LL", "FL", "SFL"]
   },
   beine: {
