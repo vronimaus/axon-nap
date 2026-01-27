@@ -90,7 +90,7 @@ export default function HardwareTest({
       </div>
       
       {/* Chain Info Card */}
-      <Card className="p-6 border-0 shadow-xl glass border border-slate-700">
+      <Card className="p-6 border-0 shadow-xl bg-[#2A2A2A] border border-slate-600">
         <div className="flex items-start gap-4">
           <div 
             className="w-12 h-12 rounded-2xl flex items-center justify-center text-white font-bold text-lg shadow-lg"
@@ -100,13 +100,13 @@ export default function HardwareTest({
           </div>
           <div className="flex-1">
             <h3 className="text-xl font-bold text-cyan-400">{chain.name_de}</h3>
-            <p className="text-sm text-slate-400 mt-1">{chain.description}</p>
+            <p className="text-sm text-white mt-1">{chain.description}</p>
           </div>
         </div>
       </Card>
       
       {/* Test Card */}
-      <Card className="p-6 border-0 shadow-xl glass border border-slate-700">
+      <Card className="p-6 border-0 shadow-xl bg-[#2A2A2A] border border-slate-600">
         <div className="flex items-center justify-between mb-4">
           <h4 className="font-semibold text-cyan-400 flex items-center gap-2">
             <Play className="w-4 h-4 text-cyan-400" />
@@ -116,7 +116,7 @@ export default function HardwareTest({
             variant="ghost"
             size="sm"
             onClick={() => setShowInstructions(!showInstructions)}
-            className="text-slate-400 hover:text-cyan-400 hover:bg-cyan-500/10"
+            className="text-slate-300 hover:text-cyan-400 hover:bg-cyan-500/10"
           >
             {showInstructions ? 'Ausblenden' : 'Anleitung zeigen'}
           </Button>
@@ -130,14 +130,14 @@ export default function HardwareTest({
               exit={{ height: 0, opacity: 0 }}
               className="overflow-hidden"
             >
-              <div className="glass rounded-2xl p-4 mb-4 border border-slate-700">
-                <p className="text-slate-400 leading-relaxed">
+              <div className="bg-[#333333] rounded-2xl p-4 mb-4 border border-slate-600">
+                <p className="text-white leading-relaxed">
                   {chain.test_instruction}
                 </p>
               </div>
-              
-              <div className="glass rounded-2xl p-4 border border-cyan-500/30">
-                <p className="text-sm text-slate-400">
+
+              <div className="bg-[#222222] rounded-2xl p-4 border border-cyan-500/30">
+                <p className="text-sm text-white">
                   <span className="font-semibold text-cyan-400">Positiver Befund: </span>
                   {chain.test_positive_indicator}
                 </p>
@@ -147,10 +147,10 @@ export default function HardwareTest({
         </AnimatePresence>
         
         {/* Image Placeholder */}
-        <div className="mt-4 glass rounded-2xl h-40 flex items-center justify-center border border-slate-700">
-          <div className="text-center text-slate-600">
+        <div className="mt-4 bg-slate-800/50 rounded-2xl h-40 flex items-center justify-center border border-slate-600">
+          <div className="text-center">
             <Play className="w-10 h-10 mx-auto mb-2 opacity-30 text-cyan-400" />
-            <span className="text-sm text-slate-500">Video-Anleitung (Coming Soon)</span>
+            <span className="text-sm text-slate-400">Video-Anleitung (Coming Soon)</span>
           </div>
         </div>
         
