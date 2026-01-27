@@ -88,7 +88,7 @@ export default function NeuroDrill({
         animate={{ opacity: 1, y: 0 }}
         className="space-y-6"
       >
-        <Card className="p-6 border-0 shadow-xl glass border border-emerald-500/30">
+        <Card className="p-6 border-0 shadow-xl glass border border-slate-700">
           <div className="text-center py-8">
             <div className="w-16 h-16 bg-emerald-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
               <Zap className="w-8 h-8 text-emerald-400" />
@@ -96,7 +96,7 @@ export default function NeuroDrill({
             <h3 className="text-xl font-bold text-emerald-400 mb-2">
               Kein Neuro-Drill erforderlich
             </h3>
-            <p className="text-slate-300">
+            <p className="text-slate-400">
               Der Hardware-Test für <strong className="text-cyan-400">{chain.name_de}</strong> war unauffällig.
               Wir überspringen den Neuro-Drill für diese Kette.
             </p>
@@ -144,14 +144,14 @@ export default function NeuroDrill({
       </div>
       
       {/* Chain Info Card */}
-      <Card className="p-6 border-0 shadow-xl glass-purple neuro-glow-purple">
+      <Card className="p-6 border-0 shadow-xl glass border border-slate-700">
         <div className="flex items-start gap-4">
           <div className="w-12 h-12 rounded-2xl bg-purple-600 flex items-center justify-center text-white shadow-lg">
             <Brain className="w-6 h-6" />
           </div>
           <div className="flex-1">
             <h3 className="text-xl font-bold text-purple-400">{chain.neuro_marker}</h3>
-            <p className="text-sm text-slate-300 mt-1">
+            <p className="text-sm text-slate-400 mt-1">
               Neuro-Drill für: {chain.name_de}
             </p>
           </div>
@@ -159,23 +159,23 @@ export default function NeuroDrill({
       </Card>
       
       {/* Drill Instructions */}
-      <Card className="p-6 border-0 shadow-xl glass">
+      <Card className="p-6 border-0 shadow-xl glass border border-slate-700">
         <div className="flex items-center gap-2 mb-4">
           <Zap className="w-5 h-5 text-purple-400" />
           <h4 className="font-semibold text-purple-400">Anleitung</h4>
         </div>
         
-        <div className="glass-purple rounded-2xl p-4 mb-4 border border-purple-500/30">
-          <p className="text-slate-300 leading-relaxed">
+        <div className="glass rounded-2xl p-4 mb-4 border border-slate-700">
+          <p className="text-slate-400 leading-relaxed">
             {chain.neuro_instruction}
           </p>
         </div>
         
         {/* Video Placeholder */}
-        <div className="glass rounded-2xl h-40 flex items-center justify-center border border-purple-500/20">
-          <div className="text-center text-slate-500">
-            <Brain className="w-10 h-10 mx-auto mb-2 opacity-50 text-purple-400" />
-            <span className="text-sm">Video-Anleitung (Coming Soon)</span>
+        <div className="glass rounded-2xl h-40 flex items-center justify-center border border-slate-700">
+          <div className="text-center text-slate-600">
+            <Brain className="w-10 h-10 mx-auto mb-2 opacity-30 text-purple-400" />
+            <span className="text-sm text-slate-500">Video-Anleitung (Coming Soon)</span>
           </div>
         </div>
         
@@ -191,8 +191,8 @@ export default function NeuroDrill({
           </div>
         ) : (
           <div className="mt-6">
-            <div className="glass-purple border border-purple-500/30 rounded-2xl p-4 mb-4">
-              <p className="text-sm text-purple-300 font-medium">
+            <div className="glass border border-purple-500/30 rounded-2xl p-4 mb-4">
+              <p className="text-sm text-purple-400 font-medium">
                 🔄 Führe jetzt den Hardware-Test "{chain.test_name}" erneut durch und bewerte die Veränderung:
               </p>
             </div>
