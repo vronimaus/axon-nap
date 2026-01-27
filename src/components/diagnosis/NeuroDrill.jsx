@@ -4,6 +4,7 @@ import { ChevronRight, ChevronLeft, Brain, Zap, TrendingUp, TrendingDown, Minus,
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import ConfettiEffect from './ConfettiEffect';
+import BreathGuide from './BreathGuide';
 
 const ImprovementButtons = ({ onResult, currentResult }) => {
   const [showConfetti, setShowConfetti] = useState(false);
@@ -24,11 +25,11 @@ const ImprovementButtons = ({ onResult, currentResult }) => {
           onClick={handleImproved}
           className={`p-5 rounded-2xl border-2 transition-all touch-target ${
             currentResult === 'improved' 
-              ? 'border-emerald-500 bg-emerald-50 text-emerald-700 shadow-lg shadow-emerald-100 pulse-success' 
-              : 'glass hover:border-emerald-300 hover:shadow-md'
+              ? 'border-emerald-500 bg-emerald-500/20 text-emerald-400 shadow-lg shadow-emerald-500/20 pulse-success' 
+              : 'glass hover:border-emerald-500/50 hover:shadow-md text-slate-300'
           }`}
         >
-          <TrendingUp className={`w-7 h-7 mx-auto mb-2 ${currentResult === 'improved' ? 'text-emerald-500' : 'text-slate-400'}`} />
+          <TrendingUp className={`w-7 h-7 mx-auto mb-2 ${currentResult === 'improved' ? 'text-emerald-400' : 'text-slate-400'}`} />
           <span className="text-sm font-semibold block">Verbessert</span>
           <span className="text-xs text-slate-500 mt-1 block">Deutlich besser</span>
         </motion.button>
@@ -39,11 +40,11 @@ const ImprovementButtons = ({ onResult, currentResult }) => {
           onClick={() => onResult('unchanged')}
           className={`p-5 rounded-2xl border-2 transition-all touch-target ${
             currentResult === 'unchanged' 
-              ? 'border-amber-500 bg-amber-50 text-amber-700 shadow-lg shadow-amber-100' 
-              : 'glass hover:border-amber-300 hover:shadow-md'
+              ? 'border-amber-500 bg-amber-500/20 text-amber-400 shadow-lg shadow-amber-500/20' 
+              : 'glass hover:border-amber-500/50 hover:shadow-md text-slate-300'
           }`}
         >
-          <Minus className={`w-7 h-7 mx-auto mb-2 ${currentResult === 'unchanged' ? 'text-amber-500' : 'text-slate-400'}`} />
+          <Minus className={`w-7 h-7 mx-auto mb-2 ${currentResult === 'unchanged' ? 'text-amber-400' : 'text-slate-400'}`} />
           <span className="text-sm font-semibold block">Unverändert</span>
           <span className="text-xs text-slate-500 mt-1 block">Keine Veränderung</span>
         </motion.button>
@@ -54,11 +55,11 @@ const ImprovementButtons = ({ onResult, currentResult }) => {
           onClick={() => onResult('worse')}
           className={`p-5 rounded-2xl border-2 transition-all touch-target ${
             currentResult === 'worse' 
-              ? 'border-red-500 bg-red-50 text-red-700 shadow-lg shadow-red-100' 
-              : 'glass hover:border-red-300 hover:shadow-md'
+              ? 'border-red-500 bg-red-500/20 text-red-400 shadow-lg shadow-red-500/20' 
+              : 'glass hover:border-red-500/50 hover:shadow-md text-slate-300'
           }`}
         >
-          <TrendingDown className={`w-7 h-7 mx-auto mb-2 ${currentResult === 'worse' ? 'text-red-500' : 'text-slate-400'}`} />
+          <TrendingDown className={`w-7 h-7 mx-auto mb-2 ${currentResult === 'worse' ? 'text-red-400' : 'text-slate-400'}`} />
           <span className="text-sm font-semibold block">Schlechter</span>
           <span className="text-xs text-slate-500 mt-1 block">Verschlechtert</span>
         </motion.button>
@@ -123,6 +124,7 @@ export default function NeuroDrill({
       exit={{ opacity: 0, y: -20 }}
       className="space-y-6"
     >
+      <BreathGuide isActive={true} />
       {/* Progress */}
       <div className="flex items-center justify-between mb-2">
         <span className="text-sm text-slate-400">
