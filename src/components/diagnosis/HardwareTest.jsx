@@ -90,7 +90,7 @@ export default function HardwareTest({
       </div>
       
       {/* Chain Info Card */}
-      <Card className="p-6 border-0 shadow-xl glass">
+      <Card className="p-6 border-0 shadow-xl glass-cyan neuro-glow">
         <div className="flex items-start gap-4">
           <div 
             className="w-12 h-12 rounded-2xl flex items-center justify-center text-white font-bold text-lg shadow-lg"
@@ -171,7 +171,7 @@ export default function HardwareTest({
         <Button
           onClick={onNext}
           disabled={!currentResult}
-          className="gap-2 bg-blue-600 hover:bg-blue-700 touch-target h-12 text-base shadow-lg"
+          className="gap-2 bg-gradient-to-r from-cyan-500 to-cyan-600 hover:from-cyan-600 hover:to-cyan-700 text-slate-900 touch-target h-12 text-base shadow-lg shadow-cyan-500/30 neuro-glow font-semibold"
         >
           Weiter
           <ChevronRight className="w-5 h-5" />

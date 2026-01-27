@@ -22,11 +22,15 @@ const BodySilhouette = ({ selectedRegion, onRegionClick }) => {
       <svg viewBox="0 0 220 300" className="w-full h-auto">
         <defs>
           <linearGradient id="bodyGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stopColor="#f8fafc" />
-            <stop offset="100%" stopColor="#e2e8f0" />
+            <stop offset="0%" stopColor="#1e293b" />
+            <stop offset="100%" stopColor="#0f172a" />
+          </linearGradient>
+          <linearGradient id="bodyGradientActive" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stopColor="#06b6d4" />
+            <stop offset="100%" stopColor="#0891b2" />
           </linearGradient>
           <filter id="glow">
-            <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+            <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
             <feMerge>
               <feMergeNode in="coloredBlur"/>
               <feMergeNode in="SourceGraphic"/>
@@ -38,20 +42,21 @@ const BodySilhouette = ({ selectedRegion, onRegionClick }) => {
           <motion.path
             key={region.id}
             d={region.path}
-            fill={selectedRegion === region.id ? '#3b82f6' : 'url(#bodyGradient)'}
-            stroke={selectedRegion === region.id ? '#1d4ed8' : '#94a3b8'}
-            strokeWidth={selectedRegion === region.id ? 2.5 : 1.5}
-            className="cursor-pointer transition-all duration-200"
+            fill={selectedRegion === region.id ? 'url(#bodyGradientActive)' : 'url(#bodyGradient)'}
+            stroke={selectedRegion === region.id ? '#06b6d4' : '#475569'}
+            strokeWidth={selectedRegion === region.id ? 3 : 1.5}
+            className="cursor-pointer transition-all duration-300"
             onClick={() => onRegionClick(region.id)}
             whileHover={{ 
-              fill: selectedRegion === region.id ? '#2563eb' : '#dbeafe',
-              scale: 1.02,
+              fill: selectedRegion === region.id ? 'url(#bodyGradientActive)' : '#1e293b',
+              stroke: '#06b6d4',
+              strokeWidth: 2,
               filter: 'url(#glow)'
             }}
             whileTap={{ scale: 0.98 }}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ duration: 0.3, delay: regions.indexOf(region) * 0.1 }}
+            transition={{ duration: 0.3, delay: regions.indexOf(region) * 0.05 }}
           />
         ))}
       </svg>
@@ -64,7 +69,7 @@ const BodySilhouette = ({ selectedRegion, onRegionClick }) => {
               key={`label-${region.id}`}
               initial={{ opacity: 0, y: 5 }}
               animate={{ opacity: 1, y: 0 }}
-              className="absolute left-1/2 -translate-x-1/2 bg-slate-900 text-white text-xs px-2 py-1 rounded-md whitespace-nowrap"
+              className="absolute left-1/2 -translate-x-1/2 bg-cyan-500 text-slate-900 text-xs px-3 py-1.5 rounded-lg whitespace-nowrap font-semibold shadow-lg shadow-cyan-500/50"
               style={{ 
                 top: region.id === 'kopf_nacken' ? '2%' : 
                      region.id === 'schulter_arm' ? '22%' :
@@ -89,18 +94,18 @@ export default function BodyMap({ selectedRegion, onRegionSelect }) {
         onRegionClick={onRegionSelect} 
       />
       
-      <div className="mt-6 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 w-full max-w-3xl">
+      <div className="mt-6 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 w-full max-w-3xl">
         {Object.entries(SYMPTOM_CLUSTERS).map(([key, cluster]) => (
           <motion.button
             key={key}
             onClick={() => onRegionSelect(key)}
-            className={`px-3 py-2 rounded-xl text-sm font-medium transition-all ${
+            className={`px-4 py-3 rounded-2xl text-sm font-semibold transition-all touch-target ${
               selectedRegion === key 
-                ? 'bg-blue-600 text-white shadow-lg shadow-blue-200' 
-                : 'bg-white text-slate-700 border border-slate-200 hover:border-blue-300 hover:bg-blue-50'
+                ? 'bg-gradient-to-r from-cyan-500 to-cyan-600 text-slate-900 shadow-lg shadow-cyan-500/30 neuro-glow' 
+                : 'glass text-slate-300 border border-slate-700 hover:border-cyan-500/50 hover:text-cyan-400'
             }`}
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
+            whileHover={{ scale: 1.03 }}
+            whileTap={{ scale: 0.97 }}
           >
             {cluster.label}
           </motion.button>

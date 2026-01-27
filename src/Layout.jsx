@@ -10,19 +10,19 @@ export default function Layout({ children, currentPageName }) {
   ];
   
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50">
+    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
       {/* Navigation */}
-      <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-slate-100">
+      <nav className="sticky top-0 z-50 glass border-b border-cyan-500/20">
         <div className="max-w-6xl mx-auto px-4">
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
             <Link to={createPageUrl('Dashboard')} className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center">
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-500 to-purple-600 flex items-center justify-center neuro-glow">
                 <Activity className="w-5 h-5 text-white" />
               </div>
               <div className="hidden sm:block">
-                <span className="font-bold text-slate-800">Neuro-Fascial</span>
-                <span className="text-xs text-slate-500 block -mt-1">Diagnosis Tool</span>
+                <span className="font-bold text-cyan-400">Neuro-Fascial</span>
+                <span className="text-xs text-slate-400 block -mt-1">Diagnosis Tool</span>
               </div>
             </Link>
             
@@ -34,8 +34,8 @@ export default function Layout({ children, currentPageName }) {
                   to={createPageUrl(item.page)}
                   className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all ${
                     currentPageName === item.page
-                      ? 'bg-blue-50 text-blue-700'
-                      : 'text-slate-600 hover:bg-slate-100 hover:text-slate-800'
+                      ? 'bg-cyan-500/20 text-cyan-400 neuro-glow'
+                      : 'text-slate-400 hover:bg-slate-800/50 hover:text-cyan-300'
                   }`}
                 >
                   <item.icon className="w-4 h-4" />
@@ -53,9 +53,9 @@ export default function Layout({ children, currentPageName }) {
       </main>
       
       {/* Footer */}
-      <footer className="border-t border-slate-100 bg-white/50 mt-auto">
+      <footer className="border-t border-cyan-500/20 glass mt-auto">
         <div className="max-w-6xl mx-auto px-4 py-6">
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-slate-500">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-slate-400">
             <p>© 2024 Neuro-Fascial Diagnosis Tool</p>
             <p className="text-xs">
               Basierend auf Thomas Myers (Anatomy Trains), Robert Schleip (Faszienforschung) & Z-Health Neuro-Athletik

@@ -107,7 +107,7 @@ export default function NeuroDrill({
             <ChevronLeft className="w-5 h-5" />
             Zurück
           </Button>
-          <Button onClick={() => { onResult('skipped'); onNext(); }} className="gap-2 bg-blue-600 hover:bg-blue-700 touch-target h-12 text-base shadow-lg">
+          <Button onClick={() => { onResult('skipped'); onNext(); }} className="gap-2 bg-gradient-to-r from-cyan-500 to-cyan-600 hover:from-cyan-600 hover:to-cyan-700 text-slate-900 touch-target h-12 text-base shadow-lg shadow-cyan-500/30 neuro-glow font-semibold">
             Weiter
             <ChevronRight className="w-5 h-5" />
           </Button>
@@ -142,7 +142,7 @@ export default function NeuroDrill({
       </div>
       
       {/* Chain Info Card */}
-      <Card className="p-6 border-0 shadow-xl glass" style={{ background: 'linear-gradient(135deg, rgba(245, 243, 255, 0.8) 0%, rgba(255, 255, 255, 0.7) 100%)' }}>
+      <Card className="p-6 border-0 shadow-xl glass-purple neuro-glow-purple">
         <div className="flex items-start gap-4">
           <div className="w-12 h-12 rounded-2xl bg-purple-600 flex items-center justify-center text-white shadow-lg">
             <Brain className="w-6 h-6" />
@@ -209,7 +209,7 @@ export default function NeuroDrill({
         <Button
           onClick={onNext}
           disabled={!currentResult}
-          className="gap-2 bg-purple-600 hover:bg-purple-700 touch-target h-12 text-base shadow-lg"
+          className="gap-2 bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white touch-target h-12 text-base shadow-lg shadow-purple-500/30 neuro-glow-purple font-semibold"
         >
           Weiter
           <ChevronRight className="w-5 h-5" />
