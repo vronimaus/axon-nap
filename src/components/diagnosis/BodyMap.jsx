@@ -11,9 +11,9 @@ const BodySilhouette = ({ selectedRegion, onRegionClick }) => {
     { id: 'rumpf', path: 'M88,85 L132,85 L128,105 L92,105 Z', label: 'Rumpf & Rippen' },
     { id: 'lws', path: 'M92,105 L128,105 L125,130 L95,130 Z', label: 'LWS & Kreuzbein' },
     { id: 'huefte', path: 'M95,130 L125,130 L130,155 L118,165 L102,165 L90,155 Z', label: 'Hüfte & Becken' },
-    { id: 'beine', path: 'M98,165 L108,210 L114,210 L122,165 L118,165 L110,200 L102,165 Z', label: 'Oberschenkel' },
-    { id: 'knie', path: 'M106,210 L104,225 L108,228 L112,228 L116,225 L114,210 Z', label: 'Knie' },
-    { id: 'fuss', path: 'M102,228 L98,260 L94,270 L96,278 L110,280 L112,272 L108,260 L106,228 Z M114,228 L118,260 L114,272 L116,280 L124,278 L126,270 L122,260 L118,228 Z', label: 'Fuß & Sprunggelenk' },
+    { id: 'beine', path: 'M98,165 L100,210 L106,210 L108,165 Z M112,165 L114,210 L120,210 L122,165 Z', label: 'Oberschenkel' },
+    { id: 'knie', path: 'M99,210 L98,225 L107,225 L107,210 Z M113,210 L113,225 L122,225 L121,210 Z', label: 'Knie' },
+    { id: 'fuss', path: 'M97,225 L95,260 L92,270 L94,278 L108,280 L109,270 L107,260 L108,225 Z M113,225 L113,260 L111,270 L112,280 L126,278 L128,270 L125,260 L123,225 Z', label: 'Fuß & Sprunggelenk' },
     { id: 'systemisch', path: 'M85,285 L135,285 L130,295 L90,295 Z', label: 'Systemisch' }
   ];
 
