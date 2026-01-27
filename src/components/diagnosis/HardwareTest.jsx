@@ -12,11 +12,11 @@ const TestResultButtons = ({ onResult, currentResult }) => (
       onClick={() => onResult('limited')}
       className={`p-5 rounded-2xl border-2 transition-all touch-target ${
         currentResult === 'limited' 
-          ? 'border-red-500 bg-red-50 text-red-700 shadow-lg shadow-red-100' 
-          : 'glass hover:border-red-300 hover:shadow-md'
+          ? 'border-red-500 bg-red-500/20 text-red-400 shadow-lg shadow-red-500/20' 
+          : 'glass hover:border-red-500/50 hover:shadow-md text-slate-300'
       }`}
     >
-      <AlertCircle className={`w-7 h-7 mx-auto mb-2 ${currentResult === 'limited' ? 'text-red-500' : 'text-slate-400'}`} />
+      <AlertCircle className={`w-7 h-7 mx-auto mb-2 ${currentResult === 'limited' ? 'text-red-400' : 'text-slate-400'}`} />
       <span className="text-sm font-semibold block">Eingeschränkt</span>
       <span className="text-xs text-slate-500 mt-1 block">Spannung/Schmerz</span>
     </motion.button>
@@ -27,11 +27,11 @@ const TestResultButtons = ({ onResult, currentResult }) => (
       onClick={() => onResult('moderate')}
       className={`p-5 rounded-2xl border-2 transition-all touch-target ${
         currentResult === 'moderate' 
-          ? 'border-amber-500 bg-amber-50 text-amber-700 shadow-lg shadow-amber-100' 
-          : 'glass hover:border-amber-300 hover:shadow-md'
+          ? 'border-amber-500 bg-amber-500/20 text-amber-400 shadow-lg shadow-amber-500/20' 
+          : 'glass hover:border-amber-500/50 hover:shadow-md text-slate-300'
       }`}
     >
-      <HelpCircle className={`w-7 h-7 mx-auto mb-2 ${currentResult === 'moderate' ? 'text-amber-500' : 'text-slate-400'}`} />
+      <HelpCircle className={`w-7 h-7 mx-auto mb-2 ${currentResult === 'moderate' ? 'text-amber-400' : 'text-slate-400'}`} />
       <span className="text-sm font-semibold block">Mittel</span>
       <span className="text-xs text-slate-500 mt-1 block">Leicht eingeschränkt</span>
     </motion.button>
@@ -42,11 +42,11 @@ const TestResultButtons = ({ onResult, currentResult }) => (
       onClick={() => onResult('good')}
       className={`p-5 rounded-2xl border-2 transition-all touch-target ${
         currentResult === 'good' 
-          ? 'border-emerald-500 bg-emerald-50 text-emerald-700 shadow-lg shadow-emerald-100' 
-          : 'glass hover:border-emerald-300 hover:shadow-md'
+          ? 'border-emerald-500 bg-emerald-500/20 text-emerald-400 shadow-lg shadow-emerald-500/20' 
+          : 'glass hover:border-emerald-500/50 hover:shadow-md text-slate-300'
       }`}
     >
-      <CheckCircle2 className={`w-7 h-7 mx-auto mb-2 ${currentResult === 'good' ? 'text-emerald-500' : 'text-slate-400'}`} />
+      <CheckCircle2 className={`w-7 h-7 mx-auto mb-2 ${currentResult === 'good' ? 'text-emerald-400' : 'text-slate-400'}`} />
       <span className="text-sm font-semibold block">Gut</span>
       <span className="text-xs text-slate-500 mt-1 block">Keine Probleme</span>
     </motion.button>
