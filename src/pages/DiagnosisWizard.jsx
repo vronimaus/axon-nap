@@ -10,6 +10,7 @@ import BodyMap from '../components/diagnosis/BodyMap';
 import SymptomSelector from '../components/diagnosis/SymptomSelector';
 import SymptomAnalyzer from '../components/diagnosis/SymptomAnalyzer';
 import FootFilter from '../components/diagnosis/FootFilter';
+import BreathModule from '../components/diagnosis/BreathModule';
 import HardwareTest from '../components/diagnosis/HardwareTest';
 import NeuroDrill from '../components/diagnosis/NeuroDrill';
 import ResultsAnalysis from '../components/diagnosis/ResultsAnalysis';
@@ -18,9 +19,10 @@ import { SYMPTOM_CLUSTERS } from '../components/diagnosis/SymptomData';
 const STEPS = {
   SYMPTOM: 0,
   FOOT_CHECK: 1,
-  HARDWARE: 2,
-  SOFTWARE: 3,
-  RESULTS: 4
+  BREATH_CHECK: 2,
+  HARDWARE: 3,
+  SOFTWARE: 4,
+  RESULTS: 5
 };
 
 export default function DiagnosisWizard() {
@@ -37,6 +39,8 @@ export default function DiagnosisWizard() {
   const [softwareResults, setSoftwareResults] = useState({});
   const [footCheckData, setFootCheckData] = useState(null);
   const [needsFootCheck, setNeedsFootCheck] = useState(false);
+  const [breathCheckData, setBreathCheckData] = useState(null);
+  const [needsBreathCheck, setNeedsBreathCheck] = useState(false);
   
   // Fetch chains
   const { data: allChains = [], isLoading } = useQuery({
@@ -91,9 +95,19 @@ export default function DiagnosisWizard() {
       
       // Check if foot filter is needed for standing symptoms
       const standingRegions = ['ruecken', 'knie', 'huefte', 'hals_nacken', 'lws', 'beine', 'fuss'];
-      if (standingRegions.includes(selectedRegion)) {
-        setNeedsFootCheck(true);
+      const needsFoot = standingRegions.includes(selectedRegion);
+      
+      // Check if breath module is needed
+      const breathRegions = ['hals_nacken', 'lws', 'rumpf', 'systemisch'];
+      const needsBreath = breathRegions.includes(selectedRegion);
+      
+      setNeedsFootCheck(needsFoot);
+      setNeedsBreathCheck(needsBreath);
+      
+      if (needsFoot) {
         setCurrentStep(STEPS.FOOT_CHECK);
+      } else if (needsBreath) {
+        setCurrentStep(STEPS.BREATH_CHECK);
       } else {
         setCurrentStep(STEPS.HARDWARE);
       }
@@ -126,6 +140,8 @@ export default function DiagnosisWizard() {
   const prevHardwareTest = () => {
     if (currentChainIndex > 0) {
       setCurrentChainIndex(prev => prev - 1);
+    } else if (needsBreathCheck) {
+      setCurrentStep(STEPS.BREATH_CHECK);
     } else if (needsFootCheck) {
       setCurrentStep(STEPS.FOOT_CHECK);
     } else {
@@ -172,11 +188,29 @@ export default function DiagnosisWizard() {
 
   const handleFootCheckComplete = (data) => {
     setFootCheckData(data);
-    setCurrentStep(STEPS.HARDWARE);
+    if (needsBreathCheck) {
+      setCurrentStep(STEPS.BREATH_CHECK);
+    } else {
+      setCurrentStep(STEPS.HARDWARE);
+    }
   };
 
   const handleFootCheckSkip = () => {
     setFootCheckData({ skipped: true });
+    if (needsBreathCheck) {
+      setCurrentStep(STEPS.BREATH_CHECK);
+    } else {
+      setCurrentStep(STEPS.HARDWARE);
+    }
+  };
+
+  const handleBreathCheckComplete = (data) => {
+    setBreathCheckData(data);
+    setCurrentStep(STEPS.HARDWARE);
+  };
+
+  const handleBreathCheckSkip = () => {
+    setBreathCheckData({ skipped: true });
     setCurrentStep(STEPS.HARDWARE);
   };
 
@@ -191,6 +225,8 @@ export default function DiagnosisWizard() {
     setSoftwareResults({});
     setFootCheckData(null);
     setNeedsFootCheck(false);
+    setBreathCheckData(null);
+    setNeedsBreathCheck(false);
   };
   
   const handleSave = () => {
@@ -217,6 +253,7 @@ export default function DiagnosisWizard() {
       hardware_results: hardwareResults,
       software_results: softwareResults,
       foot_check_data: footCheckData,
+      breath_check_data: breathCheckData,
       diagnosis_type: diagnosisType,
       completed: true
     });
@@ -251,10 +288,13 @@ export default function DiagnosisWizard() {
         <div className="flex justify-center mb-8">
           <div className="glass rounded-2xl px-6 py-4">
             <div className="flex items-center gap-2">
-              {(needsFootCheck 
-                ? ['Symptom', 'Fuß-Check', 'Hardware', 'Software', 'Ergebnis']
-                : ['Symptom', 'Hardware', 'Software', 'Ergebnis']
-              ).map((label, index) => (
+              {(() => {
+                const steps = ['Symptom'];
+                if (needsFootCheck) steps.push('Fuß');
+                if (needsBreathCheck) steps.push('Atmung');
+                steps.push('Hardware', 'Software', 'Ergebnis');
+                return steps;
+              })().map((label, index) => (
                 <div key={label} className="flex items-center gap-2">
                   <div className={`flex items-center gap-2 ${index <= currentStep ? 'text-cyan-400' : 'text-slate-600'}`}>
                     <div className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold transition-all ${
@@ -266,7 +306,12 @@ export default function DiagnosisWizard() {
                     </div>
                     <span className="hidden sm:inline text-sm font-semibold">{label}</span>
                   </div>
-                  {index < (needsFootCheck ? 4 : 3) && (
+                  {index < (() => {
+                    let total = 3;
+                    if (needsFootCheck) total++;
+                    if (needsBreathCheck) total++;
+                    return total;
+                  })() && (
                     <div className={`w-8 h-1 rounded-full ${index < currentStep ? 'bg-gradient-to-r from-cyan-500 to-purple-500' : 'bg-slate-700'}`} />
                   )}
                 </div>
@@ -361,6 +406,21 @@ export default function DiagnosisWizard() {
               />
             </motion.div>
           )}
+
+          {currentStep === STEPS.BREATH_CHECK && (
+            <motion.div
+              key="breath-check"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+            >
+              <BreathModule
+                symptomType={selectedRegion}
+                onComplete={handleBreathCheckComplete}
+                onSkip={handleBreathCheckSkip}
+              />
+            </motion.div>
+          )}
           
           {currentStep === STEPS.HARDWARE && currentChain && (
             <motion.div
@@ -414,6 +474,7 @@ export default function DiagnosisWizard() {
                 hardwareResults={hardwareResults}
                 softwareResults={softwareResults}
                 footCheckData={footCheckData}
+                breathCheckData={breathCheckData}
                 onRestart={handleRestart}
                 onSave={handleSave}
               />

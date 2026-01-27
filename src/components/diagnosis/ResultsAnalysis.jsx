@@ -97,6 +97,7 @@ export default function ResultsAnalysis({
   hardwareResults, 
   softwareResults,
   footCheckData,
+  breathCheckData,
   onRestart,
   onSave 
 }) {
@@ -206,6 +207,35 @@ export default function ResultsAnalysis({
           </div>
           <p className="text-xs text-slate-600 mt-3">
             💡 <span className="text-purple-700 font-semibold">Empfehlung:</span> Integriere tägliche Fußsohlen-Mobilisation (20-30 Sek.) vor deinen Bewegungsroutinen.
+          </p>
+        </Card>
+      )}
+
+      {/* Breath Check Info */}
+      {breathCheckData && breathCheckData.breath_issue_detected && (
+        <Card className="p-6 border-0 shadow-xl glass bg-cyan-50/50 border-cyan-200">
+          <h3 className="font-semibold text-cyan-700 mb-3 flex items-center gap-2">
+            🫁 Atmungs-Einschränkung erkannt
+          </h3>
+          <p className="text-sm text-slate-700 mb-3">
+            Das Zwerchfell (Teil der DFL) zeigt eingeschränkte Funktion. Dies beeinflusst den globalen Muskeltonus und kann defensive Spannungsmuster verstärken.
+          </p>
+          <div className="bg-cyan-100 rounded-lg p-3 border border-cyan-200">
+            <p className="text-xs text-cyan-700 font-semibold mb-1">Test-Ergebnisse:</p>
+            <ul className="text-xs text-slate-600 space-y-1">
+              {breathCheckData.ribcage_expansion === 'limited' && (
+                <li>• Rippen-Expansion: Nur nach vorne, nicht 360°</li>
+              )}
+              {breathCheckData.tongue_roof === 'difficult' && (
+                <li>• Zungen-Gaumen-Kontakt: Schwierig/verkrampft</li>
+              )}
+              {breathCheckData.box_breathing_completed && (
+                <li className="text-green-700">✓ Box-Breathing durchgeführt</li>
+              )}
+            </ul>
+          </div>
+          <p className="text-xs text-slate-600 mt-3">
+            💡 <span className="text-cyan-700 font-semibold">Empfehlung:</span> Integriere tägliches Box-Breathing (3x 4-4-4-4) zur Parasympathikus-Aktivierung.
           </p>
         </Card>
       )}
