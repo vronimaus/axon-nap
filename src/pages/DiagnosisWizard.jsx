@@ -9,6 +9,7 @@ import { toast } from 'sonner';
 import BodyMap from '../components/diagnosis/BodyMap';
 import SymptomSelector from '../components/diagnosis/SymptomSelector';
 import SymptomAnalyzer from '../components/diagnosis/SymptomAnalyzer';
+import FootFilter from '../components/diagnosis/FootFilter';
 import HardwareTest from '../components/diagnosis/HardwareTest';
 import NeuroDrill from '../components/diagnosis/NeuroDrill';
 import ResultsAnalysis from '../components/diagnosis/ResultsAnalysis';
@@ -16,9 +17,10 @@ import { SYMPTOM_CLUSTERS } from '../components/diagnosis/SymptomData';
 
 const STEPS = {
   SYMPTOM: 0,
-  HARDWARE: 1,
-  SOFTWARE: 2,
-  RESULTS: 3
+  FOOT_CHECK: 1,
+  HARDWARE: 2,
+  SOFTWARE: 3,
+  RESULTS: 4
 };
 
 export default function DiagnosisWizard() {
@@ -33,6 +35,8 @@ export default function DiagnosisWizard() {
   const [currentChainIndex, setCurrentChainIndex] = useState(0);
   const [hardwareResults, setHardwareResults] = useState({});
   const [softwareResults, setSoftwareResults] = useState({});
+  const [footCheckData, setFootCheckData] = useState(null);
+  const [needsFootCheck, setNeedsFootCheck] = useState(false);
   
   // Fetch chains
   const { data: allChains = [], isLoading } = useQuery({
@@ -84,7 +88,15 @@ export default function DiagnosisWizard() {
       setCurrentChainIndex(0);
       setHardwareResults({});
       setSoftwareResults({});
-      setCurrentStep(STEPS.HARDWARE);
+      
+      // Check if foot filter is needed for standing symptoms
+      const standingRegions = ['ruecken', 'knie', 'huefte', 'hals_nacken', 'lws', 'beine', 'fuss'];
+      if (standingRegions.includes(selectedRegion)) {
+        setNeedsFootCheck(true);
+        setCurrentStep(STEPS.FOOT_CHECK);
+      } else {
+        setCurrentStep(STEPS.HARDWARE);
+      }
     }
   };
   
@@ -114,6 +126,8 @@ export default function DiagnosisWizard() {
   const prevHardwareTest = () => {
     if (currentChainIndex > 0) {
       setCurrentChainIndex(prev => prev - 1);
+    } else if (needsFootCheck) {
+      setCurrentStep(STEPS.FOOT_CHECK);
     } else {
       setCurrentStep(STEPS.SYMPTOM);
     }
@@ -142,6 +156,27 @@ export default function DiagnosisWizard() {
     setCurrentChainIndex(0);
     setHardwareResults({});
     setSoftwareResults({});
+    
+    // Check if foot filter is needed based on affected regions
+    const standingRegions = ['ruecken', 'knie', 'huefte', 'hals_nacken', 'lws', 'beine', 'fuss'];
+    const needsFootFilter = data.analysis?.step1_extraction?.region && 
+      standingRegions.some(region => data.analysis.step1_extraction.region.toLowerCase().includes(region));
+    
+    if (needsFootFilter) {
+      setNeedsFootCheck(true);
+      setCurrentStep(STEPS.FOOT_CHECK);
+    } else {
+      setCurrentStep(STEPS.HARDWARE);
+    }
+  };
+
+  const handleFootCheckComplete = (data) => {
+    setFootCheckData(data);
+    setCurrentStep(STEPS.HARDWARE);
+  };
+
+  const handleFootCheckSkip = () => {
+    setFootCheckData({ skipped: true });
     setCurrentStep(STEPS.HARDWARE);
   };
 
@@ -154,6 +189,8 @@ export default function DiagnosisWizard() {
     setCurrentChainIndex(0);
     setHardwareResults({});
     setSoftwareResults({});
+    setFootCheckData(null);
+    setNeedsFootCheck(false);
   };
   
   const handleSave = () => {
@@ -179,6 +216,7 @@ export default function DiagnosisWizard() {
       tested_chains: orderedChainCodes,
       hardware_results: hardwareResults,
       software_results: softwareResults,
+      foot_check_data: footCheckData,
       diagnosis_type: diagnosisType,
       completed: true
     });
@@ -213,7 +251,10 @@ export default function DiagnosisWizard() {
         <div className="flex justify-center mb-8">
           <div className="glass rounded-2xl px-6 py-4">
             <div className="flex items-center gap-2">
-              {['Symptom', 'Hardware', 'Software', 'Ergebnis'].map((label, index) => (
+              {(needsFootCheck 
+                ? ['Symptom', 'Fuß-Check', 'Hardware', 'Software', 'Ergebnis']
+                : ['Symptom', 'Hardware', 'Software', 'Ergebnis']
+              ).map((label, index) => (
                 <div key={label} className="flex items-center gap-2">
                   <div className={`flex items-center gap-2 ${index <= currentStep ? 'text-cyan-400' : 'text-slate-600'}`}>
                     <div className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold transition-all ${
@@ -225,7 +266,7 @@ export default function DiagnosisWizard() {
                     </div>
                     <span className="hidden sm:inline text-sm font-semibold">{label}</span>
                   </div>
-                  {index < 3 && (
+                  {index < (needsFootCheck ? 4 : 3) && (
                     <div className={`w-8 h-1 rounded-full ${index < currentStep ? 'bg-gradient-to-r from-cyan-500 to-purple-500' : 'bg-slate-700'}`} />
                   )}
                 </div>
@@ -306,6 +347,20 @@ export default function DiagnosisWizard() {
               )}
             </motion.div>
           )}
+
+          {currentStep === STEPS.FOOT_CHECK && (
+            <motion.div
+              key="foot-check"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+            >
+              <FootFilter
+                onComplete={handleFootCheckComplete}
+                onSkip={handleFootCheckSkip}
+              />
+            </motion.div>
+          )}
           
           {currentStep === STEPS.HARDWARE && currentChain && (
             <motion.div
@@ -358,6 +413,7 @@ export default function DiagnosisWizard() {
                 chains={triggeredChains}
                 hardwareResults={hardwareResults}
                 softwareResults={softwareResults}
+                footCheckData={footCheckData}
                 onRestart={handleRestart}
                 onSave={handleSave}
               />
