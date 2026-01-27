@@ -11,9 +11,9 @@ const BodySilhouette = ({ selectedRegion, onRegionClick }) => {
     { id: 'rumpf', path: 'M88,85 L132,85 L128,105 L92,105 Z', label: 'Rumpf & Rippen' },
     { id: 'lws', path: 'M92,105 L128,105 L125,130 L95,130 Z', label: 'LWS & Kreuzbein' },
     { id: 'huefte', path: 'M95,130 L125,130 L130,155 L118,165 L102,165 L90,155 Z', label: 'Hüfte & Becken' },
-    { id: 'beine', path: 'M98,165 L110,210 M110,165 L122,210', label: 'Oberschenkel' },
-    { id: 'knie', path: 'M96,210 L104,225 M116,210 L124,225', label: 'Knie' },
-    { id: 'fuss', path: 'M92,225 L98,260 L92,275 L100,280 L108,275 L102,260 L108,225 M112,225 L118,260 L112,275 L120,280 L128,275 L122,260 L128,225', label: 'Fuß & Sprunggelenk' },
+    { id: 'beine', path: 'M98,165 L108,210 L114,210 L122,165 L118,165 L110,200 L102,165 Z', label: 'Oberschenkel' },
+    { id: 'knie', path: 'M106,210 L104,225 L108,228 L112,228 L116,225 L114,210 Z', label: 'Knie' },
+    { id: 'fuss', path: 'M102,228 L98,260 L94,270 L96,278 L110,280 L112,272 L108,260 L106,228 Z M114,228 L118,260 L114,272 L116,280 L124,278 L126,270 L122,260 L118,228 Z', label: 'Fuß & Sprunggelenk' },
     { id: 'systemisch', path: 'M85,285 L135,285 L130,295 L90,295 Z', label: 'Systemisch' }
   ];
 
