@@ -32,9 +32,10 @@ export default function BreathGuide({ isActive = true }) {
   return (
     <div className="fixed bottom-6 right-6 z-50">
       <motion.div
-        animate={{ scale }}
+        animate={{ scale: scale || 1 }}
         transition={{ duration: 0.3, ease: 'easeInOut' }}
         className="relative"
+        style={{ scale: 1 }}
       >
         {/* Outer glow */}
         <div 
@@ -54,13 +55,9 @@ export default function BreathGuide({ isActive = true }) {
       </motion.div>
       
       {/* Info tooltip */}
-      <motion.div
-        initial={{ opacity: 0, x: 10 }}
-        animate={{ opacity: 1, x: 0 }}
-        className="absolute bottom-full right-0 mb-3 bg-slate-900/95 text-slate-300 text-xs px-3 py-2 rounded-lg whitespace-nowrap backdrop-blur-sm border border-cyan-500/30"
-      >
+      <div className="absolute bottom-full right-0 mb-3 bg-slate-900/95 text-slate-300 text-xs px-3 py-2 rounded-lg whitespace-nowrap backdrop-blur-sm border border-cyan-500/30">
         🫁 Atme im Rhythmus mit
-      </motion.div>
+      </div>
     </div>
   );
 }
