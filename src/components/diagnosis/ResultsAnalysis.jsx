@@ -158,12 +158,16 @@ export default function ResultsAnalysis({
           initial={{ scale: 0 }}
           animate={{ scale: 1 }}
           transition={{ type: 'spring', delay: 0.2 }}
-          className={`w-20 h-20 rounded-3xl bg-${diagnosisColor}-100 flex items-center justify-center mx-auto mb-4`}
+          className={`w-20 h-20 rounded-3xl flex items-center justify-center mx-auto mb-4 ${
+            diagnosisColor === 'emerald' ? 'bg-emerald-100' :
+            diagnosisColor === 'purple' ? 'bg-purple-100' :
+            diagnosisColor === 'blue' ? 'bg-blue-100' : 'bg-amber-100'
+          }`}
         >
-          {diagnosisType === 'software' && <Brain className={`w-10 h-10 text-${diagnosisColor}-600`} />}
-          {diagnosisType === 'hardware' && <Cpu className={`w-10 h-10 text-${diagnosisColor}-600`} />}
-          {diagnosisType === 'mixed' && <Activity className={`w-10 h-10 text-${diagnosisColor}-600`} />}
-          {diagnosisType === 'clear' && <CheckCircle2 className={`w-10 h-10 text-${diagnosisColor}-600`} />}
+          {diagnosisType === 'software' && <Brain className="w-10 h-10 text-purple-600" />}
+          {diagnosisType === 'hardware' && <Cpu className="w-10 h-10 text-blue-600" />}
+          {diagnosisType === 'mixed' && <Activity className="w-10 h-10 text-amber-600" />}
+          {diagnosisType === 'clear' && <CheckCircle2 className="w-10 h-10 text-emerald-600" />}
         </motion.div>
         <h2 className="text-2xl font-bold text-slate-800">{diagnosisTitle}</h2>
         <p className="text-slate-500 mt-2">Analyse für: {symptom}</p>
