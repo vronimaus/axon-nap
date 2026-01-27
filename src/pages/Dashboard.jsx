@@ -13,7 +13,7 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { TOP_SYMPTOMS, SYMPTOM_CLUSTERS } from '../components/diagnosis/SymptomData';
 
-const QuickStartCard = ({ symptom, cluster, delay }) => (
+const QuickStartCard = ({ symptomData, delay }) => (
   <motion.div
     initial={{ opacity: 0, y: 20 }}
     animate={{ opacity: 1, y: 0 }}
@@ -26,12 +26,15 @@ const QuickStartCard = ({ symptom, cluster, delay }) => (
             <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-50 to-blue-100 flex items-center justify-center">
               <Target className="w-5 h-5 text-blue-600" />
             </div>
-            <div>
-              <p className="font-medium text-slate-800">{symptom}</p>
-              <p className="text-xs text-slate-500">{SYMPTOM_CLUSTERS[cluster]?.label}</p>
+            <div className="flex-1 min-w-0">
+              <p className="font-medium text-slate-800 truncate">{symptomData.symptom}</p>
+              <div className="flex items-center gap-2 mt-0.5">
+                <p className="text-xs text-slate-500">{SYMPTOM_CLUSTERS[symptomData.cluster]?.label}</p>
+                <span className="text-xs text-blue-600 font-medium">• {symptomData.prio_chain}</span>
+              </div>
             </div>
           </div>
-          <ChevronRight className="w-5 h-5 text-slate-300 group-hover:text-blue-600 group-hover:translate-x-1 transition-all" />
+          <ChevronRight className="w-5 h-5 text-slate-300 group-hover:text-blue-600 group-hover:translate-x-1 transition-all flex-shrink-0" />
         </div>
       </Card>
     </Link>
@@ -230,11 +233,10 @@ export default function Dashboard() {
                 Häufige Symptome
               </h2>
               <div className="grid sm:grid-cols-2 gap-3">
-                {TOP_SYMPTOMS.slice(0, 8).map((item, index) => (
+                {TOP_SYMPTOMS.slice(0, 10).map((item, index) => (
                   <QuickStartCard
-                    key={item.symptom}
-                    symptom={item.symptom}
-                    cluster={item.cluster}
+                    key={item.id}
+                    symptomData={item}
                     delay={0.3 + index * 0.05}
                   />
                 ))}

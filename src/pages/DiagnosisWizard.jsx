@@ -37,12 +37,22 @@ export default function DiagnosisWizard() {
     queryFn: () => base44.entities.FascialChain.list()
   });
   
-  // Get triggered chains for selected region
+  // Get triggered chains for selected region (prioritize prio_chain)
   const triggeredChainCodes = selectedRegion 
     ? SYMPTOM_CLUSTERS[selectedRegion]?.triggered_chains || []
     : [];
   
-  const triggeredChains = allChains.filter(c => triggeredChainCodes.includes(c.code));
+  // If symptom has prio_chain, ensure it's first
+  let orderedChainCodes = [...triggeredChainCodes];
+  if (selectedSymptom?.prio_chain) {
+    orderedChainCodes = [
+      selectedSymptom.prio_chain,
+      ...triggeredChainCodes.filter(c => c !== selectedSymptom.prio_chain)
+    ];
+  }
+  
+  const triggeredChains = allChains.filter(c => orderedChainCodes.includes(c.code))
+    .sort((a, b) => orderedChainCodes.indexOf(a.code) - orderedChainCodes.indexOf(b.code));
   const currentChain = triggeredChains[currentChainIndex];
   
   // Save mutation
@@ -149,8 +159,8 @@ export default function DiagnosisWizard() {
     
     saveMutation.mutate({
       symptom_location: selectedRegion,
-      symptom_description: selectedSymptom,
-      tested_chains: triggeredChainCodes,
+      symptom_description: selectedSymptom?.label || selectedSymptom,
+      tested_chains: orderedChainCodes,
       hardware_results: hardwareResults,
       software_results: softwareResults,
       diagnosis_type: diagnosisType,
@@ -301,7 +311,7 @@ export default function DiagnosisWizard() {
               exit={{ opacity: 0, x: -20 }}
             >
               <ResultsAnalysis
-                symptom={selectedSymptom}
+                symptom={selectedSymptom?.label || selectedSymptom}
                 chains={triggeredChains}
                 hardwareResults={hardwareResults}
                 softwareResults={softwareResults}

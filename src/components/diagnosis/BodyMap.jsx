@@ -4,16 +4,22 @@ import { SYMPTOM_CLUSTERS } from './SymptomData';
 
 const BodySilhouette = ({ selectedRegion, onRegionClick }) => {
   const regions = [
-    { id: 'kopf_nacken', path: 'M100,20 Q110,10 120,20 Q130,30 130,50 Q130,60 120,65 L100,65 Q90,60 90,50 Q90,30 100,20', label: 'Kopf & Nacken' },
-    { id: 'schulter_arm', path: 'M70,70 L50,90 L45,130 L55,130 L65,100 L85,75 M135,75 L155,100 L165,130 L175,130 L170,90 L150,70', label: 'Schulter & Arm' },
-    { id: 'ruecken_lws', path: 'M85,70 L135,70 L140,120 L130,140 L90,140 L80,120 Z', label: 'Rücken & LWS' },
-    { id: 'huefte_becken', path: 'M85,140 L135,140 L145,170 L130,180 L90,180 L75,170 Z', label: 'Hüfte & Becken' },
-    { id: 'knie_fuss', path: 'M85,180 L95,230 L90,280 L100,290 L105,280 L100,230 L110,180 M110,180 L120,230 L115,280 L120,290 L130,280 L125,230 L135,180', label: 'Knie & Fuß' }
+    { id: 'kopf_kiefer', path: 'M100,15 Q108,8 116,15 Q122,22 122,35 Q122,42 116,45 L104,45 Q98,42 98,35 Q98,22 100,15', label: 'Kopf & Kiefer' },
+    { id: 'hals_nacken', path: 'M102,45 L118,45 L116,60 L104,60 Z', label: 'Hals & Nacken' },
+    { id: 'schulter_arm', path: 'M75,65 L55,80 L50,110 L58,110 L68,85 L85,70 M135,70 L152,85 L162,110 L170,110 L165,80 L145,65', label: 'Schulter & Arm' },
+    { id: 'ruecken', path: 'M87,65 L133,65 L132,85 L88,85 Z', label: 'Rücken (BWS)' },
+    { id: 'rumpf', path: 'M88,85 L132,85 L128,105 L92,105 Z', label: 'Rumpf & Rippen' },
+    { id: 'lws', path: 'M92,105 L128,105 L125,130 L95,130 Z', label: 'LWS & Kreuzbein' },
+    { id: 'huefte', path: 'M95,130 L125,130 L130,155 L118,165 L102,165 L90,155 Z', label: 'Hüfte & Becken' },
+    { id: 'beine', path: 'M98,165 L110,210 M110,165 L122,210', label: 'Oberschenkel' },
+    { id: 'knie', path: 'M96,210 L104,225 M116,210 L124,225', label: 'Knie' },
+    { id: 'fuss', path: 'M92,225 L98,260 L92,275 L100,280 L108,275 L102,260 L108,225 M112,225 L118,260 L112,275 L120,280 L128,275 L122,260 L128,225', label: 'Fuß & Sprunggelenk' },
+    { id: 'systemisch', path: 'M85,285 L135,285 L130,295 L90,295 Z', label: 'Systemisch' }
   ];
 
   return (
     <div className="relative w-full max-w-[280px] mx-auto">
-      <svg viewBox="0 0 220 310" className="w-full h-auto">
+      <svg viewBox="0 0 220 300" className="w-full h-auto">
         <defs>
           <linearGradient id="bodyGradient" x1="0%" y1="0%" x2="0%" y2="100%">
             <stop offset="0%" stopColor="#f8fafc" />
@@ -83,7 +89,7 @@ export default function BodyMap({ selectedRegion, onRegionSelect }) {
         onRegionClick={onRegionSelect} 
       />
       
-      <div className="mt-6 grid grid-cols-2 sm:grid-cols-3 gap-2 w-full max-w-md">
+      <div className="mt-6 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 w-full max-w-3xl">
         {Object.entries(SYMPTOM_CLUSTERS).map(([key, cluster]) => (
           <motion.button
             key={key}
