@@ -7,47 +7,47 @@ import { Card } from '@/components/ui/card';
 const TestResultButtons = ({ onResult, currentResult }) => (
   <div className="grid grid-cols-3 gap-3 mt-6">
     <motion.button
-      whileHover={{ scale: 1.02 }}
-      whileTap={{ scale: 0.98 }}
+      whileHover={{ scale: 1.03 }}
+      whileTap={{ scale: 0.97 }}
       onClick={() => onResult('limited')}
-      className={`p-4 rounded-xl border-2 transition-all ${
+      className={`p-5 rounded-2xl border-2 transition-all touch-target ${
         currentResult === 'limited' 
-          ? 'border-red-500 bg-red-50 text-red-700' 
-          : 'border-slate-200 bg-white hover:border-red-300 hover:bg-red-50/50'
+          ? 'border-red-500 bg-red-50 text-red-700 shadow-lg shadow-red-100' 
+          : 'glass hover:border-red-300 hover:shadow-md'
       }`}
     >
-      <AlertCircle className={`w-6 h-6 mx-auto mb-2 ${currentResult === 'limited' ? 'text-red-500' : 'text-slate-400'}`} />
-      <span className="text-sm font-medium block">Eingeschränkt</span>
+      <AlertCircle className={`w-7 h-7 mx-auto mb-2 ${currentResult === 'limited' ? 'text-red-500' : 'text-slate-400'}`} />
+      <span className="text-sm font-semibold block">Eingeschränkt</span>
       <span className="text-xs text-slate-500 mt-1 block">Spannung/Schmerz</span>
     </motion.button>
     
     <motion.button
-      whileHover={{ scale: 1.02 }}
-      whileTap={{ scale: 0.98 }}
+      whileHover={{ scale: 1.03 }}
+      whileTap={{ scale: 0.97 }}
       onClick={() => onResult('moderate')}
-      className={`p-4 rounded-xl border-2 transition-all ${
+      className={`p-5 rounded-2xl border-2 transition-all touch-target ${
         currentResult === 'moderate' 
-          ? 'border-amber-500 bg-amber-50 text-amber-700' 
-          : 'border-slate-200 bg-white hover:border-amber-300 hover:bg-amber-50/50'
+          ? 'border-amber-500 bg-amber-50 text-amber-700 shadow-lg shadow-amber-100' 
+          : 'glass hover:border-amber-300 hover:shadow-md'
       }`}
     >
-      <HelpCircle className={`w-6 h-6 mx-auto mb-2 ${currentResult === 'moderate' ? 'text-amber-500' : 'text-slate-400'}`} />
-      <span className="text-sm font-medium block">Mittel</span>
+      <HelpCircle className={`w-7 h-7 mx-auto mb-2 ${currentResult === 'moderate' ? 'text-amber-500' : 'text-slate-400'}`} />
+      <span className="text-sm font-semibold block">Mittel</span>
       <span className="text-xs text-slate-500 mt-1 block">Leicht eingeschränkt</span>
     </motion.button>
     
     <motion.button
-      whileHover={{ scale: 1.02 }}
-      whileTap={{ scale: 0.98 }}
+      whileHover={{ scale: 1.03 }}
+      whileTap={{ scale: 0.97 }}
       onClick={() => onResult('good')}
-      className={`p-4 rounded-xl border-2 transition-all ${
+      className={`p-5 rounded-2xl border-2 transition-all touch-target ${
         currentResult === 'good' 
-          ? 'border-emerald-500 bg-emerald-50 text-emerald-700' 
-          : 'border-slate-200 bg-white hover:border-emerald-300 hover:bg-emerald-50/50'
+          ? 'border-emerald-500 bg-emerald-50 text-emerald-700 shadow-lg shadow-emerald-100' 
+          : 'glass hover:border-emerald-300 hover:shadow-md'
       }`}
     >
-      <CheckCircle2 className={`w-6 h-6 mx-auto mb-2 ${currentResult === 'good' ? 'text-emerald-500' : 'text-slate-400'}`} />
-      <span className="text-sm font-medium block">Gut</span>
+      <CheckCircle2 className={`w-7 h-7 mx-auto mb-2 ${currentResult === 'good' ? 'text-emerald-500' : 'text-slate-400'}`} />
+      <span className="text-sm font-semibold block">Gut</span>
       <span className="text-xs text-slate-500 mt-1 block">Keine Probleme</span>
     </motion.button>
   </div>
@@ -90,7 +90,7 @@ export default function HardwareTest({
       </div>
       
       {/* Chain Info Card */}
-      <Card className="p-6 border-0 shadow-lg bg-gradient-to-br from-white to-slate-50">
+      <Card className="p-6 border-0 shadow-xl glass">
         <div className="flex items-start gap-4">
           <div 
             className="w-12 h-12 rounded-2xl flex items-center justify-center text-white font-bold text-lg shadow-lg"
@@ -106,7 +106,7 @@ export default function HardwareTest({
       </Card>
       
       {/* Test Card */}
-      <Card className="p-6 border-0 shadow-lg">
+      <Card className="p-6 border-0 shadow-xl glass">
         <div className="flex items-center justify-between mb-4">
           <h4 className="font-semibold text-slate-800 flex items-center gap-2">
             <Play className="w-4 h-4 text-blue-600" />
@@ -162,19 +162,19 @@ export default function HardwareTest({
         <Button
           variant="outline"
           onClick={onBack}
-          className="gap-2"
+          className="gap-2 touch-target h-12 text-base"
         >
-          <ChevronLeft className="w-4 h-4" />
+          <ChevronLeft className="w-5 h-5" />
           Zurück
         </Button>
         
         <Button
           onClick={onNext}
           disabled={!currentResult}
-          className="gap-2 bg-blue-600 hover:bg-blue-700"
+          className="gap-2 bg-blue-600 hover:bg-blue-700 touch-target h-12 text-base shadow-lg"
         >
           Weiter
-          <ChevronRight className="w-4 h-4" />
+          <ChevronRight className="w-5 h-5" />
         </Button>
       </div>
     </motion.div>

@@ -174,7 +174,7 @@ export default function ResultsAnalysis({
       </div>
       
       {/* Diagnosis Gauge */}
-      <Card className="p-6 border-0 shadow-lg">
+      <Card className="p-6 border-0 shadow-xl glass">
         <h3 className="font-semibold text-slate-800 mb-4 flex items-center gap-2">
           <Activity className="w-5 h-5 text-slate-400" />
           Diagnose-Spektrum
@@ -184,7 +184,7 @@ export default function ResultsAnalysis({
       </Card>
       
       {/* Chain Results */}
-      <Card className="p-6 border-0 shadow-lg">
+      <Card className="p-6 border-0 shadow-xl glass">
         <h3 className="font-semibold text-slate-800 mb-4">Detaillierte Ergebnisse</h3>
         <div className="space-y-3">
           {chains.map(chain => (
@@ -200,7 +200,7 @@ export default function ResultsAnalysis({
       
       {/* Recommendations */}
       {recommendations.length > 0 && (
-        <Card className="p-6 border-0 shadow-lg bg-gradient-to-br from-slate-50 to-white">
+        <Card className="p-6 border-0 shadow-xl glass">
           <h3 className="font-semibold text-slate-800 mb-4 flex items-center gap-2">
             <ArrowRight className="w-5 h-5 text-blue-600" />
             Empfehlungen
@@ -229,16 +229,16 @@ export default function ResultsAnalysis({
         <Button
           variant="outline"
           onClick={onRestart}
-          className="flex-1 gap-2"
+          className="flex-1 gap-2 touch-target h-12 text-base"
         >
-          <RotateCcw className="w-4 h-4" />
+          <RotateCcw className="w-5 h-5" />
           Neue Diagnose
         </Button>
         <Button
           onClick={onSave}
-          className="flex-1 gap-2 bg-blue-600 hover:bg-blue-700"
+          className="flex-1 gap-2 bg-blue-600 hover:bg-blue-700 touch-target h-12 text-base shadow-lg"
         >
-          <Download className="w-4 h-4" />
+          <Download className="w-5 h-5" />
           Ergebnis speichern
         </Button>
       </div>

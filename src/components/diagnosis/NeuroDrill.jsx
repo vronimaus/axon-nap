@@ -3,55 +3,69 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronRight, ChevronLeft, Brain, Zap, TrendingUp, TrendingDown, Minus, RotateCcw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import ConfettiEffect from './ConfettiEffect';
 
-const ImprovementButtons = ({ onResult, currentResult }) => (
-  <div className="grid grid-cols-3 gap-3 mt-6">
-    <motion.button
-      whileHover={{ scale: 1.02 }}
-      whileTap={{ scale: 0.98 }}
-      onClick={() => onResult('improved')}
-      className={`p-4 rounded-xl border-2 transition-all ${
-        currentResult === 'improved' 
-          ? 'border-emerald-500 bg-emerald-50 text-emerald-700' 
-          : 'border-slate-200 bg-white hover:border-emerald-300 hover:bg-emerald-50/50'
-      }`}
-    >
-      <TrendingUp className={`w-6 h-6 mx-auto mb-2 ${currentResult === 'improved' ? 'text-emerald-500' : 'text-slate-400'}`} />
-      <span className="text-sm font-medium block">Verbessert</span>
-      <span className="text-xs text-slate-500 mt-1 block">Deutlich besser</span>
-    </motion.button>
-    
-    <motion.button
-      whileHover={{ scale: 1.02 }}
-      whileTap={{ scale: 0.98 }}
-      onClick={() => onResult('unchanged')}
-      className={`p-4 rounded-xl border-2 transition-all ${
-        currentResult === 'unchanged' 
-          ? 'border-amber-500 bg-amber-50 text-amber-700' 
-          : 'border-slate-200 bg-white hover:border-amber-300 hover:bg-amber-50/50'
-      }`}
-    >
-      <Minus className={`w-6 h-6 mx-auto mb-2 ${currentResult === 'unchanged' ? 'text-amber-500' : 'text-slate-400'}`} />
-      <span className="text-sm font-medium block">Unverändert</span>
-      <span className="text-xs text-slate-500 mt-1 block">Keine Veränderung</span>
-    </motion.button>
-    
-    <motion.button
-      whileHover={{ scale: 1.02 }}
-      whileTap={{ scale: 0.98 }}
-      onClick={() => onResult('worse')}
-      className={`p-4 rounded-xl border-2 transition-all ${
-        currentResult === 'worse' 
-          ? 'border-red-500 bg-red-50 text-red-700' 
-          : 'border-slate-200 bg-white hover:border-red-300 hover:bg-red-50/50'
-      }`}
-    >
-      <TrendingDown className={`w-6 h-6 mx-auto mb-2 ${currentResult === 'worse' ? 'text-red-500' : 'text-slate-400'}`} />
-      <span className="text-sm font-medium block">Schlechter</span>
-      <span className="text-xs text-slate-500 mt-1 block">Verschlechtert</span>
-    </motion.button>
-  </div>
-);
+const ImprovementButtons = ({ onResult, currentResult }) => {
+  const [showConfetti, setShowConfetti] = useState(false);
+  
+  const handleImproved = () => {
+    onResult('improved');
+    setShowConfetti(true);
+    setTimeout(() => setShowConfetti(false), 3100);
+  };
+  
+  return (
+    <>
+      <ConfettiEffect trigger={showConfetti} />
+      <div className="grid grid-cols-3 gap-3 mt-6">
+        <motion.button
+          whileHover={{ scale: 1.03 }}
+          whileTap={{ scale: 0.97 }}
+          onClick={handleImproved}
+          className={`p-5 rounded-2xl border-2 transition-all touch-target ${
+            currentResult === 'improved' 
+              ? 'border-emerald-500 bg-emerald-50 text-emerald-700 shadow-lg shadow-emerald-100 pulse-success' 
+              : 'glass hover:border-emerald-300 hover:shadow-md'
+          }`}
+        >
+          <TrendingUp className={`w-7 h-7 mx-auto mb-2 ${currentResult === 'improved' ? 'text-emerald-500' : 'text-slate-400'}`} />
+          <span className="text-sm font-semibold block">Verbessert</span>
+          <span className="text-xs text-slate-500 mt-1 block">Deutlich besser</span>
+        </motion.button>
+        
+        <motion.button
+          whileHover={{ scale: 1.03 }}
+          whileTap={{ scale: 0.97 }}
+          onClick={() => onResult('unchanged')}
+          className={`p-5 rounded-2xl border-2 transition-all touch-target ${
+            currentResult === 'unchanged' 
+              ? 'border-amber-500 bg-amber-50 text-amber-700 shadow-lg shadow-amber-100' 
+              : 'glass hover:border-amber-300 hover:shadow-md'
+          }`}
+        >
+          <Minus className={`w-7 h-7 mx-auto mb-2 ${currentResult === 'unchanged' ? 'text-amber-500' : 'text-slate-400'}`} />
+          <span className="text-sm font-semibold block">Unverändert</span>
+          <span className="text-xs text-slate-500 mt-1 block">Keine Veränderung</span>
+        </motion.button>
+        
+        <motion.button
+          whileHover={{ scale: 1.03 }}
+          whileTap={{ scale: 0.97 }}
+          onClick={() => onResult('worse')}
+          className={`p-5 rounded-2xl border-2 transition-all touch-target ${
+            currentResult === 'worse' 
+              ? 'border-red-500 bg-red-50 text-red-700 shadow-lg shadow-red-100' 
+              : 'glass hover:border-red-300 hover:shadow-md'
+          }`}
+        >
+          <TrendingDown className={`w-7 h-7 mx-auto mb-2 ${currentResult === 'worse' ? 'text-red-500' : 'text-slate-400'}`} />
+          <span className="text-sm font-semibold block">Schlechter</span>
+          <span className="text-xs text-slate-500 mt-1 block">Verschlechtert</span>
+        </motion.button>
+      </div>
+    </>
+  );
+};
 
 export default function NeuroDrill({ 
   chain, 
@@ -73,7 +87,7 @@ export default function NeuroDrill({
         animate={{ opacity: 1, y: 0 }}
         className="space-y-6"
       >
-        <Card className="p-6 border-0 shadow-lg bg-gradient-to-br from-emerald-50 to-white">
+        <Card className="p-6 border-0 shadow-xl glass" style={{ background: 'linear-gradient(135deg, rgba(236, 253, 245, 0.8) 0%, rgba(255, 255, 255, 0.7) 100%)' }}>
           <div className="text-center py-8">
             <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
               <Zap className="w-8 h-8 text-emerald-600" />
@@ -89,13 +103,13 @@ export default function NeuroDrill({
         </Card>
         
         <div className="flex justify-between pt-4">
-          <Button variant="outline" onClick={onBack} className="gap-2">
-            <ChevronLeft className="w-4 h-4" />
+          <Button variant="outline" onClick={onBack} className="gap-2 touch-target h-12 text-base">
+            <ChevronLeft className="w-5 h-5" />
             Zurück
           </Button>
-          <Button onClick={() => { onResult('skipped'); onNext(); }} className="gap-2 bg-blue-600 hover:bg-blue-700">
+          <Button onClick={() => { onResult('skipped'); onNext(); }} className="gap-2 bg-blue-600 hover:bg-blue-700 touch-target h-12 text-base shadow-lg">
             Weiter
-            <ChevronRight className="w-4 h-4" />
+            <ChevronRight className="w-5 h-5" />
           </Button>
         </div>
       </motion.div>
@@ -128,7 +142,7 @@ export default function NeuroDrill({
       </div>
       
       {/* Chain Info Card */}
-      <Card className="p-6 border-0 shadow-lg bg-gradient-to-br from-purple-50 to-white">
+      <Card className="p-6 border-0 shadow-xl glass" style={{ background: 'linear-gradient(135deg, rgba(245, 243, 255, 0.8) 0%, rgba(255, 255, 255, 0.7) 100%)' }}>
         <div className="flex items-start gap-4">
           <div className="w-12 h-12 rounded-2xl bg-purple-600 flex items-center justify-center text-white shadow-lg">
             <Brain className="w-6 h-6" />
@@ -143,7 +157,7 @@ export default function NeuroDrill({
       </Card>
       
       {/* Drill Instructions */}
-      <Card className="p-6 border-0 shadow-lg">
+      <Card className="p-6 border-0 shadow-xl glass">
         <div className="flex items-center gap-2 mb-4">
           <Zap className="w-5 h-5 text-purple-600" />
           <h4 className="font-semibold text-slate-800">Anleitung</h4>
@@ -187,18 +201,18 @@ export default function NeuroDrill({
       
       {/* Navigation */}
       <div className="flex justify-between pt-4">
-        <Button variant="outline" onClick={onBack} className="gap-2">
-          <ChevronLeft className="w-4 h-4" />
+        <Button variant="outline" onClick={onBack} className="gap-2 touch-target h-12 text-base">
+          <ChevronLeft className="w-5 h-5" />
           Zurück
         </Button>
         
         <Button
           onClick={onNext}
           disabled={!currentResult}
-          className="gap-2 bg-purple-600 hover:bg-purple-700"
+          className="gap-2 bg-purple-600 hover:bg-purple-700 touch-target h-12 text-base shadow-lg"
         >
           Weiter
-          <ChevronRight className="w-4 h-4" />
+          <ChevronRight className="w-5 h-5" />
         </Button>
       </div>
     </motion.div>
