@@ -68,7 +68,7 @@ const ChainResultCard = ({ chain, hardwareResult, softwareResult }) => {
   };
   
   return (
-    <div className="flex items-center gap-4 p-4 glass rounded-xl border border-slate-700">
+    <div className="flex items-center gap-4 p-4 bg-[#2A2A2A] rounded-xl border border-slate-600">
       <div 
         className="w-10 h-10 rounded-xl flex items-center justify-center text-white font-bold text-sm"
         style={{ backgroundColor: chain.color }}
@@ -76,7 +76,7 @@ const ChainResultCard = ({ chain, hardwareResult, softwareResult }) => {
         {chain.code}
       </div>
       <div className="flex-1 min-w-0">
-        <p className="font-medium text-slate-200 truncate">{chain.name_de}</p>
+        <p className="font-medium text-white truncate">{chain.name_de}</p>
         <p className="text-xs text-slate-400">{chain.test_name}</p>
       </div>
       <div className="flex gap-2">
@@ -176,27 +176,27 @@ export default function ResultsAnalysis({
       </div>
       
       {/* Diagnosis Gauge */}
-      <Card className="p-6 border-0 shadow-xl glass border border-slate-700">
-        <h3 className="font-semibold text-slate-200 mb-4 flex items-center gap-2">
+      <Card className="p-6 border-0 shadow-xl bg-[#2A2A2A] border border-slate-600">
+        <h3 className="font-semibold text-cyan-400 mb-4 flex items-center gap-2">
           <Activity className="w-5 h-5 text-cyan-400" />
           Diagnose-Spektrum
         </h3>
         <DiagnosisGauge hardwareScore={hardwareScore * 100} softwareScore={softwareScore * 100} />
-        <p className="text-sm text-slate-400 mt-4">{diagnosisDescription}</p>
+        <p className="text-sm text-white mt-4">{diagnosisDescription}</p>
       </Card>
       
       {/* Foot Check Info */}
       {footCheckData && footCheckData.foot_issue_detected && (
-        <Card className="p-6 border-0 shadow-xl glass border border-purple-500/30">
+        <Card className="p-6 border-0 shadow-xl bg-[#2A2A2A] border border-purple-500/30">
           <h3 className="font-semibold text-purple-400 mb-3 flex items-center gap-2">
             👣 Fuß-Sensorik Limitierung erkannt
           </h3>
-          <p className="text-sm text-slate-400 mb-3">
+          <p className="text-sm text-white mb-3">
             Der Fuß-Check zeigt eingeschränkte Propriozeption. Dies könnte ein limitierender Faktor für die getesteten Ketten sein.
           </p>
           <div className="bg-purple-500/20 rounded-lg p-3 border border-purple-500/30">
             <p className="text-xs text-purple-400 font-semibold mb-1">Test-Ergebnisse:</p>
-            <ul className="text-xs text-slate-500 space-y-1">
+            <ul className="text-xs text-slate-300 space-y-1">
               {footCheckData.toe_isolation === 'difficult' && (
                 <li>• Großzehen-Isolation: Schwierig/unklar</li>
               )}
@@ -205,7 +205,7 @@ export default function ResultsAnalysis({
               )}
             </ul>
           </div>
-          <p className="text-xs text-slate-500 mt-3">
+          <p className="text-xs text-slate-300 mt-3">
             💡 <span className="text-purple-400 font-semibold">Empfehlung:</span> Integriere tägliche Fußsohlen-Mobilisation (20-30 Sek.) vor deinen Bewegungsroutinen.
           </p>
         </Card>
@@ -213,16 +213,16 @@ export default function ResultsAnalysis({
 
       {/* Breath Check Info */}
       {breathCheckData && breathCheckData.breath_issue_detected && (
-        <Card className="p-6 border-0 shadow-xl glass border border-cyan-500/30">
+        <Card className="p-6 border-0 shadow-xl bg-[#2A2A2A] border border-cyan-500/30">
           <h3 className="font-semibold text-cyan-400 mb-3 flex items-center gap-2">
             🫁 Atmungs-Einschränkung erkannt
           </h3>
-          <p className="text-sm text-slate-400 mb-3">
+          <p className="text-sm text-white mb-3">
             Das Zwerchfell (Teil der DFL) zeigt eingeschränkte Funktion. Dies beeinflusst den globalen Muskeltonus und kann defensive Spannungsmuster verstärken.
           </p>
           <div className="bg-cyan-500/20 rounded-lg p-3 border border-cyan-500/30">
             <p className="text-xs text-cyan-400 font-semibold mb-1">Test-Ergebnisse:</p>
-            <ul className="text-xs text-slate-500 space-y-1">
+            <ul className="text-xs text-slate-300 space-y-1">
               {breathCheckData.ribcage_expansion === 'limited' && (
                 <li>• Rippen-Expansion: Nur nach vorne, nicht 360°</li>
               )}
@@ -234,15 +234,15 @@ export default function ResultsAnalysis({
               )}
             </ul>
           </div>
-          <p className="text-xs text-slate-500 mt-3">
+          <p className="text-xs text-slate-300 mt-3">
             💡 <span className="text-cyan-400 font-semibold">Empfehlung:</span> Integriere tägliches Box-Breathing (3x 4-4-4-4) zur Parasympathikus-Aktivierung.
           </p>
         </Card>
       )}
 
       {/* Chain Results */}
-      <Card className="p-6 border-0 shadow-xl glass border border-slate-700">
-        <h3 className="font-semibold text-slate-200 mb-4">Detaillierte Ergebnisse</h3>
+      <Card className="p-6 border-0 shadow-xl bg-[#2A2A2A] border border-slate-600">
+        <h3 className="font-semibold text-cyan-400 mb-4">Detaillierte Ergebnisse</h3>
         <div className="space-y-3">
           {chains.map(chain => (
             <ChainResultCard
@@ -257,8 +257,8 @@ export default function ResultsAnalysis({
       
       {/* Recommendations */}
       {recommendations.length > 0 && (
-        <Card className="p-6 border-0 shadow-xl glass border border-slate-700">
-          <h3 className="font-semibold text-slate-200 mb-4 flex items-center gap-2">
+        <Card className="p-6 border-0 shadow-xl bg-[#2A2A2A] border border-slate-600">
+          <h3 className="font-semibold text-cyan-400 mb-4 flex items-center gap-2">
             <ArrowRight className="w-5 h-5 text-cyan-400" />
             Empfehlungen
           </h3>
@@ -269,7 +269,7 @@ export default function ResultsAnalysis({
                 initial={{ opacity: 0, x: -10 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: index * 0.1 }}
-                className="flex items-start gap-3 text-slate-400"
+                className="flex items-start gap-3 text-white"
               >
                 <div className="w-6 h-6 rounded-full bg-cyan-500/20 flex items-center justify-center flex-shrink-0 mt-0.5 border border-cyan-500/30">
                   <span className="text-xs font-semibold text-cyan-400">{index + 1}</span>
