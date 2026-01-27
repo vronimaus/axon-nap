@@ -295,12 +295,22 @@ export default function Dashboard() {
                 transition={{ delay: 0.5 + index * 0.05 }}
               >
                 <Card className="p-4 border-0 bg-white hover:shadow-md transition-all text-center group cursor-pointer">
-                  <div 
-                    className="w-12 h-12 rounded-2xl mx-auto mb-2 flex items-center justify-center text-white font-bold text-lg shadow-lg group-hover:scale-110 transition-transform"
-                    style={{ backgroundColor: chain.color }}
-                  >
-                    {chain.code}
-                  </div>
+                  {chain.image_url ? (
+                    <div className="w-full aspect-square rounded-xl overflow-hidden mb-2 bg-black">
+                      <img 
+                        src={chain.image_url} 
+                        alt={chain.name_de}
+                        className="w-full h-full object-contain group-hover:scale-105 transition-transform"
+                      />
+                    </div>
+                  ) : (
+                    <div 
+                      className="w-12 h-12 rounded-2xl mx-auto mb-2 flex items-center justify-center text-white font-bold text-lg shadow-lg group-hover:scale-110 transition-transform"
+                      style={{ backgroundColor: chain.color }}
+                    >
+                      {chain.code}
+                    </div>
+                  )}
                   <p className="text-xs font-medium text-slate-700 line-clamp-2">{chain.name_de}</p>
                 </Card>
               </motion.div>
