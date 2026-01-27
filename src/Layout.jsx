@@ -7,6 +7,7 @@ export default function Layout({ children, currentPageName }) {
   const navItems = [
     { name: 'Dashboard', icon: LayoutDashboard, page: 'Dashboard' },
     { name: 'Diagnose', icon: Compass, page: 'DiagnosisWizard' },
+    { name: 'Chat', icon: Activity, page: 'DiagnosisChat' },
     { name: 'Performance', icon: Trophy, page: 'Performance' }
   ];
   
