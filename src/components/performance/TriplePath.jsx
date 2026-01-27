@@ -157,8 +157,8 @@ export default function TriplePath({ goal, onBack }) {
               </div>
             </div>
             
-            <div className={`glass rounded-2xl p-5 border border-${step.color}-500/20 mb-6`}>
-              <p className="text-slate-400 leading-relaxed whitespace-pre-line">
+            <div className={`bg-slate-800/50 rounded-2xl p-5 border border-slate-700 mb-6`}>
+              <p className="text-slate-300 leading-relaxed whitespace-pre-line">
                 {goal[instructionKey]}
               </p>
             </div>
