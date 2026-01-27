@@ -96,6 +96,7 @@ export default function ResultsAnalysis({
   chains, 
   hardwareResults, 
   softwareResults,
+  footCheckData,
   onRestart,
   onSave 
 }) {
@@ -183,6 +184,32 @@ export default function ResultsAnalysis({
         <p className="text-sm text-slate-600 mt-4">{diagnosisDescription}</p>
       </Card>
       
+      {/* Foot Check Info */}
+      {footCheckData && footCheckData.foot_issue_detected && (
+        <Card className="p-6 border-0 shadow-xl glass bg-purple-50/50 border-purple-200">
+          <h3 className="font-semibold text-purple-700 mb-3 flex items-center gap-2">
+            👣 Fuß-Sensorik Limitierung erkannt
+          </h3>
+          <p className="text-sm text-slate-700 mb-3">
+            Der Fuß-Check zeigt eingeschränkte Propriozeption. Dies könnte ein limitierender Faktor für die getesteten Ketten sein.
+          </p>
+          <div className="bg-purple-100 rounded-lg p-3 border border-purple-200">
+            <p className="text-xs text-purple-700 font-semibold mb-1">Test-Ergebnisse:</p>
+            <ul className="text-xs text-slate-600 space-y-1">
+              {footCheckData.toe_isolation === 'difficult' && (
+                <li>• Großzehen-Isolation: Schwierig/unklar</li>
+              )}
+              {footCheckData.sensorik === 'uneven' && (
+                <li>• Bodenkontakt: Ungleichmäßig oder taub</li>
+              )}
+            </ul>
+          </div>
+          <p className="text-xs text-slate-600 mt-3">
+            💡 <span className="text-purple-700 font-semibold">Empfehlung:</span> Integriere tägliche Fußsohlen-Mobilisation (20-30 Sek.) vor deinen Bewegungsroutinen.
+          </p>
+        </Card>
+      )}
+
       {/* Chain Results */}
       <Card className="p-6 border-0 shadow-xl glass">
         <h3 className="font-semibold text-slate-800 mb-4">Detaillierte Ergebnisse</h3>
