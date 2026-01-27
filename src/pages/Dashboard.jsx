@@ -20,21 +20,21 @@ const QuickStartCard = ({ symptomData, delay }) => (
     transition={{ delay }}
   >
     <Link to={createPageUrl('DiagnosisWizard')}>
-      <Card className="p-4 hover:shadow-lg transition-all duration-300 border-0 bg-white group cursor-pointer">
+      <Card className="p-4 hover:shadow-lg transition-all duration-300 border-0 bg-slate-800/50 border border-slate-700 group cursor-pointer">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-50 to-blue-100 flex items-center justify-center">
-              <Target className="w-5 h-5 text-blue-600" />
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500/20 to-blue-600/20 flex items-center justify-center">
+              <Target className="w-5 h-5 text-blue-400" />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="font-medium text-slate-800 truncate">{symptomData.symptom}</p>
+              <p className="font-medium text-white truncate">{symptomData.symptom}</p>
               <div className="flex items-center gap-2 mt-0.5">
-                <p className="text-xs text-slate-500">{SYMPTOM_CLUSTERS[symptomData.cluster]?.label}</p>
-                <span className="text-xs text-blue-600 font-medium">• {symptomData.prio_chain}</span>
+                <p className="text-xs text-slate-400">{SYMPTOM_CLUSTERS[symptomData.cluster]?.label}</p>
+                <span className="text-xs text-cyan-400 font-medium">• {symptomData.prio_chain}</span>
               </div>
             </div>
           </div>
-          <ChevronRight className="w-5 h-5 text-slate-300 group-hover:text-blue-600 group-hover:translate-x-1 transition-all flex-shrink-0" />
+          <ChevronRight className="w-5 h-5 text-slate-500 group-hover:text-cyan-400 group-hover:translate-x-1 transition-all flex-shrink-0" />
         </div>
       </Card>
     </Link>
