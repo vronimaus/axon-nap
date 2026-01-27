@@ -80,6 +80,50 @@ const EXERCISE_IMAGE_PROMPTS = [
   {
     exercise_id: "NERVE_GLIDE",
     prompt: "Line art on black background. Person in T-pose with head tilted to opposite side, palm stretched away. Median nerve path through arm to fingers shown as wavy glowing neon magenta/purple (#FF00FF) line. Technical medical style, square format, centered."
+  },
+  {
+    exercise_id: "PSOAS_STRETCH_SFL",
+    prompt: "Technical line art on pure black background. Deep lunge position with rear knee on ground. Front hip flexor and psoas muscle of rear leg highlighted as thick glowing neon cyan (#00FFFF) line extending from lower back through hip. Arms raised overhead. Medical schematic style, minimalist, square 1:1, centered."
+  },
+  {
+    exercise_id: "CALF_RAISE_SBL",
+    prompt: "Line art on black background. Person standing on edge of step, heels lowered then raised maximally. Gastrocnemius and soleus (calf muscles) glow intensely in neon cyan (#00FFFF). Upward force arrow. Technical medical diagram style, clean, square format, centered."
+  },
+  {
+    exercise_id: "HANGING_STRETCH_SBL",
+    prompt: "Technical line art on pure black. Person hanging from bar with straight arms. Entire posterior chain from fingers through lats and spine to feet shown as continuous glowing neon cyan (#00FFFF) line under stretch. Medical schematic style, minimalist, square 1:1, centered."
+  },
+  {
+    exercise_id: "SINGLE_LEG_HINGE_DFL",
+    prompt: "Line art on black background. Person balanced on one leg, torso hinged forward parallel to ground, rear leg extended straight back. Glute and hamstring of standing leg glow in neon cyan (#00FFFF). Technical medical style, clean, square format, centered."
+  },
+  {
+    exercise_id: "SIDE_STRETCH_LL",
+    prompt: "Technical line art on pure black. Person standing with one arm reaching overhead and to the side. Entire lateral body line (side of torso, obliques, IT band) highlighted as glowing neon magenta/purple (#FF00FF). Medical diagram style, minimalist, square 1:1, centered."
+  },
+  {
+    exercise_id: "SIDE_PLANK_LL",
+    prompt: "Line art on black background. Perfect side plank position with body forming straight line. Entire lateral body from foot through obliques to shoulder glows in neon magenta/purple (#FF00FF). Technical medical style, square format, centered."
+  },
+  {
+    exercise_id: "THORACIC_ROTATION_SL",
+    prompt: "Technical line art on pure black. Person on all fours with one hand behind head, rotating upper body. Spiral pathway from hips through thoracic spine to shoulder rendered as glowing neon cyan (#00FFFF) spiral line. Medical schematic style, minimalist, square 1:1, centered."
+  },
+  {
+    exercise_id: "WOOD_CHOP_SL",
+    prompt: "Line art on black background. Person performing diagonal chopping motion from high to low across body. Spiral fascial line from shoulder to opposite hip highlighted as twisting glowing neon cyan (#00FFFF) ribbon. Technical medical style, square format, centered."
+  },
+  {
+    exercise_id: "SUPINE_TWIST_SL",
+    prompt: "Technical line art on pure black. Person lying on back with knees dropped to one side, arms in T-position. Spiral twist through spine and torso shown as glowing neon magenta/purple (#FF00FF) spiral. Medical diagram style, minimalist, square 1:1, centered."
+  },
+  {
+    exercise_id: "FROG_STRETCH",
+    prompt: "Line art on black background. Person in wide-knee frog position on ground. Inner thighs, adductors and deep hip structures glow in neon cyan (#00FFFF). Top or slight angle view. Technical medical style, clean, square format, centered."
+  },
+  {
+    exercise_id: "BRIDGE",
+    prompt: "Technical line art on pure black. Person lying on back with pelvis raised, forming bridge. Deep front line (hip flexors, abs, front of spine) highlighted as glowing neon cyan (#00FFFF) line under eccentric load. Medical schematic style, minimalist, square 1:1, centered."
   }
 ];
 
