@@ -8,14 +8,23 @@ import { motion, AnimatePresence } from 'framer-motion';
 export default function ExerciseImageGenerator() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [results, setResults] = useState(null);
+  const [offset, setOffset] = useState(0);
 
   const handleGenerate = async () => {
     setIsGenerating(true);
     setResults(null);
 
     try {
-      const response = await base44.functions.invoke('generateExerciseImages');
+      const response = await base44.functions.invoke('generateExerciseImages', { 
+        limit: 5, 
+        offset: offset 
+      });
       setResults(response.data);
+      
+      // Auto-increment offset for next batch
+      if (response.data.success && response.data.summary.remaining > 0) {
+        setOffset(offset + 5);
+      }
     } catch (error) {
       setResults({
         success: false,
@@ -41,10 +50,15 @@ export default function ExerciseImageGenerator() {
         <Card className="p-6 bg-[#2A2A2A] border border-slate-600 mb-6">
           <div className="text-center">
             <ImageIcon className="w-16 h-16 text-cyan-400 mx-auto mb-4" />
-            <p className="text-white mb-6">
-              This will generate 20 technical line art images for the exercise library.
+            <p className="text-white mb-4">
+              Generates 5 images per batch. Click multiple times to generate all images.
               Each image follows the style guide: neon cyan and magenta on black background.
             </p>
+            {offset > 0 && (
+              <p className="text-cyan-400 mb-4 font-semibold">
+                Next batch: Images {offset + 1} - {offset + 5}
+              </p>
+            )}
             <Button
               onClick={handleGenerate}
               disabled={isGenerating}
@@ -53,12 +67,12 @@ export default function ExerciseImageGenerator() {
               {isGenerating ? (
                 <>
                   <Loader2 className="w-5 h-5 animate-spin" />
-                  Generating Images...
+                  Generating Batch...
                 </>
               ) : (
                 <>
                   <ImageIcon className="w-5 h-5" />
-                  Generate All Images
+                  Generate Next Batch (5 Images)
                 </>
               )}
             </Button>
@@ -78,10 +92,15 @@ export default function ExerciseImageGenerator() {
                     <div className="flex items-center gap-3 mb-4">
                       <CheckCircle2 className="w-8 h-8 text-emerald-400" />
                       <div>
-                        <h3 className="text-xl font-bold text-emerald-400">Generation Complete!</h3>
+                        <h3 className="text-xl font-bold text-emerald-400">Batch Complete!</h3>
                         <p className="text-slate-300">
-                          {results.summary.successful} of {results.summary.total} images generated successfully
+                          {results.summary.successful} of {results.summary.processed} images generated successfully
                         </p>
+                        {results.summary.remaining > 0 && (
+                          <p className="text-cyan-400 text-sm mt-1">
+                            {results.summary.remaining} images remaining - Click again to continue
+                          </p>
+                        )}
                       </div>
                     </div>
                   </Card>
