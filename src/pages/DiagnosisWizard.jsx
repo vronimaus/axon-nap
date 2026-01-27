@@ -8,8 +8,9 @@ import { toast } from 'sonner';
 
 import BodyMap from '../components/diagnosis/BodyMap';
 import SymptomSelector from '../components/diagnosis/SymptomSelector';
-import SymptomAnalyzer from '../components/diagnosis/SymptomAnalyzer';
 import FootFilter from '../components/diagnosis/FootFilter';
+import { Link } from 'react-router-dom';
+import { createPageUrl } from '@/utils';
 import BreathModule from '../components/diagnosis/BreathModule';
 import HardwareTest from '../components/diagnosis/HardwareTest';
 import NeuroDrill from '../components/diagnosis/NeuroDrill';
@@ -30,7 +31,6 @@ export default function DiagnosisWizard() {
   
   // State
   const [currentStep, setCurrentStep] = useState(STEPS.SYMPTOM);
-  const [useAIAnalysis, setUseAIAnalysis] = useState(false);
   const [selectedRegion, setSelectedRegion] = useState(null);
   const [selectedSymptom, setSelectedSymptom] = useState(null);
   const [aiAnalysis, setAiAnalysis] = useState(null);
@@ -219,7 +219,6 @@ export default function DiagnosisWizard() {
 
   const handleRestart = () => {
     setCurrentStep(STEPS.SYMPTOM);
-    setUseAIAnalysis(false);
     setSelectedRegion(null);
     setSelectedSymptom(null);
     setAiAnalysis(null);
@@ -332,67 +331,52 @@ export default function DiagnosisWizard() {
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -20 }}
             >
-              {/* Toggle between Body Map and AI Analysis */}
-              <div className="flex justify-center mb-6 gap-3">
-                <Button
-                  onClick={() => setUseAIAnalysis(false)}
-                  variant={!useAIAnalysis ? "default" : "outline"}
-                  className={!useAIAnalysis ? "bg-gradient-to-r from-cyan-500 to-cyan-600 text-white" : ""}
-                >
-                  Körper-Map
-                </Button>
-                <Button
-                  onClick={() => setUseAIAnalysis(true)}
-                  variant={useAIAnalysis ? "default" : "outline"}
-                  className={useAIAnalysis ? "bg-gradient-to-r from-purple-500 to-purple-600 text-white" : ""}
-                >
-                  KI-Analyse
-                </Button>
-              </div>
+              <div className="grid md:grid-cols-2 gap-8">
+                <div>
+                  <h2 className="text-xl font-semibold text-cyan-400 mb-4">
+                    Wo hast du Schmerzen?
+                  </h2>
+                  <p className="text-slate-400 text-sm mb-6">
+                    Klicke auf die Körperregion oder wähle sie aus der Liste
+                  </p>
+                  <BodyMap 
+                    selectedRegion={selectedRegion} 
+                    onRegionSelect={handleRegionSelect} 
+                  />
+                </div>
 
-              {!useAIAnalysis ? (
-                <div className="grid md:grid-cols-2 gap-8">
-                  <div>
-                    <h2 className="text-xl font-semibold text-cyan-400 mb-4">
-                      Wo hast du Schmerzen?
-                    </h2>
-                    <p className="text-slate-400 text-sm mb-6">
-                      Klicke auf die Körperregion oder wähle sie aus der Liste
-                    </p>
-                    <BodyMap 
-                      selectedRegion={selectedRegion} 
-                      onRegionSelect={handleRegionSelect} 
-                    />
-                  </div>
-                  
-                  <div>
-                    <SymptomSelector
-                      selectedRegion={selectedRegion}
-                      selectedSymptom={selectedSymptom}
-                      onSymptomSelect={handleSymptomSelect}
-                    />
-                    
-                    {selectedSymptom && (
-                      <motion.div
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        className="mt-6"
+                <div>
+                  <SymptomSelector
+                    selectedRegion={selectedRegion}
+                    selectedSymptom={selectedSymptom}
+                    onSymptomSelect={handleSymptomSelect}
+                  />
+
+                  {selectedSymptom && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="mt-6 space-y-3"
+                    >
+                      <Button
+                        onClick={startDiagnosis}
+                        className="w-full bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-600 hover:to-purple-700 h-12 text-base font-semibold shadow-lg shadow-cyan-500/30 neuro-glow"
                       >
+                        Diagnose starten
+                      </Button>
+
+                      <Link to={createPageUrl('DiagnosisChat')}>
                         <Button
-                          onClick={startDiagnosis}
-                          className="w-full bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-600 hover:to-purple-700 h-12 text-base font-semibold shadow-lg shadow-cyan-500/30 neuro-glow"
+                          variant="outline"
+                          className="w-full h-12 border-purple-500/50 text-purple-400 hover:bg-purple-500/10"
                         >
-                          Diagnose starten
+                          💬 Zum intelligenten Chat-Assistenten
                         </Button>
-                      </motion.div>
-                    )}
-                  </div>
+                      </Link>
+                    </motion.div>
+                  )}
                 </div>
-              ) : (
-                <div className="max-w-3xl mx-auto">
-                  <SymptomAnalyzer onAnalysisComplete={handleAIAnalysisComplete} />
-                </div>
-              )}
+              </div>
             </motion.div>
           )}
 
