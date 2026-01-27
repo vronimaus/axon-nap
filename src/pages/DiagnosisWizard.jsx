@@ -8,6 +8,7 @@ import { toast } from 'sonner';
 
 import BodyMap from '../components/diagnosis/BodyMap';
 import SymptomSelector from '../components/diagnosis/SymptomSelector';
+import SymptomAnalyzer from '../components/diagnosis/SymptomAnalyzer';
 import HardwareTest from '../components/diagnosis/HardwareTest';
 import NeuroDrill from '../components/diagnosis/NeuroDrill';
 import ResultsAnalysis from '../components/diagnosis/ResultsAnalysis';
@@ -25,8 +26,10 @@ export default function DiagnosisWizard() {
   
   // State
   const [currentStep, setCurrentStep] = useState(STEPS.SYMPTOM);
+  const [useAIAnalysis, setUseAIAnalysis] = useState(false);
   const [selectedRegion, setSelectedRegion] = useState(null);
   const [selectedSymptom, setSelectedSymptom] = useState(null);
+  const [aiAnalysis, setAiAnalysis] = useState(null);
   const [currentChainIndex, setCurrentChainIndex] = useState(0);
   const [hardwareResults, setHardwareResults] = useState({});
   const [softwareResults, setSoftwareResults] = useState({});
@@ -37,10 +40,12 @@ export default function DiagnosisWizard() {
     queryFn: () => base44.entities.FascialChain.list()
   });
   
-  // Get triggered chains for selected region (prioritize prio_chain)
-  const triggeredChainCodes = selectedRegion 
-    ? SYMPTOM_CLUSTERS[selectedRegion]?.triggered_chains || []
-    : [];
+  // Get triggered chains - either from AI analysis or from selected region
+  const triggeredChainCodes = aiAnalysis?.testedChains || (
+    selectedRegion 
+      ? SYMPTOM_CLUSTERS[selectedRegion]?.triggered_chains || []
+      : []
+  );
   
   // If symptom has prio_chain, ensure it's first
   let orderedChainCodes = [...triggeredChainCodes];
@@ -131,10 +136,21 @@ export default function DiagnosisWizard() {
     }
   };
   
+  const handleAIAnalysisComplete = (data) => {
+    setAiAnalysis(data);
+    setSelectedSymptom(data.description);
+    setCurrentChainIndex(0);
+    setHardwareResults({});
+    setSoftwareResults({});
+    setCurrentStep(STEPS.HARDWARE);
+  };
+
   const handleRestart = () => {
     setCurrentStep(STEPS.SYMPTOM);
+    setUseAIAnalysis(false);
     setSelectedRegion(null);
     setSelectedSymptom(null);
+    setAiAnalysis(null);
     setCurrentChainIndex(0);
     setHardwareResults({});
     setSoftwareResults({});
@@ -226,43 +242,68 @@ export default function DiagnosisWizard() {
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -20 }}
-              className="grid md:grid-cols-2 gap-8"
             >
-              <div>
-                <h2 className="text-xl font-semibold text-cyan-400 mb-4">
-                  Wo hast du Schmerzen?
-                </h2>
-                <p className="text-slate-400 text-sm mb-6">
-                  Klicke auf die Körperregion oder wähle sie aus der Liste
-                </p>
-                <BodyMap 
-                  selectedRegion={selectedRegion} 
-                  onRegionSelect={handleRegionSelect} 
-                />
+              {/* Toggle between Body Map and AI Analysis */}
+              <div className="flex justify-center mb-6 gap-3">
+                <Button
+                  onClick={() => setUseAIAnalysis(false)}
+                  variant={!useAIAnalysis ? "default" : "outline"}
+                  className={!useAIAnalysis ? "bg-gradient-to-r from-cyan-500 to-cyan-600 text-white" : ""}
+                >
+                  Körper-Map
+                </Button>
+                <Button
+                  onClick={() => setUseAIAnalysis(true)}
+                  variant={useAIAnalysis ? "default" : "outline"}
+                  className={useAIAnalysis ? "bg-gradient-to-r from-purple-500 to-purple-600 text-white" : ""}
+                >
+                  KI-Analyse
+                </Button>
               </div>
-              
-              <div>
-                <SymptomSelector
-                  selectedRegion={selectedRegion}
-                  selectedSymptom={selectedSymptom}
-                  onSymptomSelect={handleSymptomSelect}
-                />
-                
-                {selectedSymptom && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="mt-6"
-                  >
-                    <Button
-                      onClick={startDiagnosis}
-                      className="w-full bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-600 hover:to-purple-700 h-12 text-base font-semibold shadow-lg shadow-cyan-500/30 neuro-glow"
-                    >
-                      Diagnose starten
-                    </Button>
-                  </motion.div>
-                )}
-              </div>
+
+              {!useAIAnalysis ? (
+                <div className="grid md:grid-cols-2 gap-8">
+                  <div>
+                    <h2 className="text-xl font-semibold text-cyan-400 mb-4">
+                      Wo hast du Schmerzen?
+                    </h2>
+                    <p className="text-slate-400 text-sm mb-6">
+                      Klicke auf die Körperregion oder wähle sie aus der Liste
+                    </p>
+                    <BodyMap 
+                      selectedRegion={selectedRegion} 
+                      onRegionSelect={handleRegionSelect} 
+                    />
+                  </div>
+                  
+                  <div>
+                    <SymptomSelector
+                      selectedRegion={selectedRegion}
+                      selectedSymptom={selectedSymptom}
+                      onSymptomSelect={handleSymptomSelect}
+                    />
+                    
+                    {selectedSymptom && (
+                      <motion.div
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="mt-6"
+                      >
+                        <Button
+                          onClick={startDiagnosis}
+                          className="w-full bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-600 hover:to-purple-700 h-12 text-base font-semibold shadow-lg shadow-cyan-500/30 neuro-glow"
+                        >
+                          Diagnose starten
+                        </Button>
+                      </motion.div>
+                    )}
+                  </div>
+                </div>
+              ) : (
+                <div className="max-w-3xl mx-auto">
+                  <SymptomAnalyzer onAnalysisComplete={handleAIAnalysisComplete} />
+                </div>
+              )}
             </motion.div>
           )}
           
