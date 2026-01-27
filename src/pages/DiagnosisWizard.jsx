@@ -170,14 +170,14 @@ export default function DiagnosisWizard() {
   
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 to-slate-100">
-        <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
+      <div className="min-h-screen flex items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin text-cyan-400" />
       </div>
     );
   }
   
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50">
+    <div className="min-h-screen">
       <div className="max-w-4xl mx-auto px-4 py-8">
         {/* Header */}
         <motion.div 
@@ -185,34 +185,36 @@ export default function DiagnosisWizard() {
           animate={{ opacity: 1, y: 0 }}
           className="text-center mb-8"
         >
-          <h1 className="text-3xl md:text-4xl font-bold text-slate-800 tracking-tight">
+          <h1 className="text-3xl md:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-500 tracking-tight">
             Diagnose-Wizard
           </h1>
-          <p className="text-slate-500 mt-2">
+          <p className="text-slate-400 mt-2">
             Hardware vs. Software – Finde die Ursache deiner Beschwerden
           </p>
         </motion.div>
         
         {/* Step Indicator */}
         <div className="flex justify-center mb-8">
-          <div className="flex items-center gap-2">
-            {['Symptom', 'Hardware', 'Software', 'Ergebnis'].map((label, index) => (
-              <React.Fragment key={label}>
-                <div className={`flex items-center gap-2 ${index <= currentStep ? 'text-blue-600' : 'text-slate-300'}`}>
-                  <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold transition-all ${
-                    index < currentStep ? 'bg-blue-600 text-white' :
-                    index === currentStep ? 'bg-blue-100 text-blue-600 ring-2 ring-blue-600' :
-                    'bg-slate-100 text-slate-400'
-                  }`}>
-                    {index + 1}
+          <div className="glass rounded-2xl px-6 py-4">
+            <div className="flex items-center gap-2">
+              {['Symptom', 'Hardware', 'Software', 'Ergebnis'].map((label, index) => (
+                <React.Fragment key={label}>
+                  <div className={`flex items-center gap-2 ${index <= currentStep ? 'text-cyan-400' : 'text-slate-600'}`}>
+                    <div className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold transition-all ${
+                      index < currentStep ? 'bg-gradient-to-br from-cyan-500 to-cyan-600 text-slate-900 neuro-glow' :
+                      index === currentStep ? 'bg-cyan-500/20 text-cyan-400 ring-2 ring-cyan-500' :
+                      'bg-slate-800 text-slate-500'
+                    }`}>
+                      {index + 1}
+                    </div>
+                    <span className="hidden sm:inline text-sm font-semibold">{label}</span>
                   </div>
-                  <span className="hidden sm:inline text-sm font-medium">{label}</span>
-                </div>
-                {index < 3 && (
-                  <div className={`w-8 h-0.5 ${index < currentStep ? 'bg-blue-600' : 'bg-slate-200'}`} />
-                )}
-              </React.Fragment>
-            ))}
+                  {index < 3 && (
+                    <div className={`w-8 h-1 rounded-full ${index < currentStep ? 'bg-gradient-to-r from-cyan-500 to-purple-500' : 'bg-slate-700'}`} />
+                  )}
+                </React.Fragment>
+              ))}
+            </div>
           </div>
         </div>
         
@@ -227,10 +229,10 @@ export default function DiagnosisWizard() {
               className="grid md:grid-cols-2 gap-8"
             >
               <div>
-                <h2 className="text-xl font-semibold text-slate-800 mb-4">
+                <h2 className="text-xl font-semibold text-cyan-400 mb-4">
                   Wo hast du Schmerzen?
                 </h2>
-                <p className="text-slate-500 text-sm mb-6">
+                <p className="text-slate-400 text-sm mb-6">
                   Klicke auf die Körperregion oder wähle sie aus der Liste
                 </p>
                 <BodyMap 
@@ -254,7 +256,7 @@ export default function DiagnosisWizard() {
                   >
                     <Button
                       onClick={startDiagnosis}
-                      className="w-full bg-blue-600 hover:bg-blue-700 h-12 text-base"
+                      className="w-full bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-600 hover:to-purple-700 h-12 text-base font-semibold shadow-lg shadow-cyan-500/30 neuro-glow"
                     >
                       Diagnose starten
                     </Button>
