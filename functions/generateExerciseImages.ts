@@ -136,12 +136,16 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Forbidden: Admin access required' }, { status: 403 });
     }
 
+    const { limit = 5, offset = 0 } = await req.json().catch(() => ({}));
+
     const results = [];
     let successCount = 0;
     let errorCount = 0;
 
-    // Generate images for all exercises
-    for (const exerciseData of EXERCISE_IMAGE_PROMPTS) {
+    // Generate images for limited batch
+    const batch = EXERCISE_IMAGE_PROMPTS.slice(offset, offset + limit);
+    
+    for (const exerciseData of batch) {
       try {
         // Generate image
         const imageResult = await base44.asServiceRole.integrations.Core.GenerateImage({
@@ -189,8 +193,11 @@ Deno.serve(async (req) => {
       success: true,
       summary: {
         total: EXERCISE_IMAGE_PROMPTS.length,
+        processed: batch.length,
+        offset: offset,
         successful: successCount,
-        errors: errorCount
+        errors: errorCount,
+        remaining: Math.max(0, EXERCISE_IMAGE_PROMPTS.length - offset - limit)
       },
       results
     });
