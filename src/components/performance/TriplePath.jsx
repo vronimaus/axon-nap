@@ -80,11 +80,11 @@ export default function TriplePath({ goal, onBack }) {
       </div>
       
       {/* Info Card */}
-      <Card className="p-5 border-0 shadow-xl glass-cyan border border-cyan-500/30">
-        <p className="text-sm text-slate-300 leading-relaxed">
-          💡 <span className="font-semibold text-cyan-400">Logik:</span> Wir nutzen <strong>Mobilisation</strong> für das Gelenk, 
-          <strong> Dehnung</strong> für die Faszie und <strong>Kräftigung</strong> für die neuronale Sicherheit. 
-          Der <strong>Neuro-Fix</strong> optimiert dein Nervensystem für maximale Performance.
+      <Card className="p-5 border-0 shadow-xl glass border border-slate-700">
+        <p className="text-sm text-slate-400 leading-relaxed">
+          💡 <span className="font-semibold text-cyan-400">Logik:</span> Wir nutzen <strong className="text-slate-300">Mobilisation</strong> für das Gelenk, 
+          <strong className="text-slate-300"> Dehnung</strong> für die Faszie und <strong className="text-slate-300">Kräftigung</strong> für die neuronale Sicherheit. 
+          Der <strong className="text-slate-300">Neuro-Fix</strong> optimiert dein Nervensystem für maximale Performance.
         </p>
       </Card>
       
@@ -131,7 +131,7 @@ export default function TriplePath({ goal, onBack }) {
           animate={{ opacity: 1, x: 0 }}
           exit={{ opacity: 0, x: -20 }}
         >
-          <Card className="p-6 border-0 shadow-xl glass">
+          <Card className="p-6 border-0 shadow-xl glass border border-slate-700">
             <div className={`flex items-center gap-3 mb-4 pb-4 border-b border-${step.color}-500/30`}>
               <div 
                 className={`w-12 h-12 rounded-2xl bg-${step.color}-500/20 flex items-center justify-center border-2 border-${step.color}-500/40`}
@@ -153,21 +153,21 @@ export default function TriplePath({ goal, onBack }) {
                     </button>
                   )}
                 </div>
-                <p className="text-xs text-slate-400">{step.description}</p>
+                <p className="text-xs text-slate-500">{step.description}</p>
               </div>
             </div>
             
-            <div className={`glass-${step.color} rounded-2xl p-5 border border-${step.color}-500/30 mb-6`}>
-              <p className="text-slate-300 leading-relaxed whitespace-pre-line">
+            <div className={`glass rounded-2xl p-5 border border-${step.color}-500/20 mb-6`}>
+              <p className="text-slate-400 leading-relaxed whitespace-pre-line">
                 {goal[instructionKey]}
               </p>
             </div>
             
             {/* Video Placeholder */}
-            <div className={`glass rounded-2xl h-48 flex items-center justify-center border border-${step.color}-500/20 mb-6`}>
-              <div className="text-center text-slate-500">
-                <step.icon className={`w-12 h-12 mx-auto mb-2 opacity-50 text-${step.color}-400`} />
-                <span className="text-sm">Video-Anleitung (Coming Soon)</span>
+            <div className={`glass rounded-2xl h-48 flex items-center justify-center border border-slate-700 mb-6`}>
+              <div className="text-center text-slate-600">
+                <step.icon className={`w-12 h-12 mx-auto mb-2 opacity-30 text-${step.color}-400`} />
+                <span className="text-sm text-slate-500">Video-Anleitung (Coming Soon)</span>
               </div>
             </div>
             
@@ -194,7 +194,7 @@ export default function TriplePath({ goal, onBack }) {
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
         >
-          <Card className="p-6 border-0 shadow-xl glass-cyan border-2 border-emerald-500/50 neuro-glow">
+          <Card className="p-6 border-0 shadow-xl glass border-2 border-emerald-500/50 neuro-glow">
             <div className="text-center">
               <div className="w-16 h-16 bg-emerald-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
                 <CheckCircle2 className="w-8 h-8 text-emerald-400" />
@@ -202,7 +202,7 @@ export default function TriplePath({ goal, onBack }) {
               <h3 className="text-xl font-bold text-emerald-400 mb-2">
                 🎉 Triple-Path abgeschlossen!
               </h3>
-              <p className="text-slate-300">
+              <p className="text-slate-400">
                 Du hast alle 4 Schritte für <strong className="text-cyan-400">{goal.name}</strong> durchlaufen. 
                 Wiederhole diese Routine regelmäßig für optimale Ergebnisse.
               </p>

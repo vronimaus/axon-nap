@@ -71,11 +71,11 @@ export default function ExerciseModal({ exercise, isOpen, onClose }) {
               
               {/* Description */}
               <div className="mb-6">
-                <h3 className="text-sm font-semibold text-slate-400 uppercase tracking-wide mb-3">
+                <h3 className="text-sm font-semibold text-slate-500 uppercase tracking-wide mb-3">
                   Ausführung
                 </h3>
-                <div className="glass-cyan rounded-2xl p-4 border border-cyan-500/30">
-                  <p className="text-slate-300 leading-relaxed whitespace-pre-line">
+                <div className="glass rounded-2xl p-4 border border-slate-700">
+                  <p className="text-slate-400 leading-relaxed whitespace-pre-line">
                     {exercise.description}
                   </p>
                 </div>
@@ -84,15 +84,15 @@ export default function ExerciseModal({ exercise, isOpen, onClose }) {
               {/* Cues */}
               {exercise.cues && exercise.cues.length > 0 && (
                 <div>
-                  <h3 className="text-sm font-semibold text-slate-400 uppercase tracking-wide mb-3 flex items-center gap-2">
+                  <h3 className="text-sm font-semibold text-slate-500 uppercase tracking-wide mb-3 flex items-center gap-2">
                     <AlertCircle className="w-4 h-4 text-purple-400" />
                     Wichtige Tipps
                   </h3>
                   <div className="space-y-2">
                     {exercise.cues.map((cue, index) => (
-                      <div key={index} className="flex items-start gap-3 glass-purple rounded-xl p-3 border border-purple-500/30">
+                      <div key={index} className="flex items-start gap-3 glass rounded-xl p-3 border border-purple-500/20">
                         <CheckCircle2 className="w-5 h-5 text-purple-400 flex-shrink-0 mt-0.5" />
-                        <p className="text-slate-300 text-sm">{cue}</p>
+                        <p className="text-slate-400 text-sm">{cue}</p>
                       </div>
                     ))}
                   </div>
