@@ -68,7 +68,7 @@ const ChainResultCard = ({ chain, hardwareResult, softwareResult }) => {
   };
   
   return (
-    <div className="flex items-center gap-4 p-4 bg-white rounded-xl border border-slate-100">
+    <div className="flex items-center gap-4 p-4 glass rounded-xl border border-slate-700">
       <div 
         className="w-10 h-10 rounded-xl flex items-center justify-center text-white font-bold text-sm"
         style={{ backgroundColor: chain.color }}
@@ -76,8 +76,8 @@ const ChainResultCard = ({ chain, hardwareResult, softwareResult }) => {
         {chain.code}
       </div>
       <div className="flex-1 min-w-0">
-        <p className="font-medium text-slate-800 truncate">{chain.name_de}</p>
-        <p className="text-xs text-slate-500">{chain.test_name}</p>
+        <p className="font-medium text-slate-200 truncate">{chain.name_de}</p>
+        <p className="text-xs text-slate-400">{chain.test_name}</p>
       </div>
       <div className="flex gap-2">
         <span className={`px-2 py-1 rounded-lg text-xs font-medium ${getHardwareColor(hardwareResult)}`}>
@@ -161,42 +161,42 @@ export default function ResultsAnalysis({
           animate={{ scale: 1 }}
           transition={{ type: 'spring', delay: 0.2 }}
           className={`w-20 h-20 rounded-3xl flex items-center justify-center mx-auto mb-4 ${
-            diagnosisColor === 'emerald' ? 'bg-emerald-100' :
-            diagnosisColor === 'purple' ? 'bg-purple-100' :
-            diagnosisColor === 'blue' ? 'bg-blue-100' : 'bg-amber-100'
+            diagnosisColor === 'emerald' ? 'bg-emerald-500/20 border-2 border-emerald-500/40' :
+            diagnosisColor === 'purple' ? 'bg-purple-500/20 border-2 border-purple-500/40' :
+            diagnosisColor === 'blue' ? 'bg-blue-500/20 border-2 border-blue-500/40' : 'bg-amber-500/20 border-2 border-amber-500/40'
           }`}
         >
-          {diagnosisType === 'software' && <Brain className="w-10 h-10 text-purple-600" />}
-          {diagnosisType === 'hardware' && <Cpu className="w-10 h-10 text-blue-600" />}
-          {diagnosisType === 'mixed' && <Activity className="w-10 h-10 text-amber-600" />}
-          {diagnosisType === 'clear' && <CheckCircle2 className="w-10 h-10 text-emerald-600" />}
+          {diagnosisType === 'software' && <Brain className="w-10 h-10 text-purple-400" />}
+          {diagnosisType === 'hardware' && <Cpu className="w-10 h-10 text-blue-400" />}
+          {diagnosisType === 'mixed' && <Activity className="w-10 h-10 text-amber-400" />}
+          {diagnosisType === 'clear' && <CheckCircle2 className="w-10 h-10 text-emerald-400" />}
         </motion.div>
-        <h2 className="text-2xl font-bold text-slate-800">{diagnosisTitle}</h2>
-        <p className="text-slate-500 mt-2">Analyse für: {symptom}</p>
+        <h2 className="text-2xl font-bold text-cyan-400">{diagnosisTitle}</h2>
+        <p className="text-slate-400 mt-2">Analyse für: {symptom}</p>
       </div>
       
       {/* Diagnosis Gauge */}
-      <Card className="p-6 border-0 shadow-xl glass">
-        <h3 className="font-semibold text-slate-800 mb-4 flex items-center gap-2">
-          <Activity className="w-5 h-5 text-slate-400" />
+      <Card className="p-6 border-0 shadow-xl glass border border-slate-700">
+        <h3 className="font-semibold text-slate-200 mb-4 flex items-center gap-2">
+          <Activity className="w-5 h-5 text-cyan-400" />
           Diagnose-Spektrum
         </h3>
         <DiagnosisGauge hardwareScore={hardwareScore * 100} softwareScore={softwareScore * 100} />
-        <p className="text-sm text-slate-600 mt-4">{diagnosisDescription}</p>
+        <p className="text-sm text-slate-300 mt-4">{diagnosisDescription}</p>
       </Card>
       
       {/* Foot Check Info */}
       {footCheckData && footCheckData.foot_issue_detected && (
-        <Card className="p-6 border-0 shadow-xl glass bg-purple-50/50 border-purple-200">
-          <h3 className="font-semibold text-purple-700 mb-3 flex items-center gap-2">
+        <Card className="p-6 border-0 shadow-xl glass bg-purple-500/10 border-purple-500/30">
+          <h3 className="font-semibold text-purple-400 mb-3 flex items-center gap-2">
             👣 Fuß-Sensorik Limitierung erkannt
           </h3>
-          <p className="text-sm text-slate-700 mb-3">
+          <p className="text-sm text-slate-300 mb-3">
             Der Fuß-Check zeigt eingeschränkte Propriozeption. Dies könnte ein limitierender Faktor für die getesteten Ketten sein.
           </p>
-          <div className="bg-purple-100 rounded-lg p-3 border border-purple-200">
-            <p className="text-xs text-purple-700 font-semibold mb-1">Test-Ergebnisse:</p>
-            <ul className="text-xs text-slate-600 space-y-1">
+          <div className="bg-purple-500/20 rounded-lg p-3 border border-purple-500/30">
+            <p className="text-xs text-purple-400 font-semibold mb-1">Test-Ergebnisse:</p>
+            <ul className="text-xs text-slate-400 space-y-1">
               {footCheckData.toe_isolation === 'difficult' && (
                 <li>• Großzehen-Isolation: Schwierig/unklar</li>
               )}
@@ -205,24 +205,24 @@ export default function ResultsAnalysis({
               )}
             </ul>
           </div>
-          <p className="text-xs text-slate-600 mt-3">
-            💡 <span className="text-purple-700 font-semibold">Empfehlung:</span> Integriere tägliche Fußsohlen-Mobilisation (20-30 Sek.) vor deinen Bewegungsroutinen.
+          <p className="text-xs text-slate-400 mt-3">
+            💡 <span className="text-purple-400 font-semibold">Empfehlung:</span> Integriere tägliche Fußsohlen-Mobilisation (20-30 Sek.) vor deinen Bewegungsroutinen.
           </p>
         </Card>
       )}
 
       {/* Breath Check Info */}
       {breathCheckData && breathCheckData.breath_issue_detected && (
-        <Card className="p-6 border-0 shadow-xl glass bg-cyan-50/50 border-cyan-200">
-          <h3 className="font-semibold text-cyan-700 mb-3 flex items-center gap-2">
+        <Card className="p-6 border-0 shadow-xl glass bg-cyan-500/10 border-cyan-500/30">
+          <h3 className="font-semibold text-cyan-400 mb-3 flex items-center gap-2">
             🫁 Atmungs-Einschränkung erkannt
           </h3>
-          <p className="text-sm text-slate-700 mb-3">
+          <p className="text-sm text-slate-300 mb-3">
             Das Zwerchfell (Teil der DFL) zeigt eingeschränkte Funktion. Dies beeinflusst den globalen Muskeltonus und kann defensive Spannungsmuster verstärken.
           </p>
-          <div className="bg-cyan-100 rounded-lg p-3 border border-cyan-200">
-            <p className="text-xs text-cyan-700 font-semibold mb-1">Test-Ergebnisse:</p>
-            <ul className="text-xs text-slate-600 space-y-1">
+          <div className="bg-cyan-500/20 rounded-lg p-3 border border-cyan-500/30">
+            <p className="text-xs text-cyan-400 font-semibold mb-1">Test-Ergebnisse:</p>
+            <ul className="text-xs text-slate-400 space-y-1">
               {breathCheckData.ribcage_expansion === 'limited' && (
                 <li>• Rippen-Expansion: Nur nach vorne, nicht 360°</li>
               )}
@@ -230,19 +230,19 @@ export default function ResultsAnalysis({
                 <li>• Zungen-Gaumen-Kontakt: Schwierig/verkrampft</li>
               )}
               {breathCheckData.box_breathing_completed && (
-                <li className="text-green-700">✓ Box-Breathing durchgeführt</li>
+                <li className="text-green-400">✓ Box-Breathing durchgeführt</li>
               )}
             </ul>
           </div>
-          <p className="text-xs text-slate-600 mt-3">
-            💡 <span className="text-cyan-700 font-semibold">Empfehlung:</span> Integriere tägliches Box-Breathing (3x 4-4-4-4) zur Parasympathikus-Aktivierung.
+          <p className="text-xs text-slate-400 mt-3">
+            💡 <span className="text-cyan-400 font-semibold">Empfehlung:</span> Integriere tägliches Box-Breathing (3x 4-4-4-4) zur Parasympathikus-Aktivierung.
           </p>
         </Card>
       )}
 
       {/* Chain Results */}
-      <Card className="p-6 border-0 shadow-xl glass">
-        <h3 className="font-semibold text-slate-800 mb-4">Detaillierte Ergebnisse</h3>
+      <Card className="p-6 border-0 shadow-xl glass border border-slate-700">
+        <h3 className="font-semibold text-slate-200 mb-4">Detaillierte Ergebnisse</h3>
         <div className="space-y-3">
           {chains.map(chain => (
             <ChainResultCard
@@ -257,9 +257,9 @@ export default function ResultsAnalysis({
       
       {/* Recommendations */}
       {recommendations.length > 0 && (
-        <Card className="p-6 border-0 shadow-xl glass">
-          <h3 className="font-semibold text-slate-800 mb-4 flex items-center gap-2">
-            <ArrowRight className="w-5 h-5 text-blue-600" />
+        <Card className="p-6 border-0 shadow-xl glass border border-slate-700">
+          <h3 className="font-semibold text-slate-200 mb-4 flex items-center gap-2">
+            <ArrowRight className="w-5 h-5 text-cyan-400" />
             Empfehlungen
           </h3>
           <ul className="space-y-2">
@@ -269,10 +269,10 @@ export default function ResultsAnalysis({
                 initial={{ opacity: 0, x: -10 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: index * 0.1 }}
-                className="flex items-start gap-3 text-slate-700"
+                className="flex items-start gap-3 text-slate-300"
               >
-                <div className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0 mt-0.5">
-                  <span className="text-xs font-semibold text-blue-600">{index + 1}</span>
+                <div className="w-6 h-6 rounded-full bg-cyan-500/20 flex items-center justify-center flex-shrink-0 mt-0.5 border border-cyan-500/30">
+                  <span className="text-xs font-semibold text-cyan-400">{index + 1}</span>
                 </div>
                 {rec}
               </motion.li>
