@@ -6,6 +6,7 @@ import { ChevronLeft, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 
+import RedFlagScreen from '../components/diagnosis/RedFlagScreen';
 import BodyMap from '../components/diagnosis/BodyMap';
 import SymptomSelector from '../components/diagnosis/SymptomSelector';
 import FootFilter from '../components/diagnosis/FootFilter';
@@ -18,6 +19,7 @@ import ResultsAnalysis from '../components/diagnosis/ResultsAnalysis';
 import { SYMPTOM_CLUSTERS } from '../components/diagnosis/SymptomData';
 
 const STEPS = {
+  REDFLAGS: -1,
   SYMPTOM: 0,
   FOOT_CHECK: 1,
   BREATH_CHECK: 2,
@@ -30,7 +32,7 @@ export default function DiagnosisWizard() {
   const queryClient = useQueryClient();
   
   // State
-  const [currentStep, setCurrentStep] = useState(STEPS.SYMPTOM);
+  const [currentStep, setCurrentStep] = useState(STEPS.REDFLAGS);
   const [selectedRegion, setSelectedRegion] = useState(null);
   const [selectedSymptom, setSelectedSymptom] = useState(null);
   const [aiAnalysis, setAiAnalysis] = useState(null);
@@ -218,7 +220,7 @@ export default function DiagnosisWizard() {
   };
 
   const handleRestart = () => {
-    setCurrentStep(STEPS.SYMPTOM);
+    setCurrentStep(STEPS.REDFLAGS);
     setSelectedRegion(null);
     setSelectedSymptom(null);
     setAiAnalysis(null);
@@ -318,6 +320,12 @@ export default function DiagnosisWizard() {
         
         {/* Content */}
         <AnimatePresence mode="wait">
+          {currentStep === STEPS.REDFLAGS && (
+            <RedFlagScreen
+              onContinue={() => setCurrentStep(STEPS.SYMPTOM)}
+            />
+          )}
+
           {currentStep === STEPS.SYMPTOM && (
             <motion.div
               key="symptom"
