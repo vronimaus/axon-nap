@@ -95,10 +95,10 @@ export default function DiagnosisChat() {
         </motion.div>
 
         {/* Chat Container */}
-        <Card className="glass border border-cyan-500/30 shadow-2xl">
+        <Card className="bg-slate-900/90 border border-cyan-500/30 shadow-2xl backdrop-blur-sm">
           <div className="flex flex-col h-[600px]">
             {/* Messages */}
-            <div className="flex-1 overflow-y-auto p-6 space-y-4">
+            <div className="flex-1 overflow-y-auto p-6 space-y-4 bg-slate-900/50">
               {messages.length === 0 ? (
                 <motion.div
                   initial={{ opacity: 0, scale: 0.9 }}
@@ -106,8 +106,8 @@ export default function DiagnosisChat() {
                   className="text-center py-12"
                 >
                   <MessageCircle className="w-16 h-16 text-cyan-400/30 mx-auto mb-4" />
-                  <p className="text-slate-400 mb-2">Keine Nachrichten</p>
-                  <p className="text-sm text-slate-500">
+                  <p className="text-slate-300 mb-2">Keine Nachrichten</p>
+                  <p className="text-sm text-slate-400">
                     Beschreibe deine Symptome und ich führe dich durch die Diagnose
                   </p>
                 </motion.div>
@@ -214,7 +214,7 @@ export default function DiagnosisChat() {
             </div>
 
             {/* Input Area */}
-            <div className="p-4 border-t border-cyan-500/20">
+            <div className="p-4 border-t border-cyan-500/20 bg-slate-900/70">
               <div className="flex gap-3">
                 <Textarea
                   value={input}
