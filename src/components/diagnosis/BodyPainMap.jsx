@@ -291,123 +291,30 @@ export default function BodyPainMap({ onSubmit, onCancel }) {
   );
 }
 
-// Front body silhouette
+// Front body silhouette - Medical grade anatomy
 function BodySilhouetteFront() {
   return (
-    <svg viewBox="0 0 400 600" className="w-full h-full">
-      <defs>
-        <linearGradient id="bodyGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-          <stop offset="0%" stopColor="rgba(6, 182, 212, 0.15)" />
-          <stop offset="100%" stopColor="rgba(139, 92, 246, 0.15)" />
-        </linearGradient>
-      </defs>
-      
-      {/* Body outline - front view */}
-      <path
-        d="M 200 50 
-           C 180 50, 170 60, 170 80
-           L 170 120
-           L 140 140
-           L 140 240
-           C 140 250, 150 260, 160 260
-           L 160 350
-           L 180 550
-           L 160 590
-           L 180 590
-           L 200 500
-           L 220 590
-           L 240 590
-           L 220 550
-           L 240 350
-           L 240 260
-           C 250 260, 260 250, 260 240
-           L 260 140
-           L 230 120
-           L 230 80
-           C 230 60, 220 50, 200 50 Z"
-        fill="url(#bodyGradient)"
-        stroke="rgba(6, 182, 212, 0.5)"
-        strokeWidth="2"
+    <div className="w-full h-full flex items-center justify-center bg-slate-950">
+      <img 
+        src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/ad6e52b61_generated_image.png"
+        alt="Front anatomy view"
+        className="w-full h-full object-contain"
+        draggable={false}
       />
-      
-      {/* Head */}
-      <circle cx="200" cy="40" r="25" fill="url(#bodyGradient)" stroke="rgba(6, 182, 212, 0.5)" strokeWidth="2" />
-      
-      {/* Arms */}
-      <path
-        d="M 140 140 L 100 200 L 90 280 L 110 280 L 120 200"
-        fill="none"
-        stroke="rgba(6, 182, 212, 0.5)"
-        strokeWidth="2"
-      />
-      <path
-        d="M 260 140 L 300 200 L 310 280 L 290 280 L 280 200"
-        fill="none"
-        stroke="rgba(6, 182, 212, 0.5)"
-        strokeWidth="2"
-      />
-    </svg>
+    </div>
   );
 }
 
-// Back body silhouette
+// Back body silhouette - Medical grade anatomy
 function BodySilhouetteBack() {
   return (
-    <svg viewBox="0 0 400 600" className="w-full h-full">
-      <defs>
-        <linearGradient id="bodyGradientBack" x1="0%" y1="0%" x2="0%" y2="100%">
-          <stop offset="0%" stopColor="rgba(139, 92, 246, 0.15)" />
-          <stop offset="100%" stopColor="rgba(6, 182, 212, 0.15)" />
-        </linearGradient>
-      </defs>
-      
-      {/* Body outline - back view */}
-      <path
-        d="M 200 50 
-           C 180 50, 170 60, 170 80
-           L 170 120
-           L 140 140
-           L 140 240
-           C 140 250, 150 260, 160 260
-           L 160 350
-           L 180 550
-           L 160 590
-           L 180 590
-           L 200 500
-           L 220 590
-           L 240 590
-           L 220 550
-           L 240 350
-           L 240 260
-           C 250 260, 260 250, 260 240
-           L 260 140
-           L 230 120
-           L 230 80
-           C 230 60, 220 50, 200 50 Z"
-        fill="url(#bodyGradientBack)"
-        stroke="rgba(139, 92, 246, 0.5)"
-        strokeWidth="2"
+    <div className="w-full h-full flex items-center justify-center bg-slate-950">
+      <img 
+        src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/0df8e2e95_generated_image.png"
+        alt="Back anatomy view"
+        className="w-full h-full object-contain"
+        draggable={false}
       />
-      
-      {/* Head */}
-      <circle cx="200" cy="40" r="25" fill="url(#bodyGradientBack)" stroke="rgba(139, 92, 246, 0.5)" strokeWidth="2" />
-      
-      {/* Arms */}
-      <path
-        d="M 140 140 L 100 200 L 90 280 L 110 280 L 120 200"
-        fill="none"
-        stroke="rgba(139, 92, 246, 0.5)"
-        strokeWidth="2"
-      />
-      <path
-        d="M 260 140 L 300 200 L 310 280 L 290 280 L 280 200"
-        fill="none"
-        stroke="rgba(139, 92, 246, 0.5)"
-        strokeWidth="2"
-      />
-      
-      {/* Spine indicator */}
-      <line x1="200" y1="80" x2="200" y2="350" stroke="rgba(139, 92, 246, 0.3)" strokeWidth="1" strokeDasharray="4 4" />
-    </svg>
+    </div>
   );
 }
