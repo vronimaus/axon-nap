@@ -186,39 +186,70 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* Hardware vs Software */}
+      {/* Der "Aha-Moment": Kiefer-Becken-Beispiel */}
+      <section className="py-20 relative">
+        <div className="max-w-5xl mx-auto px-4">
+          <h2 className="text-4xl font-bold text-center mb-6 text-white">
+            Der „Aha-Moment": Das Kiefer-Becken-Beispiel
+          </h2>
+          <p className="text-xl text-slate-400 text-center mb-12 max-w-3xl mx-auto">
+            Ein typischer Zusammenhang: Deine Hüfte ist fest. Du bearbeitest deine Oberschenkel mit der Rolle, 
+            aber der Effekt verpufft sofort.
+          </p>
+
+          <div className="glass rounded-2xl border border-cyan-500/30 p-8 neuro-glow">
+            <h3 className="text-2xl font-bold text-cyan-400 mb-6 text-center">Die AXON-Lösung:</h3>
+            <div className="space-y-4 text-lg text-slate-300 leading-relaxed">
+              <p>
+                AXON zeigt dir die Verbindung zwischen deinem <span className="text-cyan-400 font-semibold">Kiefer</span> und 
+                deiner <span className="text-purple-400 font-semibold">Beckenstabilität</span>.
+              </p>
+              <p>
+                Durch das Lösen der Kieferspannung (Software-Reset) „erlaubt" dein Gehirn der Hüfte plötzlich, sich zu öffnen.
+              </p>
+              <div className="bg-slate-800/50 rounded-xl p-6 border border-cyan-500/20 mt-6">
+                <p className="text-center text-xl font-semibold text-cyan-400">
+                  Die Mechanik bereitet vor – die Neurologie gibt die Bewegung frei.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Vergleich: Klassisch vs. AXON */}
       <section className="py-20 relative">
         <div className="max-w-5xl mx-auto px-4">
           <h2 className="text-4xl font-bold text-center mb-12 text-white">
-            Warum klassisches Training oft scheitert
+            Der Vergleich: Klassisch vs. AXON
           </h2>
 
           <div className="grid md:grid-cols-2 gap-6">
             {/* Klassisch */}
             <div className="glass rounded-2xl border border-slate-600/30 p-8">
-              <div className="text-sm font-bold text-slate-500 mb-3">KLASSISCHER ANSATZ (Hardware)</div>
+              <div className="text-sm font-bold text-slate-500 mb-3">KLASSISCHER ANSATZ</div>
               <h3 className="text-xl font-bold text-slate-300 mb-4">
-                „Dein Nacken ist steif? Dehne ihn 10 Minuten."
+                „Es zwickt? Bearbeite das Symptom lokal und hoffe, dass es wegbleibt."
               </h3>
               <div className="space-y-3 text-slate-400">
-                <p>➔ Du dehnst und massierst</p>
+                <p className="text-red-400 font-semibold">➔ Ignoriert die Steuerungsebene des Gehirns</p>
                 <p>➔ Kurzfristige Linderung</p>
-                <p className="text-red-400 font-semibold">❌ Schmerz kommt nach einer Stunde zurück</p>
-                <p className="text-sm italic">Ursache (z.B. Augenstress) wird ignoriert</p>
+                <p>➔ Symptome kehren zurück</p>
+                <p className="text-sm italic">Problem wird nur oberflächlich behandelt</p>
               </div>
             </div>
 
             {/* AXON */}
             <div className="glass rounded-2xl border border-cyan-500/30 p-8 neuro-glow">
-              <div className="text-sm font-bold text-cyan-400 mb-3">AXON-WEG (Software)</div>
+              <div className="text-sm font-bold text-cyan-400 mb-3">DER AXON-WEG</div>
               <h3 className="text-xl font-bold text-white mb-4">
-                „Markiere den Nacken."
+                „Analysiere die gesamte Funktionskette und gib dem Gehirn ein Sicherheitssignal."
               </h3>
               <div className="space-y-3 text-slate-300">
-                <p>➔ 30 Sek. gezielte Augenbewegungen</p>
-                <p>➔ Gehirn erkennt Sicherheit</p>
-                <p className="text-green-400 font-semibold">✅ Schutzspannung löst sich sofort</p>
-                <p className="text-sm italic text-cyan-400">Die Ursache wird behoben, nicht das Symptom</p>
+                <p className="text-green-400 font-semibold">➔ Nachhaltige Lösung durch Korrektur von Input und Output</p>
+                <p>➔ Ursachen werden systematisch behoben</p>
+                <p>➔ Langfristige Freiheit statt Symptombekämpfung</p>
+                <p className="text-sm italic text-cyan-400">Das Problem wird an der Wurzel gelöst</p>
               </div>
             </div>
           </div>
