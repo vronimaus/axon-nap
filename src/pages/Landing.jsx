@@ -17,8 +17,8 @@ export default function Landing() {
   ];
 
   const masterGoals = [
-    '🎯 Pistol Squat', '🌉 Bridge', '🦅 Handstand', 
-    '💎 Dragon Squat', '🧘 Pancake', '⚡ L-Sit'
+    'Pistol Squat', 'Bridge', 'Handstand', 
+    'Dragon Squat', 'Pancake', 'L-Sit'
   ];
 
   const benefits = [
@@ -393,7 +393,7 @@ export default function Landing() {
           >
             {/* Popular Badge */}
             <div className="absolute top-6 right-6 px-4 py-2 rounded-full bg-gradient-to-r from-cyan-500 to-purple-600 text-white text-sm font-bold">
-              🔥 Beliebt
+              Beliebt
             </div>
 
             <h3 className="text-3xl font-bold text-white mb-2">AXON Lifetime Access</h3>
