@@ -96,7 +96,9 @@ export function useDemoTimer() {
     isLoading,
     formattedTime: formatTime(timeRemaining),
     startNewDemo: () => {
-      localStorage.setItem(DEMO_START_TIME_KEY, Date.now().toString());
+      const now = Date.now();
+      demoStartTimeGlobal = now;
+      setStorageValue(DEMO_START_TIME_KEY, now.toString());
       setTimeRemaining(DEMO_DURATION_MS);
       setIsDemoExpired(false);
     }
