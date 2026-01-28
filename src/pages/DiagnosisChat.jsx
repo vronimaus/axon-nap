@@ -306,14 +306,17 @@ export default function DiagnosisChat() {
             {/* Input Area */}
             <div className="p-4 border-t border-cyan-500/20 bg-slate-900/70">
               <div className="flex gap-3">
-                <Button
-                  onClick={() => setShowBodyMap(true)}
-                  disabled={loading || !conversation || isDemoExpired}
-                  variant="outline"
-                  className="border-pink-500/50 text-pink-400 hover:bg-pink-500/10 h-[60px] px-4"
-                >
-                  <Activity className="w-5 h-5" />
-                </Button>
+                {/* Only show body map button if NOT coming from wizard */}
+                {!wizardSession && (
+                  <Button
+                    onClick={() => setShowBodyMap(true)}
+                    disabled={loading || !conversation || isDemoExpired}
+                    variant="outline"
+                    className="border-pink-500/50 text-pink-400 hover:bg-pink-500/10 h-[60px] px-4"
+                  >
+                    <Activity className="w-5 h-5" />
+                  </Button>
+                )}
                 <Textarea
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
