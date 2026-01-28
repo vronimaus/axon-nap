@@ -18,14 +18,17 @@ export default function DemoPaywall() {
 
     setIsCheckoutLoading(true);
     try {
-      const { data } = await base44.functions.invoke('createCheckout');
-      if (data.url) {
-        window.location.href = data.url;
-      } else if (data.error) {
-        toast.error(data.error);
+      const response = await base44.functions.invoke('createCheckout');
+      const checkoutUrl = response?.data?.url || response?.url;
+      
+      if (checkoutUrl && typeof checkoutUrl === 'string') {
+        window.location.href = checkoutUrl;
+      } else {
+        toast.error('Checkout-URL konnte nicht geladen werden.');
         setIsCheckoutLoading(false);
       }
     } catch (error) {
+      console.error('Checkout error:', error);
       toast.error('Fehler beim Laden des Checkouts.');
       setIsCheckoutLoading(false);
     }
