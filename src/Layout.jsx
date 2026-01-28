@@ -8,6 +8,7 @@ import DemoTimer from './components/demo/DemoTimer';
 import DemoPaywall from './components/demo/DemoPaywall';
 import { AnimatePresence } from 'framer-motion';
 import { base44 } from '@/api/base44Client';
+import { Toaster } from 'sonner';
 
 export default function Layout({ children, currentPageName }) {
   const { isDemoExpired, isLoading: demoLoading, formattedTime } = useDemoTimer();

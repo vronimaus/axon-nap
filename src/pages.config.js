@@ -56,10 +56,10 @@ import Landing from './pages/Landing';
 import MFRIntegration from './pages/MFRIntegration';
 import Performance from './pages/Performance';
 import Privacy from './pages/Privacy';
+import Profile from './pages/Profile';
 import QuickDemo from './pages/QuickDemo';
 import Success from './pages/Success';
 import Terms from './pages/Terms';
-import Profile from './pages/Profile';
 import __Layout from './Layout.jsx';
 
 
@@ -73,10 +73,10 @@ export const PAGES = {
     "MFRIntegration": MFRIntegration,
     "Performance": Performance,
     "Privacy": Privacy,
+    "Profile": Profile,
     "QuickDemo": QuickDemo,
     "Success": Success,
     "Terms": Terms,
-    "Profile": Profile,
 }
 
 export const pagesConfig = {
