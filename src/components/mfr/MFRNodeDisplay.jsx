@@ -60,31 +60,56 @@ export default function MFRNodeDisplay({ nodeId }) {
           <p className="text-xs text-slate-400 mt-2">{nodeData.body_area}</p>
         </div>
 
-        {/* Body Map Image */}
-        <div className="relative bg-black/30 aspect-square flex items-center justify-center border-b border-cyan-500/20 overflow-hidden">
+        {/* Body Map Image - Anatomical */}
+        <div className="relative bg-black aspect-[3/5] flex items-center justify-center border-b border-cyan-500/20 overflow-hidden">
+          {/* Background anatomical image */}
+          <div className="absolute inset-0 bg-gradient-to-b from-slate-900 to-slate-950" />
+          
           {nodeData.position === 'front' && (
-            <svg viewBox="0 0 100 200" className="w-full h-full">
-              {/* Simple front body outline */}
-              <circle cx="50" cy="20" r="8" fill="none" stroke="currentColor" strokeWidth="0.5" className="text-slate-400" />
-              <path d="M50 30 L50 100 M40 50 L60 50 M40 50 L30 80 M60 50 L70 80 M40 100 L40 180 M60 100 L60 180" 
-                    fill="none" stroke="currentColor" strokeWidth="0.5" className="text-slate-400" />
-              {/* Node marker */}
-              <circle cx={nodeData.x || 50} cy={nodeData.y || 30} r="3" fill="#06b6d4" opacity="0.8" />
-              <circle cx={nodeData.x || 50} cy={nodeData.y || 30} r="4.5" fill="none" stroke="#06b6d4" strokeWidth="0.3" opacity="0.6" />
-            </svg>
+            <img
+              src="https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=400&h=600&fit=crop&q=80"
+              alt="Front anatomy"
+              className="absolute inset-0 w-full h-full object-cover opacity-40"
+            />
           )}
           {nodeData.position === 'back' && (
-            <svg viewBox="0 0 100 200" className="w-full h-full">
-              {/* Simple back body outline */}
-              <circle cx="50" cy="20" r="8" fill="none" stroke="currentColor" strokeWidth="0.5" className="text-slate-400" />
-              <path d="M50 30 L50 100 M40 50 L60 50 M40 50 L30 80 M60 50 L70 80 M40 100 L40 180 M60 100 L60 180" 
-                    fill="none" stroke="currentColor" strokeWidth="0.5" className="text-slate-400" />
-              {/* Node marker */}
-              <circle cx={nodeData.x || 50} cy={nodeData.y || 30} r="3" fill="#06b6d4" opacity="0.8" />
-              <circle cx={nodeData.x || 50} cy={nodeData.y || 30} r="4.5" fill="none" stroke="#06b6d4" strokeWidth="0.3" opacity="0.6" />
-            </svg>
+            <img
+              src="https://images.unsplash.com/photo-1576091160550-112173faf977?w=400&h=600&fit=crop&q=80"
+              alt="Back anatomy"
+              className="absolute inset-0 w-full h-full object-cover opacity-40"
+            />
           )}
-          <div className="absolute bottom-2 right-2 text-xs text-cyan-400/60 bg-slate-900/80 px-2 py-1 rounded">
+          
+          {/* Node highlight marker */}
+          <motion.div
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            className="absolute"
+            style={{
+              left: `${nodeData.x || 50}%`,
+              top: `${nodeData.y || 30}%`,
+              transform: 'translate(-50%, -50%)'
+            }}
+          >
+            {/* Outer glow ring */}
+            <motion.div
+              animate={{
+                scale: [1, 1.4, 1],
+                opacity: [1, 0.6, 1]
+              }}
+              transition={{ duration: 2, repeat: Infinity }}
+              className="absolute inset-0 rounded-full border-2 border-cyan-400"
+              style={{ width: '32px', height: '32px', top: '-16px', left: '-16px' }}
+            />
+            
+            {/* Center dot */}
+            <div className="w-3 h-3 rounded-full bg-gradient-to-br from-cyan-400 to-cyan-500 shadow-lg shadow-cyan-500/50" />
+            
+            {/* Secondary glow */}
+            <div className="absolute inset-0 rounded-full bg-cyan-400 blur-md opacity-40" style={{ width: '24px', height: '24px', top: '-12px', left: '-12px' }} />
+          </motion.div>
+          
+          <div className="absolute bottom-2 right-2 text-xs text-cyan-400/70 bg-slate-900/90 px-2 py-1 rounded backdrop-blur-sm border border-cyan-500/20">
             {nodeData.position === 'front' ? '👁️ Vorne' : '👁️ Hinten'}
           </div>
         </div>
