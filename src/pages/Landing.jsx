@@ -342,6 +342,38 @@ export default function Landing() {
         </div>
       </section>
 
+      {/* Safety & Responsibility Section */}
+      <section className="py-20 relative">
+        <div className="max-w-4xl mx-auto px-4">
+          <div className="text-center mb-8">
+            <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-red-500/20 border border-red-500/30 mb-4">
+              <Shield className="w-8 h-8 text-red-400" />
+            </div>
+            <h2 className="text-4xl font-bold text-white mb-4">
+              Deine Sicherheit hat Priorität
+            </h2>
+          </div>
+
+          <div className="glass rounded-2xl border border-red-500/20 p-8">
+            <p className="text-lg text-slate-300 leading-relaxed">
+              AXON ist ein Werkzeug zur funktionellen Optimierung und Schmerzprävention. 
+              Uns ist wichtig, dass du sicher trainierst. Deshalb beinhaltet unser System ein 
+              <span className="text-red-400 font-semibold"> integriertes Red-Flag-Screening</span>.
+            </p>
+            <p className="text-lg text-slate-300 leading-relaxed mt-4">
+              Bevor wir mit neuronalen Drills starten, stellen wir sicher, dass dein Anliegen 
+              in den Bereich der Selbsthilfe fällt. Bei Anzeichen für strukturelle Verletzungen 
+              oder medizinische Notfälle weist AXON dich konsequent an, einen Arzt aufzusuchen.
+            </p>
+            <div className="bg-slate-800/50 rounded-xl p-6 border border-red-500/20 mt-6">
+              <p className="text-center text-xl font-semibold text-red-400">
+                Wir sind dein Partner für Performance – nicht dein Ersatz für den Notfallmediziner.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Pricing Section */}
       <section id="pricing" className="py-20 relative">
         <div className="max-w-4xl mx-auto px-4">
