@@ -151,13 +151,25 @@ export default function InteractiveBodyMap({ mode, onRegionSelect, sessions }) {
 
     setIsAnalyzing(true);
     try {
+      // Call AI to analyze the marked region and get body region
+      const response = await base44.integrations.Core.InvokeLLM({
+        prompt: `Analyze this body pain map data and identify the primary body region being marked. 
+        Markers: ${JSON.stringify(markers)}
+        View: ${view}
+        
+        Return a single region code from this list: kopf_kiefer, hals_nacken, schulter_arm, brust, lws, rumpf, huefte, oberschenkel, knie, unterschenkel, fuss, systemisch
+        Return ONLY the region code as plain text, nothing else.`,
+      });
+      
+      const region = response.trim().toLowerCase();
+      
       // Store markers in session storage for DiagnosisWizard
       sessionStorage.setItem('bodyMapData', JSON.stringify({ view, markers, mode }));
       toast.success('Leite zur Analyse weiter...');
       
-      // Navigate to DiagnosisWizard
+      // Navigate to DiagnosisWizard with region parameter
       setTimeout(() => {
-        navigate(createPageUrl('DiagnosisWizard'));
+        navigate(createPageUrl(`DiagnosisWizard?region=${region}`));
       }, 500);
     } catch (error) {
       console.error('Fehler:', error);
