@@ -137,7 +137,8 @@ export default function DiagnosisChat() {
     }
   };
 
-  if (isDemoExpired) {
+  // Don't block chat with demo paywall if coming from wizard (user is mid-session)
+  if (isDemoExpired && !wizardSession) {
     return <DemoPaywall />;
   }
 
