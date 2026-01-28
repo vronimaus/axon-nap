@@ -4,82 +4,43 @@ import { SYMPTOM_CLUSTERS } from './SymptomData';
 
 const BodySilhouette = ({ selectedRegion, onRegionClick }) => {
   const regions = [
-    { id: 'kopf_kiefer', path: 'M100,15 Q108,8 116,15 Q122,22 122,35 Q122,42 116,45 L104,45 Q98,42 98,35 Q98,22 100,15', label: 'Kopf & Kiefer' },
-    { id: 'hals_nacken', path: 'M102,45 L118,45 L116,60 L104,60 Z', label: 'Hals & Nacken' },
-    { id: 'schulter_arm', path: 'M75,65 L55,80 L50,110 L58,110 L68,85 L85,70 M135,70 L152,85 L162,110 L170,110 L165,80 L145,65', label: 'Schulter & Arm' },
-    { id: 'ruecken', path: 'M87,65 L133,65 L132,85 L88,85 Z', label: 'Rücken (BWS)' },
-    { id: 'rumpf', path: 'M88,85 L132,85 L128,105 L92,105 Z', label: 'Rumpf & Rippen' },
-    { id: 'lws', path: 'M92,105 L128,105 L125,130 L95,130 Z', label: 'LWS & Kreuzbein' },
-    { id: 'huefte', path: 'M95,130 L125,130 L130,155 L118,165 L102,165 L90,155 Z', label: 'Hüfte & Becken' },
-    { id: 'beine', path: 'M98,165 L100,210 L106,210 L108,165 Z M112,165 L114,210 L120,210 L122,165 Z', label: 'Oberschenkel' },
-    { id: 'knie', path: 'M99,210 L98,225 L107,225 L107,210 Z M113,210 L113,225 L122,225 L121,210 Z', label: 'Knie' },
-    { id: 'fuss', path: 'M97,225 L95,260 L92,270 L94,278 L108,280 L109,270 L107,260 L108,225 Z M113,225 L113,260 L111,270 L112,280 L126,278 L128,270 L125,260 L123,225 Z', label: 'Fuß & Sprunggelenk' },
-    { id: 'systemisch', path: 'M85,285 L135,285 L130,295 L90,295 Z', label: 'Systemisch' }
+    { id: 'kopf_kiefer', label: 'Kopf & Kiefer', top: '5%' },
+    { id: 'hals_nacken', label: 'Hals & Nacken', top: '12%' },
+    { id: 'schulter_arm', label: 'Schulter & Arm', top: '20%' },
+    { id: 'ruecken', label: 'Rücken (BWS)', top: '30%' },
+    { id: 'rumpf', label: 'Rumpf & Rippen', top: '38%' },
+    { id: 'lws', label: 'LWS & Kreuzbein', top: '48%' },
+    { id: 'huefte', label: 'Hüfte & Becken', top: '58%' },
+    { id: 'beine', label: 'Oberschenkel', top: '68%' },
+    { id: 'knie', label: 'Knie', top: '78%' },
+    { id: 'fuss', label: 'Fuß & Sprunggelenk', top: '88%' },
+    { id: 'systemisch', label: 'Systemisch', top: '50%' }
   ];
 
   return (
-    <div className="relative w-full max-w-[280px] mx-auto">
-      <svg viewBox="0 0 220 300" className="w-full h-auto">
-        <defs>
-          <linearGradient id="bodyGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stopColor="#1e293b" />
-            <stop offset="100%" stopColor="#0f172a" />
-          </linearGradient>
-          <linearGradient id="bodyGradientActive" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stopColor="#06b6d4" />
-            <stop offset="100%" stopColor="#0891b2" />
-          </linearGradient>
-          <filter id="glow">
-            <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
-            <feMerge>
-              <feMergeNode in="coloredBlur"/>
-              <feMergeNode in="SourceGraphic"/>
-            </feMerge>
-          </filter>
-        </defs>
-        
-        {regions.map((region) => (
-          <motion.path
-            key={region.id}
-            d={region.path}
-            fill={selectedRegion === region.id ? 'url(#bodyGradientActive)' : 'url(#bodyGradient)'}
-            stroke={selectedRegion === region.id ? '#06b6d4' : '#475569'}
-            strokeWidth={selectedRegion === region.id ? 3 : 1.5}
-            className="cursor-pointer transition-all duration-300"
-            onClick={() => onRegionClick(region.id)}
-            whileHover={{ 
-              fill: selectedRegion === region.id ? 'url(#bodyGradientActive)' : '#1e293b',
-              stroke: '#06b6d4',
-              strokeWidth: 2,
-              filter: 'url(#glow)'
-            }}
-            whileTap={{ scale: 0.98 }}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.3, delay: regions.indexOf(region) * 0.05 }}
-          />
-        ))}
-      </svg>
+    <div className="relative w-full max-w-[400px] mx-auto">
+      {/* Use the detailed anatomical image */}
+      <img 
+        src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/ad6e52b61_generated_image.png"
+        alt="Anatomical body map"
+        className="w-full h-auto"
+      />
       
-      {/* Hover Labels */}
-      <div className="absolute inset-0 pointer-events-none">
+      {/* Interactive overlay regions */}
+      <div className="absolute inset-0">
         {regions.map((region) => (
-          selectedRegion === region.id && (
-            <motion.div
-              key={`label-${region.id}`}
-              initial={{ opacity: 0, y: 5 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="absolute left-1/2 -translate-x-1/2 bg-cyan-500 text-slate-900 text-xs px-3 py-1.5 rounded-lg whitespace-nowrap font-semibold shadow-lg shadow-cyan-500/50"
-              style={{ 
-                top: region.id === 'kopf_nacken' ? '2%' : 
-                     region.id === 'schulter_arm' ? '22%' :
-                     region.id === 'ruecken_lws' ? '38%' :
-                     region.id === 'huefte_becken' ? '52%' : '78%'
-              }}
-            >
-              {region.label}
-            </motion.div>
-          )
+          <button
+            key={region.id}
+            onClick={() => onRegionClick(region.id)}
+            className={`absolute left-1/2 -translate-x-1/2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
+              selectedRegion === region.id
+                ? 'bg-cyan-500 text-slate-900 shadow-[0_0_20px_rgba(6,182,212,0.8)]'
+                : 'bg-slate-900/80 text-cyan-400 border border-cyan-500/30 hover:bg-cyan-500/20 hover:shadow-[0_0_15px_rgba(6,182,212,0.5)]'
+            }`}
+            style={{ top: region.top }}
+          >
+            {region.label}
+          </button>
         ))}
       </div>
     </div>
