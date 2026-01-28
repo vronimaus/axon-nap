@@ -185,11 +185,7 @@ export default function DiagnosisWizard() {
   };
   
   const nextSoftwareTest = () => {
-    if (currentChainIndex < triggeredChains.length - 1) {
-      setCurrentChainIndex(prev => prev + 1);
-    } else {
-      setCurrentStep(STEPS.RESULTS);
-    }
+    setCurrentStep(STEPS.PAIN_CHECK_IN);
   };
   
   const prevSoftwareTest = () => {
