@@ -138,7 +138,7 @@ export default function Dashboard() {
             <HardwarePanel mode={mode} />
           </div>
 
-          {/* CENTER - Interactive Body Map or Analysis */}
+          {/* CENTER - Interactive Body Map */}
           <div className="lg:col-span-6">
             <motion.div
               key={mode}
@@ -146,35 +146,30 @@ export default function Dashboard() {
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.3 }}
             >
-              {mode === 'analysis' ? (
-                <div className="glass rounded-2xl border border-cyan-500/30 p-6">
-                  <h2 className="text-lg font-semibold text-cyan-400 mb-4">Schmerzbereiche markieren</h2>
-                  <InteractiveBodyMap
-                    mode="analysis"
-                    onRegionSelect={setSelectedBodyRegion}
-                    sessions={sessions}
-                  />
-                  {selectedBodyRegion && (
-                    <motion.div
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      className="mt-6"
-                    >
-                      <Button
-                        onClick={() => window.location.href = createPageUrl(`DiagnosisWizard?region=${selectedBodyRegion}`)}
-                        className="w-full h-12 bg-gradient-to-r from-red-500 to-pink-600 hover:from-red-600 hover:to-pink-700 text-white font-bold"
-                      >
-                        Analysieren starten →
-                      </Button>
-                    </motion.div>
-                  )}
+              {mode === 'rehab' && (
+                <div className="glass rounded-2xl border border-red-500/30 p-6 mb-6">
+                  <h2 className="text-lg font-semibold text-red-400 mb-2">Schritt 1: Schmerzbereich markieren</h2>
+                  <p className="text-sm text-slate-400 mb-4">Klicke auf deinen Körper um die Schmerzregion zu markieren, dann starte die Analyse.</p>
                 </div>
-              ) : (
-                <InteractiveBodyMap
-                  mode={mode}
-                  onRegionSelect={setSelectedBodyRegion}
-                  sessions={sessions}
-                />
+              )}
+              <InteractiveBodyMap
+                mode={mode}
+                onRegionSelect={setSelectedBodyRegion}
+                sessions={sessions}
+              />
+              {mode === 'rehab' && selectedBodyRegion && (
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="mt-6"
+                >
+                  <Button
+                    onClick={() => window.location.href = createPageUrl(`DiagnosisWizard?region=${selectedBodyRegion}`)}
+                    className="w-full h-12 bg-gradient-to-r from-red-500 to-pink-600 hover:from-red-600 hover:to-pink-700 text-white font-bold"
+                  >
+                    Analysieren starten →
+                  </Button>
+                </motion.div>
               )}
             </motion.div>
           </div>
