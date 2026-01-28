@@ -20,6 +20,7 @@ export default function Layout({ children, currentPageName }) {
         const currentUser = await base44.auth.me();
         setUser(currentUser);
       } catch (e) {
+        // Not authenticated - that's fine for demo mode
         setUser(null);
       } finally {
         setIsChecking(false);
