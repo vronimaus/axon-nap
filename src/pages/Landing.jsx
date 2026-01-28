@@ -341,7 +341,7 @@ export default function Landing() {
             Entwickelt von Athleten für Athleten
           </p>
           <p className="text-sm text-slate-500">
-            Basierend auf den Prinzipien der Neuroathletik und den Anatomy Trains nach Tom Myers
+            Basierend auf wissenschaftlich fundierten Prinzipien der Neuroathletik und faszialen Bewegungsforschung
           </p>
         </div>
       </section>
