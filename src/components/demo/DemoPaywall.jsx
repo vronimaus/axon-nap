@@ -18,7 +18,8 @@ export default function DemoPaywall() {
 
     setIsCheckoutLoading(true);
     try {
-      const { data } = await base44.functions.invoke('createCheckout');
+      const appOrigin = window.location.origin;
+      const { data } = await base44.functions.invoke('createCheckout', { appOrigin });
       if (data?.url) {
         window.location.href = data.url;
       } else {

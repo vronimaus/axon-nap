@@ -4,9 +4,14 @@ const stripe = new Stripe(Deno.env.get('STRIPE_SECRET_KEY'));
 
 Deno.serve(async (req) => {
   try {
-    const { origin } = new URL(req.url);
+    const body = await req.json();
+    const appOrigin = body.appOrigin;
     
-    console.log('Creating checkout session for:', origin);
+    if (!appOrigin) {
+      throw new Error('appOrigin erforderlich');
+    }
+    
+    console.log('Creating checkout session for:', appOrigin);
     
     // Create checkout session
     const session = await stripe.checkout.sessions.create({
@@ -17,8 +22,8 @@ Deno.serve(async (req) => {
         },
       ],
       mode: 'payment',
-      success_url: `${origin}/Success`,
-      cancel_url: `${origin}/Landing`,
+      success_url: `${appOrigin}/Success`,
+      cancel_url: `${appOrigin}/Landing`,
       metadata: {
         base44_app_id: Deno.env.get('BASE44_APP_ID')
       }
