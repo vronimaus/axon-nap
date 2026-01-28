@@ -18,10 +18,22 @@ export default function Dashboard() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const hasSeenOnboarding = localStorage.getItem('axon_onboarding_seen');
-    if (!hasSeenOnboarding) {
-      setShowOnboarding(true);
-    }
+    const checkAuth = async () => {
+      try {
+        const currentUser = await base44.auth.me();
+        setUser(currentUser);
+        
+        const hasSeenOnboarding = localStorage.getItem('axon_onboarding_seen');
+        if (!hasSeenOnboarding && currentUser?.has_paid) {
+          setShowOnboarding(true);
+        }
+      } catch (e) {
+        setUser(null);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    checkAuth();
   }, []);
 
   const handleCloseOnboarding = () => {
