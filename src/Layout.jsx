@@ -19,9 +19,11 @@ export default function Layout({ children, currentPageName }) {
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
             <Link to={createPageUrl('Dashboard')} className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-500 to-purple-600 flex items-center justify-center neuro-glow">
-                <Activity className="w-5 h-5 text-white" />
-              </div>
+              <img 
+                src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/afa60dd62_AXONLogo.png"
+                alt="AXON Logo"
+                className="w-10 h-10 object-contain"
+              />
               <div className="hidden sm:block">
                 <span className="font-bold text-cyan-400 text-lg tracking-tight">AXON</span>
                 <span className="text-xs text-slate-400 block -mt-1">Neuro-Athletic Protocol</span>
