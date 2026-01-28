@@ -17,8 +17,8 @@ Deno.serve(async (req) => {
         },
       ],
       mode: 'payment',
-      success_url: `${origin}/success`,
-      cancel_url: `${origin}/`,
+      success_url: `${origin}/Success`,
+      cancel_url: `${origin}/Landing`,
       metadata: {
         base44_app_id: Deno.env.get('BASE44_APP_ID')
       }
