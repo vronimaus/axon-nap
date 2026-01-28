@@ -141,18 +141,8 @@ export default function Dashboard() {
               </p>
             </div>
             
-            {/* Step Progress & Mode Switch */}
+            {/* Mode Switch & Back Button */}
             <div className="flex items-center gap-4">
-              <div className="flex items-center gap-2 text-sm">
-                <span className="text-slate-400">Dein Weg:</span>
-                <span className={`px-2 py-1 rounded-full text-xs font-bold ${mode === 'rehab' ? 'bg-red-500/30 text-red-300 border border-red-500/50' : 'bg-slate-700 text-slate-400'}`}>
-                  1. Rehab
-                </span>
-                <span className={`px-2 py-1 rounded-full text-xs font-bold ${mode === 'performance' ? 'bg-cyan-500/30 text-cyan-300 border border-cyan-500/50' : 'bg-slate-700 text-slate-400'}`}>
-                  2. Performance
-                </span>
-              </div>
-
               <Button
                 variant="ghost"
                 size="icon"
@@ -162,28 +152,14 @@ export default function Dashboard() {
                 <Info className="w-4 h-4" />
               </Button>
               <Button
-                onClick={() => setMode('rehab')}
-                variant={mode === 'rehab' ? 'default' : 'outline'}
-                className={`gap-2 transition-all ${
-                  mode === 'rehab'
-                    ? 'bg-gradient-to-r from-red-500 to-pink-600 text-white shadow-lg shadow-red-500/50'
-                    : 'border-red-500/30 text-red-400 hover:bg-red-500/10'
-                }`}
+                onClick={() => {
+                  setMode(null);
+                  setSelectedBodyRegion(null);
+                }}
+                variant="outline"
+                className="border-slate-600 text-slate-400 hover:text-slate-200"
               >
-                <Target className="w-4 h-4" />
-                🔴 REHAB
-              </Button>
-              <Button
-                onClick={() => setMode('performance')}
-                variant={mode === 'performance' ? 'default' : 'outline'}
-                className={`gap-2 transition-all ${
-                  mode === 'performance'
-                    ? 'bg-gradient-to-r from-cyan-500 to-purple-600 text-white shadow-lg shadow-cyan-500/50'
-                    : 'border-cyan-500/30 text-cyan-400 hover:bg-cyan-500/10'
-                }`}
-              >
-                <Zap className="w-4 h-4" />
-                🔵 PERFORMANCE
+                ← Zurück zur Wahl
               </Button>
             </div>
           </div>
