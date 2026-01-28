@@ -27,6 +27,7 @@ const STEPS = {
   BREATH_CHECK: 2,
   HARDWARE: 3,
   SOFTWARE: 4,
+  PAIN_CHECK_IN: 4.5,
   RESULTS: 5
 };
 
