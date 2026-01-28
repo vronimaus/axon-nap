@@ -6,6 +6,8 @@ Deno.serve(async (req) => {
   try {
     const { origin } = new URL(req.url);
     
+    console.log('Creating checkout session for:', origin);
+    
     // Create checkout session
     const session = await stripe.checkout.sessions.create({
       line_items: [
@@ -22,7 +24,10 @@ Deno.serve(async (req) => {
       }
     });
 
-    return Response.json({ url: session.url });
+    console.log('Session created:', session.id, 'URL:', session.url);
+    
+    // Return redirect response
+    return Response.redirect(session.url, 303);
   } catch (error) {
     console.error('Checkout error:', error);
     return Response.json({ error: error.message }, { status: 500 });
