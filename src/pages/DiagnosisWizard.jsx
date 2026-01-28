@@ -120,22 +120,22 @@ export default function DiagnosisWizard() {
   };
   
   const startDiagnosis = () => {
-    if (selectedRegion && selectedSymptom) {
+    if (selectedRegion && selectedSymptoms.length > 0) {
       setCurrentChainIndex(0);
       setHardwareResults({});
       setSoftwareResults({});
-      
+
       // Check if foot filter is needed for standing symptoms
       const standingRegions = ['ruecken', 'knie', 'huefte', 'hals_nacken', 'lws', 'beine', 'fuss'];
       const needsFoot = standingRegions.includes(selectedRegion);
-      
+
       // Check if breath module is needed
       const breathRegions = ['hals_nacken', 'lws', 'rumpf', 'systemisch'];
       const needsBreath = breathRegions.includes(selectedRegion);
-      
+
       setNeedsFootCheck(needsFoot);
       setNeedsBreathCheck(needsBreath);
-      
+
       if (needsFoot) {
         setCurrentStep(STEPS.FOOT_CHECK);
       } else if (needsBreath) {
