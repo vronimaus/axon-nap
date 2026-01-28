@@ -36,7 +36,6 @@ export default function DiagnosisChat() {
   useEffect(() => {
     const initConversation = async () => {
       try {
-        const [searchParams] = useSearchParams();
         const isContinuation = searchParams.get('continue') === 'true';
 
         const metadata = {
