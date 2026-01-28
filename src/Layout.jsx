@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { Activity, LayoutDashboard, Compass, Trophy } from 'lucide-react';
 import CookieBanner from './components/CookieBanner';
-import { useDemoTimer } from './components/demo/useDemoTimer';
+import { useDemoTimer } from './components/demo/useDemoTimer.js';
 import DemoTimer from './components/demo/DemoTimer';
 import DemoPaywall from './components/demo/DemoPaywall';
 import { AnimatePresence } from 'framer-motion';
