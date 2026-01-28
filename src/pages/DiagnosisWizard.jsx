@@ -282,7 +282,7 @@ export default function DiagnosisWizard() {
     
     saveMutation.mutate({
       symptom_location: selectedRegion,
-      symptom_description: selectedSymptom?.label || selectedSymptom,
+      symptom_description: selectedSymptoms.map(s => s.label).join(', '),
       tested_chains: orderedChainCodes,
       hardware_results: hardwareResults,
       software_results: softwareResults,
