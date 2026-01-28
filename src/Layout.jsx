@@ -34,6 +34,10 @@ export default function Layout({ children, currentPageName }) {
     { name: 'Agent', icon: Activity, page: 'DiagnosisChat' },
     { name: 'Goals', icon: Trophy, page: 'Performance' }
   ];
+
+  const handleProfileClick = () => {
+    window.location.href = createPageUrl('Profile');
+  };
   
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
