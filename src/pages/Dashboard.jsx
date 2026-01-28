@@ -61,6 +61,66 @@ export default function Dashboard() {
     return <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950" />;
   }
 
+  // Mode Selection Screen
+  if (!mode) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 flex items-center justify-center p-4">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="max-w-2xl w-full"
+        >
+          <div className="text-center mb-12">
+            <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
+              Willkommen zu AXON
+            </h1>
+            <p className="text-lg text-slate-400">
+              Wähle deinen Startpunkt
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-6">
+            {/* Rehab Path */}
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              onClick={() => setMode('rehab')}
+              className="glass rounded-2xl border border-red-500/30 p-8 hover:border-red-500/60 transition-all group"
+            >
+              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-red-500 to-pink-600 flex items-center justify-center mb-4 mx-auto group-hover:shadow-lg group-hover:shadow-red-500/50 transition-all">
+                <Target className="w-8 h-8 text-white" />
+              </div>
+              <h2 className="text-2xl font-bold text-red-400 mb-3">REHAB</h2>
+              <p className="text-slate-300 mb-4">
+                Ich habe Schmerzen und möchte diese analysieren und lösen
+              </p>
+              <p className="text-sm text-slate-500">
+                Markiere deine Schmerzregion → Detective analysiert → MFR + Neuro-Reset
+              </p>
+            </motion.button>
+
+            {/* Performance Path */}
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              onClick={() => setMode('performance')}
+              className="glass rounded-2xl border border-cyan-500/30 p-8 hover:border-cyan-500/60 transition-all group"
+            >
+              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-cyan-500 to-purple-600 flex items-center justify-center mb-4 mx-auto group-hover:shadow-lg group-hover:shadow-cyan-500/50 transition-all">
+                <Zap className="w-8 h-8 text-white" />
+              </div>
+              <h2 className="text-2xl font-bold text-cyan-400 mb-3">PERFORMANCE</h2>
+              <p className="text-slate-300 mb-4">
+                Ich möchte eine neue Fähigkeit freischalten (Splits, Handstand, etc.)
+              </p>
+              <p className="text-sm text-slate-500">
+                Wähle dein Ziel → Trainingsprotokoll → Neuro-Drills + Kraftaufbau
+              </p>
+            </motion.button>
+          </div>
+        </motion.div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 flex flex-col">
       {/* Onboarding Modal */}
