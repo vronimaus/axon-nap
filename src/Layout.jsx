@@ -105,7 +105,7 @@ export default function Layout({ children, currentPageName }) {
 
       {/* Demo Paywall Overlay */}
       <AnimatePresence>
-        {isDemoExpired && <DemoPaywall />}
+        {isDemoExpired && !user?.has_paid && user?.role !== 'admin' && <DemoPaywall />}
       </AnimatePresence>
       
       {/* Footer */}
