@@ -56,7 +56,7 @@ export default function Terms() {
             <section>
               <h2 className="text-2xl font-bold text-cyan-400 mb-4">4. Preise und Zahlung</h2>
               <p className="leading-relaxed mb-4">
-                Der Kaufpreis für den Lifetime-Zugang zu AXON beträgt einmalig 59,00 € (inkl. gesetzlicher MwSt.). 
+                Der Kaufpreis für den Lifetime-Zugang zu AXON beträgt einmalig 59,- € (Endpreis, keine MwSt. gemäß § 19 UStG). 
                 Es fallen keine weiteren Abonnement- oder Folgekosten an.
               </p>
               <p className="leading-relaxed">

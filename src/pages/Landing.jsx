@@ -398,11 +398,11 @@ export default function Landing() {
             </div>
 
             <h3 className="text-3xl font-bold text-white mb-2">AXON Lifetime Access</h3>
-            <div className="flex items-baseline gap-2 mb-8">
+            <div className="flex flex-col items-start gap-1 mb-8">
               <span className="text-6xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-400">
-                59€
+                59,- €
               </span>
-              <span className="text-xl text-slate-400">einmalig</span>
+              <span className="text-sm text-slate-400">(Endpreis, keine MwSt. gemäß § 19 UStG)</span>
             </div>
 
             <div className="space-y-4 mb-8">
