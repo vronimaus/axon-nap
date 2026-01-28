@@ -85,14 +85,14 @@ export default function Layout({ children, currentPageName }) {
       </main>
 
       {/* Global Demo Timer - nur wenn nicht admin und nicht bezahlt */}
-      {(!user?.has_paid && user?.role !== 'admin') && (
-        <DemoTimer formattedTime={formattedTime} isLoading={demoLoading} />
-      )}
+          {user && !user?.has_paid && user?.role !== 'admin' && (
+            <DemoTimer formattedTime={formattedTime} isLoading={demoLoading} />
+          )}
 
-      {/* Demo Paywall Overlay */}
-      <AnimatePresence>
-        {isDemoExpired && !user?.has_paid && user?.role !== 'admin' && <DemoPaywall />}
-      </AnimatePresence>
+          {/* Demo Paywall Overlay */}
+          <AnimatePresence>
+            {user && isDemoExpired && !user?.has_paid && user?.role !== 'admin' && <DemoPaywall />}
+          </AnimatePresence>
       
       {/* Footer */}
       <footer className="border-t border-cyan-500/20 glass mt-auto">
