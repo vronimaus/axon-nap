@@ -118,6 +118,32 @@ export default function Profile() {
           </p>
         </motion.div>
 
+        {/* Account Status */}
+        <Section title="Account-Status" icon="🔐">
+          <div className="grid md:grid-cols-2 gap-6">
+            <div className="glass-cyan rounded-lg p-4">
+              <p className="text-sm text-slate-400 mb-1">Nutzer-Rolle</p>
+              <p className="text-lg font-semibold text-cyan-400">
+                {user?.role === 'admin' ? 'Admin' : 'Benutzer'}
+              </p>
+            </div>
+            <div className={`rounded-lg p-4 ${user?.has_paid ? 'glass-cyan' : 'bg-red-900/20 border border-red-500/30'}`}>
+              <p className="text-sm text-slate-400 mb-1">Zahlungsstatus</p>
+              <p className={`text-lg font-semibold ${user?.has_paid ? 'text-green-400' : 'text-red-400'}`}>
+                {user?.has_paid ? '✓ Bezahlt' : '⚠ Demo / Kostenlos'}
+              </p>
+            </div>
+          </div>
+          {!user?.has_paid && user?.role !== 'admin' && (
+            <button
+              onClick={() => window.location.href = '/checkout'}
+              className="mt-4 w-full px-6 py-3 rounded-lg bg-gradient-to-r from-cyan-500 to-purple-500 text-white font-semibold hover:shadow-lg hover:shadow-cyan-500/50 transition-all"
+            >
+              Jetzt freischalten →
+            </button>
+          )}
+        </Section>
+
         {/* Form Sections */}
         <div className="space-y-6">
           {/* Hardware Basis */}
