@@ -3,11 +3,12 @@ import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Card } from '@/components/ui/card';
-import { Loader2, Send, MessageCircle, Sparkles, Activity } from 'lucide-react';
+import { Loader2, Send, MessageCircle, Sparkles, Activity, ArrowRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import ReactMarkdown from 'react-markdown';
 import BodyPainMap from '../components/diagnosis/BodyPainMap';
 import DemoPaywall from '../components/demo/DemoPaywall';
+import { useDemoTimer } from '../components/demo/useDemoTimer';
 
 export default function DiagnosisChat() {
   const { isDemoExpired, isLoading: demoLoading, formattedTime } = useDemoTimer();
