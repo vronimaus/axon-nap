@@ -11,9 +11,8 @@ export default function Success() {
 
   useEffect(() => {
     // Demo-Status nach erfolgreicher Zahlung zurücksetzen
-    localStorage.removeItem('demo_started_at');
+    localStorage.removeItem('axon_demo_start_time');
     localStorage.setItem('demo_completed', 'true');
-    window.location.reload(); // Seite neuladen damit Hook neu evaluiert
   }, []);
 
   const handleLogin = async () => {
