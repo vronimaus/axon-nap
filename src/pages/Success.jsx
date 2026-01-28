@@ -10,8 +10,10 @@ export default function Success() {
   const [isLoggingIn, setIsLoggingIn] = useState(false);
 
   useEffect(() => {
-    // Demo-Status zurücksetzen nach erfolgreicher Zahlung
+    // Demo-Status nach erfolgreicher Zahlung zurücksetzen
     localStorage.removeItem('demo_started_at');
+    localStorage.setItem('demo_completed', 'true');
+    window.location.reload(); // Seite neuladen damit Hook neu evaluiert
   }, []);
 
   const handleLogin = async () => {
