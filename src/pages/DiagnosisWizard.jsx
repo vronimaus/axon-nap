@@ -62,6 +62,7 @@ export default function DiagnosisWizard() {
   const [needsFootCheck, setNeedsFootCheck] = useState(false);
   const [breathCheckData, setBreathCheckData] = useState(null);
   const [needsBreathCheck, setNeedsBreathCheck] = useState(false);
+  const [painFreeChainIndex, setPainFreeChainIndex] = useState(null);
   
   // Fetch chains
   const { data: allChains = [], isLoading } = useQuery({
