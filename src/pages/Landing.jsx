@@ -15,8 +15,7 @@ export default function Landing() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Warte, bis Demo-Timer vollständig initialisiert ist
-    if (demoLoading || timeRemaining === null) return;
+    if (demoLoading) return;
 
     const checkAuth = async () => {
       try {
@@ -28,8 +27,8 @@ export default function Landing() {
           return;
         }
         
-        // Demo läuft (Timer initialisiert und nicht abgelaufen) - zum Dashboard
-        if (!isDemoExpired) {
+        // Demo läuft - zum Dashboard
+        if (timeRemaining !== null && !isDemoExpired) {
           window.location.href = createPageUrl('Dashboard');
           return;
         }
@@ -41,7 +40,7 @@ export default function Landing() {
     };
     
     checkAuth();
-  }, [demoLoading, timeRemaining]);
+  }, [demoLoading]);
 
   const scrollToSection = (id) => {
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
