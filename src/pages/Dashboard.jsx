@@ -25,7 +25,7 @@ export default function Dashboard() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
       {/* Header with Mode Switch */}
-      <div className="sticky top-16 z-40 glass border-b border-cyan-500/20 backdrop-blur-xl">
+      <div className="sticky top-16 z-40 bg-slate-900 border-b border-cyan-500/20">
         <div className="max-w-7xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div>
