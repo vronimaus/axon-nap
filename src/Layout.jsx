@@ -130,6 +130,9 @@ export default function Layout({ children, currentPageName }) {
 
       {/* Cookie Banner */}
       <CookieBanner />
+
+      {/* Toast Notifications */}
+      <Toaster position="top-center" theme="dark" />
       </div>
       );
       }
