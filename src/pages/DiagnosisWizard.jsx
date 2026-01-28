@@ -385,11 +385,11 @@ export default function DiagnosisWizard() {
                 <div>
                   <SymptomSelector
                     selectedRegion={selectedRegion}
-                    selectedSymptom={selectedSymptom}
+                    selectedSymptoms={selectedSymptoms}
                     onSymptomSelect={handleSymptomSelect}
                   />
 
-                  {selectedSymptom && (
+                  {selectedSymptoms.length > 0 && (
                     <motion.div
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
