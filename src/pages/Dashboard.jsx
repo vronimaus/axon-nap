@@ -128,43 +128,45 @@ export default function Dashboard() {
         {showOnboarding && <OnboardingModal onClose={handleCloseOnboarding} />}
       </AnimatePresence>
 
-      {/* Header with Mode Switch */}
-      <div className="sticky top-0 z-40 bg-slate-900 border-b border-cyan-500/20">
-        <div className="max-w-7xl mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-500">
-                ⚡ AXON Command Center
-              </h1>
-              <p className="text-xs text-slate-400 mt-1">
-                Hack Your Software. Free Your Hardware.
-              </p>
-            </div>
-            
-            {/* Mode Switch & Back Button */}
-            <div className="flex items-center gap-4">
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => setShowOnboarding(true)}
-                className="text-slate-400 hover:text-cyan-400"
-              >
-                <Info className="w-4 h-4" />
-              </Button>
-              <Button
-                onClick={() => {
-                  setMode(null);
-                  setSelectedBodyRegion(null);
-                }}
-                variant="outline"
-                className="border-slate-600 text-slate-400 hover:text-slate-200"
-              >
-                ← Zurück zur Wahl
-              </Button>
+      {/* Header with Mode Switch - only show when mode is selected */}
+      {mode && (
+        <div className="sticky top-0 z-40 bg-slate-900 border-b border-cyan-500/20">
+          <div className="max-w-7xl mx-auto px-4 py-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <h1 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-500">
+                  ⚡ AXON Command Center
+                </h1>
+                <p className="text-xs text-slate-400 mt-1">
+                  Hack Your Software. Free Your Hardware.
+                </p>
+              </div>
+              
+              {/* Mode Switch & Back Button */}
+              <div className="flex items-center gap-4">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setShowOnboarding(true)}
+                  className="text-slate-400 hover:text-cyan-400"
+                >
+                  <Info className="w-4 h-4" />
+                </Button>
+                <Button
+                  onClick={() => {
+                    setMode(null);
+                    setSelectedBodyRegion(null);
+                  }}
+                  variant="outline"
+                  className="border-slate-600 text-slate-400 hover:text-slate-200"
+                >
+                  ← Zurück zur Wahl
+                </Button>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      )}
 
       {/* Main Grid Layout */}
       <div className="max-w-7xl mx-auto px-4 py-6">
