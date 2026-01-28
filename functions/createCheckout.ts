@@ -22,7 +22,9 @@ Deno.serve(async (req) => {
       }
     });
 
-    return Response.json({ url: session.url });
+    // Redirect to Stripe Checkout
+    const checkoutUrl = `https://checkout.stripe.com/c/pay/${session.id}`;
+    return Response.json({ url: checkoutUrl });
   } catch (error) {
     console.error('Checkout error:', error);
     return Response.json({ error: error.message }, { status: 500 });
