@@ -1,0 +1,267 @@
+import React, { useState, useRef, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Button } from '@/components/ui/button';
+import { FlipHorizontal, MapPin, Pencil, Send, RotateCcw } from 'lucide-react';
+import { base44 } from '@/api/base44Client';
+import { toast } from 'sonner';
+
+export default function InteractiveBodyMap({ mode, onRegionSelect, sessions }) {
+  const [view, setView] = useState('front');
+  const [drawMode, setDrawMode] = useState('point');
+  const [markers, setMarkers] = useState([]);
+  const [currentPath, setCurrentPath] = useState([]);
+  const [isDrawing, setIsDrawing] = useState(false);
+  const canvasRef = useRef(null);
+  const containerRef = useRef(null);
+
+  // Load pain markers from recent sessions
+  useEffect(() => {
+    if (mode === 'rehab' && sessions?.length > 0) {
+      // Display recent pain markers
+      const recentMarkers = sessions
+        .filter(s => s.symptom_location)
+        .slice(0, 3)
+        .map(s => ({ location: s.symptom_location, type: 'pain' }));
+      setMarkers(recentMarkers);
+    }
+  }, [mode, sessions]);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
+    // Draw markers
+    markers.forEach(marker => {
+      if (marker.type === 'point' && marker.x && marker.y) {
+        const color = mode === 'rehab' ? 'rgba(239, 68, 68, 0.8)' : 'rgba(168, 85, 247, 0.8)';
+        ctx.fillStyle = color;
+        ctx.beginPath();
+        ctx.arc(marker.x, marker.y, 10, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.strokeStyle = mode === 'rehab' ? '#ef4444' : '#a855f7';
+        ctx.lineWidth = 3;
+        ctx.stroke();
+      } else if (marker.points?.length > 1) {
+        const color = mode === 'rehab' ? 'rgba(239, 68, 68, 0.9)' : 'rgba(168, 85, 247, 0.9)';
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 5;
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+        ctx.beginPath();
+        ctx.moveTo(marker.points[0].x, marker.points[0].y);
+        marker.points.forEach(p => ctx.lineTo(p.x, p.y));
+        ctx.stroke();
+      }
+    });
+    
+    // Draw current path
+    if (currentPath.length > 1) {
+      const color = mode === 'rehab' ? 'rgba(239, 68, 68, 0.9)' : 'rgba(168, 85, 247, 0.9)';
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 5;
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+      ctx.beginPath();
+      ctx.moveTo(currentPath[0].x, currentPath[0].y);
+      currentPath.forEach(p => ctx.lineTo(p.x, p.y));
+      ctx.stroke();
+    }
+  }, [markers, currentPath, mode]);
+
+  const getCoordinates = (e) => {
+    const canvas = canvasRef.current;
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+    
+    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+    
+    return {
+      x: (clientX - rect.left) * scaleX,
+      y: (clientY - rect.top) * scaleY
+    };
+  };
+
+  const startDrawing = (e) => {
+    e.preventDefault();
+    const coords = getCoordinates(e);
+    
+    if (drawMode === 'point') {
+      setMarkers([...markers, { type: 'point', x: coords.x, y: coords.y }]);
+    } else {
+      setIsDrawing(true);
+      setCurrentPath([coords]);
+    }
+  };
+
+  const draw = (e) => {
+    if (!isDrawing || drawMode === 'point') return;
+    e.preventDefault();
+    const coords = getCoordinates(e);
+    setCurrentPath([...currentPath, coords]);
+  };
+
+  const stopDrawing = () => {
+    if (isDrawing && currentPath.length > 1) {
+      setMarkers([...markers, { type: 'line', points: currentPath }]);
+    }
+    setIsDrawing(false);
+    setCurrentPath([]);
+  };
+
+  const clearMarkers = () => {
+    setMarkers([]);
+    setCurrentPath([]);
+  };
+
+  const handleAnalyze = async () => {
+    if (markers.length === 0) {
+      toast.error('Bitte markiere zuerst einen Bereich');
+      return;
+    }
+
+    toast.success('Analyse wird gestartet...');
+    onRegionSelect?.({ view, markers, mode });
+  };
+
+  const modeColor = mode === 'rehab' ? 'red' : 'purple';
+  const modeColorHex = mode === 'rehab' ? '#ef4444' : '#a855f7';
+
+  return (
+    <div className="glass rounded-2xl border border-cyan-500/20 overflow-hidden">
+      {/* Header */}
+      <div className={`p-4 border-b ${mode === 'rehab' ? 'border-red-500/20' : 'border-purple-500/20'}`}>
+        <div className="flex items-center justify-between mb-3">
+          <h3 className="text-lg font-bold text-cyan-400">
+            {mode === 'rehab' ? '🔴 Pain Mapping' : '⚡ Tension Analysis'}
+          </h3>
+          <div className="flex gap-2">
+            <Button
+              size="sm"
+              variant={view === 'front' ? 'default' : 'outline'}
+              onClick={() => setView('front')}
+              className="text-xs"
+            >
+              Vorne
+            </Button>
+            <Button
+              size="sm"
+              variant={view === 'back' ? 'default' : 'outline'}
+              onClick={() => setView('back')}
+              className="text-xs"
+            >
+              Hinten
+            </Button>
+          </div>
+        </div>
+
+        {/* Drawing Controls */}
+        <div className="flex gap-2">
+          <Button
+            size="sm"
+            variant={drawMode === 'point' ? 'default' : 'outline'}
+            onClick={() => setDrawMode('point')}
+            className="text-xs gap-2"
+          >
+            <MapPin className="w-3 h-3" />
+            Punkt
+          </Button>
+          <Button
+            size="sm"
+            variant={drawMode === 'line' ? 'default' : 'outline'}
+            onClick={() => setDrawMode('line')}
+            className="text-xs gap-2"
+          >
+            <Pencil className="w-3 h-3" />
+            Linie
+          </Button>
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={clearMarkers}
+            className={`text-xs gap-2 border-${modeColor}-500/50 text-${modeColor}-400`}
+          >
+            <RotateCcw className="w-3 h-3" />
+            Reset
+          </Button>
+          <Button
+            size="sm"
+            onClick={handleAnalyze}
+            disabled={markers.length === 0}
+            className={`text-xs gap-2 ml-auto bg-gradient-to-r ${
+              mode === 'rehab' 
+                ? 'from-red-500 to-pink-600' 
+                : 'from-purple-500 to-cyan-600'
+            }`}
+          >
+            <Send className="w-3 h-3" />
+            Analysieren
+          </Button>
+        </div>
+      </div>
+
+      {/* Body Canvas */}
+      <div 
+        ref={containerRef}
+        className="relative bg-slate-900/50"
+        style={{ touchAction: 'none' }}
+      >
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={view}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="relative"
+          >
+            {view === 'front' ? (
+              <img 
+                src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/ad6e52b61_generated_image.png"
+                alt="Front view"
+                className="w-full h-auto"
+                draggable={false}
+              />
+            ) : (
+              <img 
+                src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/0df8e2e95_generated_image.png"
+                alt="Back view"
+                className="w-full h-auto"
+                draggable={false}
+              />
+            )}
+          </motion.div>
+        </AnimatePresence>
+        
+        <canvas
+          ref={canvasRef}
+          width={400}
+          height={600}
+          className="absolute inset-0 w-full h-full cursor-crosshair"
+          onMouseDown={startDrawing}
+          onMouseMove={draw}
+          onMouseUp={stopDrawing}
+          onMouseLeave={stopDrawing}
+          onTouchStart={startDrawing}
+          onTouchMove={draw}
+          onTouchEnd={stopDrawing}
+        />
+      </div>
+
+      {/* Legend */}
+      <div className="p-3 border-t border-slate-700/50 text-xs text-slate-400">
+        <div className="flex items-center gap-4">
+          <span className="font-mono">
+            {mode === 'rehab' ? '🔴 Schmerzpunkte markieren' : '⚡ Spannungszonen markieren'}
+          </span>
+          <span className="text-slate-500">|</span>
+          <span>{markers.length} Markierung(en)</span>
+        </div>
+      </div>
+    </div>
+  );
+}
