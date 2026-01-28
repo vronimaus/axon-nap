@@ -47,7 +47,17 @@ export default function Landing() {
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
   };
 
+  const handleDemoClick = () => {
+    base44.auth.redirectToLogin(window.location.href);
+  };
+
   const handleCheckout = async () => {
+    // Login zuerst
+    if (!user) {
+      base44.auth.redirectToLogin(window.location.href);
+      return;
+    }
+
     // Check if running in iframe (preview mode)
     if (window.self !== window.top) {
       toast.error('Checkout funktioniert nur in der veröffentlichten App. Bitte öffne die App in einem neuen Tab.');
