@@ -169,31 +169,62 @@ export default function MFRNodeModal({ node, onClose }) {
               </div>
             </div>
 
-            {/* Instructions */}
+            {/* Two-Phase Instructions */}
             <div>
-              <h3 className="font-semibold text-white mb-3">Anleitung</h3>
-              <ol className="space-y-3 text-slate-300">
-                <li className="flex gap-3">
-                  <span className="font-bold text-cyan-400 flex-shrink-0">1.</span>
-                  <span>Finde den Druckpunkt an {node.body_area.toLowerCase()}</span>
-                </li>
-                <li className="flex gap-3">
-                  <span className="font-bold text-cyan-400 flex-shrink-0">2.</span>
-                  <span>Übe stetigen, sanften Druck aus (kein Schmerz, aber spürbar)</span>
-                </li>
-                <li className="flex gap-3">
-                  <span className="font-bold text-cyan-400 flex-shrink-0">3.</span>
-                  <span>Atme tief durch die Nase ein und aus</span>
-                </li>
-                <li className="flex gap-3">
-                  <span className="font-bold text-cyan-400 flex-shrink-0">4.</span>
-                  <span>Halte den Druck für {node.compression_time_max || 90} Sekunden</span>
-                </li>
-                <li className="flex gap-3">
-                  <span className="font-bold text-cyan-400 flex-shrink-0">5.</span>
-                  <span>Nach dem Timer: Teste die ursprüngliche Bewegung erneut</span>
-                </li>
-              </ol>
+              <h3 className="font-semibold text-white mb-3">Anleitung (2-Phasen-Protokoll)</h3>
+              
+              {/* Phase 1 */}
+              <div className="mb-4 bg-slate-800/50 rounded-lg p-4 border border-cyan-500/20">
+                <div className="font-semibold text-cyan-400 mb-2">⏱️ Phase 1: Statischer Druck (0–60 Sekunden)</div>
+                <ol className="space-y-2 text-slate-300 text-sm">
+                  <li className="flex gap-3">
+                    <span className="font-bold text-cyan-400 flex-shrink-0">1.</span>
+                    <span>Finde den Druckpunkt an {node.body_area.toLowerCase()}</span>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="font-bold text-cyan-400 flex-shrink-0">2.</span>
+                    <span>Übe stetigen, sanften Druck aus (kein Schmerz, aber spürbar)</span>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="font-bold text-cyan-400 flex-shrink-0">3.</span>
+                    <span>Atme tief durch die Nase ein und aus</span>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="font-bold text-cyan-400 flex-shrink-0">4.</span>
+                    <span>Halte den Druck KONSTANT für die ersten 60 Sekunden</span>
+                  </li>
+                </ol>
+              </div>
+
+              {/* Phase 2 - only for Deep nodes */}
+              {(node.compression_time_max > 90) && (
+                <div className="mb-4 bg-purple-500/10 rounded-lg p-4 border border-purple-500/20">
+                  <div className="font-semibold text-purple-400 mb-2">🔄 Phase 2: Mikro-Mobilisation (60–{node.compression_time_max} Sekunden)</div>
+                  <p className="text-slate-300 text-sm mb-3">
+                    Ab Sekunde 60: Halte den Druck, aber beginne mit minimalsten Bewegungen, um das Gewebe aktiv zu "schälen":
+                  </p>
+                  <ul className="space-y-2 text-slate-300 text-sm">
+                    <li className="flex gap-2">
+                      <span className="text-purple-400">•</span>
+                      <span>Bewege die angrenzende Region ganz leicht (Millimeter-Bewegungen)</span>
+                    </li>
+                    <li className="flex gap-2">
+                      <span className="text-purple-400">•</span>
+                      <span>Kombiniere den äußeren Druck mit innerer Muskelaktivierung</span>
+                    </li>
+                    <li className="flex gap-2">
+                      <span className="text-purple-400">•</span>
+                      <span>Du wirst merken, wie das Gewebe „nachgibt" – das ist der Thixotropie-Effekt</span>
+                    </li>
+                  </ul>
+                </div>
+              )}
+
+              {/* Final retest */}
+              <div className="bg-slate-800/50 rounded-lg p-4 border border-cyan-500/20">
+                <div className="font-semibold text-cyan-400 mb-2">✅ Nach dem Timer</div>
+                <p className="text-slate-300 text-sm">Teste die ursprüngliche Bewegung erneut. Ist es besser, gleich oder schlechter?</p>
+              </div>
             </div>
 
             {/* Neuro Explanation */}
