@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, AlertCircle, CheckCircle2, Image as ImageIcon } from 'lucide-react';
+import { X, AlertCircle, CheckCircle2, Image as ImageIcon, ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 export default function ExerciseModal({ exercise, isOpen, onClose }) {
