@@ -299,8 +299,8 @@ export default function DiagnosisChat() {
                 </Button>
               </div>
               <p className="text-xs text-slate-500 mt-2">
-                💡 Tipp: Nutze den <Activity className="w-3 h-3 inline text-pink-400" /> Button um Schmerzen visuell zu markieren
-              </p>
+                 💡 Der Detective analysiert deine Schmerzen und empfiehlt die spezifischen MFR-Nodes (N1-N12) + Neuro-Drills
+               </p>
             </div>
           </div>
         </Card>
