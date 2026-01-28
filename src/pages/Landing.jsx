@@ -347,11 +347,11 @@ export default function Landing() {
         <div className="max-w-4xl mx-auto px-4">
           <h2 className="text-4xl md:text-5xl font-bold text-center mb-4">
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-400">
-              Einmal investieren. Ein Leben lang bewegen.
+              Einmal investieren. Ein Leben lang verstehen.
             </span>
           </h2>
           <p className="text-xl text-slate-400 text-center mb-12">
-            Keine Abos. Keine versteckten Kosten. Dein Werkzeug fürs Leben.
+            AXON ist kein Abo-App. Es ist ein digitales Diagnose-Werkzeug, das du einmal kaufst und behältst.
           </p>
 
           <motion.div
