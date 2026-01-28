@@ -81,8 +81,18 @@ export default function Dashboard() {
               </p>
             </div>
             
-            {/* Mode & Analysis */}
-            <div className="flex gap-3">
+            {/* Step Progress & Mode Switch */}
+            <div className="flex items-center gap-4">
+              <div className="flex items-center gap-2 text-sm">
+                <span className="text-slate-400">Dein Weg:</span>
+                <span className={`px-2 py-1 rounded-full text-xs font-bold ${mode === 'rehab' ? 'bg-red-500/30 text-red-300 border border-red-500/50' : 'bg-slate-700 text-slate-400'}`}>
+                  1. Rehab
+                </span>
+                <span className={`px-2 py-1 rounded-full text-xs font-bold ${mode === 'performance' ? 'bg-cyan-500/30 text-cyan-300 border border-cyan-500/50' : 'bg-slate-700 text-slate-400'}`}>
+                  2. Performance
+                </span>
+              </div>
+
               <Button
                 variant="ghost"
                 size="icon"
@@ -92,16 +102,16 @@ export default function Dashboard() {
                 <Info className="w-4 h-4" />
               </Button>
               <Button
-                onClick={() => setMode('analysis')}
-                variant={mode === 'analysis' ? 'default' : 'outline'}
+                onClick={() => setMode('rehab')}
+                variant={mode === 'rehab' ? 'default' : 'outline'}
                 className={`gap-2 transition-all ${
-                  mode === 'analysis'
+                  mode === 'rehab'
                     ? 'bg-gradient-to-r from-red-500 to-pink-600 text-white shadow-lg shadow-red-500/50'
                     : 'border-red-500/30 text-red-400 hover:bg-red-500/10'
                 }`}
               >
                 <Target className="w-4 h-4" />
-                🔴 ANALYSIEREN
+                🔴 REHAB
               </Button>
               <Button
                 onClick={() => setMode('performance')}
