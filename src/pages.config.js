@@ -59,6 +59,7 @@ import Privacy from './pages/Privacy';
 import QuickDemo from './pages/QuickDemo';
 import Success from './pages/Success';
 import Terms from './pages/Terms';
+import Profile from './pages/Profile';
 import __Layout from './Layout.jsx';
 
 
@@ -75,6 +76,7 @@ export const PAGES = {
     "QuickDemo": QuickDemo,
     "Success": Success,
     "Terms": Terms,
+    "Profile": Profile,
 }
 
 export const pagesConfig = {
