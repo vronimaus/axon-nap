@@ -120,7 +120,7 @@ export default function Landing() {
               <Zap className="w-5 h-5 mr-2" />
               Jetzt AXON Lifetime-Zugang sichern
             </Button>
-            <Link to={createPageUrl('Dashboard')}>
+            <Link to={createPageUrl('QuickDemo')}>
               <Button
                 size="lg"
                 variant="outline"
