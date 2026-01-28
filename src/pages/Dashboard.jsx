@@ -23,11 +23,6 @@ export default function Dashboard() {
       try {
         const currentUser = await base44.auth.me();
         setUser(currentUser);
-        
-        const hasSeenOnboarding = localStorage.getItem('axon_onboarding_seen');
-        if (!hasSeenOnboarding && currentUser?.has_paid) {
-          setShowOnboarding(true);
-        }
       } catch (e) {
         setUser(null);
       } finally {
