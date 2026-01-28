@@ -54,24 +54,6 @@ export default function BodyMap({ selectedRegion, onRegionSelect }) {
         selectedRegion={selectedRegion} 
         onRegionClick={onRegionSelect} 
       />
-      
-      <div className="mt-6 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 w-full max-w-3xl">
-        {Object.entries(SYMPTOM_CLUSTERS).map(([key, cluster]) => (
-          <motion.button
-            key={key}
-            onClick={() => onRegionSelect(key)}
-            className={`px-4 py-3 rounded-2xl text-sm font-semibold transition-all touch-target ${
-              selectedRegion === key 
-                ? 'bg-gradient-to-r from-cyan-500 to-cyan-600 text-slate-900 shadow-lg shadow-cyan-500/30 neuro-glow' 
-                : 'glass text-slate-300 border border-slate-700 hover:border-cyan-500/50 hover:text-cyan-400'
-            }`}
-            whileHover={{ scale: 1.03 }}
-            whileTap={{ scale: 0.97 }}
-          >
-            {cluster.label}
-          </motion.button>
-        ))}
-      </div>
     </div>
   );
 }
