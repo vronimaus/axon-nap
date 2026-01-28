@@ -51,12 +51,13 @@ import Dashboard from './pages/Dashboard';
 import DiagnosisChat from './pages/DiagnosisChat';
 import DiagnosisWizard from './pages/DiagnosisWizard';
 import ExerciseImageGenerator from './pages/ExerciseImageGenerator';
+import Imprint from './pages/Imprint';
 import Landing from './pages/Landing';
 import Performance from './pages/Performance';
-import Imprint from './pages/Imprint';
 import Privacy from './pages/Privacy';
-import Terms from './pages/Terms';
 import Success from './pages/Success';
+import Terms from './pages/Terms';
+import QuickDemo from './pages/QuickDemo';
 import __Layout from './Layout.jsx';
 
 
@@ -65,12 +66,13 @@ export const PAGES = {
     "DiagnosisChat": DiagnosisChat,
     "DiagnosisWizard": DiagnosisWizard,
     "ExerciseImageGenerator": ExerciseImageGenerator,
+    "Imprint": Imprint,
     "Landing": Landing,
     "Performance": Performance,
-    "Imprint": Imprint,
     "Privacy": Privacy,
-    "Terms": Terms,
     "Success": Success,
+    "Terms": Terms,
+    "QuickDemo": QuickDemo,
 }
 
 export const pagesConfig = {
