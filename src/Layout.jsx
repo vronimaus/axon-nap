@@ -56,21 +56,29 @@ export default function Layout({ children, currentPageName }) {
               
               {/* Nav Links */}
               <div className="flex items-center gap-1">
-                {navItems.map(item => (
-                  <Link
-                    key={item.page}
-                    to={createPageUrl(item.page)}
-                    className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all ${
-                      currentPageName === item.page
-                        ? 'bg-cyan-500/20 text-cyan-400 neuro-glow'
-                        : 'text-slate-400 hover:bg-slate-800/50 hover:text-cyan-300'
-                    }`}
-                  >
-                    <item.icon className="w-4 h-4" />
-                    <span className="hidden sm:inline">{item.name}</span>
-                  </Link>
-                ))}
+               {navItems.map(item => (
+                 <Link
+                   key={item.page}
+                   to={createPageUrl(item.page)}
+                   className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all ${
+                     currentPageName === item.page
+                       ? 'bg-cyan-500/20 text-cyan-400 neuro-glow'
+                       : 'text-slate-400 hover:bg-slate-800/50 hover:text-cyan-300'
+                   }`}
+                 >
+                   <item.icon className="w-4 h-4" />
+                   <span className="hidden sm:inline">{item.name}</span>
+                 </Link>
+               ))}
               </div>
+
+              {/* Login Button */}
+              <button
+               onClick={() => base44.auth.redirectToLogin(window.location.href)}
+               className="ml-4 px-4 py-2 rounded-xl text-sm font-medium bg-cyan-500/20 text-cyan-400 hover:bg-cyan-500/30 transition-all"
+              >
+               Login
+              </button>
             </div>
           </div>
         </nav>
