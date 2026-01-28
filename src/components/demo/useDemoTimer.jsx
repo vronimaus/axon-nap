@@ -30,12 +30,25 @@ export function useDemoTimer() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-  // Check if demo already completed (paid)
-  if (getStorageValue('demo_completed') === 'true') {
-    setIsDemoExpired(false);
-    setIsLoading(false);
-    return;
-  }
+        const checkDemoStatus = async () => {
+          try {
+            // Check if user is authenticated and already paid
+            const user = await base44.auth.me();
+            if (user?.has_paid) {
+              setIsDemoExpired(false);
+              setIsLoading(false);
+              return;
+            }
+          } catch {
+            // Not authenticated, continue with demo check
+          }
+
+          // Check if demo already completed (paid)
+          if (getStorageValue('demo_completed') === 'true') {
+            setIsDemoExpired(false);
+            setIsLoading(false);
+            return;
+          }
 
   // Initialize demo timer on component mount
   let startTime = getStorageValue(DEMO_START_TIME_KEY);
