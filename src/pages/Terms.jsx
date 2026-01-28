@@ -68,9 +68,9 @@ export default function Terms() {
             <section>
               <h2 className="text-2xl font-bold text-cyan-400 mb-4">5. Widerrufsrecht</h2>
               <p className="leading-relaxed mb-4">
-                Verbrauchern steht gemäß § 312g BGB ein gesetzliches Widerrufsrecht zu:
+                Verbrauchern steht grundsätzlich gemäß § 312g BGB ein gesetzliches Widerrufsrecht zu:
               </p>
-              <div className="bg-slate-800/50 rounded-xl p-6 border border-cyan-500/20">
+              <div className="bg-slate-800/50 rounded-xl p-6 border border-cyan-500/20 mb-6">
                 <p className="leading-relaxed mb-4">
                   <strong className="text-white">Widerrufsbelehrung</strong>
                 </p>
@@ -82,6 +82,35 @@ export default function Terms() {
                   Um Ihr Widerrufsrecht auszuüben, müssen Sie uns (Vanessa Schumacher, Marienstr. 40, 50374 Erftstadt, 
                   E-Mail: info@axon-protocol.com) mittels einer eindeutigen Erklärung über Ihren Entschluss, 
                   diesen Vertrag zu widerrufen, informieren.
+                </p>
+              </div>
+
+              <div className="bg-red-900/20 rounded-xl p-6 border border-red-500/30">
+                <p className="leading-relaxed mb-4">
+                  <strong className="text-red-400">Vorzeitiges Erlöschen des Widerrufsrechts bei digitalen Inhalten</strong>
+                </p>
+                <p className="leading-relaxed mb-4">
+                  Gemäß § 356 Abs. 5 BGB erlischt Ihr Widerrufsrecht vorzeitig, wenn Sie ausdrücklich zugestimmt haben, 
+                  dass wir mit der Ausführung des Vertrags vor Ablauf der Widerrufsfrist beginnen, und Sie zur Kenntnis 
+                  genommen haben, dass Sie durch Ihre Zustimmung mit Beginn der Ausführung des Vertrags Ihr Widerrufsrecht 
+                  verlieren.
+                </p>
+                <p className="leading-relaxed mb-4">
+                  <strong className="text-white">Da AXON ein digitaler Inhalt ist, der sofort nach Zahlungseingang bereitgestellt wird</strong>, 
+                  stimmen Sie beim Kauf ausdrücklich zu, dass:
+                </p>
+                <ul className="list-disc list-inside space-y-2 text-slate-300">
+                  <li>Die Leistung sofort nach dem Kauf erbracht wird (Zugang zur Web-App)</li>
+                  <li>Sie auf Ihr Widerrufsrecht verzichten, sobald Sie Zugriff auf AXON erhalten</li>
+                  <li>Eine Rückgabe nach erfolgter Nutzung aus technischen und rechtlichen Gründen ausgeschlossen ist</li>
+                </ul>
+              </div>
+
+              <div className="bg-slate-800/50 rounded-xl p-6 border border-cyan-500/20 mt-6">
+                <p className="text-sm leading-relaxed text-slate-400">
+                  <strong className="text-cyan-400">Fairness-Garantie:</strong> Sollte AXON aus technischen Gründen 
+                  (z.B. Browser-Inkompatibilität) bei Ihnen nicht funktionieren, kontaktieren Sie uns innerhalb von 
+                  48 Stunden nach dem Kauf. Wir finden gemeinsam eine Lösung.
                 </p>
               </div>
             </section>
