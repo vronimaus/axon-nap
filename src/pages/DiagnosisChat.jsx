@@ -263,12 +263,16 @@ export default function DiagnosisChat() {
                               {msg.content}
                             </ReactMarkdown>
                             
-                            {/* Auto-detect Node references and display */}
-                            {msg.content && msg.content.match(/\b(N\d{1,2})\b/g)?.map((nodeRef, idx) => (
-                              <div key={idx} className="mt-3">
-                                <MFRNodeDisplay nodeId={nodeRef} />
-                              </div>
-                            ))}
+                            {/* Auto-detect Node references and display (deduplicated) */}
+                            {msg.content && (() => {
+                              const nodeMatches = msg.content.match(/\b(N\d{1,2})\b/g) || [];
+                              const uniqueNodes = [...new Set(nodeMatches)];
+                              return uniqueNodes.map((nodeRef, idx) => (
+                                <div key={idx} className="mt-3">
+                                  <MFRNodeDisplay nodeId={nodeRef} />
+                                </div>
+                              ));
+                            })()}
                           </>
                         )}
 

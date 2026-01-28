@@ -60,6 +60,35 @@ export default function MFRNodeDisplay({ nodeId }) {
           <p className="text-xs text-slate-400 mt-2">{nodeData.body_area}</p>
         </div>
 
+        {/* Body Map Image */}
+        <div className="relative bg-black/30 aspect-square flex items-center justify-center border-b border-cyan-500/20 overflow-hidden">
+          {nodeData.position === 'front' && (
+            <svg viewBox="0 0 100 200" className="w-full h-full">
+              {/* Simple front body outline */}
+              <circle cx="50" cy="20" r="8" fill="none" stroke="currentColor" strokeWidth="0.5" className="text-slate-400" />
+              <path d="M50 30 L50 100 M40 50 L60 50 M40 50 L30 80 M60 50 L70 80 M40 100 L40 180 M60 100 L60 180" 
+                    fill="none" stroke="currentColor" strokeWidth="0.5" className="text-slate-400" />
+              {/* Node marker */}
+              <circle cx={nodeData.x || 50} cy={nodeData.y || 30} r="3" fill="#06b6d4" opacity="0.8" />
+              <circle cx={nodeData.x || 50} cy={nodeData.y || 30} r="4.5" fill="none" stroke="#06b6d4" strokeWidth="0.3" opacity="0.6" />
+            </svg>
+          )}
+          {nodeData.position === 'back' && (
+            <svg viewBox="0 0 100 200" className="w-full h-full">
+              {/* Simple back body outline */}
+              <circle cx="50" cy="20" r="8" fill="none" stroke="currentColor" strokeWidth="0.5" className="text-slate-400" />
+              <path d="M50 30 L50 100 M40 50 L60 50 M40 50 L30 80 M60 50 L70 80 M40 100 L40 180 M60 100 L60 180" 
+                    fill="none" stroke="currentColor" strokeWidth="0.5" className="text-slate-400" />
+              {/* Node marker */}
+              <circle cx={nodeData.x || 50} cy={nodeData.y || 30} r="3" fill="#06b6d4" opacity="0.8" />
+              <circle cx={nodeData.x || 50} cy={nodeData.y || 30} r="4.5" fill="none" stroke="#06b6d4" strokeWidth="0.3" opacity="0.6" />
+            </svg>
+          )}
+          <div className="absolute bottom-2 right-2 text-xs text-cyan-400/60 bg-slate-900/80 px-2 py-1 rounded">
+            {nodeData.position === 'front' ? '👁️ Vorne' : '👁️ Hinten'}
+          </div>
+        </div>
+
         {/* Content */}
         <div className="p-4 space-y-4">
           {/* Target Chain */}
