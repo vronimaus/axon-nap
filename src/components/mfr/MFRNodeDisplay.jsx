@@ -60,26 +60,72 @@ export default function MFRNodeDisplay({ nodeId }) {
           <p className="text-xs text-slate-400 mt-2">{nodeData.body_area}</p>
         </div>
 
-        {/* Body Map Image - Anatomical */}
-        <div className="relative bg-black aspect-[3/5] flex items-center justify-center border-b border-cyan-500/20 overflow-hidden">
-          {/* Background anatomical image */}
-          <div className="absolute inset-0 bg-gradient-to-b from-slate-900 to-slate-950" />
-          
-          {nodeData.position === 'front' && (
-            <img
-              src="https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=400&h=600&fit=crop&q=80"
-              alt="Front anatomy"
-              className="absolute inset-0 w-full h-full object-cover opacity-40"
-            />
-          )}
-          {nodeData.position === 'back' && (
-            <img
-              src="https://images.unsplash.com/photo-1576091160550-112173faf977?w=400&h=600&fit=crop&q=80"
-              alt="Back anatomy"
-              className="absolute inset-0 w-full h-full object-cover opacity-40"
-            />
-          )}
-          
+        {/* Body Map - Anatomical Wireframe */}
+        <div className="relative bg-gradient-to-b from-slate-900 to-slate-950 aspect-[3/5] flex items-center justify-center border-b border-cyan-500/20 overflow-hidden">
+          {/* Anatomical Outline */}
+          <svg 
+            viewBox="0 0 100 160" 
+            className="absolute inset-0 w-full h-full opacity-30"
+            preserveAspectRatio="xMidYMid meet"
+          >
+            {nodeData.position === 'front' ? (
+              // FRONT body
+              <>
+                {/* Head */}
+                <circle cx="50" cy="15" r="6" fill="none" stroke="currentColor" strokeWidth="0.4" className="text-cyan-400/50" />
+                {/* Neck */}
+                <line x1="50" y1="21" x2="50" y2="28" stroke="currentColor" strokeWidth="0.3" className="text-cyan-400/50" />
+                {/* Chest/Torso */}
+                <path d="M 40 28 Q 40 35 38 50 L 62 50 Q 60 35 60 28" fill="none" stroke="currentColor" strokeWidth="0.4" className="text-cyan-400/50" />
+                {/* Abs */}
+                <line x1="42" y1="45" x2="58" y2="45" stroke="currentColor" strokeWidth="0.3" className="text-cyan-400/50" />
+                <line x1="42" y1="52" x2="58" y2="52" stroke="currentColor" strokeWidth="0.3" className="text-cyan-400/50" />
+                {/* Arms */}
+                <line x1="40" y1="32" x2="28" y2="60" stroke="currentColor" strokeWidth="0.3" className="text-cyan-400/50" />
+                <line x1="60" y1="32" x2="72" y2="60" stroke="currentColor" strokeWidth="0.3" className="text-cyan-400/50" />
+                {/* Hands */}
+                <circle cx="28" cy="62" r="2" fill="none" stroke="currentColor" strokeWidth="0.3" className="text-cyan-400/50" />
+                <circle cx="72" cy="62" r="2" fill="none" stroke="currentColor" strokeWidth="0.3" className="text-cyan-400/50" />
+                {/* Pelvis */}
+                <path d="M 38 60 Q 38 70 40 80 L 60 80 Q 62 70 62 60" fill="none" stroke="currentColor" strokeWidth="0.4" className="text-cyan-400/50" />
+                {/* Legs */}
+                <line x1="40" y1="80" x2="38" y2="155" stroke="currentColor" strokeWidth="0.3" className="text-cyan-400/50" />
+                <line x1="60" y1="80" x2="62" y2="155" stroke="currentColor" strokeWidth="0.3" className="text-cyan-400/50" />
+                {/* Feet */}
+                <circle cx="38" cy="157" r="2" fill="none" stroke="currentColor" strokeWidth="0.3" className="text-cyan-400/50" />
+                <circle cx="62" cy="157" r="2" fill="none" stroke="currentColor" strokeWidth="0.3" className="text-cyan-400/50" />
+              </>
+            ) : (
+              // BACK body
+              <>
+                {/* Head */}
+                <circle cx="50" cy="15" r="6" fill="none" stroke="currentColor" strokeWidth="0.4" className="text-purple-400/50" />
+                {/* Neck */}
+                <line x1="50" y1="21" x2="50" y2="28" stroke="currentColor" strokeWidth="0.3" className="text-purple-400/50" />
+                {/* Spine line */}
+                <line x1="50" y1="28" x2="50" y2="85" stroke="currentColor" strokeWidth="0.3" className="text-purple-400/50" />
+                {/* Shoulders */}
+                <line x1="35" y1="30" x2="65" y2="30" stroke="currentColor" strokeWidth="0.4" className="text-purple-400/50" />
+                {/* Back muscles */}
+                <path d="M 40 35 Q 35 45 35 60 L 65 60 Q 65 45 60 35" fill="none" stroke="currentColor" strokeWidth="0.4" className="text-purple-400/50" />
+                {/* Arms */}
+                <line x1="35" y1="32" x2="20" y2="60" stroke="currentColor" strokeWidth="0.3" className="text-purple-400/50" />
+                <line x1="65" y1="32" x2="80" y2="60" stroke="currentColor" strokeWidth="0.3" className="text-purple-400/50" />
+                {/* Hands */}
+                <circle cx="20" cy="62" r="2" fill="none" stroke="currentColor" strokeWidth="0.3" className="text-purple-400/50" />
+                <circle cx="80" cy="62" r="2" fill="none" stroke="currentColor" strokeWidth="0.3" className="text-purple-400/50" />
+                {/* Glutes */}
+                <path d="M 40 65 Q 38 75 40 85 L 60 85 Q 62 75 60 65" fill="none" stroke="currentColor" strokeWidth="0.4" className="text-purple-400/50" />
+                {/* Legs */}
+                <line x1="40" y1="85" x2="38" y2="155" stroke="currentColor" strokeWidth="0.3" className="text-purple-400/50" />
+                <line x1="60" y1="85" x2="62" y2="155" stroke="currentColor" strokeWidth="0.3" className="text-purple-400/50" />
+                {/* Feet */}
+                <circle cx="38" cy="157" r="2" fill="none" stroke="currentColor" strokeWidth="0.3" className="text-purple-400/50" />
+                <circle cx="62" cy="157" r="2" fill="none" stroke="currentColor" strokeWidth="0.3" className="text-purple-400/50" />
+              </>
+            )}
+          </svg>
+
           {/* Node highlight marker */}
           <motion.div
             initial={{ scale: 0 }}
@@ -88,28 +134,38 @@ export default function MFRNodeDisplay({ nodeId }) {
             style={{
               left: `${nodeData.x || 50}%`,
               top: `${nodeData.y || 30}%`,
-              transform: 'translate(-50%, -50%)'
+              transform: 'translate(-50%, -50%)',
+              zIndex: 10
             }}
           >
-            {/* Outer glow ring */}
+            {/* Outer pulsing ring */}
             <motion.div
               animate={{
-                scale: [1, 1.4, 1],
-                opacity: [1, 0.6, 1]
+                scale: [1, 1.5, 1],
+                opacity: [1, 0.4, 1]
               }}
               transition={{ duration: 2, repeat: Infinity }}
-              className="absolute inset-0 rounded-full border-2 border-cyan-400"
-              style={{ width: '32px', height: '32px', top: '-16px', left: '-16px' }}
+              className={`absolute inset-0 rounded-full border-2 ${nodeData.position === 'front' ? 'border-cyan-400' : 'border-purple-400'}`}
+              style={{ width: '40px', height: '40px', top: '-20px', left: '-20px' }}
             />
             
-            {/* Center dot */}
-            <div className="w-3 h-3 rounded-full bg-gradient-to-br from-cyan-400 to-cyan-500 shadow-lg shadow-cyan-500/50" />
+            {/* Center bright dot */}
+            <div className={`w-4 h-4 rounded-full shadow-lg ${
+              nodeData.position === 'front' 
+                ? 'bg-gradient-to-br from-cyan-300 to-cyan-500 shadow-cyan-500/70' 
+                : 'bg-gradient-to-br from-purple-300 to-purple-500 shadow-purple-500/70'
+            }`} />
             
-            {/* Secondary glow */}
-            <div className="absolute inset-0 rounded-full bg-cyan-400 blur-md opacity-40" style={{ width: '24px', height: '24px', top: '-12px', left: '-12px' }} />
+            {/* Glow aura */}
+            <motion.div
+              animate={{ opacity: [0.3, 0.6, 0.3] }}
+              transition={{ duration: 2, repeat: Infinity }}
+              className={`absolute inset-0 rounded-full blur-lg ${nodeData.position === 'front' ? 'bg-cyan-400/40' : 'bg-purple-400/40'}`}
+              style={{ width: '32px', height: '32px', top: '-16px', left: '-16px' }}
+            />
           </motion.div>
           
-          <div className="absolute bottom-2 right-2 text-xs text-cyan-400/70 bg-slate-900/90 px-2 py-1 rounded backdrop-blur-sm border border-cyan-500/20">
+          <div className="absolute bottom-2 right-2 text-xs text-slate-400/70 bg-slate-900/90 px-2 py-1 rounded backdrop-blur-sm border border-slate-700">
             {nodeData.position === 'front' ? '👁️ Vorne' : '👁️ Hinten'}
           </div>
         </div>
