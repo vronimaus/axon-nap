@@ -81,7 +81,7 @@ export default function Dashboard() {
               </p>
             </div>
             
-            {/* Mode Switch */}
+            {/* Mode & Analysis */}
             <div className="flex gap-3">
               <Button
                 variant="ghost"
@@ -92,8 +92,13 @@ export default function Dashboard() {
                 <Info className="w-4 h-4" />
               </Button>
               <Button
-                onClick={() => window.location.href = createPageUrl('DiagnosisWizard')}
-                className="gap-2 bg-gradient-to-r from-red-500 to-pink-600 text-white shadow-lg shadow-red-500/50 hover:from-red-600 hover:to-pink-700"
+                onClick={() => setMode('analysis')}
+                variant={mode === 'analysis' ? 'default' : 'outline'}
+                className={`gap-2 transition-all ${
+                  mode === 'analysis'
+                    ? 'bg-gradient-to-r from-red-500 to-pink-600 text-white shadow-lg shadow-red-500/50'
+                    : 'border-red-500/30 text-red-400 hover:bg-red-500/10'
+                }`}
               >
                 <Target className="w-4 h-4" />
                 🔴 ANALYSIEREN
