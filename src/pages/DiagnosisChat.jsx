@@ -7,8 +7,12 @@ import { Loader2, Send, MessageCircle, Sparkles, Activity } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import ReactMarkdown from 'react-markdown';
 import BodyPainMap from '../components/diagnosis/BodyPainMap';
+import { useDemoTimer } from '../components/demo/useDemoTimer';
+import DemoTimer from '../components/demo/DemoTimer';
+import DemoPaywall from '../components/demo/DemoPaywall';
 
 export default function DiagnosisChat() {
+  const { isDemoExpired, isLoading: demoLoading, formattedTime } = useDemoTimer();
   const [conversation, setConversation] = useState(null);
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
@@ -92,8 +96,13 @@ export default function DiagnosisChat() {
     }
   };
 
+  if (isDemoExpired) {
+    return <DemoPaywall />;
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
+      <DemoTimer formattedTime={formattedTime} isLoading={demoLoading} />
       <div className="max-w-4xl mx-auto px-4 py-8">
         {/* Header */}
         <motion.div
@@ -264,7 +273,7 @@ export default function DiagnosisChat() {
               <div className="flex gap-3">
                 <Button
                   onClick={() => setShowBodyMap(true)}
-                  disabled={loading || !conversation}
+                  disabled={loading || !conversation || isDemoExpired}
                   variant="outline"
                   className="border-pink-500/50 text-pink-400 hover:bg-pink-500/10 h-[60px] px-4"
                 >
@@ -279,13 +288,13 @@ export default function DiagnosisChat() {
                       sendMessage();
                     }
                   }}
-                  placeholder="Beschreibe deine Symptome... (Enter zum Senden)"
+                  placeholder={isDemoExpired ? "Demo vorbei – upgraden um fortzufahren" : "Beschreibe deine Symptome... (Enter zum Senden)"}
                   className="flex-1 min-h-[60px] max-h-[120px] bg-slate-900/50 border-cyan-500/30 text-slate-200 placeholder:text-slate-500 resize-none"
-                  disabled={loading || !conversation}
+                  disabled={loading || !conversation || isDemoExpired}
                 />
                 <Button
                   onClick={sendMessage}
-                  disabled={!input.trim() || loading || !conversation}
+                  disabled={!input.trim() || loading || !conversation || isDemoExpired}
                   className="bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-600 hover:to-purple-700 h-[60px] px-6"
                 >
                   <Send className="w-5 h-5" />
