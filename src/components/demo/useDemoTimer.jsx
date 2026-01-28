@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { base44 } from '@/api/base44Client';
 
 const DEMO_DURATION_MS = 15 * 60 * 1000; // 15 minutes
 const DEMO_START_TIME_KEY = 'axon_demo_start_time';
