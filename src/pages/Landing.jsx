@@ -10,14 +10,22 @@ import { toast } from 'sonner';
 export default function Landing() {
   const [isCheckoutLoading, setIsCheckoutLoading] = useState(false);
   const [user, setUser] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const checkAuth = async () => {
       try {
         const currentUser = await base44.auth.me();
         setUser(currentUser);
+        // Eingeloggte User redirect zum Dashboard
+        if (currentUser) {
+          window.location.href = createPageUrl('Dashboard');
+          return;
+        }
       } catch (e) {
         setUser(null);
+      } finally {
+        setIsLoading(false);
       }
     };
     checkAuth();
