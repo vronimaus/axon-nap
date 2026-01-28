@@ -60,22 +60,139 @@ export default function MFRNodeDisplay({ nodeId }) {
           <p className="text-xs text-slate-400 mt-2">{nodeData.body_area}</p>
         </div>
 
-        {/* Body Map - Professional Anatomical Image */}
-        <div className="relative bg-black aspect-[3/5] border-b border-cyan-500/20 overflow-hidden group">
-          {/* High-quality anatomical image */}
-          <img
-            src={nodeData.position === 'front' 
-              ? 'https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=500&h=750&fit=crop&q=80'
-              : 'https://images.unsplash.com/photo-1576091160550-112173faf977?w=500&h=750&fit=crop&q=80'
-            }
-            alt={nodeData.position === 'front' ? 'Front anatomy' : 'Back anatomy'}
-            className="absolute inset-0 w-full h-full object-cover"
-          />
-          
-          {/* Dark overlay for better visibility */}
-          <div className="absolute inset-0 bg-gradient-to-b from-slate-950/40 to-slate-950/20" />
+        {/* Body Map - Anatomical SVG */}
+        <div className="relative bg-gradient-to-b from-slate-900 to-slate-950 aspect-[3/5] border-b border-cyan-500/20 overflow-hidden">
+          <svg 
+            viewBox="0 0 200 320" 
+            className="w-full h-full"
+            preserveAspectRatio="xMidYMid meet"
+          >
+            <defs>
+              <linearGradient id="muscleGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" style={{ stopColor: nodeData.position === 'front' ? '#06b6d4' : '#a855f7', stopOpacity: 0.3 }} />
+                <stop offset="100%" style={{ stopColor: nodeData.position === 'front' ? '#0891b2' : '#7c3aed', stopOpacity: 0.1 }} />
+              </linearGradient>
+            </defs>
+            
+            {nodeData.position === 'front' ? (
+              // FRONT - Detailed Anatomy
+              <>
+                {/* Head */}
+                <circle cx="100" cy="35" r="16" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-cyan-400/60" />
+                {/* Jaw line */}
+                <path d="M 90 45 Q 100 50 110 45" fill="none" stroke="currentColor" strokeWidth="1" className="text-cyan-400/40" />
+                
+                {/* Neck muscles */}
+                <path d="M 95 50 L 95 65 M 105 50 L 105 65" stroke="currentColor" strokeWidth="1.2" className="text-cyan-400/50" />
+                <ellipse cx="100" cy="58" rx="8" ry="12" fill="url(#muscleGrad)" />
+                
+                {/* Shoulders */}
+                <line x1="75" y1="65" x2="125" y2="65" stroke="currentColor" strokeWidth="1.5" className="text-cyan-400/60" />
+                
+                {/* Chest & Pecs */}
+                <ellipse cx="85" cy="85" rx="12" ry="20" fill="url(#muscleGrad)" />
+                <ellipse cx="115" cy="85" rx="12" ry="20" fill="url(#muscleGrad)" />
+                <line x1="100" y1="70" x2="100" y2="105" stroke="currentColor" strokeWidth="1" className="text-cyan-400/30" />
+                
+                {/* Abs */}
+                <g className="text-cyan-400/40">
+                  <line x1="90" y1="100" x2="110" y2="100" stroke="currentColor" strokeWidth="0.8" />
+                  <line x1="88" y1="115" x2="112" y2="115" stroke="currentColor" strokeWidth="0.8" />
+                  <line x1="88" y1="130" x2="112" y2="130" stroke="currentColor" strokeWidth="0.8" />
+                </g>
+                
+                {/* Arms */}
+                <g className="text-cyan-400/50">
+                  <path d="M 75 70 L 55 130" stroke="currentColor" strokeWidth="1.3" fill="none" />
+                  <ellipse cx="65" cy="100" rx="6" ry="18" fill="url(#muscleGrad)" />
+                  <path d="M 125 70 L 145 130" stroke="currentColor" strokeWidth="1.3" fill="none" />
+                  <ellipse cx="135" cy="100" rx="6" ry="18" fill="url(#muscleGrad)" />
+                </g>
+                
+                {/* Forearms & Hands */}
+                <circle cx="55" cy="135" r="4" fill="none" stroke="currentColor" strokeWidth="0.8" className="text-cyan-400/50" />
+                <circle cx="145" cy="135" r="4" fill="none" stroke="currentColor" strokeWidth="0.8" className="text-cyan-400/50" />
+                
+                {/* Torso outline */}
+                <path d="M 80 65 L 75 100 L 78 150 L 100 155 L 122 150 L 125 100 L 120 65" fill="url(#muscleGrad)" />
+                
+                {/* Abs detail */}
+                <line x1="100" y1="85" x2="100" y2="140" stroke="currentColor" strokeWidth="0.7" className="text-cyan-400/30" />
+                
+                {/* Pelvis */}
+                <path d="M 75 150 Q 100 158 125 150" fill="none" stroke="currentColor" strokeWidth="1.2" className="text-cyan-400/50" />
+                
+                {/* Legs */}
+                <g className="text-cyan-400/50">
+                  <path d="M 82 155 L 80 250" stroke="currentColor" strokeWidth="1.3" fill="none" />
+                  <path d="M 118 155 L 120 250" stroke="currentColor" strokeWidth="1.3" fill="none" />
+                  <ellipse cx="81" cy="200" rx="5" ry="20" fill="url(#muscleGrad)" />
+                  <ellipse cx="119" cy="200" rx="5" ry="20" fill="url(#muscleGrad)" />
+                </g>
+                
+                {/* Feet */}
+                <circle cx="80" cy="255" r="4" fill="none" stroke="currentColor" strokeWidth="0.8" className="text-cyan-400/50" />
+                <circle cx="120" cy="255" r="4" fill="none" stroke="currentColor" strokeWidth="0.8" className="text-cyan-400/50" />
+              </>
+            ) : (
+              // BACK - Detailed Anatomy
+              <>
+                {/* Head */}
+                <circle cx="100" cy="35" r="16" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-purple-400/60" />
+                
+                {/* Neck muscles */}
+                <path d="M 95 50 L 95 70 M 105 50 L 105 70" stroke="currentColor" strokeWidth="1.2" className="text-purple-400/50" />
+                <ellipse cx="100" cy="60" rx="8" ry="15" fill="url(#muscleGrad)" />
+                
+                {/* Shoulders & Traps */}
+                <ellipse cx="75" cy="75" rx="10" ry="18" fill="url(#muscleGrad)" />
+                <ellipse cx="125" cy="75" rx="10" ry="18" fill="url(#muscleGrad)" />
+                <path d="M 100 50 L 100 90" stroke="currentColor" strokeWidth="0.8" className="text-purple-400/40" />
+                
+                {/* Lats */}
+                <ellipse cx="70" cy="120" rx="18" ry="35" fill="url(#muscleGrad)" />
+                <ellipse cx="130" cy="120" rx="18" ry="35" fill="url(#muscleGrad)" />
+                
+                {/* Erector spinae (back muscles along spine) */}
+                <path d="M 98 75 L 96 150" stroke="currentColor" strokeWidth="1.2" className="text-purple-400/50" />
+                <path d="M 102 75 L 104 150" stroke="currentColor" strokeWidth="1.2" className="text-purple-400/50" />
+                
+                {/* Glutes */}
+                <ellipse cx="85" cy="165" rx="14" ry="22" fill="url(#muscleGrad)" />
+                <ellipse cx="115" cy="165" rx="14" ry="22" fill="url(#muscleGrad)" />
+                
+                {/* Arms */}
+                <g className="text-purple-400/50">
+                  <path d="M 70 80 L 45 140" stroke="currentColor" strokeWidth="1.3" fill="none" />
+                  <ellipse cx="57" cy="110" rx="6" ry="18" fill="url(#muscleGrad)" />
+                  <path d="M 130 80 L 155 140" stroke="currentColor" strokeWidth="1.3" fill="none" />
+                  <ellipse cx="143" cy="110" rx="6" ry="18" fill="url(#muscleGrad)" />
+                </g>
+                
+                {/* Hands */}
+                <circle cx="45" cy="145" r="4" fill="none" stroke="currentColor" strokeWidth="0.8" className="text-purple-400/50" />
+                <circle cx="155" cy="145" r="4" fill="none" stroke="currentColor" strokeWidth="0.8" className="text-purple-400/50" />
+                
+                {/* Hamstrings */}
+                <g className="text-purple-400/50">
+                  <path d="M 82 190 L 78 260" stroke="currentColor" strokeWidth="1.3" fill="none" />
+                  <path d="M 118 190 L 122 260" stroke="currentColor" strokeWidth="1.3" fill="none" />
+                  <ellipse cx="80" cy="225" rx="5" ry="22" fill="url(#muscleGrad)" />
+                  <ellipse cx="120" cy="225" rx="5" ry="22" fill="url(#muscleGrad)" />
+                </g>
+                
+                {/* Calves */}
+                <ellipse cx="80" cy="270" rx="4" ry="12" fill="url(#muscleGrad)" />
+                <ellipse cx="120" cy="270" rx="4" ry="12" fill="url(#muscleGrad)" />
+                
+                {/* Feet */}
+                <circle cx="78" cy="285" r="4" fill="none" stroke="currentColor" strokeWidth="0.8" className="text-purple-400/50" />
+                <circle cx="122" cy="285" r="4" fill="none" stroke="currentColor" strokeWidth="0.8" className="text-purple-400/50" />
+              </>
+            )}
+          </svg>
 
-          {/* Node highlight marker - anchored to real body position */}
+          {/* Node highlight marker */}
           <motion.div
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
@@ -121,7 +238,7 @@ export default function MFRNodeDisplay({ nodeId }) {
             />
           </motion.div>
           
-          <div className="absolute bottom-3 right-3 text-xs text-white/70 bg-black/70 px-2 py-1 rounded backdrop-blur-sm border border-white/10">
+          <div className="absolute bottom-3 right-3 text-xs text-slate-300/70 bg-slate-900/80 px-2 py-1 rounded backdrop-blur-sm border border-slate-700">
             {nodeData.position === 'front' ? '👁️ Vorne' : '👁️ Hinten'}
           </div>
         </div>
