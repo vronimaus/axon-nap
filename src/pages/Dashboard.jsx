@@ -2,17 +2,20 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
-import { Activity, Target, Zap, Info } from 'lucide-react';
+import { Activity, Target, Zap, Info, Lock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import InteractiveBodyMap from '../components/dashboard/InteractiveBodyMap';
 import HardwarePanel from '../components/dashboard/HardwarePanel';
 import NeuroMatrix from '../components/dashboard/NeuroMatrix';
 import OnboardingModal from '../components/dashboard/OnboardingModal';
+import DemoPaywall from '../components/demo/DemoPaywall';
 
 export default function Dashboard() {
   const [mode, setMode] = useState('performance'); // 'rehab' or 'performance'
   const [selectedBodyRegion, setSelectedBodyRegion] = useState(null);
   const [showOnboarding, setShowOnboarding] = useState(false);
+  const [user, setUser] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const hasSeenOnboarding = localStorage.getItem('axon_onboarding_seen');
