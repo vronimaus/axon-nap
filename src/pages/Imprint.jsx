@@ -36,6 +36,31 @@ export default function Imprint() {
             </section>
 
             <section>
+              <h2 className="text-2xl font-bold text-cyan-400 mb-4">Umsatzsteuer-ID</h2>
+              <p className="leading-relaxed">
+                Gemäß § 19 UStG wird keine Umsatzsteuer berechnet und ausgewiesen (Kleinunternehmerregelung).
+              </p>
+            </section>
+
+            <section>
+              <h2 className="text-2xl font-bold text-cyan-400 mb-4">Streitschlichtung</h2>
+              <p className="leading-relaxed mb-3">
+                Die Europäische Kommission stellt eine Plattform zur Online-Streitbeilegung (OS) bereit:{' '}
+                <a 
+                  href="https://ec.europa.eu/consumers/odr" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="text-cyan-400 hover:underline"
+                >
+                  https://ec.europa.eu/consumers/odr
+                </a>
+              </p>
+              <p className="leading-relaxed">
+                Wir sind nicht verpflichtet, an Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle teilzunehmen.
+              </p>
+            </section>
+
+            <section>
               <h2 className="text-2xl font-bold text-cyan-400 mb-4">Haftungsausschluss</h2>
               
               <h3 className="text-xl font-semibold text-white mb-3 mt-6">Haftung für Inhalte</h3>
