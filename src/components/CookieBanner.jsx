@@ -34,7 +34,7 @@ export default function CookieBanner() {
           exit={{ y: 100, opacity: 0 }}
           className="fixed bottom-0 left-0 right-0 z-50 p-4"
         >
-          <div className="max-w-6xl mx-auto glass rounded-2xl border border-cyan-500/30 p-6 shadow-2xl">
+          <div className="max-w-6xl mx-auto bg-slate-900 rounded-2xl border border-cyan-500/30 p-6 shadow-2xl">
             <div className="flex items-start gap-4">
               <div className="flex-shrink-0 w-10 h-10 rounded-xl bg-cyan-500/20 flex items-center justify-center">
                 <Cookie className="w-5 h-5 text-cyan-400" />
