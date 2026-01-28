@@ -15,6 +15,9 @@ export default function Landing() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    // Warte, bis Demo-Timer initialisiert ist
+    if (demoLoading) return;
+
     const checkAuth = async () => {
       try {
         const currentUser = await base44.auth.me();
@@ -37,7 +40,7 @@ export default function Landing() {
       }
     };
     checkAuth();
-  }, [isDemoExpired, timeRemaining]);
+  }, [demoLoading, isDemoExpired, timeRemaining]);
 
   const scrollToSection = (id) => {
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
