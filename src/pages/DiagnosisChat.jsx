@@ -80,17 +80,17 @@ export default function DiagnosisChat() {
 
   // Subscribe to conversation updates
   useEffect(() => {
-    if (!conversation?.id) return;
+   if (!conversation?.id) return;
 
-    const unsubscribe = base44.agents.subscribeToConversation(
-      conversation.id,
-      (data) => {
-        setMessages(data.messages || []);
-        setLoading(false);
-      }
-    );
+   const unsubscribe = base44.agents.subscribeToConversation(
+     conversation.id,
+     (data) => {
+       setMessages(data.messages || []);
+       setLoading(false);
+     }
+   );
 
-    return unsubscribe;
+   return () => unsubscribe();
   }, [conversation?.id]);
 
   // Auto-scroll to bottom
