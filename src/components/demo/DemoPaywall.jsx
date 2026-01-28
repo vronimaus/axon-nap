@@ -18,15 +18,8 @@ export default function DemoPaywall() {
 
     setIsCheckoutLoading(true);
     try {
-      const response = await base44.functions.invoke('createCheckout');
-      const checkoutUrl = response?.data?.url || response?.url;
-      
-      if (checkoutUrl && typeof checkoutUrl === 'string') {
-        window.location.href = checkoutUrl;
-      } else {
-        toast.error('Checkout-URL konnte nicht geladen werden.');
-        setIsCheckoutLoading(false);
-      }
+      await base44.functions.invoke('createCheckout');
+      // Backend handles the redirect with 303 response
     } catch (error) {
       console.error('Checkout error:', error);
       toast.error('Fehler beim Laden des Checkouts.');
