@@ -51,6 +51,15 @@ export default function Dashboard() {
     queryFn: () => base44.entities.PerformanceGoal.list()
   });
 
+  // Show paywall if user not paid (except admin)
+  if (!isLoading && user && !user.has_paid && user.role !== 'admin') {
+    return <DemoPaywall />;
+  }
+
+  if (isLoading) {
+    return <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950" />;
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 flex flex-col">
       {/* Onboarding Modal */}
