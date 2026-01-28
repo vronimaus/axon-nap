@@ -7,7 +7,6 @@ import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 import { useDemoTimer } from '../components/demo/useDemoTimer';
 import DemoTimer from '../components/demo/DemoTimer';
-import DemoPaywall from '../components/demo/DemoPaywall';
 
 import RedFlagScreen from '../components/diagnosis/RedFlagScreen';
 import BodyMap from '../components/diagnosis/BodyMap';
@@ -33,7 +32,7 @@ const STEPS = {
 
 export default function DiagnosisWizard() {
   const queryClient = useQueryClient();
-  const { isDemoExpired, isLoading: demoLoading, formattedTime } = useDemoTimer();
+  const { isLoading: demoLoading, formattedTime } = useDemoTimer();
   
   // State
   const [currentStep, setCurrentStep] = useState(STEPS.REDFLAGS);
@@ -273,10 +272,6 @@ export default function DiagnosisWizard() {
         <Loader2 className="w-8 h-8 animate-spin text-cyan-400" />
       </div>
     );
-  }
-
-  if (isDemoExpired) {
-    return <DemoPaywall />;
   }
   
   return (
