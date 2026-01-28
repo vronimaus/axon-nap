@@ -63,11 +63,11 @@ export default function Landing() {
             className="text-5xl md:text-7xl font-bold mb-6"
           >
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400">
-              Dein Körper hat ein Betriebssystem.
+              Dein Gehirn bremst dich aus –
             </span>
             <br />
             <span className="text-white">
-              Wir geben dir den Zugangscode.
+              wir lösen die Handbremse.
             </span>
           </motion.h1>
 
@@ -78,8 +78,9 @@ export default function Landing() {
             transition={{ delay: 0.2 }}
             className="text-xl text-slate-300 mb-8 max-w-3xl mx-auto leading-relaxed"
           >
-            Vergiss langes Warten auf Termine. Nutze die visuelle Body-Map und neuronale Drills, 
-            um Schmerzen in Sekunden zu lösen und deine Performance-Ziele zu knacken.
+            Schmerz ist kein kaputtes Bauteil, sondern ein Schutzsignal deines Gehirns. 
+            Nutze die visuelle AXON Body-Map, um Blockaden in deinen Leitbahnen zu finden 
+            und per „Software-Reboot" sofort mehr Bewegungsfreiheit zu gewinnen.
           </motion.p>
 
           {/* CTA Button */}
@@ -137,27 +138,75 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* Problem Section */}
+      {/* Rehab Focus: 60% */}
       <section className="py-20 relative">
-        <div className="max-w-4xl mx-auto px-4">
+        <div className="max-w-5xl mx-auto px-4">
           <div className="glass rounded-3xl border border-red-500/30 p-12">
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-6 text-center">
-              Die Therapie-Lücke 🔴
+              Dein Schmerz ist kein Hardware-Fehler. 🧠
             </h2>
-            <div className="space-y-4 text-lg text-slate-300 leading-relaxed">
+            <div className="space-y-6 text-lg text-slate-300 leading-relaxed">
               <p>
-                Du bist nicht verletzt, aber dein Körper fühlt sich 'blockiert' an? 
-                Dein Physio hat erst in drei Wochen Zeit und Youtube-Videos sind zu allgemein?
+                Wenn Faszien verkleben oder Nerven unter Druck stehen, schaltet dein Gehirn 
+                auf 'Sicherheitsmodus'. Die Folge: Schmerz, Steifheit und Kraftverlust.
               </p>
-              <p>
-                Die meisten Trainingsprogramme ignorieren das Gehirn – dabei ist es die 
-                Schaltzentrale für jeden Schmerz und jede Bewegung.
+              <p className="font-semibold text-cyan-400">
+                Du musst nicht massieren oder dehnen – du musst die Kommunikation reparieren.
               </p>
-              <div className="mt-8 p-6 rounded-2xl bg-gradient-to-r from-red-500/20 to-pink-500/20 border border-red-500/30">
-                <p className="text-xl font-bold text-cyan-400 text-center">
-                  ⚡ Dein Schmerz ist kein Hardware-Fehler.<br />
-                  Er ist ein Software-Schutzsignal.
-                </p>
+
+              {/* Der AXON-Prozess */}
+              <div className="grid md:grid-cols-3 gap-6 mt-8">
+                <div className="p-6 rounded-xl bg-slate-800/50 border border-red-500/30">
+                  <div className="text-2xl font-bold text-red-400 mb-3">1. Map it</div>
+                  <p className="text-sm">Zeichne auf dem digitalen Modell ein, wo der Energiefluss stoppt.</p>
+                </div>
+                <div className="p-6 rounded-xl bg-slate-800/50 border border-orange-500/30">
+                  <div className="text-2xl font-bold text-orange-400 mb-3">2. Decode it</div>
+                  <p className="text-sm">AXON übersetzt deine Zeichnung in Faszien- und Nervenketten.</p>
+                </div>
+                <div className="p-6 rounded-xl bg-slate-800/50 border border-green-500/30">
+                  <div className="text-2xl font-bold text-green-400 mb-3">3. Reset it</div>
+                  <p className="text-sm">Aktiviere 30-Sek-Drills (Augen, Kiefer, Atmung). Schmerz sinkt, Mobilität steigt – sofort.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Hardware vs Software */}
+      <section className="py-20 relative">
+        <div className="max-w-5xl mx-auto px-4">
+          <h2 className="text-4xl font-bold text-center mb-12 text-white">
+            Warum klassisches Training oft scheitert
+          </h2>
+
+          <div className="grid md:grid-cols-2 gap-6">
+            {/* Klassisch */}
+            <div className="glass rounded-2xl border border-slate-600/30 p-8">
+              <div className="text-sm font-bold text-slate-500 mb-3">KLASSISCHER ANSATZ (Hardware)</div>
+              <h3 className="text-xl font-bold text-slate-300 mb-4">
+                „Dein Nacken ist steif? Dehne ihn 10 Minuten."
+              </h3>
+              <div className="space-y-3 text-slate-400">
+                <p>➔ Du dehnst und massierst</p>
+                <p>➔ Kurzfristige Linderung</p>
+                <p className="text-red-400 font-semibold">❌ Schmerz kommt nach einer Stunde zurück</p>
+                <p className="text-sm italic">Ursache (z.B. Augenstress) wird ignoriert</p>
+              </div>
+            </div>
+
+            {/* AXON */}
+            <div className="glass rounded-2xl border border-cyan-500/30 p-8 neuro-glow">
+              <div className="text-sm font-bold text-cyan-400 mb-3">AXON-WEG (Software)</div>
+              <h3 className="text-xl font-bold text-white mb-4">
+                „Markiere den Nacken."
+              </h3>
+              <div className="space-y-3 text-slate-300">
+                <p>➔ 30 Sek. gezielte Augenbewegungen</p>
+                <p>➔ Gehirn erkennt Sicherheit</p>
+                <p className="text-green-400 font-semibold">✅ Schutzspannung löst sich sofort</p>
+                <p className="text-sm italic text-cyan-400">Die Ursache wird behoben, nicht das Symptom</p>
               </div>
             </div>
           </div>
@@ -197,24 +246,50 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* Master-12 Section */}
+      {/* Performance Focus: 40% */}
       <section className="py-20 relative">
-        <div className="max-w-6xl mx-auto px-4">
+        <div className="max-w-5xl mx-auto px-4">
           <div className="glass rounded-3xl border border-purple-500/30 p-12">
             <h2 className="text-4xl md:text-5xl font-bold text-center mb-6">
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400">
-                Die Master-12
+                Wahre Performance ist das Ergebnis von Sicherheit
               </span>
             </h2>
-            <p className="text-xl text-slate-300 text-center mb-4">
-              Werde zum Architekten deiner Bewegung
-            </p>
-            <p className="text-slate-400 text-center max-w-3xl mx-auto mb-12">
-              AXON begleitet dich bei den 12 wichtigsten Meilensteinen der Athletik – 
-              vom perfekten Pistol Squat bis zur Brücke. Mit dem 5-Level-System schaltet 
-              dein Gehirn neue Bewegungsspielräume erst frei, wenn es sich sicher fühlt.
+            <p className="text-lg text-slate-300 text-center max-w-3xl mx-auto mb-8">
+              Du erreichst deine Ziele (wie die Brücke oder den Pistol Squat) nicht durch mehr Gewalt, 
+              sondern indem du deinem Gehirn beweist, dass die Endposition sicher ist. 
+              AXON gibt dir den Leitfaden, um deine Performance-Ziele neurologisch zu zertifizieren.
             </p>
 
+            {/* Der Leitfaden */}
+            <div className="space-y-6 mb-12">
+              <div className="flex gap-4 items-start">
+                <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-gradient-to-br from-cyan-500 to-purple-600 flex items-center justify-center font-bold text-white">
+                  1-2
+                </div>
+                <div>
+                  <h3 className="text-xl font-bold text-white mb-2">Hardware-Check</h3>
+                  <p className="text-slate-400">
+                    Wir lösen mechanische Blockaden in deinen Leitbahnen, damit kein Materialstress entsteht.
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex gap-4 items-start">
+                <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500 to-pink-600 flex items-center justify-center font-bold text-white">
+                  3-5
+                </div>
+                <div>
+                  <h3 className="text-xl font-bold text-white mb-2">Software-Autorisierung</h3>
+                  <p className="text-slate-400">
+                    Über spezifische vestibuläre Drills geben wir deinem Gehirn die Orientierung, 
+                    die es braucht, um die volle Kraft freizuschalten.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Master-12 Goals Grid */}
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
               {masterGoals.map((goal, idx) => (
                 <motion.div
@@ -233,12 +308,28 @@ export default function Landing() {
         </div>
       </section>
 
+      {/* Philosophy Section */}
+      <section className="py-20 relative">
+        <div className="max-w-4xl mx-auto px-4">
+          <h2 className="text-4xl font-bold text-center mb-6 text-white">
+            Vom Frust zur Freiheit
+          </h2>
+          <div className="glass rounded-2xl border border-cyan-500/20 p-8">
+            <p className="text-lg text-slate-300 leading-relaxed text-center">
+              Ich habe AXON entwickelt, weil ich es satt hatte, gegen meinen eigenen Körper zu kämpfen. 
+              AXON ist kein Workout-Tracker. Es ist dein persönliches Diagnose-Tool, um die Sprache 
+              deines Nervensystems zu verstehen. <span className="text-cyan-400 font-semibold">Werde dein eigener Therapeut.</span>
+            </p>
+          </div>
+        </div>
+      </section>
+
       {/* Pricing Section */}
       <section id="pricing" className="py-20 relative">
         <div className="max-w-4xl mx-auto px-4">
           <h2 className="text-4xl md:text-5xl font-bold text-center mb-4">
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-400">
-              Lifetime Access
+              Einmal investieren. Ein Leben lang bewegen.
             </span>
           </h2>
           <p className="text-xl text-slate-400 text-center mb-12">
@@ -265,14 +356,30 @@ export default function Landing() {
             </div>
 
             <div className="space-y-4 mb-8">
-              {benefits.map((benefit, idx) => (
-                <div key={idx} className="flex items-center gap-3">
-                  <div className="w-6 h-6 rounded-full bg-gradient-to-r from-cyan-500 to-purple-600 flex items-center justify-center flex-shrink-0">
-                    <Check className="w-4 h-4 text-white" />
-                  </div>
-                  <span className="text-slate-300">{benefit}</span>
+              <div className="flex items-center gap-3">
+                <div className="w-6 h-6 rounded-full bg-gradient-to-r from-cyan-500 to-purple-600 flex items-center justify-center flex-shrink-0">
+                  <Check className="w-4 h-4 text-white" />
                 </div>
-              ))}
+                <span className="text-slate-300">Vollständige interaktive Body-Map</span>
+              </div>
+              <div className="flex items-center gap-3">
+                <div className="w-6 h-6 rounded-full bg-gradient-to-r from-cyan-500 to-purple-600 flex items-center justify-center flex-shrink-0">
+                  <Check className="w-4 h-4 text-white" />
+                </div>
+                <span className="text-slate-300">Analyse aller 6 Haupt-Faszienketten</span>
+              </div>
+              <div className="flex items-center gap-3">
+                <div className="w-6 h-6 rounded-full bg-gradient-to-r from-cyan-500 to-purple-600 flex items-center justify-center flex-shrink-0">
+                  <Check className="w-4 h-4 text-white" />
+                </div>
+                <span className="text-slate-300">Die „Master-12" Performance-Pfade (Level 1-5)</span>
+              </div>
+              <div className="flex items-center gap-3">
+                <div className="w-6 h-6 rounded-full bg-gradient-to-r from-cyan-500 to-purple-600 flex items-center justify-center flex-shrink-0">
+                  <Check className="w-4 h-4 text-white" />
+                </div>
+                <span className="text-slate-300">Keine Abos. Keine versteckten Kosten.</span>
+              </div>
             </div>
 
             <Button
@@ -300,12 +407,12 @@ export default function Landing() {
           <div className="space-y-4">
             <div className="glass rounded-2xl border border-cyan-500/20 p-6">
               <h3 className="text-xl font-bold text-cyan-400 mb-3">
-                Muss ich AXON im App Store laden?
+                Das Web-App Prinzip
               </h3>
               <p className="text-slate-300 leading-relaxed">
-                Nein. AXON ist eine moderne Web-App (PWA). Du öffnest sie einfach im Browser, 
-                fügst sie mit einem Klick zu deinem Home-Bildschirm hinzu und sie funktioniert 
-                wie eine normale App – ohne den Stress mit Store-Updates oder Datenschutz-Dschungeln.
+                AXON ist eine moderne Web-App. Das bedeutet für dich: Kein Download-Stress, keine Store-Updates. 
+                Einfach im Browser öffnen, zum Home-Bildschirm hinzufügen und auf jedem Gerät sofort einsatzbereit sein. 
+                Deine Daten, dein Tool, dein Fortschritt.
               </p>
             </div>
 
