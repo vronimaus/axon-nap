@@ -191,7 +191,7 @@ export default function Landing() {
             und per „Software-Reboot" sofort mehr Bewegungsfreiheit zu gewinnen.
           </motion.p>
 
-          {/* CTA Button */}
+          {/* CTA Buttons */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -199,22 +199,31 @@ export default function Landing() {
             className="flex flex-col sm:flex-row gap-4 justify-center mb-12"
           >
             <Button
-              onClick={() => scrollToSection('pricing')}
+              onClick={handleCheckout}
+              disabled={isCheckoutLoading}
               size="lg"
-              className="text-lg px-8 py-6 bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-600 hover:to-purple-700 neuro-glow"
+              className="text-lg px-8 py-6 bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-600 hover:to-purple-700 neuro-glow disabled:opacity-50"
             >
-              <Zap className="w-5 h-5 mr-2" />
-              Jetzt AXON Lifetime-Zugang sichern
+              {isCheckoutLoading ? (
+                <>
+                  <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                  Lädt...
+                </>
+              ) : (
+                <>
+                  <Zap className="w-5 h-5 mr-2" />
+                  Jetzt Lifetime kaufen
+                </>
+              )}
             </Button>
-            <Link to={createPageUrl('Dashboard')}>
-              <Button
-                size="lg"
-                variant="outline"
-                className="text-lg px-8 py-6 border-cyan-500/50 text-cyan-400 hover:bg-cyan-500/10"
-              >
-                Demo ansehen
-              </Button>
-            </Link>
+            <Button
+              onClick={handleDemoClick}
+              size="lg"
+              variant="outline"
+              className="text-lg px-8 py-6 border-cyan-500/50 text-cyan-400 hover:bg-cyan-500/10"
+            >
+              Demo ansehen (15 Min)
+            </Button>
           </motion.div>
 
           {/* Visual Preview */}
