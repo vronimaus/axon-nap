@@ -541,7 +541,7 @@ export default function DiagnosisWizard() {
               exit={{ opacity: 0, x: -20 }}
             >
               <ResultsAnalysis
-                symptom={selectedSymptom?.label || selectedSymptom}
+                symptom={selectedSymptoms.map(s => s.label).join(', ')}
                 chains={triggeredChains}
                 hardwareResults={hardwareResults}
                 softwareResults={softwareResults}
