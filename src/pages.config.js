@@ -48,31 +48,31 @@
  * The mainPage value must match a key in the PAGES object exactly.
  */
 import Dashboard from './pages/Dashboard';
+import DiagnosisChat from './pages/DiagnosisChat';
+import DiagnosisWizard from './pages/DiagnosisWizard';
 import ExerciseImageGenerator from './pages/ExerciseImageGenerator';
 import Imprint from './pages/Imprint';
 import Landing from './pages/Landing';
 import Performance from './pages/Performance';
 import Privacy from './pages/Privacy';
+import QuickDemo from './pages/QuickDemo';
 import Success from './pages/Success';
 import Terms from './pages/Terms';
-import QuickDemo from './pages/QuickDemo';
-import DiagnosisChat from './pages/DiagnosisChat';
-import DiagnosisWizard from './pages/DiagnosisWizard';
 import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
     "Dashboard": Dashboard,
+    "DiagnosisChat": DiagnosisChat,
+    "DiagnosisWizard": DiagnosisWizard,
     "ExerciseImageGenerator": ExerciseImageGenerator,
     "Imprint": Imprint,
     "Landing": Landing,
     "Performance": Performance,
     "Privacy": Privacy,
+    "QuickDemo": QuickDemo,
     "Success": Success,
     "Terms": Terms,
-    "QuickDemo": QuickDemo,
-    "DiagnosisChat": DiagnosisChat,
-    "DiagnosisWizard": DiagnosisWizard,
 }
 
 export const pagesConfig = {
