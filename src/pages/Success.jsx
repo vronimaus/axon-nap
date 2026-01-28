@@ -1,11 +1,18 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { Button } from '@/components/ui/button';
-import { CheckCircle, Zap } from 'lucide-react';
+import { CheckCircle, Zap, LogIn } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { base44 } from '@/api/base44Client';
 
 export default function Success() {
+  const [isLoggingIn, setIsLoggingIn] = useState(false);
+
+  const handleLogin = async () => {
+    setIsLoggingIn(true);
+    await base44.auth.redirectToLogin(createPageUrl('Dashboard'));
+  };
   return (
     <div className="min-h-screen bg-gradient-to-b from-black via-slate-950 to-slate-900 flex items-center justify-center px-4">
       <motion.div
@@ -36,19 +43,21 @@ export default function Success() {
           </p>
         </div>
 
-        <Link to={createPageUrl('Dashboard')}>
+        <div className="space-y-3">
           <Button
+            onClick={handleLogin}
+            disabled={isLoggingIn}
             size="lg"
-            className="text-lg px-8 py-6 bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-600 hover:to-purple-700 neuro-glow"
+            className="w-full text-lg px-8 py-6 bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-600 hover:to-purple-700 neuro-glow"
           >
-            <Zap className="w-5 h-5 mr-2" />
-            Zum Command Center
+            <LogIn className="w-5 h-5 mr-2" />
+            {isLoggingIn ? 'Leite weiter...' : 'Jetzt Einloggen'}
           </Button>
-        </Link>
 
-        <p className="text-sm text-slate-500 mt-6">
-          Eine Bestätigungs-E-Mail ist unterwegs zu dir.
-        </p>
+          <p className="text-sm text-slate-500 text-center">
+            Eine Bestätigungs-E-Mail ist unterwegs zu dir.
+          </p>
+        </div>
       </motion.div>
     </div>
   );
