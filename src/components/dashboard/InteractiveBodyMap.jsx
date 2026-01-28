@@ -143,6 +143,59 @@ export default function InteractiveBodyMap({ mode, onRegionSelect, sessions }) {
     setCurrentPath([]);
   };
 
+  const detectRegionFromCoordinates = (markers, view) => {
+    if (markers.length === 0) return 'systemisch';
+
+    // Calculate average position of all markers
+    let totalY = 0, totalX = 0, totalPoints = 0;
+
+    markers.forEach(marker => {
+      if (marker.type === 'point') {
+        totalX += marker.x;
+        totalY += marker.y;
+        totalPoints += 1;
+      } else if (marker.points) {
+        marker.points.forEach(p => {
+          totalX += p.x;
+          totalY += p.y;
+          totalPoints += 1;
+        });
+      }
+    });
+
+    const avgY = totalPoints > 0 ? totalY / totalPoints : 0;
+    const avgX = totalPoints > 0 ? totalX / totalPoints : 0;
+    
+    // Normalized Y position (0 = top, 1 = bottom)
+    const normalizedY = avgY / 600;
+    const normalizedX = avgX / 400;
+
+    // Region detection based on Y position and view
+    if (normalizedY < 0.15) {
+      return 'kopf_kiefer';
+    } else if (normalizedY < 0.25) {
+      return 'hals_nacken';
+    } else if (normalizedY < 0.35) {
+      return 'schulter_arm';
+    } else if (normalizedY < 0.45) {
+      return view === 'front' ? 'brust' : 'rumpf';
+    } else if (normalizedY < 0.55) {
+      return view === 'front' ? 'rumpf' : 'lws';
+    } else if (normalizedY < 0.65) {
+      return 'lws';
+    } else if (normalizedY < 0.75) {
+      return 'huefte';
+    } else if (normalizedY < 0.82) {
+      return 'oberschenkel';
+    } else if (normalizedY < 0.88) {
+      return 'knie';
+    } else if (normalizedY < 0.95) {
+      return 'unterschenkel';
+    } else {
+      return 'fuss';
+    }
+  };
+
   const handleAnalyze = async () => {
     if (markers.length === 0) {
       toast.error('Bitte markiere zuerst einen Bereich');
@@ -151,17 +204,8 @@ export default function InteractiveBodyMap({ mode, onRegionSelect, sessions }) {
 
     setIsAnalyzing(true);
     try {
-      // Call AI to analyze the marked region and get body region
-      const response = await base44.integrations.Core.InvokeLLM({
-        prompt: `Analyze this body pain map data and identify the primary body region being marked. 
-        Markers: ${JSON.stringify(markers)}
-        View: ${view}
-        
-        Return a single region code from this list: kopf_kiefer, hals_nacken, schulter_arm, brust, lws, rumpf, huefte, oberschenkel, knie, unterschenkel, fuss, systemisch
-        Return ONLY the region code as plain text, nothing else.`,
-      });
-      
-      const region = response.trim().toLowerCase();
+      // Detect region from marker coordinates
+      const region = detectRegionFromCoordinates(markers, view);
       
       // Store markers in session storage for DiagnosisWizard
       sessionStorage.setItem('bodyMapData', JSON.stringify({ view, markers, mode }));
