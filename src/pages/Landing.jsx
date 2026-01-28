@@ -15,21 +15,21 @@ export default function Landing() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Warte, bis Demo-Timer initialisiert ist
-    if (demoLoading) return;
+    // Warte, bis Demo-Timer vollständig initialisiert ist
+    if (demoLoading || timeRemaining === null) return;
 
     const checkAuth = async () => {
       try {
         const currentUser = await base44.auth.me();
-        setUser(currentUser);
-        // Eingeloggte User redirect zum Dashboard
+        
+        // Eingeloggte User - zum Dashboard
         if (currentUser) {
           window.location.href = createPageUrl('Dashboard');
           return;
         }
         
-        // Demo läuft - zum Dashboard umleiten
-        if (timeRemaining !== null && !isDemoExpired) {
+        // Demo läuft (Timer initialisiert und nicht abgelaufen) - zum Dashboard
+        if (!isDemoExpired) {
           window.location.href = createPageUrl('Dashboard');
           return;
         }
@@ -39,8 +39,9 @@ export default function Landing() {
         setIsLoading(false);
       }
     };
+    
     checkAuth();
-  }, [demoLoading, isDemoExpired, timeRemaining]);
+  }, [demoLoading, timeRemaining]);
 
   const scrollToSection = (id) => {
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
