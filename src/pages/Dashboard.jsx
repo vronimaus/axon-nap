@@ -1,16 +1,30 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
-import { Activity, Target, Zap } from 'lucide-react';
+import { Activity, Target, Zap, Info } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import InteractiveBodyMap from '../components/dashboard/InteractiveBodyMap';
 import HardwarePanel from '../components/dashboard/HardwarePanel';
 import NeuroMatrix from '../components/dashboard/NeuroMatrix';
+import OnboardingModal from '../components/dashboard/OnboardingModal';
 
 export default function Dashboard() {
   const [mode, setMode] = useState('performance'); // 'rehab' or 'performance'
   const [selectedBodyRegion, setSelectedBodyRegion] = useState(null);
+  const [showOnboarding, setShowOnboarding] = useState(false);
+
+  useEffect(() => {
+    const hasSeenOnboarding = localStorage.getItem('axon_onboarding_seen');
+    if (!hasSeenOnboarding) {
+      setShowOnboarding(true);
+    }
+  }, []);
+
+  const handleCloseOnboarding = () => {
+    localStorage.setItem('axon_onboarding_seen', 'true');
+    setShowOnboarding(false);
+  };
   
   const { data: sessions = [] } = useQuery({
     queryKey: ['diagnosisSessions'],
@@ -24,21 +38,34 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
+      {/* Onboarding Modal */}
+      <AnimatePresence>
+        {showOnboarding && <OnboardingModal onClose={handleCloseOnboarding} />}
+      </AnimatePresence>
+
       {/* Header with Mode Switch */}
       <div className="sticky top-16 z-40 bg-slate-900 border-b border-cyan-500/20">
         <div className="max-w-7xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-500">
-                Neuro-Performance Command Center
+                ⚡ AXON Command Center
               </h1>
               <p className="text-xs text-slate-400 mt-1">
-                Hybrid System: Hardware + Software Intelligence
+                Hack Your Software. Free Your Hardware.
               </p>
             </div>
             
             {/* Mode Switch */}
             <div className="flex gap-3">
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setShowOnboarding(true)}
+                className="text-slate-400 hover:text-cyan-400"
+              >
+                <Info className="w-4 h-4" />
+              </Button>
               <Button
                 onClick={() => setMode('rehab')}
                 variant={mode === 'rehab' ? 'default' : 'outline'}
@@ -49,7 +76,7 @@ export default function Dashboard() {
                 }`}
               >
                 <Target className="w-4 h-4" />
-                REHAB MODE
+                🔴 REHAB
               </Button>
               <Button
                 onClick={() => setMode('performance')}
@@ -61,7 +88,7 @@ export default function Dashboard() {
                 }`}
               >
                 <Zap className="w-4 h-4" />
-                PERFORMANCE MODE
+                🔵 PERFORMANCE
               </Button>
             </div>
           </div>
