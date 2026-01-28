@@ -43,7 +43,7 @@ export default function DiagnosisWizard() {
    // State
    const [currentStep, setCurrentStep] = useState(STEPS.REDFLAGS);
    const [selectedRegion, setSelectedRegion] = useState(initialRegion || null);
-   const [selectedSymptom, setSelectedSymptom] = useState(null);
+   const [selectedSymptoms, setSelectedSymptoms] = useState([]);
 
    // Update currentStep when initialRegion changes
    useEffect(() => {
