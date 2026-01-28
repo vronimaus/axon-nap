@@ -6,8 +6,10 @@ import { Check, Zap, MapPin, Brain, Shield, ChevronDown, Loader2, LogOut } from 
 import { motion } from 'framer-motion';
 import { base44 } from '@/api/base44Client';
 import { toast } from 'sonner';
+import { useDemoTimer } from '@/components/demo/useDemoTimer';
 
 export default function Landing() {
+  const { isDemoExpired, timeRemaining, isLoading: demoLoading } = useDemoTimer();
   const [isCheckoutLoading, setIsCheckoutLoading] = useState(false);
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -22,6 +24,12 @@ export default function Landing() {
           window.location.href = createPageUrl('Dashboard');
           return;
         }
+        
+        // Demo läuft - zum Dashboard umleiten
+        if (timeRemaining !== null && !isDemoExpired) {
+          window.location.href = createPageUrl('Dashboard');
+          return;
+        }
       } catch (e) {
         setUser(null);
       } finally {
@@ -29,7 +37,7 @@ export default function Landing() {
       }
     };
     checkAuth();
-  }, []);
+  }, [isDemoExpired, timeRemaining]);
 
   const scrollToSection = (id) => {
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
