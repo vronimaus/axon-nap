@@ -3,8 +3,13 @@ import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { Activity, LayoutDashboard, Compass, Trophy } from 'lucide-react';
 import CookieBanner from './components/CookieBanner';
+import { useDemoTimer } from './components/demo/useDemoTimer';
+import DemoTimer from './components/demo/DemoTimer';
+import DemoPaywall from './components/demo/DemoPaywall';
+import { AnimatePresence } from 'framer-motion';
 
 export default function Layout({ children, currentPageName }) {
+  const { isDemoExpired, isLoading: demoLoading, formattedTime } = useDemoTimer();
   const navItems = [
     { name: 'Command', icon: LayoutDashboard, page: 'Dashboard' },
     { name: 'Detective', icon: Compass, page: 'DiagnosisWizard' },
@@ -56,6 +61,14 @@ export default function Layout({ children, currentPageName }) {
       <main>
         {children}
       </main>
+
+      {/* Global Demo Timer */}
+      <DemoTimer formattedTime={formattedTime} isLoading={demoLoading} />
+
+      {/* Demo Paywall Overlay */}
+      <AnimatePresence>
+        {isDemoExpired && <DemoPaywall />}
+      </AnimatePresence>
       
       {/* Footer */}
       <footer className="border-t border-cyan-500/20 glass mt-auto">
