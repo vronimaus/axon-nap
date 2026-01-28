@@ -63,13 +63,22 @@ export default function Layout({ children, currentPageName }) {
 
               {/* User Menu / Login */}
               {user ? (
-                <button
-                  onClick={() => base44.auth.logout()}
-                  className="ml-4 p-2 rounded-xl text-slate-400 hover:text-cyan-400 hover:bg-slate-800/50 transition-all"
-                  title="Logout"
-                >
-                  <LogOut className="w-5 h-5" />
-                </button>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={handleProfileClick}
+                    className="p-2 rounded-xl text-slate-400 hover:text-cyan-400 hover:bg-slate-800/50 transition-all"
+                    title="Profil"
+                  >
+                    <User className="w-5 h-5" />
+                  </button>
+                  <button
+                    onClick={() => base44.auth.logout()}
+                    className="p-2 rounded-xl text-slate-400 hover:text-cyan-400 hover:bg-slate-800/50 transition-all"
+                    title="Logout"
+                  >
+                    <LogOut className="w-5 h-5" />
+                  </button>
+                </div>
               ) : (
                 <button
                   onClick={() => base44.auth.redirectToLogin(window.location.href)}
