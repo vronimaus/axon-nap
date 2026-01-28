@@ -58,6 +58,7 @@ import Privacy from './pages/Privacy';
 import QuickDemo from './pages/QuickDemo';
 import Success from './pages/Success';
 import Terms from './pages/Terms';
+import MFRIntegration from './pages/MFRIntegration';
 import __Layout from './Layout.jsx';
 
 
@@ -73,6 +74,7 @@ export const PAGES = {
     "QuickDemo": QuickDemo,
     "Success": Success,
     "Terms": Terms,
+    "MFRIntegration": MFRIntegration,
 }
 
 export const pagesConfig = {
