@@ -51,8 +51,8 @@ import Dashboard from './pages/Dashboard';
 import DiagnosisChat from './pages/DiagnosisChat';
 import DiagnosisWizard from './pages/DiagnosisWizard';
 import ExerciseImageGenerator from './pages/ExerciseImageGenerator';
-import Performance from './pages/Performance';
 import Landing from './pages/Landing';
+import Performance from './pages/Performance';
 import __Layout from './Layout.jsx';
 
 
@@ -61,12 +61,12 @@ export const PAGES = {
     "DiagnosisChat": DiagnosisChat,
     "DiagnosisWizard": DiagnosisWizard,
     "ExerciseImageGenerator": ExerciseImageGenerator,
-    "Performance": Performance,
     "Landing": Landing,
+    "Performance": Performance,
 }
 
 export const pagesConfig = {
-    mainPage: "DiagnosisWizard",
+    mainPage: "Landing",
     Pages: PAGES,
     Layout: __Layout,
 };
