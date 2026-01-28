@@ -36,7 +36,7 @@ export default function DiagnosisChat() {
   useEffect(() => {
     const initConversation = async () => {
       try {
-        const isContinuation = searchParams.get('continue') === 'true';
+        const isContinuation = sessionId && searchParams.get('continue') === 'true';
 
         const metadata = {
           name: 'MFR Detective Session',
