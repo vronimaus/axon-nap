@@ -143,30 +143,42 @@ export default function Landing() {
         <div className="max-w-5xl mx-auto px-4">
           <div className="glass rounded-3xl border border-red-500/30 p-12">
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-6 text-center">
-              Dein Schmerz ist kein Hardware-Fehler. 🧠
+              Die Synergie von Mechanik und Neurologie
             </h2>
             <div className="space-y-6 text-lg text-slate-300 leading-relaxed">
               <p>
-                Wenn Faszien verkleben oder Nerven unter Druck stehen, schaltet dein Gehirn 
-                auf 'Sicherheitsmodus'. Die Folge: Schmerz, Steifheit und Kraftverlust.
-              </p>
-              <p className="font-semibold text-cyan-400">
-                Du musst nicht massieren oder dehnen – du musst die Kommunikation reparieren.
+                Die meisten Ansätze konzentrieren sich nur auf die Hardware (Muskeln und Gewebe). 
+                Doch wenn die Spannung nach Massage oder Faszientraining immer wieder zurückkehrt, 
+                liegt das an der Software (deinem Nervensystem). 
+                <span className="text-red-400 font-semibold"> Dein Gehirn hält das Schutzprogramm künstlich aufrecht.</span>
               </p>
 
-              {/* Der AXON-Prozess */}
+              {/* Das AXON 3-Stufen-System */}
+              <h3 className="text-2xl font-bold text-cyan-400 mt-8 mb-4">Das AXON 3-Stufen-System:</h3>
+              
               <div className="grid md:grid-cols-3 gap-6 mt-8">
-                <div className="p-6 rounded-xl bg-slate-800/50 border border-red-500/30">
-                  <div className="text-2xl font-bold text-red-400 mb-3">1. Map it</div>
-                  <p className="text-sm">Zeichne auf dem digitalen Modell ein, wo der Energiefluss stoppt.</p>
+                <div className="p-6 rounded-xl bg-slate-800/50 border border-cyan-500/30">
+                  <div className="text-2xl font-bold text-cyan-400 mb-3">1. Gewebe-Release</div>
+                  <p className="text-sm font-semibold text-cyan-300 mb-2">(Hardware)</p>
+                  <p className="text-sm">
+                    Nutze gezielten mechanischen Druck oder Massage (MFR), um strukturelle 
+                    Verklebungen in den Funktionsketten vorzubereiten.
+                  </p>
                 </div>
-                <div className="p-6 rounded-xl bg-slate-800/50 border border-orange-500/30">
-                  <div className="text-2xl font-bold text-orange-400 mb-3">2. Decode it</div>
-                  <p className="text-sm">AXON übersetzt deine Zeichnung in Faszien- und Nervenketten.</p>
+                <div className="p-6 rounded-xl bg-slate-800/50 border border-purple-500/30">
+                  <div className="text-2xl font-bold text-purple-400 mb-3">2. Neuronaler Reset</div>
+                  <p className="text-sm font-semibold text-purple-300 mb-2">(Software)</p>
+                  <p className="text-sm">
+                    Nutze AXON Neuro-Drills (z.B. für visuelle oder vestibuläre Reize), 
+                    um deinem Gehirn zu signalisieren, dass die neue Freiheit sicher ist.
+                  </p>
                 </div>
                 <div className="p-6 rounded-xl bg-slate-800/50 border border-green-500/30">
-                  <div className="text-2xl font-bold text-green-400 mb-3">3. Reset it</div>
-                  <p className="text-sm">Aktiviere 30-Sek-Drills (Augen, Kiefer, Atmung). Schmerz sinkt, Mobilität steigt – sofort.</p>
+                  <div className="text-2xl font-bold text-green-400 mb-3">3. Integration</div>
+                  <p className="text-sm font-semibold text-green-300 mb-2">(Speichern)</p>
+                  <p className="text-sm">
+                    Speichere die gewonnene Beweglichkeit durch aktive Kontrolle dauerhaft ab.
+                  </p>
                 </div>
               </div>
             </div>
