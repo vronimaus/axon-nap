@@ -22,6 +22,7 @@ import { SYMPTOM_CLUSTERS } from '../components/diagnosis/SymptomData';
 const STEPS = {
   REDFLAGS: -1,
   SYMPTOM: 0,
+  SYMPTOM_SELECT_ONLY: 0.5,
   FOOT_CHECK: 1,
   BREATH_CHECK: 2,
   HARDWARE: 3,
