@@ -47,7 +47,7 @@ export default function Performance() {
                   Performance-Ziele
                 </h1>
                 <p className="text-slate-400 max-w-2xl mx-auto">
-                  Die Big 6 Master-Ziele für maximale Bewegungsqualität. Jedes Ziel folgt der Triple-Path-Logik: 
+                  Die 12 Master-Ziele für maximale Bewegungsqualität. Jedes Ziel folgt der Triple-Path-Logik: 
                   Mobilisation, Dehnung, Kräftigung & Neuro-Fix.
                 </p>
               </div>
