@@ -19,20 +19,14 @@ export default function GoalCard({ goal, onClick, index }) {
     'jefferson_curl': '🌀'
   };
 
-  // Farbschema für Karten
+  // Neon-Dark Farbschema - Cyan & Purple Gradient
   const colorSchemes = [
-    { bg: 'from-pink-500/10 to-pink-600/5', border: 'border-pink-500/30', text: 'text-pink-400', icon: 'bg-pink-500' },
-    { bg: 'from-blue-500/10 to-blue-600/5', border: 'border-blue-500/30', text: 'text-blue-400', icon: 'bg-blue-500' },
-    { bg: 'from-orange-500/10 to-orange-600/5', border: 'border-orange-500/30', text: 'text-orange-400', icon: 'bg-orange-500' },
-    { bg: 'from-green-500/10 to-green-600/5', border: 'border-green-500/30', text: 'text-green-400', icon: 'bg-green-500' },
-    { bg: 'from-cyan-500/10 to-cyan-600/5', border: 'border-cyan-500/30', text: 'text-cyan-400', icon: 'bg-cyan-500' },
-    { bg: 'from-purple-500/10 to-purple-600/5', border: 'border-purple-500/30', text: 'text-purple-400', icon: 'bg-purple-500' },
-    { bg: 'from-red-500/10 to-red-600/5', border: 'border-red-500/30', text: 'text-red-400', icon: 'bg-red-500' },
-    { bg: 'from-yellow-500/10 to-yellow-600/5', border: 'border-yellow-500/30', text: 'text-yellow-400', icon: 'bg-yellow-500' },
-    { bg: 'from-indigo-500/10 to-indigo-600/5', border: 'border-indigo-500/30', text: 'text-indigo-400', icon: 'bg-indigo-500' },
-    { bg: 'from-teal-500/10 to-teal-600/5', border: 'border-teal-500/30', text: 'text-teal-400', icon: 'bg-teal-500' },
-    { bg: 'from-lime-500/10 to-lime-600/5', border: 'border-lime-500/30', text: 'text-lime-400', icon: 'bg-lime-500' },
-    { bg: 'from-fuchsia-500/10 to-fuchsia-600/5', border: 'border-fuchsia-500/30', text: 'text-fuchsia-400', icon: 'bg-fuchsia-500' }
+    { bg: 'from-cyan-500/10 to-purple-500/5', border: 'border-cyan-500/20', text: 'text-cyan-400', icon: 'bg-gradient-to-br from-cyan-500 to-cyan-600' },
+    { bg: 'from-purple-500/10 to-cyan-500/5', border: 'border-purple-500/20', text: 'text-purple-400', icon: 'bg-gradient-to-br from-purple-500 to-purple-600' },
+    { bg: 'from-cyan-400/10 to-slate-700/5', border: 'border-cyan-400/20', text: 'text-cyan-300', icon: 'bg-gradient-to-br from-cyan-400 to-cyan-500' },
+    { bg: 'from-purple-400/10 to-slate-700/5', border: 'border-purple-400/20', text: 'text-purple-300', icon: 'bg-gradient-to-br from-purple-400 to-purple-500' },
+    { bg: 'from-cyan-600/10 to-purple-600/5', border: 'border-cyan-600/20', text: 'text-cyan-500', icon: 'bg-gradient-to-br from-cyan-600 to-purple-500' },
+    { bg: 'from-purple-600/10 to-cyan-600/5', border: 'border-purple-600/20', text: 'text-purple-500', icon: 'bg-gradient-to-br from-purple-600 to-cyan-500' }
   ];
 
   const scheme = colorSchemes[index % colorSchemes.length];
