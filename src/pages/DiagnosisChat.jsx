@@ -70,6 +70,7 @@ export default function DiagnosisChat() {
             role: 'user',
             content: contextMsg
           });
+          setLoading(false);
         }
       } catch (error) {
         console.error('Fehler beim Erstellen der Konversation:', error);
