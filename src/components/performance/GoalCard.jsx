@@ -54,15 +54,6 @@ export default function GoalCard({ goal, onClick, index }) {
       
       <div className="relative flex items-center justify-between">
         <div className="flex items-center gap-4 flex-1">
-          {/* Icon */}
-          <div className={`
-            w-14 h-14 rounded-xl flex items-center justify-center text-2xl
-            ${scheme.icon} shadow-lg
-            transform group-hover:scale-110 group-hover:rotate-6 transition-transform duration-300
-          `}>
-            {emoji}
-          </div>
-          
           {/* Text */}
           <div className="flex-1 min-w-0">
             <h3 className={`text-base font-semibold ${scheme.text} mb-1 group-hover:translate-x-1 transition-transform truncate`}>
