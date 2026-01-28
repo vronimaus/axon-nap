@@ -30,13 +30,17 @@ const STEPS = {
 };
 
 export default function DiagnosisWizard() {
-  const queryClient = useQueryClient();
-  const { isDemoExpired, isLoading: demoLoading, formattedTime } = useDemoTimer();
-  
-  // State
-  const [currentStep, setCurrentStep] = useState(STEPS.REDFLAGS);
-  const [selectedRegion, setSelectedRegion] = useState(null);
-  const [selectedSymptom, setSelectedSymptom] = useState(null);
+   const queryClient = useQueryClient();
+   const { isDemoExpired, isLoading: demoLoading, formattedTime } = useDemoTimer();
+
+   // Get region from URL params
+   const urlParams = new URLSearchParams(window.location.search);
+   const initialRegion = urlParams.get('region');
+
+   // State
+   const [currentStep, setCurrentStep] = useState(STEPS.REDFLAGS);
+   const [selectedRegion, setSelectedRegion] = useState(initialRegion || null);
+   const [selectedSymptom, setSelectedSymptom] = useState(null);
   const [aiAnalysis, setAiAnalysis] = useState(null);
   const [currentChainIndex, setCurrentChainIndex] = useState(0);
   const [hardwareResults, setHardwareResults] = useState({});
