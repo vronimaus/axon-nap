@@ -113,11 +113,11 @@ export default function DiagnosisChat() {
               <Sparkles className="w-6 h-6 text-white" />
             </div>
             <h1 className="text-3xl md:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-500">
-              Diagnose-Chat
+              🔎 Detective Mode
             </h1>
           </div>
           <p className="text-slate-400">
-            Intelligente Symptom-Analyse mit Reasoning-Engine
+            Assessment → Hardware → Software → Validation (4-Phasen-Protokoll)
           </p>
         </motion.div>
 
