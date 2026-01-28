@@ -5,6 +5,7 @@ import { base44 } from '@/api/base44Client';
 import { ChevronLeft, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
+import { useDemoTimer } from '../components/demo/useDemoTimer';
 
 import RedFlagScreen from '../components/diagnosis/RedFlagScreen';
 import BodyMap from '../components/diagnosis/BodyMap';
