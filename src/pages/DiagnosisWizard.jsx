@@ -67,19 +67,25 @@ export default function DiagnosisWizard() {
     queryFn: () => base44.entities.FascialChain.list()
   });
   
-  // Get triggered chains - either from AI analysis or from selected region
-  const triggeredChainCodes = aiAnalysis?.testedChains || (
-    selectedRegion 
-      ? SYMPTOM_CLUSTERS[selectedRegion]?.triggered_chains || []
-      : []
-  );
-  
-  // If symptom has prio_chain, ensure it's first
+  // Get triggered chains - either from AI analysis or from selected symptoms
+  const triggeredChainCodes = aiAnalysis?.testedChains || (() => {
+    if (!selectedRegion) return [];
+
+    // Collect chains from all selected symptoms, dedup
+    const allChains = selectedSymptoms.length > 0
+      ? [...new Set(selectedSymptoms.flatMap(s => s.triggered_chains || []))]
+      : SYMPTOM_CLUSTERS[selectedRegion]?.triggered_chains || [];
+
+    return allChains;
+  })();
+
+  // If any symptom has prio_chain, ensure it's first
   let orderedChainCodes = [...triggeredChainCodes];
-  if (selectedSymptom?.prio_chain) {
+  const prioChain = selectedSymptoms.find(s => s.prio_chain)?.prio_chain;
+  if (prioChain) {
     orderedChainCodes = [
-      selectedSymptom.prio_chain,
-      ...triggeredChainCodes.filter(c => c !== selectedSymptom.prio_chain)
+      prioChain,
+      ...triggeredChainCodes.filter(c => c !== prioChain)
     ];
   }
   
