@@ -378,25 +378,25 @@ export default function Landing() {
                 <div className="w-6 h-6 rounded-full bg-gradient-to-r from-cyan-500 to-purple-600 flex items-center justify-center flex-shrink-0">
                   <Check className="w-4 h-4 text-white" />
                 </div>
-                <span className="text-slate-300">Vollständige interaktive Body-Map</span>
+                <span className="text-slate-300">Einmalig 59,- € (Lifetime-Zugang)</span>
               </div>
               <div className="flex items-center gap-3">
                 <div className="w-6 h-6 rounded-full bg-gradient-to-r from-cyan-500 to-purple-600 flex items-center justify-center flex-shrink-0">
                   <Check className="w-4 h-4 text-white" />
                 </div>
-                <span className="text-slate-300">Analyse aller 6 Haupt-Faszienketten</span>
+                <span className="text-slate-300">Web-App (PWA) – läuft direkt im Browser</span>
               </div>
               <div className="flex items-center gap-3">
                 <div className="w-6 h-6 rounded-full bg-gradient-to-r from-cyan-500 to-purple-600 flex items-center justify-center flex-shrink-0">
                   <Check className="w-4 h-4 text-white" />
                 </div>
-                <span className="text-slate-300">Die „Master-12" Performance-Pfade (Level 1-5)</span>
+                <span className="text-slate-300">Auf jedem Endgerät – ganz ohne App-Store-Zwang</span>
               </div>
               <div className="flex items-center gap-3">
                 <div className="w-6 h-6 rounded-full bg-gradient-to-r from-cyan-500 to-purple-600 flex items-center justify-center flex-shrink-0">
                   <Check className="w-4 h-4 text-white" />
                 </div>
-                <span className="text-slate-300">Keine Abos. Keine versteckten Kosten.</span>
+                <span className="text-slate-300">Alle Features. Keine Abos. Keine versteckten Kosten.</span>
               </div>
             </div>
 
