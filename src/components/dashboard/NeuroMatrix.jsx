@@ -21,6 +21,13 @@ export default function NeuroMatrix({ mode, goals, selectedRegion }) {
     jefferson_curl: { level: 3, unlocked: true }
   };
 
+  // Mock Rehab data
+  const rehabData = {
+    activePain: 3,
+    painReduction: 45,
+    recoveryScore: 72
+  };
+
   const getProgressColor = (level) => {
     if (level === 0) return 'text-slate-600';
     if (level <= 2) return 'text-cyan-400';
@@ -36,47 +43,82 @@ export default function NeuroMatrix({ mode, goals, selectedRegion }) {
   return (
     <div className="space-y-4">
       {/* Header */}
-      <div className="glass rounded-2xl border border-purple-500/20 p-4">
+      <div className={`glass rounded-2xl border p-4 ${
+        mode === 'rehab' ? 'border-red-500/20' : 'border-purple-500/20'
+      }`}>
         <div className="flex items-center gap-3 mb-3">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500 to-cyan-500 flex items-center justify-center">
+          <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${
+            mode === 'rehab'
+              ? 'bg-gradient-to-br from-red-500 to-pink-500'
+              : 'bg-gradient-to-br from-purple-500 to-cyan-500'
+          }`}>
             <Zap className="w-5 h-5 text-white" />
           </div>
           <div>
-            <h3 className="text-sm font-bold text-slate-200">Neuro Matrix</h3>
-            <p className="text-xs text-slate-500">Master-12 Progress</p>
+            <h3 className="text-sm font-bold text-slate-200">
+              {mode === 'rehab' ? 'Recovery Center' : 'Neuro Matrix'}
+            </h3>
+            <p className="text-xs text-slate-500">
+              {mode === 'rehab' ? 'Pain Management' : 'Master-12 Progress'}
+            </p>
           </div>
         </div>
 
         {/* Stats */}
-        <div className="grid grid-cols-3 gap-2 text-center">
-          <div className="p-2 rounded-lg bg-slate-800/50">
-            <div className="text-xl font-bold text-cyan-400">
-              {Object.values(progressData).filter(p => p.unlocked).length}
+        {mode === 'performance' ? (
+          <div className="grid grid-cols-3 gap-2 text-center">
+            <div className="p-2 rounded-lg bg-slate-800/50">
+              <div className="text-xl font-bold text-cyan-400">
+                {Object.values(progressData).filter(p => p.unlocked).length}
+              </div>
+              <div className="text-xs text-slate-400">Unlocked</div>
             </div>
-            <div className="text-xs text-slate-400">Unlocked</div>
-          </div>
-          <div className="p-2 rounded-lg bg-slate-800/50">
-            <div className="text-xl font-bold text-purple-400">
-              {Object.values(progressData).reduce((sum, p) => sum + p.level, 0)}
+            <div className="p-2 rounded-lg bg-slate-800/50">
+              <div className="text-xl font-bold text-purple-400">
+                {Object.values(progressData).reduce((sum, p) => sum + p.level, 0)}
+              </div>
+              <div className="text-xs text-slate-400">Total Lvl</div>
             </div>
-            <div className="text-xs text-slate-400">Total Lvl</div>
-          </div>
-          <div className="p-2 rounded-lg bg-slate-800/50">
-            <div className="text-xl font-bold text-green-400">
-              {Math.round((Object.values(progressData).reduce((sum, p) => sum + p.level, 0) / (12 * 5)) * 100)}%
+            <div className="p-2 rounded-lg bg-slate-800/50">
+              <div className="text-xl font-bold text-green-400">
+                {Math.round((Object.values(progressData).reduce((sum, p) => sum + p.level, 0) / (12 * 5)) * 100)}%
+              </div>
+              <div className="text-xs text-slate-400">Complete</div>
             </div>
-            <div className="text-xs text-slate-400">Complete</div>
           </div>
-        </div>
+        ) : (
+          <div className="grid grid-cols-3 gap-2 text-center">
+            <div className="p-2 rounded-lg bg-slate-800/50">
+              <div className="text-xl font-bold text-red-400">
+                {rehabData.activePain}
+              </div>
+              <div className="text-xs text-slate-400">Active Pain</div>
+            </div>
+            <div className="p-2 rounded-lg bg-slate-800/50">
+              <div className="text-xl font-bold text-orange-400">
+                {rehabData.painReduction}%
+              </div>
+              <div className="text-xs text-slate-400">Reduction</div>
+            </div>
+            <div className="p-2 rounded-lg bg-slate-800/50">
+              <div className="text-xl font-bold text-green-400">
+                {rehabData.recoveryScore}%
+              </div>
+              <div className="text-xs text-slate-400">Recovery</div>
+            </div>
+          </div>
+        )}
       </div>
 
-      {/* Master-12 Grid */}
-      <div className="glass rounded-2xl border border-purple-500/20 p-4">
-        <h3 className="text-xs font-bold text-slate-400 mb-3 uppercase tracking-wider">
-          Performance Goals
-        </h3>
-        <div className="space-y-2 max-h-[600px] overflow-y-auto custom-scrollbar">
-          {goals.slice(0, 12).map((goal, idx) => {
+      {/* Conditional Content based on Mode */}
+      {mode === 'performance' ? (
+        /* Master-12 Grid */
+        <div className="glass rounded-2xl border border-purple-500/20 p-4">
+          <h3 className="text-xs font-bold text-slate-400 mb-3 uppercase tracking-wider">
+            Performance Goals
+          </h3>
+          <div className="space-y-2 max-h-[600px] overflow-y-auto custom-scrollbar">
+            {goals.slice(0, 12).map((goal, idx) => {
             const progress = progressData[goal.code] || { level: 0, unlocked: false };
             const percentage = getProgressRing(progress.level);
             
@@ -152,16 +194,63 @@ export default function NeuroMatrix({ mode, goals, selectedRegion }) {
               </motion.div>
             );
           })}
+          </div>
         </div>
-      </div>
+      ) : (
+        /* Rehab Pain Areas */
+        <div className="glass rounded-2xl border border-red-500/20 p-4">
+          <h3 className="text-xs font-bold text-slate-400 mb-3 uppercase tracking-wider">
+            Active Pain Areas
+          </h3>
+          <div className="space-y-2">
+            {[
+              { area: 'Nacken (links)', chain: 'SPL', intensity: 7, status: 'active' },
+              { area: 'Unterer Rücken', chain: 'SBL', intensity: 5, status: 'improving' },
+              { area: 'Rechte Schulter', chain: 'AL', intensity: 4, status: 'stable' }
+            ].map((pain, idx) => (
+              <motion.div
+                key={idx}
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: idx * 0.05 }}
+                className="p-3 rounded-xl bg-slate-800/30 border border-red-500/30"
+              >
+                <div className="flex items-center justify-between mb-2">
+                  <div className="text-sm font-semibold text-slate-200">
+                    {pain.area}
+                  </div>
+                  <div className={`px-2 py-0.5 rounded-full text-xs font-mono ${
+                    pain.status === 'active' ? 'bg-red-500/20 text-red-400' :
+                    pain.status === 'improving' ? 'bg-orange-500/20 text-orange-400' :
+                    'bg-green-500/20 text-green-400'
+                  }`}>
+                    {pain.intensity}/10
+                  </div>
+                </div>
+                <div className="flex items-center gap-2 text-xs text-slate-400">
+                  <span>Chain: {pain.chain}</span>
+                  <span>•</span>
+                  <span className="capitalize">{pain.status}</span>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Active Drills */}
-      <div className="glass rounded-2xl border border-purple-500/20 p-4">
+      <div className={`glass rounded-2xl border p-4 ${
+        mode === 'rehab' ? 'border-red-500/20' : 'border-purple-500/20'
+      }`}>
         <h3 className="text-xs font-bold text-slate-400 mb-3 uppercase tracking-wider">
-          Active Neuro Drills
+          {mode === 'rehab' ? 'Neural Slack Drills' : 'Active Neuro Drills'}
         </h3>
         <div className="space-y-2">
-          {[
+          {mode === 'rehab' ? [
+            { drill: 'Neural Slack (Nacken)', target: 'SPL Entlastung', active: true },
+            { drill: 'Vagus-Atmung', target: 'Stress-Reduktion', active: true },
+            { drill: 'Fußsohlen-Sensorik', target: 'SBL Release', active: false }
+          ] : [
             { drill: 'Zungen-Gaumen-Druck', target: 'Pistol Squat', active: true },
             { drill: 'VOR-Training', target: 'Handstand', active: true },
             { drill: 'Eye-Lead Rotation', target: 'Dragon Squat', active: false }
@@ -170,16 +259,27 @@ export default function NeuroMatrix({ mode, goals, selectedRegion }) {
               key={idx}
               className={`p-2 rounded-lg border text-xs ${
                 drill.active
-                  ? 'bg-purple-500/10 border-purple-500/30'
+                  ? mode === 'rehab'
+                    ? 'bg-red-500/10 border-red-500/30'
+                    : 'bg-purple-500/10 border-purple-500/30'
                   : 'bg-slate-800/30 border-slate-700/30'
               }`}
             >
               <div className="flex items-center gap-2">
                 <div className={`w-2 h-2 rounded-full ${
-                  drill.active ? 'bg-purple-400 animate-pulse' : 'bg-slate-600'
+                  drill.active 
+                    ? mode === 'rehab' 
+                      ? 'bg-red-400 animate-pulse' 
+                      : 'bg-purple-400 animate-pulse'
+                    : 'bg-slate-600'
                 }`} />
                 <div className="flex-1">
-                  <div className={drill.active ? 'text-purple-300 font-medium' : 'text-slate-400'}>
+                  <div className={drill.active 
+                    ? mode === 'rehab'
+                      ? 'text-red-300 font-medium'
+                      : 'text-purple-300 font-medium'
+                    : 'text-slate-400'
+                  }>
                     {drill.drill}
                   </div>
                   <div className="text-slate-500 text-xs">→ {drill.target}</div>
