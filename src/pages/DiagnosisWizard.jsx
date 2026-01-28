@@ -211,12 +211,6 @@ export default function DiagnosisWizard() {
       completed: true
     }, {
       onSuccess: (data) => {
-        // Mark demo as completed
-        try {
-          localStorage.setItem('demo_completed', 'true');
-        } catch {
-          sessionStorage.setItem('demo_completed', 'true');
-        }
         window.location.href = createPageUrl(`DiagnosisChat?session_id=${data.id}`);
       }
     });
