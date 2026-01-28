@@ -1,13 +1,36 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { Button } from '@/components/ui/button';
-import { Check, Zap, MapPin, Brain, Shield, ChevronDown } from 'lucide-react';
+import { Check, Zap, MapPin, Brain, Shield, ChevronDown, Loader2 } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { base44 } from '@/api/base44Client';
+import { toast } from 'sonner';
 
 export default function Landing() {
+  const [isCheckoutLoading, setIsCheckoutLoading] = useState(false);
   const scrollToSection = (id) => {
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  const handleCheckout = async () => {
+    // Check if running in iframe (preview mode)
+    if (window.self !== window.top) {
+      toast.error('Checkout funktioniert nur in der veröffentlichten App. Bitte öffne die App in einem neuen Tab.');
+      return;
+    }
+
+    setIsCheckoutLoading(true);
+    try {
+      const { data } = await base44.functions.invoke('createCheckout');
+      if (data.url) {
+        window.location.href = data.url;
+      }
+    } catch (error) {
+      console.error('Checkout error:', error);
+      toast.error('Fehler beim Laden des Checkouts. Bitte versuche es erneut.');
+      setIsCheckoutLoading(false);
+    }
   };
 
   const features = [
@@ -432,11 +455,22 @@ export default function Landing() {
             </div>
 
             <Button
+              onClick={handleCheckout}
+              disabled={isCheckoutLoading}
               size="lg"
-              className="w-full text-lg py-6 bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-600 hover:to-purple-700 neuro-glow"
+              className="w-full text-lg py-6 bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-600 hover:to-purple-700 neuro-glow disabled:opacity-50"
             >
-              <Zap className="w-5 h-5 mr-2" />
-              JETZT FREISCHALTEN
+              {isCheckoutLoading ? (
+                <>
+                  <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                  Lädt...
+                </>
+              ) : (
+                <>
+                  <Zap className="w-5 h-5 mr-2" />
+                  JETZT FREISCHALTEN
+                </>
+              )}
             </Button>
 
             <p className="text-center text-slate-500 text-sm mt-4">
