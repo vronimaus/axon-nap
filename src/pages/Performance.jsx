@@ -17,6 +17,10 @@ export default function Performance() {
     queryFn: () => base44.entities.PerformanceGoal.list()
   });
   
+  if (isDemoExpired) {
+    return <DemoPaywall />;
+  }
+
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
