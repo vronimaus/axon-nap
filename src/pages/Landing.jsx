@@ -86,11 +86,6 @@ export default function Landing() {
     'Keine monatlichen Kosten'
   ];
 
-  // Redirect wenn Demo läuft
-  if (!demoLoading && timeRemaining !== null && !isDemoExpired) {
-    return <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950" />;
-  }
-
   if (isLoading || demoLoading) {
     return <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950" />;
   }
