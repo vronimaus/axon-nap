@@ -246,7 +246,7 @@ export default function NeuroMatrix({ mode, goals, selectedRegion }) {
           {mode === 'rehab' ? 'Neural Slack Drills' : 'Active Neuro Drills'}
         </h3>
         <div className="space-y-2">
-          {mode === 'rehab' ? [
+          {(mode === 'rehab' ? [
             { drill: 'Neural Slack (Nacken)', target: 'SPL Entlastung', active: true },
             { drill: 'Vagus-Atmung', target: 'Stress-Reduktion', active: true },
             { drill: 'Fußsohlen-Sensorik', target: 'SBL Release', active: false }
@@ -254,7 +254,7 @@ export default function NeuroMatrix({ mode, goals, selectedRegion }) {
             { drill: 'Zungen-Gaumen-Druck', target: 'Pistol Squat', active: true },
             { drill: 'VOR-Training', target: 'Handstand', active: true },
             { drill: 'Eye-Lead Rotation', target: 'Dragon Squat', active: false }
-          ].map((drill, idx) => (
+          ]).map((drill, idx) => (
             <div
               key={idx}
               className={`p-2 rounded-lg border text-xs ${
