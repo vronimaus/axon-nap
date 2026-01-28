@@ -295,42 +295,17 @@ export default function Landing() {
           <div className="glass rounded-3xl border border-purple-500/30 p-12">
             <h2 className="text-4xl md:text-5xl font-bold text-center mb-6">
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400">
-                Wahre Performance ist das Ergebnis von Sicherheit
+                Kraft braucht Sicherheit
               </span>
             </h2>
             <p className="text-lg text-slate-300 text-center max-w-3xl mx-auto mb-8">
-              Du erreichst deine Ziele (wie die Brücke oder den Pistol Squat) nicht durch mehr Gewalt, 
-              sondern indem du deinem Gehirn beweist, dass die Endposition sicher ist. 
-              AXON gibt dir den Leitfaden, um deine Performance-Ziele neurologisch zu zertifizieren.
+              Wahre Kraft entsteht nicht durch den Kampf gegen Widerstände, sondern durch deren Beseitigung. 
+              AXON begleitet dich durch 12 athletische Meilensteine. 
+              <span className="text-purple-400 font-semibold"> Wir trainieren nicht gegen die Schutzbremse deines Körpers – wir schalten sie methodisch aus.</span>
             </p>
-
-            {/* Der Leitfaden */}
-            <div className="space-y-6 mb-12">
-              <div className="flex gap-4 items-start">
-                <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-gradient-to-br from-cyan-500 to-purple-600 flex items-center justify-center font-bold text-white">
-                  1-2
-                </div>
-                <div>
-                  <h3 className="text-xl font-bold text-white mb-2">Hardware-Check</h3>
-                  <p className="text-slate-400">
-                    Wir lösen mechanische Blockaden in deinen Leitbahnen, damit kein Materialstress entsteht.
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex gap-4 items-start">
-                <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500 to-pink-600 flex items-center justify-center font-bold text-white">
-                  3-5
-                </div>
-                <div>
-                  <h3 className="text-xl font-bold text-white mb-2">Software-Autorisierung</h3>
-                  <p className="text-slate-400">
-                    Über spezifische vestibuläre Drills geben wir deinem Gehirn die Orientierung, 
-                    die es braucht, um die volle Kraft freizuschalten.
-                  </p>
-                </div>
-              </div>
-            </div>
+            <p className="text-lg text-slate-300 text-center max-w-3xl mx-auto mb-12">
+              Wenn dein System weiß, dass die Endposition sicher ist, gibt es die Kraft frei, die du längst besitzt.
+            </p>
 
             {/* Master-12 Goals Grid */}
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
