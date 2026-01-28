@@ -196,16 +196,16 @@ export default function Dashboard() {
           >
             <div
               className={`px-4 py-2 rounded-full backdrop-blur-xl border font-mono text-xs font-bold ${
-                mode === 'analysis'
+                mode === 'rehab'
                   ? 'bg-red-500/20 border-red-500/50 text-red-400'
                   : 'bg-cyan-500/20 border-cyan-500/50 text-cyan-400'
               }`}
             >
               <div className="flex items-center gap-2">
                 <div className={`w-2 h-2 rounded-full animate-pulse ${
-                  mode === 'analysis' ? 'bg-red-400' : 'bg-cyan-400'
+                  mode === 'rehab' ? 'bg-red-400' : 'bg-cyan-400'
                 }`} />
-                {mode === 'analysis' ? 'ANALYZE MODE' : 'PERFORMANCE ACTIVE'}
+                {mode === 'rehab' ? 'STEP 1: REHAB' : 'STEP 2: PERFORMANCE'}
               </div>
             </div>
           </motion.div>
