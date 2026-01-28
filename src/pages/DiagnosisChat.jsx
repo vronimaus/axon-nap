@@ -36,6 +36,9 @@ export default function DiagnosisChat() {
   useEffect(() => {
     const initConversation = async () => {
       try {
+        const [searchParams] = useSearchParams();
+        const isContinuation = searchParams.get('continue') === 'true';
+
         const metadata = {
           name: 'MFR Detective Session',
           description: '4-Phasen Diagnostic Protocol: Assessment → Hardware → Software → Validation'
@@ -60,7 +63,9 @@ export default function DiagnosisChat() {
 
         // If from wizard, send initial context message
         if (wizardSession) {
-          const contextMsg = `Ich habe gerade den Diagnose-Wizard abgeschlossen:\n- Region: ${wizardSession.symptom_location}\n- Symptom: ${wizardSession.symptom_description}\n- Diagnose-Typ: ${wizardSession.diagnosis_type}\n\nBitte verfeinere die Diagnose und empfehle mir die spezifischen MFR-Nodes.`;
+          const contextMsg = isContinuation 
+            ? `Ich habe den Wizard durchlaufen und es ist zwar besser geworden, aber nicht vollständig weg.\n- Region: ${wizardSession.symptom_location}\n- Symptom: ${wizardSession.symptom_description}\n\nWo tut es noch weh und wie können wir die verbleibenden Beschwerden angehen?`
+            : `Ich habe gerade den Diagnose-Wizard abgeschlossen:\n- Region: ${wizardSession.symptom_location}\n- Symptom: ${wizardSession.symptom_description}\n- Diagnose-Typ: ${wizardSession.diagnosis_type}\n\nBitte verfeinere die Diagnose und empfehle mir die spezifischen MFR-Nodes.`;
           
           setTimeout(() => {
             base44.agents.addMessage(conv, {
