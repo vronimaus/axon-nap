@@ -5,8 +5,11 @@ import { base44 } from '@/api/base44Client';
 import { Loader2, Trophy, Target } from 'lucide-react';
 import GoalCard from '../components/performance/GoalCard';
 import TriplePath from '../components/performance/TriplePath';
+import { useDemoTimer } from '../components/demo/useDemoTimer';
+import DemoPaywall from '../components/demo/DemoPaywall';
 
 export default function Performance() {
+  const { isDemoExpired } = useDemoTimer();
   const [selectedGoal, setSelectedGoal] = useState(null);
   
   const { data: goals = [], isLoading } = useQuery({
