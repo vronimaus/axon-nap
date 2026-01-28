@@ -200,18 +200,18 @@ export default function DiagnosisWizard() {
   
   const handleAIAnalysisComplete = (data) => {
     setAiAnalysis(data);
-    setSelectedSymptom(data.description);
+    setSelectedSymptoms([{ label: data.description }]);
     setCurrentChainIndex(0);
     setHardwareResults({});
     setSoftwareResults({});
-    
+
     // Use AI-determined filters from step2_filters
     const needsFootFilter = data.analysis?.step2_filters?.needs_foot_check || false;
     const needsBreathFilter = data.analysis?.step2_filters?.needs_breath_work || false;
-    
+
     setNeedsFootCheck(needsFootFilter);
     setNeedsBreathCheck(needsBreathFilter);
-    
+
     if (needsFootFilter) {
       setCurrentStep(STEPS.FOOT_CHECK);
     } else if (needsBreathFilter) {
