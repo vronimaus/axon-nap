@@ -1,14 +1,28 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { Button } from '@/components/ui/button';
-import { Check, Zap, MapPin, Brain, Shield, ChevronDown, Loader2 } from 'lucide-react';
+import { Check, Zap, MapPin, Brain, Shield, ChevronDown, Loader2, LogOut } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { base44 } from '@/api/base44Client';
 import { toast } from 'sonner';
 
 export default function Landing() {
   const [isCheckoutLoading, setIsCheckoutLoading] = useState(false);
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const currentUser = await base44.auth.me();
+        setUser(currentUser);
+      } catch (e) {
+        setUser(null);
+      }
+    };
+    checkAuth();
+  }, []);
+
   const scrollToSection = (id) => {
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
   };
@@ -55,6 +69,44 @@ export default function Landing() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
+      {/* Top Navigation */}
+      <nav className="sticky top-0 z-50 bg-slate-900/80 backdrop-blur border-b border-cyan-500/20">
+        <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <img 
+              src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/afa60dd62_AXONLogo.png"
+              alt="AXON"
+              className="w-8 h-8"
+            />
+            <span className="font-bold text-cyan-400">AXON</span>
+          </div>
+          <div className="flex items-center gap-3">
+            {user ? (
+              <>
+                <Link to={createPageUrl('Dashboard')}>
+                  <Button size="sm" variant="outline" className="border-cyan-500/50 text-cyan-400">
+                    Zur App
+                  </Button>
+                </Link>
+                <button
+                  onClick={() => base44.auth.logout()}
+                  className="p-2 rounded-lg text-slate-400 hover:text-cyan-400 transition-colors"
+                >
+                  <LogOut className="w-5 h-5" />
+                </button>
+              </>
+            ) : (
+              <button
+                onClick={() => base44.auth.redirectToLogin(window.location.href)}
+                className="px-4 py-2 rounded-lg text-sm font-medium bg-cyan-500/20 text-cyan-400 hover:bg-cyan-500/30 transition-colors"
+              >
+                Login
+              </button>
+            )}
+          </div>
+        </div>
+      </nav>
+
       {/* Hero Section */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-b from-black via-slate-950 to-slate-900">
         {/* Animated Background */}
