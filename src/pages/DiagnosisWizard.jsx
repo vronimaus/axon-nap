@@ -561,6 +561,22 @@ export default function DiagnosisWizard() {
             </motion.div>
           )}
           
+          {currentStep === STEPS.PAIN_CHECK_IN && currentChain && (
+            <motion.div
+              key="pain-check-in"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+            >
+              <PainCheckIn
+                chain={currentChain}
+                onComplete={handlePainGone}
+                onContinue={handlePainContinue}
+                isLoading={saveMutation.isPending}
+              />
+            </motion.div>
+          )}
+
           {currentStep === STEPS.RESULTS && (
             <motion.div
               key="results"
