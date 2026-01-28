@@ -66,12 +66,10 @@ export default function DiagnosisChat() {
             ? `Ich habe den Wizard durchlaufen und es ist zwar besser geworden, aber nicht vollständig weg.\n- Region: ${wizardSession.symptom_location}\n- Symptom: ${wizardSession.symptom_description}\n\nWo tut es noch weh und wie können wir die verbleibenden Beschwerden angehen?`
             : `Ich habe gerade den Diagnose-Wizard abgeschlossen:\n- Region: ${wizardSession.symptom_location}\n- Symptom: ${wizardSession.symptom_description}\n- Diagnose-Typ: ${wizardSession.diagnosis_type}\n\nBitte verfeinere die Diagnose und empfehle mir die spezifischen MFR-Nodes.`;
           
-          setTimeout(() => {
-            base44.agents.addMessage(conv, {
-              role: 'user',
-              content: contextMsg
-            });
-          }, 500);
+          await base44.agents.addMessage(conv, {
+            role: 'user',
+            content: contextMsg
+          });
         }
       } catch (error) {
         console.error('Fehler beim Erstellen der Konversation:', error);
