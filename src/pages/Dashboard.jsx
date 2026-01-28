@@ -128,7 +128,7 @@ export default function Dashboard() {
             <HardwarePanel mode={mode} />
           </div>
 
-          {/* CENTER - Interactive Body Map */}
+          {/* CENTER - Interactive Body Map or Analysis */}
           <div className="lg:col-span-6">
             <motion.div
               key={mode}
@@ -136,11 +136,36 @@ export default function Dashboard() {
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.3 }}
             >
-              <InteractiveBodyMap
-                mode={mode}
-                onRegionSelect={setSelectedBodyRegion}
-                sessions={sessions}
-              />
+              {mode === 'analysis' ? (
+                <div className="glass rounded-2xl border border-cyan-500/30 p-6">
+                  <h2 className="text-lg font-semibold text-cyan-400 mb-4">Schmerzbereiche markieren</h2>
+                  <InteractiveBodyMap
+                    mode="analysis"
+                    onRegionSelect={setSelectedBodyRegion}
+                    sessions={sessions}
+                  />
+                  {selectedBodyRegion && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="mt-6"
+                    >
+                      <Button
+                        onClick={() => window.location.href = createPageUrl(`DiagnosisWizard?region=${selectedBodyRegion}`)}
+                        className="w-full h-12 bg-gradient-to-r from-red-500 to-pink-600 hover:from-red-600 hover:to-pink-700 text-white font-bold"
+                      >
+                        Analysieren starten →
+                      </Button>
+                    </motion.div>
+                  )}
+                </div>
+              ) : (
+                <InteractiveBodyMap
+                  mode={mode}
+                  onRegionSelect={setSelectedBodyRegion}
+                  sessions={sessions}
+                />
+              )}
             </motion.div>
           </div>
 
