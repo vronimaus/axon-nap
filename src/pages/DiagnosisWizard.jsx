@@ -270,8 +270,11 @@ export default function DiagnosisWizard() {
   }
   
   return (
-    <div className="min-h-screen">
-      <div className="max-w-4xl mx-auto px-4 py-8">
+    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 relative">
+      {/* Deep Charcoal Overlay */}
+      <div className="absolute inset-0 bg-[#0D0D0D] opacity-20 pointer-events-none" />
+      
+      <div className="max-w-4xl mx-auto px-4 py-8 relative z-10">
         {/* Header */}
         <motion.div 
           initial={{ opacity: 0, y: -20 }}
@@ -286,10 +289,18 @@ export default function DiagnosisWizard() {
           </p>
         </motion.div>
         
-        {/* Step Indicator */}
-        <div className="flex justify-center mb-8">
-          <div className="glass rounded-2xl px-6 py-4">
-            <div className="flex items-center gap-2">
+        {/* Step Indicator - Thin Glowing Cyan Line */}
+        <div className="mb-8">
+          <div className="max-w-2xl mx-auto">
+            <div className="h-0.5 bg-slate-900 rounded-full overflow-hidden relative">
+              <motion.div
+                className="h-full bg-cyan-400 shadow-[0_0_10px_rgba(6,182,212,0.8)]"
+                initial={{ width: 0 }}
+                animate={{ width: `${(currentStep / 5) * 100}%` }}
+                transition={{ duration: 0.3 }}
+              />
+            </div>
+            <div className="flex justify-between mt-2 text-xs text-slate-500">
               {(() => {
                 const steps = ['Symptom'];
                 if (needsFootCheck) steps.push('Fuß');
@@ -297,26 +308,9 @@ export default function DiagnosisWizard() {
                 steps.push('Hardware', 'Software', 'Ergebnis');
                 return steps;
               })().map((label, index) => (
-                <div key={label} className="flex items-center gap-2">
-                  <div className={`flex items-center gap-2 ${index <= currentStep ? 'text-cyan-400' : 'text-slate-600'}`}>
-                    <div className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold transition-all ${
-                      index < currentStep ? 'bg-gradient-to-br from-cyan-500 to-cyan-600 text-slate-900 neuro-glow' :
-                      index === currentStep ? 'bg-cyan-500/20 text-cyan-400 ring-2 ring-cyan-500' :
-                      'bg-slate-800 text-slate-500'
-                    }`}>
-                      {index + 1}
-                    </div>
-                    <span className="hidden sm:inline text-sm font-semibold">{label}</span>
-                  </div>
-                  {index < (() => {
-                    let total = 3;
-                    if (needsFootCheck) total++;
-                    if (needsBreathCheck) total++;
-                    return total;
-                  })() && (
-                    <div className={`w-8 h-1 rounded-full ${index < currentStep ? 'bg-gradient-to-r from-cyan-500 to-purple-500' : 'bg-slate-700'}`} />
-                  )}
-                </div>
+                <span key={label} className={index === currentStep ? 'text-cyan-400 font-semibold' : ''}>
+                  {label}
+                </span>
               ))}
             </div>
           </div>
@@ -358,12 +352,12 @@ export default function DiagnosisWizard() {
                       animate={{ opacity: 1, y: 0 }}
                       className="mt-6 space-y-3"
                     >
-                      <Button
+                      <button
                         onClick={startDiagnosis}
-                        className="w-full bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-600 hover:to-purple-700 h-12 text-base font-semibold shadow-lg shadow-cyan-500/30 neuro-glow"
+                        className="w-full px-6 py-3 rounded-xl border-2 border-cyan-400 bg-transparent text-cyan-400 font-bold tracking-wider hover:shadow-[0_0_20px_rgba(6,182,212,0.6)] transition-all"
                       >
-                        Diagnose starten
-                      </Button>
+                        INITIALIZE SCAN
+                      </button>
 
                       <Link to={createPageUrl('DiagnosisChat')}>
                         <Button
