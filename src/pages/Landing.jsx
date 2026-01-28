@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { Button } from '@/components/ui/button';
-import { Check, Zap, MapPin, Brain, Target, Shield, ChevronDown } from 'lucide-react';
+import { Check, Zap, MapPin, Brain, Shield, ChevronDown } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 export default function Landing() {
