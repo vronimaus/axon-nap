@@ -334,7 +334,7 @@ export default function DiagnosisWizard() {
         <AnimatePresence mode="wait">
           {currentStep === STEPS.REDFLAGS && (
             <RedFlagScreen
-              onContinue={() => setCurrentStep(STEPS.SYMPTOM)}
+              onContinue={() => setCurrentStep(selectedRegion ? STEPS.SYMPTOM_SELECT_ONLY : STEPS.SYMPTOM)}
             />
           )}
 
