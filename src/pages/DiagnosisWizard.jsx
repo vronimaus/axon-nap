@@ -42,7 +42,14 @@ export default function DiagnosisWizard() {
    const [currentStep, setCurrentStep] = useState(STEPS.REDFLAGS);
    const [selectedRegion, setSelectedRegion] = useState(initialRegion || null);
    const [selectedSymptom, setSelectedSymptom] = useState(null);
-  const [aiAnalysis, setAiAnalysis] = useState(null);
+   const [aiAnalysis, setAiAnalysis] = useState(null);
+
+   // Jump to symptom selection if region is pre-selected
+   useEffect(() => {
+     if (initialRegion) {
+       setCurrentStep(STEPS.SYMPTOM_SELECT_ONLY);
+     }
+   }, []);
   const [currentChainIndex, setCurrentChainIndex] = useState(0);
   const [hardwareResults, setHardwareResults] = useState({});
   const [softwareResults, setSoftwareResults] = useState({});
