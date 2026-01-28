@@ -115,10 +115,10 @@ export default function Layout({ children, currentPageName }) {
             <DemoTimer formattedTime={formattedTime} isLoading={demoLoading} />
           )}
 
-          {/* Demo Paywall Overlay */}
-          <AnimatePresence>
-            {user && !isChecking && isDemoExpired && !user?.has_paid && user?.role !== 'admin' && <DemoPaywall />}
-          </AnimatePresence>
+          {/* Demo Paywall Overlay - nur für Demo-User ohne Bezahlung */}
+              <AnimatePresence>
+                {user && !isChecking && isDemoExpired && !user?.has_paid && <DemoPaywall />}
+              </AnimatePresence>
       
       {/* Footer */}
       <footer className="border-t border-cyan-500/20 glass mt-auto">
