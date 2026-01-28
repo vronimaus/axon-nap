@@ -6,13 +6,37 @@ import { base44 } from '@/api/base44Client';
 import { toast } from 'sonner';
 
 export default function QuickDemo() {
-  const [step, setStep] = useState('region'); // region, test, drill, result
+  const [step, setStep] = useState('region'); // region, symptom, test, drill, result
   const [selectedRegion, setSelectedRegion] = useState(null);
+  const [symptoms, setSymptoms] = useState(null);
   const [testResult, setTestResult] = useState(null);
   const [drillResult, setDrillResult] = useState(null);
   const [isCheckoutLoading, setIsCheckoutLoading] = useState(false);
 
   const regions = ['Hüfte', 'Schulter', 'Rücken', 'Knie', 'Nacken'];
+  
+  const regionInfo = {
+    'Hüfte': {
+      context: 'Die Hüfte ist das Kraftzentrum. Eingeschränkte Beweglichkeit limitiert deine athletischen Ziele.',
+      questions: ['Ist deine Hüfte eher steif?', 'Schmerz oder nur Spannung?'],
+    },
+    'Schulter': {
+      context: 'Die Schulter braucht Freiheit für volle Kraft. Enge Schultern = begrenzte Fähigkeiten.',
+      questions: ['Hast du Verspannungen?', 'Betrifft es einen Arm oder beide?'],
+    },
+    'Rücken': {
+      context: 'Der Rücken trägt dich. Blockaden hier beeinflussen fast alle Performance-Ziele.',
+      questions: ['Ist es eher Steifheit?', 'Betroffener Bereich: Oben oder unten?'],
+    },
+    'Knie': {
+      context: 'Das Knie ist ein Sensor deines Systems. Enge Knie = neurologische Schutzschaltung.',
+      questions: ['Ist es Schmerz oder Einschränkung?', 'Betrifft es nur eine Seite?'],
+    },
+    'Nacken': {
+      context: 'Der Nacken steuert dein ganzes Nervensystem. Ein steifer Nacken bremst deinen ganzen Körper.',
+      questions: ['Ist es Verspannung oder Schmerz?', 'Betrifft es Rotation oder Beugung?'],
+    }
+  };
   
   const regionTests = {
     'Hüfte': { name: 'Beinrotation Test', description: 'Leg dein Bein an und rotiere es nach außen' },
@@ -90,7 +114,7 @@ export default function QuickDemo() {
                     key={region}
                     onClick={() => {
                       setSelectedRegion(region);
-                      setStep('test');
+                      setStep('symptom');
                     }}
                     className="p-4 rounded-xl border border-cyan-500/30 bg-slate-800/50 text-white hover:bg-cyan-500/20 hover:border-cyan-500/60 transition-all font-semibold"
                   >
@@ -101,8 +125,48 @@ export default function QuickDemo() {
             </motion.div>
           )}
 
-          {/* Step 2: Hardware Test */}
-          {step === 'test' && (
+          {/* Step 2: Symptom Questions */}
+           {step === 'symptom' && (
+             <motion.div
+               key="symptom"
+               initial={{ opacity: 0, y: 20 }}
+               animate={{ opacity: 1, y: 0 }}
+               exit={{ opacity: 0, y: -20 }}
+               className="space-y-8"
+             >
+               <div className="glass rounded-2xl border border-purple-500/20 p-8">
+                 <h2 className="text-2xl font-bold text-white mb-4">Verstehe dein Problem</h2>
+                 <p className="text-slate-300 mb-6 leading-relaxed">{regionInfo[selectedRegion].context}</p>
+                 <div className="space-y-3">
+                   {regionInfo[selectedRegion].questions.map((q, idx) => (
+                     <button
+                       key={idx}
+                       onClick={() => {
+                         setSymptoms(prev => !prev || prev !== q ? q : null);
+                       }}
+                       className={`w-full p-3 rounded-lg text-left transition-all ${
+                         symptoms === q
+                           ? 'bg-purple-500/40 border border-purple-400 text-white'
+                           : 'bg-slate-800/50 border border-slate-700 text-slate-300 hover:border-purple-500/50'
+                       }`}
+                     >
+                       {q}
+                     </button>
+                   ))}
+                 </div>
+               </div>
+               <Button
+                 onClick={() => setStep('test')}
+                 size="lg"
+                 className="w-full bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 text-white neuro-glow"
+               >
+                 Zum Test <ArrowRight className="w-4 h-4 ml-2" />
+               </Button>
+             </motion.div>
+           )}
+
+           {/* Step 3: Hardware Test */}
+           {step === 'test' && (
             <motion.div
               key="test"
               initial={{ opacity: 0, y: 20 }}
@@ -126,7 +190,7 @@ export default function QuickDemo() {
             </motion.div>
           )}
 
-          {/* Step 3: Neuro Drill */}
+          {/* Step 4: Neuro Drill */}
           {step === 'drill' && (
             <motion.div
               key="drill"
@@ -151,7 +215,7 @@ export default function QuickDemo() {
             </motion.div>
           )}
 
-          {/* Step 4: Results & CTA */}
+          {/* Step 5: Results & CTA */}
           {step === 'result' && (
             <motion.div
               key="result"
