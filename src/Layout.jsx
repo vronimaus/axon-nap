@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { Activity, LayoutDashboard, Compass, Trophy } from 'lucide-react';
+import { Activity, LayoutDashboard, Compass, Trophy, LogOut, User } from 'lucide-react';
 import CookieBanner from './components/CookieBanner';
 import { useDemoTimer } from './components/demo/useDemoTimer';
 import DemoTimer from './components/demo/DemoTimer';
@@ -72,13 +72,23 @@ export default function Layout({ children, currentPageName }) {
                ))}
               </div>
 
-              {/* Login Button */}
-              <button
-               onClick={() => base44.auth.redirectToLogin(window.location.href)}
-               className="ml-4 px-4 py-2 rounded-xl text-sm font-medium bg-cyan-500/20 text-cyan-400 hover:bg-cyan-500/30 transition-all"
-              >
-               Login
-              </button>
+              {/* User Menu / Login */}
+              {user ? (
+                <button
+                  onClick={() => base44.auth.logout()}
+                  className="ml-4 p-2 rounded-xl text-slate-400 hover:text-cyan-400 hover:bg-slate-800/50 transition-all"
+                  title="Logout"
+                >
+                  <LogOut className="w-5 h-5" />
+                </button>
+              ) : (
+                <button
+                  onClick={() => base44.auth.redirectToLogin(window.location.href)}
+                  className="ml-4 px-4 py-2 rounded-xl text-sm font-medium bg-cyan-500/20 text-cyan-400 hover:bg-cyan-500/30 transition-all"
+                >
+                  Login
+                </button>
+              )}
             </div>
           </div>
         </nav>
