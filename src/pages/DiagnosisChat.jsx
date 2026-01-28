@@ -1,4 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useSearchParams } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -11,6 +13,8 @@ import DemoPaywall from '../components/demo/DemoPaywall';
 import { useDemoTimer } from '../components/demo/useDemoTimer';
 
 export default function DiagnosisChat() {
+  const [searchParams] = useSearchParams();
+  const sessionId = searchParams.get('session_id');
   const { isDemoExpired, isLoading: demoLoading, formattedTime } = useDemoTimer();
   const [conversation, setConversation] = useState(null);
   const [messages, setMessages] = useState([]);
@@ -19,25 +23,58 @@ export default function DiagnosisChat() {
   const [showBodyMap, setShowBodyMap] = useState(false);
   const messagesEndRef = useRef(null);
 
+  // Fetch wizard results if session_id provided
+  const { data: wizardSession } = useQuery({
+    queryKey: ['diagnosisSession', sessionId],
+    queryFn: () => sessionId 
+      ? base44.entities.DiagnosisSession.filter({ id: sessionId }).then(s => s[0] || null)
+      : Promise.resolve(null),
+    enabled: !!sessionId
+  });
+
   // Create conversation on mount
   useEffect(() => {
     const initConversation = async () => {
       try {
+        const metadata = {
+          name: 'MFR Detective Session',
+          description: '4-Phasen Diagnostic Protocol: Assessment → Hardware → Software → Validation'
+        };
+
+        // If we have wizard results, add them as context
+        if (wizardSession) {
+          metadata.wizard_results = {
+            region: wizardSession.symptom_location,
+            symptom: wizardSession.symptom_description,
+            diagnosis_type: wizardSession.diagnosis_type,
+            tested_chains: wizardSession.tested_chains
+          };
+        }
+
         const conv = await base44.agents.createConversation({
           agent_name: 'diagnostic_detective',
-          metadata: {
-            name: 'MFR Detective Session',
-            description: '4-Phasen Diagnostic Protocol: Assessment → Hardware → Software → Validation'
-          }
+          metadata
         });
         setConversation(conv);
         setMessages(conv.messages || []);
+
+        // If from wizard, send initial context message
+        if (wizardSession) {
+          const contextMsg = `Ich habe gerade den Diagnose-Wizard abgeschlossen:\n- Region: ${wizardSession.symptom_location}\n- Symptom: ${wizardSession.symptom_description}\n- Diagnose-Typ: ${wizardSession.diagnosis_type}\n\nBitte verfeinere die Diagnose und empfehle mir die spezifischen MFR-Nodes.`;
+          
+          setTimeout(() => {
+            base44.agents.addMessage(conv, {
+              role: 'user',
+              content: contextMsg
+            });
+          }, 500);
+        }
       } catch (error) {
         console.error('Fehler beim Erstellen der Konversation:', error);
       }
     };
     initConversation();
-  }, []);
+  }, [wizardSession]);
 
   // Subscribe to conversation updates
   useEffect(() => {
