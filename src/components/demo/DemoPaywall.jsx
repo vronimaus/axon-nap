@@ -21,6 +21,9 @@ export default function DemoPaywall() {
       const { data } = await base44.functions.invoke('createCheckout');
       if (data.url) {
         window.location.href = data.url;
+      } else if (data.error) {
+        toast.error(data.error);
+        setIsCheckoutLoading(false);
       }
     } catch (error) {
       toast.error('Fehler beim Laden des Checkouts.');
