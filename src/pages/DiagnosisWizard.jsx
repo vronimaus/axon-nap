@@ -99,11 +99,18 @@ export default function DiagnosisWizard() {
   // Step handlers
   const handleRegionSelect = (region) => {
     setSelectedRegion(region);
-    setSelectedSymptom(null);
+    setSelectedSymptoms([]);
   };
-  
+
   const handleSymptomSelect = (symptom) => {
-    setSelectedSymptom(symptom);
+    setSelectedSymptoms(prev => {
+      const exists = prev.some(s => s.id === symptom.id);
+      if (exists) {
+        return prev.filter(s => s.id !== symptom.id);
+      } else {
+        return [...prev, symptom];
+      }
+    });
   };
   
   const startDiagnosis = () => {
