@@ -45,14 +45,14 @@ Deno.serve(async (req) => {
 
       // Update user as paid
       if (user && user.length > 0) {
-        await base44.asServiceRole.entities.User.update(user[0].id, { paid: true });
+        await base44.asServiceRole.entities.User.update(user[0].id, { has_paid: true });
         console.log('Marked user as paid:', customerEmail);
       } else {
         // If user was just created via invite, update after a short delay
         setTimeout(async () => {
           const updatedUser = await base44.asServiceRole.entities.User.filter({ email: customerEmail });
           if (updatedUser && updatedUser.length > 0) {
-            await base44.asServiceRole.entities.User.update(updatedUser[0].id, { paid: true });
+            await base44.asServiceRole.entities.User.update(updatedUser[0].id, { has_paid: true });
             console.log('Marked newly created user as paid:', customerEmail);
           }
         }, 1000);
