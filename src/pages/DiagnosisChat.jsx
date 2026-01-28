@@ -7,8 +7,6 @@ import { Loader2, Send, MessageCircle, Sparkles, Activity } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import ReactMarkdown from 'react-markdown';
 import BodyPainMap from '../components/diagnosis/BodyPainMap';
-import { useDemoTimer } from '../components/demo/useDemoTimer';
-import DemoTimer from '../components/demo/DemoTimer';
 import DemoPaywall from '../components/demo/DemoPaywall';
 
 export default function DiagnosisChat() {
@@ -102,7 +100,6 @@ export default function DiagnosisChat() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
-      <DemoTimer formattedTime={formattedTime} isLoading={demoLoading} />
       <div className="max-w-4xl mx-auto px-4 py-8">
         {/* Header */}
         <motion.div

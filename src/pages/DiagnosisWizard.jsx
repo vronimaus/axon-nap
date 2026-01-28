@@ -5,8 +5,7 @@ import { base44 } from '@/api/base44Client';
 import { ChevronLeft, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
-import { useDemoTimer } from '../components/demo/useDemoTimer';
-import DemoTimer from '../components/demo/DemoTimer';
+
 import DemoPaywall from '../components/demo/DemoPaywall';
 
 import RedFlagScreen from '../components/diagnosis/RedFlagScreen';
@@ -281,7 +280,6 @@ export default function DiagnosisWizard() {
   
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 relative">
-      <DemoTimer formattedTime={formattedTime} isLoading={demoLoading} />
       {/* Deep Charcoal Overlay */}
       <div className="absolute inset-0 bg-[#0D0D0D] opacity-20 pointer-events-none" />
       
