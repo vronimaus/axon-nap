@@ -252,7 +252,7 @@ export default function DiagnosisWizard() {
   const handleRestart = () => {
     setCurrentStep(STEPS.REDFLAGS);
     setSelectedRegion(null);
-    setSelectedSymptom(null);
+    setSelectedSymptoms([]);
     setAiAnalysis(null);
     setCurrentChainIndex(0);
     setHardwareResults({});
