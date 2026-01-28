@@ -217,12 +217,22 @@ export default function DiagnosisWizard() {
   };
 
   const handlePainContinue = () => {
-    if (currentChainIndex < triggeredChains.length - 1) {
-      setCurrentChainIndex(prev => prev + 1);
-      setCurrentStep(STEPS.HARDWARE);
-    } else {
-      setCurrentStep(STEPS.RESULTS);
-    }
+    // "Besser aber da" → direkt zum Chat speichern statt zu RESULTS
+    saveMutation.mutate({
+      symptom_location: selectedRegion,
+      symptom_description: selectedSymptoms.map(s => s.label).join(', '),
+      tested_chains: orderedChainCodes,
+      hardware_results: hardwareResults,
+      software_results: softwareResults,
+      foot_check_data: footCheckData,
+      breath_check_data: breathCheckData,
+      diagnosis_type: 'partial_improvement',
+      completed: false
+    }, {
+      onSuccess: (data) => {
+        window.location.href = createPageUrl(`DiagnosisChat?session_id=${data.id}&continue=true`);
+      }
+    });
   };
   
   const handleAIAnalysisComplete = (data) => {
