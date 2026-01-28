@@ -9,6 +9,13 @@ export function useDemoTimer() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    // Check if demo already completed (paid)
+    if (localStorage.getItem('demo_completed') === 'true') {
+      setIsDemoExpired(false);
+      setIsLoading(false);
+      return;
+    }
+
     // Initialize demo timer on component mount
     const startTime = localStorage.getItem(DEMO_START_TIME_KEY);
     const now = Date.now();
