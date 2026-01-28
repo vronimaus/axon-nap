@@ -288,7 +288,8 @@ export default function DiagnosisWizard() {
     setNeedsFootCheck(false);
     setBreathCheckData(null);
     setNeedsBreathCheck(false);
-  };
+    setPainFreeChainIndex(null);
+    };
   
   const handleSave = () => {
     // Determine diagnosis type
