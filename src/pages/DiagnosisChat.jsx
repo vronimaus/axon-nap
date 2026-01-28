@@ -11,6 +11,7 @@ import ReactMarkdown from 'react-markdown';
 import BodyPainMap from '../components/diagnosis/BodyPainMap';
 import DemoPaywall from '../components/demo/DemoPaywall';
 import { useDemoTimer } from '../components/demo/useDemoTimer';
+import MFRNodeDisplay from '../components/mfr/MFRNodeDisplay';
 
 export default function DiagnosisChat() {
   const [searchParams] = useSearchParams();
@@ -225,41 +226,50 @@ export default function DiagnosisChat() {
                         {msg.role === 'user' ? (
                           <p className="text-sm leading-relaxed">{msg.content}</p>
                         ) : (
-                          <ReactMarkdown
-                            className="text-sm prose prose-sm prose-invert max-w-none [&>*:first-child]:mt-0 [&>*:last-child]:mb-0"
-                            components={{
-                              p: ({ children }) => (
-                                <p className="my-1 leading-relaxed text-slate-100">{children}</p>
-                              ),
-                              ul: ({ children }) => (
-                                <ul className="my-2 ml-4 list-disc text-slate-100">{children}</ul>
-                              ),
-                              ol: ({ children }) => (
-                                <ol className="my-2 ml-4 list-decimal text-slate-100">{children}</ol>
-                              ),
-                              li: ({ children }) => (
-                                <li className="my-0.5 text-slate-100">{children}</li>
-                              ),
-                              strong: ({ children }) => (
-                                <strong className="font-semibold text-cyan-300">{children}</strong>
-                              ),
-                              em: ({ children }) => (
-                                <em className="italic text-purple-300">{children}</em>
-                              ),
-                              code: ({ inline, children }) =>
-                                inline ? (
-                                  <code className="px-1 py-0.5 rounded bg-slate-900 text-cyan-300 text-xs">
-                                    {children}
-                                  </code>
-                                ) : (
-                                  <code className="block bg-slate-900 rounded p-2 text-xs text-slate-200">
-                                    {children}
-                                  </code>
+                          <>
+                            <ReactMarkdown
+                              className="text-sm prose prose-sm prose-invert max-w-none [&>*:first-child]:mt-0 [&>*:last-child]:mb-0"
+                              components={{
+                                p: ({ children }) => (
+                                  <p className="my-1 leading-relaxed text-slate-100">{children}</p>
                                 ),
-                            }}
-                          >
-                            {msg.content}
-                          </ReactMarkdown>
+                                ul: ({ children }) => (
+                                  <ul className="my-2 ml-4 list-disc text-slate-100">{children}</ul>
+                                ),
+                                ol: ({ children }) => (
+                                  <ol className="my-2 ml-4 list-decimal text-slate-100">{children}</ol>
+                                ),
+                                li: ({ children }) => (
+                                  <li className="my-0.5 text-slate-100">{children}</li>
+                                ),
+                                strong: ({ children }) => (
+                                  <strong className="font-semibold text-cyan-300">{children}</strong>
+                                ),
+                                em: ({ children }) => (
+                                  <em className="italic text-purple-300">{children}</em>
+                                ),
+                                code: ({ inline, children }) =>
+                                  inline ? (
+                                    <code className="px-1 py-0.5 rounded bg-slate-900 text-cyan-300 text-xs">
+                                      {children}
+                                    </code>
+                                  ) : (
+                                    <code className="block bg-slate-900 rounded p-2 text-xs text-slate-200">
+                                      {children}
+                                    </code>
+                                  ),
+                              }}
+                            >
+                              {msg.content}
+                            </ReactMarkdown>
+                            
+                            {/* Auto-detect Node references and display */}
+                            {msg.content && msg.content.match(/\b(N\d{1,2})\b/g)?.map((nodeRef, idx) => (
+                              <div key={idx} className="mt-3">
+                                <MFRNodeDisplay nodeId={nodeRef} />
+                              </div>
+                            ))}
+                          </>
                         )}
 
                         {/* Tool Calls Display */}
