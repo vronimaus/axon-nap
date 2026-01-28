@@ -1,16 +1,20 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { FlipHorizontal, MapPin, Pencil, Send, RotateCcw } from 'lucide-react';
+import { createPageUrl } from '@/utils';
 import { base44 } from '@/api/base44Client';
 import { toast } from 'sonner';
 
 export default function InteractiveBodyMap({ mode, onRegionSelect, sessions }) {
+  const navigate = useNavigate();
   const [view, setView] = useState('front');
   const [drawMode, setDrawMode] = useState('point');
   const [markers, setMarkers] = useState([]);
   const [currentPath, setCurrentPath] = useState([]);
   const [isDrawing, setIsDrawing] = useState(false);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
   const canvasRef = useRef(null);
   const containerRef = useRef(null);
 
@@ -145,8 +149,21 @@ export default function InteractiveBodyMap({ mode, onRegionSelect, sessions }) {
       return;
     }
 
-    toast.success('Analyse wird gestartet...');
-    onRegionSelect?.({ view, markers, mode });
+    setIsAnalyzing(true);
+    try {
+      // Store markers in session storage for DiagnosisWizard
+      sessionStorage.setItem('bodyMapData', JSON.stringify({ view, markers, mode }));
+      toast.success('Leite zur Analyse weiter...');
+      
+      // Navigate to DiagnosisWizard
+      setTimeout(() => {
+        navigate(createPageUrl('DiagnosisWizard'));
+      }, 500);
+    } catch (error) {
+      console.error('Fehler:', error);
+      toast.error('Fehler beim Starten der Analyse');
+      setIsAnalyzing(false);
+    }
   };
 
   const modeColor = mode === 'rehab' ? 'red' : 'purple';
@@ -212,7 +229,7 @@ export default function InteractiveBodyMap({ mode, onRegionSelect, sessions }) {
           <Button
             size="sm"
             onClick={handleAnalyze}
-            disabled={markers.length === 0}
+            disabled={markers.length === 0 || isAnalyzing}
             className={`text-xs gap-2 ml-auto bg-gradient-to-r ${
               mode === 'rehab' 
                 ? 'from-red-500 to-pink-600' 
@@ -220,7 +237,7 @@ export default function InteractiveBodyMap({ mode, onRegionSelect, sessions }) {
             }`}
           >
             <Send className="w-3 h-3" />
-            Analysieren
+            {isAnalyzing ? 'Lädt...' : 'Analysieren'}
           </Button>
         </div>
       </div>
