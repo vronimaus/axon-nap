@@ -196,6 +196,34 @@ export default function DiagnosisWizard() {
       setCurrentStep(STEPS.HARDWARE);
     }
   };
+
+  const handlePainGone = () => {
+    // Speichern und zum Chat gehen
+    saveMutation.mutate({
+      symptom_location: selectedRegion,
+      symptom_description: selectedSymptoms.map(s => s.label).join(', '),
+      tested_chains: orderedChainCodes,
+      hardware_results: hardwareResults,
+      software_results: softwareResults,
+      foot_check_data: footCheckData,
+      breath_check_data: breathCheckData,
+      diagnosis_type: 'resolved',
+      completed: true
+    }, {
+      onSuccess: (data) => {
+        window.location.href = createPageUrl(`DiagnosisChat?session_id=${data.id}`);
+      }
+    });
+  };
+
+  const handlePainContinue = () => {
+    if (currentChainIndex < triggeredChains.length - 1) {
+      setCurrentChainIndex(prev => prev + 1);
+      setCurrentStep(STEPS.HARDWARE);
+    } else {
+      setCurrentStep(STEPS.RESULTS);
+    }
+  };
   
   const handleAIAnalysisComplete = (data) => {
     setAiAnalysis(data);
