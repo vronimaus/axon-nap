@@ -31,7 +31,7 @@ export default function Imprint() {
             <section>
               <h2 className="text-2xl font-bold text-cyan-400 mb-4">Kontakt</h2>
               <p className="leading-relaxed">
-                E-Mail: info@axon-protocol.com
+                E-Mail: info@axon-nap.de
               </p>
             </section>
 

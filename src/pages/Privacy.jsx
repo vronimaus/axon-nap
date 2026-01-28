@@ -76,7 +76,7 @@ export default function Privacy() {
                 Vanessa Schumacher<br />
                 Marienstr. 40<br />
                 50374 Erftstadt<br />
-                E-Mail: info@axon-protocol.com
+                E-Mail: info@axon-nap.de
               </p>
             </section>
 

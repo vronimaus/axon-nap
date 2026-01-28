@@ -80,7 +80,7 @@ export default function Terms() {
                 </p>
                 <p className="leading-relaxed">
                   Um Ihr Widerrufsrecht auszuüben, müssen Sie uns (Vanessa Schumacher, Marienstr. 40, 50374 Erftstadt, 
-                  E-Mail: info@axon-protocol.com) mittels einer eindeutigen Erklärung über Ihren Entschluss, 
+                  E-Mail: info@axon-nap.de) mittels einer eindeutigen Erklärung über Ihren Entschluss, 
                   diesen Vertrag zu widerrufen, informieren.
                 </p>
               </div>
