@@ -52,6 +52,7 @@ import DiagnosisChat from './pages/DiagnosisChat';
 import DiagnosisWizard from './pages/DiagnosisWizard';
 import ExerciseImageGenerator from './pages/ExerciseImageGenerator';
 import Performance from './pages/Performance';
+import Landing from './pages/Landing';
 import __Layout from './Layout.jsx';
 
 
@@ -61,6 +62,7 @@ export const PAGES = {
     "DiagnosisWizard": DiagnosisWizard,
     "ExerciseImageGenerator": ExerciseImageGenerator,
     "Performance": Performance,
+    "Landing": Landing,
 }
 
 export const pagesConfig = {
