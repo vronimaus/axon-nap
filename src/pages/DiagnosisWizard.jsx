@@ -394,6 +394,54 @@ export default function DiagnosisWizard() {
             </motion.div>
           )}
 
+          {currentStep === STEPS.SYMPTOM_SELECT_ONLY && (
+            <motion.div
+              key="symptom-select"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+            >
+              <div className="max-w-2xl mx-auto">
+                <h2 className="text-xl font-semibold text-cyan-400 mb-4">
+                  Welches Symptom beschreibt deine Situation?
+                </h2>
+                <p className="text-slate-400 text-sm mb-6">
+                  Region: <span className="text-cyan-400 font-semibold">{SYMPTOM_CLUSTERS[selectedRegion]?.label || selectedRegion}</span>
+                </p>
+                
+                <SymptomSelector
+                  selectedRegion={selectedRegion}
+                  selectedSymptom={selectedSymptom}
+                  onSymptomSelect={handleSymptomSelect}
+                />
+
+                {selectedSymptom && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="mt-6 space-y-3"
+                  >
+                    <button
+                      onClick={startDiagnosis}
+                      className="w-full px-6 py-3 rounded-xl border-2 border-cyan-400 bg-transparent text-cyan-400 font-bold tracking-wider hover:shadow-[0_0_20px_rgba(6,182,212,0.6)] transition-all"
+                    >
+                      INITIALIZE SCAN
+                    </button>
+
+                    <Link to={createPageUrl('DiagnosisChat')}>
+                      <Button
+                        variant="outline"
+                        className="w-full h-12 border-purple-500/50 text-purple-400 hover:bg-purple-500/10"
+                      >
+                        💬 Zum intelligenten Chat-Assistenten
+                      </Button>
+                    </Link>
+                  </motion.div>
+                )}
+              </div>
+            </motion.div>
+          )}
+
           {currentStep === STEPS.FOOT_CHECK && (
             <motion.div
               key="foot-check"
