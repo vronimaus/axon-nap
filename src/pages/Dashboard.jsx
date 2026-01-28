@@ -12,7 +12,7 @@ import OnboardingModal from '../components/dashboard/OnboardingModal';
 import DemoPaywall from '../components/demo/DemoPaywall';
 
 export default function Dashboard() {
-  const [mode, setMode] = useState('rehab'); // 'rehab' or 'performance'
+  const [mode, setMode] = useState(null); // 'rehab', 'performance', or null for selection
   const [selectedBodyRegion, setSelectedBodyRegion] = useState(null);
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [user, setUser] = useState(null);

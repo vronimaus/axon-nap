@@ -53,12 +53,12 @@ import DiagnosisWizard from './pages/DiagnosisWizard';
 import ExerciseImageGenerator from './pages/ExerciseImageGenerator';
 import Imprint from './pages/Imprint';
 import Landing from './pages/Landing';
+import MFRIntegration from './pages/MFRIntegration';
 import Performance from './pages/Performance';
 import Privacy from './pages/Privacy';
 import QuickDemo from './pages/QuickDemo';
 import Success from './pages/Success';
 import Terms from './pages/Terms';
-import MFRIntegration from './pages/MFRIntegration';
 import __Layout from './Layout.jsx';
 
 
@@ -69,12 +69,12 @@ export const PAGES = {
     "ExerciseImageGenerator": ExerciseImageGenerator,
     "Imprint": Imprint,
     "Landing": Landing,
+    "MFRIntegration": MFRIntegration,
     "Performance": Performance,
     "Privacy": Privacy,
     "QuickDemo": QuickDemo,
     "Success": Success,
     "Terms": Terms,
-    "MFRIntegration": MFRIntegration,
 }
 
 export const pagesConfig = {
