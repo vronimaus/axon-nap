@@ -3,6 +3,26 @@ import { useEffect, useState } from 'react';
 const DEMO_DURATION_MS = 15 * 60 * 1000; // 15 minutes
 const DEMO_START_TIME_KEY = 'axon_demo_start_time';
 
+// Helper to safely access storage (fallback for incognito mode)
+const getStorageValue = (key) => {
+  try {
+    return localStorage.getItem(key);
+  } catch {
+    return sessionStorage.getItem(key);
+  }
+};
+
+const setStorageValue = (key, value) => {
+  try {
+    localStorage.setItem(key, value);
+  } catch {
+    sessionStorage.setItem(key, value);
+  }
+};
+
+// Global fallback for incognito mode
+let demoStartTimeGlobal = null;
+
 export function useDemoTimer() {
   const [timeRemaining, setTimeRemaining] = useState(null);
   const [isDemoExpired, setIsDemoExpired] = useState(false);
@@ -10,19 +30,24 @@ export function useDemoTimer() {
 
   useEffect(() => {
     // Check if demo already completed (paid)
-    if (localStorage.getItem('demo_completed') === 'true') {
+    if (getStorageValue('demo_completed') === 'true') {
       setIsDemoExpired(false);
       setIsLoading(false);
       return;
     }
 
     // Initialize demo timer on component mount
-    const startTime = localStorage.getItem(DEMO_START_TIME_KEY);
+    let startTime = getStorageValue(DEMO_START_TIME_KEY);
     const now = Date.now();
+
+    if (!startTime && demoStartTimeGlobal) {
+      startTime = demoStartTimeGlobal.toString();
+    }
 
     if (!startTime) {
       // First visit - start the demo
-      localStorage.setItem(DEMO_START_TIME_KEY, now.toString());
+      demoStartTimeGlobal = now;
+      setStorageValue(DEMO_START_TIME_KEY, now.toString());
       setTimeRemaining(DEMO_DURATION_MS);
       setIsDemoExpired(false);
       setIsLoading(false);
