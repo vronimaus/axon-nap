@@ -563,7 +563,7 @@ export default function Landing() {
               ) : (
                 <>
                   <Zap className="w-5 h-5 mr-2" />
-                  JETZT FREISCHALTEN
+                  JETZT KAUFEN
                 </>
               )}
             </Button>
