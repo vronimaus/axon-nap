@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { Button } from '@/components/ui/button';
@@ -8,6 +8,11 @@ import { base44 } from '@/api/base44Client';
 
 export default function Success() {
   const [isLoggingIn, setIsLoggingIn] = useState(false);
+
+  useEffect(() => {
+    // Demo-Status zurücksetzen nach erfolgreicher Zahlung
+    localStorage.removeItem('demo_started_at');
+  }, []);
 
   const handleLogin = async () => {
     setIsLoggingIn(true);
