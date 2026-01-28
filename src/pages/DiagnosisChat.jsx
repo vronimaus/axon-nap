@@ -3,15 +3,17 @@ import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Card } from '@/components/ui/card';
-import { Loader2, Send, MessageCircle, Sparkles } from 'lucide-react';
+import { Loader2, Send, MessageCircle, Sparkles, Activity } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import ReactMarkdown from 'react-markdown';
+import BodyPainMap from '../components/diagnosis/BodyPainMap';
 
 export default function DiagnosisChat() {
   const [conversation, setConversation] = useState(null);
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
+  const [showBodyMap, setShowBodyMap] = useState(false);
   const messagesEndRef = useRef(null);
 
   // Create conversation on mount
@@ -72,6 +74,24 @@ export default function DiagnosisChat() {
     }
   };
 
+  const handleBodyMapSubmit = async (analysisData) => {
+    setLoading(true);
+    setShowBodyMap(false);
+    
+    try {
+      const message = `Ich habe meine Schmerzbereiche auf dem Körper markiert (${analysisData.view === 'front' ? 'Vorderseite' : 'Rückseite'}). Bitte analysiere die Schmerzmarkierung und ordne sie den entsprechenden Faszien-Ketten zu.`;
+      
+      await base44.agents.addMessage(conversation, {
+        role: 'user',
+        content: message,
+        file_urls: [analysisData.imageUrl]
+      });
+    } catch (error) {
+      console.error('Fehler beim Senden:', error);
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
       <div className="max-w-4xl mx-auto px-4 py-8">
@@ -93,6 +113,32 @@ export default function DiagnosisChat() {
             Intelligente Symptom-Analyse mit Reasoning-Engine
           </p>
         </motion.div>
+
+        {/* Body Pain Map Modal */}
+        <AnimatePresence>
+          {showBodyMap && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+              onClick={() => setShowBodyMap(false)}
+            >
+              <motion.div
+                initial={{ scale: 0.9, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.9, opacity: 0 }}
+                onClick={(e) => e.stopPropagation()}
+                className="bg-slate-900 rounded-2xl border border-cyan-500/30 p-6 max-w-2xl w-full max-h-[90vh] overflow-y-auto"
+              >
+                <BodyPainMap
+                  onSubmit={handleBodyMapSubmit}
+                  onCancel={() => setShowBodyMap(false)}
+                />
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         {/* Chat Container */}
         <Card className="bg-slate-900/90 border border-cyan-500/30 shadow-2xl backdrop-blur-sm">
@@ -216,6 +262,14 @@ export default function DiagnosisChat() {
             {/* Input Area */}
             <div className="p-4 border-t border-cyan-500/20 bg-slate-900/70">
               <div className="flex gap-3">
+                <Button
+                  onClick={() => setShowBodyMap(true)}
+                  disabled={loading || !conversation}
+                  variant="outline"
+                  className="border-pink-500/50 text-pink-400 hover:bg-pink-500/10 h-[60px] px-4"
+                >
+                  <Activity className="w-5 h-5" />
+                </Button>
                 <Textarea
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
@@ -238,7 +292,7 @@ export default function DiagnosisChat() {
                 </Button>
               </div>
               <p className="text-xs text-slate-500 mt-2">
-                💡 Tipp: Beschreibe genau, wo es weh tut, wann es auftritt und was es besser/schlechter macht
+                💡 Tipp: Nutze den <Activity className="w-3 h-3 inline text-pink-400" /> Button um Schmerzen visuell zu markieren
               </p>
             </div>
           </div>
