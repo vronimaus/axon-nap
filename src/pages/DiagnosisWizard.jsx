@@ -16,6 +16,7 @@ import { createPageUrl } from '@/utils';
 import BreathModule from '../components/diagnosis/BreathModule';
 import HardwareTest from '../components/diagnosis/HardwareTest';
 import NeuroDrill from '../components/diagnosis/NeuroDrill';
+import PainCheckIn from '../components/diagnosis/PainCheckIn';
 import ResultsAnalysis from '../components/diagnosis/ResultsAnalysis';
 import { SYMPTOM_CLUSTERS } from '../components/diagnosis/SymptomData';
 
