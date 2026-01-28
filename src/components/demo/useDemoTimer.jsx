@@ -29,58 +29,62 @@ export function useDemoTimer() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Check if demo already completed (paid)
-    if (getStorageValue('demo_completed') === 'true') {
-      setIsDemoExpired(false);
-      setIsLoading(false);
-      return;
-    }
+  // Check if demo already completed (paid)
+  if (getStorageValue('demo_completed') === 'true') {
+    setIsDemoExpired(false);
+    setIsLoading(false);
+    return;
+  }
 
-    // Initialize demo timer on component mount
-    let startTime = getStorageValue(DEMO_START_TIME_KEY);
-    const now = Date.now();
+  // Initialize demo timer on component mount
+  let startTime = getStorageValue(DEMO_START_TIME_KEY);
+  const now = Date.now();
 
-    if (!startTime && demoStartTimeGlobal) {
-      startTime = demoStartTimeGlobal.toString();
-    }
+  if (!startTime && demoStartTimeGlobal) {
+    startTime = demoStartTimeGlobal.toString();
+  }
 
-    if (!startTime) {
-      // First visit - start the demo
-      demoStartTimeGlobal = now;
-      setStorageValue(DEMO_START_TIME_KEY, now.toString());
-      setTimeRemaining(DEMO_DURATION_MS);
-      setIsDemoExpired(false);
-      setIsLoading(false);
-      return;
-    }
+  if (!startTime) {
+    // First visit - start the demo
+    demoStartTimeGlobal = now;
+    setStorageValue(DEMO_START_TIME_KEY, now.toString());
+    setTimeRemaining(DEMO_DURATION_MS);
+    setIsDemoExpired(false);
+    setIsLoading(false);
+    return;
+  }
 
-    const elapsed = now - parseInt(startTime);
-    const remaining = Math.max(0, DEMO_DURATION_MS - elapsed);
+  const elapsed = now - parseInt(startTime);
+  const remaining = Math.max(0, DEMO_DURATION_MS - elapsed);
 
-    if (remaining === 0) {
+  if (remaining === 0) {
+    setIsDemoExpired(true);
+    setTimeRemaining(0);
+    // Redirect to landing page when demo expires
+    window.location.href = '/';
+  } else {
+    setTimeRemaining(remaining);
+  }
+
+  setIsLoading(false);
+
+  // Update remaining time every second
+  const interval = setInterval(() => {
+    const currentElapsed = Date.now() - parseInt(startTime);
+    const currentRemaining = Math.max(0, DEMO_DURATION_MS - currentElapsed);
+
+    if (currentRemaining === 0) {
       setIsDemoExpired(true);
       setTimeRemaining(0);
+      // Redirect to landing page when demo expires
+      window.location.href = '/';
+      clearInterval(interval);
     } else {
-      setTimeRemaining(remaining);
+      setTimeRemaining(currentRemaining);
     }
+  }, 1000);
 
-    setIsLoading(false);
-
-    // Update remaining time every second
-    const interval = setInterval(() => {
-      const currentElapsed = Date.now() - parseInt(startTime);
-      const currentRemaining = Math.max(0, DEMO_DURATION_MS - currentElapsed);
-
-      if (currentRemaining === 0) {
-        setIsDemoExpired(true);
-        setTimeRemaining(0);
-        clearInterval(interval);
-      } else {
-        setTimeRemaining(currentRemaining);
-      }
-    }, 1000);
-
-    return () => clearInterval(interval);
+  return () => clearInterval(interval);
   }, []);
 
   const formatTime = (ms) => {
