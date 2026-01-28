@@ -91,16 +91,11 @@ export default function Dashboard() {
                 <Info className="w-4 h-4" />
               </Button>
               <Button
-                onClick={() => setMode('rehab')}
-                variant={mode === 'rehab' ? 'default' : 'outline'}
-                className={`gap-2 transition-all ${
-                  mode === 'rehab'
-                    ? 'bg-gradient-to-r from-red-500 to-pink-600 text-white shadow-lg shadow-red-500/50'
-                    : 'border-red-500/30 text-red-400 hover:bg-red-500/10'
-                }`}
+                onClick={() => window.location.href = createPageUrl('DiagnosisWizard')}
+                className="gap-2 bg-gradient-to-r from-red-500 to-pink-600 text-white shadow-lg shadow-red-500/50 hover:from-red-600 hover:to-pink-700"
               >
                 <Target className="w-4 h-4" />
-                🔴 REHAB
+                🔴 ANALYSIEREN
               </Button>
               <Button
                 onClick={() => setMode('performance')}
