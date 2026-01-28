@@ -458,15 +458,15 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* Trust Factor Footer */}
+      {/* Wissenschaftliches Fundament */}
       <section className="py-12 border-t border-cyan-500/20">
         <div className="max-w-4xl mx-auto px-4 text-center">
           <Shield className="w-12 h-12 text-cyan-400 mx-auto mb-4" />
-          <p className="text-slate-400 mb-2">
-            Entwickelt von Athleten für Athleten
+          <p className="text-lg text-slate-300 mb-4 italic">
+            „Die Schnittstelle zwischen Biomechanik und angewandter Neurowissenschaft."
           </p>
-          <p className="text-sm text-slate-500">
-            Basierend auf wissenschaftlich fundierten Prinzipien der Neuroathletik und faszialen Bewegungsforschung
+          <p className="text-sm text-slate-400">
+            Basierend auf aktuellen Erkenntnissen der Faszienforschung und der sensomotorischen Bewegungssteuerung
           </p>
         </div>
       </section>
