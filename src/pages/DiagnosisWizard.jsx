@@ -262,6 +262,11 @@ export default function DiagnosisWizard() {
       breath_check_data: breathCheckData,
       diagnosis_type: diagnosisType,
       completed: true
+    }, {
+      onSuccess: (data) => {
+        // Redirect to Detective Chat with session ID for refinement
+        window.location.href = createPageUrl(`DiagnosisChat?session_id=${data.id}`);
+      }
     });
   };
   
