@@ -17,7 +17,7 @@ Deno.serve(async (req) => {
         },
       ],
       mode: 'payment',
-      success_url: `${origin}/success?session_id={CHECKOUT_SESSION_ID}`,
+      success_url: `${origin}/success`,
       cancel_url: `${origin}/`,
       metadata: {
         base44_app_id: Deno.env.get('BASE44_APP_ID')
@@ -26,8 +26,7 @@ Deno.serve(async (req) => {
 
     console.log('Session created:', session.id, 'URL:', session.url);
     
-    // Return redirect response
-    return Response.redirect(session.url, 303);
+    return Response.json({ url: session.url });
   } catch (error) {
     console.error('Checkout error:', error);
     return Response.json({ error: error.message }, { status: 500 });
