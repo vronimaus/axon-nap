@@ -120,30 +120,29 @@ export default function BodyPainMap({ onSubmit, onCancel }) {
       compositeCanvas.height = canvas.height;
       const ctx = compositeCanvas.getContext('2d');
       
-      // Draw body silhouette
-      const bodySvg = containerRef.current.querySelector('svg');
-      const svgData = new XMLSerializer().serializeToString(bodySvg);
+      // Draw body anatomy image
+      const bodyImg = containerRef.current.querySelector('img');
       const img = new Image();
-      const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
-      const url = URL.createObjectURL(svgBlob);
+      img.crossOrigin = 'anonymous';
       
-      await new Promise((resolve) => {
+      await new Promise((resolve, reject) => {
         img.onload = () => {
           ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-          URL.revokeObjectURL(url);
           resolve();
         };
-        img.src = url;
+        img.onerror = reject;
+        img.src = bodyImg.src;
       });
       
       // Draw pain markers on top
       ctx.drawImage(canvas, 0, 0);
       
-      // Convert to blob
+      // Convert to blob with proper file name
       const blob = await new Promise(resolve => compositeCanvas.toBlob(resolve, 'image/png'));
+      const file = new File([blob], `body-pain-${view}-${Date.now()}.png`, { type: 'image/png' });
       
       // Upload image
-      const { file_url } = await base44.integrations.Core.UploadFile({ file: blob });
+      const { file_url } = await base44.integrations.Core.UploadFile({ file });
       
       // Prepare analysis data
       const analysisData = {
