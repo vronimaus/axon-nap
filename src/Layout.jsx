@@ -100,8 +100,10 @@ export default function Layout({ children, currentPageName }) {
         {children}
       </main>
 
-      {/* Global Demo Timer */}
-      <DemoTimer formattedTime={formattedTime} isLoading={demoLoading} />
+      {/* Global Demo Timer - nur wenn nicht admin und nicht bezahlt */}
+      {(!user?.has_paid && user?.role !== 'admin') && (
+        <DemoTimer formattedTime={formattedTime} isLoading={demoLoading} />
+      )}
 
       {/* Demo Paywall Overlay */}
       <AnimatePresence>
