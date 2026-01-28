@@ -502,25 +502,6 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* Footer mit rechtlichen Links */}
-      <footer className="border-t border-cyan-500/20 py-8">
-        <div className="max-w-6xl mx-auto px-4">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-slate-400">
-            <p>© 2026 AXON Protocol • Vanessa Schumacher</p>
-            <div className="flex gap-6">
-              <Link to={createPageUrl('Imprint')} className="hover:text-cyan-400 transition-colors">
-                Impressum
-              </Link>
-              <Link to={createPageUrl('Privacy')} className="hover:text-cyan-400 transition-colors">
-                Datenschutz
-              </Link>
-              <Link to={createPageUrl('Terms')} className="hover:text-cyan-400 transition-colors">
-                AGB
-              </Link>
-            </div>
-          </div>
-        </div>
-      </footer>
     </div>
   );
 }
