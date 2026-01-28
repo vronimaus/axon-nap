@@ -33,7 +33,7 @@ export default function InteractiveBodyMap({ mode, onRegionSelect, sessions }) {
     const ctx = canvas.getContext('2d');
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     
-    // Draw markers
+    // Draw markers with neon-red glow effect for rehab mode
     markers.forEach(marker => {
       if (marker.type === 'point' && marker.x && marker.y) {
         const color = mode === 'rehab' ? 'rgba(239, 68, 68, 0.8)' : 'rgba(168, 85, 247, 0.8)';
@@ -41,11 +41,24 @@ export default function InteractiveBodyMap({ mode, onRegionSelect, sessions }) {
         ctx.beginPath();
         ctx.arc(marker.x, marker.y, 10, 0, Math.PI * 2);
         ctx.fill();
+
+        // Neon glow effect for rehab
+        if (mode === 'rehab') {
+          ctx.shadowColor = '#ef4444';
+          ctx.shadowBlur = 10;
+        }
         ctx.strokeStyle = mode === 'rehab' ? '#ef4444' : '#a855f7';
         ctx.lineWidth = 3;
         ctx.stroke();
+        ctx.shadowBlur = 0;
       } else if (marker.points?.length > 1) {
         const color = mode === 'rehab' ? 'rgba(239, 68, 68, 0.9)' : 'rgba(168, 85, 247, 0.9)';
+
+        // Neon glow effect for rehab
+        if (mode === 'rehab') {
+          ctx.shadowColor = '#ef4444';
+          ctx.shadowBlur = 10;
+        }
         ctx.strokeStyle = color;
         ctx.lineWidth = 5;
         ctx.lineCap = 'round';
@@ -54,12 +67,19 @@ export default function InteractiveBodyMap({ mode, onRegionSelect, sessions }) {
         ctx.moveTo(marker.points[0].x, marker.points[0].y);
         marker.points.forEach(p => ctx.lineTo(p.x, p.y));
         ctx.stroke();
+        ctx.shadowBlur = 0;
       }
     });
-    
-    // Draw current path
+
+    // Draw current path with neon-red glow
     if (currentPath.length > 1) {
       const color = mode === 'rehab' ? 'rgba(239, 68, 68, 0.9)' : 'rgba(168, 85, 247, 0.9)';
+
+      // Neon glow effect for rehab
+      if (mode === 'rehab') {
+        ctx.shadowColor = '#ef4444';
+        ctx.shadowBlur = 10;
+      }
       ctx.strokeStyle = color;
       ctx.lineWidth = 5;
       ctx.lineCap = 'round';
@@ -68,6 +88,7 @@ export default function InteractiveBodyMap({ mode, onRegionSelect, sessions }) {
       ctx.moveTo(currentPath[0].x, currentPath[0].y);
       currentPath.forEach(p => ctx.lineTo(p.x, p.y));
       ctx.stroke();
+      ctx.shadowBlur = 0;
     }
   }, [markers, currentPath, mode]);
 
