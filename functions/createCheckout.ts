@@ -17,7 +17,6 @@ Deno.serve(async (req) => {
       mode: 'payment',
       success_url: `${origin}/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${origin}/`,
-      collect_email: true,
       metadata: {
         base44_app_id: Deno.env.get('BASE44_APP_ID')
       }
