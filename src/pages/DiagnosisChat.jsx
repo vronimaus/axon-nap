@@ -24,10 +24,10 @@ export default function DiagnosisChat() {
     const initConversation = async () => {
       try {
         const conv = await base44.agents.createConversation({
-          agent_name: 'diagnosis_reasoning',
+          agent_name: 'diagnostic_detective',
           metadata: {
-            name: 'Diagnose-Session',
-            description: 'Intelligente Symptom-Analyse'
+            name: 'MFR Detective Session',
+            description: '4-Phasen Diagnostic Protocol: Assessment → Hardware → Software → Validation'
           }
         });
         setConversation(conv);
