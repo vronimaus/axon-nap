@@ -52,7 +52,7 @@ export default function DiagnosisChat() {
         }
 
         const conv = await base44.agents.createConversation({
-          agent_name: 'diagnostic_detective',
+          agent_name: 'diagnosis_reasoning',
           metadata
         });
         setConversation(conv);
