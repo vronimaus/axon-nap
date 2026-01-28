@@ -64,8 +64,8 @@ export default function MFRNodeDisplay({ nodeId }) {
         <div className="relative bg-black aspect-[3/5] border-b border-cyan-500/20 overflow-hidden">
           <img
             src={nodeData.position === 'front' 
-              ? 'https://images.unsplash.com/photo-1576091160506-112173faf977?w=500&h=800&fit=crop&q=90'
-              : 'https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=500&h=800&fit=crop&q=90'
+              ? 'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/2c14e3cdc_image.png'
+              : 'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/7b154e77f_image.png'
             }
             alt={nodeData.position === 'front' ? 'Front anatomy' : 'Back anatomy'}
             className="absolute inset-0 w-full h-full object-cover"
