@@ -53,6 +53,9 @@ import DiagnosisWizard from './pages/DiagnosisWizard';
 import ExerciseImageGenerator from './pages/ExerciseImageGenerator';
 import Landing from './pages/Landing';
 import Performance from './pages/Performance';
+import Imprint from './pages/Imprint';
+import Privacy from './pages/Privacy';
+import Terms from './pages/Terms';
 import __Layout from './Layout.jsx';
 
 
@@ -63,6 +66,9 @@ export const PAGES = {
     "ExerciseImageGenerator": ExerciseImageGenerator,
     "Landing": Landing,
     "Performance": Performance,
+    "Imprint": Imprint,
+    "Privacy": Privacy,
+    "Terms": Terms,
 }
 
 export const pagesConfig = {

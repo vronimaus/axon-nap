@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { Activity, LayoutDashboard, Compass, Trophy } from 'lucide-react';
+import CookieBanner from './components/CookieBanner';
 
 export default function Layout({ children, currentPageName }) {
   const navItems = [
@@ -61,12 +62,23 @@ export default function Layout({ children, currentPageName }) {
         <div className="max-w-6xl mx-auto px-4 py-6">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-slate-400">
             <p>© 2026 AXON Protocol</p>
-            <p className="text-xs">
-              Powered by Fascial Science & Neuro-Athletic Research
-            </p>
+            <div className="flex gap-4">
+              <Link to={createPageUrl('Imprint')} className="hover:text-cyan-400 transition-colors">
+                Impressum
+              </Link>
+              <Link to={createPageUrl('Privacy')} className="hover:text-cyan-400 transition-colors">
+                Datenschutz
+              </Link>
+              <Link to={createPageUrl('Terms')} className="hover:text-cyan-400 transition-colors">
+                AGB
+              </Link>
+            </div>
           </div>
         </div>
       </footer>
-    </div>
-  );
-}
+
+      {/* Cookie Banner */}
+      <CookieBanner />
+      </div>
+      );
+      }
