@@ -60,8 +60,6 @@ export function useDemoTimer() {
   if (remaining === 0) {
     setIsDemoExpired(true);
     setTimeRemaining(0);
-    // Redirect to landing page when demo expires
-    window.location.href = '/';
   } else {
     setTimeRemaining(remaining);
   }
@@ -76,8 +74,6 @@ export function useDemoTimer() {
     if (currentRemaining === 0) {
       setIsDemoExpired(true);
       setTimeRemaining(0);
-      // Redirect to landing page when demo expires
-      window.location.href = '/';
       clearInterval(interval);
     } else {
       setTimeRemaining(currentRemaining);
