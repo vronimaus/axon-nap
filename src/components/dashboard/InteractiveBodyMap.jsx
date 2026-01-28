@@ -137,7 +137,7 @@ export default function InteractiveBodyMap({ mode, onRegionSelect, sessions }) {
       <div className={`p-4 border-b ${mode === 'rehab' ? 'border-red-500/20' : 'border-purple-500/20'}`}>
         <div className="flex items-center justify-between mb-3">
           <h3 className="text-lg font-bold text-cyan-400">
-            {mode === 'rehab' ? '🔴 Pain Mapping' : '⚡ Tension Analysis'}
+            {mode === 'rehab' ? '🔴 Detective Mode: Pain' : '⚡ Detective Mode: Tension'}
           </h3>
           <div className="flex gap-2">
             <Button

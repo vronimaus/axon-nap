@@ -243,7 +243,7 @@ export default function NeuroMatrix({ mode, goals, selectedRegion }) {
         mode === 'rehab' ? 'border-red-500/20' : 'border-purple-500/20'
       }`}>
         <h3 className="text-xs font-bold text-slate-400 mb-3 uppercase tracking-wider">
-          {mode === 'rehab' ? 'Neural Slack Drills' : 'Active Neuro Drills'}
+          {mode === 'rehab' ? '⚡ Neural Slack Drills' : '⚡ Flash-Drills Active'}
         </h3>
         <div className="space-y-2">
           {(mode === 'rehab' ? [

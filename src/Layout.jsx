@@ -5,10 +5,10 @@ import { Activity, LayoutDashboard, Compass, Trophy } from 'lucide-react';
 
 export default function Layout({ children, currentPageName }) {
   const navItems = [
-    { name: 'Dashboard', icon: LayoutDashboard, page: 'Dashboard' },
-    { name: 'Diagnose', icon: Compass, page: 'DiagnosisWizard' },
-    { name: 'Chat', icon: Activity, page: 'DiagnosisChat' },
-    { name: 'Performance', icon: Trophy, page: 'Performance' }
+    { name: 'Command', icon: LayoutDashboard, page: 'Dashboard' },
+    { name: 'Detective', icon: Compass, page: 'DiagnosisWizard' },
+    { name: 'Agent', icon: Activity, page: 'DiagnosisChat' },
+    { name: 'Goals', icon: Trophy, page: 'Performance' }
   ];
   
   return (
@@ -23,8 +23,8 @@ export default function Layout({ children, currentPageName }) {
                 <Activity className="w-5 h-5 text-white" />
               </div>
               <div className="hidden sm:block">
-                <span className="font-bold text-cyan-400">Neuro-Fascial</span>
-                <span className="text-xs text-slate-400 block -mt-1">Diagnosis Tool</span>
+                <span className="font-bold text-cyan-400 text-lg tracking-tight">AXON</span>
+                <span className="text-xs text-slate-400 block -mt-1">Neuro-Athletic Protocol</span>
               </div>
             </Link>
             
@@ -58,9 +58,9 @@ export default function Layout({ children, currentPageName }) {
       <footer className="border-t border-cyan-500/20 glass mt-auto">
         <div className="max-w-6xl mx-auto px-4 py-6">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-slate-400">
-            <p>© 2024 Neuro-Fascial Diagnosis Tool</p>
+            <p>© 2026 AXON Protocol</p>
             <p className="text-xs">
-              Basierend auf Thomas Myers (Anatomy Trains), Robert Schleip (Faszienforschung) & Z-Health Neuro-Athletik
+              Powered by Anatomy Trains, Fascial Science & Z-Health Neuro-Athletik
             </p>
           </div>
         </div>
