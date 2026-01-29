@@ -103,28 +103,28 @@ export default function FlowSelection() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: idx * 0.1 }}
             >
-              <Card className="glass rounded-2xl border border-slate-700/50 p-6 hover:border-cyan-500/60 hover:shadow-lg hover:shadow-cyan-500/20 transition-all group h-full flex flex-col">
-                <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${getCategoryColor(routine.category)} flex items-center justify-center mb-4 group-hover:scale-105 transition-transform shadow-lg`}>
+              <div className="glass rounded-2xl border border-cyan-500/20 p-6 hover:border-cyan-500/50 hover:neuro-glow transition-all group h-full flex flex-col bg-slate-900/50 backdrop-blur-xl">
+                <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${getCategoryColor(routine.category)} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform shadow-xl`}>
                   {getCategoryIcon(routine.category)}
                 </div>
 
                 <div className="flex-1">
-                  <h3 className="text-xl font-bold text-white mb-2 group-hover:text-cyan-300 transition-colors">
+                  <h3 className="text-xl font-bold text-white mb-3 group-hover:text-cyan-400 transition-colors">
                     {routine.routine_name}
                   </h3>
                   <p className="text-sm text-slate-300 mb-4 leading-relaxed">
                     {routine.description}
                   </p>
 
-                  <div className="flex items-center gap-4 text-xs mb-4">
-                    <div className="flex items-center gap-1 text-cyan-400">
+                  <div className="flex items-center gap-3 text-xs mb-4">
+                    <div className="flex items-center gap-1.5 text-cyan-400 font-semibold">
                       <Clock className="w-4 h-4" />
-                      <span className="font-semibold">{routine.total_duration} Min</span>
+                      <span>{routine.total_duration} Min</span>
                     </div>
-                    <div className={`px-3 py-1 rounded-full font-medium ${
-                      routine.difficulty === 'easy' ? 'bg-green-500/20 text-green-400 border border-green-500/30' : 
-                      routine.difficulty === 'medium' ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30' : 
-                      'bg-red-500/20 text-red-400 border border-red-500/30'
+                    <div className={`px-3 py-1 rounded-full font-semibold ${
+                      routine.difficulty === 'easy' ? 'bg-green-500/20 text-green-400 border border-green-500/40' : 
+                      routine.difficulty === 'medium' ? 'bg-amber-500/20 text-amber-400 border border-amber-500/40' : 
+                      'bg-red-500/20 text-red-400 border border-red-500/40'
                     }`}>
                       {routine.difficulty === 'easy' ? 'Easy' : 
                        routine.difficulty === 'medium' ? 'Medium' : 
@@ -135,11 +135,11 @@ export default function FlowSelection() {
 
                 <Button
                   onClick={() => window.location.href = createPageUrl(`Flow?routine_id=${routine.id}`)}
-                  className="w-full bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-600 hover:to-purple-700 font-semibold shadow-lg hover:shadow-cyan-500/50 transition-all"
+                  className="w-full bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-600 hover:to-purple-700 font-semibold shadow-xl hover:shadow-cyan-500/60 transition-all group-hover:scale-105"
                 >
                   Starten →
                 </Button>
-              </Card>
+              </div>
             </motion.div>
           ))}
         </div>
