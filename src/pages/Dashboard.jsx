@@ -69,61 +69,91 @@ export default function Dashboard() {
     return <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950" />;
   }
 
-  // Mode Selection Screen
+  // Mode Selection Screen (3 Fronten)
   if (!mode) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 flex items-center justify-center p-4 pb-20 md:pb-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="max-w-2xl w-full"
+          className="max-w-5xl w-full"
         >
           <div className="text-center mb-8 sm:mb-12">
             <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-3 sm:mb-4">
               Willkommen zu AXON
             </h1>
             <p className="text-base sm:text-lg text-slate-400">
-              Wähle deinen Startpunkt
+              Drei Wege zu deinem optimalen Körper
             </p>
           </div>
 
-          <div className="grid sm:grid-cols-2 gap-4 sm:gap-6">
-            {/* Rehab Path */}
+          <div className="grid sm:grid-cols-3 gap-4 sm:gap-6">
+            {/* 1. REHAB (Schmerz) */}
             <motion.button
               whileTap={{ scale: 0.98 }}
               onClick={() => setMode('rehab')}
               className="glass rounded-xl sm:rounded-2xl border border-red-500/30 p-6 sm:p-8 hover:border-red-500/60 active:border-red-500/80 transition-all group touch-target"
             >
-              <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-xl sm:rounded-2xl bg-gradient-to-br from-red-500 to-pink-600 flex items-center justify-center mb-3 sm:mb-4 mx-auto group-hover:shadow-lg group-hover:shadow-red-500/50 transition-all">
+              <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-xl sm:rounded-2xl bg-gradient-to-br from-red-500 to-pink-600 flex items-center justify-center mb-3 sm:mb-4 mx-auto group-hover:shadow-lg group-hover:shadow-red-500/50 transition-all animate-pulse">
                 <Target className="w-7 h-7 sm:w-8 sm:h-8 text-white" />
               </div>
-              <h2 className="text-xl sm:text-2xl font-bold text-red-400 mb-2 sm:mb-3">REHAB</h2>
+              <h2 className="text-xl sm:text-2xl font-bold text-red-400 mb-2 sm:mb-3">🔴 REHAB</h2>
               <p className="text-sm sm:text-base text-slate-300 mb-3 sm:mb-4">
-                Ich habe Schmerzen und möchte diese analysieren und lösen
+                Akuter Schmerz? Löse dein Problem jetzt.
               </p>
               <p className="text-xs sm:text-sm text-slate-500">
-                Markiere deine Schmerzregion → Detective analysiert → MFR + Neuro-Reset
+                Detective-Diagnose → 20 Scenarios → MFR + Neuro-Reset
               </p>
             </motion.button>
 
-            {/* Performance Path */}
+            {/* 2. PERFORMANCE (Goals) */}
             <motion.button
               whileTap={{ scale: 0.98 }}
               onClick={() => setMode('performance')}
-              className="glass rounded-xl sm:rounded-2xl border border-cyan-500/30 p-6 sm:p-8 hover:border-cyan-500/60 active:border-cyan-500/80 transition-all group touch-target"
+              className="glass rounded-xl sm:rounded-2xl border border-amber-500/30 p-6 sm:p-8 hover:border-amber-500/60 active:border-amber-500/80 transition-all group touch-target"
             >
-              <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-xl sm:rounded-2xl bg-gradient-to-br from-cyan-500 to-purple-600 flex items-center justify-center mb-3 sm:mb-4 mx-auto group-hover:shadow-lg group-hover:shadow-cyan-500/50 transition-all">
+              <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-xl sm:rounded-2xl bg-gradient-to-br from-amber-500 to-yellow-600 flex items-center justify-center mb-3 sm:mb-4 mx-auto group-hover:shadow-lg group-hover:shadow-amber-500/50 transition-all">
                 <Zap className="w-7 h-7 sm:w-8 sm:h-8 text-white" />
               </div>
-              <h2 className="text-xl sm:text-2xl font-bold text-cyan-400 mb-2 sm:mb-3">PERFORMANCE</h2>
+              <h2 className="text-xl sm:text-2xl font-bold text-amber-400 mb-2 sm:mb-3">🏆 GOALS</h2>
               <p className="text-sm sm:text-base text-slate-300 mb-3 sm:mb-4">
-                Ich möchte eine neue Fähigkeit freischalten (Splits, Handstand, etc.)
+                Schalte neue Fähigkeiten frei.
               </p>
               <p className="text-xs sm:text-sm text-slate-500">
-                Wähle dein Ziel → Trainingsprotokoll → Neuro-Drills + Kraftaufbau
+                12 Meilensteine → Mobility + Kraft → Performance
+              </p>
+            </motion.button>
+
+            {/* 3. FLOW (Daily Maintenance) */}
+            <motion.button
+              whileTap={{ scale: 0.98 }}
+              onClick={() => window.location.href = createPageUrl('FlowSelection')}
+              className="glass rounded-xl sm:rounded-2xl border border-cyan-500/30 p-6 sm:p-8 hover:border-cyan-500/60 active:border-cyan-500/80 transition-all group touch-target"
+            >
+              <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-xl sm:rounded-2xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center mb-3 sm:mb-4 mx-auto group-hover:shadow-lg group-hover:shadow-cyan-500/50 transition-all">
+                <Activity className="w-7 h-7 sm:w-8 sm:h-8 text-white" />
+              </div>
+              <h2 className="text-xl sm:text-2xl font-bold text-cyan-400 mb-2 sm:mb-3">🌊 FLOW</h2>
+              <p className="text-sm sm:text-base text-slate-300 mb-3 sm:mb-4">
+                Pflege dein System täglich.
+              </p>
+              <p className="text-xs sm:text-sm text-slate-500">
+                Body Journey → Neural Hygiene → Erhaltung
               </p>
             </motion.button>
           </div>
+
+          {/* Info Box */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.3 }}
+            className="mt-8 glass rounded-xl border border-slate-700 p-4 text-center"
+          >
+            <p className="text-sm text-slate-400">
+              💡 AXON deckt den kompletten Lebenszyklus ab: Probleme lösen → Ziele erreichen → System pflegen
+            </p>
+          </motion.div>
         </motion.div>
       </div>
     );

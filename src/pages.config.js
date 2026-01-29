@@ -60,6 +60,8 @@ import Profile from './pages/Profile';
 import QuickDemo from './pages/QuickDemo';
 import Success from './pages/Success';
 import Terms from './pages/Terms';
+import Flow from './pages/Flow';
+import FlowSelection from './pages/FlowSelection';
 import __Layout from './Layout.jsx';
 
 
@@ -77,6 +79,8 @@ export const PAGES = {
     "QuickDemo": QuickDemo,
     "Success": Success,
     "Terms": Terms,
+    "Flow": Flow,
+    "FlowSelection": FlowSelection,
 }
 
 export const pagesConfig = {
