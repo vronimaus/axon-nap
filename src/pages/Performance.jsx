@@ -82,6 +82,18 @@ export default function Performance() {
                   Die 12 Master-Ziele für maximale Bewegungsqualität. Jedes Ziel folgt der Triple-Path-Logik: 
                   Mobilisation, Dehnung, Kräftigung & Neuro-Fix.
                 </p>
+
+                {/* Instructions - How to Mark Goals */}
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.3 }}
+                  className="mt-6 glass rounded-xl sm:rounded-2xl border border-amber-500/30 p-4 sm:p-5 bg-gradient-to-r from-amber-500/10 to-transparent max-w-2xl mx-auto"
+                >
+                  <p className="text-xs sm:text-sm text-slate-300">
+                    <span className="font-semibold text-amber-400">💡 Tipp:</span> Beim Training kannst du Spannungsbögen direkt auf deinem Körper markieren – <strong>tippe für eine Stelle</strong> oder <strong>zeichne eine Linie</strong> für komplexe Bewegungsmuster. So lernt AXON deine individuellen Grenzen.
+                  </p>
+                </motion.div>
               </div>
               
               {/* Stats */}

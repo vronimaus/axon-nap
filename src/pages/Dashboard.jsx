@@ -263,11 +263,11 @@ export default function Dashboard() {
                 <div className="space-y-4">
                   {/* Instructions Card */}
                   <div className="glass rounded-xl sm:rounded-2xl border border-red-500/30 p-4 sm:p-6 bg-gradient-to-r from-red-500/10 to-transparent">
-                    <h2 className="text-base sm:text-lg font-semibold text-red-400 mb-3">Schmerz lokalisieren</h2>
+                    <h2 className="text-base sm:text-lg font-semibold text-red-400 mb-3">Schmerz präzise lokalisieren</h2>
                     <div className="space-y-2 text-xs sm:text-sm text-slate-300">
                       <p className="flex items-start gap-2">
                         <span className="text-red-400 font-bold flex-shrink-0">1.</span>
-                        <span>Klicke auf die Körperregion, wo du Schmerz oder Steifheit spürst</span>
+                        <span><strong>Punkt setzen:</strong> Tippe auf eine exakte Stelle – oder <strong>zeichne eine Linie</strong> entlang des Schmerzes für komplexe Muster</span>
                       </p>
                       <p className="flex items-start gap-2">
                         <span className="text-red-400 font-bold flex-shrink-0">2.</span>
@@ -275,7 +275,7 @@ export default function Dashboard() {
                       </p>
                       <p className="flex items-start gap-2">
                         <span className="text-red-400 font-bold flex-shrink-0">3.</span>
-                        <span>Starte die intelligente Diagnose – AXON analysiert dein Problem</span>
+                        <span>Starte die Analyse – AXON erkennt die Root Cause deines Problems</span>
                       </p>
                     </div>
                   </div>
