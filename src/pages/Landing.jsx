@@ -168,7 +168,7 @@ export default function Landing() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
-            className="flex flex-col sm:flex-row gap-4 justify-center mb-12"
+            className="flex flex-col sm:flex-row gap-4 justify-center mb-8"
           >
             <Button
               onClick={handleCheckout}
@@ -184,10 +184,30 @@ export default function Landing() {
               ) : (
                 <>
                   <Zap className="w-5 h-5 mr-2" />
-                  Lifetime-Zugang sichern – 59€
+                  Sofort kaufen – 59€
                 </>
               )}
             </Button>
+            <Button
+              onClick={() => base44.auth.redirectToLogin(window.location.href)}
+              size="lg"
+              variant="outline"
+              className="text-lg px-8 py-6 border-cyan-500/50 text-cyan-400 hover:bg-cyan-500/10"
+            >
+              7 Tage kostenlos testen
+            </Button>
+          </motion.div>
+
+          {/* Trial Info */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4 }}
+            className="max-w-2xl mx-auto bg-slate-800/30 border border-cyan-500/20 rounded-lg p-4 text-center text-sm text-slate-300"
+          >
+            <p>
+              <strong className="text-cyan-400">Kein Abo.</strong> 7 Tage vollständiger Zugriff – danach einmalig 59€ bezahlen oder weitermachen.
+            </p>
           </motion.div>
 
           <motion.div
