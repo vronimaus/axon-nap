@@ -99,25 +99,65 @@ export default function Flow() {
 
   if (completed) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 flex items-center justify-center p-4">
+      <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 flex items-center justify-center p-4 relative overflow-hidden">
+        {/* Animated Background Pulse */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 0.3, scale: 1.5 }}
+          transition={{ duration: 2, repeat: Infinity, repeatType: "reverse" }}
+          className="absolute inset-0 flex items-center justify-center"
+        >
+          <div className="w-96 h-96 rounded-full bg-cyan-500/20 blur-3xl" />
+        </motion.div>
+
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="glass rounded-2xl border border-cyan-500/30 p-8 max-w-md w-full text-center"
+          className="glass-cyan rounded-2xl border border-cyan-500/40 p-10 max-w-2xl w-full text-center relative z-10 neuro-glow"
         >
-          <div className="w-20 h-20 rounded-full bg-gradient-to-br from-cyan-500 to-purple-600 flex items-center justify-center mx-auto mb-6">
-            <Check className="w-10 h-10 text-white" />
-          </div>
-          <h2 className="text-2xl font-bold text-white mb-3">Routine abgeschlossen!</h2>
-          <p className="text-slate-400 mb-6">
-            Du hast "{routine.routine_name}" erfolgreich durchgeführt.
-          </p>
-          <Button
-            onClick={() => window.history.back()}
-            className="w-full bg-gradient-to-r from-cyan-500 to-purple-600"
+          {/* Success Icon */}
+          <motion.div
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
+            className="w-24 h-24 rounded-full bg-gradient-to-br from-cyan-500 to-purple-600 flex items-center justify-center mx-auto mb-6 shadow-2xl"
           >
-            Zurück zum Dashboard
-          </Button>
+            <Check className="w-12 h-12 text-white" />
+          </motion.div>
+
+          {/* Title */}
+          <motion.h2
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+            className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-500 mb-4"
+          >
+            {routine.completion_title || "System optimiert!"}
+          </motion.h2>
+
+          {/* Message */}
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4 }}
+            className="text-slate-200 text-base leading-relaxed mb-8 max-w-xl mx-auto"
+          >
+            {routine.completion_message || `Du hast "${routine.routine_name}" erfolgreich durchgeführt. Dein System ist jetzt optimiert und bereit!`}
+          </motion.p>
+
+          {/* Action Button */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.5 }}
+          >
+            <Button
+              onClick={() => window.history.back()}
+              className="bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-600 hover:to-purple-700 px-8 py-6 text-lg font-semibold shadow-xl"
+            >
+              Zurück zum Dashboard
+            </Button>
+          </motion.div>
         </motion.div>
       </div>
     );
