@@ -11,7 +11,7 @@ import ReactMarkdown from 'react-markdown';
 import BodyPainMap from '../components/diagnosis/BodyPainMap';
 import DemoPaywall from '../components/demo/DemoPaywall';
 import { useDemoTimer } from '../components/demo/useDemoTimer';
-import { useVoiceControl } from '@/components/useVoiceControl';
+
 
 
 export default function DiagnosisChat() {
@@ -407,11 +407,9 @@ export default function DiagnosisChat() {
                     }
                   }}
                   placeholder={
-                    voice.isListening 
-                      ? "🎤 Sprechen... (sage 'absenden' oder warte 3 Sek)" 
-                      : isDemoExpired 
-                        ? "Demo vorbei – upgraden um fortzufahren" 
-                        : "Beschreibe deine Symptome..."
+                    isDemoExpired 
+                      ? "Demo vorbei – upgraden um fortzufahren" 
+                      : "Beschreibe deine Symptome..."
                   }
                   className="flex-1 min-h-[60px] max-h-[120px] bg-slate-900/50 border-cyan-500/30 text-slate-200 placeholder:text-slate-500 resize-none text-sm sm:text-base"
                   disabled={loading || !conversation || isDemoExpired}
@@ -425,13 +423,7 @@ export default function DiagnosisChat() {
                 </Button>
               </div>
               <p className="text-xs text-slate-500 mt-2">
-                {voice.isSupported ? (
-                  <>
-                    🎤 Sprachsteuerung: "absenden", "senden", "ok", "fertig" oder 3 Sek Stille zum Absenden
-                  </>
-                ) : (
-                  <>💡 Der Detective analysiert deine Schmerzen und empfiehlt die spezifischen MFR-Nodes (N1-N12) + Neuro-Drills</>
-                )}
+                💡 Nimm dir Zeit für AXON – dieser Prozess braucht deine volle Aufmerksamkeit. Es geht um dich.
               </p>
             </div>
           </div>
