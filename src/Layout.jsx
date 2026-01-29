@@ -162,8 +162,8 @@ export default function Layout({ children, currentPageName }) {
 
 
       
-      {/* Mobile Bottom Navigation - nur für eingeloggte User */}
-          {!isChecking && user && (
+      {/* Mobile Bottom Navigation - nur für eingeloggte User UND auf relevanten Pages */}
+          {!isChecking && user && showNav && (
             <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-slate-900/95 backdrop-blur border-t border-cyan-500/20 safe-area-pb">
               <div className="grid grid-cols-4 gap-1 px-2 py-2">
                 {navItems.map((item) => (
