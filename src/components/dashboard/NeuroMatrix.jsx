@@ -164,7 +164,7 @@ export default function NeuroMatrix({ mode, goals, selectedRegion }) {
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: idx * 0.05 }}
               >
-                <Link to={createPageUrl('Performance')}>
+                <Link to={createPageUrl(`Performance?goal=${goal.code}`)}>
                   <div className="group relative p-3 rounded-xl bg-slate-800/30 border border-slate-700/50 hover:border-purple-500/50 transition-all cursor-pointer">
                     <div className="flex items-center gap-3">
                       {/* Progress Ring */}

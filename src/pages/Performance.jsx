@@ -16,6 +16,18 @@ export default function Performance() {
     queryKey: ['performanceGoals'],
     queryFn: () => base44.entities.PerformanceGoal.list()
   });
+
+  // Check if goal is in URL params
+  React.useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const goalCode = params.get('goal');
+    if (goalCode && goals.length > 0) {
+      const goal = goals.find(g => g.code === goalCode);
+      if (goal) {
+        setSelectedGoal(goal);
+      }
+    }
+  }, [goals]);
   
   if (isDemoExpired) {
     return <DemoPaywall />;
