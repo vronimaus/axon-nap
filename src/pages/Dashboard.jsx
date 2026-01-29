@@ -59,54 +59,54 @@ export default function Dashboard() {
   // Mode Selection Screen
   if (!mode) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 flex items-center justify-center p-4">
+      <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 flex items-center justify-center p-4 pb-20 md:pb-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           className="max-w-2xl w-full"
         >
-          <div className="text-center mb-12">
-            <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
+          <div className="text-center mb-8 sm:mb-12">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-3 sm:mb-4">
               Willkommen zu AXON
             </h1>
-            <p className="text-lg text-slate-400">
+            <p className="text-base sm:text-lg text-slate-400">
               Wähle deinen Startpunkt
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-6">
+          <div className="grid sm:grid-cols-2 gap-4 sm:gap-6">
             {/* Rehab Path */}
             <motion.button
-              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.98 }}
               onClick={() => setMode('rehab')}
-              className="glass rounded-2xl border border-red-500/30 p-8 hover:border-red-500/60 transition-all group"
+              className="glass rounded-xl sm:rounded-2xl border border-red-500/30 p-6 sm:p-8 hover:border-red-500/60 active:border-red-500/80 transition-all group touch-target"
             >
-              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-red-500 to-pink-600 flex items-center justify-center mb-4 mx-auto group-hover:shadow-lg group-hover:shadow-red-500/50 transition-all">
-                <Target className="w-8 h-8 text-white" />
+              <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-xl sm:rounded-2xl bg-gradient-to-br from-red-500 to-pink-600 flex items-center justify-center mb-3 sm:mb-4 mx-auto group-hover:shadow-lg group-hover:shadow-red-500/50 transition-all">
+                <Target className="w-7 h-7 sm:w-8 sm:h-8 text-white" />
               </div>
-              <h2 className="text-2xl font-bold text-red-400 mb-3">REHAB</h2>
-              <p className="text-slate-300 mb-4">
+              <h2 className="text-xl sm:text-2xl font-bold text-red-400 mb-2 sm:mb-3">REHAB</h2>
+              <p className="text-sm sm:text-base text-slate-300 mb-3 sm:mb-4">
                 Ich habe Schmerzen und möchte diese analysieren und lösen
               </p>
-              <p className="text-sm text-slate-500">
+              <p className="text-xs sm:text-sm text-slate-500">
                 Markiere deine Schmerzregion → Detective analysiert → MFR + Neuro-Reset
               </p>
             </motion.button>
 
             {/* Performance Path */}
             <motion.button
-              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.98 }}
               onClick={() => setMode('performance')}
-              className="glass rounded-2xl border border-cyan-500/30 p-8 hover:border-cyan-500/60 transition-all group"
+              className="glass rounded-xl sm:rounded-2xl border border-cyan-500/30 p-6 sm:p-8 hover:border-cyan-500/60 active:border-cyan-500/80 transition-all group touch-target"
             >
-              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-cyan-500 to-purple-600 flex items-center justify-center mb-4 mx-auto group-hover:shadow-lg group-hover:shadow-cyan-500/50 transition-all">
-                <Zap className="w-8 h-8 text-white" />
+              <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-xl sm:rounded-2xl bg-gradient-to-br from-cyan-500 to-purple-600 flex items-center justify-center mb-3 sm:mb-4 mx-auto group-hover:shadow-lg group-hover:shadow-cyan-500/50 transition-all">
+                <Zap className="w-7 h-7 sm:w-8 sm:h-8 text-white" />
               </div>
-              <h2 className="text-2xl font-bold text-cyan-400 mb-3">PERFORMANCE</h2>
-              <p className="text-slate-300 mb-4">
+              <h2 className="text-xl sm:text-2xl font-bold text-cyan-400 mb-2 sm:mb-3">PERFORMANCE</h2>
+              <p className="text-sm sm:text-base text-slate-300 mb-3 sm:mb-4">
                 Ich möchte eine neue Fähigkeit freischalten (Splits, Handstand, etc.)
               </p>
-              <p className="text-sm text-slate-500">
+              <p className="text-xs sm:text-sm text-slate-500">
                 Wähle dein Ziel → Trainingsprotokoll → Neuro-Drills + Kraftaufbau
               </p>
             </motion.button>
@@ -126,24 +126,24 @@ export default function Dashboard() {
       {/* Header with Mode Switch - only show when mode is selected */}
       {mode && (
         <div className="sticky top-0 z-40 bg-slate-900 border-b border-cyan-500/20">
-          <div className="max-w-7xl mx-auto px-4 py-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <h1 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-500">
-                  ⚡ AXON Command Center
+          <div className="max-w-7xl mx-auto px-3 sm:px-4 py-3 sm:py-4">
+            <div className="flex items-center justify-between gap-2 sm:gap-4">
+              <div className="min-w-0 flex-1">
+                <h1 className="text-base sm:text-xl md:text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-500 truncate">
+                  ⚡ AXON Command
                 </h1>
-                <p className="text-xs text-slate-400 mt-1">
+                <p className="text-xs text-slate-400 mt-0.5 sm:mt-1 hidden xs:block">
                   Hack Your Software. Free Your Hardware.
                 </p>
               </div>
               
               {/* Mode Switch & Back Button */}
-              <div className="flex items-center gap-4">
+              <div className="flex items-center gap-2 sm:gap-4 flex-shrink-0">
                 <Button
                   variant="ghost"
                   size="icon"
                   onClick={() => setShowOnboarding(true)}
-                  className="text-slate-400 hover:text-cyan-400"
+                  className="text-slate-400 hover:text-cyan-400 w-8 h-8 sm:w-9 sm:h-9"
                 >
                   <Info className="w-4 h-4" />
                 </Button>
@@ -153,9 +153,11 @@ export default function Dashboard() {
                     setSelectedBodyRegion(null);
                   }}
                   variant="outline"
-                  className="border-slate-600 text-slate-400 hover:text-slate-200"
+                  size="sm"
+                  className="border-slate-600 text-slate-400 hover:text-slate-200 px-2 sm:px-4 text-xs sm:text-sm"
                 >
-                  ← Zurück zur Wahl
+                  <span className="hidden xs:inline">← Zurück</span>
+                  <span className="xs:hidden">←</span>
                 </Button>
               </div>
             </div>
@@ -164,10 +166,10 @@ export default function Dashboard() {
       )}
 
       {/* Main Grid Layout */}
-      <div className="max-w-7xl mx-auto px-4 py-6">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-          {/* LEFT PANEL - Hardware Data */}
-          <div className="lg:col-span-3">
+      <div className="max-w-7xl mx-auto px-3 sm:px-4 py-4 sm:py-6 pb-20 md:pb-6">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6">
+          {/* LEFT PANEL - Hardware Data - Hidden on mobile */}
+          <div className="hidden lg:block lg:col-span-3">
             <HardwarePanel mode={mode} />
           </div>
 
@@ -180,9 +182,9 @@ export default function Dashboard() {
               transition={{ duration: 0.3 }}
             >
               {mode === 'rehab' && (
-                <div className="glass rounded-2xl border border-red-500/30 p-6 mb-6">
-                  <h2 className="text-lg font-semibold text-red-400 mb-2">Schritt 1: Schmerzbereich markieren</h2>
-                  <p className="text-sm text-slate-400 mb-4">Klicke auf deinen Körper um die Schmerzregion zu markieren, dann starte die Analyse.</p>
+                <div className="glass rounded-xl sm:rounded-2xl border border-red-500/30 p-4 sm:p-6 mb-4 sm:mb-6">
+                  <h2 className="text-base sm:text-lg font-semibold text-red-400 mb-2">Schritt 1: Schmerzbereich markieren</h2>
+                  <p className="text-xs sm:text-sm text-slate-400">Klicke auf deinen Körper um die Schmerzregion zu markieren, dann starte die Analyse.</p>
                 </div>
               )}
               <InteractiveBodyMap
@@ -194,11 +196,11 @@ export default function Dashboard() {
                 <motion.div
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="mt-6"
+                  className="mt-4 sm:mt-6"
                 >
                   <Button
                     onClick={() => window.location.href = createPageUrl(`DiagnosisWizard?region=${selectedBodyRegion}`)}
-                    className="w-full h-12 bg-gradient-to-r from-red-500 to-pink-600 hover:from-red-600 hover:to-pink-700 text-white font-bold"
+                    className="w-full h-12 sm:h-14 bg-gradient-to-r from-red-500 to-pink-600 hover:from-red-600 hover:to-pink-700 text-white font-bold text-sm sm:text-base"
                   >
                     Analysieren starten →
                   </Button>
@@ -207,8 +209,17 @@ export default function Dashboard() {
             </motion.div>
           </div>
 
-          {/* RIGHT PANEL - Neuro Matrix */}
-          <div className="lg:col-span-3">
+          {/* RIGHT PANEL - Neuro Matrix - Hidden on mobile, shown at bottom via NeuroMatrix component */}
+          <div className="hidden lg:block lg:col-span-3">
+            <NeuroMatrix
+              mode={mode}
+              goals={goals}
+              selectedRegion={selectedBodyRegion}
+            />
+          </div>
+          
+          {/* Mobile: Show NeuroMatrix below map */}
+          <div className="lg:hidden">
             <NeuroMatrix
               mode={mode}
               goals={goals}
@@ -218,17 +229,17 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* Mode Indicator Badge */}
+      {/* Mode Indicator Badge - Hidden on small mobile to avoid overlapping with bottom nav */}
       <AnimatePresence>
         {mode && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 20 }}
-            className="fixed bottom-6 right-6 z-50"
+            className="hidden sm:block fixed bottom-6 right-6 z-50"
           >
             <div
-              className={`px-4 py-2 rounded-full backdrop-blur-xl border font-mono text-xs font-bold ${
+              className={`px-3 sm:px-4 py-2 rounded-full backdrop-blur-xl border font-mono text-xs font-bold ${
                 mode === 'rehab'
                   ? 'bg-red-500/20 border-red-500/50 text-red-400'
                   : 'bg-cyan-500/20 border-cyan-500/50 text-cyan-400'
@@ -238,7 +249,7 @@ export default function Dashboard() {
                 <div className={`w-2 h-2 rounded-full animate-pulse ${
                   mode === 'rehab' ? 'bg-red-400' : 'bg-cyan-400'
                 }`} />
-                {mode === 'rehab' ? 'STEP 1: REHAB' : 'STEP 2: PERFORMANCE'}
+                <span className="whitespace-nowrap">{mode === 'rehab' ? 'STEP 1: REHAB' : 'STEP 2: PERFORMANCE'}</span>
               </div>
             </div>
           </motion.div>
