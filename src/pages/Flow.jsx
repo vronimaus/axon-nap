@@ -325,13 +325,27 @@ export default function Flow() {
             )}
           </Button>
           <Button
-            onClick={handleNextStep}
-            disabled={currentStep === routine.sequence.length - 1}
+            onClick={() => {
+              if (currentStep === routine.sequence.length - 1) {
+                setCompleted(true);
+                setIsPlaying(false);
+                saveHistory();
+              } else {
+                handleNextStep();
+              }
+            }}
             variant="outline"
             size="lg"
             className="border-slate-600 text-slate-400"
           >
-            Weiter →
+            {currentStep === routine.sequence.length - 1 ? (
+              <>
+                <Check className="w-5 h-5 mr-2" />
+                Beenden
+              </>
+            ) : (
+              'Weiter →'
+            )}
           </Button>
         </div>
       </div>
