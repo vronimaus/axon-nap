@@ -20,11 +20,20 @@ export default function Landing() {
         const currentUser = await base44.auth.me();
         setUser(currentUser);
         
-        // Skip redirect wenn explizit auf Landing bleiben
-        if (stayOnLanding) {
-          setIsLoading(false);
-          return;
-        }
+        // Prüfe ob Checkout pending ist (nach Login)
+                const pendingCheckout = localStorage.getItem('pending_checkout_mode');
+                if (pendingCheckout) {
+                  localStorage.removeItem('pending_checkout_mode');
+                  // Starte Checkout direkt
+                  handleCheckout(pendingCheckout);
+                  return;
+                }
+
+                // Skip redirect wenn explizit auf Landing bleiben
+                if (stayOnLanding) {
+                  setIsLoading(false);
+                  return;
+                }
         
         // Eingeloggte User + bezahlt - zum Dashboard
         if (currentUser?.has_paid) {
@@ -54,6 +63,8 @@ export default function Landing() {
 
   const handleCheckout = async (mode) => {
     if (!user) {
+      // Speichere den Checkout-Modus und redirect zum Login
+      localStorage.setItem('pending_checkout_mode', mode);
       base44.auth.redirectToLogin(window.location.href);
       return;
     }
