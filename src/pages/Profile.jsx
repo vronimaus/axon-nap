@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { motion } from 'framer-motion';
-import { Loader2, Save, AlertCircle } from 'lucide-react';
+import { Loader2, Save, AlertCircle, HelpCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 
@@ -61,7 +61,9 @@ export default function Profile() {
         jaw_tension_history: profile.jaw_tension_history || false,
         primary_posture: profile.primary_posture || 'mostly_sitting',
         baseline_stress_level: profile.baseline_stress_level || 5,
-        sleep_quality_avg: profile.sleep_quality_avg || 'medium'
+        sleep_quality_avg: profile.sleep_quality_avg || 'medium',
+        hrv_score: profile.hrv_score || '',
+        strength_score: profile.strength_score || ''
       });
     }
   }, [profile]);
@@ -261,6 +263,7 @@ export default function Profile() {
                 min="1"
                 max="10"
                 displayValue={`${formData.baseline_stress_level}/10`}
+                help="1 = sehr niedrig, 10 = sehr hoch"
               />
               <FormField
                 label="Durchschnittliche Schlafqualität"
@@ -268,14 +271,47 @@ export default function Profile() {
                 value={formData.sleep_quality_avg}
                 onChange={(e) => handleChange('sleep_quality_avg', e.target.value)}
                 options={[
-                  { value: 'poor', label: 'Schlecht' },
-                  { value: 'medium', label: 'Mittelmäßig' },
-                  { value: 'good', label: 'Gut' }
+                  { value: 'poor', label: 'Schlecht (ca. 5,5h)' },
+                  { value: 'medium', label: 'Mittelmäßig (ca. 7,5h)' },
+                  { value: 'good', label: 'Gut (ca. 8,5h)' }
                 ]}
+                help="Beeinflusst deine Recovery und mentale Klarheit"
               />
             </div>
           </Section>
-        </div>
+
+          {/* Hardware Metriken */}
+          <Section title="Meine Leistungsmetriken" icon="📊">
+            <div className="bg-cyan-500/10 border border-cyan-500/30 rounded-lg p-4 mb-6">
+              <div className="flex gap-2 mb-3">
+                <HelpCircle className="w-5 h-5 text-cyan-400 flex-shrink-0 mt-0.5" />
+                <p className="text-sm text-cyan-300">
+                  Diese Metriken werden im Dashboard angezeigt und helfen, deine Trainingsfortschritte zu verfolgen.
+                </p>
+              </div>
+            </div>
+            <div className="grid md:grid-cols-2 gap-4">
+              <FormField
+                label="HRV Score (Herzfrequenzvariabilität)"
+                type="number"
+                value={formData.hrv_score}
+                onChange={(e) => handleChange('hrv_score', e.target.value ? parseInt(e.target.value) : '')}
+                placeholder="z.B. 45"
+                help="Misst die Variabilität deines Herzrhythmus in Millisekunden. Höhere Werte = bessere Recovery & Stressresistenz. Nutze ein HRV-Messgerät oder App."
+              />
+              <FormField
+                label="Strength Score (Kraftniveau)"
+                type="number"
+                value={formData.strength_score}
+                onChange={(e) => handleChange('strength_score', e.target.value ? parseInt(e.target.value) : '')}
+                placeholder="0-100"
+                min="0"
+                max="100"
+                help="Deine subjektive Einschätzung deiner Kraft (0-100%). 0% = sehr schwach, 100% = maximum Kraft."
+              />
+            </div>
+          </Section>
+          </div>
 
         {/* Save Button */}
         <motion.div
@@ -319,18 +355,34 @@ function Section({ title, icon, children }) {
   );
 }
 
-function FormField({ label, type, value, onChange, placeholder, options, min, max, displayValue }) {
+function FormField({ label, type, value, onChange, placeholder, options, min, max, displayValue, help }) {
   return (
     <div>
       <label className="block text-sm font-medium text-slate-300 mb-2">
         {label}
       </label>
+      {help && (
+        <p className="text-xs text-slate-400 mb-2">
+          {help}
+        </p>
+      )}
       {type === 'text' && (
         <input
           type="text"
           value={value}
           onChange={onChange}
           placeholder={placeholder}
+          className="w-full px-4 py-2 rounded-lg bg-slate-800/50 border border-slate-700 text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400"
+        />
+      )}
+      {type === 'number' && (
+        <input
+          type="number"
+          value={value}
+          onChange={onChange}
+          placeholder={placeholder}
+          min={min}
+          max={max}
           className="w-full px-4 py-2 rounded-lg bg-slate-800/50 border border-slate-700 text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400"
         />
       )}
