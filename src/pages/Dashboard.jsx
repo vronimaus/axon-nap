@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { createPageUrl } from '@/utils';
-import { Activity, Target, Zap, Info, Lock } from 'lucide-react';
+import { Activity, Target, Zap, Info, Lock, ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import InteractiveBodyMap from '../components/dashboard/InteractiveBodyMap';
 import HardwarePanel from '../components/dashboard/HardwarePanel';
@@ -179,9 +179,42 @@ export default function Dashboard() {
                   Hack Your Software. Free Your Hardware.
                 </p>
               </div>
-              
-              {/* Mode Switch & Back Button */}
-              <div className="flex items-center gap-2 sm:gap-4 flex-shrink-0">
+
+              {/* Mode Toggle Buttons */}
+              <div className="flex items-center gap-2 flex-shrink-0">
+                <div className="hidden xs:flex items-center gap-1 bg-slate-800/50 rounded-lg p-1">
+                  <Button
+                    onClick={() => {
+                      setMode('rehab');
+                      setSelectedBodyRegion(null);
+                    }}
+                    variant={mode === 'rehab' ? 'default' : 'ghost'}
+                    size="sm"
+                    className={`text-xs sm:text-sm ${
+                      mode === 'rehab'
+                        ? 'bg-red-500/30 text-red-400 hover:bg-red-500/40'
+                        : 'text-slate-400 hover:text-slate-200'
+                    }`}
+                  >
+                    REHAB
+                  </Button>
+                  <Button
+                    onClick={() => {
+                      setMode('performance');
+                      setSelectedBodyRegion(null);
+                    }}
+                    variant={mode === 'performance' ? 'default' : 'ghost'}
+                    size="sm"
+                    className={`text-xs sm:text-sm ${
+                      mode === 'performance'
+                        ? 'bg-amber-500/30 text-amber-400 hover:bg-amber-500/40'
+                        : 'text-slate-400 hover:text-slate-200'
+                    }`}
+                  >
+                    PERFORMANCE
+                  </Button>
+                </div>
+
                 <Button
                   variant="ghost"
                   size="icon"
@@ -199,8 +232,8 @@ export default function Dashboard() {
                   size="sm"
                   className="border-slate-600 text-slate-400 hover:text-slate-200 px-2 sm:px-4 text-xs sm:text-sm"
                 >
-                  <span className="hidden xs:inline">← Zurück</span>
-                  <span className="xs:hidden">←</span>
+                  <ArrowLeft className="w-4 h-4 mr-1" />
+                  <span className="hidden xs:inline">Zurück</span>
                 </Button>
               </div>
             </div>
@@ -227,9 +260,25 @@ export default function Dashboard() {
               transition={{ duration: 0.3 }}
             >
               {mode === 'rehab' && (
-                <div className="glass rounded-xl sm:rounded-2xl border border-red-500/30 p-4 sm:p-6 mb-4 sm:mb-6">
-                  <h2 className="text-base sm:text-lg font-semibold text-red-400 mb-2">Schritt 1: Schmerzbereich markieren</h2>
-                  <p className="text-xs sm:text-sm text-slate-400">Klicke auf deinen Körper um die Schmerzregion zu markieren, dann starte die Analyse.</p>
+                <div className="space-y-4">
+                  {/* Instructions Card */}
+                  <div className="glass rounded-xl sm:rounded-2xl border border-red-500/30 p-4 sm:p-6 bg-gradient-to-r from-red-500/10 to-transparent">
+                    <h2 className="text-base sm:text-lg font-semibold text-red-400 mb-3">Schmerz lokalisieren</h2>
+                    <div className="space-y-2 text-xs sm:text-sm text-slate-300">
+                      <p className="flex items-start gap-2">
+                        <span className="text-red-400 font-bold flex-shrink-0">1.</span>
+                        <span>Klicke auf die Körperregion, wo du Schmerz oder Steifheit spürst</span>
+                      </p>
+                      <p className="flex items-start gap-2">
+                        <span className="text-red-400 font-bold flex-shrink-0">2.</span>
+                        <span>Wähle deine spezifischen Symptome aus der Liste aus</span>
+                      </p>
+                      <p className="flex items-start gap-2">
+                        <span className="text-red-400 font-bold flex-shrink-0">3.</span>
+                        <span>Starte die intelligente Diagnose – AXON analysiert dein Problem</span>
+                      </p>
+                    </div>
+                  </div>
                 </div>
               )}
               <InteractiveBodyMap
