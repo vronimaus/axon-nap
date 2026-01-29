@@ -11,7 +11,7 @@ import ReactMarkdown from 'react-markdown';
 import BodyPainMap from '../components/diagnosis/BodyPainMap';
 import DemoPaywall from '../components/demo/DemoPaywall';
 import { useDemoTimer } from '../components/demo/useDemoTimer';
-import MFRNodeDisplay from '../components/mfr/MFRNodeDisplay';
+
 
 export default function DiagnosisChat() {
   const [searchParams] = useSearchParams();
@@ -190,7 +190,7 @@ export default function DiagnosisChat() {
         </AnimatePresence>
 
         {/* Chat Container */}
-        <Card className="bg-slate-900/90 border border-cyan-500/30 shadow-2xl backdrop-blur-sm">
+        <Card className="bg-slate-900/90 border border-cyan-500/30 shadow-2xl backdrop-blur-sm mb-6">
           <div className="flex flex-col h-[600px]">
             {/* Messages */}
             <div className="flex-1 overflow-y-auto p-6 space-y-4 bg-slate-900/50">
@@ -262,17 +262,7 @@ export default function DiagnosisChat() {
                             >
                               {msg.content}
                             </ReactMarkdown>
-                            
-                            {/* Auto-detect Node references and display (deduplicated) */}
-                            {msg.content && (() => {
-                              const nodeMatches = msg.content.match(/\b(N\d{1,2})\b/g) || [];
-                              const uniqueNodes = [...new Set(nodeMatches)];
-                              return uniqueNodes.map((nodeRef, idx) => (
-                                <div key={idx} className="mt-3">
-                                  <MFRNodeDisplay nodeId={nodeRef} />
-                                </div>
-                              ));
-                            })()}
+
                           </>
                         )}
 
@@ -362,6 +352,29 @@ export default function DiagnosisChat() {
             </div>
           </div>
         </Card>
+
+        {/* MFR Node Reference Map */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 }}
+          className="glass-cyan rounded-2xl border border-cyan-500/30 p-4 sm:p-6"
+        >
+          <h3 className="text-lg sm:text-xl font-bold text-cyan-400 mb-3 flex items-center gap-2">
+            <span>📍</span>
+            <span>MFR Node Karte</span>
+          </h3>
+          <p className="text-xs sm:text-sm text-slate-400 mb-4">
+            Alle 12 MFR-Nodes auf einen Blick – verwende diese Karte zur genauen Lokalisierung
+          </p>
+          <div className="rounded-xl overflow-hidden border border-slate-700">
+            <img
+              src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/c7c1085f4_TEchnicalMFRCoordinates.jpg"
+              alt="MFR Node Koordinaten - Front und Back"
+              className="w-full h-auto"
+            />
+          </div>
+        </motion.div>
       </div>
     </div>
   );
