@@ -370,27 +370,97 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* SEKTION 4: VISUAL - BODYMAP */}
+      {/* SEKTION 4: WORKFLOW SEQUENCE */}
       <section className="py-20 relative">
         <div className="max-w-5xl mx-auto px-4">
           <h2 className="text-4xl md:text-5xl font-bold text-center text-white mb-4">
-            Präzision statt Gießkanne
+            Der Complete Reset in 15 Minuten
           </h2>
           <p className="text-lg text-slate-400 text-center mb-12 max-w-2xl mx-auto">
-            Über 12 strategische Nodes greifen wir direkt in die Steuerung deines Körpers ein. Jedes Signal hat einen Ursprung – AXON zeigt dir, wo er liegt.
+            Hardware lösen → Gehirn kalibrieren → Bewegung verankern
           </p>
 
+          <div className="grid md:grid-cols-3 gap-6">
+            {/* Hardware */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="glass rounded-2xl border border-orange-500/30 p-8 text-center"
+            >
+              <div className="text-5xl mb-4">⚙️</div>
+              <h3 className="text-2xl font-bold text-orange-400 mb-3">Hardware</h3>
+              <p className="text-slate-300 mb-4">90 Sekunden Druck auf einen kritischen Node</p>
+              <div className="text-sm text-slate-400">
+                Spannungen lösen, Sensoren kalibrieren
+              </div>
+            </motion.div>
+
+            {/* Arrow */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.1 }}
+              className="flex items-center justify-center"
+            >
+              <div className="text-4xl">→</div>
+            </motion.div>
+
+            {/* Software */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.2 }}
+              className="glass rounded-2xl border border-cyan-500/30 p-8 text-center"
+            >
+              <div className="text-5xl mb-4">🧠</div>
+              <h3 className="text-2xl font-bold text-cyan-400 mb-3">Software</h3>
+              <p className="text-slate-300 mb-4">3 Min Neuro-Drill für Augen & Gleichgewicht</p>
+              <div className="text-sm text-slate-400">
+                Gehirn signalisiert „Sicherheit"
+              </div>
+            </motion.div>
+
+            {/* Arrow */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.3 }}
+              className="flex items-center justify-center md:col-start-3"
+            >
+              <div className="text-4xl">→</div>
+            </motion.div>
+
+            {/* Integration */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.4 }}
+              className="glass rounded-2xl border border-purple-500/30 p-8 text-center md:col-span-2"
+            >
+              <div className="text-5xl mb-4">💪</div>
+              <h3 className="text-2xl font-bold text-purple-400 mb-3">Integration</h3>
+              <p className="text-slate-300 mb-4">5 konzentrierte Wiederholungen einer Kraft-Bewegung</p>
+              <div className="text-sm text-slate-400">
+                Nervensystem verankert den Fortschritt
+              </div>
+            </motion.div>
+          </div>
+
           <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            whileInView={{ opacity: 1, scale: 1 }}
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="glass rounded-2xl border border-cyan-500/30 p-8 neuro-glow"
+            transition={{ delay: 0.5 }}
+            className="mt-12 glass rounded-2xl border border-purple-500/30 p-8 text-center bg-gradient-to-r from-purple-500/5 to-cyan-500/5"
           >
-            <img 
-              src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/ad6e52b61_generated_image.png"
-              alt="12 Nodes Body Map"
-              className="w-full h-auto rounded-lg"
-            />
+            <p className="text-lg text-white font-semibold">
+              ✅ Ergebnis: Bessere Mobilität, neue Kraft-Reserve, entspanntes Nervensystem
+            </p>
           </motion.div>
         </div>
       </section>
