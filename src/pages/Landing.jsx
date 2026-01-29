@@ -16,41 +16,37 @@ export default function Landing() {
     const checkAuth = async () => {
       try {
         const stayOnLanding = localStorage.getItem('stay_on_landing') === 'true';
-        
-        const currentUser = await base44.auth.me();
-        setUser(currentUser);
-        
-        // Prüfe ob Checkout pending ist (nach Login)
-                const pendingCheckout = localStorage.getItem('pending_checkout_mode');
-                if (pendingCheckout) {
-                  localStorage.removeItem('pending_checkout_mode');
-                  // Starte Checkout direkt
-                  handleCheckout(pendingCheckout);
-                  return;
-                }
 
-                // Skip redirect wenn explizit auf Landing bleiben
-                if (stayOnLanding) {
-                  setIsLoading(false);
-                  return;
+                try {
+                  const currentUser = await base44.auth.me();
+                  setUser(currentUser);
+
+                  // Skip redirect wenn explizit auf Landing bleiben
+                  if (stayOnLanding) {
+                    setIsLoading(false);
+                    return;
+                  }
+
+                  // Eingeloggte User + bezahlt - zum Dashboard
+                  if (currentUser?.has_paid) {
+                    window.location.href = createPageUrl('Dashboard');
+                    return;
+                  }
+
+                  // Eingeloggte User + aktiver Trial - zum Dashboard
+                  if (currentUser && currentUser.trial_start_date) {
+                    const startDate = new Date(currentUser.trial_start_date);
+                    const now = new Date();
+                    const daysElapsed = Math.floor((now - startDate) / (1000 * 60 * 60 * 24));
+                    if (daysElapsed < 7) {
+                      window.location.href = createPageUrl('Dashboard');
+                      return;
+                    }
+                  }
+                } catch (e) {
+                  // User nicht eingeloggt - das ist ok, Landing ist öffentlich
+                  setUser(null);
                 }
-        
-        // Eingeloggte User + bezahlt - zum Dashboard
-        if (currentUser?.has_paid) {
-          window.location.href = createPageUrl('Dashboard');
-          return;
-        }
-        
-        // Eingeloggte User + aktiver Trial - zum Dashboard
-        if (currentUser && currentUser.trial_start_date) {
-          const startDate = new Date(currentUser.trial_start_date);
-          const now = new Date();
-          const daysElapsed = Math.floor((now - startDate) / (1000 * 60 * 60 * 24));
-          if (daysElapsed < 7) {
-            window.location.href = createPageUrl('Dashboard');
-            return;
-          }
-        }
       } catch (e) {
         setUser(null);
       } finally {
@@ -62,13 +58,6 @@ export default function Landing() {
   }, []);
 
   const handleCheckout = async (mode) => {
-    if (!user) {
-      // Speichere den Checkout-Modus und redirect zum Login
-      localStorage.setItem('pending_checkout_mode', mode);
-      base44.auth.redirectToLogin(window.location.href);
-      return;
-    }
-
     if (window.self !== window.top) {
       toast.error('Checkout funktioniert nur in der veröffentlichten App.');
       return;
