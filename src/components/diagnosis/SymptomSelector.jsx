@@ -80,18 +80,17 @@ export default function SymptomSelector({ selectedRegion, selectedSymptoms, onSy
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="mt-4 p-4 glass rounded-2xl border border-slate-700/50 text-center"
+          className="mt-4 p-6 glass rounded-2xl border border-slate-700/50 text-center"
         >
-          <p className="text-xs text-slate-400 mb-3">
+          <p className="text-sm font-semibold text-slate-300 mb-4">
             Ist dein Symptom nicht dabei?
           </p>
           <Button
             onClick={() => window.location.href = createPageUrl('DiagnosisChat')}
-            variant="outline"
-            size="sm"
-            className="border-slate-600 text-slate-300 hover:text-cyan-400 hover:border-cyan-500/50 text-xs w-full"
+            size="lg"
+            className="w-full bg-cyan-500 hover:bg-cyan-600 text-white font-semibold text-sm py-3"
           >
-            <MessageSquare className="w-3 h-3 mr-2" />
+            <MessageSquare className="w-4 h-4 mr-2" />
             Beschreibe es im Chat mit dem Agenten
           </Button>
         </motion.div>
