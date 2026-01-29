@@ -54,6 +54,15 @@ export default function NeuroMatrix({ mode, goals, selectedRegion }) {
 
   const rehabData = getRehabStats();
 
+  // Initialize progress data for each goal
+  const progressData = goals.reduce((acc, goal) => {
+    acc[goal.code] = {
+      level: Math.floor(Math.random() * 6), // Mock: 0-5
+      unlocked: Math.random() > 0.3 // 70% unlocked
+    };
+    return acc;
+  }, {});
+
   const getProgressColor = (level) => {
     if (level === 0) return 'text-slate-600';
     if (level <= 2) return 'text-cyan-400';
