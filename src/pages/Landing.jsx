@@ -15,8 +15,17 @@ export default function Landing() {
   useEffect(() => {
     const checkAuth = async () => {
       try {
+        const params = new URLSearchParams(window.location.search);
+        const isPreview = params.get('preview') === 'true';
+        
         const currentUser = await base44.auth.me();
         setUser(currentUser);
+        
+        // Skip redirect wenn preview=true
+        if (isPreview) {
+          setIsLoading(false);
+          return;
+        }
         
         // Eingeloggte User + bezahlt - zum Dashboard
         if (currentUser?.has_paid) {
