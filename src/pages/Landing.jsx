@@ -492,7 +492,7 @@ export default function Landing() {
                 <span className="text-slate-400">7 Tage</span>
               </div>
               <p className="text-slate-300 mb-8">
-                Keine Zahlungsmethode erforderlich. Nach 7 Tagen zahlst du einmalig 59€ oder kündigst mit einem Klick.
+                Gebe deine Zahlungsdaten ein und teste 7 Tage alle Funktionen kostenlos. Danach buchen wir 59 € ab. Solltest du mit AXON keine Spannungen lösen können, kündige einfach innerhalb der Testphase.
               </p>
               <Button
                 onClick={() => handleCheckout('trial')}
