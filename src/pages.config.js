@@ -64,6 +64,7 @@ import QuickDemo from './pages/QuickDemo';
 import Success from './pages/Success';
 import Terms from './pages/Terms';
 import Glossary from './pages/Glossary';
+import TrialInfo from './pages/TrialInfo';
 import __Layout from './Layout.jsx';
 
 
@@ -85,6 +86,7 @@ export const PAGES = {
     "Success": Success,
     "Terms": Terms,
     "Glossary": Glossary,
+    "TrialInfo": TrialInfo,
 }
 
 export const pagesConfig = {
