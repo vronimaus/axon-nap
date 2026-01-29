@@ -52,7 +52,7 @@ export default function Landing() {
     checkAuth();
   }, []);
 
-  const handleCheckout = async () => {
+  const handleCheckout = async (mode) => {
     if (!user) {
       base44.auth.redirectToLogin(window.location.href);
       return;
@@ -66,9 +66,21 @@ export default function Landing() {
     setIsCheckoutLoading(true);
     try {
       const { data } = await base44.functions.invoke('createCheckoutSession', {
+        mode,
         returnUrl: window.location.href
       });
+
+      if (mode === 'direct' && data.success) {
+        // Sofortiger Zugriff gewährt
+        toast.success('Zahlung erfolgreich! Du hast jetzt lebenslangen Zugriff.');
+        setTimeout(() => {
+          window.location.href = createPageUrl('Dashboard');
+        }, 1500);
+        return;
+      }
+
       if (data.sessionId) {
+        // Trial oder Setup - zu Stripe Checkout
         window.location.href = `https://checkout.stripe.com/c/pay/${data.sessionId}`;
       }
     } catch (error) {
@@ -168,10 +180,29 @@ export default function Landing() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
-            className="flex flex-col sm:flex-row gap-4 justify-center mb-12"
+            className="flex flex-col sm:flex-row gap-4 justify-center mb-6"
           >
             <Button
-              onClick={handleCheckout}
+              onClick={() => handleCheckout('trial')}
+              disabled={isCheckoutLoading}
+              size="lg"
+              variant="outline"
+              className="text-lg px-8 py-6 border-cyan-500/50 text-cyan-400 hover:bg-cyan-500/10"
+            >
+              {isCheckoutLoading ? (
+                <>
+                  <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                  Lädt...
+                </>
+              ) : (
+                <>
+                  ⏱️
+                  7 Tage kostenlos testen
+                </>
+              )}
+            </Button>
+            <Button
+              onClick={() => handleCheckout('direct')}
               disabled={isCheckoutLoading}
               size="lg"
               className="text-lg px-8 py-6 bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-600 hover:to-purple-700 neuro-glow"
@@ -184,10 +215,22 @@ export default function Landing() {
               ) : (
                 <>
                   <Zap className="w-5 h-5 mr-2" />
-                  Lifetime-Zugang sichern – 59€
+                  Sofort kaufen – 59€
                 </>
               )}
             </Button>
+          </motion.div>
+
+          {/* Info Box */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4 }}
+            className="glass rounded-xl border border-cyan-500/20 p-6 max-w-2xl mx-auto mb-12"
+          >
+            <p className="text-sm text-slate-300 text-center">
+              <strong>7 Tage Testphase:</strong> Danach einmalig 59€. Jederzeit während der Testphase mit einem Klick kündbar. Kein Risiko.
+            </p>
           </motion.div>
 
           <motion.div
