@@ -3,16 +3,14 @@ import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { Activity, LayoutDashboard, Compass, Trophy, LogOut, User } from 'lucide-react';
 import CookieBanner from './components/CookieBanner';
-import { useDemoTimer } from './components/demo/useDemoTimer';
-import DemoTimer from './components/demo/DemoTimer';
-import DemoPaywall from './components/demo/DemoPaywall';
+import { useTrialStatus } from './components/useTrialStatus';
 import DailyReadinessCheck from './components/dashboard/DailyReadinessCheck';
 import { AnimatePresence } from 'framer-motion';
 import { base44 } from '@/api/base44Client';
 import { Toaster } from 'sonner';
 
 export default function Layout({ children, currentPageName }) {
-  const { isDemoExpired, isLoading: demoLoading, formattedTime } = useDemoTimer();
+  const { isLoading: trialLoading, hasAccess } = useTrialStatus();
   const [user, setUser] = useState(null);
   const [isChecking, setIsChecking] = useState(true);
   const [showDailyCheck, setShowDailyCheck] = useState(false);
@@ -142,15 +140,7 @@ export default function Layout({ children, currentPageName }) {
         {children}
       </main>
 
-      {/* Global Demo Timer - nur wenn nicht admin und nicht bezahlt */}
-          {user && !isChecking && !user?.has_paid && user?.role !== 'admin' && (
-            <DemoTimer formattedTime={formattedTime} isLoading={demoLoading} />
-          )}
 
-          {/* Demo Paywall Overlay - nur für Demo-User ohne Bezahlung */}
-              <AnimatePresence>
-                {user && !isChecking && isDemoExpired && !user?.has_paid && <DemoPaywall />}
-              </AnimatePresence>
       
       {/* Mobile Bottom Navigation - nur für eingeloggte User */}
           {!isChecking && user && (
