@@ -10,6 +10,9 @@ import HardwarePanel from '../components/dashboard/HardwarePanel';
 import NeuroMatrix from '../components/dashboard/NeuroMatrix';
 import OnboardingModal from '../components/dashboard/OnboardingModal';
 import DemoPaywall from '../components/demo/DemoPaywall';
+import AthleteProfile from '../components/dashboard/AthleteProfile';
+import SystemStatus from '../components/dashboard/SystemStatus';
+import HardwareAlerts from '../components/dashboard/HardwareAlerts';
 
 export default function Dashboard() {
   const [mode, setMode] = useState(null); // 'rehab', 'performance', or null for selection
@@ -45,6 +48,16 @@ export default function Dashboard() {
   const { data: goals = [] } = useQuery({
     queryKey: ['performanceGoals'],
     queryFn: () => base44.entities.PerformanceGoal.list()
+  });
+
+  const { data: neuroProfile } = useQuery({
+    queryKey: ['neuroProfile', user?.email],
+    queryFn: async () => {
+      if (!user?.email) return null;
+      const profiles = await base44.entities.UserNeuroProfile.filter({ user_email: user.email });
+      return profiles[0] || null;
+    },
+    enabled: !!user?.email
   });
 
   // Show paywall if user not paid (except admin)
@@ -168,9 +181,11 @@ export default function Dashboard() {
       {/* Main Grid Layout */}
       <div className="max-w-7xl mx-auto px-3 sm:px-4 py-4 sm:py-6 pb-20 md:pb-6">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6">
-          {/* LEFT PANEL - Hardware Data - Hidden on mobile */}
-          <div className="hidden lg:block lg:col-span-3">
-            <HardwarePanel mode={mode} />
+          {/* LEFT PANEL - Athlete Profile & Alerts */}
+          <div className="lg:col-span-3 space-y-4">
+            <AthleteProfile profile={neuroProfile} systemStatus={mode} />
+            <HardwareAlerts profile={neuroProfile} />
+            <SystemStatus mode={mode} profile={neuroProfile} lastSession={sessions[0]} />
           </div>
 
           {/* CENTER - Interactive Body Map */}
