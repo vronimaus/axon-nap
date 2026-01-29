@@ -59,14 +59,19 @@ export default function Layout({ children, currentPageName }) {
     }, 2000);
 
     return () => clearInterval(interval);
-  }, [currentPageName]);
+    }, [currentPageName]);
 
-  const handleCloseDailyCheck = () => {
+    const handleCloseDailyCheck = () => {
     const today = new Date().toISOString().split('T')[0];
     localStorage.setItem('last_daily_check_date', today);
     setShowDailyCheck(false);
-  };
-  const navItems = [
+    };
+
+    // Pages ohne Navigation Header
+    const pagesWithoutNav = ['Landing', 'Success', 'Checkout', 'Login'];
+    const showNav = !pagesWithoutNav.includes(currentPageName);
+
+    const navItems = [
     { name: 'Command', icon: LayoutDashboard, page: 'Dashboard' },
     { name: 'Detective', icon: Compass, page: 'DiagnosisWizard' },
     { name: 'Agent', icon: Activity, page: 'DiagnosisChat' },
