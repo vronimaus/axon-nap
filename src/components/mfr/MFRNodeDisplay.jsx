@@ -60,24 +60,17 @@ export default function MFRNodeDisplay({ nodeId }) {
           <p className="text-xs text-slate-400 mt-2">{nodeData.body_area}</p>
         </div>
 
-        {/* Body Map - Professional Anatomical Images */}
-        <div className="relative bg-black aspect-[3/5] border-b border-cyan-500/20 overflow-hidden">
+        {/* Body Map - Technical MFR Coordinates */}
+        <div className="relative bg-slate-950 aspect-[3/5] border-b border-cyan-500/20 overflow-hidden">
           <img
-            src={nodeData.position === 'front' 
-              ? 'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/7b154e77f_image.png'
-              : 'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/7145eb5dd_image.png'
-            }
-            alt={nodeData.position === 'front' ? 'Front anatomy' : 'Back anatomy'}
+            src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/c7c1085f4_TEchnicalMFRCoordinates.jpg"
+            alt={nodeData.position === 'front' ? 'Front MFR nodes' : 'Back MFR nodes'}
             className="absolute inset-0 w-full h-full object-cover"
-            style={{ filter: 'hue-rotate(180deg) saturate(1.2) brightness(0.9)' }}
+            style={{
+              objectPosition: nodeData.position === 'front' ? '25% center' : '75% center',
+              transform: 'scale(2.1)'
+            }}
           />
-          
-          {/* Teal/Purple overlay for brand consistency */}
-          <div className={`absolute inset-0 ${
-            nodeData.position === 'front' 
-              ? 'bg-gradient-to-b from-cyan-900/30 via-transparent to-slate-950/50'
-              : 'bg-gradient-to-b from-purple-900/30 via-transparent to-slate-950/50'
-          }`} />
 
           {/* Node highlight marker */}
           <motion.div
