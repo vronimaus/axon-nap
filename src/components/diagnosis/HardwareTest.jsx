@@ -5,50 +5,50 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 
 const TestResultButtons = ({ onResult, currentResult }) => (
-  <div className="grid grid-cols-3 gap-3 mt-6">
+  <div className="grid grid-cols-3 gap-2 sm:gap-3 mt-6">
     <motion.button
       whileHover={{ scale: 1.03 }}
       whileTap={{ scale: 0.97 }}
       onClick={() => onResult('limited')}
-      className={`p-5 rounded-2xl border-2 transition-all touch-target ${
+      className={`p-3 sm:p-5 rounded-xl sm:rounded-2xl border-2 transition-all touch-target ${
         currentResult === 'limited' 
           ? 'border-red-500 bg-red-500/20 text-red-400 shadow-lg shadow-red-500/20' 
           : 'glass hover:border-red-500/50 hover:shadow-md text-slate-300'
       }`}
     >
-      <AlertCircle className={`w-7 h-7 mx-auto mb-2 ${currentResult === 'limited' ? 'text-red-400' : 'text-slate-400'}`} />
-      <span className="text-sm font-semibold block">Eingeschränkt</span>
-      <span className="text-xs text-slate-500 mt-1 block">Spannung/Schmerz</span>
+      <AlertCircle className={`w-6 h-6 sm:w-7 sm:h-7 mx-auto mb-1 sm:mb-2 ${currentResult === 'limited' ? 'text-red-400' : 'text-slate-400'}`} />
+      <span className="text-xs sm:text-sm font-semibold block leading-tight">Eingeschränkt</span>
+      <span className="text-[10px] sm:text-xs text-slate-500 mt-0.5 sm:mt-1 block leading-tight">Spannung/Schmerz</span>
     </motion.button>
     
     <motion.button
       whileHover={{ scale: 1.03 }}
       whileTap={{ scale: 0.97 }}
       onClick={() => onResult('moderate')}
-      className={`p-5 rounded-2xl border-2 transition-all touch-target ${
+      className={`p-3 sm:p-5 rounded-xl sm:rounded-2xl border-2 transition-all touch-target ${
         currentResult === 'moderate' 
           ? 'border-amber-500 bg-amber-500/20 text-amber-400 shadow-lg shadow-amber-500/20' 
           : 'glass hover:border-amber-500/50 hover:shadow-md text-slate-300'
       }`}
     >
-      <HelpCircle className={`w-7 h-7 mx-auto mb-2 ${currentResult === 'moderate' ? 'text-amber-400' : 'text-slate-400'}`} />
-      <span className="text-sm font-semibold block">Mittel</span>
-      <span className="text-xs text-slate-500 mt-1 block">Leicht eingeschränkt</span>
+      <HelpCircle className={`w-6 h-6 sm:w-7 sm:h-7 mx-auto mb-1 sm:mb-2 ${currentResult === 'moderate' ? 'text-amber-400' : 'text-slate-400'}`} />
+      <span className="text-xs sm:text-sm font-semibold block leading-tight">Mittel</span>
+      <span className="text-[10px] sm:text-xs text-slate-500 mt-0.5 sm:mt-1 block leading-tight">Leicht eingeschränkt</span>
     </motion.button>
     
     <motion.button
       whileHover={{ scale: 1.03 }}
       whileTap={{ scale: 0.97 }}
       onClick={() => onResult('good')}
-      className={`p-5 rounded-2xl border-2 transition-all touch-target ${
+      className={`p-3 sm:p-5 rounded-xl sm:rounded-2xl border-2 transition-all touch-target ${
         currentResult === 'good' 
           ? 'border-emerald-500 bg-emerald-500/20 text-emerald-400 shadow-lg shadow-emerald-500/20' 
           : 'glass hover:border-emerald-500/50 hover:shadow-md text-slate-300'
       }`}
     >
-      <CheckCircle2 className={`w-7 h-7 mx-auto mb-2 ${currentResult === 'good' ? 'text-emerald-400' : 'text-slate-400'}`} />
-      <span className="text-sm font-semibold block">Gut</span>
-      <span className="text-xs text-slate-500 mt-1 block">Keine Probleme</span>
+      <CheckCircle2 className={`w-6 h-6 sm:w-7 sm:h-7 mx-auto mb-1 sm:mb-2 ${currentResult === 'good' ? 'text-emerald-400' : 'text-slate-400'}`} />
+      <span className="text-xs sm:text-sm font-semibold block leading-tight">Gut</span>
+      <span className="text-[10px] sm:text-xs text-slate-500 mt-0.5 sm:mt-1 block leading-tight">Keine Probleme</span>
     </motion.button>
   </div>
 );

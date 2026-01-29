@@ -18,50 +18,50 @@ const ImprovementButtons = ({ onResult, currentResult }) => {
   return (
     <>
       <ConfettiEffect trigger={showConfetti} />
-      <div className="grid grid-cols-3 gap-3 mt-6">
+      <div className="grid grid-cols-3 gap-2 sm:gap-3 mt-6">
         <motion.button
           whileHover={{ scale: 1.03 }}
           whileTap={{ scale: 0.97 }}
           onClick={handleImproved}
-          className={`p-5 rounded-2xl border-2 transition-all touch-target ${
+          className={`p-3 sm:p-5 rounded-xl sm:rounded-2xl border-2 transition-all touch-target ${
             currentResult === 'improved' 
               ? 'border-emerald-500 bg-emerald-500/20 text-emerald-400 shadow-lg shadow-emerald-500/20 pulse-success' 
               : 'glass hover:border-emerald-500/50 hover:shadow-md text-slate-300'
           }`}
         >
-          <TrendingUp className={`w-7 h-7 mx-auto mb-2 ${currentResult === 'improved' ? 'text-emerald-400' : 'text-slate-400'}`} />
-          <span className="text-sm font-semibold block">Verbessert</span>
-          <span className="text-xs text-slate-500 mt-1 block">Deutlich besser</span>
+          <TrendingUp className={`w-6 h-6 sm:w-7 sm:h-7 mx-auto mb-1 sm:mb-2 ${currentResult === 'improved' ? 'text-emerald-400' : 'text-slate-400'}`} />
+          <span className="text-xs sm:text-sm font-semibold block leading-tight">Verbessert</span>
+          <span className="text-[10px] sm:text-xs text-slate-500 mt-0.5 sm:mt-1 block leading-tight">Deutlich besser</span>
         </motion.button>
         
         <motion.button
           whileHover={{ scale: 1.03 }}
           whileTap={{ scale: 0.97 }}
           onClick={() => onResult('unchanged')}
-          className={`p-5 rounded-2xl border-2 transition-all touch-target ${
+          className={`p-3 sm:p-5 rounded-xl sm:rounded-2xl border-2 transition-all touch-target ${
             currentResult === 'unchanged' 
               ? 'border-amber-500 bg-amber-500/20 text-amber-400 shadow-lg shadow-amber-500/20' 
               : 'glass hover:border-amber-500/50 hover:shadow-md text-slate-300'
           }`}
         >
-          <Minus className={`w-7 h-7 mx-auto mb-2 ${currentResult === 'unchanged' ? 'text-amber-400' : 'text-slate-400'}`} />
-          <span className="text-sm font-semibold block">Unverändert</span>
-          <span className="text-xs text-slate-500 mt-1 block">Keine Veränderung</span>
+          <Minus className={`w-6 h-6 sm:w-7 sm:h-7 mx-auto mb-1 sm:mb-2 ${currentResult === 'unchanged' ? 'text-amber-400' : 'text-slate-400'}`} />
+          <span className="text-xs sm:text-sm font-semibold block leading-tight">Unverändert</span>
+          <span className="text-[10px] sm:text-xs text-slate-500 mt-0.5 sm:mt-1 block leading-tight">Keine Veränderung</span>
         </motion.button>
         
         <motion.button
           whileHover={{ scale: 1.03 }}
           whileTap={{ scale: 0.97 }}
           onClick={() => onResult('worse')}
-          className={`p-5 rounded-2xl border-2 transition-all touch-target ${
+          className={`p-3 sm:p-5 rounded-xl sm:rounded-2xl border-2 transition-all touch-target ${
             currentResult === 'worse' 
               ? 'border-red-500 bg-red-500/20 text-red-400 shadow-lg shadow-red-500/20' 
               : 'glass hover:border-red-500/50 hover:shadow-md text-slate-300'
           }`}
         >
-          <TrendingDown className={`w-7 h-7 mx-auto mb-2 ${currentResult === 'worse' ? 'text-red-400' : 'text-slate-400'}`} />
-          <span className="text-sm font-semibold block">Schlechter</span>
-          <span className="text-xs text-slate-500 mt-1 block">Verschlechtert</span>
+          <TrendingDown className={`w-6 h-6 sm:w-7 sm:h-7 mx-auto mb-1 sm:mb-2 ${currentResult === 'worse' ? 'text-red-400' : 'text-slate-400'}`} />
+          <span className="text-xs sm:text-sm font-semibold block leading-tight">Schlechter</span>
+          <span className="text-[10px] sm:text-xs text-slate-500 mt-0.5 sm:mt-1 block leading-tight">Verschlechtert</span>
         </motion.button>
       </div>
     </>
