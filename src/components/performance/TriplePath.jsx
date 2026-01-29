@@ -181,23 +181,23 @@ export default function TriplePath({ goal, onBack }) {
             </div>
             
             {/* Exercise Image or Placeholder */}
-            <div className={`glass rounded-2xl overflow-hidden border border-slate-700 mb-6`}>
+            <div className={`glass rounded-2xl overflow-hidden border border-slate-700 mb-6 h-96 sm:h-[500px]`}>
               {imageKey && updatedGoal[imageKey] ? (
                 <img 
                   src={updatedGoal[imageKey]} 
                   alt={currentExerciseName}
-                  className="w-full h-64 object-contain bg-black"
+                  className="w-full h-full object-contain bg-black"
                 />
               ) : exerciseInfo?.image_url ? (
                 <img 
                   src={exerciseInfo.image_url} 
                   alt={currentExerciseName}
-                  className="w-full h-64 object-contain bg-black"
+                  className="w-full h-full object-contain bg-black"
                 />
               ) : (
-                <div className="h-48 flex items-center justify-center">
+                <div className="w-full h-full flex items-center justify-center">
                   <div className="text-center text-slate-600">
-                    <step.icon className={`w-12 h-12 mx-auto mb-2 opacity-30 ${step.iconClass}`} />
+                    <step.icon className={`w-16 h-16 mx-auto mb-3 opacity-30 ${step.iconClass}`} />
                     <span className="text-sm text-slate-500">Bild wird geladen...</span>
                   </div>
                 </div>
