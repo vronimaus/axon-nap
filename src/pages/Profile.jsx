@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { motion } from 'framer-motion';
-import { Loader2, Save, AlertCircle, HelpCircle } from 'lucide-react';
+import { Loader2, Save, AlertCircle, HelpCircle, LogOut } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 import { createPageUrl } from '@/utils';
@@ -145,14 +145,33 @@ export default function Profile() {
               </p>
             </div>
           </div>
-          {!user?.has_paid && user?.role !== 'admin' && (
-            <a
-              href={createPageUrl('Checkout')}
-              className="inline-block mt-4 w-full px-6 py-3 rounded-lg bg-gradient-to-r from-cyan-500 to-purple-500 text-white font-semibold text-center hover:shadow-lg hover:shadow-cyan-500/50 transition-all"
-            >
-              Jetzt freischalten (59€) →
-            </a>
-          )}
+          <div className="mt-4 space-y-3">
+            {!user?.has_paid && user?.role !== 'admin' && (
+             <a
+               href={createPageUrl('Checkout')}
+               className="inline-block w-full px-6 py-3 rounded-lg bg-gradient-to-r from-cyan-500 to-purple-500 text-white font-semibold text-center hover:shadow-lg hover:shadow-cyan-500/50 transition-all"
+             >
+               Jetzt freischalten (59€) →
+             </a>
+            )}
+            {!user?.has_paid && user?.role !== 'admin' && (
+              <Button
+                onClick={() => {
+                  if (window.confirm('Möchtest du deine Testphase wirklich beenden? Du verlierst sofort den Zugriff.')) {
+                    base44.auth.updateMe({ trial_start_date: null }).then(() => {
+                      toast.success('Testphase beendet');
+                      window.location.href = createPageUrl('Landing');
+                    });
+                  }
+                }}
+                variant="outline"
+                className="w-full border-red-500/50 text-red-400 hover:bg-red-500/10 hover:text-red-300"
+              >
+                <LogOut className="w-4 h-4 mr-2" />
+                Testphase beenden
+              </Button>
+            )}
+          </div>
         </Section>
 
         {/* Form Sections */}
