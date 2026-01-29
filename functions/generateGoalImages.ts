@@ -20,7 +20,7 @@ Deno.serve(async (req) => {
     
     // Generate mobilisation image if missing
     if (goal.mobilisation_instruction && !goal.image_url) {
-      const mobilisationPrompt = `Fitness exercise illustration: ${goal.mobilisation_name || goal.name}. ${goal.mobilisation_instruction}. Professional anatomical style, side view, clear form, light background.`;
+      const mobilisationPrompt = `Professional anatomical illustration of ${goal.mobilisation_name || goal.name}. Show proper body form and positioning. Side view, medical illustration style, clean light background, no text, no labels.`;
       
       const mobilisationResult = await base44.asServiceRole.integrations.Core.GenerateImage({
         prompt: mobilisationPrompt
@@ -33,7 +33,7 @@ Deno.serve(async (req) => {
 
     // Generate stretch image if missing
     if (goal.stretch_instruction && !goal.gif_url) {
-      const stretchPrompt = `Stretching exercise demonstration: ${goal.stretch_name || goal.name}. ${goal.stretch_instruction}. Anatomical clarity, relaxed position, professional style, light background.`;
+      const stretchPrompt = `Professional anatomical illustration of ${goal.stretch_name || goal.name}. Show proper stretching position and form. Side or front view, medical illustration style, clean light background, no text, no labels.`;
       
       const stretchResult = await base44.asServiceRole.integrations.Core.GenerateImage({
         prompt: stretchPrompt
