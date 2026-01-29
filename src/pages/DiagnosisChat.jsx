@@ -5,12 +5,13 @@ import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Card } from '@/components/ui/card';
-import { Loader2, Send, MessageCircle, Sparkles, Activity, ArrowRight } from 'lucide-react';
+import { Loader2, Send, MessageCircle, Sparkles, Activity, ArrowRight, Mic, MicOff, Volume2, VolumeX } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import ReactMarkdown from 'react-markdown';
 import BodyPainMap from '../components/diagnosis/BodyPainMap';
 import DemoPaywall from '../components/demo/DemoPaywall';
 import { useDemoTimer } from '../components/demo/useDemoTimer';
+import { useVoiceControl } from '../hooks/useVoiceControl';
 
 
 export default function DiagnosisChat() {
@@ -22,7 +23,9 @@ export default function DiagnosisChat() {
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   const [showBodyMap, setShowBodyMap] = useState(false);
+  const [voiceEnabled, setVoiceEnabled] = useState(false);
   const messagesEndRef = useRef(null);
+  const lastMessageIdRef = useRef(null);
 
   // Fetch wizard results if session_id provided
   const { data: wizardSession } = useQuery({
@@ -100,23 +103,48 @@ export default function DiagnosisChat() {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  const sendMessage = async () => {
-    if (!input.trim() || !conversation) return;
+  const sendMessage = async (messageText) => {
+    const textToSend = messageText || input.trim();
+    if (!textToSend || !conversation) return;
 
-    const userMessage = input.trim();
     setInput('');
     setLoading(true);
 
     try {
       await base44.agents.addMessage(conversation, {
         role: 'user',
-        content: userMessage
+        content: textToSend
       });
     } catch (error) {
       console.error('Fehler beim Senden:', error);
       setLoading(false);
     }
   };
+
+  // Voice Control Hook
+  const voice = useVoiceControl({
+    onTranscript: (text) => {
+      setInput(text);
+    },
+    onSend: (text) => {
+      sendMessage(text);
+    },
+    autoSendCommands: ['senden', 'absenden', 'ok', 'fertig', 'los']
+  });
+
+  // Auto-speak agent responses
+  useEffect(() => {
+    if (!voiceEnabled || !messages.length) return;
+    
+    const lastMessage = messages[messages.length - 1];
+    if (lastMessage.role === 'assistant' && lastMessage.id !== lastMessageIdRef.current) {
+      lastMessageIdRef.current = lastMessage.id;
+      // Wait a bit for the message to fully render
+      setTimeout(() => {
+        voice.speak(lastMessage.content);
+      }, 300);
+    }
+  }, [messages, voiceEnabled]);
 
   const handleBodyMapSubmit = async (analysisData) => {
     setLoading(true);
@@ -313,7 +341,7 @@ export default function DiagnosisChat() {
 
             {/* Input Area */}
             <div className="p-4 border-t border-cyan-500/20 bg-slate-900/70">
-              <div className="flex gap-3">
+              <div className="flex gap-2">
                 {/* Only show body map button if NOT coming from wizard */}
                 {!wizardSession && (
                   <Button
@@ -325,21 +353,71 @@ export default function DiagnosisChat() {
                     <Activity className="w-5 h-5" />
                   </Button>
                 )}
+                
+                {/* Voice Input Toggle */}
+                {voice.isSupported && (
+                  <Button
+                    onClick={() => {
+                      if (voice.isListening) {
+                        voice.stopListening();
+                      } else {
+                        voice.startListening();
+                      }
+                    }}
+                    disabled={loading || !conversation || isDemoExpired}
+                    variant="outline"
+                    className={`h-[60px] px-4 ${
+                      voice.isListening 
+                        ? 'border-red-500/50 text-red-400 bg-red-500/10 animate-pulse' 
+                        : 'border-cyan-500/50 text-cyan-400 hover:bg-cyan-500/10'
+                    }`}
+                  >
+                    {voice.isListening ? <MicOff className="w-5 h-5" /> : <Mic className="w-5 h-5" />}
+                  </Button>
+                )}
+
+                {/* Voice Output Toggle */}
+                {voice.isSupported && (
+                  <Button
+                    onClick={() => {
+                      setVoiceEnabled(!voiceEnabled);
+                      if (voice.isSpeaking) {
+                        voice.stopSpeaking();
+                      }
+                    }}
+                    disabled={loading || !conversation || isDemoExpired}
+                    variant="outline"
+                    className={`h-[60px] px-4 ${
+                      voiceEnabled 
+                        ? 'border-green-500/50 text-green-400 bg-green-500/10' 
+                        : 'border-slate-500/50 text-slate-400 hover:bg-slate-500/10'
+                    }`}
+                  >
+                    {voiceEnabled ? <Volume2 className="w-5 h-5" /> : <VolumeX className="w-5 h-5" />}
+                  </Button>
+                )}
+
                 <Textarea
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   onKeyDown={(e) => {
                     if (e.key === 'Enter' && !e.shiftKey) {
                       e.preventDefault();
-                      sendMessage();
+                      sendMessage(null);
                     }
                   }}
-                  placeholder={isDemoExpired ? "Demo vorbei – upgraden um fortzufahren" : "Beschreibe deine Symptome..."}
+                  placeholder={
+                    voice.isListening 
+                      ? "🎤 Sprechen... (sage 'absenden' oder warte 2 Sek)" 
+                      : isDemoExpired 
+                        ? "Demo vorbei – upgraden um fortzufahren" 
+                        : "Beschreibe deine Symptome..."
+                  }
                   className="flex-1 min-h-[60px] max-h-[120px] bg-slate-900/50 border-cyan-500/30 text-slate-200 placeholder:text-slate-500 resize-none text-sm sm:text-base"
                   disabled={loading || !conversation || isDemoExpired}
                 />
                 <Button
-                  onClick={sendMessage}
+                  onClick={() => sendMessage(null)}
                   disabled={!input.trim() || loading || !conversation || isDemoExpired}
                   className="bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-600 hover:to-purple-700 h-[60px] px-6"
                 >
@@ -347,8 +425,14 @@ export default function DiagnosisChat() {
                 </Button>
               </div>
               <p className="text-xs text-slate-500 mt-2">
-                 💡 Der Detective analysiert deine Schmerzen und empfiehlt die spezifischen MFR-Nodes (N1-N12) + Neuro-Drills
-               </p>
+                {voice.isSupported ? (
+                  <>
+                    🎤 Sprachsteuerung: "absenden", "senden", "ok", "fertig" oder 2 Sek Stille zum Absenden
+                  </>
+                ) : (
+                  <>💡 Der Detective analysiert deine Schmerzen und empfiehlt die spezifischen MFR-Nodes (N1-N12) + Neuro-Drills</>
+                )}
+              </p>
             </div>
           </div>
         </Card>
