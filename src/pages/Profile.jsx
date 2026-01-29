@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import { Loader2, Save, AlertCircle, HelpCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
+import { createPageUrl } from '@/utils';
 
 export default function Profile() {
   const queryClient = useQueryClient();
@@ -144,6 +145,14 @@ export default function Profile() {
               </p>
             </div>
           </div>
+          {!user?.has_paid && user?.role !== 'admin' && (
+            <a
+              href={createPageUrl('Checkout')}
+              className="inline-block mt-4 w-full px-6 py-3 rounded-lg bg-gradient-to-r from-cyan-500 to-purple-500 text-white font-semibold text-center hover:shadow-lg hover:shadow-cyan-500/50 transition-all"
+            >
+              Jetzt freischalten (59€) →
+            </a>
+          )}
         </Section>
 
         {/* Form Sections */}
