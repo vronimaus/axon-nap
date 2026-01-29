@@ -81,14 +81,14 @@ export default function FlowSelection() {
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="glass rounded-2xl border border-cyan-500/30 p-6 mb-8 text-center"
+            className="glass-cyan rounded-2xl border border-cyan-500/30 p-6 mb-8 text-center neuro-glow"
           >
             <div className="flex items-center justify-center gap-3 mb-2">
               <TrendingUp className="w-6 h-6 text-cyan-400" />
               <span className="text-3xl font-bold text-cyan-400">{streak}</span>
-              <span className="text-slate-300">Tage Streak</span>
+              <span className="text-white font-semibold">Tage Streak</span>
             </div>
-            <p className="text-sm text-slate-500">
+            <p className="text-sm text-slate-400">
               Du bist auf einem guten Weg – weiter so!
             </p>
           </motion.div>
@@ -103,25 +103,29 @@ export default function FlowSelection() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: idx * 0.1 }}
             >
-              <Card className="glass rounded-2xl border border-slate-700 p-6 hover:border-cyan-500/50 transition-all group h-full flex flex-col">
-                <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${getCategoryColor(routine.category)} flex items-center justify-center mb-4 group-hover:shadow-lg transition-all`}>
+              <Card className="glass rounded-2xl border border-slate-700/50 p-6 hover:border-cyan-500/60 hover:shadow-lg hover:shadow-cyan-500/20 transition-all group h-full flex flex-col">
+                <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${getCategoryColor(routine.category)} flex items-center justify-center mb-4 group-hover:scale-105 transition-transform shadow-lg`}>
                   {getCategoryIcon(routine.category)}
                 </div>
 
                 <div className="flex-1">
-                  <h3 className="text-xl font-bold text-white mb-2">
+                  <h3 className="text-xl font-bold text-white mb-2 group-hover:text-cyan-300 transition-colors">
                     {routine.routine_name}
                   </h3>
-                  <p className="text-sm text-slate-400 mb-4">
+                  <p className="text-sm text-slate-300 mb-4 leading-relaxed">
                     {routine.description}
                   </p>
 
-                  <div className="flex items-center gap-4 text-xs text-slate-500 mb-4">
-                    <div className="flex items-center gap-1">
+                  <div className="flex items-center gap-4 text-xs mb-4">
+                    <div className="flex items-center gap-1 text-cyan-400">
                       <Clock className="w-4 h-4" />
-                      <span>{routine.total_duration} Min</span>
+                      <span className="font-semibold">{routine.total_duration} Min</span>
                     </div>
-                    <div className="px-2 py-1 rounded-full bg-slate-800 text-slate-400">
+                    <div className={`px-3 py-1 rounded-full font-medium ${
+                      routine.difficulty === 'easy' ? 'bg-green-500/20 text-green-400 border border-green-500/30' : 
+                      routine.difficulty === 'medium' ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30' : 
+                      'bg-red-500/20 text-red-400 border border-red-500/30'
+                    }`}>
                       {routine.difficulty === 'easy' ? 'Easy' : 
                        routine.difficulty === 'medium' ? 'Medium' : 
                        'Advanced'}
@@ -131,7 +135,7 @@ export default function FlowSelection() {
 
                 <Button
                   onClick={() => window.location.href = createPageUrl(`Flow?routine_id=${routine.id}`)}
-                  className="w-full bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-600 hover:to-purple-700"
+                  className="w-full bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-600 hover:to-purple-700 font-semibold shadow-lg hover:shadow-cyan-500/50 transition-all"
                 >
                   Starten →
                 </Button>
@@ -145,10 +149,13 @@ export default function FlowSelection() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.5 }}
-          className="mt-12 glass rounded-2xl border border-slate-700 p-6"
+          className="mt-12 glass-cyan rounded-2xl border border-cyan-500/30 p-8"
         >
-          <h3 className="text-lg font-bold text-white mb-3">Was ist Neural Hygiene?</h3>
-          <p className="text-slate-400 leading-relaxed">
+          <h3 className="text-xl font-bold text-cyan-400 mb-4 flex items-center gap-2">
+            <Activity className="w-6 h-6" />
+            Was ist Neural Hygiene?
+          </h3>
+          <p className="text-slate-300 leading-relaxed text-base">
             Genau wie du deine Zähne putzt, braucht dein Nervensystem tägliche Pflege. 
             Die AXON Body Journey führt dich durch eine systematische Rundreise deiner 12 MFR-Nodes, 
             kombiniert mit gezielten Neuro-Drills und Integration. 
