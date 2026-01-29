@@ -3,8 +3,8 @@ import { motion } from 'framer-motion';
 import { User, Heart, Moon, Activity, TrendingUp } from 'lucide-react';
 
 export default function AthleteProfile({ profile, systemStatus }) {
-  // Calculate HRV score (mock - would come from actual hardware)
-  const hrvScore = 65;
+  // HRV from profile or show placeholder
+  const hrvScore = profile?.hrv_score || null;
   
   // Sleep quality to hours mapping
   const sleepHours = {
@@ -17,15 +17,15 @@ export default function AthleteProfile({ profile, systemStatus }) {
   const recoveryScore = profile ? Math.round(
     ((sleepHours[profile.sleep_quality_avg] / 8.5) * 50) + 
     ((10 - profile.baseline_stress_level) / 10 * 50)
-  ) : 0;
+  ) : null;
   
-  // Strength placeholder
-  const strengthScore = 85;
+  // Strength from profile or show placeholder
+  const strengthScore = profile?.strength_score || null;
 
   const metrics = [
     {
       icon: Heart,
-      value: `${hrvScore}`,
+      value: hrvScore !== null ? `${hrvScore}` : '--',
       unit: 'ms',
       label: 'HRV Score',
       color: 'from-red-500/20 to-pink-500/20',
@@ -43,7 +43,7 @@ export default function AthleteProfile({ profile, systemStatus }) {
     },
     {
       icon: Activity,
-      value: `${recoveryScore}`,
+      value: recoveryScore !== null ? `${recoveryScore}` : '--',
       unit: '%',
       label: 'Recovery',
       color: 'from-green-500/20 to-emerald-500/20',
@@ -52,7 +52,7 @@ export default function AthleteProfile({ profile, systemStatus }) {
     },
     {
       icon: TrendingUp,
-      value: `${strengthScore}`,
+      value: strengthScore !== null ? `${strengthScore}` : '--',
       unit: '%',
       label: 'Strength',
       color: 'from-cyan-500/20 to-blue-500/20',
