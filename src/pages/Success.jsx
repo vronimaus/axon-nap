@@ -20,7 +20,14 @@ export default function Success() {
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const session = params.get('session_id');
-    setSessionId(session || '');
+    
+    // Kein Session-ID = direkt zur Landing (User darf nicht ohne Zahlung hier sein)
+    if (!session) {
+      window.location.href = createPageUrl('Landing');
+      return;
+    }
+    
+    setSessionId(session);
     setIsLoading(false);
   }, []);
 
