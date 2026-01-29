@@ -21,25 +21,9 @@ export default function TriplePath({ goal, onBack }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [updatedGoal, setUpdatedGoal] = useState(goal);
 
-  // Generate goal images on mount
-  useEffect(() => {
-    if (goal?.id) {
-      base44.functions.invoke('generateGoalImages', { goalId: goal.id })
-        .then(res => {
-          if (res.data?.goal) {
-            setUpdatedGoal(res.data.goal);
-          }
-        })
-        .catch(err => {
-          console.error('Image generation failed:', err);
-        });
-    }
-  }, [goal?.id]);
-  
   const step = STEPS[currentStep];
   const nameKey = `${step.key}_name`;
   const instructionKey = `${step.key}_instruction`;
-  const imageKey = step.key === 'mobilisation' ? 'image_url' : step.key === 'stretch' ? 'gif_url' : null;
   
   // Fetch all exercises
   const { data: exercises = [] } = useQuery({
@@ -174,34 +158,25 @@ export default function TriplePath({ goal, onBack }) {
               </div>
             </div>
             
-            <div className={`bg-[#333333] rounded-2xl p-5 border border-slate-600 mb-6`}>
-              <p className="text-white leading-relaxed whitespace-pre-line">
-                {goal[instructionKey]}
-              </p>
-            </div>
-            
-            {/* Exercise Image or Placeholder */}
-            <div className={`glass rounded-2xl overflow-hidden border border-slate-700 mb-6 h-96 sm:h-[500px]`}>
-              {imageKey && updatedGoal[imageKey] ? (
-                <img 
-                  src={updatedGoal[imageKey]} 
-                  alt={currentExerciseName}
-                  className="w-full h-full object-contain bg-black"
-                />
-              ) : exerciseInfo?.image_url ? (
-                <img 
-                  src={exerciseInfo.image_url} 
-                  alt={currentExerciseName}
-                  className="w-full h-full object-contain bg-black"
-                />
-              ) : (
-                <div className="w-full h-full flex items-center justify-center">
-                  <div className="text-center text-slate-600">
-                    <step.icon className={`w-16 h-16 mx-auto mb-3 opacity-30 ${step.iconClass}`} />
-                    <span className="text-sm text-slate-500">Bild wird geladen...</span>
-                  </div>
-                </div>
-              )}
+            {/* Instruction in Snippet Format */}
+            <div className={`bg-[#333333] rounded-2xl p-6 border border-slate-600 mb-6`}>
+              <div className="space-y-4">
+                {goal[instructionKey]?.split('\n').filter((line) => line.trim()).map((line, idx) => {
+                  const trimmed = line.trim();
+                  if (!trimmed) return null;
+                  
+                  return (
+                    <div key={idx} className="flex gap-4">
+                      <div className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-sm ${step.bgClass} border ${step.borderClass}/50`}>
+                        {idx + 1}
+                      </div>
+                      <p className="text-white leading-relaxed pt-0.5 flex-1">
+                        {trimmed}
+                      </p>
+                    </div>
+                  );
+                })}
+              </div>
             </div>
             
             <Button
