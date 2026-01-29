@@ -9,7 +9,7 @@ import InteractiveBodyMap from '../components/dashboard/InteractiveBodyMap';
 import HardwarePanel from '../components/dashboard/HardwarePanel';
 import NeuroMatrix from '../components/dashboard/NeuroMatrix';
 import OnboardingModal from '../components/dashboard/OnboardingModal';
-import DemoPaywall from '../components/demo/DemoPaywall';
+
 import AthleteProfile from '../components/dashboard/AthleteProfile';
 import SystemStatus from '../components/dashboard/SystemStatus';
 import HardwareAlerts from '../components/dashboard/HardwareAlerts';
@@ -60,10 +60,7 @@ export default function Dashboard() {
     enabled: !!user?.email
   });
 
-  // Show paywall if user not paid (except admin)
-  if (!isLoading && user && !user.has_paid && user.role !== 'admin') {
-    return <DemoPaywall />;
-  }
+
 
   if (isLoading) {
     return <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950" />;
