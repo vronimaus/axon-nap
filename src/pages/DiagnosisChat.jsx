@@ -5,7 +5,7 @@ import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Card } from '@/components/ui/card';
-import { Loader2, Send, MessageCircle, Sparkles, Activity, ArrowRight, Mic, MicOff, Volume2, VolumeX } from 'lucide-react';
+import { Loader2, Send, MessageCircle, Sparkles, Activity, ArrowRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import ReactMarkdown from 'react-markdown';
 import BodyPainMap from '../components/diagnosis/BodyPainMap';
@@ -23,9 +23,7 @@ export default function DiagnosisChat() {
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   const [showBodyMap, setShowBodyMap] = useState(false);
-  const [voiceEnabled, setVoiceEnabled] = useState(false);
   const messagesEndRef = useRef(null);
-  const lastMessageIdRef = useRef(null);
 
   // Fetch wizard results if session_id provided
   const { data: wizardSession } = useQuery({
@@ -121,30 +119,7 @@ export default function DiagnosisChat() {
     }
   };
 
-  // Voice Control Hook
-  const voice = useVoiceControl({
-    onTranscript: (text) => {
-      setInput(text);
-    },
-    onSend: (text) => {
-      sendMessage(text);
-    },
-    autoSendCommands: ['senden', 'absenden', 'ok', 'fertig', 'los']
-  });
 
-  // Auto-speak agent responses
-  useEffect(() => {
-    if (!voiceEnabled || !messages.length) return;
-    
-    const lastMessage = messages[messages.length - 1];
-    if (lastMessage.role === 'assistant' && lastMessage.id !== lastMessageIdRef.current) {
-      lastMessageIdRef.current = lastMessage.id;
-      // Wait a bit for the message to fully render
-      setTimeout(() => {
-        voice.speak(lastMessage.content);
-      }, 300);
-    }
-  }, [messages, voiceEnabled]);
 
   const handleBodyMapSubmit = async (analysisData) => {
     setLoading(true);
@@ -354,49 +329,6 @@ export default function DiagnosisChat() {
                   </Button>
                 )}
                 
-                {/* Voice Input Toggle */}
-                {voice.isSupported && (
-                  <Button
-                    onClick={() => {
-                      if (voice.isListening) {
-                        voice.stopListening();
-                      } else {
-                        voice.startListening();
-                      }
-                    }}
-                    disabled={loading || !conversation || isDemoExpired}
-                    variant="outline"
-                    className={`h-[60px] px-4 ${
-                      voice.isListening 
-                        ? 'border-red-500/50 text-red-400 bg-red-500/10 animate-pulse' 
-                        : 'border-cyan-500/50 text-cyan-400 hover:bg-cyan-500/10'
-                    }`}
-                  >
-                    {voice.isListening ? <MicOff className="w-5 h-5" /> : <Mic className="w-5 h-5" />}
-                  </Button>
-                )}
-
-                {/* Voice Output Toggle */}
-                {voice.isSupported && (
-                  <Button
-                    onClick={() => {
-                      setVoiceEnabled(!voiceEnabled);
-                      if (voice.isSpeaking) {
-                        voice.stopSpeaking();
-                      }
-                    }}
-                    disabled={loading || !conversation || isDemoExpired}
-                    variant="outline"
-                    className={`h-[60px] px-4 ${
-                      voiceEnabled 
-                        ? 'border-green-500/50 text-green-400 bg-green-500/10' 
-                        : 'border-slate-500/50 text-slate-400 hover:bg-slate-500/10'
-                    }`}
-                  >
-                    {voiceEnabled ? <Volume2 className="w-5 h-5" /> : <VolumeX className="w-5 h-5" />}
-                  </Button>
-                )}
-
                 <Textarea
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
