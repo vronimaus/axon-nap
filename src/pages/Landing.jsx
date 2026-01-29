@@ -15,14 +15,13 @@ export default function Landing() {
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const params = new URLSearchParams(window.location.search);
-        const isPreview = params.get('preview') === 'true';
+        const stayOnLanding = localStorage.getItem('stay_on_landing') === 'true';
         
         const currentUser = await base44.auth.me();
         setUser(currentUser);
         
-        // Skip redirect wenn preview=true
-        if (isPreview) {
+        // Skip redirect wenn explizit auf Landing bleiben
+        if (stayOnLanding) {
           setIsLoading(false);
           return;
         }
