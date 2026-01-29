@@ -137,21 +137,13 @@ export default function Profile() {
                 {user?.role === 'admin' ? 'Admin' : 'Benutzer'}
               </p>
             </div>
-            <div className={`rounded-lg p-4 ${user?.has_paid ? 'glass-cyan' : 'bg-red-900/20 border border-red-500/30'}`}>
+            <div className={`rounded-lg p-4 ${user?.has_paid ? 'glass-cyan' : 'bg-amber-900/20 border border-amber-500/30'}`}>
               <p className="text-sm text-slate-400 mb-1">Zahlungsstatus</p>
-              <p className={`text-lg font-semibold ${user?.has_paid ? 'text-green-400' : 'text-red-400'}`}>
-                {user?.has_paid ? '✓ Bezahlt' : '⚠ Demo / Kostenlos'}
+              <p className={`text-lg font-semibold ${user?.has_paid ? 'text-green-400' : 'text-amber-400'}`}>
+                {user?.has_paid ? '✓ Bezahlt (59€)' : '⏳ 7-Tage Trial'}
               </p>
             </div>
           </div>
-          {!user?.has_paid && user?.role !== 'admin' && (
-            <button
-              onClick={() => window.location.href = '/checkout'}
-              className="mt-4 w-full px-6 py-3 rounded-lg bg-gradient-to-r from-cyan-500 to-purple-500 text-white font-semibold hover:shadow-lg hover:shadow-cyan-500/50 transition-all"
-            >
-              Jetzt freischalten →
-            </button>
-          )}
         </Section>
 
         {/* Form Sections */}

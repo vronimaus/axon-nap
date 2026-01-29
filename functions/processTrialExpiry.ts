@@ -16,7 +16,7 @@ Deno.serve(async (req) => {
     const now = Date.now();
 
     const usersToProcess = allUsers.filter(u => {
-      if (u.has_paid || u.subscription_active || u.subscription_cancelled) return false;
+      if (u.has_paid) return false;
       if (!u.trial_start_date) return false;
 
       const trialEndTime = new Date(u.trial_start_date).getTime() + TRIAL_DURATION_MS;
@@ -48,34 +48,34 @@ Deno.serve(async (req) => {
         });
       }
 
-      // Erstelle Subscription
-      const subResponse = await fetch('https://api.stripe.com/v1/subscriptions', {
+      // Erstelle One-Time Payment Intent (59€)
+      const piResponse = await fetch('https://api.stripe.com/v1/payment_intents', {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${Deno.env.get('STRIPE_SECRET_KEY')}`,
           'Content-Type': 'application/x-www-form-urlencoded'
         },
-        body: `customer=${customerId}&items[0][price]=${Deno.env.get('STRIPE_PRICE_ID')}&metadata[base44_app_id]=${Deno.env.get('BASE44_APP_ID')}&off_session=true`
+        body: `amount=5900&currency=eur&customer=${customerId}&confirm=true&payment_method=pm_card_chargeDeclined&metadata[base44_app_id]=${Deno.env.get('BASE44_APP_ID')}&off_session=true`
       });
 
-      const subData = await subResponse.json();
+      const piData = await piResponse.json();
 
-      if (subData.id) {
-        // Markiere User als mit aktiver Subscription
+      if (piData.status === 'succeeded') {
+        // Markiere User als bezahlt
         await base44.asServiceRole.entities.User.update(targetUser.id, {
-          subscription_active: true
+          has_paid: true
         });
 
         results.push({
           email: targetUser.email,
-          status: 'subscription_created',
-          subscription_id: subData.id
+          status: 'payment_succeeded',
+          payment_id: piData.id
         });
       } else {
         results.push({
           email: targetUser.email,
-          status: 'error',
-          error: subData.error?.message
+          status: 'payment_failed',
+          error: piData.error?.message
         });
       }
     }

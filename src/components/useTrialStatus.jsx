@@ -25,24 +25,12 @@ export function useTrialStatus() {
         }
 
         // User hat bezahlt -> Zugriff
-        if (currentUser.has_paid || currentUser.subscription_active) {
+        if (currentUser.has_paid) {
           setTrialStatus({
             isActive: false,
             daysRemaining: 0,
             isExpired: false,
             hasAccess: true
-          });
-          setIsLoading(false);
-          return;
-        }
-
-        // Subscription gekündigt -> Kein Zugriff
-        if (currentUser.subscription_cancelled) {
-          setTrialStatus({
-            isActive: false,
-            daysRemaining: 0,
-            isExpired: true,
-            hasAccess: false
           });
           setIsLoading(false);
           return;
