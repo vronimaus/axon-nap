@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, Activity, Maximize2, Dumbbell, Brain, CheckCircle2, Info } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -19,6 +19,15 @@ export default function TriplePath({ goal, onBack }) {
   const [completedSteps, setCompletedSteps] = useState([]);
   const [selectedExercise, setSelectedExercise] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  // Generate goal images on mount
+  useEffect(() => {
+    if (goal?.id) {
+      base44.functions.invoke('generateGoalImages', { goalId: goal.id }).catch(err => {
+        console.error('Image generation failed:', err);
+      });
+    }
+  }, [goal?.id]);
   
   const step = STEPS[currentStep];
   const nameKey = `${step.key}_name`;
