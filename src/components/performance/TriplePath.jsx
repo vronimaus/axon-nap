@@ -8,10 +8,10 @@ import { base44 } from '@/api/base44Client';
 import ExerciseModal from './ExerciseModal';
 
 const STEPS = [
-  { key: 'mobilisation', title: 'Mobilisation', icon: Activity, color: 'cyan', description: 'Gelenk-Freiheit' },
-  { key: 'stretch', title: 'Dehnung', icon: Maximize2, color: 'purple', description: 'Faszien-Länge' },
-  { key: 'strength', title: 'Kräftigung', icon: Dumbbell, color: 'amber', description: 'Neuronale Sicherheit' },
-  { key: 'neuro_fix', title: 'Neuro-Fix', icon: Brain, color: 'emerald', description: 'Nervensystem-Boost' }
+  { key: 'mobilisation', title: 'Mobilisation', icon: Activity, color: 'cyan', borderClass: 'border-cyan-500', bgClass: 'bg-cyan-500/30', iconClass: 'text-cyan-400', description: 'Gelenk-Freiheit' },
+  { key: 'stretch', title: 'Dehnung', icon: Maximize2, color: 'purple', borderClass: 'border-purple-500', bgClass: 'bg-purple-500/30', iconClass: 'text-purple-400', description: 'Faszien-Länge' },
+  { key: 'strength', title: 'Kräftigung', icon: Dumbbell, color: 'amber', borderClass: 'border-amber-500', bgClass: 'bg-amber-500/30', iconClass: 'text-amber-400', description: 'Neuronale Sicherheit' },
+  { key: 'neuro_fix', title: 'Neuro-Fix', icon: Brain, color: 'emerald', borderClass: 'border-emerald-500', bgClass: 'bg-emerald-500/30', iconClass: 'text-emerald-400', description: 'Nervensystem-Boost' }
 ];
 
 export default function TriplePath({ goal, onBack }) {
@@ -101,7 +101,7 @@ export default function TriplePath({ goal, onBack }) {
               onClick={() => setCurrentStep(idx)}
               className={`p-3 rounded-xl border-2 transition-all ${
                 isActive 
-                  ? `border-${s.color}-500 bg-${s.color}-500/30 neuro-glow` 
+                  ? `${s.borderClass} ${s.bgClass} neuro-glow` 
                   : isCompleted
                   ? 'border-emerald-500/50 bg-emerald-500/10'
                   : 'bg-slate-800 border-slate-600'
@@ -132,11 +132,11 @@ export default function TriplePath({ goal, onBack }) {
           exit={{ opacity: 0, x: -20 }}
         >
           <Card className="p-6 border-0 shadow-xl bg-[#2A2A2A] border border-slate-600">
-            <div className={`flex items-center gap-3 mb-4 pb-4 border-b border-${step.color}-500/30`}>
+            <div className={`flex items-center gap-3 mb-4 pb-4 border-b ${step.borderClass}/30`}>
               <div 
-                className={`w-12 h-12 rounded-2xl bg-${step.color}-500/20 flex items-center justify-center border-2 border-${step.color}-500/40`}
+                className={`w-12 h-12 rounded-2xl ${step.bgClass}/70 flex items-center justify-center border-2 ${step.borderClass}/40`}
               >
-                <step.icon className={`w-6 h-6 text-${step.color}-400`} />
+                <step.icon className={`w-6 h-6 ${step.iconClass}`} />
               </div>
               <div className="flex-1">
                 <div className="flex items-center gap-2">
@@ -166,24 +166,24 @@ export default function TriplePath({ goal, onBack }) {
             {/* Exercise Image or Placeholder */}
             <div className={`glass rounded-2xl overflow-hidden border border-slate-700 mb-6`}>
               {exerciseInfo?.image_url ? (
-                <img 
-                  src={exerciseInfo.image_url} 
-                  alt={currentExerciseName}
-                  className="w-full h-64 object-contain bg-black"
-                />
+               <img 
+                 src={exerciseInfo.image_url} 
+                 alt={currentExerciseName}
+                 className="w-full h-64 object-contain bg-black"
+               />
               ) : (
-                <div className="h-48 flex items-center justify-center">
-                  <div className="text-center text-slate-600">
-                    <step.icon className={`w-12 h-12 mx-auto mb-2 opacity-30 text-${step.color}-400`} />
-                    <span className="text-sm text-slate-500">Bild wird geladen...</span>
-                  </div>
-                </div>
+               <div className="h-48 flex items-center justify-center">
+                 <div className="text-center text-slate-600">
+                   <step.icon className={`w-12 h-12 mx-auto mb-2 opacity-30 ${step.iconClass}`} />
+                   <span className="text-sm text-slate-500">Bild wird geladen...</span>
+                 </div>
+               </div>
               )}
             </div>
             
             <Button
               onClick={handleComplete}
-              className={`w-full bg-gradient-to-r from-${step.color}-500 to-${step.color}-600 hover:from-${step.color}-600 hover:to-${step.color}-700 text-white h-12 text-base font-semibold shadow-lg shadow-${step.color}-500/30`}
+              className={`w-full ${step.color === 'cyan' ? 'bg-gradient-to-r from-cyan-500 to-cyan-600 hover:from-cyan-600 hover:to-cyan-700 shadow-lg shadow-cyan-500/30' : step.color === 'purple' ? 'bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 shadow-lg shadow-purple-500/30' : step.color === 'amber' ? 'bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 shadow-lg shadow-amber-500/30' : 'bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 shadow-lg shadow-emerald-500/30'} text-white h-12 text-base font-semibold`}
             >
               {currentStep < STEPS.length - 1 ? 'Abgeschlossen – Nächster Schritt' : 'Training abschließen'}
             </Button>
