@@ -163,15 +163,15 @@ export default function Flow() {
             exit={{ opacity: 0, x: -100 }}
             transition={{ duration: 0.3 }}
           >
-            <Card className="glass rounded-2xl border border-cyan-500/30 p-8 mb-6">
+            <div className="glass rounded-2xl border border-cyan-500/20 p-8 mb-6 bg-slate-900/50 backdrop-blur-xl neuro-glow">
               {/* Step Type Badge */}
               <div className="flex items-center justify-between mb-6">
-                <div className={`px-4 py-2 rounded-full text-sm font-bold ${
-                  currentSequence.type === 'mfr' ? 'bg-red-500/20 text-red-400' :
-                  currentSequence.type === 'neuro' ? 'bg-purple-500/20 text-purple-400' :
-                  currentSequence.type === 'strength' ? 'bg-cyan-500/20 text-cyan-400' :
-                  currentSequence.type === 'mobility' ? 'bg-amber-500/20 text-amber-400' :
-                  'bg-green-500/20 text-green-400'
+                <div className={`px-4 py-2 rounded-full text-sm font-bold border ${
+                  currentSequence.type === 'mfr' ? 'bg-red-500/20 text-red-400 border-red-500/40' :
+                  currentSequence.type === 'neuro' ? 'bg-purple-500/20 text-purple-400 border-purple-500/40' :
+                  currentSequence.type === 'strength' ? 'bg-cyan-500/20 text-cyan-400 border-cyan-500/40' :
+                  currentSequence.type === 'mobility' ? 'bg-amber-500/20 text-amber-400 border-amber-500/40' :
+                  'bg-green-500/20 text-green-400 border-green-500/40'
                 }`}>
                   {currentSequence.type === 'mfr' ? 'Hardware (MFR)' :
                    currentSequence.type === 'neuro' ? 'Software (Neuro)' :
@@ -181,23 +181,23 @@ export default function Flow() {
                 </div>
                 <div className="flex items-center gap-2 text-cyan-400">
                   <Timer className="w-5 h-5" />
-                  <span className="text-2xl font-mono font-bold">
+                  <span className="text-3xl font-mono font-bold">
                     {Math.floor(timeRemaining / 60)}:{(timeRemaining % 60).toString().padStart(2, '0')}
                   </span>
                 </div>
               </div>
 
               {/* Instruction */}
-              <h2 className="text-2xl font-bold text-white mb-4">
+              <h2 className="text-xl font-bold text-cyan-300 mb-4">
                 {currentSequence.node_id || currentSequence.exercise_id || 'Übung'}
               </h2>
-              <p className="text-slate-300 text-lg leading-relaxed mb-6">
+              <p className="text-slate-200 text-base leading-relaxed mb-6">
                 {currentSequence.instruction}
               </p>
 
               {/* Visual Cue */}
               {currentSequence.type === 'mfr' && currentSequence.node_id && (
-                <div className="bg-slate-800 rounded-xl p-4 mb-6">
+                <div className="glass-cyan rounded-xl p-4 mb-6 border border-cyan-500/30">
                   <img
                     src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/c7c1085f4_TEchnicalMFRCoordinates.jpg"
                     alt="MFR Node Map"
@@ -205,7 +205,7 @@ export default function Flow() {
                   />
                 </div>
               )}
-            </Card>
+            </div>
           </motion.div>
         </AnimatePresence>
 
