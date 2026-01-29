@@ -20,7 +20,7 @@ Deno.serve(async (req) => {
     
     // Generate mobilisation image if missing
     if (goal.mobilisation_instruction && !goal.image_url) {
-      const mobilisationPrompt = `Anatomical drawing of ${goal.mobilisation_name || goal.name}. Side profile view showing proper form. Medical illustration style. Minimalist, clean background. No text. No words. No labels. No annotations.`;
+      const mobilisationPrompt = `Professional anatomical illustration of ${goal.mobilisation_name || goal.name}. Show proper body form and positioning. Side view, medical illustration style, clean light background, no text, no labels.`;
       
       const mobilisationResult = await base44.asServiceRole.integrations.Core.GenerateImage({
         prompt: mobilisationPrompt
@@ -33,7 +33,7 @@ Deno.serve(async (req) => {
 
     // Generate stretch image if missing
     if (goal.stretch_instruction && !goal.gif_url) {
-      const stretchPrompt = `Anatomical drawing of ${goal.stretch_name || goal.name}. Front or side view showing stretch position. Medical illustration style. Minimalist, clean background. No text. No words. No labels. No annotations.`;
+      const stretchPrompt = `Professional anatomical illustration of ${goal.stretch_name || goal.name}. Show proper stretching position and form. Side or front view, medical illustration style, clean light background, no text, no labels.`;
       
       const stretchResult = await base44.asServiceRole.integrations.Core.GenerateImage({
         prompt: stretchPrompt
