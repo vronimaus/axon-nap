@@ -19,19 +19,27 @@ export default function TriplePath({ goal, onBack }) {
   const [completedSteps, setCompletedSteps] = useState([]);
   const [selectedExercise, setSelectedExercise] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [updatedGoal, setUpdatedGoal] = useState(goal);
 
   // Generate goal images on mount
   useEffect(() => {
     if (goal?.id) {
-      base44.functions.invoke('generateGoalImages', { goalId: goal.id }).catch(err => {
-        console.error('Image generation failed:', err);
-      });
+      base44.functions.invoke('generateGoalImages', { goalId: goal.id })
+        .then(res => {
+          if (res.data?.goal) {
+            setUpdatedGoal(res.data.goal);
+          }
+        })
+        .catch(err => {
+          console.error('Image generation failed:', err);
+        });
     }
   }, [goal?.id]);
   
   const step = STEPS[currentStep];
   const nameKey = `${step.key}_name`;
   const instructionKey = `${step.key}_instruction`;
+  const imageKey = step.key === 'mobilisation' ? 'image_url' : step.key === 'stretch' ? 'gif_url' : null;
   
   // Fetch all exercises
   const { data: exercises = [] } = useQuery({
@@ -174,19 +182,25 @@ export default function TriplePath({ goal, onBack }) {
             
             {/* Exercise Image or Placeholder */}
             <div className={`glass rounded-2xl overflow-hidden border border-slate-700 mb-6`}>
-              {exerciseInfo?.image_url ? (
-               <img 
-                 src={exerciseInfo.image_url} 
-                 alt={currentExerciseName}
-                 className="w-full h-64 object-contain bg-black"
-               />
+              {imageKey && updatedGoal[imageKey] ? (
+                <img 
+                  src={updatedGoal[imageKey]} 
+                  alt={currentExerciseName}
+                  className="w-full h-64 object-contain bg-black"
+                />
+              ) : exerciseInfo?.image_url ? (
+                <img 
+                  src={exerciseInfo.image_url} 
+                  alt={currentExerciseName}
+                  className="w-full h-64 object-contain bg-black"
+                />
               ) : (
-               <div className="h-48 flex items-center justify-center">
-                 <div className="text-center text-slate-600">
-                   <step.icon className={`w-12 h-12 mx-auto mb-2 opacity-30 ${step.iconClass}`} />
-                   <span className="text-sm text-slate-500">Bild wird geladen...</span>
-                 </div>
-               </div>
+                <div className="h-48 flex items-center justify-center">
+                  <div className="text-center text-slate-600">
+                    <step.icon className={`w-12 h-12 mx-auto mb-2 opacity-30 ${step.iconClass}`} />
+                    <span className="text-sm text-slate-500">Bild wird geladen...</span>
+                  </div>
+                </div>
               )}
             </div>
             
