@@ -34,48 +34,57 @@ export function useVoiceControl({ onTranscript, onSend, autoSendCommands = ['sen
         }
       }
 
+      const currentText = finalTranscript || interimTranscript;
       const fullTranscript = (lastTranscriptRef.current + finalTranscript).trim();
-      setTranscript(fullTranscript || interimTranscript);
+      
+      // Always update transcript state immediately
+      const displayText = fullTranscript || interimTranscript;
+      console.log('[Voice] Transcript:', displayText);
+      setTranscript(displayText);
       
       if (onTranscript) {
-        onTranscript(fullTranscript || interimTranscript);
+        onTranscript(displayText);
       }
 
-      // Check for send commands
-      const lowerTranscript = (finalTranscript || interimTranscript).toLowerCase().trim();
-      if (autoSendCommands.some(cmd => lowerTranscript.endsWith(cmd))) {
-        if (onSend && fullTranscript) {
-          // Remove the command from transcript
-          const cleanTranscript = fullTranscript.split(' ').slice(0, -1).join(' ');
+      // Check for send commands in the current utterance
+      if (finalTranscript) {
+        const lowerTranscript = currentText.toLowerCase().trim();
+        const hasCommand = autoSendCommands.some(cmd => lowerTranscript.includes(cmd));
+        
+        if (hasCommand && onSend && fullTranscript) {
+          console.log('[Voice] Send command detected');
+          // Remove the command word from transcript
+          let cleanTranscript = fullTranscript;
+          autoSendCommands.forEach(cmd => {
+            cleanTranscript = cleanTranscript.replace(new RegExp(cmd, 'gi'), '').trim();
+          });
           onSend(cleanTranscript || fullTranscript);
           lastTranscriptRef.current = '';
           setTranscript('');
+          clearTimeout(silenceTimerRef.current);
           return;
         }
-      }
 
-      // Update last transcript if final
-      if (finalTranscript) {
+        // Update accumulated transcript
         lastTranscriptRef.current = fullTranscript;
-      }
 
-      // Auto-send after 2 seconds of silence (only for final results)
-      if (finalTranscript) {
+        // Auto-send after 3 seconds of silence
         clearTimeout(silenceTimerRef.current);
         silenceTimerRef.current = setTimeout(() => {
           if (fullTranscript && onSend) {
+            console.log('[Voice] Auto-sending after silence');
             onSend(fullTranscript);
             lastTranscriptRef.current = '';
             setTranscript('');
           }
-        }, 2000);
+        }, 3000);
       }
     };
 
     recognition.onerror = (event) => {
-      console.error('Speech recognition error:', event.error);
-      if (event.error === 'no-speech') {
-        // Silently restart
+      console.error('[Voice] Recognition error:', event.error);
+      if (event.error === 'no-speech' || event.error === 'aborted') {
+        // Silently restart for these errors
         return;
       }
       setIsListening(false);
@@ -104,12 +113,13 @@ export function useVoiceControl({ onTranscript, onSend, autoSendCommands = ['sen
   const startListening = () => {
     if (recognitionRef.current && !isListening) {
       try {
+        console.log('[Voice] Starting recognition...');
         recognitionRef.current.start();
         setIsListening(true);
         lastTranscriptRef.current = '';
         setTranscript('');
       } catch (e) {
-        console.error('Failed to start recognition:', e);
+        console.error('[Voice] Failed to start recognition:', e);
       }
     }
   };

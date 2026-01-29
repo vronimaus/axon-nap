@@ -408,7 +408,7 @@ export default function DiagnosisChat() {
                   }}
                   placeholder={
                     voice.isListening 
-                      ? "🎤 Sprechen... (sage 'absenden' oder warte 2 Sek)" 
+                      ? "🎤 Sprechen... (sage 'absenden' oder warte 3 Sek)" 
                       : isDemoExpired 
                         ? "Demo vorbei – upgraden um fortzufahren" 
                         : "Beschreibe deine Symptome..."
@@ -427,7 +427,7 @@ export default function DiagnosisChat() {
               <p className="text-xs text-slate-500 mt-2">
                 {voice.isSupported ? (
                   <>
-                    🎤 Sprachsteuerung: "absenden", "senden", "ok", "fertig" oder 2 Sek Stille zum Absenden
+                    🎤 Sprachsteuerung: "absenden", "senden", "ok", "fertig" oder 3 Sek Stille zum Absenden
                   </>
                 ) : (
                   <>💡 Der Detective analysiert deine Schmerzen und empfiehlt die spezifischen MFR-Nodes (N1-N12) + Neuro-Drills</>
