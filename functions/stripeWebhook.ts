@@ -24,16 +24,24 @@ Deno.serve(async (req) => {
     // Only handle checkout.session.completed
     if (event.type === 'checkout.session.completed') {
       const session = event.data.object;
-      const userId = session.metadata?.user_id;
-      const customerEmail = session.customer_details?.email;
+      const customerEmail = session.metadata?.customer_email || session.customer_details?.email;
 
-      if (!userId) {
-        console.error('No user_id in session metadata');
-        return Response.json({ error: 'No user_id' }, { status: 400 });
+      if (!customerEmail) {
+        console.error('No customer email in session');
+        return Response.json({ error: 'No customer email' }, { status: 400 });
       }
 
       // Initialize Base44 client for service-role operations
       const base44 = createClientFromRequest(req);
+
+      // Finde User basierend auf Email
+      const users = await base44.asServiceRole.entities.User.filter({ email: customerEmail });
+      if (users.length === 0) {
+        console.log('User mit Email nicht gefunden (kann sein dass User sich später registriert):', customerEmail);
+        return Response.json({ received: true }, { status: 200 });
+      }
+
+      const user = users[0];
 
       // Setze Trial-Start wenn noch nicht gesetzt (für Trial-Mode)
       const isTrialMode = session.metadata?.trial_mode === 'true';
@@ -43,9 +51,9 @@ Deno.serve(async (req) => {
         updateData.trial_start_date = new Date().toISOString();
       }
 
-      // Update user basierend auf user_id, nicht auf email
-      await base44.asServiceRole.entities.User.update(userId, updateData);
-      console.log('Updated user:', userId, updateData);
+      // Update user mit Checkout-Info
+      await base44.asServiceRole.entities.User.update(user.id, updateData);
+      console.log('Updated user:', user.id, updateData);
     }
 
     return Response.json({ received: true }, { status: 200 });
