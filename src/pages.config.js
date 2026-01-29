@@ -51,6 +51,8 @@ import Dashboard from './pages/Dashboard';
 import DiagnosisChat from './pages/DiagnosisChat';
 import DiagnosisWizard from './pages/DiagnosisWizard';
 import ExerciseImageGenerator from './pages/ExerciseImageGenerator';
+import Flow from './pages/Flow';
+import FlowSelection from './pages/FlowSelection';
 import Imprint from './pages/Imprint';
 import Landing from './pages/Landing';
 import MFRIntegration from './pages/MFRIntegration';
@@ -60,8 +62,6 @@ import Profile from './pages/Profile';
 import QuickDemo from './pages/QuickDemo';
 import Success from './pages/Success';
 import Terms from './pages/Terms';
-import Flow from './pages/Flow';
-import FlowSelection from './pages/FlowSelection';
 import __Layout from './Layout.jsx';
 
 
@@ -70,6 +70,8 @@ export const PAGES = {
     "DiagnosisChat": DiagnosisChat,
     "DiagnosisWizard": DiagnosisWizard,
     "ExerciseImageGenerator": ExerciseImageGenerator,
+    "Flow": Flow,
+    "FlowSelection": FlowSelection,
     "Imprint": Imprint,
     "Landing": Landing,
     "MFRIntegration": MFRIntegration,
@@ -79,8 +81,6 @@ export const PAGES = {
     "QuickDemo": QuickDemo,
     "Success": Success,
     "Terms": Terms,
-    "Flow": Flow,
-    "FlowSelection": FlowSelection,
 }
 
 export const pagesConfig = {

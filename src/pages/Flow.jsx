@@ -170,11 +170,13 @@ export default function Flow() {
                   currentSequence.type === 'mfr' ? 'bg-red-500/20 text-red-400' :
                   currentSequence.type === 'neuro' ? 'bg-purple-500/20 text-purple-400' :
                   currentSequence.type === 'strength' ? 'bg-cyan-500/20 text-cyan-400' :
+                  currentSequence.type === 'mobility' ? 'bg-amber-500/20 text-amber-400' :
                   'bg-green-500/20 text-green-400'
                 }`}>
                   {currentSequence.type === 'mfr' ? 'Hardware (MFR)' :
                    currentSequence.type === 'neuro' ? 'Software (Neuro)' :
                    currentSequence.type === 'strength' ? 'Integration' :
+                   currentSequence.type === 'mobility' ? 'Mobility (CARs)' :
                    'Breathing'}
                 </div>
                 <div className="flex items-center gap-2 text-cyan-400">
