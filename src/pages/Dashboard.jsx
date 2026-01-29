@@ -25,9 +25,27 @@ export default function Dashboard() {
     const checkAuth = async () => {
       try {
         const currentUser = await base44.auth.me();
+        
+        if (!currentUser) {
+          // Keine Auth -> zur Landing
+          window.location.href = createPageUrl('Landing');
+          return;
+        }
+
+        // Check Zugriff (Zahlung oder aktiver Trial)
+        const hasTrialStart = currentUser?.trial_start_date;
+        const daysElapsed = hasTrialStart ? Math.floor((new Date() - new Date(currentUser.trial_start_date)) / (1000 * 60 * 60 * 24)) : null;
+        const isTrialActive = daysElapsed !== null && daysElapsed < 7;
+
+        if (!currentUser?.has_paid && !isTrialActive) {
+          // Kein Zugriff -> zur Landing
+          window.location.href = createPageUrl('Landing');
+          return;
+        }
+
         setUser(currentUser);
       } catch (e) {
-        setUser(null);
+        window.location.href = createPageUrl('Landing');
       } finally {
         setIsLoading(false);
       }
@@ -42,12 +60,14 @@ export default function Dashboard() {
   
   const { data: sessions = [] } = useQuery({
     queryKey: ['diagnosisSessions'],
-    queryFn: () => base44.entities.DiagnosisSession.list('-created_date', 5)
+    queryFn: () => base44.entities.DiagnosisSession.list('-created_date', 5),
+    enabled: !!user
   });
 
   const { data: goals = [] } = useQuery({
     queryKey: ['performanceGoals'],
-    queryFn: () => base44.entities.PerformanceGoal.list()
+    queryFn: () => base44.entities.PerformanceGoal.list(),
+    enabled: !!user
   });
 
   const { data: neuroProfile } = useQuery({
@@ -60,9 +80,11 @@ export default function Dashboard() {
     enabled: !!user?.email
   });
 
-
-
   if (isLoading) {
+    return <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950" />;
+  }
+
+  if (!user) {
     return <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950" />;
   }
 
