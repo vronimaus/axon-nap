@@ -3,13 +3,13 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Loader2, Trophy, Target } from 'lucide-react';
+import { createPageUrl } from '@/utils';
 import GoalCard from '../components/performance/GoalCard';
 import TriplePath from '../components/performance/TriplePath';
-import { useDemoTimer } from '../components/demo/useDemoTimer';
-import DemoPaywall from '../components/demo/DemoPaywall';
+import { useTrialStatus } from '../components/useTrialStatus';
 
 export default function Performance() {
-  const { isDemoExpired } = useDemoTimer();
+  const { isExpired, hasAccess } = useTrialStatus();
   const [selectedGoal, setSelectedGoal] = useState(null);
   
   const { data: goals = [], isLoading } = useQuery({
@@ -29,8 +29,21 @@ export default function Performance() {
     }
   }, [goals]);
   
-  if (isDemoExpired) {
-    return <DemoPaywall />;
+  if (!hasAccess) {
+    return (
+      <div className="min-h-screen flex items-center justify-center pb-20">
+        <div className="max-w-md text-center glass rounded-2xl p-8 border border-amber-500/30">
+          <div className="w-12 h-12 bg-amber-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
+            <Trophy className="w-6 h-6 text-amber-400" />
+          </div>
+          <h2 className="text-xl font-bold text-white mb-2">Trial endet</h2>
+          <p className="text-slate-400 mb-6">Upgrade zu einer Subscription um weitere Ziele freizuschalten.</p>
+          <a href={createPageUrl('Profile')} className="inline-block px-6 py-2 bg-amber-500/20 text-amber-400 rounded-lg hover:bg-amber-500/30 transition-all border border-amber-500/50">
+            Jetzt upgraden
+          </a>
+        </div>
+      </div>
+    );
   }
 
   if (isLoading) {
