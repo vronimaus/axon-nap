@@ -457,7 +457,7 @@ export default function Landing() {
             </div>
 
             <Button
-              onClick={handleCheckout}
+              onClick={() => handleCheckout('direct')}
               disabled={isCheckoutLoading}
               size="lg"
               className="w-full text-lg py-6 bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-600 hover:to-purple-700 neuro-glow"
@@ -470,7 +470,7 @@ export default function Landing() {
               ) : (
                 <>
                   <Zap className="w-5 h-5 mr-2" />
-                  JETZT KAUFEN
+                  SOFORT KAUFEN
                 </>
               )}
             </Button>
