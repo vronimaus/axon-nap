@@ -118,7 +118,8 @@ export default function Flow() {
         instruction: node?.user_instruction || currentSequence.instruction,
         expertTip: node?.expert_tip
       };
-    } else if (currentSequence.type === 'neuro' && currentSequence.exercise_id) {
+    } else if (currentSequence.exercise_id) {
+      // For all exercise types (neuro, strength, mobility, breath)
       const exercise = exercises.find(e => e.exercise_id === currentSequence.exercise_id);
       return {
         title: exercise?.name || currentSequence.exercise_id,
@@ -127,7 +128,7 @@ export default function Flow() {
       };
     }
     return {
-      title: currentSequence.node_id || currentSequence.exercise_id || 'Übung',
+      title: currentSequence.node_id || 'Übung',
       instruction: currentSequence.instruction
     };
   };
