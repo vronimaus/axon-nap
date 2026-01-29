@@ -158,7 +158,7 @@ export default function DiagnosisChat() {
               <Sparkles className="w-6 h-6 text-white" />
             </div>
             <h1 className="text-3xl md:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-500">
-              🔎 Detective Mode
+              Detective Mode
             </h1>
           </div>
           <p className="text-slate-400">
@@ -355,7 +355,7 @@ export default function DiagnosisChat() {
                 </Button>
               </div>
               <p className="text-xs text-slate-500 mt-2">
-                💡 Nimm dir Zeit für AXON – dieser Prozess braucht deine volle Aufmerksamkeit. Es geht um dich.
+                Nimm dir Zeit für AXON – dieser Prozess braucht deine volle Aufmerksamkeit. Es geht um dich.
               </p>
             </div>
           </div>
@@ -369,7 +369,7 @@ export default function DiagnosisChat() {
           className="glass-cyan rounded-2xl border border-cyan-500/30 p-4 sm:p-6"
         >
           <h3 className="text-lg sm:text-xl font-bold text-cyan-400 mb-3 flex items-center gap-2">
-            <span>📍</span>
+            <Activity className="w-5 h-5" />
             <span>MFR Node Karte</span>
           </h3>
           <p className="text-xs sm:text-sm text-slate-400 mb-4">

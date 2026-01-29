@@ -97,7 +97,7 @@ export default function Dashboard() {
               <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-xl sm:rounded-2xl bg-gradient-to-br from-red-500 to-pink-600 flex items-center justify-center mb-3 sm:mb-4 mx-auto group-hover:shadow-lg group-hover:shadow-red-500/50 transition-all animate-pulse">
                 <Target className="w-7 h-7 sm:w-8 sm:h-8 text-white" />
               </div>
-              <h2 className="text-xl sm:text-2xl font-bold text-red-400 mb-2 sm:mb-3">🔴 REHAB</h2>
+              <h2 className="text-xl sm:text-2xl font-bold text-red-400 mb-2 sm:mb-3">REHAB</h2>
               <p className="text-sm sm:text-base text-slate-300 mb-3 sm:mb-4">
                 Akuter Schmerz? Löse dein Problem jetzt.
               </p>
@@ -115,7 +115,7 @@ export default function Dashboard() {
               <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-xl sm:rounded-2xl bg-gradient-to-br from-amber-500 to-yellow-600 flex items-center justify-center mb-3 sm:mb-4 mx-auto group-hover:shadow-lg group-hover:shadow-amber-500/50 transition-all">
                 <Zap className="w-7 h-7 sm:w-8 sm:h-8 text-white" />
               </div>
-              <h2 className="text-xl sm:text-2xl font-bold text-amber-400 mb-2 sm:mb-3">🏆 GOALS</h2>
+              <h2 className="text-xl sm:text-2xl font-bold text-amber-400 mb-2 sm:mb-3">GOALS</h2>
               <p className="text-sm sm:text-base text-slate-300 mb-3 sm:mb-4">
                 Schalte neue Fähigkeiten frei.
               </p>
@@ -133,7 +133,7 @@ export default function Dashboard() {
               <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-xl sm:rounded-2xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center mb-3 sm:mb-4 mx-auto group-hover:shadow-lg group-hover:shadow-cyan-500/50 transition-all">
                 <Activity className="w-7 h-7 sm:w-8 sm:h-8 text-white" />
               </div>
-              <h2 className="text-xl sm:text-2xl font-bold text-cyan-400 mb-2 sm:mb-3">🌊 FLOW</h2>
+              <h2 className="text-xl sm:text-2xl font-bold text-cyan-400 mb-2 sm:mb-3">FLOW</h2>
               <p className="text-sm sm:text-base text-slate-300 mb-3 sm:mb-4">
                 Pflege dein System täglich.
               </p>
@@ -151,7 +151,7 @@ export default function Dashboard() {
             className="mt-8 glass rounded-xl border border-slate-700 p-4 text-center"
           >
             <p className="text-sm text-slate-400">
-              💡 AXON deckt den kompletten Lebenszyklus ab: Probleme lösen → Ziele erreichen → System pflegen
+              AXON deckt den kompletten Lebenszyklus ab: Probleme lösen → Ziele erreichen → System pflegen
             </p>
           </motion.div>
         </motion.div>

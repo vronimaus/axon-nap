@@ -68,7 +68,7 @@ export default function FlowSelection() {
               <Activity className="w-7 h-7 text-white" />
             </div>
             <h1 className="text-3xl md:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">
-              🌊 Daily Flow
+              Daily Flow
             </h1>
           </div>
           <p className="text-slate-400">
@@ -86,7 +86,7 @@ export default function FlowSelection() {
             <div className="flex items-center justify-center gap-3 mb-2">
               <TrendingUp className="w-6 h-6 text-cyan-400" />
               <span className="text-3xl font-bold text-cyan-400">{streak}</span>
-              <span className="text-slate-300">Tage Streak 🔥</span>
+              <span className="text-slate-300">Tage Streak</span>
             </div>
             <p className="text-sm text-slate-500">
               Du bist auf einem guten Weg – weiter so!
@@ -110,7 +110,7 @@ export default function FlowSelection() {
 
                 <div className="flex-1">
                   <h3 className="text-xl font-bold text-white mb-2">
-                    {routine.icon} {routine.routine_name}
+                    {routine.routine_name}
                   </h3>
                   <p className="text-sm text-slate-400 mb-4">
                     {routine.description}
@@ -122,9 +122,9 @@ export default function FlowSelection() {
                       <span>{routine.total_duration} Min</span>
                     </div>
                     <div className="px-2 py-1 rounded-full bg-slate-800 text-slate-400">
-                      {routine.difficulty === 'easy' ? '🟢 Easy' : 
-                       routine.difficulty === 'medium' ? '🟡 Medium' : 
-                       '🔴 Advanced'}
+                      {routine.difficulty === 'easy' ? 'Easy' : 
+                       routine.difficulty === 'medium' ? 'Medium' : 
+                       'Advanced'}
                     </div>
                   </div>
                 </div>

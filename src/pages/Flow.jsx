@@ -108,7 +108,7 @@ export default function Flow() {
           <div className="w-20 h-20 rounded-full bg-gradient-to-br from-cyan-500 to-purple-600 flex items-center justify-center mx-auto mb-6">
             <Check className="w-10 h-10 text-white" />
           </div>
-          <h2 className="text-2xl font-bold text-white mb-3">Routine abgeschlossen! 🎯</h2>
+          <h2 className="text-2xl font-bold text-white mb-3">Routine abgeschlossen!</h2>
           <p className="text-slate-400 mb-6">
             Du hast "{routine.routine_name}" erfolgreich durchgeführt.
           </p>
@@ -172,10 +172,10 @@ export default function Flow() {
                   currentSequence.type === 'strength' ? 'bg-cyan-500/20 text-cyan-400' :
                   'bg-green-500/20 text-green-400'
                 }`}>
-                  {currentSequence.type === 'mfr' ? '🎯 Hardware (MFR)' :
-                   currentSequence.type === 'neuro' ? '🧠 Software (Neuro)' :
-                   currentSequence.type === 'strength' ? '💪 Integration' :
-                   '🫁 Breathing'}
+                  {currentSequence.type === 'mfr' ? 'Hardware (MFR)' :
+                   currentSequence.type === 'neuro' ? 'Software (Neuro)' :
+                   currentSequence.type === 'strength' ? 'Integration' :
+                   'Breathing'}
                 </div>
                 <div className="flex items-center gap-2 text-cyan-400">
                   <Timer className="w-5 h-5" />
