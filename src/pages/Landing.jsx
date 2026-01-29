@@ -67,7 +67,7 @@ export default function Landing() {
     try {
       const { data } = await base44.functions.invoke('createCheckoutSession', {
         mode,
-        returnUrl: window.location.href
+        email: user?.email || undefined
       });
 
       if (mode === 'direct' && data.success) {
