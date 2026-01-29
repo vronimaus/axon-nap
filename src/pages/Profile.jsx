@@ -79,6 +79,7 @@ export default function Profile() {
     onSuccess: () => {
       toast.success('Profil gespeichert');
       queryClient.invalidateQueries({ queryKey: ['userNeuroProfile'] });
+      queryClient.invalidateQueries({ queryKey: ['neuroProfile'] });
     }
   });
 
