@@ -6,6 +6,7 @@ import CookieBanner from './components/CookieBanner';
 import { useDemoTimer } from './components/demo/useDemoTimer';
 import DemoTimer from './components/demo/DemoTimer';
 import DemoPaywall from './components/demo/DemoPaywall';
+import DailyReadinessCheck from './components/dashboard/DailyReadinessCheck';
 import { AnimatePresence } from 'framer-motion';
 import { base44 } from '@/api/base44Client';
 import { Toaster } from 'sonner';
@@ -14,12 +15,21 @@ export default function Layout({ children, currentPageName }) {
   const { isDemoExpired, isLoading: demoLoading, formattedTime } = useDemoTimer();
   const [user, setUser] = useState(null);
   const [isChecking, setIsChecking] = useState(true);
+  const [showDailyCheck, setShowDailyCheck] = useState(false);
 
   useEffect(() => {
     const checkAuth = async () => {
       try {
         const currentUser = await base44.auth.me();
         setUser(currentUser);
+
+        // Check if Daily Check needed today
+        const today = new Date().toISOString().split('T')[0];
+        const lastCheck = localStorage.getItem('last_daily_check_date');
+        
+        if (lastCheck !== today && currentUser && currentPageName === 'Dashboard') {
+          setShowDailyCheck(true);
+        }
       } catch (e) {
         // Not authenticated - that's fine for demo mode
         setUser(null);
@@ -40,7 +50,13 @@ export default function Layout({ children, currentPageName }) {
     }, 2000);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [currentPageName]);
+
+  const handleCloseDailyCheck = () => {
+    const today = new Date().toISOString().split('T')[0];
+    localStorage.setItem('last_daily_check_date', today);
+    setShowDailyCheck(false);
+  };
   const navItems = [
     { name: 'Command', icon: LayoutDashboard, page: 'Dashboard' },
     { name: 'Detective', icon: Compass, page: 'DiagnosisWizard' },
@@ -180,6 +196,13 @@ export default function Layout({ children, currentPageName }) {
 
       {/* Cookie Banner */}
       <CookieBanner />
+
+      {/* Daily Readiness Check */}
+      <AnimatePresence>
+        {showDailyCheck && user && (
+          <DailyReadinessCheck user={user} onClose={handleCloseDailyCheck} />
+        )}
+      </AnimatePresence>
 
       {/* Toast Notifications */}
       <Toaster position="top-center" theme="dark" />
