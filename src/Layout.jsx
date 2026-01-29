@@ -21,13 +21,24 @@ export default function Layout({ children, currentPageName }) {
         const currentUser = await base44.auth.me();
         setUser(currentUser);
 
-        // Check if Daily Check needed today
-        const today = new Date().toISOString().split('T')[0];
-        const lastCheck = localStorage.getItem('last_daily_check_date');
-        
-        if (lastCheck !== today && currentUser && currentPageName === 'Dashboard') {
-          setShowDailyCheck(true);
-        }
+        // Prüfe ob User Zugriff hat (bezahlt oder aktive Trial)
+                const hasTrialStart = currentUser?.trial_start_date;
+                const daysElapsed = hasTrialStart ? Math.floor((new Date() - new Date(currentUser.trial_start_date)) / (1000 * 60 * 60 * 24)) : null;
+                const isTrialActive = daysElapsed !== null && daysElapsed < 7;
+
+                // Ohne Zahlung und ohne aktive Trial -> zurück zum Landing
+                if (!currentUser?.has_paid && !isTrialActive && currentPageName !== 'Landing') {
+                  window.location.href = createPageUrl('Landing');
+                  return;
+                }
+
+                // Check if Daily Check needed today
+                const today = new Date().toISOString().split('T')[0];
+                const lastCheck = localStorage.getItem('last_daily_check_date');
+
+                if (lastCheck !== today && currentUser && currentPageName === 'Dashboard') {
+                  setShowDailyCheck(true);
+                }
       } catch (e) {
         // Not authenticated - that's fine for demo mode
         setUser(null);
