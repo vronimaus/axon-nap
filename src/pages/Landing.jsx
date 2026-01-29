@@ -417,6 +417,10 @@ export default function Landing() {
             <div className="space-y-4 mb-8">
               <div className="flex items-center gap-3">
                 <Check className="w-6 h-6 text-cyan-400 flex-shrink-0" />
+                <span className="text-slate-300">Einmalig 59€ – dein Lifetime-Zugang gehört dir für immer</span>
+              </div>
+              <div className="flex items-center gap-3">
+                <Check className="w-6 h-6 text-cyan-400 flex-shrink-0" />
                 <span className="text-slate-300">Web-App (PWA) – direktzugriff über deinen Homescreen</span>
               </div>
               <div className="flex items-center gap-3">
@@ -425,11 +429,7 @@ export default function Landing() {
               </div>
               <div className="flex items-center gap-3">
                 <Check className="w-6 h-6 text-cyan-400 flex-shrink-0" />
-                <span className="text-slate-300">Lifetime Updates inklusive</span>
-              </div>
-              <div className="flex items-center gap-3">
-                <Check className="w-6 h-6 text-cyan-400 flex-shrink-0" />
-                <span className="text-slate-300">Alle Features. Keine Abos. Keine versteckten Kosten.</span>
+                <span className="text-slate-300">Lifetime Updates inklusive – keine versteckten Kosten</span>
               </div>
             </div>
 
