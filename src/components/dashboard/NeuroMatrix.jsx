@@ -3,30 +3,56 @@ import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { ChevronRight, Lock, CheckCircle, Zap } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
+import { base44 } from '@/api/base44Client';
 
 export default function NeuroMatrix({ mode, goals, selectedRegion }) {
-  // Mock progress data - würde von API kommen
-  const progressData = {
-    backbend: { level: 2, unlocked: true },
-    middle_split: { level: 3, unlocked: true },
-    pancake: { level: 1, unlocked: true },
-    deep_squat: { level: 4, unlocked: true },
-    front_split: { level: 2, unlocked: true },
-    overhead: { level: 3, unlocked: true },
-    pistol_squat: { level: 1, unlocked: false },
-    dragon_squat: { level: 0, unlocked: false },
-    handstand: { level: 2, unlocked: true },
-    l_sit: { level: 1, unlocked: false },
-    skin_the_cat: { level: 0, unlocked: false },
-    jefferson_curl: { level: 3, unlocked: true }
+  // Load real data
+  const { data: lastSession } = useQuery({
+    queryKey: ['diagnosisSessions', 'rehab'],
+    queryFn: async () => {
+      const sessions = await base44.entities.DiagnosisSession.filter({}, '-created_date', 1);
+      return sessions[0] || null;
+    }
+  });
+
+  const { data: routineHistory = [] } = useQuery({
+    queryKey: ['routineHistory'],
+    queryFn: () => base44.entities.RoutineHistory.filter({ completed: true }, '-created_date', 20)
+  });
+
+  const { data: lastReadiness } = useQuery({
+    queryKey: ['readinessCheck'],
+    queryFn: async () => {
+      const checks = await base44.entities.ReadinessCheck.filter({}, '-created_date', 1);
+      return checks[0] || null;
+    }
+  });
+
+  const { data: allChains = [] } = useQuery({
+    queryKey: ['fascialChains'],
+    queryFn: () => base44.entities.FascialChain.list()
+  });
+
+  // Berechne Stats aus echten Daten
+  const getRehabStats = () => {
+    const activePainCount = lastSession?.tested_chains?.length || 0;
+    
+    const completedRoutines = routineHistory.filter(r => r.completed).length;
+    const painReduction = completedRoutines > 0 ? Math.min(completedRoutines * 15, 100) : 0;
+    
+    const recoveryScore = lastReadiness?.readiness_score 
+      ? Math.round((lastReadiness.readiness_score / 10) * 100)
+      : 0;
+    
+    return {
+      activePain: activePainCount,
+      painReduction: Math.round(painReduction),
+      recoveryScore
+    };
   };
 
-  // Mock Rehab data
-  const rehabData = {
-    activePain: 3,
-    painReduction: 45,
-    recoveryScore: 72
-  };
+  const rehabData = getRehabStats();
 
   const getProgressColor = (level) => {
     if (level === 0) return 'text-slate-600';
@@ -203,37 +229,39 @@ export default function NeuroMatrix({ mode, goals, selectedRegion }) {
             Active Pain Areas
           </h3>
           <div className="space-y-2">
-            {[
-              { area: 'Nacken (links)', chain: 'SPL', intensity: 7, status: 'active' },
-              { area: 'Unterer Rücken', chain: 'SBL', intensity: 5, status: 'improving' },
-              { area: 'Rechte Schulter', chain: 'AL', intensity: 4, status: 'stable' }
-            ].map((pain, idx) => (
-              <motion.div
-                key={idx}
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: idx * 0.05 }}
-                className="p-3 rounded-xl bg-slate-800/30 border border-red-500/30"
-              >
-                <div className="flex items-center justify-between mb-2">
-                  <div className="text-sm font-semibold text-slate-200">
-                    {pain.area}
-                  </div>
-                  <div className={`px-2 py-0.5 rounded-full text-xs font-mono ${
-                    pain.status === 'active' ? 'bg-red-500/20 text-red-400' :
-                    pain.status === 'improving' ? 'bg-orange-500/20 text-orange-400' :
-                    'bg-green-500/20 text-green-400'
-                  }`}>
-                    {pain.intensity}/10
-                  </div>
-                </div>
-                <div className="flex items-center gap-2 text-xs text-slate-400">
-                  <span>Chain: {pain.chain}</span>
-                  <span>•</span>
-                  <span className="capitalize">{pain.status}</span>
-                </div>
-              </motion.div>
-            ))}
+            {lastSession?.tested_chains && lastSession.tested_chains.length > 0 ? (
+              lastSession.tested_chains.map((chainCode, idx) => {
+                const chain = allChains.find(c => c.code === chainCode);
+                const hardwareResult = lastSession.hardware_results?.[chainCode];
+                const status = hardwareResult ? 'active' : 'stable';
+                
+                return (
+                  <motion.div
+                    key={idx}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: idx * 0.05 }}
+                    className="p-3 rounded-xl bg-slate-800/30 border border-red-500/30"
+                  >
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="text-sm font-semibold text-slate-200">
+                        {chain?.name_de || chainCode}
+                      </div>
+                      <div className={`px-2 py-0.5 rounded-full text-xs font-mono ${
+                        status === 'active' ? 'bg-red-500/20 text-red-400' : 'bg-green-500/20 text-green-400'
+                      }`}>
+                        {status === 'active' ? 'Positiv' : 'Clear'}
+                      </div>
+                    </div>
+                    <div className="text-xs text-slate-400">
+                      {chain?.test_name}
+                    </div>
+                  </motion.div>
+                );
+              })
+            ) : (
+              <p className="text-xs text-slate-400 text-center py-4">Starte eine Diagnose um Pain Areas zu sehen</p>
+            )}
           </div>
         </div>
       )}
@@ -243,50 +271,55 @@ export default function NeuroMatrix({ mode, goals, selectedRegion }) {
         mode === 'rehab' ? 'border-red-500/20' : 'border-purple-500/20'
       }`}>
         <h3 className="text-xs font-bold text-slate-400 mb-3 uppercase tracking-wider">
-          {mode === 'rehab' ? '⚡ Neural Slack Drills' : '⚡ Flash-Drills Active'}
+          {mode === 'rehab' ? '⚡ Recommended Drills' : '⚡ Flash-Drills Active'}
         </h3>
         <div className="space-y-2">
-          {(mode === 'rehab' ? [
-            { drill: 'Neural Slack (Nacken)', target: 'SPL Entlastung', active: true },
-            { drill: 'Vagus-Atmung', target: 'Stress-Reduktion', active: true },
-            { drill: 'Fußsohlen-Sensorik', target: 'SBL Release', active: false }
-          ] : [
-            { drill: 'Zungen-Gaumen-Druck', target: 'Pistol Squat', active: true },
-            { drill: 'VOR-Training', target: 'Handstand', active: true },
-            { drill: 'Eye-Lead Rotation', target: 'Dragon Squat', active: false }
-          ]).map((drill, idx) => (
-            <div
-              key={idx}
-              className={`p-2 rounded-lg border text-xs ${
-                drill.active
-                  ? mode === 'rehab'
-                    ? 'bg-red-500/10 border-red-500/30'
-                    : 'bg-purple-500/10 border-purple-500/30'
-                  : 'bg-slate-800/30 border-slate-700/30'
-              }`}
-            >
-              <div className="flex items-center gap-2">
-                <div className={`w-2 h-2 rounded-full ${
-                  drill.active 
-                    ? mode === 'rehab' 
-                      ? 'bg-red-400 animate-pulse' 
-                      : 'bg-purple-400 animate-pulse'
-                    : 'bg-slate-600'
-                }`} />
-                <div className="flex-1">
-                  <div className={drill.active 
-                    ? mode === 'rehab'
-                      ? 'text-red-300 font-medium'
-                      : 'text-purple-300 font-medium'
-                    : 'text-slate-400'
-                  }>
-                    {drill.drill}
+          {mode === 'rehab' ? (
+            lastSession?.recommendations && lastSession.recommendations.length > 0 ? (
+              lastSession.recommendations.slice(0, 3).map((rec, idx) => (
+                <div
+                  key={idx}
+                  className="p-2 rounded-lg border bg-red-500/10 border-red-500/30 text-xs"
+                >
+                  <div className="flex items-center gap-2">
+                    <div className="w-2 h-2 rounded-full bg-red-400 animate-pulse" />
+                    <div className="flex-1">
+                      <div className="text-red-300 font-medium">
+                        {rec}
+                      </div>
+                    </div>
                   </div>
-                  <div className="text-slate-500 text-xs">→ {drill.target}</div>
+                </div>
+              ))
+            ) : (
+              <p className="text-xs text-slate-400 text-center py-4">Keine Empfehlungen vorhanden</p>
+            )
+          ) : (
+            [
+              { drill: 'Zungen-Gaumen-Druck', target: 'Pistol Squat', active: true },
+              { drill: 'VOR-Training', target: 'Handstand', active: true },
+              { drill: 'Eye-Lead Rotation', target: 'Dragon Squat', active: false }
+            ].map((drill, idx) => (
+              <div
+                key={idx}
+                className={`p-2 rounded-lg border text-xs ${
+                  drill.active ? 'bg-purple-500/10 border-purple-500/30' : 'bg-slate-800/30 border-slate-700/30'
+                }`}
+              >
+                <div className="flex items-center gap-2">
+                  <div className={`w-2 h-2 rounded-full ${
+                    drill.active ? 'bg-purple-400 animate-pulse' : 'bg-slate-600'
+                  }`} />
+                  <div className="flex-1">
+                    <div className={drill.active ? 'text-purple-300 font-medium' : 'text-slate-400'}>
+                      {drill.drill}
+                    </div>
+                    <div className="text-slate-500 text-xs">→ {drill.target}</div>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            ))
+          )}
         </div>
       </div>
     </div>
