@@ -2,7 +2,11 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
 
+import { useTrialStatus } from '../useTrialStatus';
+import { Lock } from 'lucide-react';
+
 export default function GoalCard({ goal, onClick, index }) {
+  const { hasAccess } = useTrialStatus();
   // Icon-Mapping für die 12 Performance-Ziele
   const iconEmojis = {
     'backbend': '🌉',
@@ -53,25 +57,33 @@ export default function GoalCard({ goal, onClick, index }) {
       <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
       
       <div className="relative flex items-center justify-between gap-3">
-        <div className="flex items-center gap-3 sm:gap-4 flex-1 min-w-0">
-          {/* Text */}
-          <div className="flex-1 min-w-0">
-            <h3 className={`text-sm sm:text-base font-semibold ${scheme.text} mb-1 group-hover:translate-x-1 transition-transform truncate`}>
-              {goal.name}
-            </h3>
-            <p className="text-xs text-slate-400 line-clamp-1 sm:line-clamp-2">
-              {goal.description || 'Master-Ziel für Bewegungsqualität'}
-            </p>
-          </div>
-        </div>
-        
-        {/* Arrow */}
-        <ArrowRight className={`
-          w-4 h-4 sm:w-5 sm:h-5 ${scheme.text} flex-shrink-0
-          transform group-hover:translate-x-2 transition-all
-          opacity-60 group-hover:opacity-100
-        `} />
-      </div>
+         <div className="flex items-center gap-3 sm:gap-4 flex-1 min-w-0">
+           {/* Text */}
+           <div className="flex-1 min-w-0">
+             <div className="flex items-center gap-2 mb-1">
+               <h3 className={`text-sm sm:text-base font-semibold ${scheme.text} group-hover:translate-x-1 transition-transform truncate`}>
+                 {goal.name}
+               </h3>
+               {!hasAccess && (
+                 <div className="flex-shrink-0 bg-red-500/30 px-2 py-0.5 rounded text-xs font-semibold text-red-400 border border-red-500/50 flex items-center gap-1">
+                   <Lock className="w-3 h-3" />
+                   LOCKED
+                 </div>
+               )}
+             </div>
+             <p className="text-xs text-slate-400 line-clamp-1 sm:line-clamp-2">
+               {goal.description || 'Master-Ziel für Bewegungsqualität'}
+             </p>
+           </div>
+         </div>
+
+         {/* Arrow */}
+         <ArrowRight className={`
+           w-4 h-4 sm:w-5 sm:h-5 ${scheme.text} flex-shrink-0
+           transform group-hover:translate-x-2 transition-all
+           opacity-60 group-hover:opacity-100
+         `} />
+       </div>
     </motion.div>
   );
 }
