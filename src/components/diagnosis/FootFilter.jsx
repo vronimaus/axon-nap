@@ -73,20 +73,20 @@ export default function FootFilter({ onComplete, onSkip }) {
           animate={{ opacity: 1, y: 0 }}
           className="glass rounded-2xl p-6"
         >
-          <h4 className="text-lg font-semibold text-cyan-400 mb-4">
+          <h4 className="text-base sm:text-lg font-semibold text-cyan-400 mb-4">
             Tritt dein Schmerz primär im Stehen oder Gehen auf?
           </h4>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 xs:grid-cols-2 gap-3 sm:gap-4">
             <Button
               onClick={() => handleStandingResponse(true)}
-              className="h-20 bg-gradient-to-br from-cyan-500/20 to-cyan-600/20 border-2 border-cyan-500/30 hover:border-cyan-500 text-cyan-400 font-semibold"
+              className="h-auto min-h-[64px] sm:h-20 py-3 px-4 bg-gradient-to-br from-cyan-500/20 to-cyan-600/20 border-2 border-cyan-500/30 hover:border-cyan-500 text-cyan-400 font-semibold text-sm sm:text-base whitespace-normal leading-tight"
             >
               Ja, primär im Stehen/Gehen
             </Button>
             <Button
               onClick={() => handleStandingResponse(false)}
               variant="outline"
-              className="h-20 border-slate-600 hover:border-slate-500 text-slate-400"
+              className="h-auto min-h-[64px] sm:h-20 py-3 px-4 border-slate-600 hover:border-slate-500 text-slate-400 text-sm sm:text-base whitespace-normal leading-tight"
             >
               Nein, auch im Liegen/Sitzen
             </Button>
