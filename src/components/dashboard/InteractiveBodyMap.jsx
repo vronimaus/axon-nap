@@ -226,14 +226,14 @@ export default function InteractiveBodyMap({ mode, onRegionSelect, sessions }) {
   const modeColorHex = mode === 'rehab' ? '#ef4444' : '#a855f7';
 
   return (
-    <div className="glass rounded-2xl border border-cyan-500/20 overflow-hidden">
+    <div className="glass rounded-xl sm:rounded-2xl border border-cyan-500/20 overflow-hidden">
       {/* Header */}
-      <div className={`p-4 border-b ${mode === 'rehab' ? 'border-red-500/20' : 'border-purple-500/20'}`}>
+      <div className={`p-3 sm:p-4 border-b ${mode === 'rehab' ? 'border-red-500/20' : 'border-purple-500/20'}`}>
         <div className="flex items-center justify-between mb-3">
-          <h3 className="text-lg font-bold text-cyan-400">
+          <h3 className="text-sm sm:text-base md:text-lg font-bold text-cyan-400">
             {mode === 'rehab' ? '🔴 Detective Mode: Pain' : '⚡ Detective Mode: Tension'}
           </h3>
-          <div className="flex gap-2">
+          <div className="flex gap-1.5 sm:gap-2">
             <Button
               size="sm"
               variant={view === 'front' ? 'default' : 'outline'}
@@ -253,40 +253,40 @@ export default function InteractiveBodyMap({ mode, onRegionSelect, sessions }) {
           </div>
         </div>
 
-        {/* Drawing Controls */}
-        <div className="flex gap-2">
+        {/* Drawing Controls - Responsive */}
+        <div className="flex flex-wrap gap-1.5 sm:gap-2">
           <Button
             size="sm"
             variant={drawMode === 'point' ? 'default' : 'outline'}
             onClick={() => setDrawMode('point')}
-            className="text-xs gap-2"
+            className="text-xs gap-1 sm:gap-2 px-2 sm:px-3"
           >
             <MapPin className="w-3 h-3" />
-            Punkt
+            <span className="hidden xs:inline">Punkt</span>
           </Button>
           <Button
             size="sm"
             variant={drawMode === 'line' ? 'default' : 'outline'}
             onClick={() => setDrawMode('line')}
-            className="text-xs gap-2"
+            className="text-xs gap-1 sm:gap-2 px-2 sm:px-3"
           >
             <Pencil className="w-3 h-3" />
-            Linie
+            <span className="hidden xs:inline">Linie</span>
           </Button>
           <Button
             size="sm"
             variant="outline"
             onClick={clearMarkers}
-            className={`text-xs gap-2 border-${modeColor}-500/50 text-${modeColor}-400`}
+            className={`text-xs gap-1 sm:gap-2 px-2 sm:px-3 border-${modeColor}-500/50 text-${modeColor}-400`}
           >
             <RotateCcw className="w-3 h-3" />
-            Reset
+            <span className="hidden xs:inline">Reset</span>
           </Button>
           <Button
             size="sm"
             onClick={handleAnalyze}
             disabled={markers.length === 0 || isAnalyzing}
-            className={`text-xs gap-2 ml-auto bg-gradient-to-r ${
+            className={`text-xs gap-1 sm:gap-2 px-3 sm:px-4 ml-auto bg-gradient-to-r ${
               mode === 'rehab' 
                 ? 'from-red-500 to-pink-600' 
                 : 'from-purple-500 to-cyan-600'
@@ -347,13 +347,13 @@ export default function InteractiveBodyMap({ mode, onRegionSelect, sessions }) {
       </div>
 
       {/* Legend */}
-      <div className="p-3 border-t border-slate-700/50 text-xs text-slate-400">
-        <div className="flex items-center gap-4">
-          <span className="font-mono">
+      <div className="p-2 sm:p-3 border-t border-slate-700/50 text-xs text-slate-400">
+        <div className="flex flex-col xs:flex-row xs:items-center gap-2 xs:gap-4">
+          <span className="font-mono text-xs sm:text-sm">
             {mode === 'rehab' ? '🔴 Schmerzpunkte markieren' : '⚡ Spannungszonen markieren'}
           </span>
-          <span className="text-slate-500">|</span>
-          <span>{markers.length} Markierung(en)</span>
+          <span className="hidden xs:inline text-slate-500">|</span>
+          <span className="text-xs sm:text-sm">{markers.length} Markierung(en)</span>
         </div>
       </div>
     </div>

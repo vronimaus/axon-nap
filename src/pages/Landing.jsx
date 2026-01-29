@@ -104,8 +104,8 @@ export default function Landing() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
       {/* Top Navigation */}
-      <nav className="sticky top-0 z-50 bg-slate-900/80 backdrop-blur border-b border-cyan-500/20">
-        <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
+      <nav className="sticky top-0 z-50 bg-slate-900/80 backdrop-blur border-b border-cyan-500/20 safe-area-pt">
+        <div className="max-w-6xl mx-auto px-3 sm:px-4 py-3 sm:py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <img 
               src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/afa60dd62_AXONLogo.png"
@@ -114,25 +114,26 @@ export default function Landing() {
             />
             <span className="font-bold text-cyan-400">AXON</span>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3">
             {user ? (
               <>
                 <Link to={createPageUrl('Dashboard')}>
-                  <Button size="sm" variant="outline" className="border-cyan-500/50 text-cyan-400">
-                    Zur App
+                  <Button size="sm" variant="outline" className="border-cyan-500/50 text-cyan-400 text-xs sm:text-sm px-3 sm:px-4">
+                    <span className="hidden xs:inline">Zur App</span>
+                    <span className="xs:hidden">App</span>
                   </Button>
                 </Link>
                 <button
                   onClick={() => base44.auth.logout()}
-                  className="p-2 rounded-lg text-slate-400 hover:text-cyan-400 transition-colors"
+                  className="p-2 rounded-lg text-slate-400 hover:text-cyan-400 transition-colors touch-target"
                 >
-                  <LogOut className="w-5 h-5" />
+                  <LogOut className="w-4 h-4 sm:w-5 sm:h-5" />
                 </button>
               </>
             ) : (
               <button
                 onClick={() => base44.auth.redirectToLogin(window.location.href)}
-                className="px-4 py-2 rounded-lg text-sm font-medium bg-cyan-500/20 text-cyan-400 hover:bg-cyan-500/30 transition-colors"
+                className="px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-medium bg-cyan-500/20 text-cyan-400 hover:bg-cyan-500/30 transition-colors"
               >
                 Login
               </button>
@@ -149,7 +150,7 @@ export default function Landing() {
           <div className="absolute bottom-20 right-20 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl animate-pulse delay-1000" />
         </div>
 
-        <div className="relative z-10 max-w-6xl mx-auto px-4 py-20 text-center">
+        <div className="relative z-10 max-w-6xl mx-auto px-4 py-12 sm:py-16 md:py-20 text-center">
           {/* Logo */}
           <motion.div
             initial={{ opacity: 0, y: -20 }}
@@ -168,7 +169,7 @@ export default function Landing() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="text-5xl md:text-7xl font-bold mb-6"
+            className="text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-bold mb-4 sm:mb-6 px-2"
           >
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400">
               Dein Gehirn bremst dich aus –
@@ -184,7 +185,7 @@ export default function Landing() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="text-xl text-slate-300 mb-8 max-w-3xl mx-auto leading-relaxed"
+            className="text-sm sm:text-base md:text-lg lg:text-xl text-slate-300 mb-6 sm:mb-8 max-w-3xl mx-auto leading-relaxed px-4"
           >
             Schmerz ist kein kaputtes Bauteil, sondern ein Schutzsignal deines Gehirns. 
             Nutze die visuelle AXON Body-Map, um Blockaden in deinen Leitbahnen zu finden 
@@ -196,13 +197,13 @@ export default function Landing() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
-            className="flex flex-col sm:flex-row gap-4 justify-center mb-12"
+            className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center mb-8 sm:mb-12 px-4"
           >
             <Button
               onClick={handleCheckout}
               disabled={isCheckoutLoading}
               size="lg"
-              className="text-lg px-8 py-6 bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-600 hover:to-purple-700 neuro-glow disabled:opacity-50"
+              className="text-base sm:text-lg px-6 sm:px-8 py-5 sm:py-6 bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-600 hover:to-purple-700 neuro-glow disabled:opacity-50 w-full sm:w-auto"
             >
               {isCheckoutLoading ? (
                 <>
@@ -220,9 +221,10 @@ export default function Landing() {
               onClick={handleDemoClick}
               size="lg"
               variant="outline"
-              className="text-lg px-8 py-6 border-cyan-500/50 text-cyan-400 hover:bg-cyan-500/10"
+              className="text-base sm:text-lg px-6 sm:px-8 py-5 sm:py-6 border-cyan-500/50 text-cyan-400 hover:bg-cyan-500/10 w-full sm:w-auto"
             >
-              Demo ansehen (15 Min)
+              <span className="hidden xs:inline">Demo ansehen (15 Min)</span>
+              <span className="xs:hidden">15 Min Demo</span>
             </Button>
           </motion.div>
 
@@ -256,13 +258,13 @@ export default function Landing() {
       </section>
 
       {/* Rehab Focus: 60% */}
-      <section className="py-20 relative">
-        <div className="max-w-5xl mx-auto px-4">
-          <div className="glass rounded-3xl border border-red-500/30 p-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-white mb-6 text-center">
+      <section className="py-12 sm:py-16 md:py-20 relative">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6">
+          <div className="glass rounded-2xl sm:rounded-3xl border border-red-500/30 p-6 sm:p-8 md:p-12">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-4 sm:mb-6 text-center">
               Die Synergie von Mechanik und Neurologie
             </h2>
-            <div className="space-y-6 text-lg text-slate-300 leading-relaxed">
+            <div className="space-y-4 sm:space-y-6 text-sm sm:text-base md:text-lg text-slate-300 leading-relaxed">
               <p>
                 Die meisten Ansätze konzentrieren sich nur auf die Hardware (Muskeln und Gewebe). 
                 Doch wenn die Spannung nach Massage oder Faszientraining immer wieder zurückkehrt, 
@@ -273,7 +275,7 @@ export default function Landing() {
               {/* Das AXON 3-Stufen-System */}
               <h3 className="text-2xl font-bold text-cyan-400 mt-8 mb-4">Das AXON 3-Stufen-System:</h3>
               
-              <div className="grid md:grid-cols-3 gap-6 mt-8">
+              <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6 mt-6 sm:mt-8">
                 <div className="p-6 rounded-xl bg-slate-800/50 border border-cyan-500/30">
                   <div className="text-2xl font-bold text-cyan-400 mb-3">1. Gewebe-Release</div>
                   <p className="text-sm font-semibold text-cyan-300 mb-2">(Hardware)</p>
@@ -374,8 +376,8 @@ export default function Landing() {
       </section>
 
       {/* Solution Section */}
-      <section className="py-20 relative">
-        <div className="max-w-6xl mx-auto px-4">
+      <section className="py-12 sm:py-16 md:py-20 relative">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6">
           <h2 className="text-4xl md:text-5xl font-bold text-center mb-4">
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-400">
               Der AXON-Weg
@@ -385,7 +387,7 @@ export default function Landing() {
             Drei Säulen für sofortige Ergebnisse
           </p>
 
-          <div className="grid md:grid-cols-3 gap-6">
+          <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
             {features.map((feature, idx) => (
               <motion.div
                 key={idx}
@@ -492,8 +494,8 @@ export default function Landing() {
       </section>
 
       {/* Pricing Section */}
-      <section id="pricing" className="py-20 relative">
-        <div className="max-w-4xl mx-auto px-4">
+      <section id="pricing" className="py-12 sm:py-16 md:py-20 relative">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6">
           <h2 className="text-4xl md:text-5xl font-bold text-center mb-4">
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-400">
               Einmal investieren. Ein Leben lang verstehen.
@@ -514,9 +516,9 @@ export default function Landing() {
               Beliebt
             </div>
 
-            <h3 className="text-3xl font-bold text-white mb-2">AXON Lifetime Access</h3>
-            <div className="flex flex-col items-start gap-1 mb-8">
-              <span className="text-6xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-400">
+            <h3 className="text-2xl sm:text-3xl font-bold text-white mb-2">AXON Lifetime Access</h3>
+            <div className="flex flex-col items-start gap-1 mb-6 sm:mb-8">
+              <span className="text-4xl sm:text-5xl md:text-6xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-400">
                 59,- €
               </span>
               <span className="text-sm text-slate-400">(Endpreis, keine MwSt. gemäß § 19 UStG)</span>
@@ -553,7 +555,7 @@ export default function Landing() {
               onClick={handleCheckout}
               disabled={isCheckoutLoading}
               size="lg"
-              className="w-full text-lg py-6 bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-600 hover:to-purple-700 neuro-glow disabled:opacity-50"
+              className="w-full text-base sm:text-lg py-5 sm:py-6 bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-600 hover:to-purple-700 neuro-glow disabled:opacity-50"
             >
               {isCheckoutLoading ? (
                 <>

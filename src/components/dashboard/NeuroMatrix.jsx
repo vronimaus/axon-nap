@@ -41,9 +41,9 @@ export default function NeuroMatrix({ mode, goals, selectedRegion }) {
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-3 sm:space-y-4">
       {/* Header */}
-      <div className={`glass rounded-2xl border p-4 ${
+      <div className={`glass rounded-xl sm:rounded-2xl border p-3 sm:p-4 ${
         mode === 'rehab' ? 'border-red-500/20' : 'border-purple-500/20'
       }`}>
         <div className="flex items-center gap-3 mb-3">
@@ -66,9 +66,9 @@ export default function NeuroMatrix({ mode, goals, selectedRegion }) {
 
         {/* Stats */}
         {mode === 'performance' ? (
-          <div className="grid grid-cols-3 gap-2 text-center">
+          <div className="grid grid-cols-3 gap-1.5 sm:gap-2 text-center">
             <div className="p-2 rounded-lg bg-slate-800/50">
-              <div className="text-xl font-bold text-cyan-400">
+              <div className="text-lg sm:text-xl font-bold text-cyan-400">
                 {Object.values(progressData).filter(p => p.unlocked).length}
               </div>
               <div className="text-xs text-slate-400">Unlocked</div>
@@ -113,11 +113,11 @@ export default function NeuroMatrix({ mode, goals, selectedRegion }) {
       {/* Conditional Content based on Mode */}
       {mode === 'performance' ? (
         /* Master-12 Grid */
-        <div className="glass rounded-2xl border border-purple-500/20 p-4">
-          <h3 className="text-xs font-bold text-slate-400 mb-3 uppercase tracking-wider">
+        <div className="glass rounded-xl sm:rounded-2xl border border-purple-500/20 p-3 sm:p-4">
+          <h3 className="text-xs font-bold text-slate-400 mb-2 sm:mb-3 uppercase tracking-wider">
             Performance Goals
           </h3>
-          <div className="space-y-2 max-h-[600px] overflow-y-auto custom-scrollbar">
+          <div className="space-y-2 max-h-[400px] sm:max-h-[600px] overflow-y-auto custom-scrollbar">
             {goals.slice(0, 12).map((goal, idx) => {
             const progress = progressData[goal.code] || { level: 0, unlocked: false };
             const percentage = getProgressRing(progress.level);
@@ -198,7 +198,7 @@ export default function NeuroMatrix({ mode, goals, selectedRegion }) {
         </div>
       ) : (
         /* Rehab Pain Areas */
-        <div className="glass rounded-2xl border border-red-500/20 p-4">
+        <div className="glass rounded-xl sm:rounded-2xl border border-red-500/20 p-3 sm:p-4">
           <h3 className="text-xs font-bold text-slate-400 mb-3 uppercase tracking-wider">
             Active Pain Areas
           </h3>
@@ -239,7 +239,7 @@ export default function NeuroMatrix({ mode, goals, selectedRegion }) {
       )}
 
       {/* Active Drills */}
-      <div className={`glass rounded-2xl border p-4 ${
+      <div className={`glass rounded-xl sm:rounded-2xl border p-3 sm:p-4 ${
         mode === 'rehab' ? 'border-red-500/20' : 'border-purple-500/20'
       }`}>
         <h3 className="text-xs font-bold text-slate-400 mb-3 uppercase tracking-wider">

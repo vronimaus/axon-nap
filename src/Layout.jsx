@@ -60,21 +60,37 @@ export default function Layout({ children, currentPageName }) {
           <div className="max-w-6xl mx-auto px-4">
             <div className="flex items-center justify-between h-16">
               {/* Logo */}
-              <Link to={createPageUrl('Dashboard')} className="flex items-center gap-3">
+              <Link to={createPageUrl('Dashboard')} className="flex items-center gap-2 sm:gap-3">
                 <img 
                   src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/afa60dd62_AXONLogo.png"
                   alt="AXON Logo"
-                  className="w-10 h-10 object-contain"
+                  className="w-8 h-8 sm:w-10 sm:h-10 object-contain"
                 />
-                <div className="hidden sm:block">
-                  <span className="font-bold text-cyan-400 text-lg tracking-tight">AXON</span>
-                  <span className="text-xs text-slate-400 block -mt-1">Neuro-Athletic Protocol</span>
+                <div className="hidden xs:block">
+                  <span className="font-bold text-cyan-400 text-base sm:text-lg tracking-tight">AXON</span>
+                  <span className="text-xs text-slate-400 hidden sm:block -mt-1">Neuro-Athletic Protocol</span>
                 </div>
               </Link>
               
-              {/* Nav Links */}
+              {/* Nav Links - Desktop only */}
+                      <div className="hidden md:flex items-center gap-1">
+                        {navItems.map((item) => (
+                          <Link
+                            key={item.page}
+                            to={createPageUrl(item.page)}
+                            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all ${
+                              currentPageName === item.page
+                                ? 'bg-cyan-500/20 text-cyan-400'
+                                : 'text-slate-400 hover:text-cyan-400 hover:bg-slate-800/50'
+                            }`}
+                          >
+                            <item.icon className="w-4 h-4" />
+                            <span>{item.name}</span>
+                          </Link>
+                        ))}
+                      </div>
 
-              {/* User Menu / Login */}
+                      {/* User Menu / Login */}
               {user ? (
                 <div className="flex items-center gap-2">
                   <button
@@ -120,19 +136,41 @@ export default function Layout({ children, currentPageName }) {
                 {user && !isChecking && isDemoExpired && !user?.has_paid && <DemoPaywall />}
               </AnimatePresence>
       
+      {/* Mobile Bottom Navigation - nur für eingeloggte User */}
+          {!isChecking && user && (
+            <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-slate-900/95 backdrop-blur border-t border-cyan-500/20 safe-area-pb">
+              <div className="grid grid-cols-4 gap-1 px-2 py-2">
+                {navItems.map((item) => (
+                  <Link
+                    key={item.page}
+                    to={createPageUrl(item.page)}
+                    className={`flex flex-col items-center justify-center py-2 px-1 rounded-xl transition-all touch-target ${
+                      currentPageName === item.page
+                        ? 'bg-cyan-500/20 text-cyan-400'
+                        : 'text-slate-400 active:bg-slate-800/50'
+                    }`}
+                  >
+                    <item.icon className="w-5 h-5 mb-1" />
+                    <span className="text-xs font-medium truncate w-full text-center">{item.name}</span>
+                  </Link>
+                ))}
+              </div>
+            </nav>
+          )}
+
       {/* Footer */}
-      <footer className="border-t border-cyan-500/20 glass mt-auto">
+      <footer className="border-t border-cyan-500/20 glass mt-auto mb-16 md:mb-0">
         <div className="max-w-6xl mx-auto px-4 py-6">
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-slate-400">
-            <p>© 2026 AXON Protocol</p>
-            <div className="flex gap-4">
-              <Link to={createPageUrl('Imprint')} className="hover:text-cyan-400 transition-colors">
+          <div className="flex flex-col sm:flex-row items-center justify-center sm:justify-between gap-3 sm:gap-4 text-xs sm:text-sm text-slate-400">
+            <p className="text-center sm:text-left">© 2026 AXON Protocol</p>
+            <div className="flex flex-wrap justify-center gap-3 sm:gap-4">
+              <Link to={createPageUrl('Imprint')} className="hover:text-cyan-400 transition-colors whitespace-nowrap">
                 Impressum
               </Link>
-              <Link to={createPageUrl('Privacy')} className="hover:text-cyan-400 transition-colors">
+              <Link to={createPageUrl('Privacy')} className="hover:text-cyan-400 transition-colors whitespace-nowrap">
                 Datenschutz
               </Link>
-              <Link to={createPageUrl('Terms')} className="hover:text-cyan-400 transition-colors">
+              <Link to={createPageUrl('Terms')} className="hover:text-cyan-400 transition-colors whitespace-nowrap">
                 AGB
               </Link>
             </div>

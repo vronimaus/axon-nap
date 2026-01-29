@@ -47,10 +47,10 @@ export default function MFRNodeDisplay({ nodeId }) {
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
-        className="my-4 bg-gradient-to-b from-slate-800 to-slate-900 rounded-xl border border-cyan-500/20 overflow-hidden"
+        className="my-3 sm:my-4 bg-gradient-to-b from-slate-800 to-slate-900 rounded-lg sm:rounded-xl border border-cyan-500/20 overflow-hidden"
       >
         {/* Header */}
-        <div className="bg-cyan-500/10 border-b border-cyan-500/20 px-4 py-3">
+        <div className="bg-cyan-500/10 border-b border-cyan-500/20 px-3 sm:px-4 py-2 sm:py-3">
           <div className="flex items-center gap-2 mb-1">
             <Zap className="w-4 h-4 text-cyan-400" />
             <span className="font-semibold text-cyan-400">{nodeData.node_id}</span>
@@ -131,7 +131,7 @@ export default function MFRNodeDisplay({ nodeId }) {
         </div>
 
         {/* Content */}
-        <div className="p-4 space-y-4">
+        <div className="p-3 sm:p-4 space-y-3 sm:space-y-4">
           {/* Target Chain */}
           <div>
             <p className="text-xs uppercase tracking-wider text-cyan-400/70 mb-2">Zielkette</p>

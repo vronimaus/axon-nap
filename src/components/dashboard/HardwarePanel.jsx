@@ -47,9 +47,9 @@ export default function HardwarePanel({ mode }) {
   ];
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-3 sm:space-y-4">
       {/* Header */}
-      <div className="glass rounded-2xl border border-cyan-500/20 p-4">
+      <div className="glass rounded-xl sm:rounded-2xl border border-cyan-500/20 p-3 sm:p-4">
         <div className="flex items-center gap-3 mb-4">
           <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-slate-700 to-slate-800 flex items-center justify-center">
             <User className="w-5 h-5 text-slate-300" />

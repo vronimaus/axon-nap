@@ -39,11 +39,11 @@ export default function GoalCard({ goal, onClick, index }) {
       transition={{ delay: index * 0.05 }}
       onClick={onClick}
       className={`
-        relative overflow-hidden rounded-2xl p-5 cursor-pointer
+        relative overflow-hidden rounded-xl sm:rounded-2xl p-4 sm:p-5 cursor-pointer
         bg-gradient-to-br ${scheme.bg}
         backdrop-blur-sm border ${scheme.border}
-        transition-all duration-300 hover:scale-[1.02]
-        group
+        transition-all duration-300 active:scale-[0.98] sm:hover:scale-[1.02]
+        group touch-target
       `}
       style={{
         boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)'
@@ -52,14 +52,14 @@ export default function GoalCard({ goal, onClick, index }) {
       {/* Glühender Hintergrund-Effekt bei Hover */}
       <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
       
-      <div className="relative flex items-center justify-between">
-        <div className="flex items-center gap-4 flex-1">
+      <div className="relative flex items-center justify-between gap-3">
+        <div className="flex items-center gap-3 sm:gap-4 flex-1 min-w-0">
           {/* Text */}
           <div className="flex-1 min-w-0">
-            <h3 className={`text-base font-semibold ${scheme.text} mb-1 group-hover:translate-x-1 transition-transform truncate`}>
+            <h3 className={`text-sm sm:text-base font-semibold ${scheme.text} mb-1 group-hover:translate-x-1 transition-transform truncate`}>
               {goal.name}
             </h3>
-            <p className="text-xs text-slate-400 line-clamp-2">
+            <p className="text-xs text-slate-400 line-clamp-1 sm:line-clamp-2">
               {goal.description || 'Master-Ziel für Bewegungsqualität'}
             </p>
           </div>
@@ -67,7 +67,7 @@ export default function GoalCard({ goal, onClick, index }) {
         
         {/* Arrow */}
         <ArrowRight className={`
-          w-5 h-5 ${scheme.text} flex-shrink-0
+          w-4 h-4 sm:w-5 sm:h-5 ${scheme.text} flex-shrink-0
           transform group-hover:translate-x-2 transition-all
           opacity-60 group-hover:opacity-100
         `} />
