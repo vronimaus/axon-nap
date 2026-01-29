@@ -11,7 +11,7 @@ import ReactMarkdown from 'react-markdown';
 import BodyPainMap from '../components/diagnosis/BodyPainMap';
 import DemoPaywall from '../components/demo/DemoPaywall';
 import { useDemoTimer } from '../components/demo/useDemoTimer';
-import { useVoiceControl } from '../components/useVoiceControl';
+import { useVoiceControl } from '@/components/useVoiceControl';
 
 
 export default function DiagnosisChat() {
