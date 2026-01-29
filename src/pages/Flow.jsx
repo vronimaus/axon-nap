@@ -24,6 +24,18 @@ export default function Flow() {
     enabled: !!routineId
   });
 
+  // Load MFR Node data for detailed instructions
+  const { data: mfrNodes = [] } = useQuery({
+    queryKey: ['mfrNodes'],
+    queryFn: () => base44.entities.MFRNode.list()
+  });
+
+  // Load Exercise data for neuro drills
+  const { data: exercises = [] } = useQuery({
+    queryKey: ['exercises'],
+    queryFn: () => base44.entities.Exercise.list()
+  });
+
   useEffect(() => {
     if (!routine || !isPlaying) return;
 
@@ -96,6 +108,31 @@ export default function Flow() {
 
   const currentSequence = routine.sequence[currentStep];
   const progress = ((currentStep + 1) / routine.sequence.length) * 100;
+
+  // Get detailed instruction from MFR Node or Exercise
+  const getDetailedInstruction = () => {
+    if (currentSequence.type === 'mfr' && currentSequence.node_id) {
+      const node = mfrNodes.find(n => n.node_id === currentSequence.node_id);
+      return {
+        title: node?.name_de || currentSequence.node_id,
+        instruction: node?.user_instruction || currentSequence.instruction,
+        expertTip: node?.expert_tip
+      };
+    } else if (currentSequence.type === 'neuro' && currentSequence.exercise_id) {
+      const exercise = exercises.find(e => e.exercise_id === currentSequence.exercise_id);
+      return {
+        title: exercise?.name || currentSequence.exercise_id,
+        instruction: exercise?.description || currentSequence.instruction,
+        neuroInput: exercise?.neuro_input
+      };
+    }
+    return {
+      title: currentSequence.node_id || currentSequence.exercise_id || 'Übung',
+      instruction: currentSequence.instruction
+    };
+  };
+
+  const detailedContent = getDetailedInstruction();
 
   if (completed) {
     return (
@@ -229,11 +266,20 @@ export default function Flow() {
 
               {/* Instruction */}
               <h2 className="text-xl font-bold text-cyan-300 mb-4">
-                {currentSequence.node_id || currentSequence.exercise_id || 'Übung'}
+                {detailedContent.title}
               </h2>
               <p className="text-slate-200 text-base leading-relaxed mb-6">
-                {currentSequence.instruction}
+                {detailedContent.instruction}
               </p>
+
+              {/* Expert Tip or Neuro Input */}
+              {(detailedContent.expertTip || detailedContent.neuroInput) && (
+                <div className="bg-purple-500/10 border border-purple-500/30 rounded-xl p-4 mb-6">
+                  <p className="text-sm text-purple-300 leading-relaxed">
+                    <span className="font-bold text-purple-400">💡 {detailedContent.expertTip ? 'Experten-Tipp' : 'Neuro-Input'}:</span> {detailedContent.expertTip || detailedContent.neuroInput}
+                  </p>
+                </div>
+              )}
 
               {/* Visual Cue */}
               {currentSequence.type === 'mfr' && currentSequence.node_id && (
