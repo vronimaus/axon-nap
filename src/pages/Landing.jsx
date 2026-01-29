@@ -499,7 +499,7 @@ export default function Landing() {
                 disabled={isCheckoutLoading}
                 size="lg"
                 variant="outline"
-                className="w-full text-white border-cyan-500/50 hover:bg-cyan-500/10 hover:text-white active:text-white"
+                className="w-full text-slate-900 border-cyan-500/50 hover:bg-cyan-500/20 hover:text-slate-900 active:text-slate-900 font-semibold"
               >
                 {isCheckoutLoading ? 'Lädt...' : '7 Tage kostenlos testen'}
               </Button>
@@ -522,7 +522,7 @@ export default function Landing() {
                 <span className="text-slate-400">einmalig</span>
               </div>
               <p className="text-slate-300 mb-8">
-                Unbegrenzter lebenslanger Zugriff auf alle Features. Keine Abos, keine versteckten Kosten.
+                Wie eine Sitzung bei deinem Therapeuten – aber 24/7 für dich da. Bessere Mobilität, neue Kraft-Reserve, entspanntes Nervensystem. Unbegrenzter lebenslanger Zugriff.
               </p>
               <Button
                 onClick={() => handleCheckout('direct')}
