@@ -1,7 +1,9 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Check } from 'lucide-react';
+import { Check, MessageSquare } from 'lucide-react';
 import { SYMPTOM_CLUSTERS } from './SymptomData';
+import { createPageUrl } from '@/utils';
+import { Button } from '@/components/ui/button';
 
 export default function SymptomSelector({ selectedRegion, selectedSymptoms, onSymptomSelect }) {
   if (!selectedRegion) return null;
@@ -72,6 +74,27 @@ export default function SymptomSelector({ selectedRegion, selectedSymptoms, onSy
             {allTriggeredChains.join(', ')}
           </p>
         </div>
+
+        {/* Fallback: Symptom nicht dabei */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+          className="mt-4 p-4 glass rounded-2xl border border-slate-700/50 text-center"
+        >
+          <p className="text-xs text-slate-400 mb-3">
+            Ist dein Symptom nicht dabei?
+          </p>
+          <Button
+            onClick={() => window.location.href = createPageUrl('DiagnosisChat')}
+            variant="outline"
+            size="sm"
+            className="border-slate-600 text-slate-300 hover:text-cyan-400 hover:border-cyan-500/50 text-xs w-full"
+          >
+            <MessageSquare className="w-3 h-3 mr-2" />
+            Beschreibe es im Chat mit dem Agenten
+          </Button>
+        </motion.div>
       </motion.div>
     </AnimatePresence>
   );
