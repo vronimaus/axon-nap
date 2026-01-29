@@ -71,15 +71,22 @@ export default function Profile() {
   // Save mutation
   const saveMutation = useMutation({
     mutationFn: async (data) => {
-      return base44.entities.UserNeuroProfile.update(profile.id, {
+      const cleanData = {
         ...data,
+        hrv_score: data.hrv_score ? parseInt(data.hrv_score) : null,
+        strength_score: data.strength_score ? parseFloat(data.strength_score) : null,
         profile_complete: true
-      });
+      };
+      return base44.entities.UserNeuroProfile.update(profile.id, cleanData);
     },
     onSuccess: () => {
       toast.success('Profil gespeichert');
       queryClient.invalidateQueries({ queryKey: ['userNeuroProfile'] });
       queryClient.invalidateQueries({ queryKey: ['neuroProfile'] });
+    },
+    onError: (error) => {
+      console.error('Fehler beim Speichern:', error);
+      toast.error('Fehler beim Speichern: ' + error.message);
     }
   });
 
@@ -304,7 +311,7 @@ export default function Profile() {
                 label="Strength Score (Kraftniveau)"
                 type="number"
                 value={formData.strength_score}
-                onChange={(e) => handleChange('strength_score', e.target.value ? parseInt(e.target.value) : '')}
+                onChange={(e) => handleChange('strength_score', e.target.value ? parseFloat(e.target.value) : null)}
                 placeholder="0-100"
                 min="0"
                 max="100"
