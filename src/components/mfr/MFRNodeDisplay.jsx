@@ -60,66 +60,15 @@ export default function MFRNodeDisplay({ nodeId }) {
           <p className="text-xs text-slate-400 mt-2">{nodeData.body_area}</p>
         </div>
 
-        {/* Body Map - Technical MFR Coordinates */}
-        <div className="relative bg-slate-950 aspect-[3/5] border-b border-cyan-500/20 overflow-hidden">
+        {/* Technical MFR Coordinates Map */}
+        <div className="relative bg-slate-950 border-b border-cyan-500/20 overflow-hidden">
           <img
             src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/c7c1085f4_TEchnicalMFRCoordinates.jpg"
-            alt={nodeData.position === 'front' ? 'Front MFR nodes' : 'Back MFR nodes'}
-            className="absolute inset-0 w-full h-full object-cover"
-            style={{
-              objectPosition: nodeData.position === 'front' ? '25% center' : '75% center',
-              transform: 'scale(2.1)'
-            }}
+            alt="MFR Node Koordinaten"
+            className="w-full h-auto"
           />
-
-          {/* Node highlight marker */}
-          <motion.div
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            className="absolute"
-            style={{
-              left: `${nodeData.x || 50}%`,
-              top: `${nodeData.y || 35}%`,
-              transform: 'translate(-50%, -50%)',
-              zIndex: 10
-            }}
-          >
-            {/* Outer pulsing ring */}
-            <motion.div
-              animate={{
-                scale: [1, 1.6, 1],
-                opacity: [0.8, 0.3, 0.8]
-              }}
-              transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
-              className={`absolute inset-0 rounded-full border-2.5 ${nodeData.position === 'front' ? 'border-cyan-400' : 'border-purple-400'}`}
-              style={{ width: '48px', height: '48px', top: '-24px', left: '-24px' }}
-            />
-            
-            {/* Center bright dot */}
-            <motion.div
-              animate={{ scale: [1, 1.1, 1] }}
-              transition={{ duration: 2.5, repeat: Infinity }}
-              className={`w-5 h-5 rounded-full shadow-2xl ${
-                nodeData.position === 'front' 
-                  ? 'bg-gradient-to-br from-cyan-200 to-cyan-500 shadow-cyan-500/80' 
-                  : 'bg-gradient-to-br from-purple-200 to-purple-500 shadow-purple-500/80'
-              }`}
-            />
-            
-            {/* Glow aura */}
-            <motion.div
-              animate={{ 
-                scale: [1, 1.3, 1],
-                opacity: [0.4, 0.1, 0.4] 
-              }}
-              transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
-              className={`absolute inset-0 rounded-full blur-xl ${nodeData.position === 'front' ? 'bg-cyan-400/60' : 'bg-purple-400/60'}`}
-              style={{ width: '40px', height: '40px', top: '-20px', left: '-20px' }}
-            />
-          </motion.div>
-          
-          <div className="absolute bottom-3 right-3 text-xs text-slate-300/70 bg-slate-900/80 px-2 py-1 rounded backdrop-blur-sm border border-slate-700">
-            {nodeData.position === 'front' ? '👁️ Vorne' : '👁️ Hinten'}
+          <div className="absolute top-3 right-3 text-xs font-semibold text-cyan-400 bg-slate-900/90 px-3 py-1.5 rounded-lg backdrop-blur-sm border border-cyan-500/30">
+            📍 {nodeData.node_id} auf Karte
           </div>
         </div>
 
