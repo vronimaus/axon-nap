@@ -84,8 +84,8 @@ export default function Layout({ children, currentPageName }) {
   
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
-      {/* Navigation - nur für eingeloggte User */}
-      {!isChecking && user && (
+      {/* Navigation - nur für eingeloggte User UND auf relevanten Pages */}
+      {!isChecking && user && showNav && (
         <nav className="sticky top-0 z-50 bg-slate-900 border-b border-cyan-500/20">
           <div className="max-w-6xl mx-auto px-4">
             <div className="flex items-center justify-between h-16">
