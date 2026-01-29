@@ -187,7 +187,7 @@ export default function Landing() {
               disabled={isCheckoutLoading}
               size="lg"
               variant="outline"
-              className="text-lg px-8 py-6 border-cyan-500/50 text-cyan-400 hover:bg-cyan-500/10"
+              className="text-lg px-8 py-6 border-cyan-500/50 text-cyan-400 hover:bg-cyan-500/10 hover:text-white active:text-white"
             >
               {isCheckoutLoading ? (
                 <>
@@ -196,7 +196,6 @@ export default function Landing() {
                 </>
               ) : (
                 <>
-                  ⏱️
                   7 Tage kostenlos testen
                 </>
               )}
@@ -469,76 +468,72 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* SEKTION 6: PRICING */}
+      {/* SEKTION 6: PRICING - 2 KACHELN */}
       <section className="py-20 relative">
-        <div className="max-w-4xl mx-auto px-4">
+        <div className="max-w-5xl mx-auto px-4">
           <h2 className="text-4xl md:text-5xl font-bold text-center text-white mb-4">
-            Ein Werkzeug für dein Leben
+            Wähle deine Option
           </h2>
           <p className="text-lg text-slate-400 text-center mb-12">
             Kein Abo. Keine versteckten Kosten. AXON ist ein technisches Handbuch für deinen Körper, das dir für immer gehört.
           </p>
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="glass rounded-3xl border border-cyan-500/30 p-12 relative overflow-hidden"
-          >
-            <div className="absolute top-6 right-6 px-4 py-2 rounded-full bg-gradient-to-r from-cyan-500 to-purple-600 text-white text-sm font-bold">
-              Einmalzahlung
-            </div>
-
-            <h3 className="text-3xl font-bold text-white mb-2">AXON Lifetime Access</h3>
-            <div className="flex items-end gap-2 mb-8">
-              <span className="text-6xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-400">
-                59€
-              </span>
-              <span className="text-slate-400 mb-2">einmalig</span>
-            </div>
-
-            <div className="space-y-4 mb-8">
-              <div className="flex items-center gap-3">
-                <Check className="w-6 h-6 text-cyan-400 flex-shrink-0" />
-                <span className="text-slate-300">Web-App (PWA) – direktzugriff über deinen Homescreen</span>
-              </div>
-              <div className="flex items-center gap-3">
-                <Check className="w-6 h-6 text-cyan-400 flex-shrink-0" />
-                <span className="text-slate-300">Auf jedem Gerät – plattformunabhängig</span>
-              </div>
-              <div className="flex items-center gap-3">
-                <Check className="w-6 h-6 text-cyan-400 flex-shrink-0" />
-                <span className="text-slate-300">Lifetime Updates inklusive</span>
-              </div>
-              <div className="flex items-center gap-3">
-                <Check className="w-6 h-6 text-cyan-400 flex-shrink-0" />
-                <span className="text-slate-300">Alle Features. Keine Abos. Keine versteckten Kosten.</span>
-              </div>
-            </div>
-
-            <Button
-              onClick={() => handleCheckout('direct')}
-              disabled={isCheckoutLoading}
-              size="lg"
-              className="w-full text-lg py-6 bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-600 hover:to-purple-700 neuro-glow"
+          <div className="grid md:grid-cols-2 gap-8">
+            {/* Test Card */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="glass rounded-2xl border border-cyan-500/30 p-8"
             >
-              {isCheckoutLoading ? (
-                <>
-                  <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-                  Lädt...
-                </>
-              ) : (
-                <>
-                  <Zap className="w-5 h-5 mr-2" />
-                  SOFORT KAUFEN
-                </>
-              )}
-            </Button>
+              <h3 className="text-2xl font-bold text-white mb-2">Teste kostenlos</h3>
+              <div className="flex items-baseline gap-2 mb-6">
+                <span className="text-5xl font-bold text-cyan-400">0€</span>
+                <span className="text-slate-400">7 Tage</span>
+              </div>
+              <p className="text-slate-300 mb-8">
+                Keine Zahlungsmethode erforderlich. Nach 7 Tagen zahlst du einmalig 59€ oder kündigst mit einem Klick.
+              </p>
+              <Button
+                onClick={() => handleCheckout('trial')}
+                disabled={isCheckoutLoading}
+                size="lg"
+                variant="outline"
+                className="w-full text-white border-cyan-500/50 hover:bg-cyan-500/10 hover:text-white active:text-white"
+              >
+                {isCheckoutLoading ? 'Lädt...' : '7 Tage kostenlos testen'}
+              </Button>
+            </motion.div>
 
-            <p className="text-center text-slate-500 text-sm mt-4">
-              Sichere Zahlung via Stripe • Sofortiger Zugang
-            </p>
-          </motion.div>
+            {/* Direct Purchase Card */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.1 }}
+              className="glass rounded-2xl border border-purple-500/30 p-8 bg-gradient-to-br from-purple-500/10 to-transparent"
+            >
+              <div className="absolute top-6 right-6 px-3 py-1 rounded-full bg-gradient-to-r from-cyan-500 to-purple-600 text-white text-xs font-bold">
+                SOFORT ZUGRIFF
+              </div>
+              <h3 className="text-2xl font-bold text-white mb-2">Sofort kaufen</h3>
+              <div className="flex items-baseline gap-2 mb-6">
+                <span className="text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-400">59€</span>
+                <span className="text-slate-400">einmalig</span>
+              </div>
+              <p className="text-slate-300 mb-8">
+                Unbegrenzter lebenslanger Zugriff auf alle Features. Keine Abos, keine versteckten Kosten.
+              </p>
+              <Button
+                onClick={() => handleCheckout('direct')}
+                disabled={isCheckoutLoading}
+                size="lg"
+                className="w-full text-white bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-600 hover:to-purple-700 neuro-glow"
+              >
+                {isCheckoutLoading ? 'Lädt...' : 'Sofort kaufen'}
+              </Button>
+            </motion.div>
+          </div>
         </div>
       </section>
 
