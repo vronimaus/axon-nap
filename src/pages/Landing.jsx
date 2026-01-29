@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { Button } from '@/components/ui/button';
-import { Check, Zap, Shield, ChevronDown, Loader2, LogOut, Zap as ZapIcon } from 'lucide-react';
+import { Check, Zap, Shield, ChevronDown, Loader2, LogOut, Zap as ZapIcon, Wrench, Brain, Dumbbell } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { base44 } from '@/api/base44Client';
 import { toast } from 'sonner';
@@ -386,25 +386,18 @@ export default function Landing() {
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="glass rounded-2xl border border-orange-500/30 p-8 text-center"
+              className="glass rounded-2xl border border-orange-500/30 p-8"
             >
-              <div className="text-5xl mb-4">⚙️</div>
-              <h3 className="text-2xl font-bold text-orange-400 mb-3">Hardware</h3>
-              <p className="text-slate-300 mb-4">90 Sekunden Druck auf einen kritischen Node</p>
-              <div className="text-sm text-slate-400">
-                Spannungen lösen, Sensoren kalibrieren
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center mb-6">
+                <Wrench className="w-6 h-6 text-white" />
               </div>
-            </motion.div>
-
-            {/* Arrow */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.1 }}
-              className="flex items-center justify-center"
-            >
-              <div className="text-4xl">→</div>
+              <h3 className="text-2xl font-bold text-orange-400 mb-3">Hardware</h3>
+              <p className="text-slate-300 mb-4">
+                90 Sekunden Druck auf einen kritischen Node
+              </p>
+              <p className="text-sm text-slate-400">
+                Spannungen lösen, Sensoren kalibrieren
+              </p>
             </motion.div>
 
             {/* Software */}
@@ -412,26 +405,19 @@ export default function Landing() {
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ delay: 0.2 }}
-              className="glass rounded-2xl border border-cyan-500/30 p-8 text-center"
+              transition={{ delay: 0.1 }}
+              className="glass rounded-2xl border border-cyan-500/30 p-8"
             >
-              <div className="text-5xl mb-4">🧠</div>
-              <h3 className="text-2xl font-bold text-cyan-400 mb-3">Software</h3>
-              <p className="text-slate-300 mb-4">3 Min Neuro-Drill für Augen & Gleichgewicht</p>
-              <div className="text-sm text-slate-400">
-                Gehirn signalisiert „Sicherheit"
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-cyan-500 to-cyan-600 flex items-center justify-center mb-6">
+                <Brain className="w-6 h-6 text-white" />
               </div>
-            </motion.div>
-
-            {/* Arrow */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.3 }}
-              className="flex items-center justify-center md:col-start-3"
-            >
-              <div className="text-4xl">→</div>
+              <h3 className="text-2xl font-bold text-cyan-400 mb-3">Software</h3>
+              <p className="text-slate-300 mb-4">
+                3 Min Neuro-Drill für Augen & Gleichgewicht
+              </p>
+              <p className="text-sm text-slate-400">
+                Gehirn signalisiert „Sicherheit"
+              </p>
             </motion.div>
 
             {/* Integration */}
@@ -439,15 +425,19 @@ export default function Landing() {
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ delay: 0.4 }}
-              className="glass rounded-2xl border border-purple-500/30 p-8 text-center md:col-span-2"
+              transition={{ delay: 0.2 }}
+              className="glass rounded-2xl border border-purple-500/30 p-8"
             >
-              <div className="text-5xl mb-4">💪</div>
-              <h3 className="text-2xl font-bold text-purple-400 mb-3">Integration</h3>
-              <p className="text-slate-300 mb-4">5 konzentrierte Wiederholungen einer Kraft-Bewegung</p>
-              <div className="text-sm text-slate-400">
-                Nervensystem verankert den Fortschritt
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center mb-6">
+                <Dumbbell className="w-6 h-6 text-white" />
               </div>
+              <h3 className="text-2xl font-bold text-purple-400 mb-3">Integration</h3>
+              <p className="text-slate-300 mb-4">
+                5 konzentrierte Wiederholungen einer Kraft-Bewegung
+              </p>
+              <p className="text-sm text-slate-400">
+                Nervensystem verankert den Fortschritt
+              </p>
             </motion.div>
           </div>
 
@@ -455,11 +445,11 @@ export default function Landing() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ delay: 0.5 }}
+            transition={{ delay: 0.3 }}
             className="mt-12 glass rounded-2xl border border-purple-500/30 p-8 text-center bg-gradient-to-r from-purple-500/5 to-cyan-500/5"
           >
             <p className="text-lg text-white font-semibold">
-              ✅ Ergebnis: Bessere Mobilität, neue Kraft-Reserve, entspanntes Nervensystem
+              Ergebnis: Bessere Mobilität, neue Kraft-Reserve, entspanntes Nervensystem
             </p>
           </motion.div>
         </div>
