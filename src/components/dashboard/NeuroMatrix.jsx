@@ -6,7 +6,7 @@ import { ChevronRight, Lock, CheckCircle, Zap } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 
-export default function NeuroMatrix({ mode, goals, selectedRegion }) {
+export default function NeuroMatrix({ mode, goals, selectedRegion, user }) {
   // Load real data
   const { data: lastSession } = useQuery({
     queryKey: ['diagnosisSessions', 'rehab'],
@@ -54,24 +54,33 @@ export default function NeuroMatrix({ mode, goals, selectedRegion }) {
 
   const rehabData = getRehabStats();
 
-  // Initialize progress data for each goal
+  // Fetch real progress data for the user
+  const { data: userProgress = [] } = useQuery({
+    queryKey: ['userPerformanceProgress', user?.email],
+    queryFn: () => base44.entities.UserPerformanceProgress.filter({ user_email: user.email }),
+    enabled: !!user?.email,
+  });
+
   const progressData = goals.reduce((acc, goal) => {
+    const userGoalProgress = userProgress.find(p => p.goal_code === goal.code);
     acc[goal.code] = {
-      level: Math.floor(Math.random() * 6), // Mock: 0-5
-      unlocked: Math.random() > 0.3 // 70% unlocked
+      total_sessions: userGoalProgress?.total_sessions || 0,
+      unlocked: userGoalProgress?.unlocked || false
     };
     return acc;
   }, {});
 
-  const getProgressColor = (level) => {
-    if (level === 0) return 'text-slate-600';
-    if (level <= 2) return 'text-cyan-400';
-    if (level <= 4) return 'text-purple-400';
+  const getProgressColor = (totalSessions) => {
+    if (totalSessions === 0) return 'text-slate-600';
+    if (totalSessions <= 2) return 'text-cyan-400';
+    if (totalSessions <= 4) return 'text-purple-400';
     return 'text-green-400';
   };
 
-  const getProgressRing = (level) => {
-    const percentage = (level / 5) * 100;
+  const getProgressRing = (totalSessions) => {
+    // Cap visual progress at 5 sessions for the ring
+    const cappedSessions = Math.min(totalSessions, 5);
+    const percentage = (cappedSessions / 5) * 100;
     return percentage;
   };
 
@@ -110,13 +119,13 @@ export default function NeuroMatrix({ mode, goals, selectedRegion }) {
             </div>
             <div className="p-2 rounded-lg bg-slate-800/50">
               <div className="text-xl font-bold text-purple-400">
-                {Object.values(progressData).reduce((sum, p) => sum + p.level, 0)}
+                {Object.values(progressData).reduce((sum, p) => sum + p.total_sessions, 0)}
               </div>
-              <div className="text-xs text-slate-400">Total Lvl</div>
+              <div className="text-xs text-slate-400">Total Sessions</div>
             </div>
             <div className="p-2 rounded-lg bg-slate-800/50">
               <div className="text-xl font-bold text-green-400">
-                {Math.round((Object.values(progressData).reduce((sum, p) => sum + p.level, 0) / (12 * 5)) * 100)}%
+                {Math.round((Object.values(progressData).reduce((sum, p) => sum + p.total_sessions, 0) / (12 * 5)) * 100)}%
               </div>
               <div className="text-xs text-slate-400">Complete</div>
             </div>
@@ -154,8 +163,8 @@ export default function NeuroMatrix({ mode, goals, selectedRegion }) {
           </h3>
           <div className="space-y-2 max-h-[400px] sm:max-h-[600px] overflow-y-auto custom-scrollbar">
             {goals.slice(0, 12).map((goal, idx) => {
-            const progress = progressData[goal.code] || { level: 0, unlocked: false };
-            const percentage = getProgressRing(progress.level);
+            const progress = progressData[goal.code] || { total_sessions: 0, unlocked: false };
+            const percentage = getProgressRing(progress.total_sessions);
             
             return (
               <motion.div
@@ -164,7 +173,7 @@ export default function NeuroMatrix({ mode, goals, selectedRegion }) {
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: idx * 0.05 }}
               >
-                <Link to={createPageUrl(`Performance?goal=${goal.code}`)}>
+                <Link to={createPageUrl(`PerformanceChat?goal=${goal.name}`)}>
                   <div className="group relative p-3 rounded-xl bg-slate-800/30 border border-slate-700/50 hover:border-purple-500/50 transition-all cursor-pointer">
                     <div className="flex items-center gap-3">
                       {/* Progress Ring */}
@@ -188,7 +197,7 @@ export default function NeuroMatrix({ mode, goals, selectedRegion }) {
                             fill="none"
                             strokeDasharray={`${2 * Math.PI * 20}`}
                             strokeDashoffset={`${2 * Math.PI * 20 * (1 - percentage / 100)}`}
-                            className={getProgressColor(progress.level)}
+                            className={getProgressColor(progress.total_sessions)}
                             strokeLinecap="round"
                           />
                         </svg>
@@ -203,10 +212,10 @@ export default function NeuroMatrix({ mode, goals, selectedRegion }) {
                           {goal.name}
                         </div>
                         <div className="flex items-center gap-2 mt-1">
-                          <span className={`text-xs font-mono ${getProgressColor(progress.level)}`}>
-                            Level {progress.level}/5
+                          <span className={`text-xs font-mono ${getProgressColor(progress.total_sessions)}`}>
+                            {progress.total_sessions} mal gemacht
                           </span>
-                          {progress.level === 5 && (
+                          {progress.total_sessions >= 5 && (
                             <CheckCircle className="w-3 h-3 text-green-400" />
                           )}
                         </div>

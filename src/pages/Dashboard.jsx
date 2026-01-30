@@ -401,6 +401,7 @@ export default function Dashboard() {
               mode={mode}
               goals={goals}
               selectedRegion={selectedBodyRegion}
+              user={user}
             />
           </div>
           
@@ -410,6 +411,7 @@ export default function Dashboard() {
               mode={mode}
               goals={goals}
               selectedRegion={selectedBodyRegion}
+              user={user}
             />
           </div>
         </div>
