@@ -28,9 +28,14 @@ Deno.serve(async (req) => {
       }
     });
 
+    const publishableKey = Deno.env.get('STRIPE_PUBLISHABLE_KEY');
+    const clientSecret = paymentIntent.client_secret;
+
+    console.log('Publishing:', { publishableKey, clientSecret });
+
     return Response.json({ 
-      clientSecret: paymentIntent.client_secret,
-      publishableKey: Deno.env.get('STRIPE_PUBLISHABLE_KEY'),
+      clientSecret: clientSecret,
+      publishableKey: publishableKey,
       mode: mode,
       email: email,
       success: true
