@@ -197,6 +197,46 @@ export default function Flow() {
 
   const detailedContent = getDetailedInstruction();
 
+  // Success Check Modal
+  if (showSuccessCheck) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 flex items-center justify-center p-4 relative overflow-hidden">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="glass rounded-2xl border border-cyan-500/40 p-8 max-w-xl w-full relative z-10 neuro-glow"
+        >
+          <h3 className="text-xl font-bold text-cyan-300 mb-6 text-center">
+            {currentCheckQuestion}
+          </h3>
+
+          <div className="space-y-3">
+            <Button
+              onClick={() => handleCheckResponse('yes')}
+              className="w-full h-12 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 font-semibold text-white"
+            >
+              ✓ Ja, besser!
+            </Button>
+            <Button
+              onClick={() => handleCheckResponse('same')}
+              variant="outline"
+              className="w-full h-12 border-slate-600 text-slate-400 font-semibold"
+            >
+              — Gleich geblieben
+            </Button>
+            <Button
+              onClick={() => handleCheckResponse('no')}
+              variant="outline"
+              className="w-full h-12 border-slate-600 text-slate-400 font-semibold"
+            >
+              ✗ Noch nicht ganz
+            </Button>
+          </div>
+        </motion.div>
+      </div>
+    );
+  }
+
   if (completed) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 flex items-center justify-center p-4 relative overflow-hidden">
