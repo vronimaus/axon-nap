@@ -11,9 +11,9 @@ import { createPageUrl } from '@/utils';
 export default function Checkout() {
   const navigate = useNavigate();
   const [clientSecret, setClientSecret] = useState(null);
+  const [stripePromise, setStripePromise] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [stripe, setStripe] = useState(null);
 
   useEffect(() => {
     const initCheckout = async () => {
@@ -24,9 +24,9 @@ export default function Checkout() {
         });
 
         if (response.data?.clientSecret && response.data?.publishableKey) {
-          // Load Stripe with publishable key
-          const stripeInstance = await loadStripe(response.data.publishableKey);
-          setStripe(stripeInstance);
+          // Load Stripe - pass the promise directly
+          const promise = loadStripe(response.data.publishableKey);
+          setStripePromise(promise);
           setClientSecret(response.data.clientSecret);
         } else {
           throw new Error('Keine clientSecret oder publishableKey erhalten');
