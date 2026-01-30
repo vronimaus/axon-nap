@@ -33,8 +33,10 @@ Deno.serve(async (req) => {
 
     return Response.json({ 
       sessionId: session.id,
+      publishableKey: Deno.env.get('STRIPE_PUBLISHABLE_KEY'),
       mode: mode,
-      email: email
+      email: email,
+      success: true
     });
   } catch (error) {
     console.error('Checkout error:', error);
