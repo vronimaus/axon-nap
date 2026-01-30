@@ -14,6 +14,8 @@ export default function Flow() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [timeRemaining, setTimeRemaining] = useState(0);
   const [completed, setCompleted] = useState(false);
+  const [checkAnswers, setCheckAnswers] = useState({});
+  const [showSuccessCheck, setShowSuccessCheck] = useState(false);
 
   const { data: routine, isLoading } = useQuery({
     queryKey: ['routine', routineId],
