@@ -136,6 +136,17 @@ export default function Landing() {
 
       {/* SEKTION 1: HERO */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-b from-black via-slate-950 to-slate-900">
+        {/* Body Map Background */}
+        <div className="absolute inset-0 opacity-20">
+          <img 
+            src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/ad6e52b61_generated_image.png"
+            alt="AXON Body Map Background"
+            className="w-full h-full object-cover"
+          />
+        </div>
+
+        {/* Gradient Overlays */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-slate-950/60 to-slate-900/80" />
         <div className="absolute inset-0">
           <div className="absolute top-20 left-20 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl animate-pulse" />
           <div className="absolute bottom-20 right-20 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl animate-pulse delay-1000" />
@@ -225,27 +236,11 @@ export default function Landing() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
-            className="glass rounded-xl border border-cyan-500/20 p-6 max-w-2xl mx-auto mb-12"
+            className="glass rounded-xl border border-cyan-500/20 p-6 max-w-2xl mx-auto"
           >
             <p className="text-sm text-slate-300 text-center">
               <strong>7 Tage Testphase:</strong> Danach einmalig 59€. Jederzeit während der Testphase mit einem Klick kündbar. Kein Risiko.
             </p>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.4 }}
-            className="relative max-w-3xl mx-auto"
-          >
-            <div className="glass rounded-2xl border border-cyan-500/30 overflow-hidden neuro-glow">
-              <img 
-                src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/ad6e52b61_generated_image.png"
-                alt="AXON Body Map"
-                className="w-full h-auto"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent" />
-            </div>
           </motion.div>
         </div>
       </section>
