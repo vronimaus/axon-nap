@@ -175,32 +175,43 @@ export default function InteractiveBodyMap({ mode, onRegionSelect, sessions }) {
     if (normalizedX < 0.35) laterality = 'links';
     else if (normalizedX > 0.65) laterality = 'rechts';
 
-    // Region detection based on Y position and view - PRECISE ANATOMICAL REGIONS
+    // Region detection - ANATOMISCH KORREKT basierend auf realer Körperproportionen
     let region = '';
     
     if (view === 'front') {
-      if (normalizedY < 0.08) region = 'Kopf/Stirn';
-      else if (normalizedY < 0.16) region = (normalizedX < 0.35 || normalizedX > 0.65) ? 'Kiefer/Kiefergelenk' : 'Hals vorne';
-      else if (normalizedY < 0.26) region = (normalizedX < 0.30 || normalizedX > 0.70) ? 'Schulter vorne' : 'obere Brust/Schlüsselbein';
-      else if (normalizedY < 0.38) region = (normalizedX < 0.30 || normalizedX > 0.70) ? 'Schulter/Deltamuskel' : 'mittlere Brust';
-      else if (normalizedY < 0.48) region = (normalizedX < 0.30 || normalizedX > 0.70) ? 'seitlicher Rumpf' : 'Bauch oben';
-      else if (normalizedY < 0.58) region = 'Bauch unten/Bauchnabel';
-      else if (normalizedY < 0.68) region = (normalizedX < 0.30 || normalizedX > 0.70) ? 'Hüfte/Leiste' : 'Unterbauch/Becken';
-      else if (normalizedY < 0.78) region = 'Oberschenkel vorne';
-      else if (normalizedY < 0.85) region = 'Knie vorne';
+      // Kopf beginnt bei ~5% der Körperhöhe
+      if (normalizedY < 0.10) region = 'Kopf/Stirn';
+      // Hals/Kiefer bei 10-15%
+      else if (normalizedY < 0.15) region = (normalizedX < 0.35 || normalizedX > 0.65) ? 'Kiefer/Kiefergelenk' : 'Hals vorne';
+      // Schultern/obere Brust bei 15-25%
+      else if (normalizedY < 0.25) region = (normalizedX < 0.30 || normalizedX > 0.70) ? 'Schulter vorne' : 'obere Brust/Schlüsselbein';
+      // Mittlere Brust/Schultern bei 25-35%
+      else if (normalizedY < 0.35) region = (normalizedX < 0.30 || normalizedX > 0.70) ? 'Schulter/Deltamuskel' : 'mittlere Brust';
+      // Bauch oben bei 35-45%
+      else if (normalizedY < 0.45) region = (normalizedX < 0.30 || normalizedX > 0.70) ? 'seitlicher Rumpf' : 'Bauch oben';
+      // Bauchnabel bei 45-52%
+      else if (normalizedY < 0.52) region = 'Bauch unten/Bauchnabel';
+      // Becken/Hüfte bei 52-60%
+      else if (normalizedY < 0.60) region = (normalizedX < 0.30 || normalizedX > 0.70) ? 'Hüfte/Leiste' : 'Unterbauch/Becken';
+      // Oberschenkel vorne bei 60-72%
+      else if (normalizedY < 0.72) region = 'Oberschenkel vorne';
+      // KNIE bei 72-80% (WICHTIG!)
+      else if (normalizedY < 0.80) region = 'Knie vorne';
+      // Unterschenkel bei 80-92%
       else if (normalizedY < 0.92) region = 'Unterschenkel/Schienbein';
+      // Fuß/Knöchel ab 92%
       else region = 'Fuß/Knöchel vorne';
     } else { // back view
-      if (normalizedY < 0.08) region = 'Hinterkopf';
-      else if (normalizedY < 0.16) region = 'Nacken/obere Halswirbelsäule';
-      else if (normalizedY < 0.26) region = (normalizedX < 0.25 || normalizedX > 0.75) ? 'Schulter hinten/Trapez' : 'oberer Rücken/Nacken';
-      else if (normalizedY < 0.38) region = (normalizedX < 0.30 || normalizedX > 0.70) ? 'Schulterblatt' : 'oberer Rücken';
-      else if (normalizedY < 0.53) region = (normalizedX < 0.30 || normalizedX > 0.70) ? 'seitlicher Rücken' : 'mittlerer Rücken';
-      else if (normalizedY < 0.63) region = 'unterer Rücken/Lendenwirbelsäule';
-      else if (normalizedY < 0.73) region = (normalizedX < 0.30 || normalizedX > 0.70) ? 'Hüfte seitlich' : 'Kreuzbein/Gesäß';
-      else if (normalizedY < 0.80) region = 'Oberschenkel hinten';
-      else if (normalizedY < 0.86) region = 'Kniekehle';
-      else if (normalizedY < 0.93) region = 'Wade';
+      if (normalizedY < 0.10) region = 'Hinterkopf';
+      else if (normalizedY < 0.15) region = 'Nacken/obere Halswirbelsäule';
+      else if (normalizedY < 0.25) region = (normalizedX < 0.25 || normalizedX > 0.75) ? 'Schulter hinten/Trapez' : 'oberer Rücken/Nacken';
+      else if (normalizedY < 0.35) region = (normalizedX < 0.30 || normalizedX > 0.70) ? 'Schulterblatt' : 'oberer Rücken';
+      else if (normalizedY < 0.50) region = (normalizedX < 0.30 || normalizedX > 0.70) ? 'seitlicher Rücken' : 'mittlerer Rücken';
+      else if (normalizedY < 0.60) region = 'unterer Rücken/Lendenwirbelsäule';
+      else if (normalizedY < 0.70) region = (normalizedX < 0.30 || normalizedX > 0.70) ? 'Hüfte seitlich' : 'Kreuzbein/Gesäß';
+      else if (normalizedY < 0.72) region = 'Oberschenkel hinten';
+      else if (normalizedY < 0.80) region = 'Kniekehle';
+      else if (normalizedY < 0.92) region = 'Wade';
       else region = 'Ferse/Achillessehne';
     }
 
@@ -331,16 +342,16 @@ export default function InteractiveBodyMap({ mode, onRegionSelect, sessions }) {
           >
             {view === 'front' ? (
               <img 
-                src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/ad6e52b61_generated_image.png"
+                src="https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=400&h=600&fit=crop&crop=center"
                 alt="Front view"
-                className="w-full h-auto"
+                className="w-full h-auto opacity-60"
                 draggable={false}
               />
             ) : (
               <img 
-                src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/0df8e2e95_generated_image.png"
+                src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=600&fit=crop&crop=center"
                 alt="Back view"
-                className="w-full h-auto"
+                className="w-full h-auto opacity-60"
                 draggable={false}
               />
             )}
