@@ -234,19 +234,26 @@ export default function InteractiveBodyMap({ mode, onRegionSelect, sessions }) {
       // Detect region from marker coordinates
       const region = detectRegionFromCoordinates(markers, view);
       
-      // Store markers in session storage for DiagnosisChat
+      // Store markers in session storage
       sessionStorage.setItem('bodyMapData', JSON.stringify({ view, markers, mode }));
       
-      // Navigate DIRECTLY to DiagnosisChat with mapData parameter
-      const params = new URLSearchParams({
-        mapData: JSON.stringify({ view, markers, mode }),
-        region: region
-      });
-      
-      toast.success('Starte KI-Analyse...');
-      setTimeout(() => {
-        navigate(createPageUrl(`DiagnosisChat?${params.toString()}`));
-      }, 500);
+      if (mode === 'rehab') {
+        // Navigate to DiagnosisChat for rehab
+        const params = new URLSearchParams({
+          mapData: JSON.stringify({ view, markers, mode }),
+          region: region
+        });
+        
+        toast.success('Starte KI-Analyse...');
+        setTimeout(() => {
+          navigate(createPageUrl(`DiagnosisChat?${params.toString()}`));
+        }, 500);
+      } else {
+        // Performance mode: just save and notify
+        toast.success('Spannungen gespeichert!');
+        setIsAnalyzing(false);
+        onRegionSelect(region);
+      }
     } catch (error) {
       console.error('Fehler:', error);
       toast.error('Fehler beim Starten der Analyse');
@@ -314,19 +321,22 @@ export default function InteractiveBodyMap({ mode, onRegionSelect, sessions }) {
             <RotateCcw className="w-3 h-3" />
             <span className="hidden xs:inline">Reset</span>
           </Button>
-          <Button
-            size="sm"
-            onClick={handleAnalyze}
-            disabled={markers.length === 0 || isAnalyzing}
-            className={`text-xs gap-1 sm:gap-2 px-3 sm:px-4 ml-auto bg-gradient-to-r ${
-              mode === 'rehab' 
-                ? 'from-red-500 to-pink-600' 
-                : 'from-purple-500 to-cyan-600'
-            }`}
-          >
-            <Send className="w-3 h-3" />
-            {isAnalyzing ? 'Lädt...' : 'Analysieren'}
-          </Button>
+          {mode === 'rehab' && (
+            <Button
+              size="sm"
+              onClick={handleAnalyze}
+              disabled={markers.length === 0 || isAnalyzing}
+              className="text-xs gap-1 sm:gap-2 px-3 sm:px-4 ml-auto bg-gradient-to-r from-red-500 to-pink-600"
+            >
+              <Send className="w-3 h-3" />
+              {isAnalyzing ? 'Lädt...' : 'Analysieren'}
+            </Button>
+          )}
+          {mode === 'performance' && markers.length > 0 && (
+            <div className="ml-auto text-xs text-purple-400 flex items-center gap-2">
+              ✓ {markers.length} Spannung(en) markiert
+            </div>
+          )}
         </div>
       </div>
 
