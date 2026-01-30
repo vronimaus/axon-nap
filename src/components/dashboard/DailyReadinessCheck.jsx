@@ -95,7 +95,7 @@ export default function DailyReadinessCheck({ user, onClose }) {
       <motion.div
         initial={{ scale: 0.9, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
-        className="glass rounded-2xl border border-cyan-500/20 max-w-2xl w-full p-8 bg-slate-900/80"
+        className="glass rounded-2xl border border-cyan-500/20 max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6 sm:p-8 bg-slate-900/80"
       >
         {/* Header */}
         <div className="mb-8">
