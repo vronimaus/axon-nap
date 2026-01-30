@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { Button } from '@/components/ui/button';
-import { Check, Zap, Shield, ChevronDown, Loader2, LogOut, Zap as ZapIcon, Wrench, Brain, Dumbbell } from 'lucide-react';
+import { Check, Zap, Shield, ChevronDown, Loader2, LogOut, Wrench, Brain, Dumbbell } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { base44 } from '@/api/base44Client';
 import { toast } from 'sonner';
@@ -269,7 +269,7 @@ export default function Landing() {
               className="glass rounded-2xl border border-orange-500/30 p-8"
             >
               <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center mb-6">
-                <ZapIcon className="w-6 h-6 text-white" />
+                <Wrench className="w-6 h-6 text-white" />
               </div>
               <h3 className="text-2xl font-bold text-orange-400 mb-3">Hardware-Check (MFR)</h3>
               <p className="text-slate-300">
@@ -286,7 +286,7 @@ export default function Landing() {
               className="glass rounded-2xl border border-cyan-500/30 p-8"
             >
               <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-cyan-500 to-cyan-600 flex items-center justify-center mb-6">
-                <ZapIcon className="w-6 h-6 text-white" />
+                <Brain className="w-6 h-6 text-white" />
               </div>
               <h3 className="text-2xl font-bold text-cyan-400 mb-3">Software-Update (Neuro)</h3>
               <p className="text-slate-300">
@@ -303,7 +303,7 @@ export default function Landing() {
               className="glass rounded-2xl border border-purple-500/30 p-8"
             >
               <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center mb-6">
-                <ZapIcon className="w-6 h-6 text-white" />
+                <Dumbbell className="w-6 h-6 text-white" />
               </div>
               <h3 className="text-2xl font-bold text-purple-400 mb-3">Integration (Belastung)</h3>
               <p className="text-slate-300">
@@ -362,8 +362,8 @@ export default function Landing() {
               <div className="text-5xl mb-4">✨</div>
               <h3 className="text-2xl font-bold text-yellow-400 mb-3">PERFORMANCE</h3>
               <p className="text-slate-300 leading-relaxed">
-                Wahre Stärke entsteht im Kopf. Nur wenn dein Gehirn eine Bewegung als sicher einstuft, gibt es die maximale Kraft frei. Erreiche athletische Meilensteine durch ein Protokoll, das Biologie und Training vereint.
-              </p>
+                 Wahre Stärke entsteht im Kopf. Nur wenn dein Gehirn eine Bewegung als sicher einstuft, gibt es die maximale Kraft frei. Erreiche athletische Meilensteine durch ein Protokoll, das Biologie und Trainingswissenschaften vereint. Dein persönlicher Coach verfolgt jeden Schritt mit dir – von der ersten Wiederholung bis zu deinem persönlichen Trainings-Meilenstein.
+               </p>
             </motion.div>
           </div>
         </div>
