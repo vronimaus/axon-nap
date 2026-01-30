@@ -59,13 +59,13 @@ import Imprint from './pages/Imprint';
 import Landing from './pages/Landing';
 import MFRIntegration from './pages/MFRIntegration';
 import Performance from './pages/Performance';
+import PerformanceChat from './pages/PerformanceChat';
 import Privacy from './pages/Privacy';
 import Profile from './pages/Profile';
 import QuickDemo from './pages/QuickDemo';
 import Success from './pages/Success';
 import Terms from './pages/Terms';
 import TrialInfo from './pages/TrialInfo';
-import PerformanceChat from './pages/PerformanceChat';
 import __Layout from './Layout.jsx';
 
 
@@ -82,13 +82,13 @@ export const PAGES = {
     "Landing": Landing,
     "MFRIntegration": MFRIntegration,
     "Performance": Performance,
+    "PerformanceChat": PerformanceChat,
     "Privacy": Privacy,
     "Profile": Profile,
     "QuickDemo": QuickDemo,
     "Success": Success,
     "Terms": Terms,
     "TrialInfo": TrialInfo,
-    "PerformanceChat": PerformanceChat,
 }
 
 export const pagesConfig = {

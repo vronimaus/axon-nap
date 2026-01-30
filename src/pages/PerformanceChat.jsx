@@ -192,7 +192,7 @@ export default function PerformanceChat() {
                 className="w-full h-14 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-bold text-lg shadow-lg shadow-green-500/50"
               >
                 <CheckCircle2 className="w-6 h-6 mr-2" />
-                Training geschafft!
+                Ja, ich habe das Training geschafft.
               </Button>
             </motion.div>
           </div>
