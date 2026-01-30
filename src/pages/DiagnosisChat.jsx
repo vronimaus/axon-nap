@@ -78,94 +78,11 @@ export default function DiagnosisChat() {
           });
           setLoading(false);
         }
-        // If from Dashboard with body map, trigger the agent with natural description
+        // If from Dashboard with body map, use the region already detected by InteractiveBodyMap
         else if (mapDataParam && regionParam) {
           setLoading(true);
           const mapData = JSON.parse(mapDataParam);
-          
-          // Calculate average position and get anatomical region
-          let totalY = 0, totalX = 0, totalPoints = 0;
-          mapData.markers.forEach(marker => {
-            if (marker.type === 'point') {
-              totalX += marker.x;
-              totalY += marker.y;
-              totalPoints += 1;
-            } else if (marker.points) {
-              marker.points.forEach(p => {
-                totalX += p.x;
-                totalY += p.y;
-                totalPoints += 1;
-              });
-            }
-          });
-          
-          const avgY = totalPoints > 0 ? totalY / totalPoints : 0;
-          const avgX = totalPoints > 0 ? totalX / totalPoints : 0;
-          const normalizedY = avgY / 600;
-          const normalizedX = avgX / 400;
-          
-          // Get anatomical description
-          let region = '';
-          let laterality = normalizedX < 0.35 ? 'links' : normalizedX > 0.65 ? 'rechts' : '';
-          
-          if (mapData.view === 'front') {
-            if (normalizedY < 0.12) {
-              region = 'Kopf/Stirn';
-            } else if (normalizedY < 0.20) {
-              region = normalizedX < 0.35 || normalizedX > 0.65 ? 'Kiefer/Kiefergelenk' : 'Hals vorne';
-            } else if (normalizedY < 0.38) {
-              if (normalizedX < 0.30 || normalizedX > 0.70) {
-                region = 'Schulter vorne';
-              } else if (normalizedX < 0.42 || normalizedX > 0.58) {
-                region = 'obere Brust/Schlüsselbein';
-              } else {
-                region = 'obere Brust/Brustbein';
-              }
-            } else if (normalizedY < 0.48) {
-              region = normalizedX < 0.30 || normalizedX > 0.70 ? 'Schulter/Deltamuskel' : 'mittlere Brust';
-            } else if (normalizedY < 0.60) {
-              region = normalizedX < 0.30 || normalizedX > 0.70 ? 'seitlicher Rumpf' : 'Bauch';
-            } else if (normalizedY < 0.68) {
-              region = 'unterer Bauch/Bauchnabel';
-            } else if (normalizedY < 0.76) {
-              region = normalizedX < 0.30 || normalizedX > 0.70 ? 'Hüfte/Leiste' : 'Unterbauch/Becken';
-            } else if (normalizedY < 0.84) {
-              region = 'Oberschenkel vorne';
-            } else if (normalizedY < 0.90) {
-              region = 'Knie';
-            } else if (normalizedY < 0.96) {
-              region = 'Unterschenkel/Schienbein';
-            } else {
-              region = 'Fuß/Knöchel';
-            }
-          } else {
-            // Back view
-            if (normalizedY < 0.12) {
-              region = 'Hinterkopf';
-            } else if (normalizedY < 0.20) {
-              region = 'Nacken/obere Halswirbelsäule';
-            } else if (normalizedY < 0.28) {
-              region = normalizedX < 0.25 || normalizedX > 0.75 ? 'Schulter hinten/Trapez' : 'Nacken';
-            } else if (normalizedY < 0.40) {
-              region = normalizedX < 0.30 || normalizedX > 0.70 ? 'Schulterblatt' : 'oberer Rücken';
-            } else if (normalizedY < 0.58) {
-              region = normalizedX < 0.30 || normalizedX > 0.70 ? 'seitlicher Rücken' : 'mittlerer Rücken';
-            } else if (normalizedY < 0.68) {
-              region = 'unterer Rücken/Lendenwirbelsäule';
-            } else if (normalizedY < 0.76) {
-              region = normalizedX < 0.30 || normalizedX > 0.70 ? 'Hüfte seitlich' : 'Kreuzbein/Gesäß';
-            } else if (normalizedY < 0.84) {
-              region = 'Oberschenkel hinten';
-            } else if (normalizedY < 0.90) {
-              region = 'Kniekehle';
-            } else if (normalizedY < 0.96) {
-              region = 'Wade';
-            } else {
-              region = 'Ferse/Achillessehne';
-            }
-          }
-          
-          const fullRegion = laterality ? `${region} ${laterality}` : region;
+          const fullRegion = regionParam;
           const markerType = mapData.markers.length === 1 && mapData.markers[0].type === 'point'
             ? 'einen Schmerzpunkt'
             : 'eine Schmerzlinie';

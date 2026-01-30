@@ -170,30 +170,41 @@ export default function InteractiveBodyMap({ mode, onRegionSelect, sessions }) {
     const normalizedY = avgY / 600;
     const normalizedX = avgX / 400;
 
-    // Region detection based on Y position and view
-    if (normalizedY < 0.15) {
-      return 'kopf_kiefer';
-    } else if (normalizedY < 0.25) {
-      return 'hals_nacken';
-    } else if (normalizedY < 0.35) {
-      return 'schulter_arm';
-    } else if (normalizedY < 0.45) {
-      return view === 'front' ? 'brust' : 'rumpf';
-    } else if (normalizedY < 0.55) {
-      return view === 'front' ? 'rumpf' : 'lws';
-    } else if (normalizedY < 0.65) {
-      return 'lws';
-    } else if (normalizedY < 0.75) {
-      return 'huefte';
-    } else if (normalizedY < 0.82) {
-      return 'oberschenkel';
-    } else if (normalizedY < 0.88) {
-      return 'knie';
-    } else if (normalizedY < 0.95) {
-      return 'unterschenkel';
-    } else {
-      return 'fuss';
+    // Laterality detection
+    let laterality = '';
+    if (normalizedX < 0.35) laterality = 'links';
+    else if (normalizedX > 0.65) laterality = 'rechts';
+
+    // Region detection based on Y position and view - PRECISE ANATOMICAL REGIONS
+    let region = '';
+    
+    if (view === 'front') {
+      if (normalizedY < 0.08) region = 'Kopf/Stirn';
+      else if (normalizedY < 0.16) region = (normalizedX < 0.35 || normalizedX > 0.65) ? 'Kiefer/Kiefergelenk' : 'Hals vorne';
+      else if (normalizedY < 0.26) region = (normalizedX < 0.30 || normalizedX > 0.70) ? 'Schulter vorne' : 'obere Brust/Schlüsselbein';
+      else if (normalizedY < 0.38) region = (normalizedX < 0.30 || normalizedX > 0.70) ? 'Schulter/Deltamuskel' : 'mittlere Brust';
+      else if (normalizedY < 0.48) region = (normalizedX < 0.30 || normalizedX > 0.70) ? 'seitlicher Rumpf' : 'Bauch oben';
+      else if (normalizedY < 0.58) region = 'Bauch unten/Bauchnabel';
+      else if (normalizedY < 0.68) region = (normalizedX < 0.30 || normalizedX > 0.70) ? 'Hüfte/Leiste' : 'Unterbauch/Becken';
+      else if (normalizedY < 0.78) region = 'Oberschenkel vorne';
+      else if (normalizedY < 0.85) region = 'Knie vorne';
+      else if (normalizedY < 0.92) region = 'Unterschenkel/Schienbein';
+      else region = 'Fuß/Knöchel vorne';
+    } else { // back view
+      if (normalizedY < 0.08) region = 'Hinterkopf';
+      else if (normalizedY < 0.16) region = 'Nacken/obere Halswirbelsäule';
+      else if (normalizedY < 0.26) region = (normalizedX < 0.25 || normalizedX > 0.75) ? 'Schulter hinten/Trapez' : 'oberer Rücken/Nacken';
+      else if (normalizedY < 0.38) region = (normalizedX < 0.30 || normalizedX > 0.70) ? 'Schulterblatt' : 'oberer Rücken';
+      else if (normalizedY < 0.53) region = (normalizedX < 0.30 || normalizedX > 0.70) ? 'seitlicher Rücken' : 'mittlerer Rücken';
+      else if (normalizedY < 0.63) region = 'unterer Rücken/Lendenwirbelsäule';
+      else if (normalizedY < 0.73) region = (normalizedX < 0.30 || normalizedX > 0.70) ? 'Hüfte seitlich' : 'Kreuzbein/Gesäß';
+      else if (normalizedY < 0.80) region = 'Oberschenkel hinten';
+      else if (normalizedY < 0.86) region = 'Kniekehle';
+      else if (normalizedY < 0.93) region = 'Wade';
+      else region = 'Ferse/Achillessehne';
     }
+
+    return laterality ? `${region} ${laterality}` : region;
   };
 
   const handleAnalyze = async () => {
