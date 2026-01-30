@@ -57,19 +57,7 @@ export default function DiagnosisChat() {
           };
         }
 
-        // If coming from Dashboard with body map data
-        if (mapDataParam && regionParam) {
-          try {
-            const mapData = JSON.parse(mapDataParam);
-            metadata.body_map = {
-              region: regionParam,
-              markers: mapData.markers,
-              view: mapData.view
-            };
-          } catch (e) {
-            console.error('Fehler beim Parsen der Map-Daten:', e);
-          }
-        }
+        // Body map data will be sent as a user message, not metadata
 
         const conv = await base44.agents.createConversation({
           agent_name: 'diagnosis_reasoning',
