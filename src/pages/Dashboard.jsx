@@ -312,7 +312,22 @@ export default function Dashboard() {
                   className="mt-4 sm:mt-6"
                 >
                   <Button
-                    onClick={() => window.location.href = createPageUrl(`DiagnosisWizard?region=${selectedBodyRegion}`)}
+                    onClick={() => {
+                      // Hole die Map-Daten aus sessionStorage
+                      const mapData = sessionStorage.getItem('bodyMapData');
+                      if (mapData) {
+                        const data = JSON.parse(mapData);
+                        // Navigiere zum Chat mit den Map-Daten als URL-Parameter
+                        const params = new URLSearchParams({
+                          mapData: JSON.stringify(data),
+                          region: selectedBodyRegion
+                        });
+                        window.location.href = createPageUrl(`DiagnosisChat?${params.toString()}`);
+                      } else {
+                        // Fallback falls keine Map-Daten vorhanden
+                        window.location.href = createPageUrl(`DiagnosisChat?region=${selectedBodyRegion}`);
+                      }
+                    }}
                     className="w-full h-12 sm:h-14 bg-gradient-to-r from-red-500 to-pink-600 hover:from-red-600 hover:to-pink-700 text-white font-bold text-sm sm:text-base"
                   >
                     Analysieren starten →

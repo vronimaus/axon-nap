@@ -17,6 +17,8 @@ import { useDemoTimer } from '../components/demo/useDemoTimer';
 export default function DiagnosisChat() {
   const [searchParams] = useSearchParams();
   const sessionId = searchParams.get('session_id');
+  const mapDataParam = searchParams.get('mapData');
+  const regionParam = searchParams.get('region');
   const { isDemoExpired, isLoading: demoLoading, formattedTime } = useDemoTimer();
   const [conversation, setConversation] = useState(null);
   const [messages, setMessages] = useState([]);
@@ -55,6 +57,20 @@ export default function DiagnosisChat() {
           };
         }
 
+        // If coming from Dashboard with body map data
+        if (mapDataParam && regionParam) {
+          try {
+            const mapData = JSON.parse(mapDataParam);
+            metadata.body_map = {
+              region: regionParam,
+              markers: mapData.markers,
+              view: mapData.view
+            };
+          } catch (e) {
+            console.error('Fehler beim Parsen der Map-Daten:', e);
+          }
+        }
+
         const conv = await base44.agents.createConversation({
           agent_name: 'diagnosis_reasoning',
           metadata
@@ -74,12 +90,27 @@ export default function DiagnosisChat() {
           });
           setLoading(false);
         }
+        // If from Dashboard with body map, send initial analysis request
+        else if (mapDataParam && regionParam) {
+          setLoading(true);
+          const mapData = JSON.parse(mapDataParam);
+          const markerDescription = mapData.markers.length > 1 
+            ? `eine Schmerzlinie entlang mehrerer Punkte` 
+            : `einen spezifischen Schmerzpunkt`;
+          
+          const contextMsg = `Ich habe auf der Body Map (${mapData.view === 'front' ? 'Vorderseite' : 'Rückseite'}) ${markerDescription} im Bereich "${regionParam}" gezeichnet.\n\nDie Schmerzen verlaufen entlang dieser markierten Bereiche. Bitte analysiere die Schmerzkontur präzise und identifiziere die betroffenen Faszien-Ketten und die entsprechenden MFR-Nodes.`;
+          
+          await base44.agents.addMessage(conv, {
+            role: 'user',
+            content: contextMsg
+          });
+        }
       } catch (error) {
         console.error('Fehler beim Erstellen der Konversation:', error);
       }
     };
     initConversation();
-  }, [wizardSession]);
+  }, [wizardSession, mapDataParam, regionParam]);
 
   // Subscribe to conversation updates
   useEffect(() => {
