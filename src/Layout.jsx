@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { Activity, LayoutDashboard, Compass, Trophy, LogOut, User } from 'lucide-react';
+import { Activity, LayoutDashboard, Trophy, LogOut, User } from 'lucide-react';
 import CookieBanner from './components/CookieBanner';
 import { useTrialStatus } from './components/useTrialStatus';
 import DailyReadinessCheck from './components/dashboard/DailyReadinessCheck';
@@ -73,7 +73,6 @@ export default function Layout({ children, currentPageName }) {
 
     const navItems = [
     { name: 'Command', icon: LayoutDashboard, page: 'Dashboard' },
-    { name: 'Detective', icon: Compass, page: 'DiagnosisWizard' },
     { name: 'Agent', icon: Activity, page: 'DiagnosisChat' },
     { name: 'Goals', icon: Trophy, page: 'Performance' }
   ];
