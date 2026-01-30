@@ -361,6 +361,12 @@ export default function Flow() {
   }
 
   if (completed) {
+    // Phase 2: Check if we should show deep-dive option
+    const totalResponses = Object.keys(checkAnswers).length;
+    const totalNeutral = Object.values(checkAnswers).filter(v => v === 'same' || v === 'no').length;
+    const neutralPercentage = totalResponses > 0 ? (totalNeutral / totalResponses) * 100 : 0;
+    const showDeepDive = neutralPercentage >= 40; // 40% threshold for deep-dive
+
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 flex items-center justify-center p-4 relative overflow-hidden">
         {/* Animated Background Pulse */}
@@ -376,14 +382,22 @@ export default function Flow() {
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="glass-cyan rounded-2xl border border-cyan-500/40 p-10 max-w-2xl w-full text-center relative z-10 neuro-glow"
+          className={`rounded-2xl border p-10 max-w-2xl w-full text-center relative z-10 ${
+            showDeepDive
+              ? 'glass-purple border-purple-500/40 neuro-glow-purple'
+              : 'glass-cyan border-cyan-500/40 neuro-glow'
+          }`}
         >
           {/* Success Icon */}
           <motion.div
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
             transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
-            className="w-24 h-24 rounded-full bg-gradient-to-br from-cyan-500 to-purple-600 flex items-center justify-center mx-auto mb-6 shadow-2xl"
+            className={`w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-6 shadow-2xl ${
+              showDeepDive
+                ? 'bg-gradient-to-br from-purple-500 to-pink-600'
+                : 'bg-gradient-to-br from-cyan-500 to-purple-600'
+            }`}
           >
             <Check className="w-12 h-12 text-white" />
           </motion.div>
@@ -393,7 +407,11 @@ export default function Flow() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
-            className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-500 mb-4"
+            className={`text-3xl font-bold mb-4 ${
+              showDeepDive
+                ? 'text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-500'
+                : 'text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-500'
+            }`}
           >
             {routine.completion_title || "System optimiert!"}
           </motion.h2>
@@ -405,22 +423,43 @@ export default function Flow() {
             transition={{ delay: 0.4 }}
             className="text-slate-200 text-base leading-relaxed mb-8 max-w-xl mx-auto"
           >
-            {routine.completion_message || `Du hast "${routine.routine_name}" erfolgreich durchgeführt. Dein System ist jetzt optimiert und bereit!`}
+            {showDeepDive
+              ? `Dein System signalisiert heute erhöhte Schutzspannung. Wir konnten mehrere Bereiche nur teilweise kalibrieren. Das ist ein wertvolles Signal!`
+              : routine.completion_message || `Du hast "${routine.routine_name}" erfolgreich durchgeführt. Dein System ist jetzt optimiert und bereit!`}
           </motion.p>
 
-          {/* Action Button */}
+          {/* Action Buttons */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5 }}
+            className="space-y-3"
           >
+            {showDeepDive && (
+              <Button
+                onClick={() => window.location.href = createPageUrl(`PerformanceChat?troubleshoot=${routine.routine_name}`)}
+                className="w-full h-12 bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 font-semibold text-white"
+              >
+                🔍 Analyse starten – Was blockiert dein System?
+              </Button>
+            )}
             <Button
               onClick={() => window.history.back()}
-              className="bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-600 hover:to-purple-700 px-8 py-6 text-lg font-semibold shadow-xl"
+              className={`w-full h-12 px-8 text-lg font-semibold shadow-xl ${
+                showDeepDive
+                  ? 'bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700'
+                  : 'bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-600 hover:to-purple-700'
+              }`}
             >
-              Zurück zum Dashboard
+              {showDeepDive ? '← Zurück (später analysieren)' : 'Zurück zum Dashboard'}
             </Button>
           </motion.div>
+
+          {showDeepDive && (
+            <p className="text-xs text-slate-400 text-center mt-6">
+              💡 Das zeigt mir, wo dein Nervensystem heute Unterstützung braucht. Lass mich kurz analysieren, damit wir die richtigen Hebel drehen.
+            </p>
+          )}
         </motion.div>
       </div>
     );
