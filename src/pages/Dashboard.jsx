@@ -300,6 +300,25 @@ export default function Dashboard() {
                   </div>
                 </div>
               )}
+              
+              {mode === 'performance' && (
+                <div className="space-y-4">
+                  {/* Performance Goal Input */}
+                  <div className="glass rounded-xl sm:rounded-2xl border border-amber-500/30 p-4 sm:p-6 bg-gradient-to-r from-amber-500/10 to-transparent">
+                    <h2 className="text-base sm:text-lg font-semibold text-amber-400 mb-3">Nächstes Ziel:</h2>
+                    <input
+                      type="text"
+                      value={selectedBodyRegion || ''}
+                      onChange={(e) => setSelectedBodyRegion(e.target.value)}
+                      placeholder="z.B. Klimmzug, Pistol Squat, Handstand..."
+                      className="w-full px-4 py-3 rounded-lg bg-slate-800/50 border border-slate-700 text-white placeholder-slate-500 focus:outline-none focus:border-amber-400 text-sm sm:text-base"
+                    />
+                    <p className="text-xs text-slate-400 mt-2">
+                      Gib dein sportliches Ziel ein und markiere optional Spannungsbereiche auf der BodyMap unten.
+                    </p>
+                  </div>
+                </div>
+              )}
               <InteractiveBodyMap
                 mode={mode}
                 onRegionSelect={setSelectedBodyRegion}
@@ -331,6 +350,23 @@ export default function Dashboard() {
                     className="w-full h-12 sm:h-14 bg-gradient-to-r from-red-500 to-pink-600 hover:from-red-600 hover:to-pink-700 text-white font-bold text-sm sm:text-base"
                   >
                     Analysieren starten →
+                  </Button>
+                </motion.div>
+              )}
+              
+              {mode === 'performance' && selectedBodyRegion && selectedBodyRegion.trim() && (
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="mt-4 sm:mt-6"
+                >
+                  <Button
+                    onClick={() => {
+                      window.location.href = createPageUrl(`PerformanceTrigger?goal=${encodeURIComponent(selectedBodyRegion)}`);
+                    }}
+                    className="w-full h-12 sm:h-14 bg-gradient-to-r from-amber-500 to-yellow-600 hover:from-amber-600 hover:to-yellow-700 text-white font-bold text-sm sm:text-base"
+                  >
+                    Performance Coaching starten →
                   </Button>
                 </motion.div>
               )}
