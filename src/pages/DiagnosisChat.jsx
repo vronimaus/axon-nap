@@ -90,13 +90,37 @@ export default function DiagnosisChat() {
           });
           setLoading(false);
         }
-        // If from Dashboard with body map, trigger the agent
+        // If from Dashboard with body map, trigger the agent with coordinates
         else if (mapDataParam && regionParam) {
           setLoading(true);
-          // Send a minimal trigger message - the agent will see the body_map metadata
+          const mapData = JSON.parse(mapDataParam);
+          
+          // Calculate average position
+          let totalY = 0, totalX = 0, totalPoints = 0;
+          mapData.markers.forEach(marker => {
+            if (marker.type === 'point') {
+              totalX += marker.x;
+              totalY += marker.y;
+              totalPoints += 1;
+            } else if (marker.points) {
+              marker.points.forEach(p => {
+                totalX += p.x;
+                totalY += p.y;
+                totalPoints += 1;
+              });
+            }
+          });
+          
+          const avgX = totalPoints > 0 ? Math.round(totalX / totalPoints) : 0;
+          const avgY = totalPoints > 0 ? Math.round(totalY / totalPoints) : 0;
+          
+          const markerType = mapData.markers.length === 1 && mapData.markers[0].type === 'point'
+            ? 'einen Punkt'
+            : 'eine Linie';
+          
           await base44.agents.addMessage(conv, {
             role: 'user',
-            content: 'Analysiere meine Schmerzmarkierung'
+            content: `Ich habe auf der Body Map (${mapData.view === 'front' ? 'Vorderseite' : 'Rückseite'}) ${markerType} markiert.\n\nKoordinaten: X=${avgX}, Y=${avgY}\n\nBitte analysiere diese Koordinaten und sage mir, welche Körperregion das ist und welche MFR-Nodes ich nutzen soll.`
           });
         }
       } catch (error) {
