@@ -33,7 +33,7 @@ export default function Checkout() {
         }
       } catch (err) {
         console.error('Checkout init error:', err);
-        setError('Fehler beim Erstellen der Checkout-Session');
+        setError(err?.message || 'Fehler beim Erstellen der Checkout-Session');
       } finally {
         setIsLoading(false);
       }
