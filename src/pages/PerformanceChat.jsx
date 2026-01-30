@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import { ArrowLeft, Send, Loader2 } from 'lucide-react';
+import { ArrowLeft, Send, Loader2, Target, Wrench, Brain, Dumbbell, CheckCircle2, AlertCircle } from 'lucide-react';
 import { createPageUrl } from '@/utils';
 import ReactMarkdown from 'react-markdown';
 import { toast } from 'sonner';
