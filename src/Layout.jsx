@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { Activity, LayoutDashboard, Trophy, LogOut, User } from 'lucide-react';
+import { LayoutDashboard, LogOut, User } from 'lucide-react';
 import CookieBanner from './components/CookieBanner';
 import { useTrialStatus } from './components/useTrialStatus';
 import DailyReadinessCheck from './components/dashboard/DailyReadinessCheck';
@@ -72,9 +72,7 @@ export default function Layout({ children, currentPageName }) {
     const showNav = !pagesWithoutNav.includes(currentPageName);
 
     const navItems = [
-    { name: 'Command', icon: LayoutDashboard, page: 'Dashboard' },
-    { name: 'Agent', icon: Activity, page: 'DiagnosisChat' },
-    { name: 'Goals', icon: Trophy, page: 'Performance' }
+    { name: 'Command', icon: LayoutDashboard, page: 'Dashboard' }
   ];
 
   const handleProfileClick = () => {
