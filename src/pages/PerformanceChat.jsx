@@ -201,7 +201,7 @@ function MessageBubble({ message }) {
           <div className={`rounded-2xl px-4 py-3 ${
             isUser 
               ? 'bg-slate-800 text-white' 
-              : 'glass-cyan border border-amber-500/30'
+              : 'glass-cyan border border-amber-500/30 text-white'
           }`}>
             {isUser ? (
               <p className="text-sm leading-relaxed whitespace-pre-wrap">{message.content}</p>
