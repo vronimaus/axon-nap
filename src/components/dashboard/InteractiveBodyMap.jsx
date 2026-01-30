@@ -204,9 +204,10 @@ export default function InteractiveBodyMap({ mode, onRegionSelect, sessions }) {
       else if (normalizedY < 0.12) region = 'Nacken/obere Halswirbelsäule';
       else if (normalizedY < 0.20) region = (normalizedX < 0.25 || normalizedX > 0.75) ? 'Schulter hinten/Trapez' : 'oberer Rücken/Nacken';
       else if (normalizedY < 0.30) region = (normalizedX < 0.30 || normalizedX > 0.70) ? 'Schulterblatt' : 'oberer Rücken';
-      else if (normalizedY < 0.48) region = (normalizedX < 0.30 || normalizedX > 0.70) ? 'seitlicher Rücken' : 'mittlerer Rücken';
-      else if (normalizedY < 0.56) region = 'unterer Rücken/Lendenwirbelsäule';
-      else if (normalizedY < 0.66) region = (normalizedX < 0.30 || normalizedX > 0.70) ? 'Hüfte seitlich' : 'Kreuzbein/Gesäß';
+      else if (normalizedY < 0.40) region = (normalizedX < 0.35 || normalizedX > 0.65) ? 'Ellenbogen' : 'mittlerer Rücken';
+      else if (normalizedY < 0.46) region = 'unterer Rücken/Lendenwirbelsäule';
+      else if (normalizedY < 0.52) region = (normalizedX < 0.35 || normalizedX > 0.65) ? 'Unterarm/Handgelenk' : 'Gesäß/Kreuzbein';
+      else if (normalizedY < 0.58) region = 'Becken/Hüfte';
       else if (normalizedY < 0.68) region = 'Oberschenkel hinten';
       else if (normalizedY < 0.76) region = 'Kniekehle';
       else if (normalizedY < 0.88) region = 'Wade';
