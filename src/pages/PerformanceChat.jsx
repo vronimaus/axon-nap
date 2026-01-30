@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -8,6 +8,7 @@ import { ArrowLeft, Send, Loader2, Target, Wrench, Brain, Dumbbell, CheckCircle2
 import { createPageUrl } from '@/utils';
 import ReactMarkdown from 'react-markdown';
 import { toast } from 'sonner';
+import SessionFeedbackForm from '../components/performance/SessionFeedbackForm';
 
 export default function PerformanceChat() {
   const navigate = useNavigate();
@@ -16,6 +17,8 @@ export default function PerformanceChat() {
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const [isSending, setIsSending] = useState(false);
+  const [showFeedbackForm, setShowFeedbackForm] = useState(false);
+  const [goalName, setGoalName] = useState('');
   const messagesEndRef = useRef(null);
 
   useEffect(() => {
@@ -31,6 +34,8 @@ export default function PerformanceChat() {
         const urlParams = new URLSearchParams(window.location.search);
         const goal = urlParams.get('goal');
         const mapDataStr = urlParams.get('mapData');
+
+        setGoalName(goal || 'Dein Ziel');
 
         // Create new conversation
         const newConversation = await base44.agents.createConversation({
@@ -120,6 +125,20 @@ export default function PerformanceChat() {
     }
   };
 
+  const handleDoneClick = () => {
+    setShowFeedbackForm(true);
+  };
+
+  const handleFeedbackSaved = () => {
+    // Refresh conversation to show updated progress
+    toast.success('Session erfolgreich gespeichert!');
+  };
+
+  // Check if last assistant message contains [SHOW_DONE_BUTTON]
+  const shouldShowDoneButton = messages.length > 0 && 
+    messages[messages.length - 1]?.role === 'assistant' &&
+    messages[messages.length - 1]?.content?.includes('[SHOW_DONE_BUTTON]');
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 flex flex-col pb-20 md:pb-0">
       {/* Header */}
@@ -160,6 +179,26 @@ export default function PerformanceChat() {
         </div>
       </div>
 
+      {/* Done Button - shown after training plan */}
+      {shouldShowDoneButton && !showFeedbackForm && (
+        <div className="sticky bottom-20 z-10 px-4 pb-4">
+          <div className="max-w-4xl mx-auto">
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+            >
+              <Button
+                onClick={handleDoneClick}
+                className="w-full h-14 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-bold text-lg shadow-lg shadow-green-500/50"
+              >
+                <CheckCircle2 className="w-6 h-6 mr-2" />
+                Training geschafft!
+              </Button>
+            </motion.div>
+          </div>
+        </div>
+      )}
+
       {/* Input */}
       <div className="sticky bottom-0 glass border-t border-amber-500/20">
         <div className="max-w-4xl mx-auto px-4 py-4">
@@ -182,9 +221,20 @@ export default function PerformanceChat() {
           </div>
         </div>
       </div>
-    </div>
-  );
-}
+
+      {/* Feedback Form Modal */}
+      <AnimatePresence>
+        {showFeedbackForm && (
+          <SessionFeedbackForm
+            goalName={goalName}
+            onClose={() => setShowFeedbackForm(false)}
+            onSaved={handleFeedbackSaved}
+          />
+        )}
+      </AnimatePresence>
+      </div>
+      );
+      }
 
 function MessageBubble({ message }) {
   const isUser = message.role === 'user';
@@ -210,9 +260,12 @@ function MessageBubble({ message }) {
                 className="text-sm prose prose-sm prose-invert max-w-none [&>*:first-child]:mt-0 [&>*:last-child]:mb-0"
                 components={{
                   p: ({ children }) => {
-                    // Replace icon codes with Lucide icons
+                    // Replace icon codes with Lucide icons and filter [SHOW_DONE_BUTTON]
                     const processContent = (content) => {
                       if (typeof content === 'string') {
+                        // Remove [SHOW_DONE_BUTTON] from display
+                        const cleanContent = content.replace(/\[SHOW_DONE_BUTTON\]/g, '').trim();
+
                         const parts = [];
                         const iconMap = {
                           '[TARGET]': <Target className="w-4 h-4 inline-block text-amber-400 mr-1" />,
@@ -227,19 +280,19 @@ function MessageBubble({ message }) {
                         const regex = /\[(TARGET|WRENCH|BRAIN|DUMBBELL|CHECKMARK|ALERT)\]/g;
                         let match;
 
-                        while ((match = regex.exec(content)) !== null) {
+                        while ((match = regex.exec(cleanContent)) !== null) {
                           if (match.index > lastIndex) {
-                            parts.push(content.substring(lastIndex, match.index));
+                            parts.push(cleanContent.substring(lastIndex, match.index));
                           }
                           parts.push(iconMap[match[0]]);
                           lastIndex = match.index + match[0].length;
                         }
 
-                        if (lastIndex < content.length) {
-                          parts.push(content.substring(lastIndex));
+                        if (lastIndex < cleanContent.length) {
+                          parts.push(cleanContent.substring(lastIndex));
                         }
 
-                        return parts.length > 0 ? parts : content;
+                        return parts.length > 0 ? parts : cleanContent;
                       }
                       return content;
                     };
