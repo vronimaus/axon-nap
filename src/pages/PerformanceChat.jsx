@@ -197,9 +197,9 @@ export default function PerformanceChat() {
             >
               <Button
                 onClick={handleDoneClick}
-                className="w-full h-12 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-bold shadow-lg shadow-green-500/50"
+                className="w-full h-10 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-semibold shadow-lg shadow-green-500/50"
               >
-                <CheckCircle2 className="w-5 h-5 mr-2" />
+                <CheckCircle2 className="w-4 h-4 mr-2" />
                 Ja, ich habe das Training geschafft.
               </Button>
             </motion.div>
@@ -246,6 +246,11 @@ export default function PerformanceChat() {
 
 function MessageBubble({ message }) {
   const isUser = message.role === 'user';
+  
+  // Hide internal feedback trigger messages
+  if (isUser && message.content?.includes('[FEEDBACK_SUBMITTED]')) {
+    return null;
+  }
   
   return (
     <div className={`flex gap-3 ${isUser ? 'justify-end' : 'justify-start'}`}>
