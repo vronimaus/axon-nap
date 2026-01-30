@@ -19,7 +19,6 @@ export default function InteractiveBodyMap({ mode, onRegionSelect, sessions }) {
   const [currentPath, setCurrentPath] = useState([]);
   const [isDrawing, setIsDrawing] = useState(false);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
-  const [debugInfo, setDebugInfo] = useState(null);
   const canvasRef = useRef(null);
   const containerRef = useRef(null);
 
@@ -119,12 +118,6 @@ export default function InteractiveBodyMap({ mode, onRegionSelect, sessions }) {
   const startDrawing = (e) => {
     e.preventDefault();
     const coords = getCoordinates(e);
-    
-    // Debug info
-    const normalizedY = coords.y / 600;
-    const normalizedX = coords.x / 400;
-    const detectedRegion = detectRegionFromCoordinates([{ type: 'point', x: coords.x, y: coords.y }], view);
-    setDebugInfo({ normalizedY: normalizedY.toFixed(3), normalizedX: normalizedX.toFixed(3), region: detectedRegion });
     
     if (drawMode === 'point') {
       setMarkers([...markers, { type: 'point', x: coords.x, y: coords.y }]);
@@ -388,7 +381,7 @@ export default function InteractiveBodyMap({ mode, onRegionSelect, sessions }) {
         />
       </div>
 
-      {/* Legend & Debug Info */}
+      {/* Legend */}
       <div className="p-2 sm:p-3 border-t border-slate-700/50 text-xs text-slate-400">
         <div className="flex flex-col xs:flex-row xs:items-center gap-2 xs:gap-4">
           <span className="font-mono text-xs sm:text-sm">
@@ -397,13 +390,6 @@ export default function InteractiveBodyMap({ mode, onRegionSelect, sessions }) {
           <span className="hidden xs:inline text-slate-500">|</span>
           <span className="text-xs sm:text-sm">{markers.length} Markierung(en)</span>
         </div>
-        {debugInfo && (
-          <div className="mt-2 p-2 bg-cyan-500/10 border border-cyan-500/30 rounded text-xs font-mono">
-            <div className="text-cyan-400">🔍 DEBUG:</div>
-            <div>Y: {debugInfo.normalizedY} | X: {debugInfo.normalizedX}</div>
-            <div className="text-purple-400">→ {debugInfo.region}</div>
-          </div>
-        )}
       </div>
     </div>
   );
