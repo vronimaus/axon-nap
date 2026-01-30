@@ -209,7 +209,43 @@ function MessageBubble({ message }) {
               <ReactMarkdown 
                 className="text-sm prose prose-sm prose-invert max-w-none [&>*:first-child]:mt-0 [&>*:last-child]:mb-0"
                 components={{
-                  p: ({ children }) => <p className="my-1 leading-relaxed">{children}</p>,
+                  p: ({ children }) => {
+                    // Replace icon codes with Lucide icons
+                    const processContent = (content) => {
+                      if (typeof content === 'string') {
+                        const parts = [];
+                        const iconMap = {
+                          '[TARGET]': <Target className="w-4 h-4 inline-block text-amber-400 mr-1" />,
+                          '[WRENCH]': <Wrench className="w-4 h-4 inline-block text-cyan-400 mr-1" />,
+                          '[BRAIN]': <Brain className="w-4 h-4 inline-block text-purple-400 mr-1" />,
+                          '[DUMBBELL]': <Dumbbell className="w-4 h-4 inline-block text-green-400 mr-1" />,
+                          '[CHECKMARK]': <CheckCircle2 className="w-4 h-4 inline-block text-green-400 mr-1" />,
+                          '[ALERT]': <AlertCircle className="w-4 h-4 inline-block text-red-400 mr-1" />
+                        };
+
+                        let lastIndex = 0;
+                        const regex = /\[(TARGET|WRENCH|BRAIN|DUMBBELL|CHECKMARK|ALERT)\]/g;
+                        let match;
+
+                        while ((match = regex.exec(content)) !== null) {
+                          if (match.index > lastIndex) {
+                            parts.push(content.substring(lastIndex, match.index));
+                          }
+                          parts.push(iconMap[match[0]]);
+                          lastIndex = match.index + match[0].length;
+                        }
+
+                        if (lastIndex < content.length) {
+                          parts.push(content.substring(lastIndex));
+                        }
+
+                        return parts.length > 0 ? parts : content;
+                      }
+                      return content;
+                    };
+
+                    return <p className="my-1 leading-relaxed">{processContent(children)}</p>;
+                  },
                   ul: ({ children }) => <ul className="my-2 ml-4 list-disc">{children}</ul>,
                   ol: ({ children }) => <ol className="my-2 ml-4 list-decimal">{children}</ol>,
                   li: ({ children }) => <li className="my-1">{children}</li>,
