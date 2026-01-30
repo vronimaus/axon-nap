@@ -45,10 +45,20 @@ export default function PerformanceChat() {
 
         // Build initial prompt with goal and optional tension data
         let initialPrompt = `Mein nächstes Ziel ist: ${goal}`;
-        
+
         if (mapDataStr) {
           const mapData = JSON.parse(mapDataStr);
-          initialPrompt += `\n\nIch habe folgende Spannungsbereiche auf der BodyMap markiert:\n- Ansicht: ${mapData.view === 'front' ? 'Vorderseite' : 'Rückseite'}\n- ${mapData.markers.length} Markierung(en)`;
+          const tensionDetails = mapData.markers.map((m, i) => {
+            if (m.type === 'point') {
+              return `Punkt ${i+1} bei (${Math.round(m.x)}, ${Math.round(m.y)})`;
+            } else {
+              return `Linie mit ${m.points?.length || 0} Punkten`;
+            }
+          }).join(', ');
+
+          initialPrompt += `\n\nIch habe außerdem Spannungsbereiche auf der BodyMap markiert:\n- Ansicht: ${mapData.view === 'front' ? 'Vorderseite' : 'Rückseite'}\n- ${mapData.markers.length} Markierung(en): ${tensionDetails}\n\nBitte berücksichtige diese Spannungen bei der Trainingsplanung.`;
+        } else {
+          initialPrompt += `\n\nIch habe keine spezifischen Spannungen markiert.`;
         }
 
         // Send initial message
