@@ -272,6 +272,9 @@ export default function Landing() {
                 <Wrench className="w-6 h-6 text-white" />
               </div>
               <h3 className="text-2xl font-bold text-orange-400 mb-3">Hardware-Check (MFR)</h3>
+              <p className="text-slate-300 text-sm mb-2">
+                <strong>MFR = Myofasziale Release</strong> – gezielter Druck auf Faszienlinien
+              </p>
               <p className="text-slate-300">
                 Wir lösen mechanische Spannungen an 12 strategischen Nodes, um die Informationsqualität deiner Sensoren zu verbessern.
               </p>
@@ -289,6 +292,9 @@ export default function Landing() {
                 <Brain className="w-6 h-6 text-white" />
               </div>
               <h3 className="text-2xl font-bold text-cyan-400 mb-3">Software-Update (Neuro)</h3>
+              <p className="text-slate-300 text-sm mb-2">
+                <strong>Neuro-Drills = neurologische Übungen</strong> für Augen, Balance und Propriozeption
+              </p>
               <p className="text-slate-300">
                 Wir kalibrieren dein visuelles und vestibuläres System (Augen & Gleichgewicht), um deinem Gehirn das Signal „Sicherheit" zu senden.
               </p>
@@ -369,88 +375,73 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* SEKTION 4: WORKFLOW SEQUENCE */}
+      {/* SEKTION 4: APP SCREENSHOTS */}
       <section className="py-20 relative">
-        <div className="max-w-5xl mx-auto px-4">
+        <div className="max-w-6xl mx-auto px-4">
           <h2 className="text-4xl md:text-5xl font-bold text-center text-white mb-4">
-            Der Complete Reset in 15 Minuten
+            So sieht AXON aus
           </h2>
           <p className="text-lg text-slate-400 text-center mb-12 max-w-2xl mx-auto">
-            Hardware lösen → Gehirn kalibrieren → Bewegung verankern
+            Drei Modi, ein System – speziell für deine Bedürfnisse
           </p>
 
           <div className="grid md:grid-cols-3 gap-6">
-            {/* Hardware */}
+            {/* REHAB Screenshot */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="glass rounded-2xl border border-orange-500/30 p-8"
+              className="glass rounded-2xl border border-red-500/30 overflow-hidden"
             >
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center mb-6">
-                <Wrench className="w-6 h-6 text-white" />
+              <img 
+                src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/6c0e02a2d_image.png"
+                alt="REHAB - Detective Mode"
+                className="w-full h-auto"
+              />
+              <div className="p-4 bg-gradient-to-t from-slate-900 to-transparent">
+                <h3 className="font-bold text-red-400 mb-1">REHAB</h3>
+                <p className="text-xs text-slate-400">Detective Mode: Finde die Root Cause deines Schmerzes</p>
               </div>
-              <h3 className="text-2xl font-bold text-orange-400 mb-3">Hardware</h3>
-              <p className="text-slate-300 mb-4">
-                90 Sekunden Druck auf einen kritischen Node
-              </p>
-              <p className="text-sm text-slate-400">
-                Spannungen lösen, Sensoren kalibrieren
-              </p>
             </motion.div>
 
-            {/* Software */}
+            {/* PERFORMANCE Screenshot */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.1 }}
-              className="glass rounded-2xl border border-cyan-500/30 p-8"
+              className="glass rounded-2xl border border-yellow-500/30 overflow-hidden"
             >
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-cyan-500 to-cyan-600 flex items-center justify-center mb-6">
-                <Brain className="w-6 h-6 text-white" />
+              <img 
+                src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/707e1e9f9_image.png"
+                alt="PERFORMANCE - Goal Tracking"
+                className="w-full h-auto"
+              />
+              <div className="p-4 bg-gradient-to-t from-slate-900 to-transparent">
+                <h3 className="font-bold text-yellow-400 mb-1">PERFORMANCE</h3>
+                <p className="text-xs text-slate-400">Highscores tracken: Verfolge jeden Fortschritt</p>
               </div>
-              <h3 className="text-2xl font-bold text-cyan-400 mb-3">Software</h3>
-              <p className="text-slate-300 mb-4">
-                3 Min Neuro-Drill für Augen & Gleichgewicht
-              </p>
-              <p className="text-sm text-slate-400">
-                Gehirn signalisiert „Sicherheit"
-              </p>
             </motion.div>
 
-            {/* Integration */}
+            {/* HARDWARE Screenshot */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.2 }}
-              className="glass rounded-2xl border border-purple-500/30 p-8"
+              className="glass rounded-2xl border border-orange-500/30 overflow-hidden"
             >
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center mb-6">
-                <Dumbbell className="w-6 h-6 text-white" />
+              <img 
+                src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/664fb6302_image.png"
+                alt="HARDWARE - 15-Min Reset"
+                className="w-full h-auto"
+              />
+              <div className="p-4 bg-gradient-to-t from-slate-900 to-transparent">
+                <h3 className="font-bold text-orange-400 mb-1">HARDWARE</h3>
+                <p className="text-xs text-slate-400">15-Min Reset: Alle 12 Nodes – dein täglicher Check-up</p>
               </div>
-              <h3 className="text-2xl font-bold text-purple-400 mb-3">Integration</h3>
-              <p className="text-slate-300 mb-4">
-                5 konzentrierte Wiederholungen einer Kraft-Bewegung
-              </p>
-              <p className="text-sm text-slate-400">
-                Nervensystem verankert den Fortschritt
-              </p>
             </motion.div>
           </div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.3 }}
-            className="mt-12 glass rounded-2xl border border-purple-500/30 p-8 text-center bg-gradient-to-r from-purple-500/5 to-cyan-500/5"
-          >
-            <p className="text-lg text-white font-semibold">
-              Ergebnis: Bessere Mobilität, neue Kraft-Reserve, entspanntes Nervensystem
-            </p>
-          </motion.div>
         </div>
       </section>
 
