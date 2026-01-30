@@ -63,11 +63,29 @@ export default function Flow() {
   const handleNextStep = () => {
     if (!routine) return;
     
+    // Show success check before moving to next step
+    if (currentStep < routine.sequence.length - 1) {
+      setShowSuccessCheck(true);
+    } else {
+      setCompleted(true);
+      setIsPlaying(false);
+      saveHistory();
+    }
+  };
+
+  const handleCheckResponse = (response) => {
+    setCheckAnswers({
+      ...checkAnswers,
+      [currentStep]: response
+    });
+    setShowSuccessCheck(false);
+    setIsPlaying(false);
+    
+    // Move to next step
     if (currentStep < routine.sequence.length - 1) {
       setCurrentStep(prev => prev + 1);
     } else {
       setCompleted(true);
-      setIsPlaying(false);
       saveHistory();
     }
   };
