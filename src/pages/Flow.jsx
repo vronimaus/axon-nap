@@ -129,6 +129,48 @@ export default function Flow() {
   const currentSequence = routine.sequence[currentStep];
   const progress = ((currentStep + 1) / routine.sequence.length) * 100;
 
+  // Success Check messages per flow & step
+  const successChecks = {
+    'Morning Spark': [
+      "Fühlt sich deine Haut jetzt 'elektrisiert' oder präsenter an?",
+      "Ist dein Blickfeld schärfer? Lässt der Nackendruck nach?",
+      "Kannst du den Kopf jetzt leichter drehen? (Check: N1)",
+      "Spürst du mehr Grip und Stabilität im Stand?",
+      "Fühlst du den Energie-Kick in deinem System?",
+      "Geht die Atmung jetzt leichter in den Brustkorb?",
+      "Fühlst du dich stabiler und 'verbundener' mit dem Boden?"
+    ],
+    'Office Rescue': [
+      "Spürst du einen Entspannungsimpuls oder musstest du schlucken?",
+      "Fühlt sich dein Kiefer lockerer an? (Check: N12)",
+      "Ist die Spannung in deinen Unterarmen gesunken?",
+      "Fühlt sich das aufrechte Sitzen jetzt müheloser an?",
+      "Spürst du mehr Freiheit in der Leiste beim Aufstehen?",
+      "Wirkt der Raum um dich herum gerade weiter und ruhiger?",
+      "Fühlt sich dein Gesäß wieder 'aktiv' und wach an?"
+    ],
+    'Performance Prep': [
+      "Läuft das Sprunggelenk 'runder' und ohne Blockaden?",
+      "Fühlt sich dein unterer Rücken stabiler und kontrollierter an?",
+      "Ist dein Gleichgewicht beim nächsten Test fester?",
+      "Spürst du die Kraftübertragung bis in den Rumpf?",
+      "Gleiten deine Schulterblätter jetzt flüssiger?",
+      "Ist deine Rumpfspannung ('Bracing') jetzt auf 100%?",
+      "Bist du bereit? Fühlt sich das Gewicht jetzt leichter an?"
+    ],
+    'Nightly Reset': [
+      "Ist das Schwarz vor deinen Augen tiefer geworden?",
+      "Lässt der Druck in deiner Kehle und dem Nacken nach?",
+      "Spürst du, wie dein innerer Rhythmus langsamer wird?",
+      "Wird dein Bauch warm und weich? (Check: N8)",
+      "Fällt das Ausatmen jetzt schwereloser? (Check: N4)",
+      "Fühlen sich deine Beine jetzt schwerer und entspannter an?",
+      "Ist dein Herzschlag jetzt ruhig und gleichmäßig?"
+    ]
+  };
+
+  const currentCheckQuestion = successChecks[routine.routine_name]?.[currentStep] || "Spürst du eine Verbesserung?";
+
   // Get detailed instruction from MFR Node or Exercise
   const getDetailedInstruction = () => {
     if (currentSequence.type === 'mfr' && currentSequence.node_id) {
