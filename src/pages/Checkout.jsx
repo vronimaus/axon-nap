@@ -88,9 +88,9 @@ export default function Checkout() {
           </p>
         </div>
 
-        {clientSecret && (
+        {clientSecret && stripe && (
           <EmbeddedCheckoutProvider
-            stripe={stripePromise}
+            stripe={Promise.resolve(stripe)}
             options={{
               clientSecret
             }}
