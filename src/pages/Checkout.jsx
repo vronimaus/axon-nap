@@ -24,6 +24,7 @@ export default function Checkout() {
   const [clientSecret, setClientSecret] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [stripe, setStripe] = useState(null);
 
   useEffect(() => {
     const initCheckout = async () => {
@@ -33,8 +34,10 @@ export default function Checkout() {
           returnUrl: window.location.origin + createPageUrl('Profile')
         });
 
-        if (response.data.sessionId) {
-          localStorage.setItem('stripe_publishable_key', response.data.publishableKey);
+        if (response.data.sessionId && response.data.publishableKey) {
+          // Load Stripe with publishable key
+          const stripeInstance = await loadStripe(response.data.publishableKey);
+          setStripe(stripeInstance);
           setClientSecret(response.data.sessionId);
         } else {
           setError('Checkout konnte nicht initialisiert werden');
