@@ -76,14 +76,46 @@ export default function Flow() {
   };
 
   const handleCheckResponse = (response) => {
-    setCheckAnswers({
+    const newAnswers = {
       ...checkAnswers,
       [currentStep]: response
-    });
+    };
+    setCheckAnswers(newAnswers);
+    
+    // Count neutral/negative responses for troubleshooting trigger
+    if (response === 'same' || response === 'no') {
+      setNeutralCount(prev => prev + 1);
+      // Show micro-tweak instead of moving forward
+      setShowMicroTweak(true);
+      setShowSuccessCheck(false);
+      return;
+    }
+    
     setShowSuccessCheck(false);
     setIsPlaying(false);
     
     // Move to next step
+    if (currentStep < routine.sequence.length - 1) {
+      setCurrentStep(prev => prev + 1);
+    } else {
+      // Check if we should show deep-dive option (more than 50% neutral)
+      const totalNeutral = Object.values(newAnswers).filter(v => v === 'same' || v === 'no').length;
+      setCompleted(true);
+      saveHistory();
+    }
+  };
+
+  const handleMicroTweakRetry = () => {
+    // User retries the same step after tweak suggestion
+    setShowMicroTweak(false);
+    setIsPlaying(false);
+    setTimeRemaining(routine.sequence[currentStep].duration_seconds);
+  };
+
+  const handleMicroTweakSkip = () => {
+    // User skips and moves to next step
+    setShowMicroTweak(false);
+    setIsPlaying(false);
     if (currentStep < routine.sequence.length - 1) {
       setCurrentStep(prev => prev + 1);
     } else {
