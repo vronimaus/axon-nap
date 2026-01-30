@@ -94,11 +94,91 @@ export default function DiagnosisChat() {
         else if (mapDataParam && regionParam) {
           setLoading(true);
           const mapData = JSON.parse(mapDataParam);
-          const markerDescription = mapData.markers.length > 1 
-            ? `eine Schmerzlinie entlang mehrerer Punkte` 
-            : `einen spezifischen Schmerzpunkt`;
           
-          const contextMsg = `Ich habe auf der Body Map (${mapData.view === 'front' ? 'Vorderseite' : 'Rückseite'}) ${markerDescription} im Bereich "${regionParam}" gezeichnet.\n\nDie Schmerzen verlaufen entlang dieser markierten Bereiche. Bitte analysiere die Schmerzkontur präzise und identifiziere die betroffenen Faszien-Ketten und die entsprechenden MFR-Nodes.`;
+          // Create detailed anatomical description based on coordinates
+          const getDetailedRegion = (markers, view) => {
+            let totalY = 0, totalX = 0, totalPoints = 0;
+            markers.forEach(marker => {
+              if (marker.type === 'point') {
+                totalX += marker.x;
+                totalY += marker.y;
+                totalPoints += 1;
+              } else if (marker.points) {
+                marker.points.forEach(p => {
+                  totalX += p.x;
+                  totalY += p.y;
+                  totalPoints += 1;
+                });
+              }
+            });
+            
+            const avgY = totalPoints > 0 ? totalY / totalPoints : 0;
+            const avgX = totalPoints > 0 ? totalX / totalPoints : 0;
+            const normalizedY = avgY / 600;
+            const normalizedX = avgX / 400;
+            
+            // Detailed region mapping
+            let region = '';
+            let laterality = normalizedX < 0.4 ? 'links' : normalizedX > 0.6 ? 'rechts' : 'zentral';
+            
+            if (view === 'front') {
+              if (normalizedY < 0.15) {
+                region = 'Kopf/Schädel';
+              } else if (normalizedY < 0.25) {
+                region = 'Hals/Nacken vorne';
+              } else if (normalizedY < 0.35) {
+                region = normalizedX < 0.35 || normalizedX > 0.65 ? 'Schulter' : 'Brust/Brustbein';
+              } else if (normalizedY < 0.45) {
+                region = 'Obere Brust/Rippen';
+              } else if (normalizedY < 0.55) {
+                region = normalizedX < 0.35 || normalizedX > 0.65 ? 'Seitliche Rippen' : 'Bauch/Mitte';
+              } else if (normalizedY < 0.65) {
+                region = 'Unterer Bauch/Hüfte';
+              } else if (normalizedY < 0.75) {
+                region = normalizedX < 0.35 || normalizedX > 0.65 ? 'Hüftgelenk/Leiste' : 'Unterbauch';
+              } else if (normalizedY < 0.82) {
+                region = 'Oberschenkel vorne';
+              } else if (normalizedY < 0.88) {
+                region = 'Knie vorne';
+              } else if (normalizedY < 0.95) {
+                region = 'Unterschenkel/Schienbein';
+              } else {
+                region = 'Fuß/Knöchel';
+              }
+            } else {
+              // Back view
+              if (normalizedY < 0.15) {
+                region = 'Hinterkopf';
+              } else if (normalizedY < 0.25) {
+                region = 'Nacken/obere HWS';
+              } else if (normalizedY < 0.35) {
+                region = normalizedX < 0.35 || normalizedX > 0.65 ? 'Schulterblatt' : 'Oberer Rücken/BWS';
+              } else if (normalizedY < 0.55) {
+                region = normalizedX < 0.35 || normalizedX > 0.65 ? 'Seitlicher Rücken/Rippen' : 'Mittlerer Rücken/BWS';
+              } else if (normalizedY < 0.65) {
+                region = 'Unterer Rücken/LWS';
+              } else if (normalizedY < 0.75) {
+                region = normalizedX < 0.35 || normalizedX > 0.65 ? 'Hüfte/Becken seitlich' : 'Kreuzbein/Gesäß';
+              } else if (normalizedY < 0.82) {
+                region = 'Oberschenkel hinten';
+              } else if (normalizedY < 0.88) {
+                region = 'Knie hinten/Kniekehle';
+              } else if (normalizedY < 0.95) {
+                region = 'Wade';
+              } else {
+                region = 'Ferse/Achillessehne';
+              }
+            }
+            
+            return `${region} (${laterality})`;
+          };
+          
+          const detailedRegion = getDetailedRegion(mapData.markers, mapData.view);
+          const markerType = mapData.markers.length === 1 && mapData.markers[0].type === 'point'
+            ? 'einen einzelnen Schmerzpunkt'
+            : 'eine Schmerzlinie';
+          
+          const contextMsg = `Ich habe auf der Body Map (${mapData.view === 'front' ? 'Vorderseite' : 'Rückseite'}) ${markerType} markiert.\n\n📍 **Markierte Stelle:** ${detailedRegion}\n\nBitte analysiere diese exakte Stelle und identifiziere die betroffenen Faszien-Ketten und MFR-Nodes für diese Region.`;
           
           await base44.agents.addMessage(conv, {
             role: 'user',
