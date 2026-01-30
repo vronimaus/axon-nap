@@ -117,53 +117,64 @@ export default function DiagnosisChat() {
             const normalizedY = avgY / 600;
             const normalizedX = avgX / 400;
             
-            // Detailed region mapping
+            // Detailed region mapping with more precision
             let region = '';
-            let laterality = normalizedX < 0.4 ? 'links' : normalizedX > 0.6 ? 'rechts' : 'zentral';
+            let laterality = normalizedX < 0.35 ? 'links' : normalizedX > 0.65 ? 'rechts' : 'zentral';
             
             if (view === 'front') {
-              if (normalizedY < 0.15) {
-                region = 'Kopf/Schädel';
-              } else if (normalizedY < 0.25) {
-                region = 'Hals/Nacken vorne';
-              } else if (normalizedY < 0.35) {
-                region = normalizedX < 0.35 || normalizedX > 0.65 ? 'Schulter' : 'Brust/Brustbein';
-              } else if (normalizedY < 0.45) {
-                region = 'Obere Brust/Rippen';
-              } else if (normalizedY < 0.55) {
-                region = normalizedX < 0.35 || normalizedX > 0.65 ? 'Seitliche Rippen' : 'Bauch/Mitte';
-              } else if (normalizedY < 0.65) {
-                region = 'Unterer Bauch/Hüfte';
-              } else if (normalizedY < 0.75) {
-                region = normalizedX < 0.35 || normalizedX > 0.65 ? 'Hüftgelenk/Leiste' : 'Unterbauch';
-              } else if (normalizedY < 0.82) {
+              if (normalizedY < 0.12) {
+                region = 'Kopf/Stirn';
+              } else if (normalizedY < 0.20) {
+                region = normalizedX < 0.35 || normalizedX > 0.65 ? 'Kiefer/Kiefergelenk' : 'Hals vorne';
+              } else if (normalizedY < 0.28) {
+                // This is the shoulder/upper chest area
+                if (normalizedX < 0.25 || normalizedX > 0.75) {
+                  region = 'Schulter vorne/Schlüsselbein lateral';
+                } else if (normalizedX < 0.4 || normalizedX > 0.6) {
+                  region = 'Obere Brust/Schlüsselbein';
+                } else {
+                  region = 'Hals/Kehlkopf';
+                }
+              } else if (normalizedY < 0.40) {
+                region = normalizedX < 0.30 || normalizedX > 0.70 ? 'Schulter/Deltamuskel' : 'Brust/Brustbein';
+              } else if (normalizedY < 0.50) {
+                region = normalizedX < 0.30 || normalizedX > 0.70 ? 'Seitliche Rippen/Achsel' : 'Mittlere Brust';
+              } else if (normalizedY < 0.60) {
+                region = normalizedX < 0.30 || normalizedX > 0.70 ? 'Seitlicher Rumpf' : 'Oberer Bauch';
+              } else if (normalizedY < 0.68) {
+                region = 'Unterer Bauch/Bauchnabel';
+              } else if (normalizedY < 0.76) {
+                region = normalizedX < 0.30 || normalizedX > 0.70 ? 'Hüfte/Leiste' : 'Unterbauch/Becken';
+              } else if (normalizedY < 0.84) {
                 region = 'Oberschenkel vorne';
-              } else if (normalizedY < 0.88) {
-                region = 'Knie vorne';
-              } else if (normalizedY < 0.95) {
+              } else if (normalizedY < 0.90) {
+                region = 'Knie/Kniescheibe';
+              } else if (normalizedY < 0.96) {
                 region = 'Unterschenkel/Schienbein';
               } else {
-                region = 'Fuß/Knöchel';
+                region = 'Fuß/Knöchel/Zehen';
               }
             } else {
               // Back view
-              if (normalizedY < 0.15) {
+              if (normalizedY < 0.12) {
                 region = 'Hinterkopf';
-              } else if (normalizedY < 0.25) {
+              } else if (normalizedY < 0.20) {
                 region = 'Nacken/obere HWS';
-              } else if (normalizedY < 0.35) {
-                region = normalizedX < 0.35 || normalizedX > 0.65 ? 'Schulterblatt' : 'Oberer Rücken/BWS';
-              } else if (normalizedY < 0.55) {
-                region = normalizedX < 0.35 || normalizedX > 0.65 ? 'Seitlicher Rücken/Rippen' : 'Mittlerer Rücken/BWS';
-              } else if (normalizedY < 0.65) {
+              } else if (normalizedY < 0.28) {
+                region = normalizedX < 0.25 || normalizedX > 0.75 ? 'Schulter hinten/Trapez' : 'Nacken/HWS-Übergang';
+              } else if (normalizedY < 0.40) {
+                region = normalizedX < 0.30 || normalizedX > 0.70 ? 'Schulterblatt' : 'Oberer Rücken/BWS';
+              } else if (normalizedY < 0.58) {
+                region = normalizedX < 0.30 || normalizedX > 0.70 ? 'Seitlicher Rücken/Latissimus' : 'Mittlerer Rücken/BWS';
+              } else if (normalizedY < 0.68) {
                 region = 'Unterer Rücken/LWS';
-              } else if (normalizedY < 0.75) {
-                region = normalizedX < 0.35 || normalizedX > 0.65 ? 'Hüfte/Becken seitlich' : 'Kreuzbein/Gesäß';
-              } else if (normalizedY < 0.82) {
-                region = 'Oberschenkel hinten';
-              } else if (normalizedY < 0.88) {
-                region = 'Knie hinten/Kniekehle';
-              } else if (normalizedY < 0.95) {
+              } else if (normalizedY < 0.76) {
+                region = normalizedX < 0.30 || normalizedX > 0.70 ? 'Hüfte seitlich/Becken' : 'Kreuzbein/Gesäß';
+              } else if (normalizedY < 0.84) {
+                region = 'Oberschenkel hinten/Beinbeuger';
+              } else if (normalizedY < 0.90) {
+                region = 'Kniekehle';
+              } else if (normalizedY < 0.96) {
                 region = 'Wade';
               } else {
                 region = 'Ferse/Achillessehne';
