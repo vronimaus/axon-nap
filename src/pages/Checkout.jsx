@@ -6,18 +6,7 @@ import { Loader2, ArrowLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 
-let stripePromise;
 
-const getStripe = async () => {
-  if (!stripePromise) {
-    const publishableKey = localStorage.getItem('stripe_publishable_key');
-    if (!publishableKey) {
-      throw new Error('Stripe publishable key not found');
-    }
-    stripePromise = loadStripe(publishableKey);
-  }
-  return stripePromise;
-};
 
 export default function Checkout() {
   const navigate = useNavigate();
