@@ -137,7 +137,7 @@ export default function Landing() {
       {/* SEKTION 1: HERO */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-b from-black via-slate-950 to-slate-900">
         {/* Body Map Background */}
-        <div className="absolute inset-0 opacity-20">
+        <div className="absolute inset-0 opacity-50">
           <img 
             src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/ad6e52b61_generated_image.png"
             alt="AXON Body Map Background"
@@ -146,7 +146,7 @@ export default function Landing() {
         </div>
 
         {/* Gradient Overlays */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-slate-950/60 to-slate-900/80" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-slate-950/40 to-slate-900/60" />
         <div className="absolute inset-0">
           <div className="absolute top-20 left-20 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl animate-pulse" />
           <div className="absolute bottom-20 right-20 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl animate-pulse delay-1000" />
