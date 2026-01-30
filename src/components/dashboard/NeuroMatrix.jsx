@@ -2,7 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { ChevronRight, Lock, CheckCircle, Zap } from 'lucide-react';
+import { ChevronRight, Lock, CheckCircle, Zap, Trophy } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 
@@ -64,23 +64,24 @@ export default function NeuroMatrix({ mode, goals, selectedRegion, user }) {
   const progressData = goals.reduce((acc, goal) => {
     const userGoalProgress = userProgress.find(p => p.goal_code === goal.code);
     acc[goal.code] = {
+      max_reps: userGoalProgress?.max_reps || 0,
       total_sessions: userGoalProgress?.total_sessions || 0,
       unlocked: userGoalProgress?.unlocked || false
     };
     return acc;
   }, {});
 
-  const getProgressColor = (totalSessions) => {
-    if (totalSessions === 0) return 'text-slate-600';
-    if (totalSessions <= 2) return 'text-cyan-400';
-    if (totalSessions <= 4) return 'text-purple-400';
+  const getProgressColor = (maxReps) => {
+    if (maxReps === 0) return 'text-slate-600';
+    if (maxReps <= 2) return 'text-cyan-400';
+    if (maxReps <= 5) return 'text-purple-400';
     return 'text-green-400';
   };
 
-  const getProgressRing = (totalSessions) => {
-    // Cap visual progress at 5 sessions for the ring
-    const cappedSessions = Math.min(totalSessions, 5);
-    const percentage = (cappedSessions / 5) * 100;
+  const getProgressRing = (maxReps) => {
+    // Cap visual progress at 10 reps for the ring
+    const cappedReps = Math.min(maxReps, 10);
+    const percentage = (cappedReps / 10) * 100;
     return percentage;
   };
 
@@ -163,8 +164,8 @@ export default function NeuroMatrix({ mode, goals, selectedRegion, user }) {
           </h3>
           <div className="space-y-2 max-h-[400px] sm:max-h-[600px] overflow-y-auto custom-scrollbar">
             {goals.slice(0, 12).map((goal, idx) => {
-            const progress = progressData[goal.code] || { total_sessions: 0, unlocked: false };
-            const percentage = getProgressRing(progress.total_sessions);
+            const progress = progressData[goal.code] || { max_reps: 0, total_sessions: 0, unlocked: false };
+            const percentage = getProgressRing(progress.max_reps);
             
             return (
               <motion.div
@@ -197,7 +198,7 @@ export default function NeuroMatrix({ mode, goals, selectedRegion, user }) {
                             fill="none"
                             strokeDasharray={`${2 * Math.PI * 20}`}
                             strokeDashoffset={`${2 * Math.PI * 20 * (1 - percentage / 100)}`}
-                            className={getProgressColor(progress.total_sessions)}
+                            className={getProgressColor(progress.max_reps)}
                             strokeLinecap="round"
                           />
                         </svg>
@@ -212,10 +213,11 @@ export default function NeuroMatrix({ mode, goals, selectedRegion, user }) {
                           {goal.name}
                         </div>
                         <div className="flex items-center gap-2 mt-1">
-                          <span className={`text-xs font-mono ${getProgressColor(progress.total_sessions)}`}>
-                            {progress.total_sessions} mal gemacht
+                          <Trophy className="w-3 h-3 text-amber-400" />
+                          <span className={`text-xs font-mono ${getProgressColor(progress.max_reps)}`}>
+                            Highscore: {progress.max_reps}
                           </span>
-                          {progress.total_sessions >= 5 && (
+                          {progress.max_reps >= 10 && (
                             <CheckCircle className="w-3 h-3 text-green-400" />
                           )}
                         </div>

@@ -2,13 +2,14 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
+import { Input } from '@/components/ui/input';
 import { Slider } from '@/components/ui/slider';
-import { CheckCircle2, TrendingUp, Zap, MessageSquare, X } from 'lucide-react';
+import { CheckCircle2, Trophy, Zap, MessageSquare, X } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { toast } from 'sonner';
 
 export default function SessionFeedbackForm({ goalName, onClose, onSaved }) {
-  const [currentLevel, setCurrentLevel] = useState(5);
+  const [reps, setReps] = useState('');
   const [intensity, setIntensity] = useState(5);
   const [notes, setNotes] = useState('');
   const [isSaving, setIsSaving] = useState(false);
@@ -26,15 +27,19 @@ export default function SessionFeedbackForm({ goalName, onClose, onSaved }) {
         goal_code: goalName.toLowerCase().replace(/\s+/g, '_')
       });
 
+      const currentReps = parseInt(reps) || 0;
+      const previousMaxReps = existing[0]?.max_reps || 0;
+      const newMaxReps = Math.max(currentReps, previousMaxReps);
+
       const progressData = {
         user_email: user.email,
         goal_code: goalName.toLowerCase().replace(/\s+/g, '_'),
-        current_level: currentLevel,
+        max_reps: newMaxReps,
         last_intensity: intensity,
         notes: notes,
         last_session_date: new Date().toISOString().split('T')[0],
         total_sessions: existing[0] ? (existing[0].total_sessions || 0) + 1 : 1,
-        unlocked: currentLevel >= 10
+        unlocked: newMaxReps >= 10
       };
 
       if (existing[0]) {
@@ -52,13 +57,6 @@ export default function SessionFeedbackForm({ goalName, onClose, onSaved }) {
     } finally {
       setIsSaving(false);
     }
-  };
-
-  const getLevelLabel = (level) => {
-    if (level <= 2) return 'Anfänger';
-    if (level <= 5) return 'In Entwicklung';
-    if (level <= 8) return 'Fortgeschritten';
-    return 'Gemeistert';
   };
 
   const getIntensityLabel = (int) => {
@@ -104,28 +102,24 @@ export default function SessionFeedbackForm({ goalName, onClose, onSaved }) {
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Current Level */}
+          {/* Reps Input */}
           <div>
             <div className="flex items-center justify-between mb-3">
               <label className="flex items-center gap-2 text-sm font-medium text-white">
-                <TrendingUp className="w-4 h-4 text-cyan-400" />
-                Aktuelles Level
+                <Trophy className="w-4 h-4 text-amber-400" />
+                Geschaffte Wiederholungen
               </label>
-              <span className="text-lg font-bold text-amber-400">
-                {currentLevel}/10
-                <span className="text-xs text-slate-400 ml-2">{getLevelLabel(currentLevel)}</span>
-              </span>
             </div>
-            <Slider
-              value={[currentLevel]}
-              onValueChange={(v) => setCurrentLevel(v[0])}
-              min={1}
-              max={10}
-              step={1}
-              className="cursor-pointer"
+            <Input
+              type="number"
+              value={reps}
+              onChange={(e) => setReps(e.target.value)}
+              placeholder="z.B. 5"
+              min="0"
+              className="bg-slate-800/50 border-slate-700 text-white placeholder-slate-500 text-lg"
             />
             <p className="text-xs text-slate-500 mt-2">
-              Wie gut kannst du die Übung jetzt ausführen?
+              Wie viele saubere Wiederholungen hast du geschafft?
             </p>
           </div>
 
@@ -163,7 +157,7 @@ export default function SessionFeedbackForm({ goalName, onClose, onSaved }) {
             <Textarea
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
-              placeholder="z.B. 'N2 fühlte sich besser an', 'Neuro-Drill war herausfordernd', 'Schaffe jetzt 3 saubere Reps'..."
+              placeholder="z.B. 'N2 fühlte sich besser an', 'Neuro-Drill war herausfordernd', 'Balance war heute besser'..."
               className="bg-slate-800/50 border-slate-700 text-white placeholder-slate-500 min-h-[100px]"
             />
           </div>
