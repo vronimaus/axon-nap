@@ -522,7 +522,7 @@ export default function Landing() {
                 <span className="text-slate-400">einmalig</span>
               </div>
               <p className="text-slate-300 mb-8">
-                Wie eine Sitzung bei deinem Therapeuten – aber 24/7 für dich da. Bessere Mobilität, neue Kraft-Reserve, entspanntes Nervensystem. Unbegrenzter lebenslanger Zugriff.
+                Wie eine Sitzung bei deinem persönlichen Trainer – aber 24/7 für dich da. Entlastung, Kraft und Performance auf deinem eigenen Tempo. Unbegrenzter lebenslanger Zugriff.
               </p>
               <Button
                 onClick={() => handleCheckout('direct')}
