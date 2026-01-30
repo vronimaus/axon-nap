@@ -66,7 +66,6 @@ import Success from './pages/Success';
 import Terms from './pages/Terms';
 import TrialInfo from './pages/TrialInfo';
 import PerformanceChat from './pages/PerformanceChat';
-import PerformanceTrigger from './pages/PerformanceTrigger';
 import __Layout from './Layout.jsx';
 
 
@@ -90,7 +89,6 @@ export const PAGES = {
     "Terms": Terms,
     "TrialInfo": TrialInfo,
     "PerformanceChat": PerformanceChat,
-    "PerformanceTrigger": PerformanceTrigger,
 }
 
 export const pagesConfig = {
