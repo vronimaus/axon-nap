@@ -90,103 +90,14 @@ export default function DiagnosisChat() {
           });
           setLoading(false);
         }
-        // If from Dashboard with body map, send initial analysis request
+        // If from Dashboard with body map, trigger the agent
         else if (mapDataParam && regionParam) {
           setLoading(true);
-          const mapData = JSON.parse(mapDataParam);
-          
-          // Create detailed anatomical description based on coordinates
-          const getDetailedRegion = (markers, view) => {
-            let totalY = 0, totalX = 0, totalPoints = 0;
-            markers.forEach(marker => {
-              if (marker.type === 'point') {
-                totalX += marker.x;
-                totalY += marker.y;
-                totalPoints += 1;
-              } else if (marker.points) {
-                marker.points.forEach(p => {
-                  totalX += p.x;
-                  totalY += p.y;
-                  totalPoints += 1;
-                });
-              }
-            });
-            
-            const avgY = totalPoints > 0 ? totalY / totalPoints : 0;
-            const avgX = totalPoints > 0 ? totalX / totalPoints : 0;
-            const normalizedY = avgY / 600;
-            const normalizedX = avgX / 400;
-            
-            // Detailed region mapping with more precision
-            let region = '';
-            let laterality = normalizedX < 0.35 ? 'links' : normalizedX > 0.65 ? 'rechts' : 'zentral';
-            
-            if (view === 'front') {
-              if (normalizedY < 0.12) {
-                region = 'Kopf/Stirn';
-              } else if (normalizedY < 0.20) {
-                region = normalizedX < 0.35 || normalizedX > 0.65 ? 'Kiefer/Kiefergelenk' : 'Hals vorne';
-              } else if (normalizedY < 0.38) {
-                // Shoulder and upper chest - prioritize shoulder detection
-                if (normalizedX < 0.30 || normalizedX > 0.70) {
-                  region = 'Schulter vorne';
-                } else if (normalizedX < 0.42 || normalizedX > 0.58) {
-                  region = 'Obere Brust/Schlüsselbein';
-                } else {
-                  region = 'Obere Brust/Brustbein';
-                }
-              } else if (normalizedY < 0.48) {
-                region = normalizedX < 0.30 || normalizedX > 0.70 ? 'Schulter/Deltamuskel' : 'Mittlere Brust';
-              } else if (normalizedY < 0.50) {
-                region = normalizedX < 0.30 || normalizedX > 0.70 ? 'Seitliche Rippen/Achsel' : 'Mittlere Brust';
-              } else if (normalizedY < 0.60) {
-                region = normalizedX < 0.30 || normalizedX > 0.70 ? 'Seitlicher Rumpf' : 'Oberer Bauch';
-              } else if (normalizedY < 0.68) {
-                region = 'Unterer Bauch/Bauchnabel';
-              } else if (normalizedY < 0.76) {
-                region = normalizedX < 0.30 || normalizedX > 0.70 ? 'Hüfte/Leiste' : 'Unterbauch/Becken';
-              } else if (normalizedY < 0.84) {
-                region = 'Oberschenkel vorne';
-              } else if (normalizedY < 0.90) {
-                region = 'Knie/Kniescheibe';
-              } else if (normalizedY < 0.96) {
-                region = 'Unterschenkel/Schienbein';
-              } else {
-                region = 'Fuß/Knöchel/Zehen';
-              }
-            } else {
-              // Back view
-              if (normalizedY < 0.12) {
-                region = 'Hinterkopf';
-              } else if (normalizedY < 0.20) {
-                region = 'Nacken/obere HWS';
-              } else if (normalizedY < 0.28) {
-                region = normalizedX < 0.25 || normalizedX > 0.75 ? 'Schulter hinten/Trapez' : 'Nacken/HWS-Übergang';
-              } else if (normalizedY < 0.40) {
-                region = normalizedX < 0.30 || normalizedX > 0.70 ? 'Schulterblatt' : 'Oberer Rücken/BWS';
-              } else if (normalizedY < 0.58) {
-                region = normalizedX < 0.30 || normalizedX > 0.70 ? 'Seitlicher Rücken/Latissimus' : 'Mittlerer Rücken/BWS';
-              } else if (normalizedY < 0.68) {
-                region = 'Unterer Rücken/LWS';
-              } else if (normalizedY < 0.76) {
-                region = normalizedX < 0.30 || normalizedX > 0.70 ? 'Hüfte seitlich/Becken' : 'Kreuzbein/Gesäß';
-              } else if (normalizedY < 0.84) {
-                region = 'Oberschenkel hinten/Beinbeuger';
-              } else if (normalizedY < 0.90) {
-                region = 'Kniekehle';
-              } else if (normalizedY < 0.96) {
-                region = 'Wade';
-              } else {
-                region = 'Ferse/Achillessehne';
-              }
-            }
-            
-            return `${region} (${laterality})`;
-          };
-          
-          // Don't send an automatic user message
-          // The agent will see the body_map metadata and respond to it
-          // This prevents showing a fake "user message" in the chat
+          // Send a minimal trigger message - the agent will see the body_map metadata
+          await base44.agents.addMessage(conv, {
+            role: 'user',
+            content: 'Analysiere meine Schmerzmarkierung'
+          });
         }
       } catch (error) {
         console.error('Fehler beim Erstellen der Konversation:', error);
