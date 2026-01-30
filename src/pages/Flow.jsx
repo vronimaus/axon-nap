@@ -205,6 +205,48 @@ export default function Flow() {
 
   const currentCheckQuestion = successChecks[routine.routine_name]?.[currentStep] || "Spürst du eine Verbesserung?";
 
+  // Micro-tweaks for each routine and step
+  const microTweaks = {
+    'Morning Spark': [
+      "Halte den Kiefer locker – atme flach durch die Nase und konzentriere dich auf die Bewegung.",
+      "Lasse den Nacken komplett passiv. Nur die Augen bewegen sich. Probiers nochmal.",
+      "Tiefere Augenfixation: Behalte den Blick auf einem Punkt, während sich dein Kopf bewegt.",
+      "Dein System braucht einen stärkeren Reiz. Vergrößere die Bewegung beim nächsten Versuch.",
+      "Zunge an den Gaumen – das aktiviert dein visuelles System direkt. Nochmal!",
+      "Atme vor der Bewegung tief ein, halte dann kurz an und DANN die Bewegung. Das triggert mehr Input.",
+      "Du brauchst heute mehr sensorischen Input. Berühre dabei deine Haut leicht – das hilft deinem Gehirn."
+    ],
+    'Office Rescue': [
+      "Focus: Nur der Kiefer bewegt sich. Alles andere bleibt entspannt. Und atme weiter.",
+      "Stärker komprimieren – dein Kiefer-Kaumuskel braucht heute einen intensiveren Reiz.",
+      "Verlangsamung: Super langsam kommen, 3 Sekunden halten. Das ist kein Krafttraining.",
+      "Dein Rücken ist noch angespannt. Lehne dich beim nächsten Mal leicht nach vorne – das entspannt den Nacken.",
+      "Spann die Bauchmuskulatur an, während du sitzt. Das signalisiert deinem Gehirn: ‚Sicherheit'.",
+      "Atemtiming: Ausatmen beim Dehnen. Das ist das Geheimnis. Probier es nochmal.",
+      "Dein System meldet heute ‚Schutzspannung'. Gib dir selbst 3 tiefe Atemzüge vor dem nächsten Versuch."
+    ],
+    'Performance Prep': [
+      "Die Bewegung muss explosiv sein – dein Gehirn braucht das ‚Go'-Signal. Versuch es schneller.",
+      "Stabilität checken: Kannst du die Balance halten? Wenn ja, mach die Bewegung größer.",
+      "Zunge an den Gaumen – das triggert dein posturales Kontrollsystem direkt.",
+      "Dein Rumpf braucht mehr ‚Bracing'. Spann den Bauch vorher an, als würdest du gleich einen Schlag bekommen.",
+      "Augenfokus: Fixiere einen Punkt 2 Meter weg. Das stabilisiert dein Gleichgewicht während der Bewegung.",
+      "Dein System ist heute konservativ. Starte langsamer und beschleunige dann. Das Gehirn mag Progression.",
+      "Tempo! Dein visuelles System braucht Geschwindigkeit, um ‚Kraft' freizugeben. Nochmal, schneller!"
+    ],
+    'Nightly Reset': [
+      "Verlangsame die Atmung noch mehr – 4 Sekunden rein, 6 Sekunden raus. Das ist das magische Timing.",
+      "Entspannt die Augen: Augenlider halb zu, keine fixation. Nur fühlen, nicht sehen.",
+      "Dein Parasympathikus braucht mehr Zeit. Halte die Position 10 Sekunden länger.",
+      "Komplettest Loslassen: Wenn du spannst, sabotierst du dich. Lass den Körper 100% passiv fallen.",
+      "Der Kiefer ist der Trick – komplett locker, Zunge breit auf dem Boden. Das triggert Vagus direkt.",
+      "Dunkelheit: Schließ die Augen vollständig. Dein Gehirn braucht dunkel für den Parasympathikus.",
+      "Wärmefokus: Spüre die Wärmebewegung in deinem Bauch. Das hilft dem Nervensystem, ‚entspannen' zu verstehen."
+    ]
+  };
+
+  const currentMicroTweak = microTweaks[routine.routine_name]?.[currentStep] || "Versuche es nochmal mit etwas mehr Konzentration auf die Details.";
+
   // Get detailed instruction from MFR Node or Exercise
   const getDetailedInstruction = () => {
     if (currentSequence.type === 'mfr' && currentSequence.node_id) {
