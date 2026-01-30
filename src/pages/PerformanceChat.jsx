@@ -129,9 +129,17 @@ export default function PerformanceChat() {
     setShowFeedbackForm(true);
   };
 
-  const handleFeedbackSaved = () => {
-    // Refresh conversation to show updated progress
-    toast.success('Session erfolgreich gespeichert!');
+  const handleFeedbackSaved = async () => {
+    // Send follow-up message from coach
+    try {
+      await base44.agents.addMessage(conversation, {
+        role: 'user',
+        content: '[FEEDBACK_SUBMITTED] Session abgeschlossen und Feedback gespeichert. Frage ob ich weitermachen will oder mich entspannen möchte.'
+      });
+      toast.success('Session erfolgreich gespeichert!');
+    } catch (error) {
+      console.error('Fehler beim Senden der Follow-up-Nachricht:', error);
+    }
   };
 
   // Check if last assistant message contains [SHOW_DONE_BUTTON]
@@ -189,9 +197,9 @@ export default function PerformanceChat() {
             >
               <Button
                 onClick={handleDoneClick}
-                className="w-full h-14 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-bold text-lg shadow-lg shadow-green-500/50"
+                className="w-full h-12 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-bold shadow-lg shadow-green-500/50"
               >
-                <CheckCircle2 className="w-6 h-6 mr-2" />
+                <CheckCircle2 className="w-5 h-5 mr-2" />
                 Ja, ich habe das Training geschafft.
               </Button>
             </motion.div>
