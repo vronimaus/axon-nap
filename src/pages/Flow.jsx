@@ -16,6 +16,8 @@ export default function Flow() {
   const [completed, setCompleted] = useState(false);
   const [checkAnswers, setCheckAnswers] = useState({});
   const [showSuccessCheck, setShowSuccessCheck] = useState(false);
+  const [showMicroTweak, setShowMicroTweak] = useState(false);
+  const [neutralCount, setNeutralCount] = useState(0);
 
   const { data: routine, isLoading } = useQuery({
     queryKey: ['routine', routineId],
