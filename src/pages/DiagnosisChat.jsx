@@ -184,17 +184,9 @@ export default function DiagnosisChat() {
             return `${region} (${laterality})`;
           };
           
-          const detailedRegion = getDetailedRegion(mapData.markers, mapData.view);
-          const markerType = mapData.markers.length === 1 && mapData.markers[0].type === 'point'
-            ? 'einen einzelnen Schmerzpunkt'
-            : 'eine Schmerzlinie';
-          
-          const contextMsg = `Ich habe auf der Body Map (${mapData.view === 'front' ? 'Vorderseite' : 'Rückseite'}) ${markerType} markiert.\n\n📍 **Markierte Stelle:** ${detailedRegion}\n\nBitte analysiere diese exakte Stelle und identifiziere die betroffenen Faszien-Ketten und MFR-Nodes für diese Region.`;
-          
-          await base44.agents.addMessage(conv, {
-            role: 'user',
-            content: contextMsg
-          });
+          // Don't send an automatic user message
+          // The agent will see the body_map metadata and respond to it
+          // This prevents showing a fake "user message" in the chat
         }
       } catch (error) {
         console.error('Fehler beim Erstellen der Konversation:', error);
