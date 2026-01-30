@@ -14,25 +14,22 @@ Deno.serve(async (req) => {
       }
     });
 
-    // Checkout Session erstellen
-    const sessionConfig = {
+    // Payment Intent für Embedded Checkout erstellen
+    const paymentIntent = await stripeClient.paymentIntents.create({
       customer: customer.id,
-      mode: 'setup',
-      payment_method_types: ['card'],
-      success_url: `${getBaseUrl(req)}/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${getBaseUrl(req)}/landing`,
+      amount: 5900, // 59€ in cents
+      currency: 'eur',
+      automatic_payment_methods: { enabled: true },
       metadata: {
         base44_app_id: Deno.env.get('BASE44_APP_ID'),
         customer_email: email,
         trial_mode: mode === 'trial' ? 'true' : 'false',
         checkout_mode: mode
       }
-    };
-
-    const session = await stripeClient.checkout.sessions.create(sessionConfig);
+    });
 
     return Response.json({ 
-      sessionId: session.id,
+      clientSecret: paymentIntent.client_secret,
       publishableKey: Deno.env.get('STRIPE_PUBLISHABLE_KEY'),
       mode: mode,
       email: email,
