@@ -6,8 +6,6 @@ import { Loader2, ArrowLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 
-
-
 export default function Checkout() {
   const navigate = useNavigate();
   const [clientSecret, setClientSecret] = useState(null);
@@ -18,21 +16,30 @@ export default function Checkout() {
   useEffect(() => {
     const initCheckout = async () => {
       try {
+        console.log('[Checkout] Starting initialization...');
+
         // Create checkout session
         const response = await base44.functions.invoke('createCheckoutSession', {
           returnUrl: window.location.origin + createPageUrl('Profile')
         });
 
-        if (response.data?.clientSecret && response.data?.publishableKey) {
-          // Load Stripe - pass the promise directly
-          const promise = loadStripe(response.data.publishableKey);
-          setStripePromise(promise);
-          setClientSecret(response.data.clientSecret);
-        } else {
-          throw new Error('Keine clientSecret oder publishableKey erhalten');
+        console.log('[Checkout] Backend response:', response.data);
+
+        const { clientSecret: secret, publishableKey: key } = response.data || {};
+
+        if (!secret || !key) {
+          console.error('[Checkout] Missing data:', { secret, key });
+          throw new Error(`Fehlende Daten: clientSecret=${!!secret}, publishableKey=${!!key}`);
         }
+
+        console.log('[Checkout] Loading Stripe with key:', key.substring(0, 20) + '...');
+        const promise = loadStripe(key);
+
+        setStripePromise(promise);
+        setClientSecret(secret);
+        console.log('[Checkout] Initialization complete');
       } catch (err) {
-        console.error('Checkout init error:', err);
+        console.error('[Checkout] Init error:', err);
         setError(err?.message || 'Fehler beim Erstellen der Checkout-Session');
       } finally {
         setIsLoading(false);
