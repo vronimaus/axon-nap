@@ -126,17 +126,17 @@ export default function DiagnosisChat() {
                 region = 'Kopf/Stirn';
               } else if (normalizedY < 0.20) {
                 region = normalizedX < 0.35 || normalizedX > 0.65 ? 'Kiefer/Kiefergelenk' : 'Hals vorne';
-              } else if (normalizedY < 0.28) {
-                // This is the shoulder/upper chest area
-                if (normalizedX < 0.25 || normalizedX > 0.75) {
-                  region = 'Schulter vorne/Schlüsselbein lateral';
-                } else if (normalizedX < 0.4 || normalizedX > 0.6) {
+              } else if (normalizedY < 0.38) {
+                // Shoulder and upper chest - prioritize shoulder detection
+                if (normalizedX < 0.30 || normalizedX > 0.70) {
+                  region = 'Schulter vorne';
+                } else if (normalizedX < 0.42 || normalizedX > 0.58) {
                   region = 'Obere Brust/Schlüsselbein';
                 } else {
-                  region = 'Hals/Kehlkopf';
+                  region = 'Obere Brust/Brustbein';
                 }
-              } else if (normalizedY < 0.40) {
-                region = normalizedX < 0.30 || normalizedX > 0.70 ? 'Schulter/Deltamuskel' : 'Brust/Brustbein';
+              } else if (normalizedY < 0.48) {
+                region = normalizedX < 0.30 || normalizedX > 0.70 ? 'Schulter/Deltamuskel' : 'Mittlere Brust';
               } else if (normalizedY < 0.50) {
                 region = normalizedX < 0.30 || normalizedX > 0.70 ? 'Seitliche Rippen/Achsel' : 'Mittlere Brust';
               } else if (normalizedY < 0.60) {
