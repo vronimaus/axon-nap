@@ -273,6 +273,53 @@ export default function Flow() {
 
   const detailedContent = getDetailedInstruction();
 
+  // Micro-Tweak Layer (Phase 1)
+  if (showMicroTweak) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 flex items-center justify-center p-4 relative overflow-hidden">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="glass rounded-2xl border border-purple-500/40 p-8 max-w-2xl w-full relative z-10 neuro-glow"
+        >
+          <div className="mb-6">
+            <h3 className="text-2xl font-bold text-purple-300 mb-4 flex items-center gap-2">
+              <span className="text-3xl">🔧</span> Neuro-Tweak: Präzisions-Abfrage
+            </h3>
+            <p className="text-slate-300 text-sm mb-4">
+              Dein System braucht heute einen anderen Input. Hier's der Trick:
+            </p>
+            <div className="bg-purple-500/10 border border-purple-500/30 rounded-xl p-4">
+              <p className="text-slate-200 text-base leading-relaxed">
+                {currentMicroTweak}
+              </p>
+            </div>
+          </div>
+
+          <div className="space-y-3">
+            <Button
+              onClick={handleMicroTweakRetry}
+              className="w-full h-12 bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 font-semibold text-white"
+            >
+              🔄 Nochmal versuchen mit dem Tweak
+            </Button>
+            <Button
+              onClick={handleMicroTweakSkip}
+              variant="outline"
+              className="w-full h-12 border-slate-600 text-slate-400 font-semibold"
+            >
+              ⏭ Weiter zum nächsten Drill
+            </Button>
+          </div>
+
+          <p className="text-xs text-slate-500 text-center mt-6">
+            💡 Das ist normal – dein Nervensystem ist heute einfach anders kalibriert. Keine Sorge!
+          </p>
+        </motion.div>
+      </div>
+    );
+  }
+
   // Success Check Modal
   if (showSuccessCheck) {
     return (
