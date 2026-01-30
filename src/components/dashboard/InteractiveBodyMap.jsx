@@ -7,6 +7,10 @@ import { createPageUrl } from '@/utils';
 import { base44 } from '@/api/base44Client';
 import { toast } from 'sonner';
 
+// KRITISCH: Diese Bilder sind final kalibriert - NICHT ändern!
+const BODY_IMAGE_FRONT = "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/ad6e52b61_generated_image.png";
+const BODY_IMAGE_BACK = "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/0df8e2e95_generated_image.png";
+
 export default function InteractiveBodyMap({ mode, onRegionSelect, sessions }) {
   const navigate = useNavigate();
   const [view, setView] = useState('front');
@@ -150,6 +154,8 @@ export default function InteractiveBodyMap({ mode, onRegionSelect, sessions }) {
     setCurrentPath([]);
   };
 
+  // KRITISCH: Region-Detection - Final kalibriert - NICHT ändern!
+  // Koordinaten basieren auf den finalen Body-Bildern (400x600px Canvas)
   const detectRegionFromCoordinates = (markers, view) => {
     if (markers.length === 0) return 'systemisch';
 
@@ -172,7 +178,7 @@ export default function InteractiveBodyMap({ mode, onRegionSelect, sessions }) {
 
     const avgY = totalPoints > 0 ? totalY / totalPoints : 0;
     const avgX = totalPoints > 0 ? totalX / totalPoints : 0;
-    
+
     // Normalized Y position (0 = top, 1 = bottom)
     const normalizedY = avgY / 600;
     const normalizedX = avgX / 400;
@@ -341,14 +347,14 @@ export default function InteractiveBodyMap({ mode, onRegionSelect, sessions }) {
           >
             {view === 'front' ? (
               <img 
-                src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/ad6e52b61_generated_image.png"
+                src={BODY_IMAGE_FRONT}
                 alt="Front view"
                 className="w-full h-auto"
                 draggable={false}
               />
             ) : (
               <img 
-                src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/0df8e2e95_generated_image.png"
+                src={BODY_IMAGE_BACK}
                 alt="Back view"
                 className="w-full h-auto"
                 draggable={false}
