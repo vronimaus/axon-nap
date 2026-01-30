@@ -23,13 +23,13 @@ export default function Checkout() {
           returnUrl: window.location.origin + createPageUrl('Profile')
         });
 
-        if (response.data.sessionId && response.data.publishableKey) {
+        if (response.data?.sessionId && response.data?.publishableKey) {
           // Load Stripe with publishable key
           const stripeInstance = await loadStripe(response.data.publishableKey);
           setStripe(stripeInstance);
           setClientSecret(response.data.sessionId);
         } else {
-          setError('Checkout konnte nicht initialisiert werden');
+          throw new Error('Keine sessionId oder publishableKey erhalten');
         }
       } catch (err) {
         console.error('Checkout init error:', err);
