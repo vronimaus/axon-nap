@@ -189,7 +189,7 @@ export default function InteractiveBodyMap({ mode, onRegionSelect, sessions }) {
       // Basiert auf dem tatsächlichen Körper-Rendering im Bild
       if (normalizedY < 0.06) region = 'Kopf/Stirn';
       else if (normalizedY < 0.11) region = (normalizedX < 0.47 || normalizedX > 0.53) ? 'Ohr/Kiefergelenk' : 'Hals vorne';
-      else if (normalizedY < 0.20) region = (normalizedX < 0.30 || normalizedX > 0.70) ? 'Schulter vorne' : 'obere Brust/Schlüsselbein';
+      else if (normalizedY < 0.20) region = (normalizedX < 0.40 || normalizedX > 0.60) ? 'Schulter vorne/Acromion' : 'obere Brust/Schlüsselbein';
       else if (normalizedY < 0.30) region = (normalizedX < 0.30 || normalizedX > 0.70) ? 'Oberarm' : 'mittlere Brust';
       else if (normalizedY < 0.37) region = (normalizedX < 0.30 || normalizedX > 0.70) ? 'Ellenbogen' : 'Bauch oben';
       else if (normalizedY < 0.42) region = 'Bauch Mitte/Bauchnabel';
@@ -202,10 +202,10 @@ export default function InteractiveBodyMap({ mode, onRegionSelect, sessions }) {
     } else { // back view
       if (normalizedY < 0.06) region = 'Hinterkopf';
       else if (normalizedY < 0.12) region = 'Nacken/obere Halswirbelsäule';
-      else if (normalizedY < 0.22) region = (normalizedX < 0.38 || normalizedX > 0.62) ? 'Schulter hinten/Acromion' : 'oberer Rücken/Nacken';
+      else if (normalizedY < 0.22) region = (normalizedX < 0.40 || normalizedX > 0.60) ? 'Schulter hinten/Acromion' : 'oberer Rücken/Nacken';
       else if (normalizedY < 0.32) region = (normalizedX < 0.30 || normalizedX > 0.70) ? 'Schulterblatt' : 'oberer Rücken';
-      else if (normalizedY < 0.39) region = (normalizedX < 0.38 || normalizedX > 0.62) ? 'Ellenbogen' : 'mittlerer Rücken';
-      else if (normalizedY < 0.46) region = 'unterer Rücken/Lendenwirbelsäule';
+      else if (normalizedY < 0.38) region = (normalizedX < 0.40 || normalizedX > 0.60) ? 'Ellenbogen' : 'mittlerer Rücken';
+      else if (normalizedY < 0.45) region = 'unterer Rücken/Lendenwirbelsäule';
       else if (normalizedY < 0.54) region = (normalizedX < 0.35 || normalizedX > 0.65) ? 'Unterarm/Handgelenk' : 'Gesäß';
       else if (normalizedY < 0.60) region = 'Becken/Hüfte';
       else if (normalizedY < 0.70) region = 'Oberschenkel hinten';
