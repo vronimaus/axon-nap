@@ -207,13 +207,18 @@ export default function InteractiveBodyMap({ mode, onRegionSelect, sessions }) {
       // Detect region from marker coordinates
       const region = detectRegionFromCoordinates(markers, view);
       
-      // Store markers in session storage for DiagnosisWizard
+      // Store markers in session storage for DiagnosisChat
       sessionStorage.setItem('bodyMapData', JSON.stringify({ view, markers, mode }));
-      toast.success('Leite zur Analyse weiter...');
       
-      // Navigate to DiagnosisWizard with region parameter
+      // Navigate DIRECTLY to DiagnosisChat with mapData parameter
+      const params = new URLSearchParams({
+        mapData: JSON.stringify({ view, markers, mode }),
+        region: region
+      });
+      
+      toast.success('Starte KI-Analyse...');
       setTimeout(() => {
-        navigate(createPageUrl(`DiagnosisWizard?region=${region}`));
+        navigate(createPageUrl(`DiagnosisChat?${params.toString()}`));
       }, 500);
     } catch (error) {
       console.error('Fehler:', error);
