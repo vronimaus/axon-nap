@@ -3,9 +3,12 @@ const stripeClient = new stripe.default(Deno.env.get('STRIPE_SECRET_KEY'));
 
 Deno.serve(async (req) => {
   try {
-    const { mode = 'trial', email } = await req.json();
+    const body = await req.json();
+    const { mode = 'direct', email, returnUrl } = body;
 
-    // Stripe Customer erstellen mit Email (kein User-Login erforderlich)
+    console.log('[createCheckoutSession] Request:', { mode, email, returnUrl });
+
+    // Stripe Customer erstellen
     const customer = await stripeClient.customers.create({
       email: email || undefined,
       metadata: {
@@ -14,34 +17,38 @@ Deno.serve(async (req) => {
       }
     });
 
-    // Payment Intent für Embedded Checkout erstellen
+    console.log('[createCheckoutSession] Customer created:', customer.id);
+
+    // Payment Intent für Embedded Checkout
     const paymentIntent = await stripeClient.paymentIntents.create({
       customer: customer.id,
-      amount: 5900, // 59€ in cents
+      amount: 5900,
       currency: 'eur',
       automatic_payment_methods: { enabled: true },
       metadata: {
         base44_app_id: Deno.env.get('BASE44_APP_ID'),
-        customer_email: email,
-        trial_mode: mode === 'trial' ? 'true' : 'false',
+        customer_email: email || 'unknown',
         checkout_mode: mode
       }
     });
 
-    const publishableKey = Deno.env.get('STRIPE_PUBLISHABLE_KEY');
-    const clientSecret = paymentIntent.client_secret;
+    console.log('[createCheckoutSession] PaymentIntent created:', paymentIntent.id);
 
-    console.log('Publishing:', { publishableKey, clientSecret });
+    const result = {
+      clientSecret: paymentIntent.client_secret,
+      publishableKey: Deno.env.get('STRIPE_PUBLISHABLE_KEY'),
+      mode,
+      email
+    };
 
-    return Response.json({ 
-      clientSecret: clientSecret,
-      publishableKey: publishableKey,
-      mode: mode,
-      email: email,
-      success: true
+    console.log('[createCheckoutSession] Returning:', { 
+      hasClientSecret: !!result.clientSecret, 
+      hasPublishableKey: !!result.publishableKey 
     });
+
+    return Response.json(result);
   } catch (error) {
-    console.error('Checkout error:', error);
+    console.error('[createCheckoutSession] Error:', error);
     return Response.json({ error: error.message }, { status: 500 });
   }
 });
