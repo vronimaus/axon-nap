@@ -131,6 +131,26 @@ export default function Profile() {
 
         {/* Account Status */}
         <Section title="Account-Status" icon="🔐">
+          <div className="grid md:grid-cols-2 gap-4 mb-4">
+            <FormField
+              label="Vollständiger Name"
+              type="text"
+              value={user?.full_name || ''}
+              onChange={(e) => {
+                base44.auth.updateMe({ full_name: e.target.value }).then(() => {
+                  setUser({ ...user, full_name: e.target.value });
+                  toast.success('Name aktualisiert');
+                });
+              }}
+              placeholder="Dein Name"
+            />
+            <div>
+              <label className="block text-sm font-medium text-slate-300 mb-2">Email</label>
+              <div className="px-4 py-2 rounded-lg bg-slate-800/30 border border-slate-700 text-slate-400">
+                {user?.email}
+              </div>
+            </div>
+          </div>
           <div className="grid md:grid-cols-2 gap-6">
             <div className="glass-cyan rounded-lg p-4">
               <p className="text-sm text-slate-400 mb-1">Nutzer-Rolle</p>
@@ -147,12 +167,26 @@ export default function Profile() {
           </div>
           <div className="mt-4 space-y-3">
             {!user?.has_paid && user?.role !== 'admin' && (
-             <a
-               href={createPageUrl('Checkout')}
-               className="inline-block w-full px-6 py-3 rounded-lg bg-gradient-to-r from-cyan-500 to-purple-500 text-white font-semibold text-center hover:shadow-lg hover:shadow-cyan-500/50 transition-all"
-             >
-               Jetzt freischalten (59€) →
-             </a>
+              <Button
+                onClick={async () => {
+                  localStorage.setItem('axon_selected_mode', 'direct');
+                  try {
+                    const { data } = await base44.functions.invoke('createCheckoutSession', {
+                      mode: 'direct',
+                      email: user.email
+                    });
+                    if (data.url) {
+                      window.location.href = data.url;
+                    }
+                  } catch (error) {
+                    console.error('Checkout error:', error);
+                    toast.error('Fehler beim Laden des Checkouts');
+                  }
+                }}
+                className="w-full bg-gradient-to-r from-cyan-500 to-purple-500 hover:from-cyan-600 hover:to-purple-600 text-white font-semibold"
+              >
+                Jetzt freischalten (59€) →
+              </Button>
             )}
             {!user?.has_paid && user?.role !== 'admin' && (
               <Button
