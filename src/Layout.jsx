@@ -17,12 +17,6 @@ export default function Layout({ children, currentPageName }) {
 
   useEffect(() => {
     const checkAuth = async () => {
-      // Skip auth check on public pages
-      if (skipUserCheck) {
-        setIsChecking(false);
-        return;
-      }
-
       try {
         const currentUser = await base44.auth.me();
         setUser(currentUser);
@@ -56,7 +50,7 @@ export default function Layout({ children, currentPageName }) {
 
     // Poll user status every 2 seconds to detect payment changes
     // Only poll on pages where user should be authenticated
-    if (!skipUserCheck) {
+    if (!pagesWithoutNav.includes(currentPageName)) {
       const interval = setInterval(async () => {
         try {
           const currentUser = await base44.auth.me();
@@ -76,10 +70,9 @@ export default function Layout({ children, currentPageName }) {
     setShowDailyCheck(false);
     };
 
-    // Pages ohne Navigation Header und ohne User-Check
+    // Pages ohne Navigation Header
     const pagesWithoutNav = ['Landing', 'Success', 'Checkout', 'Login'];
     const showNav = !pagesWithoutNav.includes(currentPageName);
-    const skipUserCheck = ['Landing', 'Success', 'Checkout', 'Login'].includes(currentPageName);
 
     const navItems = [
     { name: 'Command', icon: LayoutDashboard, page: 'Dashboard' }
