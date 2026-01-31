@@ -21,24 +21,54 @@ export default function Layout({ children, currentPageName }) {
         const currentUser = await base44.auth.me();
         setUser(currentUser);
 
+        // Prüfe ob nach Login eine Option gewählt wurde
+        const selectedMode = localStorage.getItem('axon_selected_mode');
+        if (selectedMode && currentPageName === 'Landing') {
+          localStorage.removeItem('axon_selected_mode');
+          
+          if (selectedMode === 'trial') {
+            // Trial starten: trial_start_date setzen falls noch nicht gesetzt
+            if (!currentUser.trial_start_date) {
+              await base44.auth.updateMe({ trial_start_date: new Date().toISOString() });
+            }
+            // Zum Dashboard weiterleiten
+            window.location.href = createPageUrl('Dashboard');
+            return;
+          } else if (selectedMode === 'direct') {
+            // Zum Stripe Checkout weiterleiten
+            try {
+              const { data } = await base44.functions.invoke('createCheckoutSession', {
+                mode: 'direct',
+                email: currentUser.email
+              });
+              if (data.url) {
+                window.location.href = data.url;
+                return;
+              }
+            } catch (error) {
+              console.error('Checkout error:', error);
+            }
+          }
+        }
+
         // Prüfe ob User Zugriff hat (bezahlt oder aktive Trial)
-                const hasTrialStart = currentUser?.trial_start_date;
-                const daysElapsed = hasTrialStart ? Math.floor((new Date() - new Date(currentUser.trial_start_date)) / (1000 * 60 * 60 * 24)) : null;
-                const isTrialActive = daysElapsed !== null && daysElapsed < 7;
+        const hasTrialStart = currentUser?.trial_start_date;
+        const daysElapsed = hasTrialStart ? Math.floor((new Date() - new Date(currentUser.trial_start_date)) / (1000 * 60 * 60 * 24)) : null;
+        const isTrialActive = daysElapsed !== null && daysElapsed < 7;
 
-                // Ohne Zahlung und ohne aktive Trial -> zurück zum Landing
-                if (!currentUser?.has_paid && !isTrialActive && currentPageName !== 'Landing') {
-                  window.location.href = createPageUrl('Landing');
-                  return;
-                }
+        // Ohne Zahlung und ohne aktive Trial -> zurück zum Landing
+        if (!currentUser?.has_paid && !isTrialActive && currentPageName !== 'Landing') {
+          window.location.href = createPageUrl('Landing');
+          return;
+        }
 
-                // Check if Daily Check needed today
-                const today = new Date().toISOString().split('T')[0];
-                const lastCheck = localStorage.getItem('last_daily_check_date');
+        // Check if Daily Check needed today
+        const today = new Date().toISOString().split('T')[0];
+        const lastCheck = localStorage.getItem('last_daily_check_date');
 
-                if (lastCheck !== today && currentUser && currentPageName === 'Dashboard') {
-                  setShowDailyCheck(true);
-                }
+        if (lastCheck !== today && currentUser && currentPageName === 'Dashboard') {
+          setShowDailyCheck(true);
+        }
       } catch (e) {
         // Not authenticated - that's fine for demo mode
         setUser(null);

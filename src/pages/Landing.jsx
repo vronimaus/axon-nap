@@ -8,7 +8,6 @@ import { base44 } from '@/api/base44Client';
 import { toast } from 'sonner';
 
 export default function Landing() {
-  const [isCheckoutLoading, setIsCheckoutLoading] = useState(false);
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -57,30 +56,12 @@ export default function Landing() {
     checkAuth();
   }, []);
 
-  const handleCheckout = async (mode) => {
-    if (window.self !== window.top) {
-      toast.error('Checkout funktioniert nur in der veröffentlichten App.');
-      return;
-    }
-
-    setIsCheckoutLoading(true);
-    try {
-      const { data } = await base44.functions.invoke('createCheckoutSession', {
-        mode,
-        email: user?.email || undefined
-      });
-
-      if (data.url) {
-        // Redirect to Stripe Hosted Checkout
-        window.location.href = data.url;
-      } else {
-        throw new Error('Keine Checkout-URL erhalten');
-      }
-    } catch (error) {
-      console.error('Checkout error:', error);
-      toast.error('Fehler beim Laden des Checkouts.');
-      setIsCheckoutLoading(false);
-    }
+  const handleSelectOption = (mode) => {
+    // Speichere die gewählte Option für nach dem Login
+    localStorage.setItem('axon_selected_mode', mode);
+    
+    // Leite zum Login/Registrierung weiter
+    base44.auth.redirectToLogin(window.location.href);
   };
 
   if (isLoading) {
@@ -187,40 +168,20 @@ export default function Landing() {
             className="flex flex-col sm:flex-row gap-4 justify-center mb-6"
           >
             <Button
-              onClick={() => handleCheckout('trial')}
-              disabled={isCheckoutLoading}
+              onClick={() => handleSelectOption('trial')}
               size="lg"
               variant="outline"
               className="text-lg px-8 py-6 border-cyan-500/50 text-cyan-400 hover:bg-cyan-500/10 hover:text-white active:text-white"
             >
-              {isCheckoutLoading ? (
-                <>
-                  <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-                  Lädt...
-                </>
-              ) : (
-                <>
-                  7 Tage kostenlos testen
-                </>
-              )}
+              7 Tage kostenlos testen
             </Button>
             <Button
-              onClick={() => handleCheckout('direct')}
-              disabled={isCheckoutLoading}
+              onClick={() => handleSelectOption('direct')}
               size="lg"
               className="text-lg px-8 py-6 bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-600 hover:to-purple-700 neuro-glow"
             >
-              {isCheckoutLoading ? (
-                <>
-                  <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-                  Lädt...
-                </>
-              ) : (
-                <>
-                  <Zap className="w-5 h-5 mr-2" />
-                  Sofort kaufen – 59€
-                </>
-              )}
+              <Zap className="w-5 h-5 mr-2" />
+              Sofort kaufen – 59€
             </Button>
           </motion.div>
 
@@ -474,13 +435,12 @@ export default function Landing() {
                 Gebe deine Zahlungsdaten ein und teste 7 Tage alle Funktionen kostenlos. Danach buchen wir 59 € ab. Solltest du mit AXON keine Spannungen lösen können, kündige einfach innerhalb der Testphase.
               </p>
               <Button
-                onClick={() => handleCheckout('trial')}
-                disabled={isCheckoutLoading}
+                onClick={() => handleSelectOption('trial')}
                 size="lg"
                 variant="outline"
                 className="w-full text-slate-900 border-cyan-500/50 hover:bg-cyan-500/20 hover:text-slate-900 active:text-slate-900 font-semibold"
               >
-                {isCheckoutLoading ? 'Lädt...' : '7 Tage kostenlos testen'}
+                7 Tage kostenlos testen
               </Button>
             </motion.div>
 
@@ -504,12 +464,11 @@ export default function Landing() {
                 Wie eine Sitzung bei deinem persönlichen Trainer – aber 24/7 für dich da. Entlastung, Kraft und Performance auf deinem eigenen Tempo. Unbegrenzter lebenslanger Zugriff.
               </p>
               <Button
-                onClick={() => handleCheckout('direct')}
-                disabled={isCheckoutLoading}
+                onClick={() => handleSelectOption('direct')}
                 size="lg"
                 className="w-full text-white bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-600 hover:to-purple-700 neuro-glow"
               >
-                {isCheckoutLoading ? 'Lädt...' : 'Sofort kaufen'}
+                Sofort kaufen
               </Button>
             </motion.div>
           </div>
