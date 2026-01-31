@@ -65,8 +65,17 @@ export default function Landing() {
 
     setIsCheckoutLoading(true);
     try {
-      // Redirect to Checkout page with mode parameter
-      window.location.href = createPageUrl('Checkout') + `?mode=${mode}&email=${encodeURIComponent(user?.email || '')}`;
+      const { data } = await base44.functions.invoke('createCheckoutSession', {
+        mode,
+        email: user?.email || undefined
+      });
+
+      if (data.url) {
+        // Redirect to Stripe Hosted Checkout
+        window.location.href = data.url;
+      } else {
+        throw new Error('Keine Checkout-URL erhalten');
+      }
     } catch (error) {
       console.error('Checkout error:', error);
       toast.error('Fehler beim Laden des Checkouts.');

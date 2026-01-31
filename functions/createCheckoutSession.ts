@@ -4,49 +4,41 @@ const stripeClient = new stripe.default(Deno.env.get('STRIPE_SECRET_KEY'));
 Deno.serve(async (req) => {
   try {
     const body = await req.json();
-    const { mode = 'direct', email, returnUrl } = body;
+    const { mode = 'direct', email } = body;
+    const baseUrl = getBaseUrl(req);
 
-    console.log('[createCheckoutSession] Request:', { mode, email, returnUrl });
+    console.log('[createCheckoutSession] Request:', { mode, email, baseUrl });
 
-    // Stripe Customer erstellen
-    const customer = await stripeClient.customers.create({
-      email: email || undefined,
+    // Checkout Session erstellen (Hosted Checkout)
+    const session = await stripeClient.checkout.sessions.create({
+      mode: 'payment',
+      customer_email: email || undefined,
+      line_items: [{
+        price_data: {
+          currency: 'eur',
+          unit_amount: 5900,
+          product_data: {
+            name: 'AXON Protocol - Lebenslanger Zugriff',
+            description: 'Einmalige Zahlung für unbegrenzten Zugriff auf alle AXON Features'
+          }
+        },
+        quantity: 1
+      }],
+      success_url: `${baseUrl}/Success?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${baseUrl}/Landing`,
       metadata: {
         base44_app_id: Deno.env.get('BASE44_APP_ID'),
-        checkout_mode: mode
+        checkout_mode: mode,
+        customer_email: email || 'unknown'
       }
     });
 
-    console.log('[createCheckoutSession] Customer created:', customer.id);
+    console.log('[createCheckoutSession] Session created:', session.id);
 
-    // Payment Intent für Embedded Checkout
-    const paymentIntent = await stripeClient.paymentIntents.create({
-      customer: customer.id,
-      amount: 5900,
-      currency: 'eur',
-      automatic_payment_methods: { enabled: true },
-      metadata: {
-        base44_app_id: Deno.env.get('BASE44_APP_ID'),
-        customer_email: email || 'unknown',
-        checkout_mode: mode
-      }
+    return Response.json({
+      sessionId: session.id,
+      url: session.url
     });
-
-    console.log('[createCheckoutSession] PaymentIntent created:', paymentIntent.id);
-
-    const result = {
-      clientSecret: paymentIntent.client_secret,
-      publishableKey: Deno.env.get('STRIPE_PUBLISHABLE_KEY'),
-      mode,
-      email
-    };
-
-    console.log('[createCheckoutSession] Returning:', { 
-      hasClientSecret: !!result.clientSecret, 
-      hasPublishableKey: !!result.publishableKey 
-    });
-
-    return Response.json(result);
   } catch (error) {
     console.error('[createCheckoutSession] Error:', error);
     return Response.json({ error: error.message }, { status: 500 });
@@ -58,5 +50,5 @@ function getBaseUrl(req) {
   if (origin) {
     return new URL(origin).origin;
   }
-  return 'https://axonprotocol.app';
+  return 'https://axon-nap.de';
 }
