@@ -49,16 +49,19 @@ export default function Layout({ children, currentPageName }) {
     checkAuth();
 
     // Poll user status every 2 seconds to detect payment changes
-    const interval = setInterval(async () => {
-      try {
-        const currentUser = await base44.auth.me();
-        setUser(currentUser);
-      } catch (e) {
-        // Silent fail on polling
-      }
-    }, 2000);
+    // Only poll on pages where user should be authenticated
+    if (!pagesWithoutNav.includes(currentPageName)) {
+      const interval = setInterval(async () => {
+        try {
+          const currentUser = await base44.auth.me();
+          setUser(currentUser);
+        } catch (e) {
+          // Silent fail on polling
+        }
+      }, 2000);
 
-    return () => clearInterval(interval);
+      return () => clearInterval(interval);
+    }
     }, [currentPageName]);
 
     const handleCloseDailyCheck = () => {
