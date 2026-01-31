@@ -65,24 +65,8 @@ export default function Landing() {
 
     setIsCheckoutLoading(true);
     try {
-      const { data } = await base44.functions.invoke('createCheckoutSession', {
-        mode,
-        email: user?.email || undefined
-      });
-
-      if (mode === 'direct' && data.success) {
-        // Sofortiger Zugriff gewährt
-        toast.success('Zahlung erfolgreich! Du hast jetzt lebenslangen Zugriff.');
-        setTimeout(() => {
-          window.location.href = createPageUrl('Dashboard');
-        }, 1500);
-        return;
-      }
-
-      if (data.sessionId) {
-        // Trial oder Setup - zu Stripe Checkout
-        window.location.href = `https://checkout.stripe.com/c/pay/${data.sessionId}`;
-      }
+      // Redirect to Checkout page with mode parameter
+      window.location.href = createPageUrl('Checkout') + `?mode=${mode}&email=${encodeURIComponent(user?.email || '')}`;
     } catch (error) {
       console.error('Checkout error:', error);
       toast.error('Fehler beim Laden des Checkouts.');
