@@ -18,8 +18,17 @@ export default function Checkout() {
       try {
         console.log('[Checkout] Starting initialization...');
 
+        // Get URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const mode = urlParams.get('mode') || 'direct';
+        const email = urlParams.get('email') || undefined;
+
+        console.log('[Checkout] Parameters:', { mode, email });
+
         // Create checkout session
         const response = await base44.functions.invoke('createCheckoutSession', {
+          mode,
+          email,
           returnUrl: window.location.origin + createPageUrl('Profile')
         });
 
