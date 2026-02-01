@@ -11,6 +11,12 @@ export default function OnboardingWizard({ user, onComplete }) {
   const [formData, setFormData] = useState({
     date_of_birth: '',
     biological_sex: '',
+    activity_level: 'lightly_active',
+    training_experience: 'beginner',
+    primary_sport: '',
+    training_frequency: '1_2_times_week',
+    fitness_goals: [],
+    current_complaints: '',
     injury_history_major: '',
     scar_tissue_locations: '',
     hand_dominance: 'right',
@@ -20,7 +26,9 @@ export default function OnboardingWizard({ user, onComplete }) {
     jaw_tension_history: false,
     primary_posture: 'mostly_sitting',
     baseline_stress_level: 5,
-    sleep_quality_avg: 'medium'
+    sleep_quality_avg: 'medium',
+    previous_assessments: [],
+    training_preferences: []
   });
 
   const createProfileMutation = useMutation({
@@ -45,7 +53,7 @@ export default function OnboardingWizard({ user, onComplete }) {
   };
 
   const handleNext = () => {
-    if (step < 2) {
+    if (step < 5) {
       setStep(step + 1);
     } else {
       createProfileMutation.mutate(formData);
@@ -85,7 +93,7 @@ export default function OnboardingWizard({ user, onComplete }) {
         {/* Progress Bar */}
         <div className="mb-8">
           <div className="flex gap-2">
-            {[0, 1, 2].map(i => (
+            {[0, 1, 2, 3, 4, 5].map(i => (
               <div
                 key={i}
                 className={`h-1.5 flex-1 rounded-full ${
@@ -94,7 +102,7 @@ export default function OnboardingWizard({ user, onComplete }) {
               />
             ))}
           </div>
-          <p className="text-xs text-slate-500 mt-2">Schritt {step + 1} von 3</p>
+          <p className="text-xs text-slate-500 mt-2">Schritt {step + 1} von 6</p>
         </div>
 
         {/* Content */}
@@ -164,6 +172,150 @@ export default function OnboardingWizard({ user, onComplete }) {
           {step === 2 && (
             <motion.div
               key="step2"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+            >
+              <h2 className="text-xl font-semibold text-white mb-6">
+                Trainings-Hintergrund
+              </h2>
+              <div className="space-y-4">
+                <Field
+                  label="Aktivitätslevel"
+                  type="select"
+                  value={formData.activity_level}
+                  onChange={(e) => handleChange('activity_level', e.target.value)}
+                  options={[
+                    { value: 'sedentary', label: 'Wenig aktiv (Desk-Job)' },
+                    { value: 'lightly_active', label: 'Leicht aktiv (1-3x/Woche)' },
+                    { value: 'moderately_active', label: 'Moderat aktiv (3-5x/Woche)' },
+                    { value: 'very_active', label: 'Sehr aktiv (5-6x/Woche)' },
+                    { value: 'athlete', label: 'Athlet (täglich)' }
+                  ]}
+                />
+                <Field
+                  label="Trainings-Erfahrung"
+                  type="select"
+                  value={formData.training_experience}
+                  onChange={(e) => handleChange('training_experience', e.target.value)}
+                  options={[
+                    { value: 'beginner', label: 'Anfänger (< 1 Jahr)' },
+                    { value: 'intermediate', label: 'Fortgeschritten (1-3 Jahre)' },
+                    { value: 'advanced', label: 'Erfahren (3-10 Jahre)' },
+                    { value: 'elite', label: 'Elite (> 10 Jahre)' }
+                  ]}
+                />
+                <Field
+                  label="Primäre Sportart (falls vorhanden)"
+                  type="text"
+                  value={formData.primary_sport}
+                  onChange={(e) => handleChange('primary_sport', e.target.value)}
+                  placeholder="z.B. BJJ, CrossFit, Laufen, Yoga"
+                />
+                <Field
+                  label="Trainings-Frequenz pro Woche"
+                  type="select"
+                  value={formData.training_frequency}
+                  onChange={(e) => handleChange('training_frequency', e.target.value)}
+                  options={[
+                    { value: 'none', label: 'Nicht aktiv' },
+                    { value: '1_2_times_week', label: '1-2x pro Woche' },
+                    { value: '3_4_times_week', label: '3-4x pro Woche' },
+                    { value: '5_6_times_week', label: '5-6x pro Woche' },
+                    { value: 'daily', label: 'Täglich' }
+                  ]}
+                />
+              </div>
+            </motion.div>
+          )}
+
+          {step === 3 && (
+            <motion.div
+              key="step3"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+            >
+              <h2 className="text-xl font-semibold text-white mb-6">
+                Ziele & Beschwerden
+              </h2>
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-slate-300 mb-3">
+                    Deine Trainingsziele
+                  </label>
+                  <div className="space-y-2">
+                    {['improve_mobility', 'reduce_pain', 'build_strength', 'improve_performance', 'general_fitness', 'recovery'].map(goal => (
+                      <label key={goal} className="flex items-center gap-2 cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={formData.fitness_goals.includes(goal)}
+                          onChange={(e) => {
+                            if (e.target.checked) {
+                              handleChange('fitness_goals', [...formData.fitness_goals, goal]);
+                            } else {
+                              handleChange('fitness_goals', formData.fitness_goals.filter(g => g !== goal));
+                            }
+                          }}
+                          className="rounded"
+                        />
+                        <span className="text-slate-300 text-sm">
+                          {{
+                            'improve_mobility': 'Mobilität verbessern',
+                            'reduce_pain': 'Schmerzen reduzieren',
+                            'build_strength': 'Kraft aufbauen',
+                            'improve_performance': 'Leistung verbessern',
+                            'general_fitness': 'Allgemeine Fitness',
+                            'recovery': 'Regeneration'
+                          }[goal]}
+                        </span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+                <Field
+                  label="Aktuelle Beschwerden oder Schmerzen"
+                  type="textarea"
+                  value={formData.current_complaints}
+                  onChange={(e) => handleChange('current_complaints', e.target.value)}
+                  placeholder="z.B. Knieschmerz beim Hocken, Schulterverspannungen, Rückenschmerz nach langem Sitzen"
+                />
+              </div>
+            </motion.div>
+          )}
+
+          {step === 4 && (
+            <motion.div
+              key="step4"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+            >
+              <h2 className="text-xl font-semibold text-white mb-6">
+                Verletzungen & Narben
+              </h2>
+              <div className="space-y-4">
+                <Field
+                  label="Historische Verletzungen"
+                  type="textarea"
+                  value={formData.injury_history_major}
+                  onChange={(e) => handleChange('injury_history_major', e.target.value)}
+                  placeholder="z.B. Schienbeinkantensyndrom 2020, ACL-Riss rechts 2018"
+                />
+                <Field
+                  label="Narbengewebe-Lokalisationen"
+                  type="textarea"
+                  value={formData.scar_tissue_locations}
+                  onChange={(e) => handleChange('scar_tissue_locations', e.target.value)}
+                  placeholder="z.B. Knie-OP rechts, Blinddarm 2015"
+                />
+              </div>
+            </motion.div>
+          )}
+
+          {step === 5 && (
+            <motion.div
+              key="step5"
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -20 }}
@@ -248,8 +400,8 @@ export default function OnboardingWizard({ user, onComplete }) {
               <Loader2 className="w-4 h-4 animate-spin" />
             ) : (
               <>
-                {step === 2 ? 'Fertig!' : 'Weiter'}
-                {step < 2 && <ChevronRight className="w-4 h-4" />}
+                {step === 5 ? 'Fertig!' : 'Weiter'}
+                {step < 5 && <ChevronRight className="w-4 h-4" />}
               </>
             )}
           </Button>
@@ -271,6 +423,15 @@ function Field({ label, type, value, onChange, placeholder, options }) {
           value={value}
           onChange={onChange}
           className="w-full px-3 py-2 rounded-lg bg-slate-800/50 border border-slate-700 text-white focus:outline-none focus:border-cyan-400 text-sm"
+        />
+      )}
+      {type === 'text' && (
+        <input
+          type="text"
+          value={value}
+          onChange={onChange}
+          placeholder={placeholder}
+          className="w-full px-3 py-2 rounded-lg bg-slate-800/50 border border-slate-700 text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400 text-sm"
         />
       )}
       {type === 'select' && (
