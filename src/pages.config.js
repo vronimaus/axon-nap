@@ -69,6 +69,7 @@ import QuickDemo from './pages/QuickDemo';
 import Success from './pages/Success';
 import Terms from './pages/Terms';
 import TrialInfo from './pages/TrialInfo';
+import TrainingPlan from './pages/TrainingPlan';
 import __Layout from './Layout.jsx';
 
 
@@ -95,6 +96,7 @@ export const PAGES = {
     "Success": Success,
     "Terms": Terms,
     "TrialInfo": TrialInfo,
+    "TrainingPlan": TrainingPlan,
 }
 
 export const pagesConfig = {
