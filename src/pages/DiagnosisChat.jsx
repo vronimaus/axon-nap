@@ -206,29 +206,47 @@ export default function DiagnosisChat() {
 
     setSpeakingMessageId(messageId);
 
-    // Use Web Speech API
-    const utterance = new SpeechSynthesisUtterance(cleanText);
-    utterance.lang = 'de-DE';
-    utterance.rate = 0.95; // Slightly slower for better clarity
-    utterance.pitch = 1.0;
-    utterance.volume = 1.0;
+    // Split into sentences (Web Speech API has limits on text length)
+    const sentences = cleanText
+      .replace(/([.!?])\s+/g, '$1|SPLIT|')
+      .split('|SPLIT|')
+      .filter(s => s.trim().length > 0);
 
-    // Find a good German voice if available
-    const voices = window.speechSynthesis.getVoices();
-    const germanVoice = voices.find(v => v.lang.startsWith('de')) || voices[0];
-    if (germanVoice) {
-      utterance.voice = germanVoice;
-    }
+    let currentIndex = 0;
 
-    utterance.onend = () => {
-      setSpeakingMessageId(null);
+    const speakNextSentence = () => {
+      if (currentIndex >= sentences.length) {
+        setSpeakingMessageId(null);
+        return;
+      }
+
+      const utterance = new SpeechSynthesisUtterance(sentences[currentIndex]);
+      utterance.lang = 'de-DE';
+      utterance.rate = 0.95;
+      utterance.pitch = 1.0;
+      utterance.volume = 1.0;
+
+      // Find a good German voice if available
+      const voices = window.speechSynthesis.getVoices();
+      const germanVoice = voices.find(v => v.lang.startsWith('de')) || voices[0];
+      if (germanVoice) {
+        utterance.voice = germanVoice;
+      }
+
+      utterance.onend = () => {
+        currentIndex++;
+        speakNextSentence();
+      };
+
+      utterance.onerror = (e) => {
+        console.error('Speech error:', e);
+        setSpeakingMessageId(null);
+      };
+
+      window.speechSynthesis.speak(utterance);
     };
 
-    utterance.onerror = () => {
-      setSpeakingMessageId(null);
-    };
-
-    window.speechSynthesis.speak(utterance);
+    speakNextSentence();
   };
 
   // Cleanup audio on unmount
