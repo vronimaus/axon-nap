@@ -273,6 +273,11 @@ export default function Dashboard() {
             >
               {mode === 'rehab' && (
                 <div className="space-y-4">
+                  {/* Mode Title */}
+                  <div className="bg-gradient-to-r from-red-500/20 to-transparent border-l-4 border-red-500 px-6 py-3 rounded-r-xl">
+                    <h1 className="text-2xl sm:text-3xl font-bold text-red-400 tracking-tight">REHAB</h1>
+                  </div>
+                  
                   {/* Instructions Card */}
                   <div className="glass rounded-xl sm:rounded-2xl border border-red-500/30 p-4 sm:p-6 bg-gradient-to-r from-red-500/10 to-transparent">
                     <h2 className="text-base sm:text-lg font-semibold text-red-400 mb-3">Schmerz präzise lokalisieren</h2>
@@ -296,6 +301,11 @@ export default function Dashboard() {
               
               {mode === 'performance' && (
                 <div className="space-y-4">
+                  {/* Mode Title */}
+                  <div className="bg-gradient-to-r from-amber-500/20 to-transparent border-l-4 border-amber-500 px-6 py-3 rounded-r-xl">
+                    <h1 className="text-2xl sm:text-3xl font-bold text-amber-400 tracking-tight">PERFORMANCE</h1>
+                  </div>
+                  
                   {/* Performance Goal Input */}
                   <div className="glass rounded-xl sm:rounded-2xl border border-amber-500/30 p-4 sm:p-6 bg-gradient-to-r from-amber-500/10 to-transparent">
                     <h2 className="text-base sm:text-lg font-semibold text-amber-400 mb-3">Nächstes Ziel:</h2>
