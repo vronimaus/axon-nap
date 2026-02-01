@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { LayoutDashboard, LogOut, User, Target } from 'lucide-react';
+import { LayoutDashboard, LogOut, User, Target, Activity } from 'lucide-react';
 import CookieBanner from './components/CookieBanner';
 import { useTrialStatus } from './components/useTrialStatus';
 import DailyReadinessCheck from './components/dashboard/DailyReadinessCheck';
