@@ -1,8 +1,19 @@
-import React from 'react';
-import { motion } from 'framer-motion';
-import { User, Heart, Moon, Activity, TrendingUp } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { User, Heart, Moon, Activity, TrendingUp, ChevronDown } from 'lucide-react';
 
 export default function AthleteProfile({ profile, systemStatus }) {
+  const [isCollapsed, setIsCollapsed] = useState(false);
+
+  // Auto-collapse on mobile/tablet
+  useEffect(() => {
+    const handleResize = () => {
+      setIsCollapsed(window.innerWidth < 1024);
+    };
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
   // HRV from profile or show placeholder
   const hrvScore = profile?.hrv_score || null;
   
@@ -65,21 +76,36 @@ export default function AthleteProfile({ profile, systemStatus }) {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="glass rounded-2xl border border-cyan-500/20 p-6 space-y-6"
+      className="glass rounded-2xl border border-cyan-500/20 overflow-hidden"
     >
       {/* Header */}
-      <div className="flex items-center gap-3">
+      <button
+        onClick={() => setIsCollapsed(!isCollapsed)}
+        className="w-full p-6 flex items-center gap-3 hover:bg-slate-800/30 transition-colors"
+      >
         <div className="w-12 h-12 rounded-xl bg-slate-800 flex items-center justify-center">
           <User className="w-6 h-6 text-cyan-400" />
         </div>
-        <div>
+        <div className="flex-1 text-left">
           <h2 className="text-lg font-bold text-white">Athlete Profile</h2>
           <p className="text-sm text-slate-400">Hardware Status</p>
         </div>
-      </div>
+        <ChevronDown 
+          className={`w-5 h-5 text-slate-400 transition-transform ${isCollapsed ? '' : 'rotate-180'}`}
+        />
+      </button>
 
       {/* Metrics Grid */}
-      <div className="grid grid-cols-2 gap-3">
+      <AnimatePresence>
+        {!isCollapsed && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="overflow-hidden"
+          >
+            <div className="px-6 pb-6 grid grid-cols-2 gap-3">
         {metrics.map((metric, idx) => (
           <motion.div
             key={metric.label}
@@ -100,7 +126,10 @@ export default function AthleteProfile({ profile, systemStatus }) {
             <p className="text-xs text-slate-400 mt-1">{metric.label}</p>
           </motion.div>
         ))}
-      </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.div>
   );
 }

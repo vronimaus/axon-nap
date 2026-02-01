@@ -1,26 +1,45 @@
-import React from 'react';
-import { motion } from 'framer-motion';
-import { Scissors, Eye, AlertTriangle, User } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Scissors, Eye, AlertTriangle, User, ChevronDown } from 'lucide-react';
 
 export default function HardwareAlerts({ profile }) {
+  const [isCollapsed, setIsCollapsed] = useState(false);
+
+  // Auto-collapse on mobile/tablet
+  useEffect(() => {
+    const handleResize = () => {
+      setIsCollapsed(window.innerWidth < 1024);
+    };
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
   if (!profile) {
     return (
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="glass rounded-2xl border border-yellow-500/30 bg-yellow-500/10 p-6"
+        className="glass rounded-2xl border border-yellow-500/30 bg-yellow-500/10 overflow-hidden"
       >
-        <div className="flex items-start gap-3">
+        <button
+          onClick={() => setIsCollapsed(!isCollapsed)}
+          className="w-full p-6 flex items-start gap-3 hover:bg-yellow-500/5 transition-colors"
+        >
           <AlertTriangle className="w-5 h-5 text-yellow-400 flex-shrink-0 mt-0.5" />
-          <div>
+          <div className="flex-1 text-left">
             <h3 className="text-sm font-bold text-yellow-400 mb-1">
               Neuro-Passport Unvollständig
             </h3>
-            <p className="text-xs text-slate-300 leading-relaxed">
-              Vervollständige deinen Neuro-Passport für präzisere Diagnosen und personalisierte Protokolle.
-            </p>
+            {!isCollapsed && (
+              <p className="text-xs text-slate-300 leading-relaxed">
+                Vervollständige deinen Neuro-Passport für präzisere Diagnosen und personalisierte Protokolle.
+              </p>
+            )}
           </div>
-        </div>
+          <ChevronDown 
+            className={`w-4 h-4 text-yellow-400 transition-transform ${isCollapsed ? '' : 'rotate-180'}`}
+          />
+        </button>
       </motion.div>
     );
   }
@@ -73,17 +92,25 @@ export default function HardwareAlerts({ profile }) {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="glass rounded-2xl border border-green-500/30 bg-green-500/10 p-6"
+        className="glass rounded-2xl border border-green-500/30 bg-green-500/10 overflow-hidden"
       >
-        <div className="flex items-center gap-3">
+        <button
+          onClick={() => setIsCollapsed(!isCollapsed)}
+          className="w-full p-6 flex items-center gap-3 hover:bg-green-500/5 transition-colors"
+        >
           <User className="w-5 h-5 text-green-400" />
-          <div>
+          <div className="flex-1 text-left">
             <h3 className="text-sm font-bold text-green-400">Hardware-Profil Clean</h3>
-            <p className="text-xs text-slate-300 mt-1">
-              Keine Störfaktoren im System erkannt
-            </p>
+            {!isCollapsed && (
+              <p className="text-xs text-slate-300 mt-1">
+                Keine Störfaktoren im System erkannt
+              </p>
+            )}
           </div>
-        </div>
+          <ChevronDown 
+            className={`w-4 h-4 text-green-400 transition-transform ${isCollapsed ? '' : 'rotate-180'}`}
+          />
+        </button>
       </motion.div>
     );
   }
@@ -92,10 +119,28 @@ export default function HardwareAlerts({ profile }) {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="glass rounded-2xl border border-cyan-500/20 p-6"
+      className="glass rounded-2xl border border-cyan-500/20 overflow-hidden"
     >
-      <h3 className="text-sm font-bold text-white mb-4">Hardware-Alerts</h3>
-      <div className="space-y-3">
+      <button
+        onClick={() => setIsCollapsed(!isCollapsed)}
+        className="w-full p-6 flex items-center justify-between hover:bg-slate-800/30 transition-colors"
+      >
+        <h3 className="text-sm font-bold text-white">Hardware-Alerts</h3>
+        <ChevronDown 
+          className={`w-4 h-4 text-slate-400 transition-transform ${isCollapsed ? '' : 'rotate-180'}`}
+        />
+      </button>
+      
+      <AnimatePresence>
+        {!isCollapsed && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="overflow-hidden"
+          >
+            <div className="px-6 pb-6 space-y-3">
         {alerts.map((alert, idx) => (
           <motion.div
             key={idx}
@@ -115,7 +160,10 @@ export default function HardwareAlerts({ profile }) {
             </div>
           </motion.div>
         ))}
-      </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.div>
   );
 }
