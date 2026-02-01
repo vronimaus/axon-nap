@@ -263,15 +263,8 @@ export default function Dashboard() {
       {/* Main Grid Layout */}
       <div className="max-w-7xl mx-auto px-3 sm:px-4 py-4 sm:py-6 pb-20 md:pb-6">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6">
-          {/* LEFT PANEL - Athlete Profile & Alerts */}
-          <div className="lg:col-span-3 space-y-4">
-            <AthleteProfile profile={neuroProfile} systemStatus={mode} />
-            <HardwareAlerts profile={neuroProfile} />
-            <SystemStatus mode={mode} profile={neuroProfile} lastSession={sessions[0]} />
-          </div>
-
-          {/* CENTER - Interactive Body Map */}
-          <div className="lg:col-span-6">
+          {/* PRIMARY FOCUS - Instructions & Body Map (full width on mobile, center on desktop) */}
+          <div className="lg:col-span-12 xl:col-span-9 xl:col-start-2">
             <motion.div
               key={mode}
               initial={{ opacity: 0, scale: 0.95 }}
@@ -395,8 +388,14 @@ export default function Dashboard() {
             </motion.div>
           </div>
 
-          {/* RIGHT PANEL - Neuro Matrix - Hidden on mobile, shown at bottom via NeuroMatrix component */}
-          <div className="hidden lg:block lg:col-span-3">
+          {/* SECONDARY PANELS - Athlete Profile & Status (below on mobile, side panels on desktop) */}
+          <div className="lg:col-span-6 xl:col-span-4 space-y-4">
+            <AthleteProfile profile={neuroProfile} systemStatus={mode} />
+            <HardwareAlerts profile={neuroProfile} />
+          </div>
+
+          <div className="lg:col-span-6 xl:col-span-4 space-y-4">
+            <SystemStatus mode={mode} profile={neuroProfile} lastSession={sessions[0]} />
             <NeuroMatrix
               mode={mode}
               goals={goals}
@@ -404,18 +403,8 @@ export default function Dashboard() {
               user={user}
             />
           </div>
-          
-          {/* Mobile: Show NeuroMatrix below map */}
-          <div className="lg:hidden">
-            <NeuroMatrix
-              mode={mode}
-              goals={goals}
-              selectedRegion={selectedBodyRegion}
-              user={user}
-            />
           </div>
-        </div>
-      </div>
+          </div>
 
       {/* Mode Indicator Badge - Hidden on small mobile to avoid overlapping with bottom nav */}
       <AnimatePresence>
