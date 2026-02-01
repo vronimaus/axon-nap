@@ -68,8 +68,9 @@ import ProfileComparison from './pages/ProfileComparison';
 import QuickDemo from './pages/QuickDemo';
 import Success from './pages/Success';
 import Terms from './pages/Terms';
-import TrialInfo from './pages/TrialInfo';
 import TrainingPlan from './pages/TrainingPlan';
+import TrialInfo from './pages/TrialInfo';
+import RehabPlan from './pages/RehabPlan';
 import __Layout from './Layout.jsx';
 
 
@@ -95,8 +96,9 @@ export const PAGES = {
     "QuickDemo": QuickDemo,
     "Success": Success,
     "Terms": Terms,
-    "TrialInfo": TrialInfo,
     "TrainingPlan": TrainingPlan,
+    "TrialInfo": TrialInfo,
+    "RehabPlan": RehabPlan,
 }
 
 export const pagesConfig = {
