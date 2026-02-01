@@ -182,30 +182,30 @@ export default function DiagnosisChat() {
 
     const utterance = new SpeechSynthesisUtterance(cleanText);
     utterance.lang = 'de-DE';
-    utterance.rate = 0.92; // Slightly slower for expert-like delivery
-    utterance.pitch = 0.9; // Lower pitch for male voice
+    utterance.rate = 1.05; // Natural speaking pace
+    utterance.pitch = 0.85; // Lower pitch for deeper female voice
     
-    // Try to select a better German male voice
+    // Try to select a better German female voice with lower pitch
     const voices = window.speechSynthesis.getVoices();
     const germanVoices = voices.filter(voice => voice.lang.startsWith('de'));
     
-    // Prefer male voices, and prioritize quality voices
-    const maleVoice = germanVoices.find(voice => 
-      voice.name.toLowerCase().includes('male') || 
-      voice.name.toLowerCase().includes('mann') ||
-      voice.name.toLowerCase().includes('daniel') ||
-      voice.name.toLowerCase().includes('markus')
+    // Prefer female voices, prioritize quality voices
+    const femaleVoice = germanVoices.find(voice => 
+      voice.name.toLowerCase().includes('female') || 
+      voice.name.toLowerCase().includes('frau') ||
+      voice.name.toLowerCase().includes('anna') ||
+      voice.name.toLowerCase().includes('petra')
     );
     
-    // If no specific male voice, try Google or Microsoft premium voices
+    // If no specific female voice, try Google or Microsoft premium voices
     const premiumVoice = germanVoices.find(voice =>
       voice.name.includes('Google') || 
       voice.name.includes('Microsoft') ||
       voice.name.includes('Premium')
     );
     
-    if (maleVoice) {
-      utterance.voice = maleVoice;
+    if (femaleVoice) {
+      utterance.voice = femaleVoice;
     } else if (premiumVoice) {
       utterance.voice = premiumVoice;
     } else if (germanVoices.length > 0) {
