@@ -101,15 +101,37 @@ export default function DiagnosisChat() {
     initConversation();
   }, [wizardSession, mapDataParam, regionParam]);
 
-  // Subscribe to conversation updates
+  // Subscribe to conversation updates and auto-play new AI messages
   useEffect(() => {
    if (!conversation?.id) return;
+
+   let previousMessageCount = messages.length;
 
    const unsubscribe = base44.agents.subscribeToConversation(
      conversation.id,
      (data) => {
-       setMessages(data.messages || []);
+       const newMessages = data.messages || [];
+       setMessages(newMessages);
        setLoading(false);
+
+       // Auto-play newest AI message if new message arrived
+       if (newMessages.length > previousMessageCount) {
+         const lastMessage = newMessages[newMessages.length - 1];
+         if (lastMessage.role === 'assistant' && lastMessage.content) {
+           // Stop any currently playing audio first
+           if (speechSynthesisRef.current) {
+             speechSynthesisRef.current.isStopped = true;
+             speechSynthesisRef.current.activeSources.forEach(source => source.stop());
+           }
+           setSpeakingMessageId(null);
+           
+           // Small delay then auto-play
+           setTimeout(() => {
+             handleSpeak(lastMessage.id, lastMessage.content);
+           }, 300);
+         }
+       }
+       previousMessageCount = newMessages.length;
      }
    );
 
@@ -441,27 +463,8 @@ export default function DiagnosisChat() {
                             >
                               {msg.content}
                             </ReactMarkdown>
-
-                            {/* Text-to-Speech Button */}
-                            <button
-                              onClick={() => handleSpeak(msg.id, msg.content)}
-                              className="mt-3 flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-700/50 hover:bg-slate-700 transition-colors text-xs text-slate-300 hover:text-cyan-400"
-                              title={speakingMessageId === msg.id ? 'Vorlesen stoppen' : 'Absatzweise vorlesen'}
-                            >
-                              {speakingMessageId === msg.id ? (
-                                <>
-                                  <VolumeX className="w-4 h-4" />
-                                  <span>Stoppen</span>
-                                </>
-                              ) : (
-                                <>
-                                  <Volume2 className="w-4 h-4" />
-                                  <span>Vorlesen</span>
-                                </>
-                              )}
-                            </button>
-                          </>
-                        )}
+                            </>
+                            )}
 
                         {/* Tool Calls Display - Hidden for cleaner UX */}
                       </div>
