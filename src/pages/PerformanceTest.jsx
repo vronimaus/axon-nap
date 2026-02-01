@@ -13,7 +13,7 @@ const TEST_SUITE = {
     {
       name: 'Deep Squat Test',
       description: 'Wie tief kannst du schmerzfrei in die Hocke gehen?',
-      instruction: 'Füße schulterbreit, gehe langsam so tief wie möglich. Notiere die maximale Tiefe (0-100%, 0=keine Tiefe, 100=volle Tiefe)',
+      instruction: 'Stelle dich hin, Füße etwa schulterbreit auseinander. Gehe langsam nach unten in die Hocke, so tief wie möglich – ohne in den Schmerz zu gehen. Deine Fersen sollten am Boden bleiben, Oberkörper aufrecht. Gehe nur so tief, wie es schmerzfrei möglich ist. Schätze die Tiefe (0% = überhaupt nicht runter, 100% = volle Tiefe mit Oberschenkeln parallel zum Boden).',
       unit: '%',
       expected: '60%+',
       icon: '🦵'
@@ -21,7 +21,7 @@ const TEST_SUITE = {
     {
       name: 'Shoulder Reach Test',
       description: 'Wie gut ist deine Schulter-Mobilität?',
-      instruction: 'Hände hinter dem Rücken, versuche die Hände zu berühren. Notiere den Abstand in cm (0=berühren, negativ=Lücke)',
+      instruction: 'Stelle dich aufrecht hin. Bring einen Arm über den Kopf und beuge ihn, sodass deine Hand zwischen deine Schulterblätter zeigt. Bring den anderen Arm nach unten hinter deinen Rücken und versuche, mit dieser Hand ebenfalls zwischen deine Schulterblätter zu greifen. Versuche, deine Finger zu berühren oder zu greifen. Notiere den Abstand zwischen den Fingerspitzen in cm (0 = Finger berühren sich, negativ = Lücke dazwischen, positiv = Überlappung).',
       unit: 'cm',
       expected: '0cm oder näher',
       icon: '💪'
@@ -30,16 +30,16 @@ const TEST_SUITE = {
   build_strength: [
     {
       name: 'Max Pull-ups',
-      description: 'Wie viele klimmzüge schaffst du?',
-      instruction: 'Starte mit Armen gestreckt, pull-up bis Kinn über der Stange. Zähle nur saubere Wiederholungen.',
+      description: 'Wie viele saubere Klimmzüge schaffst du?',
+      instruction: 'Hänge dich mit gestreckten Armen an eine Stange (Grip schulterbreit, Handflächen zeigen weg). Ziehe dich hoch, bis dein Kinn über der Stange ist. Gehe kontrolliert wieder runter. Zähle nur saubere Wiederholungen – dein Körper sollte gerade sein, keine wild wippenden Bewegungen.',
       unit: 'reps',
       expected: '3+',
       icon: '📈'
     },
     {
       name: 'Max Push-ups',
-      description: 'Wie viele Liegestütze schaffst du?',
-      instruction: 'Standardposition, gehe runter bis Brust knapp über dem Boden, push zurück hoch. Nur saubere Reps zählen.',
+      description: 'Wie viele saubere Liegestütze schaffst du?',
+      instruction: 'Starte in Plank-Position: Hände schulterbreit unter deinen Schultern, Körper gerade von Kopf bis Ferse. Senke deinen Körper ab, bis deine Brust knapp über dem Boden ist. Drücke dich wieder hoch. Zähle nur saubere Reps – dein Körper bleibt die ganze Zeit angespannt und gerade.',
       unit: 'reps',
       expected: '10+',
       icon: '💪'
@@ -49,7 +49,7 @@ const TEST_SUITE = {
     {
       name: 'Forward Fold Test',
       description: 'Wie nah kommst du mit den Händen an deine Zehen?',
-      instruction: 'Stehe aufrecht, beuge dich nach vorne. Notiere wie viele cm deine Hände von den Zehen entfernt sind (0=berühren, negativ=über den Zehen)',
+      instruction: 'Stelle dich aufrecht hin, Beine gerade und entspannt. Beuge dich langsam nach vorne, lasse deine Arme hängen. Gehe nur so weit, wie es sich angenehm anfühlt – ohne in den Schmerz zu gehen. Notiere, wie viele cm deine Fingerspitzen von deinen Zehen entfernt sind (0 = du berührst die Zehen, negativ = deine Hände sind über den Zehen).',
       unit: 'cm',
       expected: '0cm oder näher',
       icon: '🤸'
@@ -57,7 +57,7 @@ const TEST_SUITE = {
     {
       name: 'Shoulder Flexibility',
       description: 'Wie beweglich sind deine Schultern?',
-      instruction: 'Arme über den Kopf, versuche die Hände hinter dem Kopf zu berühren. Notiere den Abstand in cm.',
+      instruction: 'Stelle dich aufrecht hin. Hebe einen Arm über den Kopf und beuge ihn im Ellenbogen, sodass deine Hand zum Rücken zeigt und zwischen deine Schulterblätter zeigt. Bring den anderen Arm hinter deinen Rücken nach oben. Versuche, deine Fingerspitzen zu berühren oder zu greifen. Notiere den Abstand in cm (0 = Finger berühren, negativ = Lücke, positiv = Überlappung). Mache das Test auf beiden Seiten.',
       unit: 'cm',
       expected: '0cm oder näher',
       icon: '🧘'
@@ -67,7 +67,7 @@ const TEST_SUITE = {
     {
       name: 'Vertical Jump',
       description: 'Wie hoch kannst du springen?',
-      instruction: 'Stelle dich mit beiden Füßen hin, kreuze die Arme und springe so hoch wie möglich. Notiere die Höhe in cm.',
+      instruction: 'Stelle dich mit beiden Füßen etwa schulterbreit hin. Kreuze deine Arme vor der Brust. Mache eine kleine Hocke (Gegenbewegung) und springe dann explosiv so hoch wie möglich in die Luft. Versuche, mit der Hand so hoch wie möglich an die Wand zu tippen (oder stellt euch eine imaginäre Höhe vor). Notiere die maximale Sprunghöhe in cm von der Ausgangsposition.',
       unit: 'cm',
       expected: '40cm+',
       icon: '🚀'
@@ -75,7 +75,7 @@ const TEST_SUITE = {
     {
       name: 'Plank Hold',
       description: 'Wie lange kannst du einen Plank halten?',
-      instruction: 'Unterarmstütz, Körper gerade. Halten bis zur Erschöpfung. Notiere Zeit in Sekunden.',
+      instruction: 'Starte in Unterarmstütz: Unterarme auf dem Boden, Ellenbogen unter den Schultern, Körper gerade von Kopf bis Ferse. Deine Core sollte angespannt sein, damit dein Rücken nicht hängt. Halte diese Position so lange wie möglich, bis zur Erschöpfung. Notiere die Zeit in Sekunden.',
       unit: 'seconds',
       expected: '60+',
       icon: '⏱️'
