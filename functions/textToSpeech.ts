@@ -100,14 +100,15 @@ Deno.serve(async (req) => {
     // Convert PCM to WAV format for browser compatibility
     const pcmData = Uint8Array.from(atob(audioData), c => c.charCodeAt(0));
     const wavData = createWavFile(pcmData, 24000, 1, 16);
-    
-    // Convert to base64 in chunks to avoid stack overflow
-    let wavBase64 = '';
+
+    // Convert to base64 using btoa on smaller chunks
+    const chunks = [];
     const chunkSize = 8192;
     for (let i = 0; i < wavData.length; i += chunkSize) {
-      const chunk = wavData.slice(i, i + chunkSize);
-      wavBase64 += btoa(String.fromCharCode.apply(null, chunk));
+      const chunk = Array.from(wavData.slice(i, i + chunkSize));
+      chunks.push(btoa(String.fromCharCode(...chunk)));
     }
+    const wavBase64 = chunks.join('');
 
     return Response.json({ 
       audio: wavBase64,
