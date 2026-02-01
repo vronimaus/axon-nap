@@ -256,7 +256,7 @@ export default function DiagnosisChat() {
       source.start(0);
     };
 
-    // Process sentences sequentially
+    // Process sentences sequentially with delay to avoid API overload
     const processSentence = async (index) => {
       if (index >= sentences.length || speechSynthesisRef.current?.isStopped) {
         return;
@@ -285,11 +285,18 @@ export default function DiagnosisChat() {
         }
 
         currentSentenceIndex = index + 1;
+        
+        // Small delay before next request to avoid overwhelming the API
+        await new Promise(resolve => setTimeout(resolve, 200));
+        
         // Process next sentence
         processSentence(index + 1);
       } catch (error) {
         console.error(`TTS Error at sentence ${index}:`, error.message);
         currentSentenceIndex = index + 1;
+        
+        // Longer delay after error
+        await new Promise(resolve => setTimeout(resolve, 500));
         processSentence(index + 1);
       }
     };
