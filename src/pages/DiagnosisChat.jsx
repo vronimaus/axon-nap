@@ -162,7 +162,11 @@ export default function DiagnosisChat() {
   const handleSpeak = async (messageId, text) => {
     // Stop current audio if any
     if (speechSynthesisRef.current) {
-      speechSynthesisRef.current.pause();
+      if (speechSynthesisRef.current.stop) {
+        speechSynthesisRef.current.stop();
+      } else if (speechSynthesisRef.current.pause) {
+        speechSynthesisRef.current.pause();
+      }
       if (speakingMessageId === messageId) {
         setSpeakingMessageId(null);
         speechSynthesisRef.current = null;
@@ -191,34 +195,55 @@ export default function DiagnosisChat() {
       console.log('[TTS DEBUG] Backend response:', {
         status: response.status,
         hasData: !!response.data,
-        dataKeys: response.data ? Object.keys(response.data) : [],
-        audioLength: response.data?.audio?.length,
-        mimeType: response.data?.mimeType
+        dataKeys: response.data ? Object.keys(response.data) : []
       });
       
       if (!response.data || !response.data.audio) {
         throw new Error('No audio data received from server');
       }
       
-      // Create audio element with data URL
-      const dataUrl = `data:${response.data.mimeType};base64,${response.data.audio}`;
-      console.log('[TTS DEBUG] Creating audio element with URL length:', dataUrl.length);
-      const audio = new Audio(dataUrl);
+      // Decode base64 PCM data
+      const pcmBase64 = response.data.audio;
+      const pcmBinary = atob(pcmBase64);
+      const pcmBytes = new Uint8Array(pcmBinary.length);
+      for (let i = 0; i < pcmBinary.length; i++) {
+        pcmBytes[i] = pcmBinary.charCodeAt(i);
+      }
       
-      audio.onended = () => {
+      console.log('[TTS DEBUG] PCM data decoded, bytes:', pcmBytes.length);
+      
+      // Create Web Audio context and decode PCM to AudioBuffer
+      const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      const audioBuffer = audioContext.createBuffer(
+        response.data.channels,
+        pcmBytes.length / 2, // 16-bit = 2 bytes per sample
+        response.data.sampleRate
+      );
+      
+      // Convert PCM bytes to Float32 samples
+      const channelData = audioBuffer.getChannelData(0);
+      for (let i = 0; i < channelData.length; i++) {
+        const sample = (pcmBytes[i * 2] | (pcmBytes[i * 2 + 1] << 8));
+        // Convert from int16 to float32 (-1 to 1)
+        channelData[i] = sample < 0x8000 ? sample / 0x8000 : (sample - 0x10000) / 0x8000;
+      }
+      
+      console.log('[TTS DEBUG] AudioBuffer created, duration:', audioBuffer.duration);
+      
+      // Play using AudioBufferSourceNode
+      const source = audioContext.createBufferSource();
+      source.buffer = audioBuffer;
+      source.connect(audioContext.destination);
+      
+      source.onended = () => {
         console.log('[TTS DEBUG] Audio playback ended');
         setSpeakingMessageId(null);
         speechSynthesisRef.current = null;
-      };
-      audio.onerror = (e) => {
-        console.error('[TTS DEBUG] Audio playback error:', e, audio.error);
-        setSpeakingMessageId(null);
-        speechSynthesisRef.current = null;
+        audioContext.close();
       };
       
-      speechSynthesisRef.current = audio;
-      console.log('[TTS DEBUG] Starting audio playback...');
-      await audio.play();
+      speechSynthesisRef.current = source;
+      source.start(0);
       console.log('[TTS DEBUG] Audio playback started successfully');
     } catch (error) {
       console.error('[TTS DEBUG] TTS Error:', {

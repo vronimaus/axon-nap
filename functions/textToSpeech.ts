@@ -1,54 +1,5 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
 
-function createWavFile(pcmData, sampleRate, numChannels, bitsPerSample) {
-  const byteRate = sampleRate * numChannels * bitsPerSample / 8;
-  const blockAlign = numChannels * bitsPerSample / 8;
-  const dataSize = pcmData.length;
-  const headerSize = 44;
-  const fileSize = headerSize + dataSize;
-
-  const wavHeader = new ArrayBuffer(headerSize);
-  const view = new DataView(wavHeader);
-
-  // "RIFF" chunk descriptor
-  view.setUint8(0, 'R'.charCodeAt(0));
-  view.setUint8(1, 'I'.charCodeAt(0));
-  view.setUint8(2, 'F'.charCodeAt(0));
-  view.setUint8(3, 'F'.charCodeAt(0));
-  view.setUint32(4, fileSize - 8, true);
-  view.setUint8(8, 'W'.charCodeAt(0));
-  view.setUint8(9, 'A'.charCodeAt(0));
-  view.setUint8(10, 'V'.charCodeAt(0));
-  view.setUint8(11, 'E'.charCodeAt(0));
-
-  // "fmt " sub-chunk
-  view.setUint8(12, 'f'.charCodeAt(0));
-  view.setUint8(13, 'm'.charCodeAt(0));
-  view.setUint8(14, 't'.charCodeAt(0));
-  view.setUint8(15, ' '.charCodeAt(0));
-  view.setUint32(16, 16, true); // fmt chunk size
-  view.setUint16(20, 1, true); // PCM format
-  view.setUint16(22, numChannels, true);
-  view.setUint32(24, sampleRate, true);
-  view.setUint32(28, byteRate, true);
-  view.setUint16(32, blockAlign, true);
-  view.setUint16(34, bitsPerSample, true);
-
-  // "data" sub-chunk
-  view.setUint8(36, 'd'.charCodeAt(0));
-  view.setUint8(37, 'a'.charCodeAt(0));
-  view.setUint8(38, 't'.charCodeAt(0));
-  view.setUint8(39, 'a'.charCodeAt(0));
-  view.setUint32(40, dataSize, true);
-
-  // Combine header and PCM data
-  const wavFile = new Uint8Array(fileSize);
-  wavFile.set(new Uint8Array(wavHeader), 0);
-  wavFile.set(pcmData, headerSize);
-
-  return wavFile;
-}
-
 Deno.serve(async (req) => {
   try {
     const { text } = await req.json();
@@ -96,23 +47,13 @@ Deno.serve(async (req) => {
     }
 
     const audioData = data.candidates[0].content.parts[0].inlineData.data;
-    
-    // Convert PCM to WAV format for browser compatibility
-    const pcmData = Uint8Array.from(atob(audioData), c => c.charCodeAt(0));
-    const wavData = createWavFile(pcmData, 24000, 1, 16);
 
-    // Convert to base64 using btoa on smaller chunks
-    const chunks = [];
-    const chunkSize = 8192;
-    for (let i = 0; i < wavData.length; i += chunkSize) {
-      const chunk = Array.from(wavData.slice(i, i + chunkSize));
-      chunks.push(btoa(String.fromCharCode(...chunk)));
-    }
-    const wavBase64 = chunks.join('');
-
+    // Return raw PCM data for Web Audio API processing in frontend
     return Response.json({ 
-      audio: wavBase64,
-      mimeType: 'audio/wav'
+      audio: audioData,
+      sampleRate: 24000,
+      channels: 1,
+      bitsPerSample: 16
     });
 
   } catch (error) {
