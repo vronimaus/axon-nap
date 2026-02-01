@@ -26,10 +26,8 @@ export default function DiagnosisChat() {
   const [loading, setLoading] = useState(false);
   const [showBodyMap, setShowBodyMap] = useState(false);
   const [speakingMessageId, setSpeakingMessageId] = useState(null);
-  const [currentParagraph, setCurrentParagraph] = useState(0);
   const messagesEndRef = useRef(null);
   const speechSynthesisRef = useRef(null);
-  const abortControllerRef = useRef(null);
 
   // Fetch wizard results if session_id provided
   const { data: wizardSession } = useQuery({
@@ -167,22 +165,14 @@ export default function DiagnosisChat() {
       if (speechSynthesisRef.current) {
         speechSynthesisRef.current.stop();
       }
-      if (abortControllerRef.current) {
-        abortControllerRef.current.abort();
-      }
       setSpeakingMessageId(null);
-      setCurrentParagraph(0);
       speechSynthesisRef.current = null;
-      abortControllerRef.current = null;
       return;
     }
 
     // Stop any other currently playing audio
     if (speechSynthesisRef.current) {
       speechSynthesisRef.current.stop();
-    }
-    if (abortControllerRef.current) {
-      abortControllerRef.current.abort();
     }
 
     // Clean markdown for speech
@@ -202,93 +192,55 @@ export default function DiagnosisChat() {
       cleanText = lastPeriod > 400 ? truncated.substring(0, lastPeriod + 1) : truncated;
     }
 
-    // Don't split into paragraphs - use full text for consistent voice
-    const paragraphs = [cleanText];
-
-    if (paragraphs.length === 0) return;
-
     setSpeakingMessageId(messageId);
-    setCurrentParagraph(0);
-    abortControllerRef.current = new AbortController();
 
-    // Play paragraphs sequentially
-    const playParagraph = async (index) => {
-      if (index >= paragraphs.length || abortControllerRef.current?.signal.aborted) {
-        setSpeakingMessageId(null);
-        setCurrentParagraph(0);
-        abortControllerRef.current = null;
-        return;
+    try {
+      const response = await base44.functions.invoke('textToSpeech', { text: cleanText });
+      
+      if (!response.data || !response.data.audio) {
+        throw new Error('No audio data received');
       }
-
-      setCurrentParagraph(index);
-
-      try {
-        console.log(`[TTS] Loading paragraph ${index + 1}/${paragraphs.length}, length: ${paragraphs[index].length} chars`);
-        
-        const response = await base44.functions.invoke('textToSpeech', { 
-          text: paragraphs[index] 
-        });
-        
-        console.log(`[TTS] Received audio for paragraph ${index + 1}`);
-        
-        if (abortControllerRef.current?.signal.aborted) return;
-        
-        if (!response.data || !response.data.audio) {
-          throw new Error('No audio data received');
-        }
-        
-        // Decode base64 PCM data
-        const pcmBase64 = response.data.audio;
-        const pcmBinary = atob(pcmBase64);
-        const pcmBytes = new Uint8Array(pcmBinary.length);
-        for (let i = 0; i < pcmBinary.length; i++) {
-          pcmBytes[i] = pcmBinary.charCodeAt(i);
-        }
-        
-        // Create Web Audio context and buffer
-        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-        const audioBuffer = audioContext.createBuffer(
-          response.data.channels,
-          pcmBytes.length / 2,
-          response.data.sampleRate
-        );
-        
-        const channelData = audioBuffer.getChannelData(0);
-        for (let i = 0; i < channelData.length; i++) {
-          const sample = (pcmBytes[i * 2] | (pcmBytes[i * 2 + 1] << 8));
-          channelData[i] = sample < 0x8000 ? sample / 0x8000 : (sample - 0x10000) / 0x8000;
-        }
-        
-        if (abortControllerRef.current?.signal.aborted) {
-          audioContext.close();
-          return;
-        }
-        
-        // Play audio
-        const source = audioContext.createBufferSource();
-        source.buffer = audioBuffer;
-        source.connect(audioContext.destination);
-        
-        source.onended = () => {
-          console.log(`[TTS] Finished playing paragraph ${index + 1}`);
-          audioContext.close();
-          if (!abortControllerRef.current?.signal.aborted) {
-            playParagraph(index + 1);
-          }
-        };
-        
-        speechSynthesisRef.current = source;
-        source.start(0);
-        console.log(`[TTS] Started playing paragraph ${index + 1}`);
-      } catch (error) {
-        console.error(`[TTS] Error at paragraph ${index + 1}:`, error.message, error);
-        setSpeakingMessageId(null);
-        setCurrentParagraph(0);
-        abortControllerRef.current = null;
+      
+      // Decode base64 PCM data
+      const pcmBase64 = response.data.audio;
+      const pcmBinary = atob(pcmBase64);
+      const pcmBytes = new Uint8Array(pcmBinary.length);
+      for (let i = 0; i < pcmBinary.length; i++) {
+        pcmBytes[i] = pcmBinary.charCodeAt(i);
       }
-    };
-
-    playParagraph(0);
+      
+      // Create Web Audio context and buffer
+      const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      const audioBuffer = audioContext.createBuffer(
+        response.data.channels,
+        pcmBytes.length / 2,
+        response.data.sampleRate
+      );
+      
+      const channelData = audioBuffer.getChannelData(0);
+      for (let i = 0; i < channelData.length; i++) {
+        const sample = (pcmBytes[i * 2] | (pcmBytes[i * 2 + 1] << 8));
+        channelData[i] = sample < 0x8000 ? sample / 0x8000 : (sample - 0x10000) / 0x8000;
+      }
+      
+      // Play audio
+      const source = audioContext.createBufferSource();
+      source.buffer = audioBuffer;
+      source.connect(audioContext.destination);
+      
+      source.onended = () => {
+        setSpeakingMessageId(null);
+        speechSynthesisRef.current = null;
+        audioContext.close();
+      };
+      
+      speechSynthesisRef.current = source;
+      source.start(0);
+    } catch (error) {
+      console.error('TTS Error:', error.message);
+      setSpeakingMessageId(null);
+      speechSynthesisRef.current = null;
+    }
   };
 
   // Cleanup audio on unmount
@@ -296,9 +248,6 @@ export default function DiagnosisChat() {
     return () => {
       if (speechSynthesisRef.current) {
         speechSynthesisRef.current.stop();
-      }
-      if (abortControllerRef.current) {
-        abortControllerRef.current.abort();
       }
     };
   }, []);
