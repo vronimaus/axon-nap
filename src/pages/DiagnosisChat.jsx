@@ -182,33 +182,25 @@ export default function DiagnosisChat() {
 
     const utterance = new SpeechSynthesisUtterance(cleanText);
     utterance.lang = 'de-DE';
-    utterance.rate = 1.05; // Natural speaking pace
-    utterance.pitch = 0.85; // Lower pitch for deeper female voice
+    utterance.rate = 0.98; // Slightly slower for natural delivery
+    utterance.pitch = 0.88; // Lower pitch for deeper, warmer female voice
     
-    // Try to select a better German female voice with lower pitch
+    // Try to select a better German voice
     const voices = window.speechSynthesis.getVoices();
     const germanVoices = voices.filter(voice => voice.lang.startsWith('de'));
     
-    // Prefer female voices, prioritize quality voices
-    const femaleVoice = germanVoices.find(voice => 
-      voice.name.toLowerCase().includes('female') || 
-      voice.name.toLowerCase().includes('frau') ||
-      voice.name.toLowerCase().includes('anna') ||
-      voice.name.toLowerCase().includes('petra')
-    );
-    
-    // If no specific female voice, try Google or Microsoft premium voices
-    const premiumVoice = germanVoices.find(voice =>
+    // Prefer quality voices (Google, Microsoft, or local enhanced voices)
+    const qualityVoice = germanVoices.find(voice => 
       voice.name.includes('Google') || 
       voice.name.includes('Microsoft') ||
+      voice.name.includes('Enhanced') ||
       voice.name.includes('Premium')
     );
     
-    if (femaleVoice) {
-      utterance.voice = femaleVoice;
-    } else if (premiumVoice) {
-      utterance.voice = premiumVoice;
+    if (qualityVoice) {
+      utterance.voice = qualityVoice;
     } else if (germanVoices.length > 0) {
+      // Use the first available German voice
       utterance.voice = germanVoices[0];
     }
     
