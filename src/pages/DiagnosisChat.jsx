@@ -5,7 +5,7 @@ import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Card } from '@/components/ui/card';
-import { Loader2, Send, MessageCircle, Sparkles, Activity, ArrowRight, Volume2, VolumeX } from 'lucide-react';
+import { Loader2, Send, MessageCircle, Sparkles, Activity, ArrowRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import ReactMarkdown from 'react-markdown';
 import BodyPainMap from '../components/diagnosis/BodyPainMap';
@@ -25,9 +25,7 @@ export default function DiagnosisChat() {
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   const [showBodyMap, setShowBodyMap] = useState(false);
-  const [speakingMessageId, setSpeakingMessageId] = useState(null);
   const messagesEndRef = useRef(null);
-  const speechSynthesisRef = useRef(null);
 
   // Fetch wizard results if session_id provided
   const { data: wizardSession } = useQuery({
@@ -101,11 +99,9 @@ export default function DiagnosisChat() {
     initConversation();
   }, [wizardSession, mapDataParam, regionParam]);
 
-  // Subscribe to conversation updates and auto-play new AI messages
+  // Subscribe to conversation updates
   useEffect(() => {
    if (!conversation?.id) return;
-
-   let previousMessageCount = messages.length;
 
    const unsubscribe = base44.agents.subscribeToConversation(
      conversation.id,
@@ -113,25 +109,6 @@ export default function DiagnosisChat() {
        const newMessages = data.messages || [];
        setMessages(newMessages);
        setLoading(false);
-
-       // Auto-play newest AI message if new message arrived
-       if (newMessages.length > previousMessageCount) {
-         const lastMessage = newMessages[newMessages.length - 1];
-         if (lastMessage.role === 'assistant' && lastMessage.content) {
-           // Stop any currently playing audio first
-           if (speechSynthesisRef.current) {
-             speechSynthesisRef.current.isStopped = true;
-             speechSynthesisRef.current.activeSources.forEach(source => source.stop());
-           }
-           setSpeakingMessageId(null);
-           
-           // Small delay then auto-play
-           setTimeout(() => {
-             handleSpeak(lastMessage.id, lastMessage.content);
-           }, 300);
-         }
-       }
-       previousMessageCount = newMessages.length;
      }
    );
 
@@ -272,12 +249,7 @@ export default function DiagnosisChat() {
     speakNextChunk();
   };
 
-  // Cleanup audio on unmount
-  useEffect(() => {
-    return () => {
-      window.speechSynthesis.cancel();
-    };
-  }, []);
+
 
   // Don't block chat with demo paywall if coming from wizard (user is mid-session)
   if (isDemoExpired && !wizardSession) {
