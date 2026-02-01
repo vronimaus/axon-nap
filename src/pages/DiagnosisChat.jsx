@@ -186,22 +186,17 @@ export default function DiagnosisChat() {
       // Call Gemini TTS backend
       const { data } = await base44.functions.invoke('textToSpeech', { text: cleanText });
       
-      // Decode base64 audio
-      const audioBytes = Uint8Array.from(atob(data.audio), c => c.charCodeAt(0));
-      const audioBlob = new Blob([audioBytes], { type: data.mimeType });
-      const audioUrl = URL.createObjectURL(audioBlob);
+      // Create audio element with data URL
+      const audio = new Audio(`data:${data.mimeType};base64,${data.audio}`);
       
-      // Play audio
-      const audio = new Audio(audioUrl);
       audio.onended = () => {
         setSpeakingMessageId(null);
         speechSynthesisRef.current = null;
-        URL.revokeObjectURL(audioUrl);
       };
-      audio.onerror = () => {
+      audio.onerror = (e) => {
+        console.error('Audio playback error:', e);
         setSpeakingMessageId(null);
         speechSynthesisRef.current = null;
-        URL.revokeObjectURL(audioUrl);
       };
       
       speechSynthesisRef.current = audio;
