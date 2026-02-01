@@ -174,7 +174,7 @@ export default function DiagnosisChat() {
       }
     }
 
-    // Clean markdown for speech
+    // Clean markdown for speech and limit length
     const cleanText = text
       .replace(/\*\*/g, '')
       .replace(/\*/g, '')
@@ -182,35 +182,26 @@ export default function DiagnosisChat() {
       .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
       .replace(/`([^`]+)`/g, '$1')
       .replace(/^[-*+]\s/gm, '')
-      .replace(/^\d+\.\s/gm, '');
+      .replace(/^\d+\.\s/gm, '')
+      .substring(0, 500); // Limit to 500 chars for faster TTS
 
-    console.log('[TTS DEBUG] Starting TTS with text:', cleanText.substring(0, 100) + '...');
     setSpeakingMessageId(messageId);
 
     try {
-      // Call Gemini TTS backend
-      console.log('[TTS DEBUG] Calling backend function...');
+      // Call Gemini TTS backend (can take 10-15s for 500 chars)
       const response = await base44.functions.invoke('textToSpeech', { text: cleanText });
-      
-      console.log('[TTS DEBUG] Backend response:', {
-        status: response.status,
-        hasData: !!response.data,
-        dataKeys: response.data ? Object.keys(response.data) : []
-      });
       
       if (!response.data || !response.data.audio) {
         throw new Error('No audio data received from server');
       }
       
-      // Decode base64 PCM data
+      // Decode base64 PCM data (24kHz, 16-bit, mono from Gemini)
       const pcmBase64 = response.data.audio;
       const pcmBinary = atob(pcmBase64);
       const pcmBytes = new Uint8Array(pcmBinary.length);
       for (let i = 0; i < pcmBinary.length; i++) {
         pcmBytes[i] = pcmBinary.charCodeAt(i);
       }
-      
-      console.log('[TTS DEBUG] PCM data decoded, bytes:', pcmBytes.length);
       
       // Create Web Audio context and decode PCM to AudioBuffer
       const audioContext = new (window.AudioContext || window.webkitAudioContext)();
@@ -228,15 +219,12 @@ export default function DiagnosisChat() {
         channelData[i] = sample < 0x8000 ? sample / 0x8000 : (sample - 0x10000) / 0x8000;
       }
       
-      console.log('[TTS DEBUG] AudioBuffer created, duration:', audioBuffer.duration);
-      
       // Play using AudioBufferSourceNode
       const source = audioContext.createBufferSource();
       source.buffer = audioBuffer;
       source.connect(audioContext.destination);
       
       source.onended = () => {
-        console.log('[TTS DEBUG] Audio playback ended');
         setSpeakingMessageId(null);
         speechSynthesisRef.current = null;
         audioContext.close();
@@ -244,13 +232,8 @@ export default function DiagnosisChat() {
       
       speechSynthesisRef.current = source;
       source.start(0);
-      console.log('[TTS DEBUG] Audio playback started successfully');
     } catch (error) {
-      console.error('[TTS DEBUG] TTS Error:', {
-        message: error.message,
-        stack: error.stack,
-        response: error.response
-      });
+      console.error('TTS Error:', error.message);
       setSpeakingMessageId(null);
       speechSynthesisRef.current = null;
     }

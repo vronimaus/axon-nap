@@ -1,5 +1,17 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
 
+/**
+ * Gemini TTS Backend Function
+ * 
+ * WORKING SETUP (Feb 2026):
+ * - Uses Gemini 2.5 Flash TTS model
+ * - Voice: Charon (fast, neutral male voice for better performance)
+ * - Returns raw PCM data (24kHz, 16-bit, mono)
+ * - Frontend uses Web Audio API to decode and play
+ * 
+ * Performance: ~10-15s for 500 chars
+ */
+
 Deno.serve(async (req) => {
   try {
     const { text } = await req.json();
@@ -13,6 +25,9 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'GEMINI_API_KEY not configured' }, { status: 500 });
     }
 
+    // Limit text length for faster generation (500 chars ~ 30-40 seconds speech)
+    const trimmedText = text.length > 500 ? text.substring(0, 500) + '...' : text;
+
     // Call Gemini TTS API
     const response = await fetch(
       `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent?key=${apiKey}`,
@@ -22,7 +37,7 @@ Deno.serve(async (req) => {
         body: JSON.stringify({
           contents: [{
             role: 'user',
-            parts: [{ text: `Lies diesen Text vor in warmem, professionellem Ton auf Deutsch: ${text}` }]
+            parts: [{ text: `Lies diesen Text vor in warmem, professionellem Ton auf Deutsch: ${trimmedText}` }]
           }],
           generationConfig: {
             temperature: 1,
@@ -30,7 +45,7 @@ Deno.serve(async (req) => {
             speechConfig: {
               voiceConfig: {
                 prebuiltVoiceConfig: {
-                  voiceName: 'Enceladus' // Deep, warm female voice
+                  voiceName: 'Charon' // Faster, neutral male voice
                 }
               }
             }
