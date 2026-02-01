@@ -85,28 +85,58 @@ const TEST_SUITE = {
 
 const getBaselineLevel = (testName, value, unit) => {
   const mappings = {
-    'Deep Squat Test': { 60: 'beginner', 80: 'intermediate', 100: 'advanced' },
-    'Shoulder Reach Test': { -5: 'beginner', 0: 'intermediate', 5: 'advanced' },
-    'Max Pull-ups': { 1: 'beginner', 5: 'intermediate', 10: 'advanced' },
-    'Max Push-ups': { 5: 'beginner', 15: 'intermediate', 30: 'advanced' },
-    'Forward Fold Test': { -10: 'beginner', 0: 'intermediate', 10: 'advanced' },
-    'Shoulder Flexibility': { -10: 'beginner', 0: 'intermediate', 10: 'advanced' },
-    'Vertical Jump': { 20: 'beginner', 40: 'intermediate', 60: 'advanced' },
-    'Plank Hold': { 30: 'beginner', 60: 'intermediate', 120: 'advanced' }
+    'Deep Squat Test': [
+      { min: 0, max: 60, level: 'beginner' },
+      { min: 60, max: 80, level: 'intermediate' },
+      { min: 80, max: 100, level: 'advanced' }
+    ],
+    'Shoulder Reach Test': [
+      { min: -100, max: -5, level: 'beginner' },
+      { min: -5, max: 0, level: 'intermediate' },
+      { min: 0, max: 100, level: 'advanced' }
+    ],
+    'Max Pull-ups': [
+      { min: 0, max: 3, level: 'beginner' },
+      { min: 3, max: 8, level: 'intermediate' },
+      { min: 8, max: 100, level: 'advanced' }
+    ],
+    'Max Push-ups': [
+      { min: 0, max: 10, level: 'beginner' },
+      { min: 10, max: 25, level: 'intermediate' },
+      { min: 25, max: 100, level: 'advanced' }
+    ],
+    'Forward Fold Test': [
+      { min: -100, max: -10, level: 'beginner' },
+      { min: -10, max: 0, level: 'intermediate' },
+      { min: 0, max: 100, level: 'advanced' }
+    ],
+    'Shoulder Flexibility': [
+      { min: -100, max: -10, level: 'beginner' },
+      { min: -10, max: 0, level: 'intermediate' },
+      { min: 0, max: 100, level: 'advanced' }
+    ],
+    'Vertical Jump': [
+      { min: 0, max: 30, level: 'beginner' },
+      { min: 30, max: 50, level: 'intermediate' },
+      { min: 50, max: 100, level: 'advanced' }
+    ],
+    'Plank Hold': [
+      { min: 0, max: 45, level: 'beginner' },
+      { min: 45, max: 90, level: 'intermediate' },
+      { min: 90, max: 10000, level: 'advanced' }
+    ]
   };
 
   const thresholds = mappings[testName];
   if (!thresholds) return 'intermediate';
 
-  const sorted = Object.entries(thresholds).sort((a, b) => parseFloat(a[0]) - parseFloat(b[0]));
-  
-  for (const [threshold, level] of sorted) {
-    if (value >= parseFloat(threshold)) {
-      return level;
+  for (const threshold of thresholds) {
+    if (value >= threshold.min && value < threshold.max) {
+      return threshold.level;
     }
   }
   
-  return 'beginner';
+  return 'advanced';
 };
 
 export default function PerformanceTest() {
