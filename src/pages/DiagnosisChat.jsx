@@ -159,10 +159,10 @@ export default function DiagnosisChat() {
     }
   };
 
-  const handleSpeak = (messageId, text) => {
-    // Stop current speech if any
+  const handleSpeak = async (messageId, text) => {
+    // Stop current audio if any
     if (speechSynthesisRef.current) {
-      window.speechSynthesis.cancel();
+      speechSynthesisRef.current.pause();
       if (speakingMessageId === messageId) {
         setSpeakingMessageId(null);
         speechSynthesisRef.current = null;
@@ -170,60 +170,54 @@ export default function DiagnosisChat() {
       }
     }
 
-    // Clean markdown for speech (remove formatting characters)
+    // Clean markdown for speech
     const cleanText = text
-      .replace(/\*\*/g, '') // Remove bold
-      .replace(/\*/g, '') // Remove italic
-      .replace(/#{1,6}\s/g, '') // Remove headers
-      .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1') // Convert links to text
-      .replace(/`([^`]+)`/g, '$1') // Remove inline code formatting
-      .replace(/^[-*+]\s/gm, '') // Remove list markers
-      .replace(/^\d+\.\s/gm, ''); // Remove numbered list markers
+      .replace(/\*\*/g, '')
+      .replace(/\*/g, '')
+      .replace(/#{1,6}\s/g, '')
+      .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
+      .replace(/`([^`]+)`/g, '$1')
+      .replace(/^[-*+]\s/gm, '')
+      .replace(/^\d+\.\s/gm, '');
 
-    const utterance = new SpeechSynthesisUtterance(cleanText);
-    utterance.lang = 'de-DE';
-    utterance.rate = 0.98; // Slightly slower for natural delivery
-    utterance.pitch = 0.88; // Lower pitch for deeper, warmer female voice
-    
-    // Try to select a better German voice
-    const voices = window.speechSynthesis.getVoices();
-    const germanVoices = voices.filter(voice => voice.lang.startsWith('de'));
-    
-    // Prefer quality voices (Google, Microsoft, or local enhanced voices)
-    const qualityVoice = germanVoices.find(voice => 
-      voice.name.includes('Google') || 
-      voice.name.includes('Microsoft') ||
-      voice.name.includes('Enhanced') ||
-      voice.name.includes('Premium')
-    );
-    
-    if (qualityVoice) {
-      utterance.voice = qualityVoice;
-    } else if (germanVoices.length > 0) {
-      // Use the first available German voice
-      utterance.voice = germanVoices[0];
-    }
-    
-    utterance.onend = () => {
-      setSpeakingMessageId(null);
-      speechSynthesisRef.current = null;
-    };
-
-    utterance.onerror = () => {
-      setSpeakingMessageId(null);
-      speechSynthesisRef.current = null;
-    };
-
-    speechSynthesisRef.current = utterance;
     setSpeakingMessageId(messageId);
-    window.speechSynthesis.speak(utterance);
+
+    try {
+      // Call Gemini TTS backend
+      const { data } = await base44.functions.invoke('textToSpeech', { text: cleanText });
+      
+      // Decode base64 audio
+      const audioBytes = Uint8Array.from(atob(data.audio), c => c.charCodeAt(0));
+      const audioBlob = new Blob([audioBytes], { type: data.mimeType });
+      const audioUrl = URL.createObjectURL(audioBlob);
+      
+      // Play audio
+      const audio = new Audio(audioUrl);
+      audio.onended = () => {
+        setSpeakingMessageId(null);
+        speechSynthesisRef.current = null;
+        URL.revokeObjectURL(audioUrl);
+      };
+      audio.onerror = () => {
+        setSpeakingMessageId(null);
+        speechSynthesisRef.current = null;
+        URL.revokeObjectURL(audioUrl);
+      };
+      
+      speechSynthesisRef.current = audio;
+      await audio.play();
+    } catch (error) {
+      console.error('TTS Error:', error);
+      setSpeakingMessageId(null);
+      speechSynthesisRef.current = null;
+    }
   };
 
-  // Cleanup speech on unmount
+  // Cleanup audio on unmount
   useEffect(() => {
     return () => {
       if (speechSynthesisRef.current) {
-        window.speechSynthesis.cancel();
+        speechSynthesisRef.current.pause();
       }
     };
   }, []);
