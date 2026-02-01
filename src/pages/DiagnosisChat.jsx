@@ -180,33 +180,52 @@ export default function DiagnosisChat() {
       .replace(/^[-*+]\s/gm, '')
       .replace(/^\d+\.\s/gm, '');
 
+    console.log('[TTS DEBUG] Starting TTS with text:', cleanText.substring(0, 100) + '...');
     setSpeakingMessageId(messageId);
 
     try {
       // Call Gemini TTS backend
+      console.log('[TTS DEBUG] Calling backend function...');
       const response = await base44.functions.invoke('textToSpeech', { text: cleanText });
+      
+      console.log('[TTS DEBUG] Backend response:', {
+        status: response.status,
+        hasData: !!response.data,
+        dataKeys: response.data ? Object.keys(response.data) : [],
+        audioLength: response.data?.audio?.length,
+        mimeType: response.data?.mimeType
+      });
       
       if (!response.data || !response.data.audio) {
         throw new Error('No audio data received from server');
       }
       
       // Create audio element with data URL
-      const audio = new Audio(`data:${response.data.mimeType};base64,${response.data.audio}`);
+      const dataUrl = `data:${response.data.mimeType};base64,${response.data.audio}`;
+      console.log('[TTS DEBUG] Creating audio element with URL length:', dataUrl.length);
+      const audio = new Audio(dataUrl);
       
       audio.onended = () => {
+        console.log('[TTS DEBUG] Audio playback ended');
         setSpeakingMessageId(null);
         speechSynthesisRef.current = null;
       };
       audio.onerror = (e) => {
-        console.error('Audio playback error:', e, audio.error);
+        console.error('[TTS DEBUG] Audio playback error:', e, audio.error);
         setSpeakingMessageId(null);
         speechSynthesisRef.current = null;
       };
       
       speechSynthesisRef.current = audio;
+      console.log('[TTS DEBUG] Starting audio playback...');
       await audio.play();
+      console.log('[TTS DEBUG] Audio playback started successfully');
     } catch (error) {
-      console.error('TTS Error:', error);
+      console.error('[TTS DEBUG] TTS Error:', {
+        message: error.message,
+        stack: error.stack,
+        response: error.response
+      });
       setSpeakingMessageId(null);
       speechSynthesisRef.current = null;
     }
