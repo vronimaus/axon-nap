@@ -163,16 +163,17 @@ export default function DiagnosisChat() {
     // Stop current audio if speaking same message
     if (speakingMessageId === messageId) {
       if (speechSynthesisRef.current) {
-        speechSynthesisRef.current.stop();
+        speechSynthesisRef.current.forEach(source => source.stop());
+        speechSynthesisRef.current = null;
       }
       setSpeakingMessageId(null);
-      speechSynthesisRef.current = null;
       return;
     }
 
     // Stop any other currently playing audio
     if (speechSynthesisRef.current) {
-      speechSynthesisRef.current.stop();
+      speechSynthesisRef.current.forEach(source => source.stop());
+      speechSynthesisRef.current = null;
     }
 
     // Clean markdown for speech
@@ -185,59 +186,124 @@ export default function DiagnosisChat() {
       .replace(/^[-*+]\s/gm, '')
       .replace(/^\d+\.\s/gm, '');
 
-    // Smart truncation: cut at sentence end if > 800 chars
-    if (cleanText.length > 800) {
-      const truncated = cleanText.substring(0, 800);
-      const lastPeriod = truncated.lastIndexOf('.');
-      cleanText = lastPeriod > 400 ? truncated.substring(0, lastPeriod + 1) : truncated;
-    }
-
     setSpeakingMessageId(messageId);
 
     try {
-      const response = await base44.functions.invoke('textToSpeech', { text: cleanText });
-      
-      if (!response.data || !response.data.audio) {
-        throw new Error('No audio data received');
-      }
-      
-      // Decode base64 PCM data
-      const pcmBase64 = response.data.audio;
-      const pcmBinary = atob(pcmBase64);
-      const pcmBytes = new Uint8Array(pcmBinary.length);
-      for (let i = 0; i < pcmBinary.length; i++) {
-        pcmBytes[i] = pcmBinary.charCodeAt(i);
-      }
-      
-      // Create Web Audio context and buffer
       const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-      const audioBuffer = audioContext.createBuffer(
-        response.data.channels,
-        pcmBytes.length / 2,
-        response.data.sampleRate
-      );
-      
-      const channelData = audioBuffer.getChannelData(0);
-      for (let i = 0; i < channelData.length; i++) {
-        const sample = (pcmBytes[i * 2] | (pcmBytes[i * 2 + 1] << 8));
-        channelData[i] = sample < 0x8000 ? sample / 0x8000 : (sample - 0x10000) / 0x8000;
-      }
-      
-      // Play audio
-      const source = audioContext.createBufferSource();
-      source.buffer = audioBuffer;
-      source.connect(audioContext.destination);
-      
-      source.onended = () => {
-        setSpeakingMessageId(null);
-        speechSynthesisRef.current = null;
-        audioContext.close();
+      const audioQueue = [];
+      const activeSources = [];
+      let isPlaying = false;
+
+      // Helper to decode and create audio buffer
+      const createAudioBuffer = (pcmBase64, sampleRate, channels) => {
+        const pcmBinary = atob(pcmBase64);
+        const pcmBytes = new Uint8Array(pcmBinary.length);
+        for (let i = 0; i < pcmBinary.length; i++) {
+          pcmBytes[i] = pcmBinary.charCodeAt(i);
+        }
+
+        const audioBuffer = audioContext.createBuffer(
+          channels,
+          pcmBytes.length / 2,
+          sampleRate
+        );
+
+        const channelData = audioBuffer.getChannelData(0);
+        for (let i = 0; i < channelData.length; i++) {
+          const sample = (pcmBytes[i * 2] | (pcmBytes[i * 2 + 1] << 8));
+          channelData[i] = sample < 0x8000 ? sample / 0x8000 : (sample - 0x10000) / 0x8000;
+        }
+
+        return audioBuffer;
       };
+
+      // Play next chunk in queue
+      const playNext = () => {
+        if (audioQueue.length === 0 || !isPlaying) return;
+
+        const audioBuffer = audioQueue.shift();
+        const source = audioContext.createBufferSource();
+        source.buffer = audioBuffer;
+        source.connect(audioContext.destination);
+        
+        source.onended = () => {
+          const index = activeSources.indexOf(source);
+          if (index > -1) activeSources.splice(index, 1);
+          playNext(); // Play next chunk
+        };
+
+        activeSources.push(source);
+        source.start(0);
+      };
+
+      // Get function URL for SSE
+      const functionUrl = `${window.location.origin}/api/functions/textToSpeech`;
       
-      speechSynthesisRef.current = source;
-      source.start(0);
+      // Fetch SSE stream
+      const response = await fetch(functionUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text: cleanText })
+      });
+
+      if (!response.ok) {
+        throw new Error('TTS stream failed');
+      }
+
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder();
+      let buffer = '';
+
+      isPlaying = true;
+      speechSynthesisRef.current = activeSources;
+
+      // Read SSE stream
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split('\n\n');
+        buffer = lines.pop() || '';
+
+        for (const line of lines) {
+          if (!line.startsWith('data: ')) continue;
+          
+          const data = JSON.parse(line.slice(6));
+          
+          if (data.done) {
+            // Stream complete
+            if (audioQueue.length === 0 && activeSources.length === 0) {
+              setSpeakingMessageId(null);
+              speechSynthesisRef.current = null;
+              audioContext.close();
+            }
+            break;
+          }
+
+          // Add audio chunk to queue
+          const audioBuffer = createAudioBuffer(data.audio, data.sampleRate, data.channels);
+          audioQueue.push(audioBuffer);
+
+          // Start playing if not already
+          if (activeSources.length === 0) {
+            playNext();
+          }
+        }
+      }
+
+      // Handle cleanup when all chunks are played
+      const checkComplete = setInterval(() => {
+        if (audioQueue.length === 0 && activeSources.length === 0) {
+          clearInterval(checkComplete);
+          setSpeakingMessageId(null);
+          speechSynthesisRef.current = null;
+          audioContext.close();
+        }
+      }, 100);
+
     } catch (error) {
-      console.error('TTS Error:', error.message);
+      console.error('TTS Stream Error:', error.message);
       setSpeakingMessageId(null);
       speechSynthesisRef.current = null;
     }
@@ -247,7 +313,7 @@ export default function DiagnosisChat() {
   useEffect(() => {
     return () => {
       if (speechSynthesisRef.current) {
-        speechSynthesisRef.current.stop();
+        speechSynthesisRef.current.forEach(source => source.stop());
       }
     };
   }, []);
