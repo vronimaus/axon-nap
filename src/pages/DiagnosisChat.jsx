@@ -182,8 +182,35 @@ export default function DiagnosisChat() {
 
     const utterance = new SpeechSynthesisUtterance(cleanText);
     utterance.lang = 'de-DE';
-    utterance.rate = 0.95; // Slightly slower for better comprehension
-    utterance.pitch = 1.0;
+    utterance.rate = 0.92; // Slightly slower for expert-like delivery
+    utterance.pitch = 0.9; // Lower pitch for male voice
+    
+    // Try to select a better German male voice
+    const voices = window.speechSynthesis.getVoices();
+    const germanVoices = voices.filter(voice => voice.lang.startsWith('de'));
+    
+    // Prefer male voices, and prioritize quality voices
+    const maleVoice = germanVoices.find(voice => 
+      voice.name.toLowerCase().includes('male') || 
+      voice.name.toLowerCase().includes('mann') ||
+      voice.name.toLowerCase().includes('daniel') ||
+      voice.name.toLowerCase().includes('markus')
+    );
+    
+    // If no specific male voice, try Google or Microsoft premium voices
+    const premiumVoice = germanVoices.find(voice =>
+      voice.name.includes('Google') || 
+      voice.name.includes('Microsoft') ||
+      voice.name.includes('Premium')
+    );
+    
+    if (maleVoice) {
+      utterance.voice = maleVoice;
+    } else if (premiumVoice) {
+      utterance.voice = premiumVoice;
+    } else if (germanVoices.length > 0) {
+      utterance.voice = germanVoices[0];
+    }
     
     utterance.onend = () => {
       setSpeakingMessageId(null);
@@ -357,27 +384,7 @@ export default function DiagnosisChat() {
                           </>
                         )}
 
-                        {/* Tool Calls Display */}
-                        {msg.tool_calls && msg.tool_calls.length > 0 && (
-                          <div className="mt-3 space-y-2">
-                            {msg.tool_calls.map((tool, toolIdx) => (
-                              <div
-                                key={toolIdx}
-                                className="text-xs bg-slate-800/50 rounded-lg p-2 border border-slate-700"
-                              >
-                                <div className="flex items-center gap-2 text-purple-400 font-semibold">
-                                  <Sparkles className="w-3 h-3" />
-                                  <span>{tool.name}</span>
-                                </div>
-                                {tool.status === 'completed' && tool.results && (
-                                  <div className="mt-1 text-slate-400">
-                                    ✓ {typeof tool.results === 'string' ? tool.results.substring(0, 50) + '...' : 'Completed'}
-                                  </div>
-                                )}
-                              </div>
-                            ))}
-                          </div>
-                        )}
+                        {/* Tool Calls Display - Hidden for cleaner UX */}
                       </div>
                     </motion.div>
                   ))}
