@@ -78,17 +78,25 @@ export default function Layout({ children, currentPageName }) {
     };
     checkAuth();
 
-    // Poll user status every 2 seconds to detect payment changes
+    // Poll user status every 10 seconds to detect payment changes
     // Only poll on pages where user should be authenticated
+    // Reduced frequency to prevent interference with user interactions
     if (!pagesWithoutNav.includes(currentPageName)) {
       const interval = setInterval(async () => {
         try {
           const currentUser = await base44.auth.me();
-          setUser(currentUser);
+          // Only update if user data actually changed to prevent unnecessary re-renders
+          setUser(prev => {
+            if (JSON.stringify(prev) !== JSON.stringify(currentUser)) {
+              return currentUser;
+            }
+            return prev;
+          });
         } catch (e) {
-          // Silent fail on polling
+          // Silent fail on polling - don't redirect on error
+          console.warn('User status poll failed:', e.message);
         }
-      }, 2000);
+      }, 10000);
 
       return () => clearInterval(interval);
     }
