@@ -53,6 +53,12 @@ export default function Profile() {
       setFormData({
         date_of_birth: profile.date_of_birth || '',
         biological_sex: profile.biological_sex || '',
+        activity_level: profile.activity_level || 'lightly_active',
+        training_experience: profile.training_experience || 'beginner',
+        primary_sport: profile.primary_sport || '',
+        training_frequency: profile.training_frequency || '1_2_times_week',
+        fitness_goals: profile.fitness_goals || [],
+        current_complaints: profile.current_complaints || '',
         injury_history_major: profile.injury_history_major || '',
         scar_tissue_locations: profile.scar_tissue_locations || '',
         hand_dominance: profile.hand_dominance || 'right',
@@ -74,6 +80,7 @@ export default function Profile() {
     mutationFn: async (data) => {
       const cleanData = {
         ...data,
+        fitness_goals: Array.isArray(data.fitness_goals) ? data.fitness_goals : [],
         hrv_score: data.hrv_score ? parseInt(data.hrv_score) : null,
         strength_score: data.strength_score ? parseFloat(data.strength_score) : null,
         profile_complete: true
@@ -210,6 +217,101 @@ export default function Profile() {
 
         {/* Form Sections */}
         <div className="space-y-6">
+          {/* Trainings-Hintergrund */}
+          <Section title="Trainings-Hintergrund" icon="🏋️">
+            <div className="grid md:grid-cols-2 gap-4">
+              <FormField
+                label="Aktivitätslevel"
+                type="select"
+                value={formData.activity_level}
+                onChange={(e) => handleChange('activity_level', e.target.value)}
+                options={[
+                  { value: 'sedentary', label: 'Wenig aktiv (Desk-Job)' },
+                  { value: 'lightly_active', label: 'Leicht aktiv (1-3x/Woche)' },
+                  { value: 'moderately_active', label: 'Moderat aktiv (3-5x/Woche)' },
+                  { value: 'very_active', label: 'Sehr aktiv (5-6x/Woche)' },
+                  { value: 'athlete', label: 'Athlet (täglich)' }
+                ]}
+              />
+              <FormField
+                label="Trainings-Erfahrung"
+                type="select"
+                value={formData.training_experience}
+                onChange={(e) => handleChange('training_experience', e.target.value)}
+                options={[
+                  { value: 'beginner', label: 'Anfänger (< 1 Jahr)' },
+                  { value: 'intermediate', label: 'Fortgeschritten (1-3 Jahre)' },
+                  { value: 'advanced', label: 'Erfahren (3-10 Jahre)' },
+                  { value: 'elite', label: 'Elite (> 10 Jahre)' }
+                ]}
+              />
+            </div>
+            <FormField
+              label="Primäre Sportart (falls vorhanden)"
+              type="text"
+              value={formData.primary_sport}
+              onChange={(e) => handleChange('primary_sport', e.target.value)}
+              placeholder="z.B. BJJ, CrossFit, Laufen, Yoga"
+            />
+            <FormField
+              label="Trainings-Frequenz pro Woche"
+              type="select"
+              value={formData.training_frequency}
+              onChange={(e) => handleChange('training_frequency', e.target.value)}
+              options={[
+                { value: 'none', label: 'Nicht aktiv' },
+                { value: '1_2_times_week', label: '1-2x pro Woche' },
+                { value: '3_4_times_week', label: '3-4x pro Woche' },
+                { value: '5_6_times_week', label: '5-6x pro Woche' },
+                { value: 'daily', label: 'Täglich' }
+              ]}
+            />
+          </Section>
+
+          {/* Ziele & Beschwerden */}
+          <Section title="Ziele & Beschwerden" icon="🎯">
+            <div>
+              <label className="block text-sm font-medium text-slate-300 mb-3">
+                Deine Trainingsziele
+              </label>
+              <div className="space-y-2">
+                {['improve_mobility', 'reduce_pain', 'build_strength', 'improve_performance', 'general_fitness', 'recovery'].map(goal => (
+                  <label key={goal} className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={formData.fitness_goals?.includes(goal) || false}
+                      onChange={(e) => {
+                        if (e.target.checked) {
+                          handleChange('fitness_goals', [...(formData.fitness_goals || []), goal]);
+                        } else {
+                          handleChange('fitness_goals', (formData.fitness_goals || []).filter(g => g !== goal));
+                        }
+                      }}
+                      className="rounded"
+                    />
+                    <span className="text-slate-300 text-sm">
+                      {{
+                        'improve_mobility': 'Mobilität verbessern',
+                        'reduce_pain': 'Schmerzen reduzieren',
+                        'build_strength': 'Kraft aufbauen',
+                        'improve_performance': 'Leistung verbessern',
+                        'general_fitness': 'Allgemeine Fitness',
+                        'recovery': 'Regeneration'
+                      }[goal]}
+                    </span>
+                  </label>
+                ))}
+              </div>
+            </div>
+            <FormField
+              label="Aktuelle Beschwerden oder Schmerzen"
+              type="textarea"
+              value={formData.current_complaints}
+              onChange={(e) => handleChange('current_complaints', e.target.value)}
+              placeholder="z.B. Knieschmerz beim Hocken, Schulterverspannungen, Rückenschmerz nach langem Sitzen"
+            />
+          </Section>
+
           {/* Hardware Basis */}
           <Section title="Meine Hardware" icon="⚙️">
             <div className="grid md:grid-cols-2 gap-4">
