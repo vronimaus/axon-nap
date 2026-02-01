@@ -68,6 +68,7 @@ import Terms from './pages/Terms';
 import TrialInfo from './pages/TrialInfo';
 import ProfileComparison from './pages/ProfileComparison';
 import PerformanceTest from './pages/PerformanceTest';
+import PerformanceTestChoice from './pages/PerformanceTestChoice';
 import __Layout from './Layout.jsx';
 
 
@@ -93,6 +94,7 @@ export const PAGES = {
     "TrialInfo": TrialInfo,
     "ProfileComparison": ProfileComparison,
     "PerformanceTest": PerformanceTest,
+    "PerformanceTestChoice": PerformanceTestChoice,
 }
 
 export const pagesConfig = {
