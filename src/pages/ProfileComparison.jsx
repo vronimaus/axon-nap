@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Card } from '@/components/ui/card';
 import { motion } from 'framer-motion';
-import { CheckCircle2, AlertCircle, Target, Zap } from 'lucide-react';
+import { CheckCircle2, Target, Zap } from 'lucide-react';
 
 // Recommendation Engine
 const generateRecommendations = (profile) => {
@@ -70,7 +70,7 @@ const generateRecommendations = (profile) => {
 };
 
 export default function ProfileComparison() {
-  const { data: profiles = [] } = useQuery({
+  const { data: profiles = {}, isLoading } = useQuery({
     queryKey: ['allProfiles'],
     queryFn: async () => {
       const sandra = await base44.entities.UserNeuroProfile.filter({ user_email: 'sandra@test.axon.local' });
@@ -204,6 +204,10 @@ export default function ProfileComparison() {
       )}
     </motion.div>
   );
+
+  if (isLoading) {
+    return <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950" />;
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 p-6 pb-20">
