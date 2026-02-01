@@ -25,8 +25,13 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'GEMINI_API_KEY not configured' }, { status: 500 });
     }
 
-    // Limit text length for faster generation (500 chars ~ 30-40 seconds speech)
-    const trimmedText = text.length > 500 ? text.substring(0, 500) + '...' : text;
+    // Smart truncation at sentence end if text too long
+    let trimmedText = text;
+    if (text.length > 800) {
+      const truncated = text.substring(0, 800);
+      const lastPeriod = truncated.lastIndexOf('.');
+      trimmedText = lastPeriod > 400 ? truncated.substring(0, lastPeriod + 1) : truncated;
+    }
 
     // Call Gemini TTS API
     const response = await fetch(

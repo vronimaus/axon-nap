@@ -174,16 +174,22 @@ export default function DiagnosisChat() {
       }
     }
 
-    // Clean markdown for speech and limit length
-    const cleanText = text
+    // Clean markdown for speech
+    let cleanText = text
       .replace(/\*\*/g, '')
       .replace(/\*/g, '')
       .replace(/#{1,6}\s/g, '')
       .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
       .replace(/`([^`]+)`/g, '$1')
       .replace(/^[-*+]\s/gm, '')
-      .replace(/^\d+\.\s/gm, '')
-      .substring(0, 500); // Limit to 500 chars for faster TTS
+      .replace(/^\d+\.\s/gm, '');
+
+    // Smart truncation: cut at sentence end if > 800 chars
+    if (cleanText.length > 800) {
+      const truncated = cleanText.substring(0, 800);
+      const lastPeriod = truncated.lastIndexOf('.');
+      cleanText = lastPeriod > 400 ? truncated.substring(0, lastPeriod + 1) : truncated;
+    }
 
     setSpeakingMessageId(messageId);
 
@@ -379,12 +385,12 @@ export default function DiagnosisChat() {
                             <button
                               onClick={() => handleSpeak(msg.id, msg.content)}
                               className="mt-3 flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-700/50 hover:bg-slate-700 transition-colors text-xs text-slate-300 hover:text-cyan-400"
-                              title={speakingMessageId === msg.id ? 'Vorlesen stoppen' : 'Antwort vorlesen'}
+                              title={speakingMessageId === msg.id ? 'Vorlesen stoppen' : 'Antwort vorlesen (dauert ~15s)'}
                             >
                               {speakingMessageId === msg.id ? (
                                 <>
-                                  <VolumeX className="w-4 h-4" />
-                                  <span>Stoppen</span>
+                                  <Loader2 className="w-4 h-4 animate-spin" />
+                                  <span>Lädt...</span>
                                 </>
                               ) : (
                                 <>
