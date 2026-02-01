@@ -186,7 +186,7 @@ export default function DiagnosisChat() {
     }
 
     // Clean markdown for speech
-    const cleanText = text
+    let cleanText = text
       .replace(/\*\*/g, '')
       .replace(/\*/g, '')
       .replace(/#{1,6}\s/g, '')
@@ -195,11 +195,15 @@ export default function DiagnosisChat() {
       .replace(/^[-*+]\s/gm, '')
       .replace(/^\d+\.\s/gm, '');
 
-    // Split into paragraphs (by double newline or single newline)
-    const paragraphs = cleanText
-      .split(/\n\n+/)
-      .map(p => p.trim())
-      .filter(p => p.length > 0);
+    // Smart truncation: cut at sentence end if > 800 chars
+    if (cleanText.length > 800) {
+      const truncated = cleanText.substring(0, 800);
+      const lastPeriod = truncated.lastIndexOf('.');
+      cleanText = lastPeriod > 400 ? truncated.substring(0, lastPeriod + 1) : truncated;
+    }
+
+    // Don't split into paragraphs - use full text for consistent voice
+    const paragraphs = [cleanText];
 
     if (paragraphs.length === 0) return;
 
@@ -219,9 +223,13 @@ export default function DiagnosisChat() {
       setCurrentParagraph(index);
 
       try {
+        console.log(`[TTS] Loading paragraph ${index + 1}/${paragraphs.length}, length: ${paragraphs[index].length} chars`);
+        
         const response = await base44.functions.invoke('textToSpeech', { 
           text: paragraphs[index] 
         });
+        
+        console.log(`[TTS] Received audio for paragraph ${index + 1}`);
         
         if (abortControllerRef.current?.signal.aborted) return;
         
@@ -262,6 +270,7 @@ export default function DiagnosisChat() {
         source.connect(audioContext.destination);
         
         source.onended = () => {
+          console.log(`[TTS] Finished playing paragraph ${index + 1}`);
           audioContext.close();
           if (!abortControllerRef.current?.signal.aborted) {
             playParagraph(index + 1);
@@ -270,8 +279,9 @@ export default function DiagnosisChat() {
         
         speechSynthesisRef.current = source;
         source.start(0);
+        console.log(`[TTS] Started playing paragraph ${index + 1}`);
       } catch (error) {
-        console.error('TTS Error:', error.message);
+        console.error(`[TTS] Error at paragraph ${index + 1}:`, error.message, error);
         setSpeakingMessageId(null);
         setCurrentParagraph(0);
         abortControllerRef.current = null;
