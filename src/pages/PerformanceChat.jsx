@@ -59,10 +59,21 @@ export default function PerformanceChat() {
 
         // Add baseline test results if available
         if (baselines.length > 0) {
-          const baselineInfo = baselines.map(b => 
-            `- ${b.test_name}: ${b.result_value} ${b.result_unit} (Level: ${b.baseline_level})`
-          ).join('\n');
-          initialPrompt += `\n\nMeine bisherigen Baseline-Tests:\n${baselineInfo}\n\nBitte beachte diese Ergebnisse bei der Trainingsplanung.`;
+          const baselineInfo = baselines.map(b => {
+            const testLabel = {
+              'Deep Squat Test': 'Tiefe Kniebeuge',
+              'Shoulder Reach Test': 'Schulterreichweite',
+              'Max Pull-ups': 'Klimmzüge',
+              'Max Push-ups': 'Liegestütze',
+              'Forward Fold Test': 'Vorwärtsbeuge',
+              'Shoulder Flexibility': 'Schulterbeweglichkeit',
+              'Vertical Jump': 'Vertikalsprung',
+              'Plank Hold': 'Planke halten'
+            }[b.test_name] || b.test_name;
+            
+            return `- ${testLabel}: ${b.result_value} ${b.result_unit} (Level: ${b.baseline_level})`;
+          }).join('\n');
+          initialPrompt += `\n\nMeine Performance Baselines aus den bisherigen Tests:\n${baselineInfo}\n\nDiese sind meine aktuellen Fähigkeiten - bitte plane das Training basierend darauf.`;
         }
 
         if (mapDataStr) {
