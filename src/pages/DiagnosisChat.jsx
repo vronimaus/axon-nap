@@ -26,8 +26,10 @@ export default function DiagnosisChat() {
   const [loading, setLoading] = useState(false);
   const [showBodyMap, setShowBodyMap] = useState(false);
   const [speakingMessageId, setSpeakingMessageId] = useState(null);
+  const [currentParagraph, setCurrentParagraph] = useState(0);
   const messagesEndRef = useRef(null);
   const speechSynthesisRef = useRef(null);
+  const abortControllerRef = useRef(null);
 
   // Fetch wizard results if session_id provided
   const { data: wizardSession } = useQuery({
@@ -160,22 +162,31 @@ export default function DiagnosisChat() {
   };
 
   const handleSpeak = async (messageId, text) => {
-    // Stop current audio if any
-    if (speechSynthesisRef.current) {
-      if (speechSynthesisRef.current.stop) {
+    // Stop current audio if speaking same message
+    if (speakingMessageId === messageId) {
+      if (speechSynthesisRef.current) {
         speechSynthesisRef.current.stop();
-      } else if (speechSynthesisRef.current.pause) {
-        speechSynthesisRef.current.pause();
       }
-      if (speakingMessageId === messageId) {
-        setSpeakingMessageId(null);
-        speechSynthesisRef.current = null;
-        return;
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
       }
+      setSpeakingMessageId(null);
+      setCurrentParagraph(0);
+      speechSynthesisRef.current = null;
+      abortControllerRef.current = null;
+      return;
+    }
+
+    // Stop any other currently playing audio
+    if (speechSynthesisRef.current) {
+      speechSynthesisRef.current.stop();
+    }
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
     }
 
     // Clean markdown for speech
-    let cleanText = text
+    const cleanText = text
       .replace(/\*\*/g, '')
       .replace(/\*/g, '')
       .replace(/#{1,6}\s/g, '')
@@ -184,72 +195,100 @@ export default function DiagnosisChat() {
       .replace(/^[-*+]\s/gm, '')
       .replace(/^\d+\.\s/gm, '');
 
-    // Smart truncation: cut at sentence end if > 800 chars
-    if (cleanText.length > 800) {
-      const truncated = cleanText.substring(0, 800);
-      const lastPeriod = truncated.lastIndexOf('.');
-      cleanText = lastPeriod > 400 ? truncated.substring(0, lastPeriod + 1) : truncated;
-    }
+    // Split into paragraphs (by double newline or single newline)
+    const paragraphs = cleanText
+      .split(/\n\n+/)
+      .map(p => p.trim())
+      .filter(p => p.length > 0);
+
+    if (paragraphs.length === 0) return;
 
     setSpeakingMessageId(messageId);
+    setCurrentParagraph(0);
+    abortControllerRef.current = new AbortController();
 
-    try {
-      // Call Gemini TTS backend (can take 10-15s for 500 chars)
-      const response = await base44.functions.invoke('textToSpeech', { text: cleanText });
-      
-      if (!response.data || !response.data.audio) {
-        throw new Error('No audio data received from server');
-      }
-      
-      // Decode base64 PCM data (24kHz, 16-bit, mono from Gemini)
-      const pcmBase64 = response.data.audio;
-      const pcmBinary = atob(pcmBase64);
-      const pcmBytes = new Uint8Array(pcmBinary.length);
-      for (let i = 0; i < pcmBinary.length; i++) {
-        pcmBytes[i] = pcmBinary.charCodeAt(i);
-      }
-      
-      // Create Web Audio context and decode PCM to AudioBuffer
-      const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-      const audioBuffer = audioContext.createBuffer(
-        response.data.channels,
-        pcmBytes.length / 2, // 16-bit = 2 bytes per sample
-        response.data.sampleRate
-      );
-      
-      // Convert PCM bytes to Float32 samples
-      const channelData = audioBuffer.getChannelData(0);
-      for (let i = 0; i < channelData.length; i++) {
-        const sample = (pcmBytes[i * 2] | (pcmBytes[i * 2 + 1] << 8));
-        // Convert from int16 to float32 (-1 to 1)
-        channelData[i] = sample < 0x8000 ? sample / 0x8000 : (sample - 0x10000) / 0x8000;
-      }
-      
-      // Play using AudioBufferSourceNode
-      const source = audioContext.createBufferSource();
-      source.buffer = audioBuffer;
-      source.connect(audioContext.destination);
-      
-      source.onended = () => {
+    // Play paragraphs sequentially
+    const playParagraph = async (index) => {
+      if (index >= paragraphs.length || abortControllerRef.current?.signal.aborted) {
         setSpeakingMessageId(null);
-        speechSynthesisRef.current = null;
-        audioContext.close();
-      };
-      
-      speechSynthesisRef.current = source;
-      source.start(0);
-    } catch (error) {
-      console.error('TTS Error:', error.message);
-      setSpeakingMessageId(null);
-      speechSynthesisRef.current = null;
-    }
+        setCurrentParagraph(0);
+        abortControllerRef.current = null;
+        return;
+      }
+
+      setCurrentParagraph(index);
+
+      try {
+        const response = await base44.functions.invoke('textToSpeech', { 
+          text: paragraphs[index] 
+        });
+        
+        if (abortControllerRef.current?.signal.aborted) return;
+        
+        if (!response.data || !response.data.audio) {
+          throw new Error('No audio data received');
+        }
+        
+        // Decode base64 PCM data
+        const pcmBase64 = response.data.audio;
+        const pcmBinary = atob(pcmBase64);
+        const pcmBytes = new Uint8Array(pcmBinary.length);
+        for (let i = 0; i < pcmBinary.length; i++) {
+          pcmBytes[i] = pcmBinary.charCodeAt(i);
+        }
+        
+        // Create Web Audio context and buffer
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        const audioBuffer = audioContext.createBuffer(
+          response.data.channels,
+          pcmBytes.length / 2,
+          response.data.sampleRate
+        );
+        
+        const channelData = audioBuffer.getChannelData(0);
+        for (let i = 0; i < channelData.length; i++) {
+          const sample = (pcmBytes[i * 2] | (pcmBytes[i * 2 + 1] << 8));
+          channelData[i] = sample < 0x8000 ? sample / 0x8000 : (sample - 0x10000) / 0x8000;
+        }
+        
+        if (abortControllerRef.current?.signal.aborted) {
+          audioContext.close();
+          return;
+        }
+        
+        // Play audio
+        const source = audioContext.createBufferSource();
+        source.buffer = audioBuffer;
+        source.connect(audioContext.destination);
+        
+        source.onended = () => {
+          audioContext.close();
+          if (!abortControllerRef.current?.signal.aborted) {
+            playParagraph(index + 1);
+          }
+        };
+        
+        speechSynthesisRef.current = source;
+        source.start(0);
+      } catch (error) {
+        console.error('TTS Error:', error.message);
+        setSpeakingMessageId(null);
+        setCurrentParagraph(0);
+        abortControllerRef.current = null;
+      }
+    };
+
+    playParagraph(0);
   };
 
   // Cleanup audio on unmount
   useEffect(() => {
     return () => {
       if (speechSynthesisRef.current) {
-        speechSynthesisRef.current.pause();
+        speechSynthesisRef.current.stop();
+      }
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
       }
     };
   }, []);
@@ -385,12 +424,12 @@ export default function DiagnosisChat() {
                             <button
                               onClick={() => handleSpeak(msg.id, msg.content)}
                               className="mt-3 flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-700/50 hover:bg-slate-700 transition-colors text-xs text-slate-300 hover:text-cyan-400"
-                              title={speakingMessageId === msg.id ? 'Vorlesen stoppen' : 'Antwort vorlesen (dauert ~15s)'}
+                              title={speakingMessageId === msg.id ? 'Vorlesen stoppen' : 'Absatzweise vorlesen'}
                             >
                               {speakingMessageId === msg.id ? (
                                 <>
-                                  <Loader2 className="w-4 h-4 animate-spin" />
-                                  <span>Lädt...</span>
+                                  <VolumeX className="w-4 h-4" />
+                                  <span>Stoppen</span>
                                 </>
                               ) : (
                                 <>
