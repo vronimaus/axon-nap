@@ -66,24 +66,22 @@ export default function PerformanceTestChoice() {
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
           >
-            <Card className="glass border-cyan-500/50 h-full cursor-pointer hover:border-cyan-400 transition-colors">
+            <div className="bg-white rounded-2xl p-8 h-full flex flex-col cursor-pointer hover:shadow-2xl hover:shadow-cyan-500/20 transition-all">
               <button
                 onClick={handleTestNow}
-                className="w-full h-full p-8 flex flex-col items-center text-center"
+                className="w-full h-full flex flex-col items-center text-center"
               >
-                <Zap className="w-16 h-16 text-cyan-400 mb-4" />
-                <h2 className="text-2xl font-bold text-white mb-2">Test JETZT</h2>
-                <p className="text-slate-300 mb-6 flex-grow">
-                  Starte sofort mit deinem personalisierten Baseline Assessment. Dies dauert etwa 10-15 Minuten.
-                </p>
-                <div className="w-full bg-cyan-500/20 border border-cyan-500/30 rounded-lg p-3 text-sm text-cyan-300 mb-4">
-                  ⏱️ 10-15 Minuten | Körperliche Aktivität erforderlich
+                <Zap className="w-16 h-16 text-cyan-500 mb-6" />
+                <h2 className="text-xl font-semibold text-slate-400 mb-4">Starte sofort mit deinem personalisierten Baseline Assessment. Dies dauert etwa 10-15 Minuten.</h2>
+                <div className="w-full bg-cyan-100 rounded-lg p-4 text-sm text-cyan-600 font-medium mb-6 mt-auto flex items-center justify-center gap-2">
+                  <span>⏱️</span>
+                  <span>10-15 Minuten | Körperliche Aktivität erforderlich</span>
                 </div>
-                <div className="w-full px-4 py-2 rounded-lg bg-cyan-500 text-white font-semibold hover:bg-cyan-600 transition-colors">
+                <div className="w-full px-4 py-3 rounded-lg bg-cyan-500 text-white font-semibold hover:bg-cyan-600 transition-colors">
                   Test starten →
                 </div>
               </button>
-            </Card>
+            </div>
           </motion.div>
 
           {/* Option 2: Test Later */}
@@ -91,24 +89,22 @@ export default function PerformanceTestChoice() {
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
           >
-            <Card className="glass border-purple-500/50 h-full cursor-pointer hover:border-purple-400 transition-colors">
+            <div className="bg-white rounded-2xl p-8 h-full flex flex-col cursor-pointer hover:shadow-2xl hover:shadow-purple-500/20 transition-all">
               <button
                 onClick={handleTestLater}
-                className="w-full h-full p-8 flex flex-col items-center text-center"
+                className="w-full h-full flex flex-col items-center text-center"
               >
-                <Calendar className="w-16 h-16 text-purple-400 mb-4" />
-                <h2 className="text-2xl font-bold text-white mb-2">Test SPÄTER</h2>
-                <p className="text-slate-300 mb-6 flex-grow">
-                  Starte jetzt mit dem Training und absolviere den Test vor deinem ersten Workout.
-                </p>
-                <div className="w-full bg-purple-500/20 border border-purple-500/30 rounded-lg p-3 text-sm text-purple-300 mb-4">
-                  ✓ Jederzeit nachholbar | Finde dein Tempo
+                <Calendar className="w-16 h-16 text-purple-500 mb-6" />
+                <h2 className="text-xl font-semibold text-slate-400 mb-4">Starte jetzt mit dem Training und absolviere den Test vor deinem ersten Workout.</h2>
+                <div className="w-full bg-purple-100 rounded-lg p-4 text-sm text-purple-600 font-medium mb-6 mt-auto flex items-center justify-center gap-2">
+                  <span>✓</span>
+                  <span>Jederzeit nachholbar | Finde dein Tempo</span>
                 </div>
-                <div className="w-full px-4 py-2 rounded-lg bg-slate-700 text-slate-300 font-semibold hover:bg-slate-600 transition-colors">
+                <div className="w-full px-4 py-3 rounded-lg bg-slate-800 text-white font-semibold hover:bg-slate-900 transition-colors">
                   Zum Dashboard →
                 </div>
               </button>
-            </Card>
+            </div>
           </motion.div>
         </div>
 
