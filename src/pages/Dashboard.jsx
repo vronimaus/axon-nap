@@ -80,6 +80,16 @@ export default function Dashboard() {
     enabled: !!user?.email
   });
 
+  const { data: performanceBaselines = [] } = useQuery({
+    queryKey: ['performanceBaselines', user?.email],
+    queryFn: async () => {
+      if (!user?.email) return [];
+      const baselines = await base44.entities.PerformanceBaseline.filter({ user_email: user.email });
+      return baselines;
+    },
+    enabled: !!user?.email
+  });
+
   if (isLoading) {
     return <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950" />;
   }
