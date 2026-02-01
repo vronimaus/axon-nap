@@ -206,28 +206,43 @@ export default function DiagnosisChat() {
 
     setSpeakingMessageId(messageId);
 
-    // Split into sentences (Web Speech API has limits on text length)
-    const sentences = cleanText
-      .replace(/([.!?])\s+/g, '$1|SPLIT|')
-      .split('|SPLIT|')
-      .filter(s => s.trim().length > 0);
+    // Split into very small chunks (max 200 chars) to avoid browser limits
+    const chunks = [];
+    const sentences = cleanText.split(/([.!?]\s+)/);
+    let currentChunk = '';
+
+    sentences.forEach(part => {
+      if ((currentChunk + part).length > 200) {
+        if (currentChunk) chunks.push(currentChunk.trim());
+        currentChunk = part;
+      } else {
+        currentChunk += part;
+      }
+    });
+    if (currentChunk.trim()) chunks.push(currentChunk.trim());
 
     let currentIndex = 0;
+    let isCancelled = false;
 
-    const speakNextSentence = () => {
-      if (currentIndex >= sentences.length) {
-        setSpeakingMessageId(null);
+    const speakNextChunk = () => {
+      if (isCancelled || currentIndex >= chunks.length) {
+        if (!isCancelled) setSpeakingMessageId(null);
         return;
       }
 
-      const utterance = new SpeechSynthesisUtterance(sentences[currentIndex]);
+      // Wait for voices to load
+      const voices = window.speechSynthesis.getVoices();
+      if (voices.length === 0 && currentIndex === 0) {
+        setTimeout(speakNextChunk, 100);
+        return;
+      }
+
+      const utterance = new SpeechSynthesisUtterance(chunks[currentIndex]);
       utterance.lang = 'de-DE';
-      utterance.rate = 0.95;
+      utterance.rate = 0.9;
       utterance.pitch = 1.0;
       utterance.volume = 1.0;
 
-      // Find a good German voice if available
-      const voices = window.speechSynthesis.getVoices();
       const germanVoice = voices.find(v => v.lang.startsWith('de')) || voices[0];
       if (germanVoice) {
         utterance.voice = germanVoice;
@@ -235,18 +250,26 @@ export default function DiagnosisChat() {
 
       utterance.onend = () => {
         currentIndex++;
-        speakNextSentence();
+        setTimeout(speakNextChunk, 50); // Small delay between chunks
       };
 
       utterance.onerror = (e) => {
         console.error('Speech error:', e);
-        setSpeakingMessageId(null);
+        currentIndex++;
+        setTimeout(speakNextChunk, 100); // Continue on error
       };
 
       window.speechSynthesis.speak(utterance);
     };
 
-    speakNextSentence();
+    // Cleanup function
+    const cancel = () => {
+      isCancelled = true;
+      window.speechSynthesis.cancel();
+    };
+
+    // Start speaking
+    speakNextChunk();
   };
 
   // Cleanup audio on unmount
