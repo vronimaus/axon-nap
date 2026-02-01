@@ -113,9 +113,10 @@ export default function Layout({ children, currentPageName }) {
     const showNav = !pagesWithoutNav.includes(currentPageName);
 
     const navItems = [
-          { name: 'Command', icon: LayoutDashboard, page: 'Dashboard' },
-          { name: 'Plan', icon: Target, page: 'TrainingPlan' }
-        ];
+              { name: 'Command', icon: LayoutDashboard, page: 'Dashboard' },
+              { name: 'Training', icon: Target, page: 'TrainingPlan' },
+              { name: 'Rehab', icon: Activity, page: 'RehabPlan' }
+            ];
 
   const handleProfileClick = () => {
     window.location.href = createPageUrl('Profile');
