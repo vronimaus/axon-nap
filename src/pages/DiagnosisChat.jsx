@@ -5,7 +5,7 @@ import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Card } from '@/components/ui/card';
-import { Loader2, Send, MessageCircle, Sparkles, Activity, ArrowRight } from 'lucide-react';
+import { Loader2, Send, MessageCircle, Sparkles, Activity, ArrowRight, Volume2, VolumeX } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import ReactMarkdown from 'react-markdown';
 import BodyPainMap from '../components/diagnosis/BodyPainMap';
@@ -25,7 +25,9 @@ export default function DiagnosisChat() {
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   const [showBodyMap, setShowBodyMap] = useState(false);
+  const [speakingMessageId, setSpeakingMessageId] = useState(null);
   const messagesEndRef = useRef(null);
+  const speechSynthesisRef = useRef(null);
 
   // Fetch wizard results if session_id provided
   const { data: wizardSession } = useQuery({
@@ -157,6 +159,56 @@ export default function DiagnosisChat() {
     }
   };
 
+  const handleSpeak = (messageId, text) => {
+    // Stop current speech if any
+    if (speechSynthesisRef.current) {
+      window.speechSynthesis.cancel();
+      if (speakingMessageId === messageId) {
+        setSpeakingMessageId(null);
+        speechSynthesisRef.current = null;
+        return;
+      }
+    }
+
+    // Clean markdown for speech (remove formatting characters)
+    const cleanText = text
+      .replace(/\*\*/g, '') // Remove bold
+      .replace(/\*/g, '') // Remove italic
+      .replace(/#{1,6}\s/g, '') // Remove headers
+      .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1') // Convert links to text
+      .replace(/`([^`]+)`/g, '$1') // Remove inline code formatting
+      .replace(/^[-*+]\s/gm, '') // Remove list markers
+      .replace(/^\d+\.\s/gm, ''); // Remove numbered list markers
+
+    const utterance = new SpeechSynthesisUtterance(cleanText);
+    utterance.lang = 'de-DE';
+    utterance.rate = 0.95; // Slightly slower for better comprehension
+    utterance.pitch = 1.0;
+    
+    utterance.onend = () => {
+      setSpeakingMessageId(null);
+      speechSynthesisRef.current = null;
+    };
+
+    utterance.onerror = () => {
+      setSpeakingMessageId(null);
+      speechSynthesisRef.current = null;
+    };
+
+    speechSynthesisRef.current = utterance;
+    setSpeakingMessageId(messageId);
+    window.speechSynthesis.speak(utterance);
+  };
+
+  // Cleanup speech on unmount
+  useEffect(() => {
+    return () => {
+      if (speechSynthesisRef.current) {
+        window.speechSynthesis.cancel();
+      }
+    };
+  }, []);
+
   // Don't block chat with demo paywall if coming from wizard (user is mid-session)
   if (isDemoExpired && !wizardSession) {
     return <DemoPaywall />;
@@ -284,6 +336,24 @@ export default function DiagnosisChat() {
                               {msg.content}
                             </ReactMarkdown>
 
+                            {/* Text-to-Speech Button */}
+                            <button
+                              onClick={() => handleSpeak(msg.id, msg.content)}
+                              className="mt-3 flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-700/50 hover:bg-slate-700 transition-colors text-xs text-slate-300 hover:text-cyan-400"
+                              title={speakingMessageId === msg.id ? 'Vorlesen stoppen' : 'Antwort vorlesen'}
+                            >
+                              {speakingMessageId === msg.id ? (
+                                <>
+                                  <VolumeX className="w-4 h-4" />
+                                  <span>Stoppen</span>
+                                </>
+                              ) : (
+                                <>
+                                  <Volume2 className="w-4 h-4" />
+                                  <span>Vorlesen</span>
+                                </>
+                              )}
+                            </button>
                           </>
                         )}
 
