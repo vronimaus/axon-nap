@@ -66,6 +66,7 @@ import QuickDemo from './pages/QuickDemo';
 import Success from './pages/Success';
 import Terms from './pages/Terms';
 import TrialInfo from './pages/TrialInfo';
+import ProfileComparison from './pages/ProfileComparison';
 import __Layout from './Layout.jsx';
 
 
@@ -89,6 +90,7 @@ export const PAGES = {
     "Success": Success,
     "Terms": Terms,
     "TrialInfo": TrialInfo,
+    "ProfileComparison": ProfileComparison,
 }
 
 export const pagesConfig = {
