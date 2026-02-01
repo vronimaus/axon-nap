@@ -113,7 +113,7 @@ export default function PerformanceTestChoice() {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="glass rounded-lg border border-slate-700/50 p-6"
+          className="bg-slate-800/80 backdrop-blur-md border border-slate-700 rounded-lg p-6"
         >
           <h3 className="text-white font-semibold mb-3">Was ist ein Baseline Assessment?</h3>
           <ul className="space-y-2 text-slate-300 text-sm">
