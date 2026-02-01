@@ -56,10 +56,12 @@ Deno.serve(async (req) => {
     const audioData = data.candidates[0].content.parts[0].inlineData.data;
     const mimeType = data.candidates[0].content.parts[0].inlineData.mimeType;
 
-    // Return base64 audio data
+    console.log('Gemini returned mimeType:', mimeType);
+
+    // Return base64 audio data with corrected MIME type for browser compatibility
     return Response.json({ 
       audio: audioData,
-      mimeType: mimeType || 'audio/wav'
+      mimeType: 'audio/mpeg' // Force MP3 for better browser support
     });
 
   } catch (error) {
