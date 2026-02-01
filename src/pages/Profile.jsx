@@ -293,12 +293,14 @@ export default function Profile() {
                 min="1"
                 max="5"
                 displayValue={`${formData.vestibular_sensitivity}/5`}
+                help="1 = keine Probleme, 5 = sehr empfindlich (Schwindel, Übelkeit bei Bewegung)"
               />
               <FormField
                 label="Zähneknirschen / Spangen-Historie"
                 type="checkbox"
                 value={formData.jaw_tension_history}
                 onChange={(e) => handleChange('jaw_tension_history', e.target.checked)}
+                help="Beeinflusst die Nacken- und Kiefermuskulatur"
               />
             </div>
           </Section>
