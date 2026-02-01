@@ -60,15 +60,15 @@ import Landing from './pages/Landing';
 import MFRIntegration from './pages/MFRIntegration';
 import Performance from './pages/Performance';
 import PerformanceChat from './pages/PerformanceChat';
+import PerformanceTest from './pages/PerformanceTest';
+import PerformanceTestChoice from './pages/PerformanceTestChoice';
 import Privacy from './pages/Privacy';
 import Profile from './pages/Profile';
+import ProfileComparison from './pages/ProfileComparison';
 import QuickDemo from './pages/QuickDemo';
 import Success from './pages/Success';
 import Terms from './pages/Terms';
 import TrialInfo from './pages/TrialInfo';
-import ProfileComparison from './pages/ProfileComparison';
-import PerformanceTest from './pages/PerformanceTest';
-import PerformanceTestChoice from './pages/PerformanceTestChoice';
 import __Layout from './Layout.jsx';
 
 
@@ -86,15 +86,15 @@ export const PAGES = {
     "MFRIntegration": MFRIntegration,
     "Performance": Performance,
     "PerformanceChat": PerformanceChat,
+    "PerformanceTest": PerformanceTest,
+    "PerformanceTestChoice": PerformanceTestChoice,
     "Privacy": Privacy,
     "Profile": Profile,
+    "ProfileComparison": ProfileComparison,
     "QuickDemo": QuickDemo,
     "Success": Success,
     "Terms": Terms,
     "TrialInfo": TrialInfo,
-    "ProfileComparison": ProfileComparison,
-    "PerformanceTest": PerformanceTest,
-    "PerformanceTestChoice": PerformanceTestChoice,
 }
 
 export const pagesConfig = {

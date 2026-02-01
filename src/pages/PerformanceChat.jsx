@@ -37,19 +37,33 @@ export default function PerformanceChat() {
 
         setGoalName(goal || 'Dein Ziel');
 
+        // Fetch existing performance baselines
+        const baselines = await base44.entities.PerformanceBaseline.filter({
+          user_email: user.email
+        });
+
         // Create new conversation
         const newConversation = await base44.agents.createConversation({
           agent_name: 'performance_coach',
           metadata: {
             goal: goal,
-            has_tension_map: !!mapDataStr
+            has_tension_map: !!mapDataStr,
+            baseline_count: baselines.length
           }
         });
 
         setConversation(newConversation);
 
-        // Build initial prompt with goal and optional tension data
+        // Build initial prompt with goal, baseline data, and optional tension data
         let initialPrompt = `Mein nächstes Ziel ist: ${goal}`;
+
+        // Add baseline test results if available
+        if (baselines.length > 0) {
+          const baselineInfo = baselines.map(b => 
+            `- ${b.test_name}: ${b.result_value} ${b.result_unit} (Level: ${b.baseline_level})`
+          ).join('\n');
+          initialPrompt += `\n\nMeine bisherigen Baseline-Tests:\n${baselineInfo}\n\nBitte beachte diese Ergebnisse bei der Trainingsplanung.`;
+        }
 
         if (mapDataStr) {
           const mapData = JSON.parse(mapDataStr);
@@ -62,7 +76,7 @@ export default function PerformanceChat() {
           }).join(', ');
 
           initialPrompt += `\n\nIch habe außerdem Spannungsbereiche auf der BodyMap markiert:\n- Ansicht: ${mapData.view === 'front' ? 'Vorderseite' : 'Rückseite'}\n- ${mapData.markers.length} Markierung(en): ${tensionDetails}\n\nBitte berücksichtige diese Spannungen bei der Trainingsplanung.`;
-        } else {
+        } else if (baselines.length === 0) {
           initialPrompt += `\n\nIch habe keine spezifischen Spannungen markiert.`;
         }
 
