@@ -260,7 +260,7 @@ export default function PerformanceChat() {
 
       {/* Messages */}
       <div className="flex-1 overflow-y-auto custom-scrollbar">
-        <div className="max-w-4xl mx-auto px-4 py-6 space-y-4 flex flex-col">
+        <div className="max-w-4xl mx-auto px-4 py-6 space-y-4">
               {isLoading ? (
                 <div className="flex items-center justify-center py-12">
                   <Loader2 className="w-8 h-8 text-amber-400 animate-spin" />
