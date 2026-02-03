@@ -243,21 +243,23 @@ function PhaseCard({ phase, index, isExpanded, onToggle, isCompleted, onComplete
             className="border-t border-slate-700/50"
           >
             <div className="p-4 space-y-4">
-              {/* Instructions */}
+              {/* Phase Description */}
               <div>
-                <h4 className="font-semibold text-slate-200 mb-2">Anleitung:</h4>
-                <p className="text-sm text-slate-400 leading-relaxed">{phase.instruction}</p>
+                <h4 className="font-semibold text-slate-200 mb-2">Fokus:</h4>
+                <p className="text-sm text-slate-400 leading-relaxed">{phase.description}</p>
               </div>
 
-              {/* Details (optional, collapsible further) */}
-              {phase.details && (
+              {/* Exercises */}
+              {phase.exercises && phase.exercises.length > 0 && (
                 <div className="pt-4 border-t border-slate-700/50">
-                  <h4 className="font-semibold text-slate-200 mb-2">Details:</h4>
-                  <div className="text-sm text-slate-400 space-y-1">
-                    {Object.entries(phase.details).map(([key, value]) => (
-                      <p key={key}>
-                        <span className="text-slate-300 font-medium">{key}:</span> {value}
-                      </p>
+                  <h4 className="font-semibold text-slate-200 mb-3">Übungen:</h4>
+                  <div className="space-y-3">
+                    {phase.exercises.map((exercise, exIdx) => (
+                      <div key={exIdx} className="bg-white/5 rounded-lg p-3">
+                        <p className="font-medium text-slate-200">{exercise.name}</p>
+                        <p className="text-xs text-slate-400 mt-1">{exercise.sets_reps_tempo}</p>
+                        <p className="text-sm text-slate-400 mt-2">{exercise.instruction}</p>
+                      </div>
                     ))}
                   </div>
                 </div>
