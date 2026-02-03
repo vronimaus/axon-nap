@@ -118,14 +118,18 @@ export default function PerformanceChat() {
           initialPrompt += `\n\nMeine Performance Baselines aus den bisherigen Tests:\n${baselineInfo}\n\nDiese sind meine aktuellen Fähigkeiten - bitte plane das Training basierend darauf.`;
         }
 
-        // Add complaint history from Rehab mode if available
+        // Add complaint history or current_complaints if available
         if (complaintHistory.length > 0) {
           const complaintInfo = complaintHistory.map(c => 
-            `- ${c.location}: ${c.description}${c.intensity ? ` (Intensität: ${c.intensity}/10)` : ''}${c.status ? ` [${c.status}]` : ''}`
+            `- ${c.location}${c.intensity ? ` (${c.intensity}/10)` : ''}${c.status ? ` [${c.status}]` : ''}`
           ).join('\n');
-          const complaintPrompt = `\n\n⚠️ Ich habe folgende Beschwerde(n) aus meinem Rehab-Bereich:\n${complaintInfo}\n\nBitte beachte diese bei der Planung des Trainings – achte auf Modifikationen und sichere Varianten für diese Bereiche.`;
+          const complaintPrompt = `\n\n⚠️ Aktuelle Beschwerden:\n${complaintInfo}\n\nBitte beachte diese bei der Planung.`;
           initialPrompt += complaintPrompt;
           console.log('Added complaint history to prompt:', complaintPrompt);
+        } else if (currentComplaints) {
+          const complaintPrompt = `\n\n⚠️ Aktuelle Beschwerde: ${currentComplaints}\n\nBitte beachte diese bei der Planung des Trainings.`;
+          initialPrompt += complaintPrompt;
+          console.log('Added current_complaints to prompt:', complaintPrompt);
         }
 
         if (mapDataStr) {
