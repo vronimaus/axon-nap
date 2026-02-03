@@ -30,10 +30,22 @@ export default function PerformanceChat() {
           return;
         }
 
-        // Get goal and bodymap data from URL params
+        // Get goal and bodymap data from URL params or sessionStorage
         const urlParams = new URLSearchParams(window.location.search);
-        const goal = urlParams.get('goal');
-        const mapDataStr = urlParams.get('mapData');
+        let goal = urlParams.get('goal');
+        let mapDataStr = urlParams.get('mapData');
+        
+        // If not in URL, try to get from sessionStorage (from InteractiveBodyMap)
+        if (!goal || !mapDataStr) {
+          const bodyMapData = sessionStorage.getItem('bodyMapData');
+          if (bodyMapData) {
+            const parsedData = JSON.parse(bodyMapData);
+            if (!goal) goal = parsedData.goal;
+            if (!mapDataStr && parsedData.mode === 'performance') {
+              mapDataStr = JSON.stringify(parsedData);
+            }
+          }
+        }
 
         setGoalName(goal || 'Dein Ziel');
 
