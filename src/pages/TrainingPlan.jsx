@@ -135,7 +135,7 @@ export default function TrainingPlan() {
 
             {/* Phases */}
             <div className="space-y-3">
-              {activePlan.phases?.reverse().map((phase, idx) => (
+              {activePlan.phases?.map((phase, idx) => (
                 <PhaseCard
                   key={idx}
                   phase={phase}
