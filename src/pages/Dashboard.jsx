@@ -355,7 +355,8 @@ export default function Dashboard() {
                       </div>
                       <Button
                         onClick={() => {
-                          window.location.href = createPageUrl(`PerformanceChat`);
+                          const encodedGoal = encodeURIComponent(selectedBodyRegion.trim());
+                          window.location.href = createPageUrl(`PerformanceChat?goal=${encodedGoal}`);
                         }}
                         className="w-full h-12 sm:h-14 bg-gradient-to-r from-amber-500 to-yellow-600 hover:from-amber-600 hover:to-yellow-700 text-white font-bold text-sm sm:text-base"
                       >
