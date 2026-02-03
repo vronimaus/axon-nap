@@ -402,10 +402,10 @@ export default function InteractiveBodyMap({ mode, onRegionSelect, sessions }) {
           <span className="text-xs sm:text-sm">{markers.length} Markierung(en)</span>
         </div>
       </div>
-      </div>
+    </div>
 
-      {/* Performance Mode Analysis Button - Outside container to avoid canvas overlap */}
-      {mode === 'performance' && (
+    {/* Performance Mode Analysis Button - Outside container to avoid canvas overlap */}
+    {mode === 'performance' && (
       <div className="mt-4 flex flex-col gap-2">
         <Button
           onClick={() => {
@@ -422,6 +422,8 @@ export default function InteractiveBodyMap({ mode, onRegionSelect, sessions }) {
           {markers.length > 0 ? 'Goal & Tension erfasst. Analyse starten →' : 'Goal erfasst. Analyse starten →'}
         </Button>
       </div>
-      )}
-      );
+    )}
+    </>
+    );
+  }
       }
