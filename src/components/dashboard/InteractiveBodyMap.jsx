@@ -334,26 +334,35 @@ export default function InteractiveBodyMap({ mode, onRegionSelect, sessions }) {
             </Button>
           )}
           {mode === 'performance' && (
-            <Button
-              size="sm"
-              onClick={() => {
-                console.log('BUTTON CLICKED - Performance');
-                // Get goal and use same detection as Rehab
-                const goalInput = document.querySelector('input[placeholder*="Klimmzug"], input[placeholder*="Pistol"]')?.value || '';
-                console.log('Goal Input:', goalInput);
-                console.log('Markers before detection:', markers);
-                const detectedRegion = markers.length > 0 ? detectRegionFromCoordinates(markers, view, 400, 600) : '';
-                console.log('Performance - Markers:', markers);
-                console.log('Performance - View:', view);
-                console.log('Performance - Detected region:', detectedRegion);
-                sessionStorage.setItem('bodyMapData', JSON.stringify({ view, markers, mode, dashboardGoal: goalInput, detectedRegion }));
-                navigate(createPageUrl('PerformanceChat'));
-              }}
-              className="ml-auto text-sm bg-gradient-to-r from-amber-500 to-yellow-600 hover:from-amber-600 hover:to-yellow-700 text-black font-semibold px-4 py-2"
-            >
-              <Send className="w-4 h-4 mr-2" />
-              {markers.length > 0 ? 'Goal & Tension erfasst. Analyse starten →' : 'Goal erfasst. Analyse starten →'}
-            </Button>
+            <>
+              <Button
+                size="sm"
+                onClick={() => {
+                  setDebugOutput(`BUTTON CLICKED! Markers: ${markers.length}, View: ${view}`);
+                  console.log('BUTTON CLICKED - Performance');
+                  // Get goal and use same detection as Rehab
+                  const goalInput = document.querySelector('input[placeholder*="Klimmzug"], input[placeholder*="Pistol"]')?.value || '';
+                  console.log('Goal Input:', goalInput);
+                  console.log('Markers before detection:', markers);
+                  const detectedRegion = markers.length > 0 ? detectRegionFromCoordinates(markers, view, 400, 600) : '';
+                  console.log('Performance - Markers:', markers);
+                  console.log('Performance - View:', view);
+                  console.log('Performance - Detected region:', detectedRegion);
+                  setDebugOutput(`Detected Region: ${detectedRegion}`);
+                  sessionStorage.setItem('bodyMapData', JSON.stringify({ view, markers, mode, dashboardGoal: goalInput, detectedRegion }));
+                  navigate(createPageUrl('PerformanceChat'));
+                }}
+                className="ml-auto text-sm bg-gradient-to-r from-amber-500 to-yellow-600 hover:from-amber-600 hover:to-yellow-700 text-black font-semibold px-4 py-2"
+              >
+                <Send className="w-4 h-4 mr-2" />
+                {markers.length > 0 ? 'Goal & Tension erfasst. Analyse starten →' : 'Goal erfasst. Analyse starten →'}
+              </Button>
+              {debugOutput && (
+                <div className="mt-2 p-2 bg-cyan-500/10 border border-cyan-500/30 rounded text-cyan-400 text-xs font-mono">
+                  {debugOutput}
+                </div>
+              )}
+            </>
           )}
         </div>
       </div>
