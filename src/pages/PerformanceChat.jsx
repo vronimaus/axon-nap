@@ -30,20 +30,22 @@ export default function PerformanceChat() {
           return;
         }
 
-        // Get goal and bodymap data from URL params or sessionStorage
+        // Get goal from Dashboard input, body map data from sessionStorage
         const urlParams = new URLSearchParams(window.location.search);
         let goal = urlParams.get('goal');
         let mapDataStr = urlParams.get('mapData');
         
-        // If not in URL, try to get from sessionStorage (from InteractiveBodyMap)
-        if (!goal || !mapDataStr) {
-          const bodyMapData = sessionStorage.getItem('bodyMapData');
-          if (bodyMapData) {
-            const parsedData = JSON.parse(bodyMapData);
-            if (!goal) goal = parsedData.goal;
-            if (!mapDataStr && parsedData.mode === 'performance') {
-              mapDataStr = JSON.stringify(parsedData);
-            }
+        // Get stored data from Dashboard (goal + tension markers)
+        const bodyMapData = sessionStorage.getItem('bodyMapData');
+        if (bodyMapData) {
+          const parsedData = JSON.parse(bodyMapData);
+          // Check if goal was passed via Dashboard's selectedBodyRegion
+          if (!goal && parsedData.dashboardGoal) {
+            goal = parsedData.dashboardGoal;
+          }
+          // Use the body map data with tension markers
+          if (parsedData.mode === 'performance') {
+            mapDataStr = JSON.stringify(parsedData);
           }
         }
 
