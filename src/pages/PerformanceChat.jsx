@@ -62,17 +62,22 @@ export default function PerformanceChat() {
           console.error('Fehler beim Laden von Baselines:', e);
         }
 
-        // Fetch UserNeuroProfile to get complaint_history
+        // Fetch RehabPlans to get complaint history
         let complaintHistory = [];
         try {
-          const neuroProfiles = await base44.entities.UserNeuroProfile.filter({ user_email: user.email });
-          console.log('Fetched neuroProfiles:', neuroProfiles);
-          if (Array.isArray(neuroProfiles) && neuroProfiles.length > 0 && neuroProfiles[0]?.complaint_history) {
-            complaintHistory = neuroProfiles[0].complaint_history;
-            console.log('Loaded complaint_history:', complaintHistory);
+          const rehabPlans = await base44.entities.RehabPlan.filter({ user_email: user.email });
+          console.log('Fetched rehabPlans:', rehabPlans);
+          if (Array.isArray(rehabPlans) && rehabPlans.length > 0) {
+            // Sammle symptom_location und phases info
+            complaintHistory = rehabPlans.map(plan => ({
+              location: plan.symptom_location,
+              status: plan.status,
+              current_phase: plan.current_phase
+            }));
+            console.log('Loaded complaint_history from RehabPlans:', complaintHistory);
           }
         } catch (e) {
-          console.error('Fehler beim Laden von Beschwerdehistorie:', e);
+          console.error('Fehler beim Laden von Rehab-Plänen:', e);
         }
 
         // Create new conversation
