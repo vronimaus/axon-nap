@@ -329,7 +329,9 @@ export default function InteractiveBodyMap({ mode, onRegionSelect, sessions }) {
             <Button
               size="sm"
               onClick={() => {
-                sessionStorage.setItem('bodyMapData', JSON.stringify({ view, markers, mode }));
+                // Get goal from parent component's state (passed via prop or use selected region)
+                const goalInput = document.querySelector('input[placeholder*="Klimmzug"], input[placeholder*="Pistol"]')?.value || '';
+                sessionStorage.setItem('bodyMapData', JSON.stringify({ view, markers, mode, dashboardGoal: goalInput }));
                 navigate(createPageUrl('PerformanceChat'));
               }}
               className="ml-auto text-sm bg-gradient-to-r from-amber-500 to-yellow-600 hover:from-amber-600 hover:to-yellow-700 text-black font-semibold px-4 py-2"
