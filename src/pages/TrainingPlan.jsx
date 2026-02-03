@@ -210,12 +210,14 @@ function PhaseCard({ phase, index, isExpanded, onToggle, isCompleted, onComplete
         className="w-full p-4 flex items-center justify-between hover:bg-white/5 transition-colors"
       >
         <div className="flex items-center gap-4 text-left">
-          <div className="text-2xl">{phaseIcons[phase.type]}</div>
+          <div className="text-2xl">
+            {phase.phase_number === 1 ? '🏗️' : phase.phase_number === 2 ? '📈' : '🎯'}
+          </div>
           <div>
             <h3 className={`font-semibold ${colors.text}`}>
-              {phase.title || `Phase ${index + 1}`}
+              {phase.title || `Phase ${phase.phase_number || index + 1}`}
             </h3>
-            <p className="text-sm text-slate-400">{phase.duration_weeks} Wochen</p>
+            <p className="text-sm text-slate-400">{phase.duration_weeks || 2} Wochen</p>
           </div>
         </div>
         <div className="flex items-center gap-3">
