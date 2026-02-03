@@ -404,14 +404,7 @@ export default function InteractiveBodyMap({ mode, onRegionSelect, sessions }) {
           ref={canvasRef}
           width={400}
           height={600}
-          className="absolute inset-0 w-full h-full cursor-crosshair"
-          onMouseDown={startDrawing}
-          onMouseMove={draw}
-          onMouseUp={stopDrawing}
-          onMouseLeave={stopDrawing}
-          onTouchStart={startDrawing}
-          onTouchMove={draw}
-          onTouchEnd={stopDrawing}
+          className="absolute inset-0 w-full h-full cursor-crosshair pointer-events-none"
         />
       </div>
 
