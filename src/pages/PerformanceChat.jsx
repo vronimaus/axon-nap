@@ -17,6 +17,7 @@ export default function PerformanceChat() {
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const [isSending, setIsSending] = useState(false);
+  const [isPlanCreating, setIsPlanCreating] = useState(false);
   const [showFeedbackForm, setShowFeedbackForm] = useState(false);
   const [goalName, setGoalName] = useState('');
   const messagesEndRef = useRef(null);
@@ -259,20 +260,24 @@ export default function PerformanceChat() {
     const lastMessage = messages[messages.length - 1];
     if (lastMessage?.role !== 'assistant') return;
 
-    // Check if message contains plan creation trigger (only once per message)
+    // Check if message contains plan creation trigger (only once per conversation)
       const hasCreatePlanTrigger = lastMessage?.content?.includes('[CREATE_PLAN]');
-      const notYetTriggered = !lastMessage?.plan_created_triggered;
+      const planCreatedKey = `plan_created_${conversation.id}`;
+      const planAlreadyCreated = localStorage.getItem(planCreatedKey) === 'true';
 
       console.log('Plan trigger check:', {
         hasCreatePlanTrigger,
-        notYetTriggered,
+        isPlanCreating,
+        planAlreadyCreated,
         lastMessageContent: lastMessage?.content?.substring(0, 100)
       });
 
-      if (hasCreatePlanTrigger && notYetTriggered) {
+      if (hasCreatePlanTrigger && !planAlreadyCreated && !isPlanCreating) {
         console.log('🎯 TRIGGERING PLAN CREATION');
+        setIsPlanCreating(true);
         const createPlan = async () => {
           try {
+            localStorage.setItem(planCreatedKey, 'true');
             // Extract training frequency from conversation
             const conversationText = messages.map(m => m.content).join(' ');
 
@@ -297,24 +302,17 @@ export default function PerformanceChat() {
 
             if (response.data?.success) {
               console.log('✨ Training plan created successfully:', response.data.plan?.id);
-              // Mark this message as processed to avoid duplicate triggers
-              setMessages(prev => {
-                const updated = [...prev];
-                updated[updated.length - 1] = { 
-                  ...updated[updated.length - 1], 
-                  plan_created_triggered: true,
-                  content: lastMessage.content.replace('[CREATE_PLAN]', '').trim()
-                };
-                return updated;
-              });
             }
-          } catch (error) {
+            } catch (error) {
             console.error('❌ Error creating training plan:', error);
-          }
-        };
+            localStorage.removeItem(planCreatedKey);
+            } finally {
+            setIsPlanCreating(false);
+            }
+            };
 
-        createPlan();
-      }
+            createPlan();
+            }
   }, [messages, conversation, goalName]);
 
   return (
