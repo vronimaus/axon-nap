@@ -402,28 +402,26 @@ export default function InteractiveBodyMap({ mode, onRegionSelect, sessions }) {
           <span className="text-xs sm:text-sm">{markers.length} Markierung(en)</span>
         </div>
       </div>
-    </div>
 
-    {/* Performance Mode Analysis Button - Outside container to avoid canvas overlap */}
-    {mode === 'performance' && (
-      <div className="mt-4 flex flex-col gap-2">
-        <Button
-          onClick={() => {
-            console.log('BUTTON CLICKED - Performance');
-            const goalInput = document.querySelector('input[placeholder*="Klimmzug"], input[placeholder*="Pistol"]')?.value || '';
-            const detectedRegion = markers.length > 0 ? detectRegionFromCoordinates(markers, view, 400, 600) : '';
-            console.log('Markers:', markers, 'Region:', detectedRegion);
-            sessionStorage.setItem('bodyMapData', JSON.stringify({ view, markers, mode, dashboardGoal: goalInput, detectedRegion }));
-            navigate(createPageUrl('PerformanceChat'));
-          }}
-          className="w-full text-sm bg-gradient-to-r from-amber-500 to-yellow-600 hover:from-amber-600 hover:to-yellow-700 text-black font-semibold py-3"
-        >
-          <Send className="w-4 h-4 mr-2" />
-          {markers.length > 0 ? 'Goal & Tension erfasst. Analyse starten →' : 'Goal erfasst. Analyse starten →'}
-        </Button>
-      </div>
-    )}
-    </>
-    );
-  }
-      }
+      {/* Performance Mode Analysis Button */}
+      {mode === 'performance' && (
+        <div className="p-4 border-t border-slate-700/50">
+          <Button
+            onClick={() => {
+              console.log('BUTTON CLICKED - Performance');
+              const goalInput = document.querySelector('input[placeholder*="Klimmzug"], input[placeholder*="Pistol"]')?.value || '';
+              const detectedRegion = markers.length > 0 ? detectRegionFromCoordinates(markers, view, 400, 600) : '';
+              console.log('Markers:', markers, 'Region:', detectedRegion);
+              sessionStorage.setItem('bodyMapData', JSON.stringify({ view, markers, mode, dashboardGoal: goalInput, detectedRegion }));
+              navigate(createPageUrl('PerformanceChat'));
+            }}
+            className="w-full text-sm bg-gradient-to-r from-amber-500 to-yellow-600 hover:from-amber-600 hover:to-yellow-700 text-black font-semibold py-3"
+          >
+            <Send className="w-4 h-4 mr-2" />
+            {markers.length > 0 ? 'Goal & Tension erfasst. Analyse starten →' : 'Goal erfasst. Analyse starten →'}
+          </Button>
+        </div>
+      )}
+    </div>
+  );
+}
