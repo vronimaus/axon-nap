@@ -355,11 +355,15 @@ export default function Dashboard() {
                   )}
                 </div>
               )}
-              <InteractiveBodyMap
-                mode={mode}
-                onRegionSelect={setSelectedBodyRegion}
-                sessions={sessions}
-              />
+
+              {/* Body Map - ONLY in Rehab Mode */}
+              {mode === 'rehab' && (
+               <InteractiveBodyMap
+                 mode={mode}
+                 onRegionSelect={setSelectedBodyRegion}
+                 sessions={sessions}
+               />
+              )}
               {mode === 'rehab' && selectedBodyRegion && (
                 <motion.div
                   initial={{ opacity: 0, y: 10 }}
