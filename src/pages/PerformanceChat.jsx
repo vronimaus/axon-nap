@@ -253,43 +253,52 @@ export default function PerformanceChat() {
     const lastMessage = messages[messages.length - 1];
     if (lastMessage?.role !== 'assistant') return;
 
-    // Check if message contains plan creation trigger
-    if (lastMessage?.content?.includes('[CREATE_PLAN]')) {
-      const createPlan = async () => {
-        try {
-          // Extract training frequency from conversation
-          const conversationText = messages.map(m => m.content).join(' ');
-          
-          let frequency = '2_3_times_week'; // default
-          if (conversationText.toLowerCase().includes('4-5') || conversationText.toLowerCase().includes('4 bis 5')) {
-            frequency = '4_5_times_week';
-          } else if (conversationText.toLowerCase().includes('täglich') || conversationText.toLowerCase().includes('jeden tag')) {
-            frequency = 'daily';
-          }
+    // Check if message contains plan creation trigger (only once per message)
+      if (lastMessage?.content?.includes('[CREATE_PLAN]') && !lastMessage?.plan_created_triggered) {
+        const createPlan = async () => {
+          try {
+            // Extract training frequency from conversation
+            const conversationText = messages.map(m => m.content).join(' ');
 
-          // Call createTrainingPlan function
-          const response = await base44.functions.invoke('createTrainingPlan', {
-            goal_description: goalName,
-            training_frequency: frequency
-          });
+            let frequency = '2_3_times_week'; // default
+            if (conversationText.toLowerCase().includes('4-5') || conversationText.toLowerCase().includes('4 bis 5')) {
+              frequency = '4_5_times_week';
+            } else if (conversationText.toLowerCase().includes('täglich') || conversationText.toLowerCase().includes('jeden tag')) {
+              frequency = 'daily';
+            } else if (conversationText.toLowerCase().includes('2') && (conversationText.toLowerCase().includes('2 mal') || conversationText.toLowerCase().includes('2x'))) {
+              frequency = '2_3_times_week';
+            }
 
-          if (response.data?.success) {
-            console.log('Training plan created:', response.data.plan);
-            // Clear the trigger from message display by updating it
-            const cleanedMessage = lastMessage.content.replace('[CREATE_PLAN]', '').trim();
-            setMessages(prev => {
-              const updated = [...prev];
-              updated[updated.length - 1] = { ...updated[updated.length - 1], content: cleanedMessage };
-              return updated;
+            console.log('Creating training plan with frequency:', frequency);
+
+            // Call createTrainingPlan function
+            const response = await base44.functions.invoke('createTrainingPlan', {
+              goal_description: goalName,
+              training_frequency: frequency
             });
-          }
-        } catch (error) {
-          console.error('Error creating training plan:', error);
-        }
-      };
 
-      createPlan();
-    }
+            console.log('Training plan response:', response);
+
+            if (response.data?.success) {
+              console.log('Training plan created successfully');
+              // Mark this message as processed to avoid duplicate triggers
+              setMessages(prev => {
+                const updated = [...prev];
+                updated[updated.length - 1] = { 
+                  ...updated[updated.length - 1], 
+                  plan_created_triggered: true,
+                  content: lastMessage.content.replace('[CREATE_PLAN]', '').trim()
+                };
+                return updated;
+              });
+            }
+          } catch (error) {
+            console.error('Error creating training plan:', error);
+          }
+        };
+
+        createPlan();
+      }
   }, [messages, conversation, goalName]);
 
   return (
