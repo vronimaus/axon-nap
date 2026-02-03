@@ -325,22 +325,7 @@ export default function InteractiveBodyMap({ mode, onRegionSelect, sessions }) {
               <Send className="w-3 h-3" />
               {isAnalyzing ? 'Lädt...' : 'Analysieren'}
             </Button>
-          )}
-          {mode !== 'performance' && (
-            <>
-              {mode === 'rehab' && (
-                <Button
-                  size="sm"
-                  onClick={handleAnalyze}
-                  disabled={markers.length === 0 || isAnalyzing}
-                  className="text-xs gap-1 sm:gap-2 px-3 sm:px-4 ml-auto bg-gradient-to-r from-red-500 to-pink-600"
-                >
-                  <Send className="w-3 h-3" />
-                  {isAnalyzing ? 'Lädt...' : 'Analysieren'}
-                </Button>
-              )}
-            </>
-          )}
+            )}
         </div>
       </div>
 
