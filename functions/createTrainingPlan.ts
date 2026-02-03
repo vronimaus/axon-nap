@@ -112,6 +112,13 @@ Deno.serve(async (req) => {
     ];
 
     // Create the training plan
+    console.log('Creating training plan with data:', {
+      user_email: user.email,
+      goal_description,
+      estimated_duration_weeks,
+      phases_count: phases.length
+    });
+
     const plan = await base44.entities.TrainingPlan.create({
       user_email: user.email,
       goal_description: goal_description,
@@ -123,6 +130,8 @@ Deno.serve(async (req) => {
       phases: phases
     });
 
+    console.log('Training plan created successfully:', plan?.id);
+
     return Response.json({ 
       success: true,
       plan: plan,
@@ -130,7 +139,8 @@ Deno.serve(async (req) => {
     });
 
   } catch (error) {
-    console.error('Error creating training plan:', error);
-    return Response.json({ error: error.message }, { status: 500 });
+    console.error('Error creating training plan - full error:', error);
+    console.error('Error stack:', error.stack);
+    return Response.json({ error: error.message, errorType: error.constructor.name }, { status: 500 });
   }
 });
