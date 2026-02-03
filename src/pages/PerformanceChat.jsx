@@ -254,7 +254,17 @@ export default function PerformanceChat() {
     if (lastMessage?.role !== 'assistant') return;
 
     // Check if message contains plan creation trigger (only once per message)
-      if (lastMessage?.content?.includes('[CREATE_PLAN]') && !lastMessage?.plan_created_triggered) {
+      const hasCreatePlanTrigger = lastMessage?.content?.includes('[CREATE_PLAN]');
+      const notYetTriggered = !lastMessage?.plan_created_triggered;
+
+      console.log('Plan trigger check:', {
+        hasCreatePlanTrigger,
+        notYetTriggered,
+        lastMessageContent: lastMessage?.content?.substring(0, 100)
+      });
+
+      if (hasCreatePlanTrigger && notYetTriggered) {
+        console.log('🎯 TRIGGERING PLAN CREATION');
         const createPlan = async () => {
           try {
             // Extract training frequency from conversation
@@ -269,7 +279,7 @@ export default function PerformanceChat() {
               frequency = '2_3_times_week';
             }
 
-            console.log('Creating training plan with frequency:', frequency);
+            console.log('📋 Creating training plan with frequency:', frequency, 'Goal:', goalName);
 
             // Call createTrainingPlan function
             const response = await base44.functions.invoke('createTrainingPlan', {
@@ -277,10 +287,10 @@ export default function PerformanceChat() {
               training_frequency: frequency
             });
 
-            console.log('Training plan response:', response);
+            console.log('✅ Training plan response:', response);
 
             if (response.data?.success) {
-              console.log('Training plan created successfully');
+              console.log('✨ Training plan created successfully:', response.data.plan?.id);
               // Mark this message as processed to avoid duplicate triggers
               setMessages(prev => {
                 const updated = [...prev];
@@ -293,7 +303,7 @@ export default function PerformanceChat() {
               });
             }
           } catch (error) {
-            console.error('Error creating training plan:', error);
+            console.error('❌ Error creating training plan:', error);
           }
         };
 
