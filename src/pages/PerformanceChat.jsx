@@ -52,13 +52,26 @@ export default function PerformanceChat() {
         setGoalName(goal || 'Dein Ziel');
 
         // Fetch existing performance baselines
-        const baselines = await base44.entities.PerformanceBaseline.filter({
-          user_email: user.email
-        });
+        let baselines = [];
+        try {
+          const baselinesData = await base44.entities.PerformanceBaseline.filter({
+            user_email: user.email
+          });
+          baselines = Array.isArray(baselinesData) ? baselinesData : [];
+        } catch (e) {
+          console.error('Fehler beim Laden von Baselines:', e);
+        }
 
         // Fetch UserNeuroProfile to get complaint_history
-        const neuroProfile = await base44.entities.UserNeuroProfile.filter({ user_email: user.email });
-        const complaintHistory = Array.isArray(neuroProfile) && neuroProfile.length > 0 ? neuroProfile[0].complaint_history : [];
+        let complaintHistory = [];
+        try {
+          const neuroProfile = await base44.entities.UserNeuroProfile.filter({ user_email: user.email });
+          if (Array.isArray(neuroProfile) && neuroProfile.length > 0 && neuroProfile[0]?.complaint_history) {
+            complaintHistory = neuroProfile[0].complaint_history;
+          }
+        } catch (e) {
+          console.error('Fehler beim Laden von Beschwerdehistorie:', e);
+        }
 
         // Create new conversation
         const newConversation = await base44.agents.createConversation({
