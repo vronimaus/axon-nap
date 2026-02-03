@@ -65,9 +65,11 @@ export default function PerformanceChat() {
         // Fetch UserNeuroProfile to get complaint_history
         let complaintHistory = [];
         try {
-          const neuroProfile = await base44.entities.UserNeuroProfile.filter({ user_email: user.email });
-          if (Array.isArray(neuroProfile) && neuroProfile.length > 0 && neuroProfile[0]?.complaint_history) {
-            complaintHistory = neuroProfile[0].complaint_history;
+          const neuroProfiles = await base44.entities.UserNeuroProfile.filter({ user_email: user.email });
+          console.log('Fetched neuroProfiles:', neuroProfiles);
+          if (Array.isArray(neuroProfiles) && neuroProfiles.length > 0 && neuroProfiles[0]?.complaint_history) {
+            complaintHistory = neuroProfiles[0].complaint_history;
+            console.log('Loaded complaint_history:', complaintHistory);
           }
         } catch (e) {
           console.error('Fehler beim Laden von Beschwerdehistorie:', e);
@@ -80,7 +82,7 @@ export default function PerformanceChat() {
             goal: goal,
             has_tension_map: !!mapDataStr,
             baseline_count: baselines.length,
-            complaint_history: complaintHistory
+            complaint_history_summary: complaintHistory.length > 0 ? `${complaintHistory.length} Beschwerden` : 'Keine'
           }
         });
 
