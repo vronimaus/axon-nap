@@ -113,18 +113,14 @@ export default function TrainingPlan() {
             <div className="glass rounded-2xl border border-amber-500/30 p-6 bg-gradient-to-r from-amber-500/10 to-transparent">
               <div className="flex items-start justify-between gap-4">
                 <div>
-                  <h2 className="text-2xl font-bold text-amber-400 mb-2">{activePlan.goal}</h2>
+                  <h2 className="text-2xl font-bold text-amber-400 mb-2">{activePlan.goal_description || activePlan.goal}</h2>
                   <p className="text-slate-300 mb-4">
-                    Level: <span className="font-semibold text-amber-400">{activePlan.level}</span>
+                    Dauer: <span className="font-semibold text-amber-400">{activePlan.estimated_duration_weeks} Wochen</span>
                   </p>
                   <div className="flex flex-wrap gap-3">
                     <div className="flex items-center gap-2 text-sm text-slate-300">
-                      <Clock className="w-4 h-4 text-cyan-400" />
-                      <span>{activePlan.totalDuration} Min</span>
-                    </div>
-                    <div className="flex items-center gap-2 text-sm text-slate-300">
-                      <Zap className="w-4 h-4 text-yellow-400" />
-                      <span>{activePlan.intensity} Intensität</span>
+                      <Target className="w-4 h-4 text-cyan-400" />
+                      <span>{activePlan.phases?.length || 3} Phasen</span>
                     </div>
                   </div>
                 </div>
