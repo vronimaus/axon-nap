@@ -325,17 +325,17 @@ export default function InteractiveBodyMap({ mode, onRegionSelect, sessions }) {
               {isAnalyzing ? 'Lädt...' : 'Analysieren'}
             </Button>
           )}
-          {mode === 'performance' && markers.length > 0 && (
+          {mode === 'performance' && (
             <Button
               size="sm"
               onClick={() => {
                 sessionStorage.setItem('bodyMapData', JSON.stringify({ view, markers, mode }));
-                onRegionSelect('Spannungen markiert');
+                onRegionSelect(markers.length > 0 ? 'Mit Spannungen' : 'Ohne Spannungen');
               }}
-              className="ml-auto text-xs bg-gradient-to-r from-amber-500 to-yellow-600 hover:from-amber-600 hover:to-yellow-700"
+              className="ml-auto text-sm bg-gradient-to-r from-amber-500 to-yellow-600 hover:from-amber-600 hover:to-yellow-700 text-black font-semibold px-4 py-2"
             >
-              <Send className="w-3 h-3 mr-1" />
-              Goal & Tension erfasst. Analyse starten →
+              <Send className="w-4 h-4 mr-2" />
+              {markers.length > 0 ? 'Goal & Tension erfasst. Analyse starten →' : 'Goal erfasst. Analyse starten →'}
             </Button>
           )}
         </div>
