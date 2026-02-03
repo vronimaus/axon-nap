@@ -62,22 +62,25 @@ export default function PerformanceChat() {
           console.error('Fehler beim Laden von Baselines:', e);
         }
 
-        // Fetch RehabPlans to get complaint history
+        // Fetch UserNeuroProfile to get complaint_history or current_complaints
         let complaintHistory = [];
+        let currentComplaints = '';
         try {
-          const rehabPlans = await base44.entities.RehabPlan.filter({ user_email: user.email });
-          console.log('Fetched rehabPlans:', rehabPlans);
-          if (Array.isArray(rehabPlans) && rehabPlans.length > 0) {
-            // Sammle symptom_location und phases info
-            complaintHistory = rehabPlans.map(plan => ({
-              location: plan.symptom_location,
-              status: plan.status,
-              current_phase: plan.current_phase
-            }));
-            console.log('Loaded complaint_history from RehabPlans:', complaintHistory);
+          const neuroProfiles = await base44.entities.UserNeuroProfile.filter({ user_email: user.email });
+          console.log('Fetched neuroProfiles:', neuroProfiles);
+          if (Array.isArray(neuroProfiles) && neuroProfiles.length > 0) {
+            const profile = neuroProfiles[0];
+            // Versuche complaint_history zu laden, fallback auf current_complaints
+            if (profile?.complaint_history && Array.isArray(profile.complaint_history) && profile.complaint_history.length > 0) {
+              complaintHistory = profile.complaint_history;
+              console.log('Loaded complaint_history:', complaintHistory);
+            } else if (profile?.current_complaints) {
+              currentComplaints = profile.current_complaints;
+              console.log('Using current_complaints fallback:', currentComplaints);
+            }
           }
         } catch (e) {
-          console.error('Fehler beim Laden von Rehab-Plänen:', e);
+          console.error('Fehler beim Laden von Beschwerdehistorie:', e);
         }
 
         // Create new conversation
