@@ -56,13 +56,18 @@ export default function PerformanceChat() {
           user_email: user.email
         });
 
+        // Fetch UserNeuroProfile to get complaint_history
+        const neuroProfile = await base44.entities.UserNeuroProfile.filter({ user_email: user.email });
+        const complaintHistory = neuroProfile.length > 0 ? neuroProfile[0].complaint_history : [];
+
         // Create new conversation
         const newConversation = await base44.agents.createConversation({
           agent_name: 'performance_coach',
           metadata: {
             goal: goal,
             has_tension_map: !!mapDataStr,
-            baseline_count: baselines.length
+            baseline_count: baselines.length,
+            complaint_history: complaintHistory
           }
         });
 
@@ -88,6 +93,17 @@ export default function PerformanceChat() {
             return `- ${testLabel}: ${b.result_value} ${b.result_unit} (Level: ${b.baseline_level})`;
           }).join('\n');
           initialPrompt += `\n\nMeine Performance Baselines aus den bisherigen Tests:\n${baselineInfo}\n\nDiese sind meine aktuellen Fähigkeiten - bitte plane das Training basierend darauf.`;
+        }
+
+        // Add complaint history from Rehab mode if available
+        if (complaintHistory.length > 0) {
+          const activeComplaints = complaintHistory.filter(c => c.status === 'active' || c.status === 'improving');
+          if (activeComplaints.length > 0) {
+            const complaintInfo = activeComplaints.map(c => 
+              `- ${c.location}: ${c.description} (Intensität: ${c.intensity}/10, Status: ${c.status})`
+            ).join('\n');
+            initialPrompt += `\n\nIch habe folgende Beschwerden aus dem Rehab-Bereich:\n${complaintInfo}\n\nBerücksichtige bitte diese Spannungen und Schmerzen bei der Planung des Trainings.`;
+          }
         }
 
         if (mapDataStr) {

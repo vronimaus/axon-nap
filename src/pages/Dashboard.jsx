@@ -359,7 +359,7 @@ export default function Dashboard() {
                         }}
                         className="w-full h-12 sm:h-14 bg-gradient-to-r from-amber-500 to-yellow-600 hover:from-amber-600 hover:to-yellow-700 text-white font-bold text-sm sm:text-base"
                       >
-                        Trainingsplan erstellen →
+                        Coaching starten →
                       </Button>
                     </motion.div>
                   )}
