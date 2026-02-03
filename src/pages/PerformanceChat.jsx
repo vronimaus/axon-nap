@@ -26,7 +26,7 @@ export default function PerformanceChat() {
       try {
         const user = await base44.auth.me();
         if (!user) {
-          navigate(createPageUrl('Landing'));
+          window.location.href = createPageUrl('Landing');
           return;
         }
 
@@ -104,7 +104,7 @@ export default function PerformanceChat() {
     };
 
     initChat();
-  }, [navigate]);
+  }, []);
 
   // Subscribe to conversation updates
   useEffect(() => {
