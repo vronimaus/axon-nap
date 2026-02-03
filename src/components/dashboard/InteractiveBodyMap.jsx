@@ -339,6 +339,9 @@ export default function InteractiveBodyMap({ mode, onRegionSelect, sessions }) {
                 // Get goal and use same detection as Rehab
                 const goalInput = document.querySelector('input[placeholder*="Klimmzug"], input[placeholder*="Pistol"]')?.value || '';
                 const detectedRegion = markers.length > 0 ? detectRegionFromCoordinates(markers, view, 400, 600) : '';
+                console.log('Performance - Markers:', markers);
+                console.log('Performance - View:', view);
+                console.log('Performance - Detected region:', detectedRegion);
                 sessionStorage.setItem('bodyMapData', JSON.stringify({ view, markers, mode, dashboardGoal: goalInput, detectedRegion }));
                 navigate(createPageUrl('PerformanceChat'));
               }}
