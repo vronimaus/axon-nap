@@ -354,8 +354,15 @@ export default function InteractiveBodyMap({ mode, onRegionSelect, sessions }) {
       {/* Body Canvas */}
       <div 
         ref={containerRef}
-        className="relative bg-slate-900/50"
+        className="relative bg-slate-900/50 cursor-crosshair"
         style={{ touchAction: 'none' }}
+        onMouseDown={startDrawing}
+        onMouseMove={draw}
+        onMouseUp={stopDrawing}
+        onMouseLeave={stopDrawing}
+        onTouchStart={startDrawing}
+        onTouchMove={draw}
+        onTouchEnd={stopDrawing}
       >
         <AnimatePresence mode="wait">
           <motion.div
@@ -365,6 +372,7 @@ export default function InteractiveBodyMap({ mode, onRegionSelect, sessions }) {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
             className="relative"
+            style={{ pointerEvents: 'none' }}
           >
             {view === 'front' ? (
               <img 
@@ -388,7 +396,8 @@ export default function InteractiveBodyMap({ mode, onRegionSelect, sessions }) {
           ref={canvasRef}
           width={400}
           height={600}
-          className="absolute inset-0 w-full h-full cursor-crosshair pointer-events-none"
+          className="absolute inset-0 w-full h-full"
+          style={{ pointerEvents: 'none' }}
         />
       </div>
 
