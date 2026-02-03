@@ -194,18 +194,20 @@ function PhaseCard({ phase, index, isExpanded, onToggle, isCompleted, onComplete
     integration: '💪'
   };
 
-  const phaseColors = {
-    hardware: 'from-cyan-500/20 to-transparent border-cyan-500/30',
-    software: 'from-purple-500/20 to-transparent border-purple-500/30',
-    integration: 'from-green-500/20 to-transparent border-green-500/30'
+  const getPhaseColor = (idx) => {
+    if (idx === 0) return { bg: 'from-amber-500/20', border: 'border-amber-500/30', text: 'text-amber-400' };
+    if (idx === 1) return { bg: 'from-cyan-500/20', border: 'border-cyan-500/30', text: 'text-cyan-400' };
+    return { bg: 'from-orange-500/20', border: 'border-orange-500/30', text: 'text-orange-400' };
   };
+
+  const colors = getPhaseColor(index);
 
   return (
     <motion.div
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.1 }}
-      className={`glass rounded-xl border transition-all ${phaseColors[phase.type]}`}
+      className={`glass rounded-xl border transition-all bg-gradient-to-r ${colors.bg} to-transparent ${colors.border}`}
     >
       <button
         onClick={onToggle}
@@ -214,7 +216,7 @@ function PhaseCard({ phase, index, isExpanded, onToggle, isCompleted, onComplete
         <div className="flex items-center gap-4 text-left">
           <div className="text-2xl">{phaseIcons[phase.type]}</div>
           <div>
-            <h3 className="font-semibold text-white">
+            <h3 className={`font-semibold ${colors.text}`}>
               {phase.title || `Phase ${index + 1}`}
             </h3>
             <p className="text-sm text-slate-400">{phase.duration_weeks} Wochen</p>
