@@ -224,8 +224,9 @@ export default function InteractiveBodyMap({ mode, onRegionSelect, sessions }) {
 
     setIsAnalyzing(true);
     try {
-      // Detect region from marker coordinates
-      const region = detectRegionFromCoordinates(markers, view);
+      // Detect region from marker coordinates using actual canvas dimensions
+      const canvas = canvasRef.current;
+      const region = detectRegionFromCoordinates(markers, view, canvas.width, canvas.height);
       
       // Store markers in session storage
       sessionStorage.setItem('bodyMapData', JSON.stringify({ view, markers, mode }));
