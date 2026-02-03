@@ -339,8 +339,11 @@ export default function InteractiveBodyMap({ mode, onRegionSelect, sessions }) {
             <Button
               size="sm"
               onClick={() => {
+                console.log('BUTTON CLICKED - Performance');
                 // Get goal and use same detection as Rehab
                 const goalInput = document.querySelector('input[placeholder*="Klimmzug"], input[placeholder*="Pistol"]')?.value || '';
+                console.log('Goal Input:', goalInput);
+                console.log('Markers before detection:', markers);
                 const detectedRegion = markers.length > 0 ? detectRegionFromCoordinates(markers, view, 400, 600) : '';
                 console.log('Performance - Markers:', markers);
                 console.log('Performance - View:', view);
