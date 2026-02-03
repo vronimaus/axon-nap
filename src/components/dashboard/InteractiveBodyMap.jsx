@@ -173,8 +173,8 @@ export default function InteractiveBodyMap({ mode, onRegionSelect, sessions }) {
     const avgX = totalPoints > 0 ? totalX / totalPoints : 0;
 
     // Normalized Y position (0 = top, 1 = bottom)
-    const normalizedY = avgY / 600;
-    const normalizedX = avgX / 400;
+    const normalizedY = avgY / canvasHeight;
+    const normalizedX = avgX / canvasWidth;
 
     // Laterality detection
     let laterality = '';
