@@ -173,6 +173,52 @@ export default function PerformanceChat() {
     messages[messages.length - 1]?.role === 'assistant' &&
     messages[messages.length - 1]?.content?.includes('[SHOW_DONE_BUTTON]');
 
+  // Check if training plan should be created and trigger it
+  useEffect(() => {
+    if (!conversation || !messages.length) return;
+
+    const lastMessage = messages[messages.length - 1];
+    if (lastMessage?.role !== 'assistant') return;
+
+    // Check if message contains plan creation trigger
+    if (lastMessage?.content?.includes('[CREATE_PLAN]')) {
+      const createPlan = async () => {
+        try {
+          // Extract training frequency from conversation
+          const conversationText = messages.map(m => m.content).join(' ');
+          
+          let frequency = '2_3_times_week'; // default
+          if (conversationText.toLowerCase().includes('4-5') || conversationText.toLowerCase().includes('4 bis 5')) {
+            frequency = '4_5_times_week';
+          } else if (conversationText.toLowerCase().includes('täglich') || conversationText.toLowerCase().includes('jeden tag')) {
+            frequency = 'daily';
+          }
+
+          // Call createTrainingPlan function
+          const response = await base44.functions.invoke('createTrainingPlan', {
+            goal_description: goalName,
+            training_frequency: frequency
+          });
+
+          if (response.data?.success) {
+            console.log('Training plan created:', response.data.plan);
+            // Clear the trigger from message display by updating it
+            const cleanedMessage = lastMessage.content.replace('[CREATE_PLAN]', '').trim();
+            setMessages(prev => {
+              const updated = [...prev];
+              updated[updated.length - 1] = { ...updated[updated.length - 1], content: cleanedMessage };
+              return updated;
+            });
+          }
+        } catch (error) {
+          console.error('Error creating training plan:', error);
+        }
+      };
+
+      createPlan();
+    }
+  }, [messages, conversation, goalName]);
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 flex flex-col pb-20 md:pb-0">
       {/* Header */}
