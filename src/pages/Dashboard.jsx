@@ -390,31 +390,7 @@ export default function Dashboard() {
                 </motion.div>
               )}
               
-              {mode === 'performance' && selectedBodyRegion && selectedBodyRegion.trim() && (
-                <motion.div
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="mt-4 sm:mt-6"
-                >
-                  <Button
-                    onClick={() => {
-                      // Get bodymap data from sessionStorage (if marked)
-                      const mapData = sessionStorage.getItem('bodyMapData');
-                      
-                      // Navigate to PerformanceChat with goal and optional map data
-                      const params = new URLSearchParams({ goal: selectedBodyRegion.trim() });
-                      if (mapData) {
-                        params.append('mapData', mapData);
-                      }
-                      
-                      window.location.href = createPageUrl(`PerformanceChat?${params.toString()}`);
-                    }}
-                    className="w-full h-12 sm:h-14 bg-gradient-to-r from-amber-500 to-yellow-600 hover:from-amber-600 hover:to-yellow-700 text-white font-bold text-sm sm:text-base"
-                  >
-                    Performance Coaching starten →
-                  </Button>
-                </motion.div>
-              )}
+
             </motion.div>
           </div>
 
