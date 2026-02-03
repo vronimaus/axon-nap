@@ -326,9 +326,17 @@ export default function InteractiveBodyMap({ mode, onRegionSelect, sessions }) {
             </Button>
           )}
           {mode === 'performance' && markers.length > 0 && (
-            <div className="ml-auto text-xs text-purple-400 flex items-center gap-2">
-              ✓ {markers.length} Spannung(en) markiert
-            </div>
+            <Button
+              size="sm"
+              onClick={() => {
+                sessionStorage.setItem('bodyMapData', JSON.stringify({ view, markers, mode }));
+                onRegionSelect('Spannungen markiert');
+              }}
+              className="ml-auto text-xs bg-gradient-to-r from-purple-500 to-violet-600"
+            >
+              <Send className="w-3 h-3 mr-1" />
+              Zum Chat →
+            </Button>
           )}
         </div>
       </div>
