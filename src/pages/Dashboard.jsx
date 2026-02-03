@@ -117,25 +117,7 @@ export default function Dashboard() {
           </div>
 
           <div className="grid sm:grid-cols-3 gap-4 sm:gap-6">
-            {/* 1. REHAB (Schmerz) */}
-            <motion.button
-              whileTap={{ scale: 0.98 }}
-              onClick={() => setMode('rehab')}
-              className="glass rounded-xl sm:rounded-2xl border border-red-500/30 p-6 sm:p-8 hover:border-red-500/60 active:border-red-500/80 transition-all group touch-target"
-            >
-              <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-xl sm:rounded-2xl bg-gradient-to-br from-red-500 to-pink-600 flex items-center justify-center mb-3 sm:mb-4 mx-auto group-hover:shadow-lg group-hover:shadow-red-500/50 transition-all animate-pulse">
-                <Target className="w-7 h-7 sm:w-8 sm:h-8 text-white" />
-              </div>
-              <h2 className="text-xl sm:text-2xl font-bold text-red-400 mb-2 sm:mb-3">REHAB</h2>
-              <p className="text-sm sm:text-base text-slate-300 mb-3 sm:mb-4">
-                Akuter Schmerz? Löse dein Problem jetzt.
-              </p>
-              <p className="text-xs sm:text-sm text-slate-500">
-                Detective-Diagnose → 20 Scenarios → MFR + Neuro-Reset
-              </p>
-            </motion.button>
-
-            {/* 2. PERFORMANCE (Goals) */}
+            {/* 1. PERFORMANCE (Goals) - NOW FIRST */}
             <motion.button
               whileTap={{ scale: 0.98 }}
               onClick={() => {
@@ -163,7 +145,25 @@ export default function Dashboard() {
               </p>
             </motion.button>
 
-            {/* 3. FLOW (Daily Maintenance) */}
+            {/* 2. REHAB (Schmerz) - NOW SECOND */}
+            <motion.button
+              whileTap={{ scale: 0.98 }}
+              onClick={() => setMode('rehab')}
+              className="glass rounded-xl sm:rounded-2xl border border-red-500/30 p-6 sm:p-8 hover:border-red-500/60 active:border-red-500/80 transition-all group touch-target"
+            >
+              <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-xl sm:rounded-2xl bg-gradient-to-br from-red-500 to-pink-600 flex items-center justify-center mb-3 sm:mb-4 mx-auto group-hover:shadow-lg group-hover:shadow-red-500/50 transition-all animate-pulse">
+                <Target className="w-7 h-7 sm:w-8 sm:h-8 text-white" />
+              </div>
+              <h2 className="text-xl sm:text-2xl font-bold text-red-400 mb-2 sm:mb-3">REHAB</h2>
+              <p className="text-sm sm:text-base text-slate-300 mb-3 sm:mb-4">
+                Akuter Schmerz? Löse dein Problem jetzt.
+              </p>
+              <p className="text-xs sm:text-sm text-slate-500">
+                Detective-Diagnose → 20 Scenarios → MFR + Neuro-Reset
+              </p>
+            </motion.button>
+
+            {/* 3. FLOW (Daily Maintenance) - UNCHANGED */}
             <motion.button
               whileTap={{ scale: 0.98 }}
               onClick={() => window.location.href = createPageUrl('FlowSelection')}
