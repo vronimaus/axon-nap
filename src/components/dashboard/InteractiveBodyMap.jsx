@@ -332,10 +332,10 @@ export default function InteractiveBodyMap({ mode, onRegionSelect, sessions }) {
                 sessionStorage.setItem('bodyMapData', JSON.stringify({ view, markers, mode }));
                 onRegionSelect('Spannungen markiert');
               }}
-              className="ml-auto text-xs bg-gradient-to-r from-purple-500 to-violet-600"
+              className="ml-auto text-xs bg-gradient-to-r from-amber-500 to-yellow-600 hover:from-amber-600 hover:to-yellow-700"
             >
               <Send className="w-3 h-3 mr-1" />
-              Zum Chat →
+              Goal & Tension erfasst. Analyse starten →
             </Button>
           )}
         </div>
