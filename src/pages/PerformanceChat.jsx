@@ -58,7 +58,7 @@ export default function PerformanceChat() {
 
         // Fetch UserNeuroProfile to get complaint_history
         const neuroProfile = await base44.entities.UserNeuroProfile.filter({ user_email: user.email });
-        const complaintHistory = neuroProfile.length > 0 ? neuroProfile[0].complaint_history : [];
+        const complaintHistory = Array.isArray(neuroProfile) && neuroProfile.length > 0 ? neuroProfile[0].complaint_history : [];
 
         // Create new conversation
         const newConversation = await base44.agents.createConversation({
