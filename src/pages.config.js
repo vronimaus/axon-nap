@@ -66,11 +66,11 @@ import Privacy from './pages/Privacy';
 import Profile from './pages/Profile';
 import ProfileComparison from './pages/ProfileComparison';
 import QuickDemo from './pages/QuickDemo';
+import RehabPlan from './pages/RehabPlan';
 import Success from './pages/Success';
 import Terms from './pages/Terms';
 import TrainingPlan from './pages/TrainingPlan';
 import TrialInfo from './pages/TrialInfo';
-import RehabPlan from './pages/RehabPlan';
 import __Layout from './Layout.jsx';
 
 
@@ -94,11 +94,11 @@ export const PAGES = {
     "Profile": Profile,
     "ProfileComparison": ProfileComparison,
     "QuickDemo": QuickDemo,
+    "RehabPlan": RehabPlan,
     "Success": Success,
     "Terms": Terms,
     "TrainingPlan": TrainingPlan,
     "TrialInfo": TrialInfo,
-    "RehabPlan": RehabPlan,
 }
 
 export const pagesConfig = {

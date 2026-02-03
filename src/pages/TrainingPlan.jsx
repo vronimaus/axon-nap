@@ -31,14 +31,16 @@ export default function TrainingPlan() {
     checkAuth();
   }, []);
 
-  // Fetch latest active conversation/plan
+  // Fetch latest active training plan
   const { data: activePlan } = useQuery({
     queryKey: ['activePlan', user?.email],
     queryFn: async () => {
       if (!user?.email) return null;
-      // In a real implementation, we'd fetch from a stored training plan entity
-      // For now, this is a placeholder for future integration
-      return null;
+      const plans = await base44.entities.TrainingPlan.filter({ 
+        user_email: user.email,
+        status: 'active'
+      }, '-created_date', 1);
+      return plans[0] || null;
     },
     enabled: !!user?.email
   });
