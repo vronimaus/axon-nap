@@ -214,10 +214,10 @@ function PhaseCard({ phase, index, isExpanded, onToggle, isCompleted, onComplete
         <div className="flex items-center gap-4 text-left">
           <div className="text-2xl">{phaseIcons[phase.type]}</div>
           <div>
-            <h3 className="font-semibold text-white capitalize">
-              Phase {index + 1}: {phase.type === 'hardware' ? 'Aufwärmen' : phase.type === 'software' ? 'Gehirn' : 'Training'}
+            <h3 className="font-semibold text-white">
+              {phase.title || `Phase ${index + 1}`}
             </h3>
-            <p className="text-sm text-slate-400">{phase.duration} Min</p>
+            <p className="text-sm text-slate-400">{phase.duration_weeks} Wochen</p>
           </div>
         </div>
         <div className="flex items-center gap-3">
