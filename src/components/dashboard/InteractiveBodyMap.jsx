@@ -148,8 +148,8 @@ export default function InteractiveBodyMap({ mode, onRegionSelect, sessions }) {
   };
 
   // KRITISCH: Region-Detection - Final kalibriert - NICHT ändern!
-  // Koordinaten basieren auf den finalen Body-Bildern (400x600px Canvas)
-  const detectRegionFromCoordinates = (markers, view) => {
+  // Koordinaten basieren auf den finalen Body-Bildern (Canvas-Dimensionen)
+  const detectRegionFromCoordinates = (markers, view, canvasWidth = 400, canvasHeight = 600) => {
     if (markers.length === 0) return 'systemisch';
 
     // Calculate average position of all markers
