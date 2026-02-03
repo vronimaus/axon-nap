@@ -112,7 +112,8 @@ export default function PerformanceChat() {
 
     const unsubscribe = base44.agents.subscribeToConversation(conversation.id, (data) => {
       setMessages(data.messages || []);
-      setIsLoading(false);
+      // Only set loading false once at the start
+      setIsLoading(prev => prev === true ? false : prev);
     });
 
     return () => unsubscribe();
