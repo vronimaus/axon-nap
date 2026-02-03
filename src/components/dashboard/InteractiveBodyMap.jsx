@@ -330,7 +330,7 @@ export default function InteractiveBodyMap({ mode, onRegionSelect, sessions }) {
               size="sm"
               onClick={() => {
                 sessionStorage.setItem('bodyMapData', JSON.stringify({ view, markers, mode }));
-                onRegionSelect(markers.length > 0 ? 'Mit Spannungen' : 'Ohne Spannungen');
+                navigate(createPageUrl('PerformanceChat'));
               }}
               className="ml-auto text-sm bg-gradient-to-r from-amber-500 to-yellow-600 hover:from-amber-600 hover:to-yellow-700 text-black font-semibold px-4 py-2"
             >
