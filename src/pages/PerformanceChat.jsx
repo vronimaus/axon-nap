@@ -115,7 +115,9 @@ export default function PerformanceChat() {
           const complaintInfo = complaintHistory.map(c => 
             `- ${c.location}: ${c.description}${c.intensity ? ` (Intensität: ${c.intensity}/10)` : ''}${c.status ? ` [${c.status}]` : ''}`
           ).join('\n');
-          initialPrompt += `\n\nIch habe folgende Beschwerden aus dem Rehab-Bereich:\n${complaintInfo}\n\nBerücksichtige bitte diese Spannungen und Schmerzen bei der Planung des Trainings.`;
+          const complaintPrompt = `\n\n⚠️ Ich habe folgende Beschwerde(n) aus meinem Rehab-Bereich:\n${complaintInfo}\n\nBitte beachte diese bei der Planung des Trainings – achte auf Modifikationen und sichere Varianten für diese Bereiche.`;
+          initialPrompt += complaintPrompt;
+          console.log('Added complaint history to prompt:', complaintPrompt);
         }
 
         if (mapDataStr) {
