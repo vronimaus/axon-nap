@@ -329,8 +329,7 @@ export default function InteractiveBodyMap({ mode, onRegionSelect, sessions }) {
             <Button
               size="sm"
               onClick={() => {
-                const goalFromParent = document.querySelector('input[placeholder*="Klimmzug"]')?.value || '';
-                sessionStorage.setItem('bodyMapData', JSON.stringify({ view, markers, mode, goal: goalFromParent }));
+                sessionStorage.setItem('bodyMapData', JSON.stringify({ view, markers, mode }));
                 navigate(createPageUrl('PerformanceChat'));
               }}
               className="ml-auto text-sm bg-gradient-to-r from-amber-500 to-yellow-600 hover:from-amber-600 hover:to-yellow-700 text-black font-semibold px-4 py-2"
