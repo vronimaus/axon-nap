@@ -336,9 +336,10 @@ export default function InteractiveBodyMap({ mode, onRegionSelect, sessions }) {
             <Button
               size="sm"
               onClick={() => {
-                // Get goal from parent component's state (passed via prop or use selected region)
+                // Get goal and use same detection as Rehab
                 const goalInput = document.querySelector('input[placeholder*="Klimmzug"], input[placeholder*="Pistol"]')?.value || '';
-                sessionStorage.setItem('bodyMapData', JSON.stringify({ view, markers, mode, dashboardGoal: goalInput }));
+                const detectedRegion = markers.length > 0 ? detectRegionFromCoordinates(markers, view, 400, 600) : '';
+                sessionStorage.setItem('bodyMapData', JSON.stringify({ view, markers, mode, dashboardGoal: goalInput, detectedRegion }));
                 navigate(createPageUrl('PerformanceChat'));
               }}
               className="ml-auto text-sm bg-gradient-to-r from-amber-500 to-yellow-600 hover:from-amber-600 hover:to-yellow-700 text-black font-semibold px-4 py-2"
