@@ -110,13 +110,10 @@ export default function PerformanceChat() {
 
         // Add complaint history from Rehab mode if available
         if (complaintHistory.length > 0) {
-          const activeComplaints = complaintHistory.filter(c => c.status === 'active' || c.status === 'improving');
-          if (activeComplaints.length > 0) {
-            const complaintInfo = activeComplaints.map(c => 
-              `- ${c.location}: ${c.description} (Intensität: ${c.intensity}/10, Status: ${c.status})`
-            ).join('\n');
-            initialPrompt += `\n\nIch habe folgende Beschwerden aus dem Rehab-Bereich:\n${complaintInfo}\n\nBerücksichtige bitte diese Spannungen und Schmerzen bei der Planung des Trainings.`;
-          }
+          const complaintInfo = complaintHistory.map(c => 
+            `- ${c.location}: ${c.description}${c.intensity ? ` (Intensität: ${c.intensity}/10)` : ''}${c.status ? ` [${c.status}]` : ''}`
+          ).join('\n');
+          initialPrompt += `\n\nIch habe folgende Beschwerden aus dem Rehab-Bereich:\n${complaintInfo}\n\nBerücksichtige bitte diese Spannungen und Schmerzen bei der Planung des Trainings.`;
         }
 
         if (mapDataStr) {
