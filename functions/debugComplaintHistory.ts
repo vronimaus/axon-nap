@@ -9,35 +9,30 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    // 1. Check UserNeuroProfile
+    // Fetch UserNeuroProfile
     const profiles = await base44.entities.UserNeuroProfile.filter({ user_email: user.email });
-    const hasNeuroprofile = profiles && profiles.length > 0;
-    const complaintHistory = hasNeuroprofile ? (profiles[0].complaint_history || []) : [];
+    console.log('All profiles:', JSON.stringify(profiles, null, 2));
 
-    // 2. Check RehabPlans
-    const rehabPlans = await base44.entities.RehabPlan.filter({ user_email: user.email });
-    const hasRehabPlans = rehabPlans && rehabPlans.length > 0;
+    if (!profiles || profiles.length === 0) {
+      return Response.json({ 
+        success: true, 
+        message: 'Kein UserNeuroProfile vorhanden',
+        profiles: []
+      });
+    }
+
+    const profile = profiles[0];
+    console.log('Profile complaint_history:', JSON.stringify(profile.complaint_history, null, 2));
 
     return Response.json({ 
       success: true,
-      user_email: user.email,
-      neuro_profile: {
-        exists: hasNeuroprofile,
-        complaint_history: complaintHistory,
-        complaint_history_count: complaintHistory.length
-      },
-      rehab_plans: {
-        exists: hasRehabPlans,
-        count: rehabPlans?.length || 0,
-        plans: rehabPlans?.map(p => ({
-          id: p.id,
-          symptom_location: p.symptom_location,
-          status: p.status
-        })) || []
-      }
+      profile_id: profile.id,
+      complaint_history: profile.complaint_history || [],
+      complaint_history_length: profile.complaint_history?.length || 0,
+      full_profile: profile
     });
   } catch (error) {
     console.error('Debug error:', error);
-    return Response.json({ error: error.message, stack: error.stack }, { status: 500 });
+    return Response.json({ error: error.message }, { status: 500 });
   }
 });
