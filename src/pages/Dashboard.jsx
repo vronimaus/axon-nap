@@ -343,14 +343,24 @@ export default function Dashboard() {
                     <motion.div
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
-                      className="glass rounded-xl sm:rounded-2xl border border-purple-500/30 p-4 sm:p-6 bg-gradient-to-r from-purple-500/10 to-transparent"
+                      className="space-y-4"
                     >
-                      <h3 className="text-sm sm:text-base font-semibold text-purple-400 mb-2">
-                        Spürst du Spannungen oder Einschränkungen?
-                      </h3>
-                      <p className="text-xs sm:text-sm text-slate-300">
-                        Für dein Ziel "<span className="text-amber-400 font-semibold">{selectedBodyRegion}</span>" kann es hilfreich sein, bestehende Spannungen zu kennen. Falls ja, markiere sie unten auf der BodyMap. Falls nicht, starte direkt.
-                      </p>
+                      <div className="glass rounded-xl sm:rounded-2xl border border-purple-500/30 p-4 sm:p-6 bg-gradient-to-r from-purple-500/10 to-transparent">
+                        <h3 className="text-sm sm:text-base font-semibold text-purple-400 mb-2">
+                          Spürst du Spannungen oder Einschränkungen?
+                        </h3>
+                        <p className="text-xs sm:text-sm text-slate-300">
+                          Für dein Ziel "<span className="text-amber-400 font-semibold">{selectedBodyRegion}</span>" kann es hilfreich sein, bestehende Spannungen zu kennen. Falls ja, markiere sie unten auf der BodyMap. Falls nicht, starte direkt.
+                        </p>
+                      </div>
+                      <Button
+                        onClick={() => {
+                          window.location.href = createPageUrl(`PerformanceChat`);
+                        }}
+                        className="w-full h-12 sm:h-14 bg-gradient-to-r from-amber-500 to-yellow-600 hover:from-amber-600 hover:to-yellow-700 text-white font-bold text-sm sm:text-base"
+                      >
+                        Trainingsplan erstellen →
+                      </Button>
                     </motion.div>
                   )}
                 </div>
