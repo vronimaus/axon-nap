@@ -22,7 +22,7 @@ export default function InteractiveBodyMap({ mode, onRegionSelect, sessions }) {
   const canvasRef = useRef(null);
   const containerRef = useRef(null);
 
-  // Load pain markers from recent sessions or clear on mode change
+  // Load pain markers from recent sessions
   useEffect(() => {
     if (mode === 'rehab' && sessions?.length > 0) {
       // Display recent pain markers
@@ -31,9 +31,6 @@ export default function InteractiveBodyMap({ mode, onRegionSelect, sessions }) {
         .slice(0, 3)
         .map(s => ({ location: s.symptom_location, type: 'pain' }));
       setMarkers(recentMarkers);
-    } else {
-      // Clear old markers when switching to performance mode
-      setMarkers([]);
     }
   }, [mode, sessions]);
 
