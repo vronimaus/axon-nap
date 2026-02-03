@@ -180,17 +180,23 @@ export default function PerformanceChat() {
   }, []);
 
   // Subscribe to conversation updates
-  useEffect(() => {
-    if (!conversation?.id) return;
+      useEffect(() => {
+        if (!conversation?.id) return;
 
-    const unsubscribe = base44.agents.subscribeToConversation(conversation.id, (data) => {
-      setMessages(data.messages || []);
-      // Only set loading false once at the start
-      setIsLoading(prev => prev === true ? false : prev);
-    });
+        console.log('🔄 Subscribing to conversation:', conversation.id);
 
-    return () => unsubscribe();
-  }, [conversation?.id]);
+        const unsubscribe = base44.agents.subscribeToConversation(conversation.id, (data) => {
+          console.log('📨 Messages update received, count:', data.messages?.length, 'Last message:', data.messages?.[data.messages.length - 1]?.content?.substring(0, 100));
+          setMessages(data.messages || []);
+          // Only set loading false once at the start
+          setIsLoading(prev => prev === true ? false : prev);
+        });
+
+        return () => {
+          console.log('🔌 Unsubscribing from conversation');
+          unsubscribe();
+        };
+      }, [conversation?.id]);
 
   // Auto-scroll to bottom
   useEffect(() => {
