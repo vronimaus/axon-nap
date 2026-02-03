@@ -19,6 +19,7 @@ export default function InteractiveBodyMap({ mode, onRegionSelect, sessions }) {
   const [currentPath, setCurrentPath] = useState([]);
   const [isDrawing, setIsDrawing] = useState(false);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [debugOutput, setDebugOutput] = useState('');
   const canvasRef = useRef(null);
   const containerRef = useRef(null);
 
