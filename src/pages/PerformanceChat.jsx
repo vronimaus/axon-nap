@@ -78,17 +78,34 @@ export default function PerformanceChat() {
 
         if (mapDataStr) {
           const mapData = JSON.parse(mapDataStr);
-          const tensionDetails = mapData.markers.map((m, i) => {
-            if (m.type === 'point') {
-              return `Punkt ${i+1} bei (${Math.round(m.x)}, ${Math.round(m.y)})`;
+          
+          // Map coordinates to body regions
+          const getBodyRegion = (x, y, view) => {
+            if (view === 'front') {
+              if (y < 20) return 'Kopf/Nacken';
+              if (y < 35) return 'Schultern/Brust';
+              if (y < 50) return 'Oberer Rücken/Arme';
+              if (y < 65) return 'Bauchmuskeln/Seiten';
+              if (y < 75) return 'Unterer Rücken/Hüfte';
+              return 'Beine/Füße';
             } else {
-              return `Linie mit ${m.points?.length || 0} Punkten`;
+              if (y < 20) return 'Nacken/oberer Rücken';
+              if (y < 40) return 'mittlerer Rücken';
+              if (y < 60) return 'unterer Rücken/Gesäß';
+              if (y < 80) return 'Oberschenkel/Hamstrings';
+              return 'Waden/Füße';
             }
-          }).join(', ');
+          };
 
-          initialPrompt += `\n\nIch habe außerdem Spannungsbereiche auf der BodyMap markiert:\n- Ansicht: ${mapData.view === 'front' ? 'Vorderseite' : 'Rückseite'}\n- ${mapData.markers.length} Markierung(en): ${tensionDetails}\n\nBitte berücksichtige diese Spannungen bei der Trainingsplanung.`;
-        } else if (baselines.length === 0) {
-          initialPrompt += `\n\nIch habe keine spezifischen Spannungen markiert.`;
+          const tensionRegions = mapData.markers.map(m => {
+            const region = getBodyRegion(m.x, m.y, mapData.view);
+            if (m.type === 'line') return `${region} (Linie)`;
+            return region;
+          });
+
+          const uniqueRegions = [...new Set(tensionRegions)];
+
+          initialPrompt += `\n\nAußerdem habe ich folgende Spannungsbereiche markiert, die ich berücksichtigen möchte:\n- ${uniqueRegions.join('\n- ')}\n\nBitte plane das Training so, dass diese Spannungen gelöst werden und das Ziel nicht behindert wird.`;
         }
 
         // Send initial message
