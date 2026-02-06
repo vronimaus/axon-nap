@@ -11,8 +11,11 @@ import ReactMarkdown from 'react-markdown';
 import BodyPainMap from '../components/diagnosis/BodyPainMap';
 import DemoPaywall from '../components/demo/DemoPaywall';
 import { useDemoTimer } from '../components/demo/useDemoTimer';
-
-
+import FocusScreenContainer from '../components/diagnosis/FocusScreenContainer';
+import InteractiveBodyMapInput from '../components/diagnosis/InteractiveBodyMapInput';
+import PainIntensitySlider from '../components/diagnosis/PainIntensitySlider';
+import BinaryChoiceButtons from '../components/diagnosis/BinaryChoiceButtons';
+import DiagnosisCard from '../components/diagnosis/DiagnosisCard';
 
 export default function DiagnosisChat() {
   const [searchParams] = useSearchParams();
@@ -25,6 +28,7 @@ export default function DiagnosisChat() {
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   const [showBodyMap, setShowBodyMap] = useState(false);
+  const [workflowStep, setWorkflowStep] = useState('chat'); // 'chat', 'body_map', 'intensity', 'analysis_card', 'retest'
   const messagesEndRef = useRef(null);
 
   // Fetch wizard results if session_id provided
@@ -256,6 +260,114 @@ export default function DiagnosisChat() {
     return <DemoPaywall />;
   }
 
+  // === WORKFLOW STEP HANDLERS ===
+  const handleBodyMapSubmitFocus = async (mapData) => {
+    setLoading(true);
+    try {
+      // Store map data in session
+      sessionStorage.setItem('current_pain_map', JSON.stringify(mapData));
+      
+      // Send to agent
+      const markerType = mapData.markers.length === 1 && mapData.markers[0].type === 'point'
+        ? 'einen Schmerzpunkt'
+        : 'eine Schmerzlinie';
+      
+      await base44.agents.addMessage(conversation, {
+        role: 'user',
+        content: `Ich habe auf der Body Map (${mapData.view === 'front' ? 'Vorderseite' : 'Rückseite'}) ${markerType} markiert.`
+      });
+      
+      // Move to next step
+      setWorkflowStep('intensity');
+    } catch (error) {
+      console.error('Fehler beim Senden:', error);
+      setLoading(false);
+    }
+  };
+
+  const handleIntensitySubmit = async (intensity) => {
+    setLoading(true);
+    try {
+      await base44.agents.addMessage(conversation, {
+        role: 'user',
+        content: `Schmerzintensität: ${intensity}/10`
+      });
+      
+      // Return to chat for agent analysis
+      setWorkflowStep('chat');
+    } catch (error) {
+      console.error('Fehler beim Senden:', error);
+      setLoading(false);
+    }
+  };
+
+  const handleRetestPositive = async () => {
+    setLoading(true);
+    try {
+      await base44.agents.addMessage(conversation, {
+        role: 'user',
+        content: 'Ja, es fühlt sich besser an! Ich spüre mehr Freiheit.'
+      });
+      setWorkflowStep('chat');
+    } catch (error) {
+      console.error('Fehler:', error);
+      setLoading(false);
+    }
+  };
+
+  const handleRetestNegative = async () => {
+    setLoading(true);
+    try {
+      await base44.agents.addMessage(conversation, {
+        role: 'user',
+        content: 'Leider keine Veränderung. Der Schmerz ist gleich geblieben.'
+      });
+      setWorkflowStep('chat');
+    } catch (error) {
+      console.error('Fehler:', error);
+      setLoading(false);
+    }
+  };
+
+  // === RENDER WORKFLOW STEPS ===
+  if (workflowStep === 'body_map') {
+    return (
+      <FocusScreenContainer
+        title="Wo tut es weh?"
+        instruction="Tippe auf die exakte Stelle oder zeichne eine Linie entlang des Schmerzes"
+        showBackButton
+        onBack={() => setWorkflowStep('chat')}
+      >
+        <InteractiveBodyMapInput onSubmit={handleBodyMapSubmitFocus} />
+      </FocusScreenContainer>
+    );
+  }
+
+  if (workflowStep === 'intensity') {
+    return (
+      <FocusScreenContainer
+        title="Wie stark ist der Schmerz?"
+        instruction="Wähle die Intensität auf einer Skala von 1-10"
+      >
+        <PainIntensitySlider onSubmit={handleIntensitySubmit} />
+      </FocusScreenContainer>
+    );
+  }
+
+  if (workflowStep === 'retest') {
+    return (
+      <FocusScreenContainer
+        title="Erfolgs-Check"
+        instruction="Wie fühlt sich die Bewegung jetzt an?"
+      >
+        <BinaryChoiceButtons
+          onPositive={handleRetestPositive}
+          onNegative={handleRetestNegative}
+        />
+      </FocusScreenContainer>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
       <div className="max-w-4xl mx-auto px-4 py-8">
@@ -408,13 +520,13 @@ export default function DiagnosisChat() {
             {/* Input Area */}
             <div className="p-4 border-t border-cyan-500/20 bg-slate-900/70">
               <div className="flex gap-2">
-                {/* Only show body map button if NOT coming from wizard */}
+                {/* Focus Mode Trigger - Only show if NOT coming from wizard */}
                 {!wizardSession && (
                   <Button
-                    onClick={() => setShowBodyMap(true)}
+                    onClick={() => setWorkflowStep('body_map')}
                     disabled={loading || !conversation || isDemoExpired}
                     variant="outline"
-                    className="border-pink-500/50 text-pink-400 hover:bg-pink-500/10 h-[60px] px-4"
+                    className="border-red-500/50 text-red-400 hover:bg-red-500/10 h-[60px] px-4"
                   >
                     <Activity className="w-5 h-5" />
                   </Button>
