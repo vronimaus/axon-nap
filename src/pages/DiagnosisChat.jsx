@@ -29,6 +29,7 @@ export default function DiagnosisChat() {
   const [loading, setLoading] = useState(false);
   const [showBodyMap, setShowBodyMap] = useState(false);
   const [workflowStep, setWorkflowStep] = useState('chat'); // 'chat', 'body_map', 'intensity', 'analysis_card', 'retest'
+  const [diagnosisCardData, setDiagnosisCardData] = useState(null);
   const messagesEndRef = useRef(null);
 
   // Fetch wizard results if session_id provided
@@ -127,6 +128,14 @@ export default function DiagnosisChat() {
              setWorkflowStep('intensity');
            } else if (content.includes('[TRIGGER_RETEST]')) {
              setWorkflowStep('retest');
+           } else if (content.includes('[SHOW_DIAGNOSIS_CARD]')) {
+             // Extract card data from message (simple parsing)
+             const cardMatch = content.match(/\[SHOW_DIAGNOSIS_CARD\]([\s\S]*?)(?=\[|$)/);
+             if (cardMatch) {
+               setDiagnosisCardData({
+                 analysis: content.split('[SHOW_DIAGNOSIS_CARD]')[0].trim()
+               });
+             }
            }
          }
        }
@@ -136,9 +145,12 @@ export default function DiagnosisChat() {
    return () => unsubscribe();
   }, [conversation?.id]);
 
-  // Auto-scroll to bottom
+  // Auto-scroll to bottom (optimized with debounce)
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    const timer = setTimeout(() => {
+      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }, 100);
+    return () => clearTimeout(timer);
   }, [messages]);
 
   const sendMessage = async (messageText) => {
@@ -480,9 +492,10 @@ export default function DiagnosisChat() {
                                         .replace(/\[TRIGGER_BODY_MAP\]/g, '')
                                         .replace(/\[TRIGGER_INTENSITY\]/g, '')
                                         .replace(/\[TRIGGER_RETEST\]/g, '')
-                                        .replace(/\[SHOW_DIAGNOSIS_CARD\]/g, '')
+                                        .replace(/\[SHOW_DIAGNOSIS_CARD\][\s\S]*/g, '')
+                                        .trim()
                                     : children;
-                                  return <p className="my-1 leading-relaxed text-slate-100">{cleanChildren}</p>;
+                                  return cleanChildren ? <p className="my-1 leading-relaxed text-slate-100">{cleanChildren}</p> : null;
                                 },
                                 ul: ({ children }) => (
                                   <ul className="my-2 ml-4 list-disc text-slate-100">{children}</ul>
