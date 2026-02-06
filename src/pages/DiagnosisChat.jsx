@@ -29,7 +29,8 @@ export default function DiagnosisChat() {
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   const [showBodyMap, setShowBodyMap] = useState(false);
-  const [workflowStep, setWorkflowStep] = useState('chat'); // 'chat', 'body_map', 'intensity', 'analysis_card', 'retest'
+  // Start with body_map if no initial data, or intensity if coming from dashboard with mapData
+  const [workflowStep, setWorkflowStep] = useState(mapDataParam && regionParam ? 'intensity' : 'body_map');
   const [diagnosisCardData, setDiagnosisCardData] = useState(null);
   const messagesEndRef = useRef(null);
 
