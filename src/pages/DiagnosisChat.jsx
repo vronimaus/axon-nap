@@ -103,7 +103,7 @@ export default function DiagnosisChat() {
     initConversation();
   }, [wizardSession, mapDataParam, regionParam]);
 
-  // Subscribe to conversation updates
+  // Subscribe to conversation updates and detect workflow triggers
   useEffect(() => {
    if (!conversation?.id) return;
 
@@ -113,6 +113,20 @@ export default function DiagnosisChat() {
        const newMessages = data.messages || [];
        setMessages(newMessages);
        setLoading(false);
+       
+       // Check last assistant message for workflow triggers
+       const lastMessage = newMessages[newMessages.length - 1];
+       if (lastMessage?.role === 'assistant' && lastMessage?.content) {
+         const content = lastMessage.content;
+         
+         if (content.includes('[TRIGGER_BODY_MAP]')) {
+           setWorkflowStep('body_map');
+         } else if (content.includes('[TRIGGER_INTENSITY]')) {
+           setWorkflowStep('intensity');
+         } else if (content.includes('[TRIGGER_RETEST]')) {
+           setWorkflowStep('retest');
+         }
+       }
      }
    );
 
@@ -457,9 +471,17 @@ export default function DiagnosisChat() {
                             <ReactMarkdown
                               className="text-sm prose prose-sm prose-invert max-w-none [&>*:first-child]:mt-0 [&>*:last-child]:mb-0"
                               components={{
-                                p: ({ children }) => (
-                                  <p className="my-1 leading-relaxed text-slate-100">{children}</p>
-                                ),
+                                p: ({ children }) => {
+                                  // Filter out workflow triggers from display
+                                  const cleanChildren = typeof children === 'string' 
+                                    ? children
+                                        .replace(/\[TRIGGER_BODY_MAP\]/g, '')
+                                        .replace(/\[TRIGGER_INTENSITY\]/g, '')
+                                        .replace(/\[TRIGGER_RETEST\]/g, '')
+                                        .replace(/\[SHOW_DIAGNOSIS_CARD\]/g, '')
+                                    : children;
+                                  return <p className="my-1 leading-relaxed text-slate-100">{cleanChildren}</p>;
+                                },
                                 ul: ({ children }) => (
                                   <ul className="my-2 ml-4 list-disc text-slate-100">{children}</ul>
                                 ),
