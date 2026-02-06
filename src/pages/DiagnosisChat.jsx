@@ -119,24 +119,23 @@ export default function DiagnosisChat() {
        if (lastMessage?.role === 'assistant' && lastMessage?.content) {
          const content = lastMessage.content;
 
-         // Only trigger if we're currently in chat mode (prevent re-triggering)
-         if (workflowStep === 'chat') {
-           if (content.includes('[TRIGGER_BODY_MAP]')) {
-             setWorkflowStep('body_map');
-           } else if (content.includes('[TRIGGER_INTENSITY]')) {
-             setWorkflowStep('intensity');
-           } else if (content.includes('[TRIGGER_RETEST]')) {
-             setWorkflowStep('retest');
-           } else if (content.includes('[SHOW_DIAGNOSIS_CARD]')) {
-             // Extract full diagnosis text (everything before the trigger)
-             const diagnosisText = content.split('[SHOW_DIAGNOSIS_CARD]')[0].trim();
-             setDiagnosisCardData({
-               title: 'Deine AXON-Diagnose',
-               analysis: diagnosisText
-             });
-             // Move to analysis card focus screen
-             setWorkflowStep('analysis_card');
-           }
+         // Trigger workflow steps based on agent's response
+         // Check in all workflow modes (not just 'chat') to ensure transitions work
+         if (content.includes('[TRIGGER_BODY_MAP]') && workflowStep === 'chat') {
+           setWorkflowStep('body_map');
+         } else if (content.includes('[TRIGGER_INTENSITY]')) {
+           setWorkflowStep('intensity');
+         } else if (content.includes('[TRIGGER_RETEST]')) {
+           setWorkflowStep('retest');
+         } else if (content.includes('[SHOW_DIAGNOSIS_CARD]')) {
+           // Extract full diagnosis text (everything before the trigger)
+           const diagnosisText = content.split('[SHOW_DIAGNOSIS_CARD]')[0].trim();
+           setDiagnosisCardData({
+             title: 'Deine AXON-Diagnose',
+             analysis: diagnosisText
+           });
+           // Move to analysis card focus screen
+           setWorkflowStep('analysis_card');
          }
        }
      }
@@ -316,8 +315,7 @@ export default function DiagnosisChat() {
   };
 
   const handleIntensitySubmit = async (intensity) => {
-    // Return to chat immediately
-    setWorkflowStep('chat');
+    // Stay in workflow - wait for agent to trigger next step
     setLoading(true);
     
     try {
@@ -325,6 +323,7 @@ export default function DiagnosisChat() {
         role: 'user',
         content: `Schmerzintensität: ${intensity}/10`
       });
+      // Agent will trigger [SHOW_DIAGNOSIS_CARD] which moves to 'analysis_card'
     } catch (error) {
       console.error('Fehler beim Senden:', error);
       setLoading(false);
@@ -338,7 +337,10 @@ export default function DiagnosisChat() {
         role: 'user',
         content: 'Ja, es fühlt sich besser an! Ich spüre mehr Freiheit.'
       });
-      setWorkflowStep('chat');
+      // Success! Redirect to dashboard after short delay
+      setTimeout(() => {
+        window.location.href = createPageUrl('Dashboard');
+      }, 2000);
     } catch (error) {
       console.error('Fehler:', error);
       setLoading(false);
@@ -352,6 +354,7 @@ export default function DiagnosisChat() {
         role: 'user',
         content: 'Leider keine Veränderung. Der Schmerz ist gleich geblieben.'
       });
+      // Need further investigation - back to chat for deeper analysis
       setWorkflowStep('chat');
     } catch (error) {
       console.error('Fehler:', error);
@@ -394,14 +397,19 @@ export default function DiagnosisChat() {
         <DiagnosisCard
           title={diagnosisCardData?.title || 'Diagnose'}
           analysis={diagnosisCardData?.analysis || ''}
-          callToAction="Fertig – Zurück zum Chat"
-          onActionClick={() => {
-            setWorkflowStep('chat');
-            setInput('Habe es gemacht');
-            // Auto-send "Fertig" message
-            setTimeout(() => {
-              sendMessage('Habe es gemacht');
-            }, 300);
+          callToAction="Fertig – Übungen gemacht"
+          onActionClick={async () => {
+            setLoading(true);
+            try {
+              await base44.agents.addMessage(conversation, {
+                role: 'user',
+                content: 'Habe es gemacht'
+              });
+              // Agent will trigger [TRIGGER_RETEST] which moves to 'retest'
+            } catch (error) {
+              console.error('Fehler:', error);
+              setLoading(false);
+            }
           }}
         />
       </FocusScreenContainer>
