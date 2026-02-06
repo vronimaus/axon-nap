@@ -290,13 +290,16 @@ export default function DiagnosisChat() {
 
   // === WORKFLOW STEP HANDLERS ===
   const handleBodyMapSubmitFocus = async (mapData) => {
-    // Store map data in session
-    sessionStorage.setItem('current_pain_map', JSON.stringify(mapData));
+    // Detect region from map data
+    const region = mapData.region || 'unbekannte Region';
     
-    // Move to next step IMMEDIATELY (no waiting for agent)
+    // Store full data in session
+    sessionStorage.setItem('current_pain_map', JSON.stringify({ ...mapData, region }));
+    
+    // Move to intensity IMMEDIATELY (no chat screen)
     setWorkflowStep('intensity');
     
-    // Send to agent in background
+    // Send to agent in background with region info
     try {
       const markerType = mapData.markers.length === 1 && mapData.markers[0].type === 'point'
         ? 'einen Schmerzpunkt'
@@ -304,7 +307,7 @@ export default function DiagnosisChat() {
       
       base44.agents.addMessage(conversation, {
         role: 'user',
-        content: `Ich habe auf der Body Map (${mapData.view === 'front' ? 'Vorderseite' : 'Rückseite'}) ${markerType} markiert.`
+        content: `Ich habe auf der Body Map (${mapData.view === 'front' ? 'Vorderseite' : 'Rückseite'}) ${markerType} markiert. Die Markierung ist im Bereich: ${region}`
       });
     } catch (error) {
       console.error('Fehler beim Senden:', error);
