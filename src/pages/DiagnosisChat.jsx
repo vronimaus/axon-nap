@@ -118,7 +118,7 @@ export default function DiagnosisChat() {
        const lastMessage = newMessages[newMessages.length - 1];
        if (lastMessage?.role === 'assistant' && lastMessage?.content) {
          const content = lastMessage.content;
-         
+
          // Only trigger if we're currently in chat mode (prevent re-triggering)
          if (workflowStep === 'chat') {
            if (content.includes('[TRIGGER_BODY_MAP]')) {
@@ -128,13 +128,14 @@ export default function DiagnosisChat() {
            } else if (content.includes('[TRIGGER_RETEST]')) {
              setWorkflowStep('retest');
            } else if (content.includes('[SHOW_DIAGNOSIS_CARD]')) {
-             // Extract card data from message (simple parsing)
-             const cardMatch = content.match(/\[SHOW_DIAGNOSIS_CARD\]([\s\S]*?)(?=\[|$)/);
-             if (cardMatch) {
-               setDiagnosisCardData({
-                 analysis: content.split('[SHOW_DIAGNOSIS_CARD]')[0].trim()
-               });
-             }
+             // Extract full diagnosis text (everything before the trigger)
+             const diagnosisText = content.split('[SHOW_DIAGNOSIS_CARD]')[0].trim();
+             setDiagnosisCardData({
+               title: 'Deine AXON-Diagnose',
+               analysis: diagnosisText
+             });
+             // Move to analysis card focus screen
+             setWorkflowStep('analysis_card');
            }
          }
        }
@@ -379,6 +380,30 @@ export default function DiagnosisChat() {
         showBackButton={false}
       >
         <PainIntensitySlider onSubmit={handleIntensitySubmit} />
+      </FocusScreenContainer>
+    );
+  }
+
+  if (workflowStep === 'analysis_card') {
+    return (
+      <FocusScreenContainer
+        title="Deine Diagnose & Protokoll"
+        instruction="Folge den 3 Schritten und melde dich danach zurück"
+        showBackButton={false}
+      >
+        <DiagnosisCard
+          title={diagnosisCardData?.title || 'Diagnose'}
+          analysis={diagnosisCardData?.analysis || ''}
+          callToAction="Fertig – Zurück zum Chat"
+          onActionClick={() => {
+            setWorkflowStep('chat');
+            setInput('Habe es gemacht');
+            // Auto-send "Fertig" message
+            setTimeout(() => {
+              sendMessage('Habe es gemacht');
+            }, 300);
+          }}
+        />
       </FocusScreenContainer>
     );
   }
