@@ -4,7 +4,8 @@ import { base44 } from '@/api/base44Client';
 import { createPageUrl } from '@/utils';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, Zap, Target, CheckCircle2, Clock, AlertCircle } from 'lucide-react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { ArrowLeft, Zap, Target, CheckCircle2, Clock, AlertCircle, Activity } from 'lucide-react';
 import { toast } from 'sonner';
 
 export default function TrainingPlan() {
@@ -57,6 +58,18 @@ export default function TrainingPlan() {
     enabled: !!user?.email
   });
 
+  // Fetch Rehab Routines
+  const { data: routines } = useQuery({
+    queryKey: ['routines', user?.email],
+    queryFn: async () => {
+      if (!user?.email) return [];
+      return base44.entities.Routine.filter({ 
+        created_by: user.email
+      }, '-created_date');
+    },
+    enabled: !!user?.email
+  });
+
   if (isLoading || !user) {
     return <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950" />;
   }
@@ -85,25 +98,39 @@ export default function TrainingPlan() {
 
       {/* Main Content */}
       <div className="max-w-6xl mx-auto px-4 py-6 space-y-6">
-        {!activePlan ? (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="glass rounded-2xl border border-cyan-500/30 p-8 text-center"
-          >
-            <Target className="w-16 h-16 text-cyan-400 mx-auto mb-4 opacity-50" />
-            <h2 className="text-2xl font-bold text-white mb-2">Noch kein aktiver Trainingsplan</h2>
-            <p className="text-slate-400 mb-6">
-              Starten Sie eine Performance Coaching Session, um einen personalisierten Plan zu erhalten.
-            </p>
-            <Button
-              onClick={() => window.location.href = createPageUrl('Dashboard')}
-              className="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700"
-            >
-              Zum Dashboard
-            </Button>
-          </motion.div>
-        ) : (
+        <Tabs defaultValue="rehab" className="w-full">
+          <TabsList className="grid w-full grid-cols-2 mb-6">
+            <TabsTrigger value="performance" className="flex items-center gap-2">
+              <Target className="w-4 h-4" />
+              Performance
+            </TabsTrigger>
+            <TabsTrigger value="rehab" className="flex items-center gap-2">
+              <Activity className="w-4 h-4" />
+              Rehab
+            </TabsTrigger>
+          </TabsList>
+
+          {/* Performance Tab */}
+          <TabsContent value="performance">
+            {!activePlan ? (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="glass rounded-2xl border border-cyan-500/30 p-8 text-center"
+              >
+                <Target className="w-16 h-16 text-cyan-400 mx-auto mb-4 opacity-50" />
+                <h2 className="text-2xl font-bold text-white mb-2">Noch kein aktiver Trainingsplan</h2>
+                <p className="text-slate-400 mb-6">
+                  Starten Sie eine Performance Coaching Session, um einen personalisierten Plan zu erhalten.
+                </p>
+                <Button
+                  onClick={() => window.location.href = createPageUrl('Dashboard')}
+                  className="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700"
+                >
+                  Zum Dashboard
+                </Button>
+              </motion.div>
+            ) : (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -178,8 +205,126 @@ export default function TrainingPlan() {
             )}
           </motion.div>
         )}
+          </TabsContent>
+
+          {/* Rehab Tab */}
+          <TabsContent value="rehab">
+            {!routines || routines.length === 0 ? (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="glass rounded-2xl border border-cyan-500/30 p-8 text-center"
+              >
+                <Activity className="w-16 h-16 text-cyan-400 mx-auto mb-4 opacity-50" />
+                <h2 className="text-2xl font-bold text-white mb-2">Keine Rehab-Routinen vorhanden</h2>
+                <p className="text-slate-400 mb-6">
+                  Starte eine Diagnose-Session, um personalisierte Rehab-Übungen zu erhalten.
+                </p>
+                <Button
+                  onClick={() => window.location.href = createPageUrl('Dashboard')}
+                  className="bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-600 hover:to-purple-700"
+                >
+                  Zum Dashboard
+                </Button>
+              </motion.div>
+            ) : (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="space-y-4"
+              >
+                {routines.map((routine, idx) => (
+                  <RoutineCard key={routine.id} routine={routine} index={idx} />
+                ))}
+              </motion.div>
+            )}
+          </TabsContent>
+        </Tabs>
       </div>
     </div>
+  );
+}
+
+function RoutineCard({ routine, index }) {
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: index * 0.1 }}
+      className="glass rounded-xl border border-purple-500/30 bg-gradient-to-r from-purple-500/10 to-transparent"
+    >
+      <button
+        onClick={() => setIsExpanded(!isExpanded)}
+        className="w-full p-4 flex items-center justify-between hover:bg-white/5 transition-colors"
+      >
+        <div className="flex items-center gap-4 text-left">
+          <div className="text-2xl">{routine.icon || '🎯'}</div>
+          <div>
+            <h3 className="font-semibold text-purple-400">{routine.routine_name}</h3>
+            <p className="text-sm text-slate-400">{routine.total_duration} Min · {routine.sequence?.length || 0} Übungen</p>
+          </div>
+        </div>
+        <div className={`text-slate-400 transition-transform ${isExpanded ? 'rotate-180' : ''}`}>
+          ▼
+        </div>
+      </button>
+
+      <AnimatePresence>
+        {isExpanded && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            className="border-t border-slate-700/50"
+          >
+            <div className="p-4 space-y-4">
+              {routine.description && (
+                <div>
+                  <p className="text-sm text-slate-400 leading-relaxed">{routine.description}</p>
+                </div>
+              )}
+
+              {routine.sequence && routine.sequence.length > 0 && (
+                <div className="pt-4 border-t border-slate-700/50">
+                  <h4 className="font-semibold text-slate-200 mb-3">Übungen:</h4>
+                  <div className="space-y-3">
+                    {routine.sequence.map((step, stepIdx) => (
+                      <div key={stepIdx} className="bg-white/5 rounded-lg p-3">
+                        <div className="flex items-center justify-between mb-2">
+                          <p className="font-medium text-slate-200">
+                            {step.type === 'mfr' && '🔨 Hardware'}
+                            {step.type === 'neuro' && '🧠 Software'}
+                            {step.type === 'strength' && '💪 Integration'}
+                            {step.type === 'breath' && '🌬️ Atem'}
+                            {step.type === 'mobility' && '🤸 Mobilität'}
+                          </p>
+                          <span className="text-xs text-slate-500">{step.duration_seconds}s</span>
+                        </div>
+                        <p className="text-sm text-slate-400">{step.instruction}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              <div className="pt-4 border-t border-slate-700/50">
+                <Button
+                  onClick={() => {
+                    // Start routine flow
+                    toast.success('Routine wird gestartet...');
+                  }}
+                  className="w-full bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700"
+                >
+                  Routine starten
+                </Button>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.div>
   );
 }
 
