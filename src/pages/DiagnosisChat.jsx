@@ -333,34 +333,21 @@ export default function DiagnosisChat() {
   };
 
   const handleRetestPositive = async () => {
-    setLoading(true);
-    try {
-      await base44.agents.addMessage(conversation, {
-        role: 'user',
-        content: 'Ja, es fühlt sich besser an! Ich spüre mehr Freiheit.'
-      });
-      // Success! Redirect to dashboard after short delay
-      setTimeout(() => {
-        window.location.href = createPageUrl('Dashboard');
-      }, 2000);
-    } catch (error) {
-      console.error('Fehler:', error);
-      setLoading(false);
-    }
+    // Success! Go directly to dashboard - no agent call needed
+    window.location.href = createPageUrl('Dashboard');
   };
 
   const handleRetestNegative = async () => {
-    setLoading(true);
+    // Need further investigation - send to agent and return to chat
     try {
       await base44.agents.addMessage(conversation, {
         role: 'user',
         content: 'Leider keine Veränderung. Der Schmerz ist gleich geblieben.'
       });
-      // Need further investigation - back to chat for deeper analysis
+      // Back to chat for deeper analysis
       setWorkflowStep('chat');
     } catch (error) {
       console.error('Fehler:', error);
-      setLoading(false);
     }
   };
 
