@@ -338,16 +338,37 @@ export default function DiagnosisChat() {
   };
 
   const handleRetestNegative = async () => {
-    // Need further investigation - send to agent and return to chat
+    // Need further investigation - go to minimal follow-up UI
+    setLoading(true);
     try {
       await base44.agents.addMessage(conversation, {
         role: 'user',
         content: 'Leider keine Veränderung. Der Schmerz ist gleich geblieben.'
       });
-      // Back to chat for deeper analysis
-      setWorkflowStep('chat');
+      // Go to minimal follow-up UI instead of full chat
+      setWorkflowStep('follow_up');
     } catch (error) {
       console.error('Fehler:', error);
+      setLoading(false);
+    }
+  };
+
+  const handleFollowUpSubmit = async () => {
+    if (!input.trim() || !conversation) return;
+    
+    setLoading(true);
+    const messageText = input.trim();
+    setInput('');
+
+    try {
+      await base44.agents.addMessage(conversation, {
+        role: 'user',
+        content: messageText
+      });
+      // Agent will decide next step via triggers
+    } catch (error) {
+      console.error('Fehler:', error);
+      setLoading(false);
     }
   };
 
@@ -416,6 +437,86 @@ export default function DiagnosisChat() {
           onPositive={handleRetestPositive}
           onNegative={handleRetestNegative}
         />
+      </FocusScreenContainer>
+    );
+  }
+
+  if (workflowStep === 'follow_up') {
+    // Get last assistant message for context
+    const lastAssistantMsg = [...messages].reverse().find(m => m.role === 'assistant');
+    const lastMsgContent = lastAssistantMsg?.content || '';
+    
+    return (
+      <FocusScreenContainer
+        title="Noch eine Frage"
+        instruction="Beantworte kurz, damit wir weiter analysieren können"
+        showBackButton={false}
+      >
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="w-full max-w-2xl mx-auto space-y-6"
+        >
+          {/* Last Agent Message */}
+          {lastMsgContent && (
+            <div className="glass rounded-2xl p-6 border border-cyan-500/30">
+              <ReactMarkdown
+                className="text-slate-300 prose prose-sm prose-invert max-w-none"
+                components={{
+                  p: ({ children }) => {
+                    const cleanChildren = typeof children === 'string' 
+                      ? children
+                          .replace(/\[TRIGGER_BODY_MAP\]/g, '')
+                          .replace(/\[TRIGGER_INTENSITY\]/g, '')
+                          .replace(/\[TRIGGER_RETEST\]/g, '')
+                          .replace(/\[SHOW_DIAGNOSIS_CARD\][\s\S]*/g, '')
+                          .trim()
+                      : children;
+                    return cleanChildren ? <p className="mb-3">{cleanChildren}</p> : null;
+                  },
+                  strong: ({ children }) => <strong className="text-cyan-400">{children}</strong>
+                }}
+              >
+                {lastMsgContent}
+              </ReactMarkdown>
+            </div>
+          )}
+
+          {/* Minimal Input */}
+          <div className="glass rounded-2xl p-4 border border-cyan-500/30">
+            <Textarea
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                  e.preventDefault();
+                  handleFollowUpSubmit();
+                }
+              }}
+              placeholder="Deine Antwort..."
+              className="w-full min-h-[80px] bg-slate-900/50 border-slate-700 text-slate-200 placeholder:text-slate-500 resize-none mb-3"
+              disabled={loading}
+              autoFocus
+            />
+            <Button
+              onClick={handleFollowUpSubmit}
+              disabled={!input.trim() || loading}
+              className="w-full h-12 bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-600 hover:to-purple-700 text-white font-semibold"
+            >
+              {loading ? (
+                <>
+                  <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                  Analysiere...
+                </>
+              ) : (
+                <>
+                  Senden
+                  <Send className="w-5 h-5 ml-2" />
+                </>
+              )}
+            </Button>
+          </div>
+        </motion.div>
       </FocusScreenContainer>
     );
   }
