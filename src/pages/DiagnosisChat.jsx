@@ -119,12 +119,15 @@ export default function DiagnosisChat() {
        if (lastMessage?.role === 'assistant' && lastMessage?.content) {
          const content = lastMessage.content;
          
-         if (content.includes('[TRIGGER_BODY_MAP]')) {
-           setWorkflowStep('body_map');
-         } else if (content.includes('[TRIGGER_INTENSITY]')) {
-           setWorkflowStep('intensity');
-         } else if (content.includes('[TRIGGER_RETEST]')) {
-           setWorkflowStep('retest');
+         // Only trigger if we're currently in chat mode (prevent re-triggering)
+         if (workflowStep === 'chat') {
+           if (content.includes('[TRIGGER_BODY_MAP]')) {
+             setWorkflowStep('body_map');
+           } else if (content.includes('[TRIGGER_INTENSITY]')) {
+             setWorkflowStep('intensity');
+           } else if (content.includes('[TRIGGER_RETEST]')) {
+             setWorkflowStep('retest');
+           }
          }
        }
      }
@@ -347,8 +350,7 @@ export default function DiagnosisChat() {
       <FocusScreenContainer
         title="Wo tut es weh?"
         instruction="Tippe auf die exakte Stelle oder zeichne eine Linie entlang des Schmerzes"
-        showBackButton
-        onBack={() => setWorkflowStep('chat')}
+        showBackButton={false}
       >
         <InteractiveBodyMapInput onSubmit={handleBodyMapSubmitFocus} />
       </FocusScreenContainer>
@@ -360,6 +362,7 @@ export default function DiagnosisChat() {
       <FocusScreenContainer
         title="Wie stark ist der Schmerz?"
         instruction="Wähle die Intensität auf einer Skala von 1-10"
+        showBackButton={false}
       >
         <PainIntensitySlider onSubmit={handleIntensitySubmit} />
       </FocusScreenContainer>
@@ -371,6 +374,7 @@ export default function DiagnosisChat() {
       <FocusScreenContainer
         title="Erfolgs-Check"
         instruction="Wie fühlt sich die Bewegung jetzt an?"
+        showBackButton={false}
       >
         <BinaryChoiceButtons
           onPositive={handleRetestPositive}
