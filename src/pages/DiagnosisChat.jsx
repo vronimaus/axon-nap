@@ -276,39 +276,37 @@ export default function DiagnosisChat() {
 
   // === WORKFLOW STEP HANDLERS ===
   const handleBodyMapSubmitFocus = async (mapData) => {
-    setLoading(true);
+    // Store map data in session
+    sessionStorage.setItem('current_pain_map', JSON.stringify(mapData));
+    
+    // Move to next step IMMEDIATELY (no waiting for agent)
+    setWorkflowStep('intensity');
+    
+    // Send to agent in background
     try {
-      // Store map data in session
-      sessionStorage.setItem('current_pain_map', JSON.stringify(mapData));
-      
-      // Send to agent
       const markerType = mapData.markers.length === 1 && mapData.markers[0].type === 'point'
         ? 'einen Schmerzpunkt'
         : 'eine Schmerzlinie';
       
-      await base44.agents.addMessage(conversation, {
+      base44.agents.addMessage(conversation, {
         role: 'user',
         content: `Ich habe auf der Body Map (${mapData.view === 'front' ? 'Vorderseite' : 'Rückseite'}) ${markerType} markiert.`
       });
-      
-      // Move to next step
-      setWorkflowStep('intensity');
     } catch (error) {
       console.error('Fehler beim Senden:', error);
-      setLoading(false);
     }
   };
 
   const handleIntensitySubmit = async (intensity) => {
+    // Return to chat immediately
+    setWorkflowStep('chat');
     setLoading(true);
+    
     try {
       await base44.agents.addMessage(conversation, {
         role: 'user',
         content: `Schmerzintensität: ${intensity}/10`
       });
-      
-      // Return to chat for agent analysis
-      setWorkflowStep('chat');
     } catch (error) {
       console.error('Fehler beim Senden:', error);
       setLoading(false);
