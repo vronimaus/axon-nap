@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
-import { ChevronDown, Info, ArrowRight } from 'lucide-react';
+import { ChevronDown, Info, ArrowRight, Loader2 } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 
 export default function DiagnosisCard({ 
@@ -13,6 +13,18 @@ export default function DiagnosisCard({
   showExpertByDefault = false
 }) {
   const [showExpert, setShowExpert] = useState(showExpertByDefault);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  
+  const handleActionClick = async () => {
+    if (isSubmitting) return;
+    setIsSubmitting(true);
+    try {
+      await onActionClick();
+    } catch (error) {
+      console.error('Action error:', error);
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <motion.div
@@ -85,11 +97,21 @@ export default function DiagnosisCard({
           {/* Call to Action */}
           {callToAction && onActionClick && (
             <Button
-              onClick={onActionClick}
-              className="w-full h-14 bg-gradient-to-r from-red-500 to-pink-600 hover:from-red-600 hover:to-pink-700 text-white font-bold text-lg"
+              onClick={handleActionClick}
+              disabled={isSubmitting}
+              className="w-full h-14 bg-gradient-to-r from-red-500 to-pink-600 hover:from-red-600 hover:to-pink-700 text-white font-bold text-lg disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {callToAction}
-              <ArrowRight className="w-5 h-5 ml-2" />
+              {isSubmitting ? (
+                <>
+                  <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                  Wird verarbeitet...
+                </>
+              ) : (
+                <>
+                  {callToAction}
+                  <ArrowRight className="w-5 h-5 ml-2" />
+                </>
+              )}
             </Button>
           )}
         </div>

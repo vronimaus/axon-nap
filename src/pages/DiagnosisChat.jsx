@@ -432,6 +432,11 @@ export default function DiagnosisChat() {
     );
   }
 
+  // Only show chat when in 'chat' workflow step
+  if (workflowStep !== 'chat') {
+    return null; // Focus screens are rendered above
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
       <div className="max-w-4xl mx-auto px-4 py-8">
@@ -453,32 +458,6 @@ export default function DiagnosisChat() {
             Assessment → Hardware → Software → Validation (4-Phasen-Protokoll)
           </p>
         </motion.div>
-
-        {/* Body Pain Map Modal */}
-        <AnimatePresence>
-          {showBodyMap && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4"
-              onClick={() => setShowBodyMap(false)}
-            >
-              <motion.div
-                initial={{ scale: 0.9, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                exit={{ scale: 0.9, opacity: 0 }}
-                onClick={(e) => e.stopPropagation()}
-                className="bg-slate-900 rounded-2xl border border-cyan-500/30 p-6 max-w-2xl w-full max-h-[90vh] overflow-y-auto"
-              >
-                <BodyPainMap
-                  onSubmit={handleBodyMapSubmit}
-                  onCancel={() => setShowBodyMap(false)}
-                />
-              </motion.div>
-            </motion.div>
-          )}
-        </AnimatePresence>
 
         {/* Chat Container */}
         <Card className="bg-slate-900/90 border border-cyan-500/30 shadow-2xl backdrop-blur-sm mb-6">
