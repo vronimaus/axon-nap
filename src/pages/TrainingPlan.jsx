@@ -58,14 +58,18 @@ export default function TrainingPlan() {
     enabled: !!user?.email
   });
 
-  // Fetch Rehab Routines
+  // Fetch Rehab Routines (exclude predefined Flow routines)
   const { data: routines } = useQuery({
     queryKey: ['routines', user?.email],
     queryFn: async () => {
       if (!user?.email) return [];
-      return base44.entities.Routine.filter({ 
+      const allRoutines = await base44.entities.Routine.filter({ 
         created_by: user.email
       }, '-created_date');
+      // Filter out predefined Flow routines (wakeup, full_reset, evening)
+      return allRoutines.filter(r => 
+        !['wakeup', 'full_reset', 'evening'].includes(r.category)
+      );
     },
     enabled: !!user?.email
   });
