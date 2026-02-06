@@ -62,8 +62,6 @@ export default function DiagnosisChat() {
           };
         }
 
-        // Body map data will be sent as a user message, not metadata
-
         const conv = await base44.agents.createConversation({
           agent_name: 'diagnosis_reasoning',
           metadata
@@ -73,6 +71,7 @@ export default function DiagnosisChat() {
 
         // If from wizard, send initial context message
         if (wizardSession) {
+          setLoading(true);
           const contextMsg = isContinuation 
             ? `Ich habe den Wizard durchlaufen und es ist zwar besser geworden, aber nicht vollständig weg.\n- Region: ${wizardSession.symptom_location}\n- Symptom: ${wizardSession.symptom_description}\n\nWo tut es noch weh und wie können wir die verbleibenden Beschwerden angehen?`
             : `Ich habe gerade den Diagnose-Wizard abgeschlossen:\n- Region: ${wizardSession.symptom_location}\n- Symptom: ${wizardSession.symptom_description}\n- Diagnose-Typ: ${wizardSession.diagnosis_type}\n\nBitte verfeinere die Diagnose und empfehle mir die spezifischen MFR-Nodes.`;
@@ -81,9 +80,8 @@ export default function DiagnosisChat() {
             role: 'user',
             content: contextMsg
           });
-          setLoading(false);
         }
-        // If from Dashboard with body map, use the region already detected by InteractiveBodyMap
+        // If from Dashboard with body map, skip Body Map and go straight to intensity
         else if (mapDataParam && regionParam) {
           setLoading(true);
           const mapData = JSON.parse(mapDataParam);
@@ -92,9 +90,10 @@ export default function DiagnosisChat() {
             ? 'einen Schmerzpunkt'
             : 'eine Schmerzlinie';
           
+          // Send body map data as if user just completed it
           await base44.agents.addMessage(conv, {
             role: 'user',
-            content: `Ich habe auf der Body Map (${mapData.view === 'front' ? 'Vorderseite' : 'Rückseite'}) ${markerType} markiert.\n\n📍 Die Markierung ist im Bereich: **${fullRegion}**\n\nKannst du mir sagen, welche MFR-Nodes und Neuro-Drills ich für diese Region nutzen soll?`
+            content: `Ich habe auf der Body Map (${mapData.view === 'front' ? 'Vorderseite' : 'Rückseite'}) ${markerType} markiert. Die Markierung ist im Bereich: ${fullRegion}`
           });
         }
       } catch (error) {
@@ -143,7 +142,7 @@ export default function DiagnosisChat() {
    );
 
    return () => unsubscribe();
-  }, [conversation?.id, workflowStep]);
+  }, [conversation?.id]);
 
   // Auto-scroll to bottom (optimized with debounce)
   useEffect(() => {
