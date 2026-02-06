@@ -143,7 +143,7 @@ export default function DiagnosisChat() {
    );
 
    return () => unsubscribe();
-  }, [conversation?.id]);
+  }, [conversation?.id, workflowStep]);
 
   // Auto-scroll to bottom (optimized with debounce)
   useEffect(() => {
