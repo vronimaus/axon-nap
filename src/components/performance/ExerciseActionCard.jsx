@@ -92,7 +92,7 @@ export default function ExerciseActionCard({
           onClick={onComplete}
           className="w-full h-12 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-semibold mt-6"
         >
-          Fertig - Session abschließen
+          Übungen geprüft - Trainingsplan erstellen?
         </Button>
       )}
     </motion.div>
