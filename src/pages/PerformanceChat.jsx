@@ -4,11 +4,12 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import { ArrowLeft, Send, Loader2, Target, Wrench, Brain, Dumbbell, CheckCircle2, AlertCircle } from 'lucide-react';
+import { ArrowLeft, Send, Loader2, Target } from 'lucide-react';
 import { createPageUrl } from '@/utils';
-import ReactMarkdown from 'react-markdown';
 import { toast } from 'sonner';
 import SessionFeedbackForm from '../components/performance/SessionFeedbackForm';
+import PerformanceGoalCard from '../components/performance/PerformanceGoalCard';
+import ExerciseActionCard from '../components/performance/ExerciseActionCard';
 
 export default function PerformanceChat() {
   const navigate = useNavigate();
@@ -20,6 +21,9 @@ export default function PerformanceChat() {
   const [isPlanCreating, setIsPlanCreating] = useState(false);
   const [showFeedbackForm, setShowFeedbackForm] = useState(false);
   const [goalName, setGoalName] = useState('');
+  const [workflowStep, setWorkflowStep] = useState('analysis'); // 'analysis' | 'exercises' | 'chat'
+  const [goalAnalysis, setGoalAnalysis] = useState(null);
+  const [exercisePhases, setExercisePhases] = useState(null);
   const messagesEndRef = useRef(null);
 
   useEffect(() => {
@@ -180,24 +184,102 @@ export default function PerformanceChat() {
     initChat();
   }, []);
 
-  // Subscribe to conversation updates
-      useEffect(() => {
-        if (!conversation?.id) return;
+  // Subscribe to conversation updates and detect workflow triggers
+  useEffect(() => {
+    if (!conversation?.id) return;
 
-        console.log('🔄 Subscribing to conversation:', conversation.id);
+    console.log('🔄 Subscribing to conversation:', conversation.id);
 
-        const unsubscribe = base44.agents.subscribeToConversation(conversation.id, (data) => {
-          console.log('📨 Messages update received, count:', data.messages?.length, 'Last message:', data.messages?.[data.messages.length - 1]?.content?.substring(0, 100));
-          setMessages(data.messages || []);
-          // Only set loading false once at the start
-          setIsLoading(prev => prev === true ? false : prev);
+    const unsubscribe = base44.agents.subscribeToConversation(conversation.id, (data) => {
+      console.log('📨 Messages update received, count:', data.messages?.length);
+      const newMessages = data.messages || [];
+      setMessages(newMessages);
+      
+      // Detect workflow triggers from last assistant message
+      const lastMessage = newMessages[newMessages.length - 1];
+      if (lastMessage?.role === 'assistant' && lastMessage.content) {
+        
+        // Check for [SHOW_GOAL_ANALYSIS] trigger
+        if (lastMessage.content.includes('[SHOW_GOAL_ANALYSIS]') && workflowStep === 'analysis') {
+          const content = lastMessage.content.replace('[SHOW_GOAL_ANALYSIS]', '').trim();
+          setGoalAnalysis({
+            title: `Ziel: ${goalName}`,
+            analysis: content,
+            expertInsight: 'Dieses Ziel erfordert eine Balance aus Mobilität, Kraft und neuromuskulärer Kontrolle. Wir arbeiten in Phasen: Hardware (Beweglichkeit), Software (Neuro-Reset) und Integration (Kraft).',
+            callToAction: 'Übungen starten'
+          });
+        }
+        
+        // Check for [SHOW_EXERCISES] trigger
+        if (lastMessage.content.includes('[SHOW_EXERCISES]') && workflowStep === 'analysis') {
+          try {
+            const exerciseMatch = lastMessage.content.match(/\[SHOW_EXERCISES\]([\s\S]*)/);
+            if (exerciseMatch) {
+              const exerciseText = exerciseMatch[1].trim();
+              // Parse exercises from structured text
+              const phases = parseExercisesFromText(exerciseText);
+              setExercisePhases(phases);
+              setWorkflowStep('exercises');
+            }
+          } catch (e) {
+            console.error('Error parsing exercises:', e);
+          }
+        }
+      }
+      
+      setIsLoading(prev => prev === true ? false : prev);
+    });
+
+    return () => {
+      console.log('🔌 Unsubscribing from conversation');
+      unsubscribe();
+    };
+  }, [conversation?.id, workflowStep, goalName]);
+
+  // Helper function to parse exercises from AI text
+  const parseExercisesFromText = (text) => {
+    // Simple parser - AI should provide structured format
+    const phases = [
+      {
+        type: 'hardware',
+        title: '⚙️ Hardware - Mobilität',
+        duration: '10 Min',
+        exercises: []
+      },
+      {
+        type: 'software',
+        title: '🧠 Software - Neuro-Reset',
+        duration: '5 Min',
+        exercises: []
+      },
+      {
+        type: 'integration',
+        title: '💪 Integration - Kraft',
+        duration: '15 Min',
+        exercises: []
+      }
+    ];
+
+    // Extract exercises from text (simplified - could be improved)
+    const lines = text.split('\n').filter(l => l.trim());
+    let currentPhaseIdx = 0;
+    
+    lines.forEach(line => {
+      if (line.includes('Hardware') || line.includes('Mobilität')) currentPhaseIdx = 0;
+      else if (line.includes('Software') || line.includes('Neuro')) currentPhaseIdx = 1;
+      else if (line.includes('Integration') || line.includes('Kraft')) currentPhaseIdx = 2;
+      else if (line.match(/^[\d\-\*]\s/)) {
+        const exText = line.replace(/^[\d\-\*]\s+/, '').trim();
+        phases[currentPhaseIdx].exercises.push({
+          name: exText.split(':')[0] || exText,
+          instruction: exText.split(':')[1]?.trim() || 'Führe die Übung kontrolliert durch',
+          sets_reps: '3 x 10'
         });
+      }
+    });
 
-        return () => {
-          console.log('🔌 Unsubscribing from conversation');
-          unsubscribe();
-        };
-      }, [conversation?.id]);
+    return phases;
+  };
 
   // Auto-scroll to bottom
   useEffect(() => {
@@ -231,16 +313,32 @@ export default function PerformanceChat() {
     }
   };
 
+  const handleGoalAnalysisNext = async () => {
+    // Request exercises from AI
+    setWorkflowStep('exercises');
+    try {
+      await base44.agents.addMessage(conversation, {
+        role: 'user',
+        content: 'Ja, lass uns mit den Übungen starten!'
+      });
+    } catch (error) {
+      console.error('Error requesting exercises:', error);
+    }
+  };
+
+  const handleExercisesComplete = () => {
+    setWorkflowStep('chat');
+  };
+
   const handleDoneClick = () => {
     setShowFeedbackForm(true);
   };
 
   const handleFeedbackSaved = async () => {
-    // Send follow-up message from coach
     try {
       await base44.agents.addMessage(conversation, {
         role: 'user',
-        content: '[FEEDBACK_SUBMITTED] Session abgeschlossen und Feedback gespeichert. Frage ob ich weitermachen will oder mich entspannen möchte.'
+        content: '[FEEDBACK_SUBMITTED] Session abgeschlossen. Frage, ob ein vollständiger Trainingsplan erstellt werden soll.'
       });
       toast.success('Session erfolgreich gespeichert!');
     } catch (error) {
@@ -248,8 +346,7 @@ export default function PerformanceChat() {
     }
   };
 
-  // Check if last assistant message contains [SHOW_DONE_BUTTON]
-  const shouldShowDoneButton = messages.length > 0 && 
+  const shouldShowDoneButton = workflowStep === 'chat' && messages.length > 0 && 
     messages[messages.length - 1]?.role === 'assistant' &&
     messages[messages.length - 1]?.content?.includes('[SHOW_DONE_BUTTON]');
 
@@ -337,66 +434,74 @@ export default function PerformanceChat() {
         </div>
       </div>
 
-      {/* Messages */}
+      {/* Main Content Area */}
       <div className="flex-1 overflow-y-auto custom-scrollbar">
-        <div className="max-w-4xl mx-auto px-4 py-6 space-y-4">
-              {isLoading ? (
-                <div className="flex items-center justify-center py-12">
-                  <Loader2 className="w-8 h-8 text-amber-400 animate-spin" />
-                </div>
-              ) : (
-                <>
-                  {messages.map((msg, idx) => (
-                    <MessageBubble key={idx} message={msg} />
-                  ))}
-                  <div ref={messagesEndRef} />
-                </>
-              )}
+        <div className="max-w-4xl mx-auto px-4 py-6 space-y-6">
+          {isLoading ? (
+            <div className="flex items-center justify-center py-12">
+              <Loader2 className="w-8 h-8 text-amber-400 animate-spin" />
             </div>
+          ) : (
+            <>
+              {/* Step 1: Goal Analysis Card */}
+              {workflowStep === 'analysis' && goalAnalysis && (
+                <PerformanceGoalCard
+                  title={goalAnalysis.title}
+                  analysis={goalAnalysis.analysis}
+                  expertInsight={goalAnalysis.expertInsight}
+                  callToAction={goalAnalysis.callToAction}
+                  onActionClick={handleGoalAnalysisNext}
+                />
+              )}
+
+              {/* Step 2: Exercise Action Cards */}
+              {workflowStep === 'exercises' && exercisePhases && (
+                <ExerciseActionCard
+                  phases={exercisePhases}
+                  onComplete={handleExercisesComplete}
+                />
+              )}
+
+              {/* Step 3: Simplified Chat for Follow-up */}
+              {workflowStep === 'chat' && (
+                <div className="space-y-4">
+                  {messages
+                    .filter(msg => !msg.content?.includes('[SHOW_GOAL_ANALYSIS]') && !msg.content?.includes('[SHOW_EXERCISES]'))
+                    .map((msg, idx) => (
+                      <SimpleChatBubble key={idx} message={msg} />
+                    ))}
+                  <div ref={messagesEndRef} />
+                </div>
+              )}
+            </>
+          )}
+        </div>
       </div>
 
-      {/* Done Button - shown after training plan */}
-      {shouldShowDoneButton && !showFeedbackForm && (
-        <div className="sticky bottom-20 z-10 px-4 pb-4">
-          <div className="max-w-4xl mx-auto">
-            <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-            >
+      {/* Input - only show in chat step */}
+      {workflowStep === 'chat' && (
+        <div className="sticky bottom-0 glass border-t border-amber-500/20">
+          <div className="max-w-4xl mx-auto px-4 py-4">
+            <div className="flex gap-2">
+              <Textarea
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyPress={handleKeyPress}
+                placeholder="Deine Nachricht..."
+                className="resize-none bg-slate-800/50 border-slate-700 text-white min-h-[44px] max-h-32"
+                rows={1}
+              />
               <Button
-                onClick={handleDoneClick}
-                className="w-full h-10 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-semibold shadow-lg shadow-green-500/50"
+                onClick={handleSend}
+                disabled={!input.trim() || isSending}
+                className="bg-gradient-to-r from-amber-500 to-yellow-600 hover:from-amber-600 hover:to-yellow-700 px-4 h-auto"
               >
-                <CheckCircle2 className="w-4 h-4 mr-2" />
-                Ja, ich habe das Training geschafft.
+                {isSending ? <Loader2 className="w-5 h-5 animate-spin" /> : <Send className="w-5 h-5" />}
               </Button>
-            </motion.div>
+            </div>
           </div>
         </div>
       )}
-
-      {/* Input */}
-      <div className="sticky bottom-0 glass border-t border-amber-500/20">
-        <div className="max-w-4xl mx-auto px-4 py-4">
-          <div className="flex gap-2">
-            <Textarea
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyPress={handleKeyPress}
-              placeholder="Deine Nachricht..."
-              className="resize-none bg-slate-800/50 border-slate-700 text-white min-h-[44px] max-h-32"
-              rows={1}
-            />
-            <Button
-              onClick={handleSend}
-              disabled={!input.trim() || isSending}
-              className="bg-gradient-to-r from-amber-500 to-yellow-600 hover:from-amber-600 hover:to-yellow-700 px-4 h-auto"
-            >
-              {isSending ? <Loader2 className="w-5 h-5 animate-spin" /> : <Send className="w-5 h-5" />}
-            </Button>
-          </div>
-        </div>
-      </div>
 
       {/* Feedback Form Modal */}
       <AnimatePresence>
@@ -412,111 +517,36 @@ export default function PerformanceChat() {
       );
       }
 
-function MessageBubble({ message }) {
+function SimpleChatBubble({ message }) {
   const isUser = message.role === 'user';
   
-  // Hide internal feedback trigger messages
+  // Hide internal triggers
   if (isUser && message.content?.includes('[FEEDBACK_SUBMITTED]')) {
     return null;
   }
   
   return (
-    <div className={`flex gap-3 ${isUser ? 'justify-end' : 'justify-start'}`}>
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      className={`flex gap-3 ${isUser ? 'justify-end' : 'justify-start'}`}
+    >
       {!isUser && (
         <div className="h-8 w-8 rounded-xl bg-gradient-to-br from-amber-500 to-yellow-600 flex items-center justify-center flex-shrink-0">
-          <span className="text-white font-bold text-sm">💪</span>
+          <Target className="w-4 h-4 text-white" />
         </div>
       )}
       <div className={`max-w-[85%] ${isUser && 'flex flex-col items-end'}`}>
-        {message.content && (
-          <div className={`rounded-2xl px-4 py-3 ${
-            isUser 
-              ? 'bg-slate-800 text-white' 
-              : 'glass-cyan border border-amber-500/30 text-white'
-          }`}>
-            {isUser ? (
-              <p className="text-sm leading-relaxed whitespace-pre-wrap">{message.content}</p>
-            ) : (
-              <ReactMarkdown 
-                className="text-sm prose prose-sm prose-invert max-w-none [&>*:first-child]:mt-0 [&>*:last-child]:mb-0"
-                components={{
-                  p: ({ children }) => {
-                    // Replace icon codes with Lucide icons and filter [SHOW_DONE_BUTTON]
-                    const processContent = (content) => {
-                      if (typeof content === 'string') {
-                        // Remove [SHOW_DONE_BUTTON] from display
-                        const cleanContent = content.replace(/\[SHOW_DONE_BUTTON\]/g, '').trim();
-
-                        const parts = [];
-                        const iconMap = {
-                          '[TARGET]': <Target className="w-4 h-4 inline-block text-amber-400 mr-1" />,
-                          '[WRENCH]': <Wrench className="w-4 h-4 inline-block text-cyan-400 mr-1" />,
-                          '[BRAIN]': <Brain className="w-4 h-4 inline-block text-purple-400 mr-1" />,
-                          '[DUMBBELL]': <Dumbbell className="w-4 h-4 inline-block text-green-400 mr-1" />,
-                          '[CHECKMARK]': <CheckCircle2 className="w-4 h-4 inline-block text-green-400 mr-1" />,
-                          '[ALERT]': <AlertCircle className="w-4 h-4 inline-block text-red-400 mr-1" />
-                        };
-
-                        let lastIndex = 0;
-                        const regex = /\[(TARGET|WRENCH|BRAIN|DUMBBELL|CHECKMARK|ALERT)\]/g;
-                        let match;
-
-                        while ((match = regex.exec(cleanContent)) !== null) {
-                          if (match.index > lastIndex) {
-                            parts.push(cleanContent.substring(lastIndex, match.index));
-                          }
-                          parts.push(iconMap[match[0]]);
-                          lastIndex = match.index + match[0].length;
-                        }
-
-                        if (lastIndex < cleanContent.length) {
-                          parts.push(cleanContent.substring(lastIndex));
-                        }
-
-                        return parts.length > 0 ? parts : cleanContent;
-                      }
-                      return content;
-                    };
-
-                    return <p className="my-1 leading-relaxed">{processContent(children)}</p>;
-                  },
-                  ul: ({ children }) => <ul className="my-2 ml-4 list-disc">{children}</ul>,
-                  ol: ({ children }) => <ol className="my-2 ml-4 list-decimal">{children}</ol>,
-                  li: ({ children }) => <li className="my-1">{children}</li>,
-                  strong: ({ children }) => <strong className="text-amber-400">{children}</strong>,
-                  h1: ({ children }) => <h1 className="text-lg font-bold my-2 text-amber-400">{children}</h1>,
-                  h2: ({ children }) => <h2 className="text-base font-bold my-2 text-amber-400">{children}</h2>,
-                  h3: ({ children }) => <h3 className="text-sm font-semibold my-2 text-amber-400">{children}</h3>,
-                  code: ({ inline, children }) => (
-                    inline ? (
-                      <code className="px-1.5 py-0.5 rounded bg-slate-800 text-amber-400 text-xs font-mono">
-                        {children}
-                      </code>
-                    ) : (
-                      <code className="block bg-slate-800 rounded p-2 text-xs font-mono my-2">
-                        {children}
-                      </code>
-                    )
-                  ),
-                }}
-              >
-                {message.content}
-              </ReactMarkdown>
-            )}
-          </div>
-        )}
-        
-        {message.tool_calls?.length > 0 && (
-          <div className="mt-2 space-y-1">
-            {message.tool_calls.map((toolCall, idx) => (
-              <div key={idx} className="text-xs text-slate-500 flex items-center gap-2">
-                <Loader2 className="w-3 h-3 animate-spin" />
-                <span>{toolCall.name || 'Tool wird ausgeführt...'}</span>
-              </div>
-            ))}
-          </div>
-        )}
+        <div className={`rounded-xl px-4 py-3 ${
+          isUser 
+            ? 'bg-slate-800 text-white' 
+            : 'glass border border-amber-500/30 text-slate-200'
+        }`}>
+          <p className="text-sm leading-relaxed whitespace-pre-wrap">
+            {message.content?.replace(/\[SHOW_DONE_BUTTON\]/g, '').replace(/\[CREATE_PLAN\]/g, '').trim()}
+          </p>
+        </div>
       </div>
-    </div>
+    </motion.div>
   );
 }
