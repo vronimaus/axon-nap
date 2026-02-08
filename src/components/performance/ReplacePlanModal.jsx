@@ -65,8 +65,7 @@ export default function ReplacePlanModal({ existingPlan, onConfirm, onCancel }) 
 
             <Button
               onClick={onCancel}
-              variant="outline"
-              className="w-full border-slate-700 hover:bg-slate-800/50 text-slate-300 h-auto py-4"
+              className="w-full bg-slate-800 hover:bg-slate-700 border border-slate-600 text-slate-200 h-auto py-4"
             >
               <div className="flex items-center justify-between w-full">
                 <div className="text-left">

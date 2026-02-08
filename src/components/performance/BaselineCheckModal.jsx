@@ -232,9 +232,10 @@ export default function BaselineCheckModal({ goalName, onComplete, onCancel }) {
               <div className="pt-4 border-t border-slate-700">
                 <Button
                   onClick={handleNoChanges}
-                  variant="outline"
-                  className={`w-full border-slate-600 hover:bg-slate-800/50 ${
-                    noChangesConfirmed ? 'bg-green-500/20 border-green-500/50 text-green-400' : 'text-slate-300'
+                  className={`w-full ${
+                    noChangesConfirmed 
+                      ? 'bg-green-500/20 border-green-500/50 text-green-400 hover:bg-green-500/30' 
+                      : 'bg-slate-800 hover:bg-slate-700 border border-slate-600 text-slate-200'
                   }`}
                 >
                   <CheckCircle2 className="w-4 h-4 mr-2" />
@@ -246,8 +247,7 @@ export default function BaselineCheckModal({ goalName, onComplete, onCancel }) {
               <div className="flex gap-3 pt-2">
                 <Button
                   onClick={onCancel}
-                  variant="outline"
-                  className="flex-1 border-slate-700 hover:bg-slate-800/50 text-slate-300"
+                  className="flex-1 bg-slate-800 hover:bg-slate-700 border border-slate-600 text-slate-200"
                 >
                   Abbrechen
                 </Button>
