@@ -250,8 +250,7 @@ export default function PerformanceChat() {
   // Helper function to parse exercises from AI text
   const parseExercisesFromText = (text) => {
     console.log('📝 Parsing exercise text:', text.substring(0, 200));
-    
-    // Simple parser - AI should provide structured format
+
     const phases = [
       {
         type: 'hardware',
@@ -273,13 +272,17 @@ export default function PerformanceChat() {
       }
     ];
 
-    // Extract exercises from text
     const lines = text.split('\n').filter(l => l.trim());
     let currentPhaseIdx = 0;
-    
+
     lines.forEach(line => {
       const trimmed = line.trim();
-      
+
+      // Skip hints, notes, or markdown formatting
+      if (trimmed.startsWith('*') || trimmed.startsWith('**') || trimmed.toLowerCase().includes('hinweis')) {
+        return; // Skip this line
+      }
+
       // Detect phase headers
       if (trimmed.includes('HARDWARE') || trimmed.includes('Hardware') || trimmed.includes('Mobilität')) {
         currentPhaseIdx = 0;
@@ -291,25 +294,28 @@ export default function PerformanceChat() {
         currentPhaseIdx = 2;
         console.log('📍 Detected Integration phase');
       }
-      // Detect exercise lines (starting with number, dash, or asterisk)
-      else if (trimmed.match(/^[\d\-\*\.]\s/)) {
-        const exText = trimmed.replace(/^[\d\-\*\.]+\s*/, '').trim();
-        if (exText) {
-          const parts = exText.split(':');
-          const name = parts[0]?.trim() || exText;
-          const rest = parts.slice(1).join(':').trim();
-          
-          // Try to extract sets/reps
-          const setsMatch = rest.match(/(\d+x\d+|\d+\s*(x|×)\s*\d+|\d+\s+Sek)/i);
-          const sets_reps = setsMatch ? setsMatch[0] : '3x10';
-          const instruction = rest.replace(setsMatch ? setsMatch[0] : '', '').replace(/^[\s\-:]+/, '').trim() || 'Führe die Übung kontrolliert durch';
-          
+      // Detect exercise lines: Must start with number followed by dot
+      else if (trimmed.match(/^\d+\.\s/)) {
+        const exText = trimmed.replace(/^\d+\.\s*/, '').trim();
+
+        // Expected format: "Exercise Name - 3x10: Instruction"
+        // Split by " - " to separate name from sets/instruction
+        const dashParts = exText.split(' - ');
+        if (dashParts.length >= 2) {
+          const name = dashParts[0].trim();
+          const restText = dashParts.slice(1).join(' - ');
+
+          // Split by colon to separate sets from instruction
+          const colonParts = restText.split(':');
+          const sets_reps = colonParts[0]?.trim() || '3x10';
+          const instruction = colonParts.slice(1).join(':').trim() || 'Führe die Übung kontrolliert durch';
+
           phases[currentPhaseIdx].exercises.push({
             name,
-            instruction,
-            sets_reps
+            sets_reps,
+            instruction
           });
-          console.log(`✅ Added exercise to phase ${currentPhaseIdx}:`, name);
+          console.log(`✅ Added exercise to phase ${currentPhaseIdx}:`, name, sets_reps);
         }
       }
     });
