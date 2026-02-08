@@ -381,10 +381,34 @@ export default function PerformanceChat() {
   };
 
   const handleExercisesComplete = async () => {
-    // Direkt Trainingsplan erstellen ohne weitere Chat-Interaktion
-    setIsPlanCreating(true);
-    
+    // Prüfe erst, ob bereits ein aktiver Trainingsplan existiert
     try {
+      const user = await base44.auth.me();
+      const existingPlans = await base44.entities.TrainingPlan.filter({
+        user_email: user.email,
+        status: 'active'
+      });
+
+      // Falls aktiver Plan existiert, frage den User
+      if (existingPlans && existingPlans.length > 0) {
+        const confirmed = window.confirm(
+          'Du hast bereits einen aktiven Trainingsplan.\n\n' +
+          'Möchtest du deinen bestehenden Plan löschen und durch einen neuen ersetzen?\n\n' +
+          '✓ JA - Bestehenden Plan ersetzen\n' +
+          '✗ NEIN - Zurück zum Dashboard (du kannst deinen Plan im Tab TRAINING anpassen)'
+        );
+
+        if (!confirmed) {
+          // User möchte nicht ersetzen - zurück zum Dashboard
+          toast.info('Plan-Erstellung abgebrochen');
+          window.location.href = createPageUrl('Dashboard');
+          return;
+        }
+      }
+
+      // Wenn kein Plan existiert oder User bestätigt hat, erstelle neuen Plan
+      setIsPlanCreating(true);
+      
       // Extract training frequency from conversation
       const conversationText = messages.map(m => m.content).join(' ');
 
@@ -399,10 +423,11 @@ export default function PerformanceChat() {
 
       console.log('📋 Creating training plan with frequency:', frequency, 'Goal:', goalName);
 
-      // Call createTrainingPlan function
+      // Call createTrainingPlan function with replace flag
       const response = await base44.functions.invoke('createTrainingPlan', {
         goal_description: goalName,
-        training_frequency: frequency
+        training_frequency: frequency,
+        replaceExisting: true
       });
 
       console.log('✅ Training plan response:', response);
@@ -485,10 +510,11 @@ export default function PerformanceChat() {
 
             console.log('📋 Creating training plan with frequency:', frequency, 'Goal:', goalName);
 
-            // Call createTrainingPlan function
+            // Call createTrainingPlan function with replace flag
             const response = await base44.functions.invoke('createTrainingPlan', {
               goal_description: goalName,
-              training_frequency: frequency
+              training_frequency: frequency,
+              replaceExisting: true
             });
 
             console.log('✅ Training plan response:', response);
