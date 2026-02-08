@@ -411,9 +411,9 @@ export default function PerformanceChat() {
         console.log('✨ Training plan created successfully:', response.data.plan?.id);
         toast.success('Trainingsplan erfolgreich erstellt! 🎉');
         
-        // Warte kurz für Animation, dann weiterleiten
+        // Warte kurz für Animation, dann weiterleiten zum Performance Tab
         setTimeout(() => {
-          navigate(createPageUrl('TrainingPlan'));
+          window.location.href = createPageUrl('TrainingPlan') + '?tab=performance';
         }, 2000);
       } else {
         toast.error('Fehler beim Erstellen des Plans');

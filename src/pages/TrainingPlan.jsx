@@ -14,6 +14,11 @@ export default function TrainingPlan() {
   const [isLoading, setIsLoading] = useState(true);
   const [expandedPhase, setExpandedPhase] = useState(null);
   const [completedPhases, setCompletedPhases] = useState({});
+  
+  // Get tab from URL parameter
+  const urlParams = new URLSearchParams(window.location.search);
+  const tabParam = urlParams.get('tab');
+  const [activeTab, setActiveTab] = useState(tabParam || 'rehab');
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -110,7 +115,7 @@ export default function TrainingPlan() {
 
       {/* Main Content */}
       <div className="max-w-6xl mx-auto px-4 py-6 space-y-6">
-        <Tabs defaultValue="rehab" className="w-full">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="grid w-full grid-cols-2 mb-6">
             <TabsTrigger value="performance" className="flex items-center gap-2">
               <Target className="w-4 h-4" />
@@ -124,16 +129,54 @@ export default function TrainingPlan() {
 
           {/* Performance Tab */}
           <TabsContent value="performance">
-            {!goals || goals.length === 0 ? (
+            {activePlan ? (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="space-y-6"
+              >
+                {/* Plan Header */}
+                <div className="glass rounded-2xl border border-amber-500/30 p-6 bg-gradient-to-r from-amber-500/10 to-transparent">
+                  <div className="flex items-start justify-between mb-4">
+                    <div>
+                      <h2 className="text-2xl font-bold text-amber-400 mb-1">{activePlan.goal_description}</h2>
+                      <p className="text-slate-400 text-sm">
+                        {activePlan.estimated_duration_weeks} Wochen Plan · Phase {activePlan.current_phase || 1}/{activePlan.phases?.length || 3}
+                      </p>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-xs text-slate-500 mb-1">Gestartet</div>
+                      <div className="text-sm text-slate-300">{new Date(activePlan.plan_generated_date).toLocaleDateString('de-DE')}</div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Phases */}
+                {activePlan.phases?.map((phase, idx) => (
+                  <PhaseCard
+                    key={idx}
+                    phase={phase}
+                    index={idx}
+                    isExpanded={expandedPhase === idx}
+                    onToggle={() => setExpandedPhase(expandedPhase === idx ? null : idx)}
+                    isCompleted={completedPhases[idx]}
+                    onComplete={() => {
+                      setCompletedPhases({ ...completedPhases, [idx]: !completedPhases[idx] });
+                      toast.success(completedPhases[idx] ? 'Als nicht erledigt markiert' : 'Phase abgeschlossen! 🎉');
+                    }}
+                  />
+                ))}
+              </motion.div>
+            ) : (
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 className="glass rounded-2xl border border-cyan-500/30 p-8 text-center"
               >
                 <Target className="w-16 h-16 text-amber-400 mx-auto mb-4 opacity-50" />
-                <h2 className="text-2xl font-bold text-white mb-2">Keine Performance-Ziele vorhanden</h2>
+                <h2 className="text-2xl font-bold text-white mb-2">Kein aktiver Trainingsplan</h2>
                 <p className="text-slate-400 mb-6">
-                  Starte eine Performance Coaching Session, um deine Ziele zu definieren.
+                  Starte eine Performance Coaching Session, um deinen personalisierten Plan zu erstellen.
                 </p>
                 <Button
                   onClick={() => window.location.href = createPageUrl('Dashboard')}
@@ -141,24 +184,6 @@ export default function TrainingPlan() {
                 >
                   Zum Dashboard
                 </Button>
-              </motion.div>
-            ) : (
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="space-y-4"
-              >
-                {goals.map((goal, idx) => (
-                  <GoalCard
-                    key={goal.id}
-                    goal={goal}
-                    index={idx}
-                    onClick={() => {
-                      const encodedGoal = encodeURIComponent(goal.name);
-                      window.location.href = createPageUrl(`PerformanceChat?goal=${encodedGoal}`);
-                    }}
-                  />
-                ))}
               </motion.div>
             )}
           </TabsContent>
