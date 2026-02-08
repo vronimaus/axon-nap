@@ -198,9 +198,11 @@ export default function PerformanceChat() {
       // Detect workflow triggers from last assistant message
       const lastMessage = newMessages[newMessages.length - 1];
       if (lastMessage?.role === 'assistant' && lastMessage.content) {
+        console.log('🔍 Checking last message for triggers:', lastMessage.content.substring(0, 100));
         
         // Check for [SHOW_GOAL_ANALYSIS] trigger
-        if (lastMessage.content.includes('[SHOW_GOAL_ANALYSIS]') && workflowStep === 'analysis') {
+        if (lastMessage.content.includes('[SHOW_GOAL_ANALYSIS]')) {
+          console.log('✅ Found SHOW_GOAL_ANALYSIS trigger');
           const content = lastMessage.content.replace('[SHOW_GOAL_ANALYSIS]', '').trim();
           setGoalAnalysis({
             title: `Ziel: ${goalName}`,
@@ -210,19 +212,28 @@ export default function PerformanceChat() {
           });
         }
         
-        // Check for [SHOW_EXERCISES] trigger
-        if (lastMessage.content.includes('[SHOW_EXERCISES]') && workflowStep === 'analysis') {
+        // Check for [SHOW_EXERCISES] trigger - allow from any workflow step
+        if (lastMessage.content.includes('[SHOW_EXERCISES]')) {
+          console.log('✅ Found SHOW_EXERCISES trigger, parsing...');
           try {
-            const exerciseMatch = lastMessage.content.match(/\[SHOW_EXERCISES\]([\s\S]*)/);
-            if (exerciseMatch) {
-              const exerciseText = exerciseMatch[1].trim();
-              // Parse exercises from structured text
-              const phases = parseExercisesFromText(exerciseText);
-              setExercisePhases(phases);
-              setWorkflowStep('exercises');
-            }
+            const content = lastMessage.content.replace('[SHOW_EXERCISES]', '').trim();
+            // Parse exercises from structured text
+            const phases = parseExercisesFromText(content);
+            console.log('📋 Parsed phases:', phases);
+            setExercisePhases(phases);
+            setWorkflowStep('exercises');
           } catch (e) {
-            console.error('Error parsing exercises:', e);
+            console.error('❌ Error parsing exercises:', e);
+            // Show exercises anyway with fallback
+            setExercisePhases([
+              {
+                type: 'hardware',
+                title: '⚙️ Hardware - Mobilität',
+                duration: '10 Min',
+                exercises: [{ name: 'Übungen werden geladen...', instruction: 'Bitte warten', sets_reps: '' }]
+              }
+            ]);
+            setWorkflowStep('exercises');
           }
         }
       }
@@ -238,6 +249,8 @@ export default function PerformanceChat() {
 
   // Helper function to parse exercises from AI text
   const parseExercisesFromText = (text) => {
+    console.log('📝 Parsing exercise text:', text.substring(0, 200));
+    
     // Simple parser - AI should provide structured format
     const phases = [
       {
@@ -260,24 +273,48 @@ export default function PerformanceChat() {
       }
     ];
 
-    // Extract exercises from text (simplified - could be improved)
+    // Extract exercises from text
     const lines = text.split('\n').filter(l => l.trim());
     let currentPhaseIdx = 0;
     
     lines.forEach(line => {
-      if (line.includes('Hardware') || line.includes('Mobilität')) currentPhaseIdx = 0;
-      else if (line.includes('Software') || line.includes('Neuro')) currentPhaseIdx = 1;
-      else if (line.includes('Integration') || line.includes('Kraft')) currentPhaseIdx = 2;
-      else if (line.match(/^[\d\-\*]\s/)) {
-        const exText = line.replace(/^[\d\-\*]\s+/, '').trim();
-        phases[currentPhaseIdx].exercises.push({
-          name: exText.split(':')[0] || exText,
-          instruction: exText.split(':')[1]?.trim() || 'Führe die Übung kontrolliert durch',
-          sets_reps: '3 x 10'
-        });
+      const trimmed = line.trim();
+      
+      // Detect phase headers
+      if (trimmed.includes('HARDWARE') || trimmed.includes('Hardware') || trimmed.includes('Mobilität')) {
+        currentPhaseIdx = 0;
+        console.log('📍 Detected Hardware phase');
+      } else if (trimmed.includes('SOFTWARE') || trimmed.includes('Software') || trimmed.includes('Neuro')) {
+        currentPhaseIdx = 1;
+        console.log('📍 Detected Software phase');
+      } else if (trimmed.includes('INTEGRATION') || trimmed.includes('Integration') || trimmed.includes('Kraft')) {
+        currentPhaseIdx = 2;
+        console.log('📍 Detected Integration phase');
+      }
+      // Detect exercise lines (starting with number, dash, or asterisk)
+      else if (trimmed.match(/^[\d\-\*\.]\s/)) {
+        const exText = trimmed.replace(/^[\d\-\*\.]+\s*/, '').trim();
+        if (exText) {
+          const parts = exText.split(':');
+          const name = parts[0]?.trim() || exText;
+          const rest = parts.slice(1).join(':').trim();
+          
+          // Try to extract sets/reps
+          const setsMatch = rest.match(/(\d+x\d+|\d+\s*(x|×)\s*\d+|\d+\s+Sek)/i);
+          const sets_reps = setsMatch ? setsMatch[0] : '3x10';
+          const instruction = rest.replace(setsMatch ? setsMatch[0] : '', '').replace(/^[\s\-:]+/, '').trim() || 'Führe die Übung kontrolliert durch';
+          
+          phases[currentPhaseIdx].exercises.push({
+            name,
+            instruction,
+            sets_reps
+          });
+          console.log(`✅ Added exercise to phase ${currentPhaseIdx}:`, name);
+        }
       }
     });
 
+    console.log('✅ Parsed phases with exercises:', phases.map(p => `${p.title}: ${p.exercises.length} exercises`));
     return phases;
   };
 
