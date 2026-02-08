@@ -380,8 +380,17 @@ export default function PerformanceChat() {
     }
   };
 
-  const handleExercisesComplete = () => {
-    setWorkflowStep('chat');
+  const handleExercisesComplete = async () => {
+    // Send message to AI asking if user wants a full plan
+    try {
+      await base44.agents.addMessage(conversation, {
+        role: 'user',
+        content: '[EXERCISES_COMPLETED] Übungen durchgeführt. Frage nun ob vollständiger Trainingsplan erstellt werden soll.'
+      });
+      setWorkflowStep('chat');
+    } catch (error) {
+      console.error('Error requesting plan question:', error);
+    }
   };
 
   const handleDoneClick = () => {
