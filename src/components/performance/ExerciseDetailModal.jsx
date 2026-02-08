@@ -7,8 +7,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 export default function ExerciseDetailModal({ exercise, onClose }) {
   if (!exercise) return null;
 
-  // Check if this is a complementary drill (has category field)
-  const isComplementaryDrill = !!exercise.category;
+  // Check if this is a complementary drill (has frequency and duration fields)
+  const isComplementaryDrill = !!(exercise.frequency && exercise.duration);
 
   return (
     <motion.div
