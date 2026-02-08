@@ -48,62 +48,91 @@ export default function ExerciseDetailModal({ exercise, onClose }) {
 
         {/* Content */}
         <div className="p-6 space-y-6">
-          <Tabs defaultValue="execution" className="w-full">
-            <TabsList className={`grid w-full mb-6 ${isComplementaryDrill ? 'grid-cols-1' : 'grid-cols-4'}`}>
-              <TabsTrigger value="execution" className="text-xs sm:text-sm">
-                <Target className="w-4 h-4 mr-1" />
-                {isComplementaryDrill ? 'Begründung & Anleitung' : 'Ausführung'}
-              </TabsTrigger>
-              {!isComplementaryDrill && (
-                <>
-                  <TabsTrigger value="cues" className="text-xs sm:text-sm">
-                    <Zap className="w-4 h-4 mr-1" />
-                    Cues
-                  </TabsTrigger>
-                  <TabsTrigger value="progression" className="text-xs sm:text-sm">
-                    <TrendingUp className="w-4 h-4 mr-1" />
-                    Progression
-                  </TabsTrigger>
-                  <TabsTrigger value="expert" className="text-xs sm:text-sm">
-                    <Info className="w-4 h-4 mr-1" />
-                    Experten
-                  </TabsTrigger>
-                </>
-              )}
-            </TabsList>
-
-            {/* Execution Tab */}
-            <TabsContent value="execution" className="space-y-4">
+          {isComplementaryDrill ? (
+            /* Simplified view for complementary drills */
+            <div className="space-y-4">
+              {/* Rationale */}
               <div className="glass rounded-xl p-5 border border-cyan-500/20">
                 <h3 className="font-semibold text-cyan-400 mb-3 flex items-center gap-2">
-                  <Target className="w-5 h-5" />
-                  {isComplementaryDrill ? 'Begründung & Anleitung' : 'Schritt-für-Schritt Anleitung'}
+                  <Info className="w-5 h-5" />
+                  Warum diese Übung?
                 </h3>
-                <div className="space-y-3 text-slate-300 leading-relaxed">
-                  {(exercise.instruction || exercise.rationale)?.split('\n').map((step, idx) => (
-                    <div key={idx} className="flex gap-3">
-                      <div className="flex-shrink-0 w-6 h-6 rounded-full bg-cyan-500/20 border border-cyan-500/30 flex items-center justify-center text-xs text-cyan-400 font-semibold">
-                        {idx + 1}
-                      </div>
-                      <p>{step}</p>
-                    </div>
-                  ))}
-                </div>
+                <p className="text-slate-300 leading-relaxed">{exercise.rationale}</p>
               </div>
 
-              {(exercise.notes || (isComplementaryDrill && exercise.rationale)) && (
-                <div className="glass rounded-xl p-5 border border-amber-500/20 bg-amber-500/5">
-                  <h3 className="font-semibold text-amber-400 mb-2 flex items-center gap-2">
-                    <AlertTriangle className="w-5 h-5" />
-                    Wichtige Hinweise
+              {/* Instruction if available */}
+              {exercise.instruction && (
+                <div className="glass rounded-xl p-5 border border-purple-500/20">
+                  <h3 className="font-semibold text-purple-400 mb-3 flex items-center gap-2">
+                    <Target className="w-5 h-5" />
+                    Ausführung
                   </h3>
-                  <p className="text-slate-300 leading-relaxed">{exercise.notes || exercise.rationale}</p>
+                  <div className="space-y-3 text-slate-300 leading-relaxed">
+                    {exercise.instruction.split('\n').map((step, idx) => (
+                      <div key={idx} className="flex gap-3">
+                        <div className="flex-shrink-0 w-6 h-6 rounded-full bg-purple-500/20 border border-purple-500/30 flex items-center justify-center text-xs text-purple-400 font-semibold">
+                          {idx + 1}
+                        </div>
+                        <p>{step}</p>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               )}
-            </TabsContent>
+            </div>
+          ) : (
+            /* Full tabbed view for regular exercises */
+            <Tabs defaultValue="execution" className="w-full">
+              <TabsList className="grid w-full grid-cols-4 mb-6">
+                <TabsTrigger value="execution" className="text-xs sm:text-sm">
+                  <Target className="w-4 h-4 mr-1" />
+                  Ausführung
+                </TabsTrigger>
+                <TabsTrigger value="cues" className="text-xs sm:text-sm">
+                  <Zap className="w-4 h-4 mr-1" />
+                  Cues
+                </TabsTrigger>
+                <TabsTrigger value="progression" className="text-xs sm:text-sm">
+                  <TrendingUp className="w-4 h-4 mr-1" />
+                  Progression
+                </TabsTrigger>
+                <TabsTrigger value="expert" className="text-xs sm:text-sm">
+                  <Info className="w-4 h-4 mr-1" />
+                  Experten
+                </TabsTrigger>
+              </TabsList>
 
-            {/* Cues Tab - Only for normal exercises */}
-            {!isComplementaryDrill && (
+              {/* Execution Tab */}
+              <TabsContent value="execution" className="space-y-4">
+                <div className="glass rounded-xl p-5 border border-cyan-500/20">
+                  <h3 className="font-semibold text-cyan-400 mb-3 flex items-center gap-2">
+                    <Target className="w-5 h-5" />
+                    Schritt-für-Schritt Anleitung
+                  </h3>
+                  <div className="space-y-3 text-slate-300 leading-relaxed">
+                    {exercise.instruction?.split('\n').map((step, idx) => (
+                      <div key={idx} className="flex gap-3">
+                        <div className="flex-shrink-0 w-6 h-6 rounded-full bg-cyan-500/20 border border-cyan-500/30 flex items-center justify-center text-xs text-cyan-400 font-semibold">
+                          {idx + 1}
+                        </div>
+                        <p>{step}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {exercise.notes && (
+                  <div className="glass rounded-xl p-5 border border-amber-500/20 bg-amber-500/5">
+                    <h3 className="font-semibold text-amber-400 mb-2 flex items-center gap-2">
+                      <AlertTriangle className="w-5 h-5" />
+                      Wichtige Hinweise
+                    </h3>
+                    <p className="text-slate-300 leading-relaxed">{exercise.notes}</p>
+                  </div>
+                )}
+              </TabsContent>
+
+              {/* Cues Tab */}
               <TabsContent value="cues" className="space-y-4">
                 <div className="glass rounded-xl p-5 border border-purple-500/20">
                   <h3 className="font-semibold text-purple-400 mb-3 flex items-center gap-2">
@@ -141,10 +170,8 @@ export default function ExerciseDetailModal({ exercise, onClose }) {
                   </div>
                 )}
               </TabsContent>
-            )}
 
-            {/* Progression Tab - Only for normal exercises */}
-            {!isComplementaryDrill && (
+              {/* Progression Tab */}
               <TabsContent value="progression" className="space-y-4">
                 <div className="glass rounded-xl p-5 border border-green-500/20">
                   <h3 className="font-semibold text-green-400 mb-3 flex items-center gap-2">
@@ -181,10 +208,8 @@ export default function ExerciseDetailModal({ exercise, onClose }) {
                   </div>
                 )}
               </TabsContent>
-            )}
 
-            {/* Expert Tab - Only for normal exercises */}
-            {!isComplementaryDrill && (
+              {/* Expert Tab */}
               <TabsContent value="expert" className="space-y-4">
                 {exercise.expert_insight && (
                   <div className="glass rounded-xl p-5 border border-amber-500/20">
@@ -214,8 +239,8 @@ export default function ExerciseDetailModal({ exercise, onClose }) {
                   </div>
                 )}
               </TabsContent>
-            )}
-          </Tabs>
+            </Tabs>
+          )}
         </div>
 
         {/* Footer */}

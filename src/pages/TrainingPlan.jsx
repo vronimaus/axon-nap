@@ -128,6 +128,13 @@ export default function TrainingPlan() {
     return <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950" />;
   }
 
+  const categoryLabels = {
+    'mobility': 'Mobilität',
+    'neuro_drill': 'Neuro-Drill',
+    'fascial_release': 'Faszien-Release',
+    'corrective': 'Korrektur'
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 pb-20 md:pb-6">
       {/* Header */}
@@ -197,8 +204,8 @@ export default function TrainingPlan() {
                           {activePlan.suggested_complementary_drills.map((drill, idx) => (
                             <div key={idx} className="bg-slate-800/50 rounded-lg p-3">
                               <div className="flex items-start gap-2">
-                                <div className="w-6 h-6 rounded-lg bg-cyan-500/20 flex items-center justify-center flex-shrink-0 mt-0.5 text-xs text-cyan-400">
-                                  {idx + 1}
+                                <div className="w-6 h-6 rounded-lg bg-cyan-500/20 flex items-center justify-center flex-shrink-0 mt-0.5 text-xs text-cyan-400 font-semibold">
+                                  {categoryLabels[drill.category]?.charAt(0) || idx + 1}
                                 </div>
                                 <div className="flex-1">
                                   <button onClick={() => setSelectedExercise(drill)} className="text-left w-full">
@@ -281,10 +288,10 @@ export default function TrainingPlan() {
                         >
                           <div className="flex items-start gap-3">
                             <div className="w-8 h-8 rounded-lg bg-cyan-500/20 flex items-center justify-center flex-shrink-0 text-xs text-cyan-400 font-semibold">
-                              {idx + 1}
+                              {categoryLabels[drill.category]?.charAt(0) || (idx + 1)}
                             </div>
                             <div className="flex-1">
-                              <h4 className="font-semibold text-slate-200 group-hover:text-cyan-400 transition-colors">{drill.name}</h4>
+                              <h4 className="font-semibold text-slate-200">{drill.name}</h4>
                               <p className="text-sm text-slate-400 mt-1">{drill.rationale}</p>
                               {drill.frequency && (
                                 <div className="flex items-center gap-4 mt-2 text-xs">
@@ -442,7 +449,9 @@ function RoutineCard({ routine, index }) {
         className="w-full p-4 flex items-center justify-between hover:bg-white/5 transition-colors"
       >
         <div className="flex items-center gap-4 text-left">
-          <div className="text-2xl">{routine.icon || 'R'}</div>
+          <div className="w-8 h-8 rounded-lg bg-purple-500/20 flex items-center justify-center text-purple-400 font-semibold text-sm">
+            R
+          </div>
           <div>
             <h3 className="font-semibold text-purple-400">{routine.routine_name}</h3>
             <p className="text-sm text-slate-400">{routine.total_duration} Min · {routine.sequence?.length || 0} Übungen</p>
