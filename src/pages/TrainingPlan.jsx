@@ -255,6 +255,49 @@ export default function TrainingPlan() {
                   </div>
                 </div>
 
+                {/* Accepted Complementary Drills */}
+                {activePlan.complementary_drills_accepted && activePlan.suggested_complementary_drills?.length > 0 && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="glass rounded-xl border border-cyan-500/30 bg-gradient-to-r from-cyan-500/10 to-transparent p-6"
+                  >
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="w-10 h-10 rounded-xl bg-cyan-500/20 flex items-center justify-center">
+                        <Sparkles className="w-5 h-5 text-cyan-400" />
+                      </div>
+                      <div>
+                        <h3 className="text-lg font-bold text-cyan-400">Ergänzende Übungen für Longevity</h3>
+                        <p className="text-xs text-slate-400">Zusätzlich zu deinen Hauptphasen</p>
+                      </div>
+                    </div>
+                    <div className="space-y-3">
+                      {activePlan.suggested_complementary_drills.map((drill, idx) => (
+                        <div key={idx} className="bg-slate-800/30 rounded-lg p-4 border border-slate-700/50">
+                          <div className="flex items-start gap-3">
+                            <div className="w-8 h-8 rounded-lg bg-cyan-500/20 flex items-center justify-center flex-shrink-0 text-xl">
+                              {drill.category === 'mobility' && '🤸'}
+                              {drill.category === 'neuro_drill' && '🧠'}
+                              {drill.category === 'fascial_release' && '⚙️'}
+                              {drill.category === 'corrective' && '🎯'}
+                            </div>
+                            <div className="flex-1">
+                              <h4 className="font-semibold text-slate-200">{drill.name}</h4>
+                              <p className="text-sm text-slate-400 mt-1">{drill.rationale}</p>
+                              {drill.frequency && (
+                                <div className="flex items-center gap-4 mt-2 text-xs">
+                                  <span className="text-cyan-400">📅 {drill.frequency}</span>
+                                  <span className="text-slate-500">⏱️ {drill.duration}</span>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </motion.div>
+                )}
+
                 {/* Phases */}
                 {activePlan.phases?.map((phase, idx) => (
                   <PhaseCard
@@ -271,6 +314,40 @@ export default function TrainingPlan() {
                     onExerciseClick={(exercise) => setSelectedExercise(exercise)}
                   />
                 ))}
+
+                {/* Chat with Coach Section */}
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="glass rounded-xl border border-purple-500/30 bg-gradient-to-r from-purple-500/10 to-transparent p-6"
+                >
+                  <div className="flex items-start gap-4">
+                    <div className="w-12 h-12 rounded-xl bg-purple-500/20 flex items-center justify-center flex-shrink-0">
+                      <Target className="w-6 h-6 text-purple-400" />
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="text-lg font-bold text-purple-400 mb-2">Fragen zu deinem Plan?</h3>
+                      <p className="text-sm text-slate-400 mb-4">
+                        Dein Performance Coach kann dir weitere Fragen beantworten, den Plan anpassen oder zusätzliche Übungen erklären.
+                      </p>
+                      <Button
+                        onClick={() => {
+                          // Store plan context for the chat
+                          sessionStorage.setItem('training_plan_context', JSON.stringify({
+                            plan_id: activePlan.id,
+                            goal: activePlan.goal_description,
+                            current_phase: activePlan.current_phase,
+                            has_complementary_drills: activePlan.complementary_drills_accepted
+                          }));
+                          window.location.href = createPageUrl('PerformanceChat') + '?mode=plan_discussion';
+                        }}
+                        className="bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700"
+                      >
+                        💬 Mit Coach chatten
+                      </Button>
+                    </div>
+                  </div>
+                </motion.div>
               </motion.div>
             ) : (
               <motion.div
