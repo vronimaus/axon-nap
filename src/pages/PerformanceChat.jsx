@@ -381,15 +381,48 @@ export default function PerformanceChat() {
   };
 
   const handleExercisesComplete = async () => {
-    // Send message to AI asking if user wants a full plan
+    // Direkt Trainingsplan erstellen ohne weitere Chat-Interaktion
+    setIsPlanCreating(true);
+    
     try {
-      await base44.agents.addMessage(conversation, {
-        role: 'user',
-        content: '[EXERCISES_COMPLETED] Übungen durchgeführt. Frage nun ob vollständiger Trainingsplan erstellt werden soll.'
+      // Extract training frequency from conversation
+      const conversationText = messages.map(m => m.content).join(' ');
+
+      let frequency = '2_3_times_week'; // default
+      if (conversationText.toLowerCase().includes('4-5') || conversationText.toLowerCase().includes('4 bis 5')) {
+        frequency = '4_5_times_week';
+      } else if (conversationText.toLowerCase().includes('täglich') || conversationText.toLowerCase().includes('jeden tag')) {
+        frequency = 'daily';
+      } else if (conversationText.toLowerCase().includes('2') && (conversationText.toLowerCase().includes('2 mal') || conversationText.toLowerCase().includes('2x'))) {
+        frequency = '2_3_times_week';
+      }
+
+      console.log('📋 Creating training plan with frequency:', frequency, 'Goal:', goalName);
+
+      // Call createTrainingPlan function
+      const response = await base44.functions.invoke('createTrainingPlan', {
+        goal_description: goalName,
+        training_frequency: frequency
       });
-      setWorkflowStep('chat');
+
+      console.log('✅ Training plan response:', response);
+
+      if (response.data?.success) {
+        console.log('✨ Training plan created successfully:', response.data.plan?.id);
+        toast.success('Trainingsplan erfolgreich erstellt! 🎉');
+        
+        // Warte kurz für Animation, dann weiterleiten
+        setTimeout(() => {
+          navigate(createPageUrl('TrainingPlan'));
+        }, 2000);
+      } else {
+        toast.error('Fehler beim Erstellen des Plans');
+        setIsPlanCreating(false);
+      }
     } catch (error) {
-      console.error('Error requesting plan question:', error);
+      console.error('❌ Error creating training plan:', error);
+      toast.error('Fehler beim Erstellen des Trainingsplans');
+      setIsPlanCreating(false);
     }
   };
 
@@ -519,7 +552,7 @@ export default function PerformanceChat() {
               )}
 
               {/* Step 2: Exercise Action Cards */}
-              {workflowStep === 'exercises' && exercisePhases && (
+              {workflowStep === 'exercises' && exercisePhases && !isPlanCreating && (
                 <ExerciseActionCard
                   phases={exercisePhases}
                   onComplete={handleExercisesComplete}
@@ -533,6 +566,59 @@ export default function PerformanceChat() {
               ✓ Dein Plan kann jederzeit an deine Bedürfnisse angepasst werden
               ✓ Du findest ihn nach der Erstellung im Tab TRAINING und kannst ihn jederzeit abrufen.`}
                 />
+              )}
+
+              {/* Loading Animation während Plan-Erstellung */}
+              {isPlanCreating && (
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  className="flex flex-col items-center justify-center py-12 space-y-6"
+                >
+                  <div className="relative">
+                    <motion.div
+                      animate={{ rotate: 360 }}
+                      transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+                      className="w-24 h-24 rounded-full border-4 border-amber-500/20 border-t-amber-500"
+                    />
+                    <motion.div
+                      animate={{ scale: [1, 1.2, 1] }}
+                      transition={{ duration: 1.5, repeat: Infinity }}
+                      className="absolute inset-0 flex items-center justify-center"
+                    >
+                      <Target className="w-12 h-12 text-amber-400" />
+                    </motion.div>
+                  </div>
+
+                  <div className="text-center space-y-2">
+                    <h3 className="text-xl font-bold text-amber-400">
+                      Dein Trainingsplan wird erstellt...
+                    </h3>
+                    <p className="text-slate-400 text-sm">
+                      Wir generieren deinen personalisierten Plan mit allen Details
+                    </p>
+                  </div>
+
+                  <div className="glass rounded-xl p-6 max-w-md space-y-3">
+                    {[
+                      { icon: '⚙️', text: 'Hardware-Übungen werden angepasst', delay: 0 },
+                      { icon: '🧠', text: 'Software-Drills werden integriert', delay: 0.5 },
+                      { icon: '💪', text: 'Kraft-Progressionen werden geplant', delay: 1 },
+                      { icon: '📊', text: 'Experten-Insights werden hinzugefügt', delay: 1.5 }
+                    ].map((item, idx) => (
+                      <motion.div
+                        key={idx}
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: item.delay }}
+                        className="flex items-center gap-3 text-slate-300"
+                      >
+                        <span className="text-2xl">{item.icon}</span>
+                        <span className="text-sm">{item.text}</span>
+                      </motion.div>
+                    ))}
+                  </div>
+                </motion.div>
               )}
 
               {/* Step 3: Simplified Chat for Follow-up */}
