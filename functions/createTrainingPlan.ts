@@ -1,5 +1,112 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
 
+// Helper function to generate intelligent complementary drill suggestions
+async function generateComplementaryDrills(user, goal_description, base44) {
+    try {
+        // Fetch UserNeuroProfile to understand complaints and needs
+        const neuroProfiles = await base44.asServiceRole.entities.UserNeuroProfile.filter({
+            user_email: user.email
+        });
+        
+        const neuroProfile = neuroProfiles?.[0] || {};
+        const complaintHistory = neuroProfile?.complaint_history || [];
+        const activityLevel = neuroProfile?.activity_level || 'lightly_active';
+        
+        // Fetch FascialChains data
+        const fascialChains = await base44.asServiceRole.entities.FascialChain.list();
+        
+        // Analyze goal to determine relevant body regions and chains
+        const goalLower = goal_description.toLowerCase();
+        
+        const drills = [];
+        
+        // 1. Mobility drill based on goal
+        if (goalLower.includes('pull') || goalLower.includes('klimmz')) {
+            drills.push({
+                exercise_id: 'shoulder_mobility_flow',
+                name: 'Schulter-Mobility Flow',
+                category: 'mobility',
+                rationale: 'Verbessert die Schultermobilität und Rotation der Thoracic Spine - entscheidend für Pull-up Progression und langfristige Schultergesundheit.',
+                frequency: 'täglich oder vor jeder Trainingseinheit',
+                duration: '5-8 Min'
+            });
+        } else if (goalLower.includes('squat') || goalLower.includes('pistol')) {
+            drills.push({
+                exercise_id: 'hip_ankle_mobility',
+                name: 'Hüft- und Sprunggelenk-Mobilisation',
+                category: 'mobility',
+                rationale: 'Öffnet die Hüftflexion und verbessert die Sprunggelenk-Dorsalflexion - kritisch für tiefe Squats und Knie-Longevity.',
+                frequency: 'täglich oder vor jeder Trainingseinheit',
+                duration: '5-8 Min'
+            });
+        } else if (goalLower.includes('handstand') || goalLower.includes('push')) {
+            drills.push({
+                exercise_id: 'wrist_shoulder_prep',
+                name: 'Handgelenk- und Schulter-Preparation',
+                category: 'mobility',
+                rationale: 'Bereitet Handgelenke und Schultern auf Gewichtsbelastung vor und fördert gesunde Handgelenk-Alignment - essentiell für Handstand und Push-Bewegungen.',
+                frequency: 'vor jeder Trainingseinheit',
+                duration: '5-10 Min'
+            });
+        }
+        
+        // 2. Fascial chain drill if complaints present
+        if (complaintHistory.length > 0) {
+            const recentComplaint = complaintHistory[0];
+            const location = recentComplaint.location?.toLowerCase() || '';
+            
+            if (location.includes('nacken') || location.includes('schulter')) {
+                drills.push({
+                    exercise_id: 'sbl_release_drill',
+                    name: 'Superficial Back Line Release',
+                    category: 'fascial_release',
+                    rationale: `Adressiert Spannungen in der hinteren Faszienkette (SBL), die mit deinen Nacken/Schulter-Beschwerden zusammenhängen. Fördert langfristige Bewegungsfreiheit.`,
+                    frequency: '2-3x pro Woche',
+                    duration: '8-10 Min'
+                });
+            } else if (location.includes('rücken') || location.includes('hüfte')) {
+                drills.push({
+                    exercise_id: 'dfl_activation',
+                    name: 'Deep Front Line Activation',
+                    category: 'corrective',
+                    rationale: `Stärkt die tiefen anterioren Stabilisatoren, die bei Rücken/Hüft-Problemen oft geschwächt sind. Präventiv für Longevity.`,
+                    frequency: '3x pro Woche',
+                    duration: '6-8 Min'
+                });
+            }
+        }
+        
+        // 3. Neuro drill for athletic performance
+        if (activityLevel === 'very_active' || activityLevel === 'athlete') {
+            drills.push({
+                exercise_id: 'vestibular_drill',
+                name: 'Vestibulärer Balance-Drill',
+                category: 'neuro_drill',
+                rationale: 'Verbessert das Gleichgewichtssystem und die neuromuskuläre Kontrolle - fundamental für athletische Performance und Sturzprävention (Longevity).',
+                frequency: '2-3x pro Woche',
+                duration: '5 Min'
+            });
+        } else {
+            drills.push({
+                exercise_id: 'breathing_reset',
+                name: 'Diaphragmatischer Atem-Reset',
+                category: 'neuro_drill',
+                rationale: 'Aktiviert das parasympathische Nervensystem und verbessert Core-Stabilität durch optimale Atemfunktion - essentiell für Erholung und Longevity.',
+                frequency: 'täglich',
+                duration: '3-5 Min'
+            });
+        }
+        
+        // Limit to 3 drills maximum
+        return drills.slice(0, 3);
+        
+    } catch (error) {
+        console.error('Error generating complementary drills:', error);
+        // Return empty array on error - complementary drills are optional
+        return [];
+    }
+}
+
 Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
