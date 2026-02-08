@@ -193,6 +193,26 @@ export default function Dashboard() {
               AXON deckt den kompletten Lebenszyklus ab: Probleme lösen → Ziele erreichen → System pflegen
             </p>
           </motion.div>
+
+          {/* Admin-Tool Link */}
+          {user?.role === 'admin' && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.4 }}
+              className="mt-4"
+            >
+              <button
+                onClick={() => window.location.href = createPageUrl('AdminDiagnostics')}
+                className="w-full glass rounded-xl border border-cyan-500/30 p-4 hover:border-cyan-500/60 transition-all group"
+              >
+                <div className="flex items-center justify-center gap-2 text-cyan-400">
+                  <Activity className="w-4 h-4" />
+                  <span className="text-sm font-semibold">Coach Diagnose-Tool</span>
+                </div>
+              </button>
+            </motion.div>
+          )}
         </motion.div>
       </div>
     );
