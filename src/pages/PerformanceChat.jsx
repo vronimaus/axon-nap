@@ -10,6 +10,8 @@ import { toast } from 'sonner';
 import SessionFeedbackForm from '../components/performance/SessionFeedbackForm';
 import PerformanceGoalCard from '../components/performance/PerformanceGoalCard';
 import ExerciseActionCard from '../components/performance/ExerciseActionCard';
+import ReplacePlanModal from '../components/performance/ReplacePlanModal';
+import BaselineCheckModal from '../components/performance/BaselineCheckModal';
 
 export default function PerformanceChat() {
   const navigate = useNavigate();
@@ -24,6 +26,9 @@ export default function PerformanceChat() {
   const [workflowStep, setWorkflowStep] = useState('analysis'); // 'analysis' | 'exercises' | 'chat'
   const [goalAnalysis, setGoalAnalysis] = useState(null);
   const [exercisePhases, setExercisePhases] = useState(null);
+  const [showReplacePlanModal, setShowReplacePlanModal] = useState(false);
+  const [showBaselineCheckModal, setShowBaselineCheckModal] = useState(false);
+  const [existingActivePlan, setExistingActivePlan] = useState(null);
   const messagesEndRef = useRef(null);
 
   useEffect(() => {
@@ -389,26 +394,37 @@ export default function PerformanceChat() {
         status: 'active'
       });
 
-      // Falls aktiver Plan existiert, frage den User
+      // Falls aktiver Plan existiert, zeige Modal
       if (existingPlans && existingPlans.length > 0) {
-        const confirmed = window.confirm(
-          'Du hast bereits einen aktiven Trainingsplan.\n\n' +
-          'Möchtest du deinen bestehenden Plan löschen und durch einen neuen ersetzen?\n\n' +
-          '✓ JA - Bestehenden Plan ersetzen\n' +
-          '✗ NEIN - Zurück zum Dashboard (du kannst deinen Plan im Tab TRAINING anpassen)'
-        );
-
-        if (!confirmed) {
-          // User möchte nicht ersetzen - zurück zum Dashboard
-          toast.info('Plan-Erstellung abgebrochen');
-          window.location.href = createPageUrl('Dashboard');
-          return;
-        }
+        setExistingActivePlan(existingPlans[0]);
+        setShowReplacePlanModal(true);
+        return;
       }
 
-      // Wenn kein Plan existiert oder User bestätigt hat, erstelle neuen Plan
-      setIsPlanCreating(true);
-      
+      // Kein bestehender Plan - direkt zum Baseline-Check
+      setShowBaselineCheckModal(true);
+    } catch (error) {
+      console.error('❌ Error checking for existing plans:', error);
+      toast.error('Fehler beim Überprüfen bestehender Pläne');
+    }
+  };
+
+  const handleReplacePlanConfirm = () => {
+    setShowReplacePlanModal(false);
+    setShowBaselineCheckModal(true);
+  };
+
+  const handleReplacePlanCancel = () => {
+    setShowReplacePlanModal(false);
+    toast.info('Plan-Erstellung abgebrochen');
+    window.location.href = createPageUrl('Dashboard');
+  };
+
+  const handleBaselineCheckComplete = async () => {
+    setShowBaselineCheckModal(false);
+    setIsPlanCreating(true);
+    
+    try {
       // Extract training frequency from conversation
       const conversationText = messages.map(m => m.content).join(' ');
 
@@ -695,6 +711,31 @@ export default function PerformanceChat() {
             goalName={goalName}
             onClose={() => setShowFeedbackForm(false)}
             onSaved={handleFeedbackSaved}
+          />
+        )}
+      </AnimatePresence>
+
+      {/* Replace Plan Modal */}
+      <AnimatePresence>
+        {showReplacePlanModal && existingActivePlan && (
+          <ReplacePlanModal
+            existingPlan={existingActivePlan}
+            onConfirm={handleReplacePlanConfirm}
+            onCancel={handleReplacePlanCancel}
+          />
+        )}
+      </AnimatePresence>
+
+      {/* Baseline Check Modal */}
+      <AnimatePresence>
+        {showBaselineCheckModal && (
+          <BaselineCheckModal
+            goalName={goalName}
+            onComplete={handleBaselineCheckComplete}
+            onCancel={() => {
+              setShowBaselineCheckModal(false);
+              toast.info('Plan-Erstellung abgebrochen');
+            }}
           />
         )}
       </AnimatePresence>
