@@ -1,14 +1,13 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
-import { ChevronDown, Wrench, Brain, Dumbbell, Info } from 'lucide-react';
+import { ChevronDown, Wrench, Brain, Dumbbell } from 'lucide-react';
 
 export default function ExerciseActionCard({ 
   phases,
   onComplete
 }) {
   const [expandedPhase, setExpandedPhase] = useState(null);
-  const [expandedInfo, setExpandedInfo] = useState(null);
 
   const phaseIcons = {
     hardware: Wrench,
@@ -71,54 +70,15 @@ export default function ExerciseActionCard({
                   className="border-t border-slate-700/50"
                 >
                   <div className="p-4 space-y-3">
-                    {phase.exercises?.map((ex, exIdx) => {
-                      const infoKey = `${idx}-${exIdx}`;
-                      const showInfo = expandedInfo === infoKey;
-                      
-                      return (
-                        <div key={exIdx} className="bg-white/5 rounded-lg p-4">
-                          <div className="flex items-start justify-between gap-2">
-                            <div className="flex-1">
-                              <p className="font-semibold text-slate-100 text-base">{ex.name}</p>
-                              {ex.sets_reps && (
-                                <p className="text-sm text-amber-400 font-medium mt-1">{ex.sets_reps}</p>
-                              )}
-                            </div>
-                            <button
-                              onClick={() => setExpandedInfo(showInfo ? null : infoKey)}
-                              className="flex-shrink-0 w-8 h-8 rounded-full bg-slate-700/50 hover:bg-slate-600/50 flex items-center justify-center transition-colors"
-                              title="Mehr Infos"
-                            >
-                              <Info className="w-4 h-4 text-slate-400" />
-                            </button>
-                          </div>
-                          
-                          <div className="mt-3 space-y-2">
-                            <div className="text-sm text-slate-300 leading-relaxed">
-                              {ex.instruction}
-                            </div>
-                            
-                            <AnimatePresence>
-                              {showInfo && (
-                                <motion.div
-                                  initial={{ height: 0, opacity: 0 }}
-                                  animate={{ height: 'auto', opacity: 1 }}
-                                  exit={{ height: 0, opacity: 0 }}
-                                  className="overflow-hidden"
-                                >
-                                  <div className="mt-3 p-3 bg-slate-800/80 rounded-lg border border-slate-700">
-                                    <p className="text-xs font-semibold text-amber-400 mb-2">💡 Hintergrund</p>
-                                    <p className="text-xs text-slate-400 leading-relaxed">
-                                      {getExerciseBackground(ex.name, phase.type)}
-                                    </p>
-                                  </div>
-                                </motion.div>
-                              )}
-                            </AnimatePresence>
-                          </div>
-                        </div>
-                      );
-                    })}
+                    {phase.exercises?.map((ex, exIdx) => (
+                      <div key={exIdx} className="bg-white/5 rounded-lg p-3">
+                        <p className="font-medium text-slate-200">{ex.name}</p>
+                        {ex.sets_reps && (
+                          <p className="text-xs text-slate-400 mt-1">{ex.sets_reps}</p>
+                        )}
+                        <p className="text-sm text-slate-400 mt-2">{ex.instruction}</p>
+                      </div>
+                    ))}
                   </div>
                 </motion.div>
               )}
@@ -137,48 +97,4 @@ export default function ExerciseActionCard({
       )}
     </motion.div>
   );
-}
-
-// Helper function to generate contextual background info
-function getExerciseBackground(exerciseName, phaseType) {
-  const name = exerciseName.toLowerCase();
-  
-  // Hardware (Mobilität) backgrounds
-  if (phaseType === 'hardware') {
-    if (name.includes('schulter')) {
-      return 'Die Schulter ist das mobilste Gelenk des Körpers. Nach Luigi Stecco (Faszien-Experte) müssen wir die faszialen Ketten um die Schulter lösen, um volle Beweglichkeit zu erreichen. Diese Übung adressiert die myofaszialen Verbindungen.';
-    }
-    if (name.includes('thorax') || name.includes('brust')) {
-      return 'Der Thorax (Brustkorb) ist zentral für Atmung und Schulterfunktion. Gray Cook (FMS-Entwickler) betont: "Stabilität vor Mobilität" - aber hier brauchen wir Mobilität als Basis für spätere Integration.';
-    }
-    if (name.includes('lat') || name.includes('rücken')) {
-      return 'Der Latissimus ist die größte Rückenfläche. Pavel Tsatsouline (Kettlebell-Ikone) sagt: "Lat-Spannung ist Ganzkörper-Spannung." Wir dehnen ihn hier, um später maximale Kraft zu entwickeln.';
-    }
-  }
-  
-  // Software (Neuro) backgrounds
-  if (phaseType === 'software') {
-    if (name.includes('schulterblatt') || name.includes('scapula')) {
-      return 'Das Schulterblatt muss sich frei auf dem Brustkorb bewegen können. McGill (Wirbelsäulen-Forscher) zeigt: Schulterstabilität = Wirbelsäulenschutz. Wir aktivieren hier die neuronale Kontrolle.';
-    }
-    if (name.includes('lat')) {
-      return 'Lat-Aktivierung ist neurologisch zentral. Dan John (Strength Coach) lehrt: "Der Lat verbindet Hüfte mit Schulter." Ohne bewusste Aktivierung bleibt Kraft ungenutzt.';
-    }
-  }
-  
-  // Integration (Kraft) backgrounds
-  if (phaseType === 'integration') {
-    if (name.includes('negativ') || name.includes('absenken')) {
-      return 'Negative (exzentrische) Wiederholungen bauen 1.5x mehr Kraft auf als konzentrische. Vern Gambetta (Athletic Development) nennt sie "die Geheimwaffe für Sportler."';
-    }
-    if (name.includes('australian')) {
-      return 'Horizontales Ziehen baut Rücken-Fundament auf. Pavel empfiehlt: "Meistere die Reihe, bevor du den Klimmzug versuchst." Diese Variation ist perfekt für progressive Überlastung.';
-    }
-    if (name.includes('scapula')) {
-      return 'Scapula Pull-ups isolieren die Schultergürtel-Retraktion - das ist die Basis aller Zugbewegungen. Gray Cook: "Corrective before Performance" - diese Übung ist beides.';
-    }
-  }
-  
-  // Fallback
-  return 'Diese Übung ist wissenschaftlich fundiert und baut systematisch die Grundlage für dein athletisches Ziel auf. Jede Wiederholung zählt - Qualität vor Quantität.';
 }
