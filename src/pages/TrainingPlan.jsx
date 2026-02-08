@@ -5,11 +5,12 @@ import { createPageUrl } from '@/utils';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { ArrowLeft, Zap, Target, CheckCircle2, Clock, AlertCircle, Activity, Info, TrendingUp, Sparkles, Loader2 } from 'lucide-react';
+import { ArrowLeft, Zap, Target, CheckCircle2, Clock, AlertCircle, Activity, Info, TrendingUp, Sparkles, Loader2, MessageSquareText } from 'lucide-react';
 import { toast } from 'sonner';
 import { useQueryClient } from '@tanstack/react-query';
 import GoalCard from '../components/performance/GoalCard';
 import ExerciseDetailModal from '../components/performance/ExerciseDetailModal';
+import TrainingPlanChat from '../components/performance/TrainingPlanChat';
 
 export default function TrainingPlan() {
   const [user, setUser] = useState(null);
@@ -19,6 +20,7 @@ export default function TrainingPlan() {
   const [selectedExercise, setSelectedExercise] = useState(null);
   const [showComplementaryDrills, setShowComplementaryDrills] = useState(true);
   const [isAcceptingDrills, setIsAcceptingDrills] = useState(false);
+  const [showChat, setShowChat] = useState(false);
   
   const queryClient = useQueryClient();
   
@@ -202,13 +204,15 @@ export default function TrainingPlan() {
                                   {drill.category === 'corrective' && '🎯'}
                                 </div>
                                 <div className="flex-1">
-                                  <p className="font-medium text-slate-200">{drill.name}</p>
-                                  <p className="text-xs text-slate-400 mt-1">{drill.rationale}</p>
-                                  {drill.frequency && (
-                                    <p className="text-xs text-cyan-400 mt-1">
-                                      Empfohlen: {drill.frequency} • {drill.duration}
-                                    </p>
-                                  )}
+                                  <button onClick={() => setSelectedExercise(drill)} className="text-left w-full">
+                                    <p className="font-medium text-slate-200 hover:text-cyan-400 transition-colors">{drill.name}</p>
+                                    <p className="text-xs text-slate-400 mt-1">{drill.rationale}</p>
+                                    {drill.frequency && (
+                                      <p className="text-xs text-cyan-400 mt-1">
+                                        Empfohlen: {drill.frequency} • {drill.duration}
+                                      </p>
+                                    )}
+                                  </button>
                                 </div>
                               </div>
                             </div>
@@ -282,14 +286,16 @@ export default function TrainingPlan() {
                               {drill.category === 'corrective' && '🎯'}
                             </div>
                             <div className="flex-1">
-                              <h4 className="font-semibold text-slate-200">{drill.name}</h4>
-                              <p className="text-sm text-slate-400 mt-1">{drill.rationale}</p>
-                              {drill.frequency && (
-                                <div className="flex items-center gap-4 mt-2 text-xs">
-                                  <span className="text-cyan-400">📅 {drill.frequency}</span>
-                                  <span className="text-slate-500">⏱️ {drill.duration}</span>
-                                </div>
-                              )}
+                              <button onClick={() => setSelectedExercise(drill)} className="text-left w-full">
+                                <h4 className="font-semibold text-slate-200 hover:text-cyan-400 transition-colors">{drill.name}</h4>
+                                <p className="text-sm text-slate-400 mt-1">{drill.rationale}</p>
+                                {drill.frequency && (
+                                  <div className="flex items-center gap-4 mt-2 text-xs">
+                                    <span className="text-cyan-400">📅 {drill.frequency}</span>
+                                    <span className="text-slate-500">⏱️ {drill.duration}</span>
+                                  </div>
+                                )}
+                              </button>
                             </div>
                           </div>
                         </div>
@@ -323,7 +329,7 @@ export default function TrainingPlan() {
                 >
                   <div className="flex items-start gap-4">
                     <div className="w-12 h-12 rounded-xl bg-purple-500/20 flex items-center justify-center flex-shrink-0">
-                      <Target className="w-6 h-6 text-purple-400" />
+                      <MessageSquareText className="w-6 h-6 text-purple-400" />
                     </div>
                     <div className="flex-1">
                       <h3 className="text-lg font-bold text-purple-400 mb-2">Fragen zu deinem Plan?</h3>
@@ -331,23 +337,21 @@ export default function TrainingPlan() {
                         Dein Performance Coach kann dir weitere Fragen beantworten, den Plan anpassen oder zusätzliche Übungen erklären.
                       </p>
                       <Button
-                        onClick={() => {
-                          // Store plan context for the chat
-                          sessionStorage.setItem('training_plan_context', JSON.stringify({
-                            plan_id: activePlan.id,
-                            goal: activePlan.goal_description,
-                            current_phase: activePlan.current_phase,
-                            has_complementary_drills: activePlan.complementary_drills_accepted
-                          }));
-                          window.location.href = createPageUrl('PerformanceChat') + '?mode=plan_discussion';
-                        }}
+                        onClick={() => setShowChat(!showChat)}
                         className="bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700"
                       >
-                        💬 Mit Coach chatten
+                        {showChat ? '💬 Chat schließen' : '💬 Mit Coach chatten'}
                       </Button>
                     </div>
                   </div>
                 </motion.div>
+
+                {/* Inline Chat Component */}
+                <AnimatePresence>
+                  {showChat && activePlan && (
+                    <TrainingPlanChat activePlan={activePlan} />
+                  )}
+                </AnimatePresence>
               </motion.div>
             ) : (
               <motion.div
@@ -553,7 +557,7 @@ function PhaseCard({ phase, index, isExpanded, onToggle, isCompleted, onComplete
         {isExpanded && (
           <motion.div
             initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
+            animate={{ opacity: 1, height: 0 }}
             exit={{ opacity: 0, height: 0 }}
             className="border-t border-slate-700/50"
           >

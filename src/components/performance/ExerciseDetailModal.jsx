@@ -7,6 +7,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 export default function ExerciseDetailModal({ exercise, onClose }) {
   if (!exercise) return null;
 
+  // Check if this is a complementary drill (has category field)
+  const isComplementaryDrill = !!exercise.category;
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -27,7 +30,12 @@ export default function ExerciseDetailModal({ exercise, onClose }) {
           <div className="flex items-start justify-between">
             <div>
               <h2 className="text-2xl font-bold text-cyan-400 mb-2">{exercise.name}</h2>
-              <p className="text-slate-400 text-sm">{exercise.sets_reps_tempo}</p>
+              {exercise.sets_reps_tempo && <p className="text-slate-400 text-sm">{exercise.sets_reps_tempo}</p>}
+              {isComplementaryDrill && (
+                <p className="text-slate-400 text-sm capitalize">
+                  {exercise.category.replace('_', ' ')}: {exercise.frequency} ({exercise.duration})
+                </p>
+              )}
             </div>
             <button
               onClick={onClose}
@@ -41,23 +49,27 @@ export default function ExerciseDetailModal({ exercise, onClose }) {
         {/* Content */}
         <div className="p-6 space-y-6">
           <Tabs defaultValue="execution" className="w-full">
-            <TabsList className="grid w-full grid-cols-4 mb-6">
+            <TabsList className={`grid w-full mb-6 ${isComplementaryDrill ? 'grid-cols-1' : 'grid-cols-4'}`}>
               <TabsTrigger value="execution" className="text-xs sm:text-sm">
                 <Target className="w-4 h-4 mr-1" />
-                Ausführung
+                {isComplementaryDrill ? 'Begründung & Anleitung' : 'Ausführung'}
               </TabsTrigger>
-              <TabsTrigger value="cues" className="text-xs sm:text-sm">
-                <Zap className="w-4 h-4 mr-1" />
-                Cues
-              </TabsTrigger>
-              <TabsTrigger value="progression" className="text-xs sm:text-sm">
-                <TrendingUp className="w-4 h-4 mr-1" />
-                Progression
-              </TabsTrigger>
-              <TabsTrigger value="expert" className="text-xs sm:text-sm">
-                <Info className="w-4 h-4 mr-1" />
-                Experten
-              </TabsTrigger>
+              {!isComplementaryDrill && (
+                <>
+                  <TabsTrigger value="cues" className="text-xs sm:text-sm">
+                    <Zap className="w-4 h-4 mr-1" />
+                    Cues
+                  </TabsTrigger>
+                  <TabsTrigger value="progression" className="text-xs sm:text-sm">
+                    <TrendingUp className="w-4 h-4 mr-1" />
+                    Progression
+                  </TabsTrigger>
+                  <TabsTrigger value="expert" className="text-xs sm:text-sm">
+                    <Info className="w-4 h-4 mr-1" />
+                    Experten
+                  </TabsTrigger>
+                </>
+              )}
             </TabsList>
 
             {/* Execution Tab */}
@@ -65,10 +77,10 @@ export default function ExerciseDetailModal({ exercise, onClose }) {
               <div className="glass rounded-xl p-5 border border-cyan-500/20">
                 <h3 className="font-semibold text-cyan-400 mb-3 flex items-center gap-2">
                   <Target className="w-5 h-5" />
-                  Schritt-für-Schritt Anleitung
+                  {isComplementaryDrill ? 'Begründung & Anleitung' : 'Schritt-für-Schritt Anleitung'}
                 </h3>
                 <div className="space-y-3 text-slate-300 leading-relaxed">
-                  {exercise.instruction?.split('\n').map((step, idx) => (
+                  {(exercise.instruction || exercise.rationale)?.split('\n').map((step, idx) => (
                     <div key={idx} className="flex gap-3">
                       <div className="flex-shrink-0 w-6 h-6 rounded-full bg-cyan-500/20 border border-cyan-500/30 flex items-center justify-center text-xs text-cyan-400 font-semibold">
                         {idx + 1}
@@ -79,124 +91,130 @@ export default function ExerciseDetailModal({ exercise, onClose }) {
                 </div>
               </div>
 
-              {exercise.notes && (
+              {(exercise.notes || (isComplementaryDrill && exercise.rationale)) && (
                 <div className="glass rounded-xl p-5 border border-amber-500/20 bg-amber-500/5">
                   <h3 className="font-semibold text-amber-400 mb-2 flex items-center gap-2">
                     <AlertTriangle className="w-5 h-5" />
                     Wichtige Hinweise
                   </h3>
-                  <p className="text-slate-300 leading-relaxed">{exercise.notes}</p>
+                  <p className="text-slate-300 leading-relaxed">{exercise.notes || exercise.rationale}</p>
                 </div>
               )}
             </TabsContent>
 
-            {/* Cues Tab */}
-            <TabsContent value="cues" className="space-y-4">
-              <div className="glass rounded-xl p-5 border border-purple-500/20">
-                <h3 className="font-semibold text-purple-400 mb-3 flex items-center gap-2">
-                  <Zap className="w-5 h-5" />
-                  Technik-Cues
-                </h3>
-                {exercise.cues && exercise.cues.length > 0 ? (
-                  <div className="space-y-2">
-                    {exercise.cues.map((cue, idx) => (
-                      <div key={idx} className="flex items-start gap-3 text-slate-300">
-                        <CheckCircle2 className="w-5 h-5 text-purple-400 flex-shrink-0 mt-0.5" />
-                        <p>{cue}</p>
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <p className="text-slate-400">Keine spezifischen Cues verfügbar.</p>
-                )}
-              </div>
-
-              {exercise.common_mistakes && (
-                <div className="glass rounded-xl p-5 border border-red-500/20 bg-red-500/5">
-                  <h3 className="font-semibold text-red-400 mb-3 flex items-center gap-2">
-                    <AlertTriangle className="w-5 h-5" />
-                    Häufige Fehler
-                  </h3>
-                  <div className="space-y-2">
-                    {exercise.common_mistakes.map((mistake, idx) => (
-                      <div key={idx} className="flex items-start gap-3 text-slate-300">
-                        <X className="w-5 h-5 text-red-400 flex-shrink-0 mt-0.5" />
-                        <p>{mistake}</p>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </TabsContent>
-
-            {/* Progression Tab */}
-            <TabsContent value="progression" className="space-y-4">
-              <div className="glass rounded-xl p-5 border border-green-500/20">
-                <h3 className="font-semibold text-green-400 mb-3 flex items-center gap-2">
-                  <TrendingUp className="w-5 h-5" />
-                  Progressions-Strategie
-                </h3>
-                <p className="text-slate-300 leading-relaxed mb-4">
-                  {exercise.progression_strategy || 'Steigere Volumen oder Intensität schrittweise über mehrere Wochen.'}
-                </p>
-                
-                {exercise.progression_milestones && exercise.progression_milestones.length > 0 && (
-                  <div className="space-y-3 mt-4">
-                    <h4 className="text-sm font-semibold text-slate-400 uppercase tracking-wide">Meilensteine</h4>
-                    {exercise.progression_milestones.map((milestone, idx) => (
-                      <div key={idx} className="bg-white/5 rounded-lg p-3">
-                        <div className="flex items-center gap-2 mb-1">
-                          <div className="w-2 h-2 rounded-full bg-green-400" />
-                          <span className="font-medium text-slate-200">{milestone.level}</span>
-                        </div>
-                        <p className="text-sm text-slate-400 ml-4">{milestone.description}</p>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-
-              {exercise.deload_protocol && (
-                <div className="glass rounded-xl p-5 border border-blue-500/20 bg-blue-500/5">
-                  <h3 className="font-semibold text-blue-400 mb-2 flex items-center gap-2">
-                    <Info className="w-5 h-5" />
-                    Deload-Protokoll
-                  </h3>
-                  <p className="text-slate-300 text-sm">{exercise.deload_protocol}</p>
-                </div>
-              )}
-            </TabsContent>
-
-            {/* Expert Tab */}
-            <TabsContent value="expert" className="space-y-4">
-              {exercise.expert_insight && (
-                <div className="glass rounded-xl p-5 border border-amber-500/20">
-                  <h3 className="font-semibold text-amber-400 mb-3 flex items-center gap-2">
-                    <Info className="w-5 h-5" />
-                    Experten-Insight
-                  </h3>
-                  <div className="text-slate-300 leading-relaxed space-y-2">
-                    <p className="italic text-slate-400 text-sm mb-2">"{exercise.expert_insight.quote}"</p>
-                    <p className="text-xs text-slate-500">— {exercise.expert_insight.source}</p>
-                    <p className="mt-3">{exercise.expert_insight.explanation}</p>
-                  </div>
-                </div>
-              )}
-
-              {exercise.scientific_background && (
+            {/* Cues Tab - Only for normal exercises */}
+            {!isComplementaryDrill && (
+              <TabsContent value="cues" className="space-y-4">
                 <div className="glass rounded-xl p-5 border border-purple-500/20">
-                  <h3 className="font-semibold text-purple-400 mb-3">Wissenschaftlicher Hintergrund</h3>
-                  <p className="text-slate-300 text-sm leading-relaxed">{exercise.scientific_background}</p>
+                  <h3 className="font-semibold text-purple-400 mb-3 flex items-center gap-2">
+                    <Zap className="w-5 h-5" />
+                    Technik-Cues
+                  </h3>
+                  {exercise.cues && exercise.cues.length > 0 ? (
+                    <div className="space-y-2">
+                      {exercise.cues.map((cue, idx) => (
+                        <div key={idx} className="flex items-start gap-3 text-slate-300">
+                          <CheckCircle2 className="w-5 h-5 text-purple-400 flex-shrink-0 mt-0.5" />
+                          <p>{cue}</p>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="text-slate-400">Keine spezifischen Cues verfügbar.</p>
+                  )}
                 </div>
-              )}
 
-              {exercise.fms_relevance && (
-                <div className="glass rounded-xl p-5 border border-cyan-500/20">
-                  <h3 className="font-semibold text-cyan-400 mb-3">FMS Pattern</h3>
-                  <p className="text-slate-300 text-sm leading-relaxed">{exercise.fms_relevance}</p>
+                {exercise.common_mistakes && (
+                  <div className="glass rounded-xl p-5 border border-red-500/20 bg-red-500/5">
+                    <h3 className="font-semibold text-red-400 mb-3 flex items-center gap-2">
+                      <AlertTriangle className="w-5 h-5" />
+                      Häufige Fehler
+                    </h3>
+                    <div className="space-y-2">
+                      {exercise.common_mistakes.map((mistake, idx) => (
+                        <div key={idx} className="flex items-start gap-3 text-slate-300">
+                          <X className="w-5 h-5 text-red-400 flex-shrink-0 mt-0.5" />
+                          <p>{mistake}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </TabsContent>
+            )}
+
+            {/* Progression Tab - Only for normal exercises */}
+            {!isComplementaryDrill && (
+              <TabsContent value="progression" className="space-y-4">
+                <div className="glass rounded-xl p-5 border border-green-500/20">
+                  <h3 className="font-semibold text-green-400 mb-3 flex items-center gap-2">
+                    <TrendingUp className="w-5 h-5" />
+                    Progressions-Strategie
+                  </h3>
+                  <p className="text-slate-300 leading-relaxed mb-4">
+                    {exercise.progression_strategy || 'Steigere Volumen oder Intensität schrittweise über mehrere Wochen.'}
+                  </p>
+                  
+                  {exercise.progression_milestones && exercise.progression_milestones.length > 0 && (
+                    <div className="space-y-3 mt-4">
+                      <h4 className="text-sm font-semibold text-slate-400 uppercase tracking-wide">Meilensteine</h4>
+                      {exercise.progression_milestones.map((milestone, idx) => (
+                        <div key={idx} className="bg-white/5 rounded-lg p-3">
+                          <div className="flex items-center gap-2 mb-1">
+                            <div className="w-2 h-2 rounded-full bg-green-400" />
+                            <span className="font-medium text-slate-200">{milestone.level}</span>
+                          </div>
+                          <p className="text-sm text-slate-400 ml-4">{milestone.description}</p>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
-              )}
-            </TabsContent>
+
+                {exercise.deload_protocol && (
+                  <div className="glass rounded-xl p-5 border border-blue-500/20 bg-blue-500/5">
+                    <h3 className="font-semibold text-blue-400 mb-2 flex items-center gap-2">
+                      <Info className="w-5 h-5" />
+                      Deload-Protokoll
+                    </h3>
+                    <p className="text-slate-300 text-sm">{exercise.deload_protocol}</p>
+                  </div>
+                )}
+              </TabsContent>
+            )}
+
+            {/* Expert Tab - Only for normal exercises */}
+            {!isComplementaryDrill && (
+              <TabsContent value="expert" className="space-y-4">
+                {exercise.expert_insight && (
+                  <div className="glass rounded-xl p-5 border border-amber-500/20">
+                    <h3 className="font-semibold text-amber-400 mb-3 flex items-center gap-2">
+                      <Info className="w-5 h-5" />
+                      Experten-Insight
+                    </h3>
+                    <div className="text-slate-300 leading-relaxed space-y-2">
+                      <p className="italic text-slate-400 text-sm mb-2">"{exercise.expert_insight.quote}"</p>
+                      <p className="text-xs text-slate-500">— {exercise.expert_insight.source}</p>
+                      <p className="mt-3">{exercise.expert_insight.explanation}</p>
+                    </div>
+                  </div>
+                )}
+
+                {exercise.scientific_background && (
+                  <div className="glass rounded-xl p-5 border border-purple-500/20">
+                    <h3 className="font-semibold text-purple-400 mb-3">Wissenschaftlicher Hintergrund</h3>
+                    <p className="text-slate-300 text-sm leading-relaxed">{exercise.scientific_background}</p>
+                  </div>
+                )}
+
+                {exercise.fms_relevance && (
+                  <div className="glass rounded-xl p-5 border border-cyan-500/20">
+                    <h3 className="font-semibold text-cyan-400 mb-3">FMS Pattern</h3>
+                    <p className="text-slate-300 text-sm leading-relaxed">{exercise.fms_relevance}</p>
+                  </div>
+                )}
+              </TabsContent>
+            )}
           </Tabs>
         </div>
 
