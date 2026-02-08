@@ -47,7 +47,7 @@ export default function ExerciseDetailModal({ exercise, onClose }) {
         </div>
 
         {/* Content */}
-        <div className="p-6 space-y-6">
+        <div className="p-6 space-y-6 overflow-y-auto max-h-[calc(90vh-180px)]">
           {isComplementaryDrill ? (
             /* Simplified view for complementary drills */
             <div className="space-y-4">
