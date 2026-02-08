@@ -131,59 +131,217 @@ Deno.serve(async (req) => {
       },
       {
         phase_number: 2,
-        title: 'Progression',
-        description: 'Kraft progressiv aufbauen mit gezielten Varianten',
+        title: 'Kraftaufbau & Volumen',
+        description: 'Jetzt wird es ernst: Wir steigern das Trainingsvolumen und die Intensität. Du wirst erste vollständige Pull-ups schaffen und die Kraft konsolidieren.',
         duration_weeks: Math.ceil(estimated_duration_weeks / 3),
         exercises: [
           {
             exercise_id: 'progression_1',
-            name: 'Assisted Pull-ups',
-            sets_reps_tempo: '4x4-6',
-            instruction: 'Mit Widerstandsband oder Maschine unterstützen',
-            notes: 'Gewicht reduzieren wenn möglich'
+            name: 'Assisted Pull-ups (Band oder Maschine)',
+            sets_reps_tempo: '4 Sets × 4-6 Reps @ kontrolliertes Tempo',
+            instruction: 'Setup: Widerstandsband um die Stange und unter die Füße, oder Assisted Pull-up Maschine\nGriff: Schulterbreit, Handflächen nach vorne\nBewegung: Ziehe dich hoch bis das Kinn über der Stange ist\nKontrolle: 2 Sekunden hoch, 1 Sekunde halten, 2 Sekunden runter\nPause: 2 Minuten zwischen Sets',
+            notes: 'Wähle ein Band/Gewicht, das dir 4-6 saubere Wiederholungen ermöglicht. Sobald du 6 Reps schaffst, wechsle zu einem leichteren Band oder weniger Unterstützung.',
+            cues: [
+              'Starte mit aktivierten Schulterblättern - wie bei Scapula Pull-ups',
+              'Ellbogen ziehen nach unten und hinten - nicht zur Seite',
+              'Brust zur Stange - denke daran, die Brust hochzuziehen',
+              'Kontrolliertes Tempo - keine ruckartigen Bewegungen',
+              'Volle Range of Motion - komplett hoch und komplett runter'
+            ],
+            common_mistakes: [
+              'Zu viel Unterstützung - fordere dich heraus',
+              'Schwung nutzen statt Muskelkraft',
+              'Nicht vollständig hochziehen (Kinn muss über Stange)',
+              'Zu schnelle Bewegung - Tempo ist wichtig'
+            ],
+            progression_strategy: 'Reduziere die Unterstützung schrittweise. Beginne mit schwerem Band, wechsle zu mittlerem Band, dann zu leichtem Band, dann zu keiner Unterstützung.',
+            progression_milestones: [
+              { level: 'Woche 7-8', description: '4×4 mit starkem Band' },
+              { level: 'Woche 9-10', description: '4×5 mit mittlerem Band' },
+              { level: 'Woche 11-12', description: '4×6 mit leichtem Band' }
+            ],
+            expert_insight: {
+              quote: 'Volume before intensity - earn the right to progress.',
+              source: 'Dan John - 40-30-30 Strength Protocol',
+              explanation: 'In dieser Phase geht es um Volumen-Akkumulation. Du baust eine solide Basis mit höherem Volumen auf, bevor du zu schwereren Varianten wechselst. Das reduziert Verletzungsrisiko und maximiert langfristige Kraft.'
+            },
+            scientific_background: 'Assisted Pull-ups erlauben dir, in der vollen Range of Motion zu trainieren, während du deine Kraft aufbaust - besser als partielle Bewegungen.',
+            fms_relevance: 'Verbessert Pull Pattern und Shoulder Mobility gleichzeitig.',
+            deload_protocol: 'Reduziere auf 3×3 mit mehr Unterstützung für eine Woche'
           },
           {
             exercise_id: 'progression_2',
-            name: 'Negativ-Wiederholungen (schwerer)',
-            sets_reps_tempo: '3x3',
-            instruction: 'Mit Gewicht um die Hüfte hochspringen, langsam runterlassen',
-            notes: 'Intensivere Negatives'
+            name: 'Weighted Negatives (Belastete Exzentriks)',
+            sets_reps_tempo: '3 Sets × 3-5 Reps @ 5-6 Sekunden',
+            instruction: 'Setup: Gewichtsweste (2.5-5kg) oder Gewichtsgürtel anlegen\nStartposition: Hochspringen oder Hilfsmittel nutzen, Kinn über Stange\nBewegung: Extrem langsam und kontrolliert absenken (5-6 Sekunden)\nEndposition: Arme vollständig gestreckt\nPause: 2-3 Minuten zwischen Sets',
+            notes: 'Dies ist eine fortgeschrittene Version der Negativ-Wiederholungen. Das zusätzliche Gewicht intensiviert den Trainingsreiz massiv. Beginne konservativ mit wenig Gewicht.',
+            cues: [
+              'Noch langsamer als in Phase 1 - 5-6 Sekunden',
+              'Totale Körperkontrolle - kein Schwingen',
+              'Schultern bleiben aktiv während der gesamten Bewegung',
+              'Mentaler Fokus auf jeden Zentimeter der Bewegung',
+              'Atme gleichmäßig - nicht die Luft anhalten'
+            ],
+            common_mistakes: [
+              'Zu viel Gewicht zu früh - starte leicht',
+              'Zu schnelles Absenken - Zeit unter Spannung ist der Schlüssel',
+              'Schultern fallen nach oben (zu den Ohren)'
+            ],
+            progression_strategy: 'Steigere zuerst die Wiederholungen (bis 5), dann verlängere die Zeit (bis 7 Sekunden), dann erhöhe das Gewicht (in 2.5kg Schritten).',
+            progression_milestones: [
+              { level: 'Woche 7-8', description: '3×3 @ 5 Sek mit 2.5kg' },
+              { level: 'Woche 9-10', description: '3×4 @ 6 Sek mit 2.5kg' },
+              { level: 'Woche 11-12', description: '3×5 @ 6 Sek mit 5kg' }
+            ],
+            expert_insight: {
+              quote: 'Add load, not complexity.',
+              source: 'Pavel Tsatsouline - Simple & Sinister',
+              explanation: 'Statt zu komplexeren Übungen zu wechseln, fügen wir einfach Gewicht zu einer Übung hinzu, die bereits funktioniert. Das ist der direkte Weg zu mehr Kraft.'
+            },
+            scientific_background: 'Weighted eccentrics erzeugen maximales Muskelwachstum durch erhöhtes mechanisches Trauma bei gleichzeitiger neuronaler Adaptation.',
+            fms_relevance: 'Maximiert die exzentrische Kontrolle, essentiell für Injury Prevention.',
+            deload_protocol: 'Entferne Gewicht und reduziere auf 2×3 bei Übertraining'
           },
           {
             exercise_id: 'progression_3',
-            name: 'Reihen-Varianten',
-            sets_reps_tempo: '3x6',
-            instruction: 'Zur Stange hochziehen, Rückenmuskulatur trainieren',
-            notes: 'Antagonist-Training'
+            name: 'Inverted Rows (Australische Klimmzüge)',
+            sets_reps_tempo: '3 Sets × 8-12 Reps @ 2 Sekunden hoch, 2 Sekunden runter',
+            instruction: 'Setup: Stange auf Hüfthöhe, lege dich darunter\nGriff: Schulterbreit, Handflächen zu dir\nKörper: Gerade wie ein Brett, Fersen am Boden\nBewegung: Ziehe die Brust zur Stange, Ellbogen nah am Körper\nRückkehr: Kontrolliert zurück, Arme gestreckt\nWiederhole für 8-12 Reps',
+            notes: 'Dies ist eine horizontale Zugübung und perfektes Ergänzungstraining zu vertikalen Zügen (Pull-ups). Trainiert die gleichen Muskeln aus einem anderen Winkel.',
+            cues: [
+              'Körper bleibt gerade - keine Hüfte durchhängen lassen',
+              'Ziehe mit den Ellbogen, nicht mit den Händen',
+              'Brust zur Stange - berühre sie wenn möglich',
+              'Schulterblätter zusammen am höchsten Punkt',
+              'Kontrolliertes Tempo - 2 Sekunden hoch, 2 Sekunden runter'
+            ],
+            common_mistakes: [
+              'Hüfte sackt durch - halte Körperspannung',
+              'Ellbogen gehen zu weit nach außen',
+              'Nicht volle Range of Motion - Brust muss zur Stange'
+            ],
+            progression_strategy: 'Senke die Stange schrittweise ab für einen steileren Winkel, steigere dann Wiederholungen, dann füge Gewicht hinzu (Gewichtsweste).',
+            progression_milestones: [
+              { level: 'Woche 7-8', description: '3×8 Reps @ Hüfthöhe' },
+              { level: 'Woche 9-10', description: '3×10 Reps @ Hüfthöhe' },
+              { level: 'Woche 11-12', description: '3×12 Reps @ Hüfthöhe oder 3×8 @ niedriger' }
+            ],
+            expert_insight: {
+              quote: 'Horizontal pulling creates balanced strength and prevents injury.',
+              source: 'Vern Gambetta - Movement Pattern Training',
+              explanation: 'Viele fokussieren sich nur auf vertikale Züge (Pull-ups) und vernachlässigen horizontale Züge. Das führt zu muskulären Dysbalancen. Rows balancieren das System aus und stärken die Schultergesundheit.'
+            },
+            scientific_background: 'Horizontale Zugübungen aktivieren verstärkt die Rhomboiden und mittleren Trapezius-Fasern, essentiell für Schultergesundheit.',
+            fms_relevance: 'Trainiert Trunk Stability und verbessert das Pull Pattern aus verschiedenen Winkeln.',
+            deload_protocol: 'Erhöhe die Stangenhöhe und reduziere auf 2×6 Reps'
           }
         ]
       },
       {
         phase_number: 3,
-        title: 'Meistern',
-        description: 'Ziel stabilisieren und neue Varianten erkunden',
+        title: 'Mastery & Konsolidierung',
+        description: 'Du hast das Fundament gelegt und Kraft aufgebaut - jetzt meisterst du das Ziel. Vollständige Pull-ups werden zur Routine, und wir erkunden fortgeschrittene Varianten.',
         duration_weeks: Math.ceil(estimated_duration_weeks / 3),
         exercises: [
           {
             exercise_id: 'mastery_1',
-            name: 'Volle Pull-ups',
-            sets_reps_tempo: '5x1-3',
-            instruction: 'Vollständige Wiederholungen vom Dead Hang bis Kinn über Stange',
-            notes: 'Stabil durchziehen, kein Schwung'
+            name: 'Full Pull-ups (Komplette Klimmzüge)',
+            sets_reps_tempo: '5 Sets × 1-5 Reps @ kontrolliertes Tempo',
+            instruction: 'Startposition: Dead Hang, Arme komplett gestreckt\nAktivierung: Beginne mit Schulterblatt-Aktivierung\nZugphase: Ziehe dich hoch bis Kinn über der Stange\nHold: Kurz halten am höchsten Punkt (1 Sekunde)\nAbsenkphase: Kontrolliert zurück in Dead Hang\nPause: 2-3 Minuten zwischen Sets',
+            notes: 'DU HAST ES GESCHAFFT! Dies ist das Ziel. Fokussiere dich auf perfekte Form bei jeder Wiederholung. Qualität über Quantität - jede Rep sollte identisch aussehen.',
+            cues: [
+              'Starte jeden Rep wie der erste - keine Ermüdung zeigen',
+              'Schulterblätter zuerst aktivieren, dann ziehen',
+              'Denke daran, die Ellbogen nach unten zu ziehen',
+              'Brust hoch - nicht nur das Kinn',
+              'Vollständiger Dead Hang zwischen Reps - keine halben Bewegungen'
+            ],
+            common_mistakes: [
+              'Kipping (Schwung mit den Beinen) - halte es strict',
+              'Nicht vollständig runtergehen zwischen Reps',
+              'Form verschlechtert sich im letzten Rep - stoppe bevor das passiert',
+              'Zu lange Pausen zwischen Reps im selben Set'
+            ],
+            progression_strategy: 'Steigere die Wiederholungen schrittweise von 5×1 auf 5×5. Dann wechsle zu 3×8 für Volumen. Dann beginne mit Weighted Pull-ups.',
+            progression_milestones: [
+              { level: 'Woche 13-14', description: '5×2 Reps strict' },
+              { level: 'Woche 15-16', description: '5×3-4 Reps strict' },
+              { level: 'Woche 17-18', description: '5×5 Reps oder 3×8 Reps' }
+            ],
+            expert_insight: {
+              quote: 'Mastery is not about doing more - it is about doing it better.',
+              source: 'Pavel Tsatsouline - Grease the Groove Method',
+              explanation: 'Jetzt wo du Pull-ups kannst, ist die Versuchung groß, so viele wie möglich zu machen. Aber Mastery kommt von perfekter Ausführung bei jedem Rep. Trainiere mehrmals pro Woche mit niedrigem Volumen aber perfekter Form - Grease the Groove.'
+            },
+            scientific_background: 'Neuronale Anpassung erreicht ihr Maximum bei niedrigem Volumen aber hoher Frequenz - perfekt für Pull-up Mastery.',
+            fms_relevance: 'Vollständige Integration des Pull Pattern mit optimaler Shoulder Mobility.',
+            deload_protocol: 'Reduziere auf 3×1 mit 3-4 Minuten Pause zwischen Sets'
           },
           {
             exercise_id: 'mastery_2',
-            name: 'Rückenschlag-Varianten',
-            sets_reps_tempo: '3x5',
-            instruction: 'Rückenschläge oder L-Sit Pull-ups',
-            notes: 'Neue Herausforderung'
+            name: 'Weighted Pull-ups (Belastete Klimmzüge)',
+            sets_reps_tempo: '4 Sets × 3-5 Reps @ 2.5-10kg Zusatzgewicht',
+            instruction: 'Setup: Gewichtsweste oder Dip-Gürtel mit Gewicht (beginne mit 2.5kg)\nGriff: Standard Overhand Grip, schulterbreit\nBewegung: Identisch zu normalen Pull-ups - perfekte Form\nTempo: Kontrolliert, 2 Sekunden hoch, 1 Sekunde halten, 2 Sekunden runter\nPause: 3 Minuten zwischen Sets',
+            notes: 'Weighted Pull-ups sind der nächste Level. Sie bauen maximale Kraft auf und bereiten dich auf fortgeschrittene Varianten vor. Beginne leicht - 2.5kg ist perfekt für den Start.',
+            cues: [
+              'Form bleibt identisch - Gewicht ändert nichts an der Technik',
+              'Kein Kompensieren - wenn Form leidet, ist es zu schwer',
+              'Noch kontrollierter als ohne Gewicht',
+              'Volle Range of Motion beibehalten',
+              'Mentale Fokus auf jeden Zentimeter'
+            ],
+            common_mistakes: [
+              'Zu viel Gewicht zu früh - starte mit 2.5kg',
+              'Form verschlechtert sich - reduziere Gewicht',
+              'Reps erzwingen - stoppe bei technischem Failure'
+            ],
+            progression_strategy: 'Steigere die Wiederholungen bei einem Gewicht, bevor du das Gewicht erhöhst. 4×5 @ 2.5kg → 4×3 @ 5kg → 4×5 @ 5kg, usw.',
+            progression_milestones: [
+              { level: 'Woche 13-15', description: '4×3 @ 2.5kg' },
+              { level: 'Woche 16-17', description: '4×5 @ 2.5kg oder 4×3 @ 5kg' },
+              { level: 'Woche 18+', description: '4×5 @ 5kg' }
+            ],
+            expert_insight: {
+              quote: 'Strength is a skill. Practice it often with perfect form.',
+              source: 'Pavel Tsatsouline - Power to the People',
+              explanation: 'Weighted Pull-ups sind eine der besten Übungen für Oberkörper-Kraft. Sie transferieren zu allen anderen Zugbewegungen und bauen funktionelle, dichte Muskulatur auf.'
+            },
+            scientific_background: 'Progressives Overload durch Gewicht ist effektiver für Kraft als durch Wiederholungen - wenn Form perfekt bleibt.',
+            fms_relevance: 'Maximiert die Kraft im Pull Pattern bei gleichzeitiger Beibehaltung optimaler Bewegungsqualität.',
+            deload_protocol: 'Entferne Gewicht komplett und mache 3×3 normale Pull-ups'
           },
           {
             exercise_id: 'mastery_3',
-            name: 'Volumen-Session',
-            sets_reps_tempo: '3x3-5',
-            instruction: 'Mehrere Wiederholungen für Volumen',
-            notes: 'Kraft stabilisieren'
+            name: 'Volume Training (Volumen-Akkumulation)',
+            sets_reps_tempo: 'Ziel: 30-50 Gesamtwiederholungen über mehrere Sets',
+            instruction: 'Methode: Ladder Training oder EMOM (Every Minute on the Minute)\nBeispiel Ladder: 1-2-3-4-5 Reps, pause, repeat\nBeispiel EMOM: 5 Reps jeden Minute für 8 Minuten\nFokus: Jeder Rep ist perfekt - keine Ermüdung zeigen\nZiel: Erreiche 30 saubere Reps, dann 40, dann 50\nFrequenz: 2x pro Woche',
+            notes: 'Volume Training baut Work Capacity auf - die Fähigkeit, viele Reps über Zeit zu machen. Dies konsolidiert deine Kraft und macht Pull-ups zur zweiten Natur.',
+            cues: [
+              'Halte Reserve - stoppe 1-2 Reps vor dem Failure',
+              'Jeder Rep identisch - keine Ermüdung zeigen',
+              'Atme zwischen Sets - volle Erholung',
+              'Mentale Frische ist wichtig - keine gegrindeten Reps',
+              'Tracke Gesamt-Volume - das ist deine Metrik'
+            ],
+            common_mistakes: [
+              'Zu viele Reps pro Set - halte Reserve',
+              'Form verschlechtert sich - stoppe früher',
+              'Zu wenig Pause zwischen Sets'
+            ],
+            progression_strategy: 'Erhöhe das Gesamt-Volume schrittweise. 30 Reps → 35 Reps → 40 Reps → 50 Reps über mehrere Wochen.',
+            progression_milestones: [
+              { level: 'Woche 13-14', description: '30 Reps total' },
+              { level: 'Woche 15-16', description: '40 Reps total' },
+              { level: 'Woche 17-18', description: '50 Reps total' }
+            ],
+            expert_insight: {
+              quote: 'Volume creates the foundation for long-term strength.',
+              source: 'Dan John - Easy Strength Protocol',
+              explanation: 'Volume Training an einem Tag pro Woche baut Work Capacity auf und sorgt dafür, dass Pull-ups nie wieder schwer werden. Dies ist die langfristige Strategie für bulletproof Kraft.'
+            },
+            scientific_background: 'Hohe Frequenz mit moderatem Volumen verbessert neuronale Effizienz und macht Bewegungen automatisch.',
+            fms_relevance: 'Konsolidiert Movement Pattern und macht es zum Standard-Bewegungsmuster.',
+            deload_protocol: 'Reduziere auf 20 Reps total mit längeren Pausen'
           }
         ]
       }
