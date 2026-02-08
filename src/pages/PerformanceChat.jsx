@@ -30,6 +30,7 @@ export default function PerformanceChat() {
   const [showBaselineCheckModal, setShowBaselineCheckModal] = useState(false);
   const [existingActivePlan, setExistingActivePlan] = useState(null);
   const messagesEndRef = useRef(null);
+  const queryClient = useQueryClient();
 
   useEffect(() => {
     const initChat = async () => {
@@ -450,6 +451,10 @@ export default function PerformanceChat() {
 
       if (response.data?.success) {
         console.log('✨ Training plan created successfully:', response.data.plan?.id);
+        
+        // Invalidiere Query Cache für TrainingPlan-Seite
+        await queryClient.invalidateQueries({ queryKey: ['activePlan'] });
+        
         toast.success('Trainingsplan erfolgreich erstellt! 🎉');
         
         // Warte kurz für Animation, dann weiterleiten zum Performance Tab
