@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ArrowLeft, Zap, Target, CheckCircle2, Clock, AlertCircle, Activity } from 'lucide-react';
 import { toast } from 'sonner';
+import GoalCard from '../components/performance/GoalCard';
 
 export default function TrainingPlan() {
   const [user, setUser] = useState(null);
@@ -55,6 +56,13 @@ export default function TrainingPlan() {
         user_email: user.email
       });
     },
+    enabled: !!user?.email
+  });
+
+  // Fetch Performance Goals
+  const { data: goals = [] } = useQuery({
+    queryKey: ['performanceGoals'],
+    queryFn: () => base44.entities.PerformanceGoal.list(),
     enabled: !!user?.email
   });
 
@@ -116,99 +124,43 @@ export default function TrainingPlan() {
 
           {/* Performance Tab */}
           <TabsContent value="performance">
-            {!activePlan ? (
+            {!goals || goals.length === 0 ? (
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 className="glass rounded-2xl border border-cyan-500/30 p-8 text-center"
               >
-                <Target className="w-16 h-16 text-cyan-400 mx-auto mb-4 opacity-50" />
-                <h2 className="text-2xl font-bold text-white mb-2">Noch kein aktiver Trainingsplan</h2>
+                <Target className="w-16 h-16 text-amber-400 mx-auto mb-4 opacity-50" />
+                <h2 className="text-2xl font-bold text-white mb-2">Keine Performance-Ziele vorhanden</h2>
                 <p className="text-slate-400 mb-6">
-                  Starten Sie eine Performance Coaching Session, um einen personalisierten Plan zu erhalten.
+                  Starte eine Performance Coaching Session, um deine Ziele zu definieren.
                 </p>
                 <Button
                   onClick={() => window.location.href = createPageUrl('Dashboard')}
-                  className="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700"
+                  className="bg-gradient-to-r from-amber-500 to-yellow-600 hover:from-amber-600 hover:to-yellow-700"
                 >
                   Zum Dashboard
                 </Button>
               </motion.div>
             ) : (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="space-y-4"
-          >
-            {/* Plan Summary */}
-            <div className="glass rounded-2xl border border-amber-500/30 p-6 bg-gradient-to-r from-amber-500/10 to-transparent">
-              <div className="flex items-start justify-between gap-4">
-                <div>
-                  <h2 className="text-2xl font-bold text-amber-400 mb-2">{activePlan.goal_description || activePlan.goal}</h2>
-                  <p className="text-slate-300 mb-4">
-                    Dauer: <span className="font-semibold text-amber-400">{activePlan.estimated_duration_weeks} Wochen</span>
-                  </p>
-                  <div className="flex flex-wrap gap-3">
-                    <div className="flex items-center gap-2 text-sm text-slate-300">
-                      <Target className="w-4 h-4 text-cyan-400" />
-                      <span>{activePlan.phases?.length || 3} Phasen</span>
-                    </div>
-                  </div>
-                </div>
-                <div className="text-right">
-                  <div className="text-4xl font-bold text-cyan-400 mb-2">
-                    {Object.values(completedPhases).filter(Boolean).length}/{activePlan.phases?.length || 3}
-                  </div>
-                  <p className="text-xs text-slate-400">Phasen abgeschlossen</p>
-                </div>
-              </div>
-            </div>
-
-            {/* Phases */}
-            <div className="space-y-3">
-              {activePlan.phases?.map((phase, idx) => (
-                <PhaseCard
-                  key={idx}
-                  phase={phase}
-                  index={idx}
-                  isExpanded={expandedPhase === idx}
-                  onToggle={() => setExpandedPhase(expandedPhase === idx ? null : idx)}
-                  isCompleted={completedPhases[idx]}
-                  onComplete={() => setCompletedPhases(prev => ({
-                    ...prev,
-                    [idx]: !prev[idx]
-                  }))}
-                />
-              ))}
-            </div>
-
-            {/* Session Summary */}
-            {Object.values(completedPhases).filter(Boolean).length === activePlan.phases?.length && (
               <motion.div
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                className="glass rounded-2xl border border-green-500/30 p-6 bg-gradient-to-r from-green-500/10 to-transparent"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="space-y-4"
               >
-                <div className="flex items-center gap-3 mb-4">
-                  <CheckCircle2 className="w-6 h-6 text-green-400" />
-                  <h3 className="text-xl font-bold text-green-400">Session abgeschlossen!</h3>
-                </div>
-                <p className="text-slate-300 mb-4">
-                  Großartig! Jetzt speichern wir deine Ergebnisse.
-                </p>
-                <Button
-                  onClick={() => {
-                    toast.success('Feedback wird gespeichert...');
-                    // In PerformanceChat würde dieser Button zum SessionFeedbackForm führen
-                  }}
-                  className="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700"
-                >
-                  Feedback eingeben
-                </Button>
+                {goals.map((goal, idx) => (
+                  <GoalCard
+                    key={goal.id}
+                    goal={goal}
+                    index={idx}
+                    onClick={() => {
+                      const encodedGoal = encodeURIComponent(goal.name);
+                      window.location.href = createPageUrl(`PerformanceChat?goal=${encodedGoal}`);
+                    }}
+                  />
+                ))}
               </motion.div>
             )}
-          </motion.div>
-        )}
           </TabsContent>
 
           {/* Rehab Tab */}
