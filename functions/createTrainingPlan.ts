@@ -462,6 +462,9 @@ Deno.serve(async (req) => {
       phases_count: phases.length
     });
 
+    // Generate intelligent complementary drill suggestions
+    const complementaryDrills = await generateComplementaryDrills(user, goal_description, base44);
+
     const plan = await base44.entities.TrainingPlan.create({
       user_email: user.email,
       goal_description: goal_description,
@@ -470,7 +473,9 @@ Deno.serve(async (req) => {
       plan_generated_date: new Date().toISOString().split('T')[0],
       current_phase: 1,
       phase_start_date: new Date().toISOString().split('T')[0],
-      phases: phases
+      phases: phases,
+      suggested_complementary_drills: complementaryDrills,
+      complementary_drills_accepted: false
     });
 
     console.log('Training plan created successfully:', plan?.id);

@@ -5,8 +5,9 @@ import { createPageUrl } from '@/utils';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { ArrowLeft, Zap, Target, CheckCircle2, Clock, AlertCircle, Activity, Info, TrendingUp } from 'lucide-react';
+import { ArrowLeft, Zap, Target, CheckCircle2, Clock, AlertCircle, Activity, Info, TrendingUp, Sparkles, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
+import { useQueryClient } from '@tanstack/react-query';
 import GoalCard from '../components/performance/GoalCard';
 import ExerciseDetailModal from '../components/performance/ExerciseDetailModal';
 
@@ -16,6 +17,10 @@ export default function TrainingPlan() {
   const [expandedPhase, setExpandedPhase] = useState(null);
   const [completedPhases, setCompletedPhases] = useState({});
   const [selectedExercise, setSelectedExercise] = useState(null);
+  const [showComplementaryDrills, setShowComplementaryDrills] = useState(true);
+  const [isAcceptingDrills, setIsAcceptingDrills] = useState(false);
+  
+  const queryClient = useQueryClient();
   
   // Get tab from URL parameter
   const urlParams = new URLSearchParams(window.location.search);
@@ -89,6 +94,34 @@ export default function TrainingPlan() {
     enabled: !!user?.email
   });
 
+  const handleAcceptComplementaryDrills = async (planId) => {
+    setIsAcceptingDrills(true);
+    try {
+      await base44.entities.TrainingPlan.update(planId, {
+        complementary_drills_accepted: true
+      });
+      await queryClient.invalidateQueries({ queryKey: ['activePlan'] });
+      toast.success('Ergänzende Übungen wurden zu deinem Plan hinzugefügt!');
+    } catch (error) {
+      console.error('Error accepting drills:', error);
+      toast.error('Fehler beim Hinzufügen der Übungen');
+    } finally {
+      setIsAcceptingDrills(false);
+    }
+  };
+
+  const handleDeclineComplementaryDrills = async (planId) => {
+    try {
+      await base44.entities.TrainingPlan.update(planId, {
+        complementary_drills_accepted: false
+      });
+      setShowComplementaryDrills(false);
+      toast.success('Du konzentrierst dich auf dein Hauptziel');
+    } catch (error) {
+      console.error('Error declining drills:', error);
+    }
+  };
+
   if (isLoading || !user) {
     return <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950" />;
   }
@@ -137,6 +170,75 @@ export default function TrainingPlan() {
                 animate={{ opacity: 1, y: 0 }}
                 className="space-y-6"
               >
+                {/* Complementary Drills Suggestion */}
+                {activePlan.suggested_complementary_drills?.length > 0 && 
+                 !activePlan.complementary_drills_accepted && 
+                 showComplementaryDrills && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="glass rounded-xl p-6 border border-cyan-500/30 bg-gradient-to-r from-cyan-500/10 to-transparent"
+                  >
+                    <div className="flex items-start gap-3 mb-4">
+                      <div className="w-10 h-10 rounded-xl bg-cyan-500/20 flex items-center justify-center flex-shrink-0">
+                        <Sparkles className="w-5 h-5 text-cyan-400" />
+                      </div>
+                      <div className="flex-1">
+                        <h3 className="text-lg font-bold text-cyan-400 mb-2">
+                          Möchtest du ergänzende Übungen für maximale Longevity?
+                        </h3>
+                        <p className="text-sm text-slate-300 leading-relaxed mb-3">
+                          Basierend auf deinem Ziel und deinem Neuro-Profil haben wir {activePlan.suggested_complementary_drills.length} intelligente 
+                          Ergänzungen identifiziert, die deine funktionelle Gesundheit langfristig unterstützen.
+                        </p>
+                        <div className="space-y-2 mb-4">
+                          {activePlan.suggested_complementary_drills.map((drill, idx) => (
+                            <div key={idx} className="bg-slate-800/50 rounded-lg p-3">
+                              <div className="flex items-start gap-2">
+                                <div className="w-6 h-6 rounded-lg bg-cyan-500/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+                                  {drill.category === 'mobility' && '🤸'}
+                                  {drill.category === 'neuro_drill' && '🧠'}
+                                  {drill.category === 'fascial_release' && '⚙️'}
+                                  {drill.category === 'corrective' && '🎯'}
+                                </div>
+                                <div className="flex-1">
+                                  <p className="font-medium text-slate-200">{drill.name}</p>
+                                  <p className="text-xs text-slate-400 mt-1">{drill.rationale}</p>
+                                  {drill.frequency && (
+                                    <p className="text-xs text-cyan-400 mt-1">
+                                      Empfohlen: {drill.frequency} • {drill.duration}
+                                    </p>
+                                  )}
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                        <div className="flex flex-col sm:flex-row gap-3">
+                          <Button
+                            onClick={() => handleAcceptComplementaryDrills(activePlan.id)}
+                            disabled={isAcceptingDrills}
+                            className="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700"
+                          >
+                            {isAcceptingDrills ? (
+                              <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Füge hinzu...</>
+                            ) : (
+                              <><CheckCircle2 className="w-4 h-4 mr-2" /> Ja, zu meinem Plan hinzufügen</>
+                            )}
+                          </Button>
+                          <Button
+                            variant="outline"
+                            onClick={() => handleDeclineComplementaryDrills(activePlan.id)}
+                            className="border-slate-600 text-slate-400 hover:text-slate-200"
+                          >
+                            Nein, nur auf mein Hauptziel fokussieren
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  </motion.div>
+                )}
+
                 {/* Plan Header */}
                 <div className="glass rounded-2xl border border-amber-500/30 p-6 bg-gradient-to-r from-amber-500/10 to-transparent">
                   <div className="flex items-start justify-between mb-4">
