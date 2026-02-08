@@ -5,15 +5,17 @@ import { createPageUrl } from '@/utils';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { ArrowLeft, Zap, Target, CheckCircle2, Clock, AlertCircle, Activity } from 'lucide-react';
+import { ArrowLeft, Zap, Target, CheckCircle2, Clock, AlertCircle, Activity, Info, TrendingUp } from 'lucide-react';
 import { toast } from 'sonner';
 import GoalCard from '../components/performance/GoalCard';
+import ExerciseDetailModal from '../components/performance/ExerciseDetailModal';
 
 export default function TrainingPlan() {
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [expandedPhase, setExpandedPhase] = useState(null);
   const [completedPhases, setCompletedPhases] = useState({});
+  const [selectedExercise, setSelectedExercise] = useState(null);
   
   // Get tab from URL parameter
   const urlParams = new URLSearchParams(window.location.search);
@@ -162,8 +164,9 @@ export default function TrainingPlan() {
                     isCompleted={completedPhases[idx]}
                     onComplete={() => {
                       setCompletedPhases({ ...completedPhases, [idx]: !completedPhases[idx] });
-                      toast.success(completedPhases[idx] ? 'Als nicht erledigt markiert' : 'Phase abgeschlossen! 🎉');
+                      toast.success(completedPhases[idx] ? 'Als nicht erledigt markiert' : 'Phase abgeschlossen!');
                     }}
+                    onExerciseClick={(exercise) => setSelectedExercise(exercise)}
                   />
                 ))}
               </motion.div>
@@ -222,6 +225,16 @@ export default function TrainingPlan() {
           </TabsContent>
         </Tabs>
       </div>
+
+      {/* Exercise Detail Modal */}
+      <AnimatePresence>
+        {selectedExercise && (
+          <ExerciseDetailModal
+            exercise={selectedExercise}
+            onClose={() => setSelectedExercise(null)}
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 }
@@ -309,20 +322,15 @@ function RoutineCard({ routine, index }) {
   );
 }
 
-function PhaseCard({ phase, index, isExpanded, onToggle, isCompleted, onComplete }) {
-  const phaseIcons = {
-    hardware: '⚙️',
-    software: '🧠',
-    integration: '💪'
-  };
-
+function PhaseCard({ phase, index, isExpanded, onToggle, isCompleted, onComplete, onExerciseClick }) {
   const getPhaseColor = (idx) => {
-    if (idx === 0) return { bg: 'from-amber-500/20', border: 'border-amber-500/30', text: 'text-amber-400' };
-    if (idx === 1) return { bg: 'from-cyan-500/20', border: 'border-cyan-500/30', text: 'text-cyan-400' };
-    return { bg: 'from-orange-500/20', border: 'border-orange-500/30', text: 'text-orange-400' };
+    if (idx === 0) return { bg: 'from-amber-500/20', border: 'border-amber-500/30', text: 'text-amber-400', icon: Target };
+    if (idx === 1) return { bg: 'from-cyan-500/20', border: 'border-cyan-500/30', text: 'text-cyan-400', icon: TrendingUp };
+    return { bg: 'from-orange-500/20', border: 'border-orange-500/30', text: 'text-orange-400', icon: Zap };
   };
 
   const colors = getPhaseColor(index);
+  const PhaseIcon = colors.icon;
 
   return (
     <motion.div
@@ -336,14 +344,16 @@ function PhaseCard({ phase, index, isExpanded, onToggle, isCompleted, onComplete
         className="w-full p-4 flex items-center justify-between hover:bg-white/5 transition-colors"
       >
         <div className="flex items-center gap-4 text-left">
-          <div className="text-2xl">
-            {phase.phase_number === 1 ? '🏗️' : phase.phase_number === 2 ? '📈' : '🎯'}
+          <div className={`w-12 h-12 rounded-xl ${colors.bg} border ${colors.border} flex items-center justify-center`}>
+            <PhaseIcon className={`w-6 h-6 ${colors.text}`} />
           </div>
           <div>
             <h3 className={`font-semibold ${colors.text}`}>
               {phase.title || `Phase ${phase.phase_number || index + 1}`}
             </h3>
-            <p className="text-sm text-slate-400">{phase.duration_weeks || 2} Wochen</p>
+            <p className="text-sm text-slate-400">
+              {phase.duration_weeks || 2} Wochen · {phase.exercises?.length || 0} Übungen
+            </p>
           </div>
         </div>
         <div className="flex items-center gap-3">
@@ -378,14 +388,30 @@ function PhaseCard({ phase, index, isExpanded, onToggle, isCompleted, onComplete
               {/* Exercises */}
               {phase.exercises && phase.exercises.length > 0 && (
                 <div className="pt-4 border-t border-slate-700/50">
-                  <h4 className="font-semibold text-slate-200 mb-3">Übungen:</h4>
+                  <h4 className="font-semibold text-slate-200 mb-3 flex items-center gap-2">
+                    <Zap className="w-4 h-4 text-cyan-400" />
+                    Übungen
+                  </h4>
                   <div className="space-y-3">
                     {phase.exercises.map((exercise, exIdx) => (
-                      <div key={exIdx} className="bg-white/5 rounded-lg p-3">
-                        <p className="font-medium text-slate-200">{exercise.name}</p>
-                        <p className="text-xs text-slate-400 mt-1">{exercise.sets_reps_tempo}</p>
-                        <p className="text-sm text-slate-400 mt-2">{exercise.instruction}</p>
-                      </div>
+                      <button
+                        key={exIdx}
+                        onClick={() => onExerciseClick(exercise)}
+                        className="w-full bg-white/5 hover:bg-white/10 rounded-lg p-4 text-left transition-all group border border-transparent hover:border-cyan-500/30"
+                      >
+                        <div className="flex items-start justify-between mb-2">
+                          <div className="flex-1">
+                            <p className="font-medium text-slate-200 group-hover:text-cyan-400 transition-colors">
+                              {exercise.name}
+                            </p>
+                            <p className="text-xs text-slate-400 mt-1">{exercise.sets_reps_tempo}</p>
+                          </div>
+                          <div className="flex items-center gap-2 text-slate-500 group-hover:text-cyan-400 transition-colors">
+                            <Info className="w-4 h-4" />
+                          </div>
+                        </div>
+                        <p className="text-sm text-slate-400 line-clamp-2">{exercise.instruction?.split('\n')[0]}</p>
+                      </button>
                     ))}
                   </div>
                 </div>
