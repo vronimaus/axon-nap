@@ -64,7 +64,50 @@ async function generateComplementaryDrills(user, goal_description, base44) {
             });
         }
         
-        // 2. Fascial chain drill if complaints present
+        // 2. Strength/Corrective drill based on goal
+        if (goalLower.includes('pull') || goalLower.includes('klimmz')) {
+            drills.push({
+                exercise_id: 'core_stability',
+                name: 'Anti-Rotations Core Training',
+                category: 'corrective',
+                rationale: 'Pull-ups erfordern massive Core-Stabilität. Diese Übungen verhindern Schwingen und verbessern deine Körperspannung am Eisen.',
+                instruction: 'Pallof Press: 3×12 pro Seite, Widerstandsband auf Brusthöhe\nDead Bug: 3×10 pro Seite, langsame Kontrolle\nHollow Body Hold: 3×20 Sekunden, maximale Spannung\nBird Dog: 3×8 pro Seite, 3 Sekunden halten',
+                frequency: '3x pro Woche',
+                duration: '8-10 Min'
+            });
+        } else if (goalLower.includes('squat') || goalLower.includes('pistol')) {
+            drills.push({
+                exercise_id: 'single_leg_balance',
+                name: 'Einbeinige Balance & Stabilität',
+                category: 'corrective',
+                rationale: 'Pistol Squats erfordern extreme Balance und Stabilität. Diese Drills bauen die neuronale Kontrolle auf.',
+                instruction: 'Single-Leg Stand: 3×30 Sekunden pro Bein, Augen offen\nSingle-Leg Reaches: 3×8 pro Richtung\nCossack Squats: 3×10 pro Seite\nSingle-Leg RDL: 3×8 pro Bein, langsame Kontrolle',
+                frequency: '3x pro Woche',
+                duration: '8-10 Min'
+            });
+        } else if (goalLower.includes('handstand') || goalLower.includes('push')) {
+            drills.push({
+                exercise_id: 'shoulder_stability',
+                name: 'Schulter-Stabilisations-Drills',
+                category: 'corrective',
+                rationale: 'Handstands erfordern maximale Schulterstabilität. Diese Übungen bereiten die Schultern auf Gewichtsbelastung vor.',
+                instruction: 'Wall Plank Hold: 3×20-30 Sekunden, Nase zur Wand\nYTWL Sequence: 2×10 jede Position, leichte Gewichte\nBanded Face Pulls: 3×15, fokussiere externe Rotation\nScapular Push-ups: 3×12, nur Schulterblatt-Bewegung',
+                frequency: '3-4x pro Woche',
+                duration: '8-10 Min'
+            });
+        } else {
+            drills.push({
+                exercise_id: 'functional_core',
+                name: 'Funktionelle Core-Basis',
+                category: 'corrective',
+                rationale: 'Ein starker Core ist das Fundament für jede Bewegung. Diese Übungen bauen eine solide Basis auf.',
+                instruction: 'Plank: 3×30-45 Sekunden\nSide Plank: 3×20 Sekunden pro Seite\nDead Bug: 3×10 pro Seite\nBird Dog: 3×8 pro Seite',
+                frequency: '3x pro Woche',
+                duration: '6-8 Min'
+            });
+        }
+        
+        // 3. Fascial chain drill if complaints present
         if (complaintHistory.length > 0) {
             const recentComplaint = complaintHistory[0];
             const location = recentComplaint.location?.toLowerCase() || '';
@@ -92,7 +135,7 @@ async function generateComplementaryDrills(user, goal_description, base44) {
             }
         }
         
-        // 3. Neuro drill for athletic performance
+        // 4. Neuro drill for athletic performance
         if (activityLevel === 'very_active' || activityLevel === 'athlete') {
             drills.push({
                 exercise_id: 'vestibular_drill',
@@ -115,8 +158,8 @@ async function generateComplementaryDrills(user, goal_description, base44) {
             });
         }
         
-        // Limit to 3 drills maximum
-        return drills.slice(0, 3);
+        // Return top 3-4 drills (mobility + strength + optional fascial/neuro)
+        return drills.slice(0, 4);
         
     } catch (error) {
         console.error('Error generating complementary drills:', error);
