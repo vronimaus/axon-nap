@@ -480,7 +480,17 @@ export default function PerformanceChat() {
             </div>
           ) : (
             <>
-              {/* Step 1: Goal Analysis Card */}
+              {/* Step 1: Show Chat until Goal Analysis Card appears */}
+              {workflowStep === 'analysis' && !goalAnalysis && (
+                <div className="space-y-4">
+                  {messages.map((msg, idx) => (
+                    <SimpleChatBubble key={idx} message={msg} />
+                  ))}
+                  <div ref={messagesEndRef} />
+                </div>
+              )}
+
+              {/* Step 1b: Goal Analysis Card */}
               {workflowStep === 'analysis' && goalAnalysis && (
                 <PerformanceGoalCard
                   title={goalAnalysis.title}
@@ -515,8 +525,8 @@ export default function PerformanceChat() {
         </div>
       </div>
 
-      {/* Input - only show in chat step */}
-      {workflowStep === 'chat' && (
+      {/* Input - show in chat step AND in analysis step (before card appears) */}
+      {(workflowStep === 'chat' || (workflowStep === 'analysis' && !goalAnalysis)) && (
         <div className="sticky bottom-0 glass border-t border-amber-500/20">
           <div className="max-w-4xl mx-auto px-4 py-4">
             <div className="flex gap-2">
