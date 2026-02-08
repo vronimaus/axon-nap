@@ -60,6 +60,20 @@ export default function ExerciseDetailModal({ exercise, onClose }) {
                 <p className="text-slate-300 leading-relaxed">{exercise.rationale}</p>
               </div>
 
+              {/* DEBUG: Show raw instruction data */}
+              <div className="glass rounded-xl p-5 border border-yellow-500/20 bg-yellow-500/5">
+                <h3 className="font-semibold text-yellow-400 mb-3">🔍 DEBUG INFO</h3>
+                <div className="text-xs text-slate-300 space-y-2">
+                  <p><strong>instruction exists:</strong> {exercise.instruction ? 'YES' : 'NO'}</p>
+                  <p><strong>instruction type:</strong> {typeof exercise.instruction}</p>
+                  <p><strong>instruction length:</strong> {exercise.instruction?.length || 0} chars</p>
+                  <p><strong>Lines when split by \\n:</strong> {exercise.instruction?.split('\n').length || 0}</p>
+                  <div className="mt-2 p-2 bg-black/30 rounded max-h-32 overflow-y-auto">
+                    <pre className="text-xs whitespace-pre-wrap">{JSON.stringify(exercise, null, 2)}</pre>
+                  </div>
+                </div>
+              </div>
+
               {/* Instruction if available */}
               {exercise.instruction && (
                 <div className="glass rounded-xl p-5 border border-purple-500/20">
