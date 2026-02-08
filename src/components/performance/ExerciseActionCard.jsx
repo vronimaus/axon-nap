@@ -5,7 +5,8 @@ import { ChevronDown, Wrench, Brain, Dumbbell } from 'lucide-react';
 
 export default function ExerciseActionCard({ 
   phases,
-  onComplete
+  onComplete,
+  infoText
 }) {
   const [expandedPhase, setExpandedPhase] = useState(null);
 
@@ -86,6 +87,14 @@ export default function ExerciseActionCard({
           </div>
         );
       })}
+
+      {infoText && (
+        <div className="glass rounded-xl p-4 border border-amber-500/30 mt-6">
+          <p className="text-slate-200 text-sm leading-relaxed whitespace-pre-line">
+            {infoText}
+          </p>
+        </div>
+      )}
 
       {onComplete && (
         <Button

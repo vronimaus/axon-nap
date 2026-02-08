@@ -523,6 +523,15 @@ export default function PerformanceChat() {
                 <ExerciseActionCard
                   phases={exercisePhases}
                   onComplete={handleExercisesComplete}
+                  infoText={`Perfekt! Du hast die vorgeschlagenen Übungen gesichtet.
+
+              Möchtest du nun einen vollständigen Trainingsplan basierend darauf erstellen lassen?
+
+              Dieser beinhaltet dann:
+              ✓ Alle Übungen mit ausführlichen Anleitungen und detaillierten Hintergrundinformationen von Experten
+              ✓ Dein persönliches Progressions-Tracking
+              ✓ Dein Plan kann jederzeit an deine Bedürfnisse angepasst werden
+              ✓ Du findest ihn nach der Erstellung im Tab TRAINING und kannst ihn jederzeit abrufen.`}
                 />
               )}
 
