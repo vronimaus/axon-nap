@@ -350,9 +350,20 @@ export default function PerformanceChat() {
     }
   };
 
+  const handleFrequencySelect = async (frequency) => {
+    // Send frequency selection to AI
+    try {
+      await base44.agents.addMessage(conversation, {
+        role: 'user',
+        content: frequency
+      });
+    } catch (error) {
+      console.error('Error sending frequency:', error);
+    }
+  };
+
   const handleGoalAnalysisNext = async () => {
     // Request exercises from AI
-    setWorkflowStep('exercises');
     try {
       await base44.agents.addMessage(conversation, {
         role: 'user',
@@ -488,6 +499,7 @@ export default function PerformanceChat() {
                   expertInsight={goalAnalysis.expertInsight}
                   callToAction={goalAnalysis.callToAction}
                   onActionClick={handleGoalAnalysisNext}
+                  onFrequencySelect={handleFrequencySelect}
                 />
               )}
 

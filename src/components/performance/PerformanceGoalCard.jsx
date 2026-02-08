@@ -10,10 +10,17 @@ export default function PerformanceGoalCard({
   expertInsight,
   callToAction,
   onActionClick,
+  onFrequencySelect,
   showExpertByDefault = false
 }) {
   const [showExpert, setShowExpert] = useState(showExpertByDefault);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [selectedFrequency, setSelectedFrequency] = useState(null);
+  
+  // Check if analysis contains frequency question
+  const hasFrequencyQuestion = analysis?.includes('Wie oft kannst du trainieren') || 
+                                analysis?.includes('2-3x/Woche') ||
+                                analysis?.includes('4-5x/Woche');
   
   const handleActionClick = async () => {
     if (isSubmitting) return;
@@ -22,6 +29,20 @@ export default function PerformanceGoalCard({
       await onActionClick();
     } catch (error) {
       console.error('Action error:', error);
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleFrequencyClick = async (frequency) => {
+    if (isSubmitting) return;
+    setSelectedFrequency(frequency);
+    setIsSubmitting(true);
+    try {
+      if (onFrequencySelect) {
+        await onFrequencySelect(frequency);
+      }
+    } catch (error) {
+      console.error('Frequency selection error:', error);
       setIsSubmitting(false);
     }
   };
@@ -94,8 +115,47 @@ export default function PerformanceGoalCard({
             </div>
           )}
 
-          {/* Call to Action */}
-          {callToAction && onActionClick && (
+          {/* Frequency Selection (if question is in analysis) */}
+          {hasFrequencyQuestion && !selectedFrequency && onFrequencySelect && (
+            <div className="space-y-3">
+              <p className="text-sm text-amber-400 font-semibold">Wie oft kannst du trainieren?</p>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <Button
+                  onClick={() => handleFrequencyClick('2-3x/Woche')}
+                  disabled={isSubmitting}
+                  className="h-auto py-4 bg-slate-800 hover:bg-amber-500/20 border border-amber-500/30 hover:border-amber-500 text-white"
+                >
+                  <div className="text-center">
+                    <div className="font-bold">2-3x/Woche</div>
+                    <div className="text-xs text-slate-400">= 8 Wochen Plan</div>
+                  </div>
+                </Button>
+                <Button
+                  onClick={() => handleFrequencyClick('4-5x/Woche')}
+                  disabled={isSubmitting}
+                  className="h-auto py-4 bg-slate-800 hover:bg-amber-500/20 border border-amber-500/30 hover:border-amber-500 text-white"
+                >
+                  <div className="text-center">
+                    <div className="font-bold">4-5x/Woche</div>
+                    <div className="text-xs text-slate-400">= 6 Wochen Plan</div>
+                  </div>
+                </Button>
+                <Button
+                  onClick={() => handleFrequencyClick('Täglich')}
+                  disabled={isSubmitting}
+                  className="h-auto py-4 bg-slate-800 hover:bg-amber-500/20 border border-amber-500/30 hover:border-amber-500 text-white"
+                >
+                  <div className="text-center">
+                    <div className="font-bold">Täglich</div>
+                    <div className="text-xs text-slate-400">= 4 Wochen Plan</div>
+                  </div>
+                </Button>
+              </div>
+            </div>
+          )}
+
+          {/* Call to Action (shown after frequency selection OR if no frequency question) */}
+          {callToAction && onActionClick && (!hasFrequencyQuestion || selectedFrequency) && (
             <Button
               onClick={handleActionClick}
               disabled={isSubmitting}
