@@ -197,11 +197,8 @@ export default function TrainingPlan() {
                           {activePlan.suggested_complementary_drills.map((drill, idx) => (
                             <div key={idx} className="bg-slate-800/50 rounded-lg p-3">
                               <div className="flex items-start gap-2">
-                                <div className="w-6 h-6 rounded-lg bg-cyan-500/20 flex items-center justify-center flex-shrink-0 mt-0.5">
-                                  {drill.category === 'mobility' && '🤸'}
-                                  {drill.category === 'neuro_drill' && '🧠'}
-                                  {drill.category === 'fascial_release' && '⚙️'}
-                                  {drill.category === 'corrective' && '🎯'}
+                                <div className="w-6 h-6 rounded-lg bg-cyan-500/20 flex items-center justify-center flex-shrink-0 mt-0.5 text-xs text-cyan-400">
+                                  {idx + 1}
                                 </div>
                                 <div className="flex-1">
                                   <button onClick={() => setSelectedExercise(drill)} className="text-left w-full">
@@ -277,28 +274,28 @@ export default function TrainingPlan() {
                     </div>
                     <div className="space-y-3">
                       {activePlan.suggested_complementary_drills.map((drill, idx) => (
-                        <div key={idx} className="bg-slate-800/30 rounded-lg p-4 border border-slate-700/50">
+                        <button
+                          key={idx}
+                          onClick={() => setSelectedExercise(drill)}
+                          className="w-full bg-slate-800/30 rounded-lg p-4 border border-slate-700/50 hover:border-cyan-500/50 hover:bg-slate-800/50 transition-all text-left"
+                        >
                           <div className="flex items-start gap-3">
-                            <div className="w-8 h-8 rounded-lg bg-cyan-500/20 flex items-center justify-center flex-shrink-0 text-xl">
-                              {drill.category === 'mobility' && '🤸'}
-                              {drill.category === 'neuro_drill' && '🧠'}
-                              {drill.category === 'fascial_release' && '⚙️'}
-                              {drill.category === 'corrective' && '🎯'}
+                            <div className="w-8 h-8 rounded-lg bg-cyan-500/20 flex items-center justify-center flex-shrink-0 text-xs text-cyan-400 font-semibold">
+                              {idx + 1}
                             </div>
                             <div className="flex-1">
-                              <button onClick={() => setSelectedExercise(drill)} className="text-left w-full">
-                                <h4 className="font-semibold text-slate-200 hover:text-cyan-400 transition-colors">{drill.name}</h4>
-                                <p className="text-sm text-slate-400 mt-1">{drill.rationale}</p>
-                                {drill.frequency && (
-                                  <div className="flex items-center gap-4 mt-2 text-xs">
-                                    <span className="text-cyan-400">📅 {drill.frequency}</span>
-                                    <span className="text-slate-500">⏱️ {drill.duration}</span>
-                                  </div>
-                                )}
-                              </button>
+                              <h4 className="font-semibold text-slate-200 group-hover:text-cyan-400 transition-colors">{drill.name}</h4>
+                              <p className="text-sm text-slate-400 mt-1">{drill.rationale}</p>
+                              {drill.frequency && (
+                                <div className="flex items-center gap-4 mt-2 text-xs">
+                                  <span className="text-cyan-400">{drill.frequency}</span>
+                                  <span className="text-slate-500">{drill.duration}</span>
+                                </div>
+                              )}
                             </div>
+                            <Info className="w-4 h-4 text-slate-500 flex-shrink-0 mt-1" />
                           </div>
-                        </div>
+                        </button>
                       ))}
                     </div>
                   </motion.div>
@@ -340,7 +337,7 @@ export default function TrainingPlan() {
                         onClick={() => setShowChat(!showChat)}
                         className="bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700"
                       >
-                        {showChat ? '💬 Chat schließen' : '💬 Mit Coach chatten'}
+                        {showChat ? 'Chat schließen' : 'Mit Coach chatten'}
                       </Button>
                     </div>
                   </div>
@@ -425,6 +422,14 @@ export default function TrainingPlan() {
 function RoutineCard({ routine, index }) {
   const [isExpanded, setIsExpanded] = useState(false);
 
+  const typeLabels = {
+    'mfr': 'Hardware',
+    'neuro': 'Software',
+    'strength': 'Integration',
+    'breath': 'Atem',
+    'mobility': 'Mobilität'
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 10 }}
@@ -437,7 +442,7 @@ function RoutineCard({ routine, index }) {
         className="w-full p-4 flex items-center justify-between hover:bg-white/5 transition-colors"
       >
         <div className="flex items-center gap-4 text-left">
-          <div className="text-2xl">{routine.icon || '🎯'}</div>
+          <div className="text-2xl">{routine.icon || 'R'}</div>
           <div>
             <h3 className="font-semibold text-purple-400">{routine.routine_name}</h3>
             <p className="text-sm text-slate-400">{routine.total_duration} Min · {routine.sequence?.length || 0} Übungen</p>
@@ -471,11 +476,7 @@ function RoutineCard({ routine, index }) {
                       <div key={stepIdx} className="bg-white/5 rounded-lg p-3">
                         <div className="flex items-center justify-between mb-2">
                           <p className="font-medium text-slate-200">
-                            {step.type === 'mfr' && '🔨 Hardware'}
-                            {step.type === 'neuro' && '🧠 Software'}
-                            {step.type === 'strength' && '💪 Integration'}
-                            {step.type === 'breath' && '🌬️ Atem'}
-                            {step.type === 'mobility' && '🤸 Mobilität'}
+                            {typeLabels[step.type] || step.type}
                           </p>
                           <span className="text-xs text-slate-500">{step.duration_seconds}s</span>
                         </div>
@@ -489,7 +490,6 @@ function RoutineCard({ routine, index }) {
               <div className="pt-4 border-t border-slate-700/50">
                 <Button
                   onClick={() => {
-                    // Start routine flow
                     toast.success('Routine wird gestartet...');
                   }}
                   className="w-full bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700"
@@ -557,7 +557,7 @@ function PhaseCard({ phase, index, isExpanded, onToggle, isCompleted, onComplete
         {isExpanded && (
           <motion.div
             initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
             className="border-t border-slate-700/50"
           >
@@ -611,7 +611,7 @@ function PhaseCard({ phase, index, isExpanded, onToggle, isCompleted, onComplete
                       : 'bg-gradient-to-r from-cyan-500 to-blue-600'
                   }`}
                 >
-                  {isCompleted ? '✓ Abgeschlossen' : 'Als erledigt markieren'}
+                  {isCompleted ? 'Abgeschlossen' : 'Als erledigt markieren'}
                 </Button>
               </div>
             </div>

@@ -27,6 +27,7 @@ async function generateComplementaryDrills(user, goal_description, base44) {
                 name: 'Schulter-Mobility Flow',
                 category: 'mobility',
                 rationale: 'Verbessert die Schultermobilität und Rotation der Thoracic Spine - entscheidend für Pull-up Progression und langfristige Schultergesundheit.',
+                instruction: 'Arm-Kreise: 2×20 Wiederholungen vorwärts und rückwärts, langsam und kontrolliert\nWand-Slides: 3×10, Arme an der Wand nach oben schieben\nThorax-Rotation: 2×30 Sekunden pro Seite, im Vierfüßlerstand\nSchulter-Ausrollen: Mit Foam Roller oder Ball 2-3 Minuten pro Seite',
                 frequency: 'täglich oder vor jeder Trainingseinheit',
                 duration: '5-8 Min'
             });
@@ -36,6 +37,7 @@ async function generateComplementaryDrills(user, goal_description, base44) {
                 name: 'Hüft- und Sprunggelenk-Mobilisation',
                 category: 'mobility',
                 rationale: 'Öffnet die Hüftflexion und verbessert die Sprunggelenk-Dorsalflexion - kritisch für tiefe Squats und Knie-Longevity.',
+                instruction: '90/90 Hip Stretch: 2×60 Sekunden pro Seite\nAnkle Rocks: 3×15 pro Seite, Knie über Zehen schieben\nDeep Squat Hold: 2×45 Sekunden, so tief wie möglich\nCossack Squats: 2×8 pro Seite für dynamische Mobilität',
                 frequency: 'täglich oder vor jeder Trainingseinheit',
                 duration: '5-8 Min'
             });
@@ -45,8 +47,20 @@ async function generateComplementaryDrills(user, goal_description, base44) {
                 name: 'Handgelenk- und Schulter-Preparation',
                 category: 'mobility',
                 rationale: 'Bereitet Handgelenke und Schultern auf Gewichtsbelastung vor und fördert gesunde Handgelenk-Alignment - essentiell für Handstand und Push-Bewegungen.',
+                instruction: 'Handgelenk-Kreise: 2×20 in beide Richtungen\nHandgelenk-Dehnung: 3×30 Sekunden in Extension und Flexion\nFinger-Dehnung: 2×20 Sekunden pro Position\nSchulter-CARs: 2×5 pro Richtung, volle Kontrolle',
                 frequency: 'vor jeder Trainingseinheit',
                 duration: '5-10 Min'
+            });
+        } else {
+            // Default mobility drill
+            drills.push({
+                exercise_id: 'general_mobility_flow',
+                name: 'Allgemeine Mobilisations-Routine',
+                category: 'mobility',
+                rationale: 'Verbessert die allgemeine Beweglichkeit und bereitet den Körper optimal auf das Training vor.',
+                instruction: 'Gelenk-Kreise: 2×10 für Handgelenke, Ellbogen, Schultern\nWirbelsäulen-Mobilisation: Cat-Cow 2×15\nHüft-Kreise: 2×10 pro Richtung\nSprunggelenk-Prep: 2×15 Ankle Rocks pro Seite',
+                frequency: 'täglich oder vor Training',
+                duration: '5-8 Min'
             });
         }
         
@@ -60,7 +74,8 @@ async function generateComplementaryDrills(user, goal_description, base44) {
                     exercise_id: 'sbl_release_drill',
                     name: 'Superficial Back Line Release',
                     category: 'fascial_release',
-                    rationale: `Adressiert Spannungen in der hinteren Faszienkette (SBL), die mit deinen Nacken/Schulter-Beschwerden zusammenhängen. Fördert langfristige Bewegungsfreiheit.`,
+                    rationale: 'Adressiert Spannungen in der hinteren Faszienkette (SBL), die mit deinen Nacken/Schulter-Beschwerden zusammenhängen. Fördert langfristige Bewegungsfreiheit.',
+                    instruction: 'Ball-Release Nacken: 2×90 Sekunden pro Seite, tiefer Druck\nOberer Trapezius: 2×60 Sekunden pro Seite\nLat-Release: Mit Ball oder Roller 2×90 Sekunden\nWaden-Release: 2×60 Sekunden pro Seite, langsame Bewegungen',
                     frequency: '2-3x pro Woche',
                     duration: '8-10 Min'
                 });
@@ -69,7 +84,8 @@ async function generateComplementaryDrills(user, goal_description, base44) {
                     exercise_id: 'dfl_activation',
                     name: 'Deep Front Line Activation',
                     category: 'corrective',
-                    rationale: `Stärkt die tiefen anterioren Stabilisatoren, die bei Rücken/Hüft-Problemen oft geschwächt sind. Präventiv für Longevity.`,
+                    rationale: 'Stärkt die tiefen anterioren Stabilisatoren, die bei Rücken/Hüft-Problemen oft geschwächt sind. Präventiv für Longevity.',
+                    instruction: 'Dead Bug: 3×10 pro Seite, langsame Kontrolle\nBird Dog: 3×8 pro Seite, 3 Sekunden Hold\nPallof Press: 3×12 pro Seite gegen Widerstand\nHollow Body Hold: 3×20 Sekunden',
                     frequency: '3x pro Woche',
                     duration: '6-8 Min'
                 });
@@ -83,6 +99,7 @@ async function generateComplementaryDrills(user, goal_description, base44) {
                 name: 'Vestibulärer Balance-Drill',
                 category: 'neuro_drill',
                 rationale: 'Verbessert das Gleichgewichtssystem und die neuromuskuläre Kontrolle - fundamental für athletische Performance und Sturzprävention (Longevity).',
+                instruction: 'Single-Leg Balance: 3×30 Sekunden pro Bein, Augen offen\nSingle-Leg Balance Eyes Closed: 3×20 Sekunden pro Bein\nBalance Reaches: 2×8 pro Richtung, einbeinig stehend\nBalance + Head Turns: 2×10 Kopfdrehungen pro Bein',
                 frequency: '2-3x pro Woche',
                 duration: '5 Min'
             });
@@ -92,6 +109,7 @@ async function generateComplementaryDrills(user, goal_description, base44) {
                 name: 'Diaphragmatischer Atem-Reset',
                 category: 'neuro_drill',
                 rationale: 'Aktiviert das parasympathische Nervensystem und verbessert Core-Stabilität durch optimale Atemfunktion - essentiell für Erholung und Longevity.',
+                instruction: 'Rückenlage mit angewinkelten Knien\nEine Hand auf Brust, eine auf Bauch\nTief durch die Nase einatmen - nur der Bauch hebt sich\nLangsam durch den Mund ausatmen - Bauch sinkt\n5-10 Atemzüge pro Runde, 3 Runden\nZwischen den Runden 30 Sekunden Pause',
                 frequency: 'täglich',
                 duration: '3-5 Min'
             });
