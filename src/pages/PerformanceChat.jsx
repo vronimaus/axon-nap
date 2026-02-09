@@ -663,17 +663,6 @@ export default function PerformanceChat() {
         )}
       </AnimatePresence>
 
-      {/* Replace Plan Modal */}
-      <AnimatePresence>
-        {showReplacePlanModal && existingActivePlan && (
-          <ReplacePlanModal
-            existingPlan={existingActivePlan}
-            onConfirm={handleReplacePlanConfirm}
-            onCancel={handleReplacePlanCancel}
-          />
-        )}
-      </AnimatePresence>
-
       {/* Baseline Check Modal */}
       <AnimatePresence>
         {showBaselineCheckModal && (
