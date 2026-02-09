@@ -717,37 +717,3 @@ export default function PerformanceChat() {
       </div>
       );
       }
-
-function SimpleChatBubble({ message }) {
-  const isUser = message.role === 'user';
-  
-  // Hide internal triggers
-  if (isUser && message.content?.includes('[FEEDBACK_SUBMITTED]')) {
-    return null;
-  }
-  
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      className={`flex gap-3 ${isUser ? 'justify-end' : 'justify-start'}`}
-    >
-      {!isUser && (
-        <div className="h-8 w-8 rounded-xl bg-gradient-to-br from-amber-500 to-yellow-600 flex items-center justify-center flex-shrink-0">
-          <Target className="w-4 h-4 text-white" />
-        </div>
-      )}
-      <div className={`max-w-[85%] ${isUser && 'flex flex-col items-end'}`}>
-        <div className={`rounded-xl px-4 py-3 ${
-          isUser 
-            ? 'bg-slate-800 text-white' 
-            : 'glass border border-amber-500/30 text-slate-200'
-        }`}>
-          <p className="text-sm leading-relaxed whitespace-pre-wrap">
-            {message.content?.replace(/\[SHOW_DONE_BUTTON\]/g, '').replace(/\[CREATE_PLAN\]/g, '').trim()}
-          </p>
-        </div>
-      </div>
-    </motion.div>
-  );
-}
