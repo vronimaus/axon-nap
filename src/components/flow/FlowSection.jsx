@@ -84,7 +84,7 @@ export default function FlowSection() {
       >
         <h2 className="text-2xl font-bold text-cyan-400 mb-3">🌊 Flow Section</h2>
         <p className="text-slate-300 mb-4">
-          Die <strong>5 fundamentalen Gary Gray 3DMAPS-Bewegungsmuster</strong> bilden die Grundlage für neuronale Bewegungsintegration und Kraftübertragung. Diese Muster zeigen, wie der Körper in verschiedenen Ebenen organisiert ist und wie Kraft durch myofasziale Ketten fließt.
+          Die <strong>5 fundamentalen Bewegungsmuster</strong> bilden die Grundlage für neuronale Bewegungsintegration und Kraftübertragung. Diese Muster zeigen, wie der Körper in verschiedenen Ebenen organisiert ist und wie Kraft durch myofasziale Ketten fließt.
         </p>
         <p className="text-sm text-slate-400">
           Nutze diese Referenzen im Coaching, um Clients ihre Bewegungsmuster zu zeigen und die Wichtigkeit von ganzheitlicher Mobilität und Stabilität zu vermitteln.
@@ -174,10 +174,10 @@ export default function FlowSection() {
         transition={{ delay: 0.5 }}
         className="glass rounded-xl border border-slate-700 p-4 bg-gradient-to-r from-purple-500/10 to-transparent"
       >
-        <h4 className="font-semibold text-purple-400 mb-2">📚 Quelle</h4>
+        <h4 className="font-semibold text-purple-400 mb-2">📚 Grundlagen</h4>
         <p className="text-sm text-slate-400">
-          Diese Bewegungsmuster basieren auf Gary Grays 3DMAPS-Konzept (3-Dimensional Movement Analysis and Performance System) 
-          und zeigen die neurologischen Koordinationsmuster, die für optimale Kraft- und Bewegungsintegration notwendig sind.
+          Diese Bewegungsmuster zeigen die neurologischen Koordinationsmuster, die für optimale Kraft- und Bewegungsintegration notwendig sind. 
+          Sie bilden die Basis für alle Trainings- und Rehabilitationsprogramme im AXON System.
         </p>
       </motion.div>
     </div>

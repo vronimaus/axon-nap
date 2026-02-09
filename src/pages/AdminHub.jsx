@@ -127,10 +127,10 @@ export default function AdminHub() {
                 Erweiterte Diagnose-Funktionen für detaillierte Ketten-Analysen und Plan-Erstellung.
               </p>
               <Button
-                onClick={() => window.location.href = createPageUrl('DiagnosisChat')}
+                onClick={() => window.location.href = createPageUrl('AdminDiagnostics')}
                 className="bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-600 hover:to-purple-700"
               >
-                Zum Diagnose Tool
+                Zum Admin Diagnose Tool
               </Button>
             </motion.div>
           </TabsContent>
