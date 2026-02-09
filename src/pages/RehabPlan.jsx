@@ -92,15 +92,17 @@ export default function RehabPlan() {
 
       return { isLastPhase, updateData };
     },
-    onSuccess: (result) => {
-      if (!result) return;
+    onSuccess: async (result) => {
+      if (!result || !user?.email) return;
       
-      console.log('Success! Querying updated plan...');
-      // Refetch alle queries mit dieser queryKey - das zwingt neuen Fetch
-      queryClient.refetchQueries({ 
-        queryKey: ['rehabPlan'],
+      console.log('Success! Refetching with correct queryKey...');
+      // Warte auf den Refetch mit der exakten queryKey
+      await queryClient.refetchQueries({ 
+        queryKey: ['rehabPlan', user.email],
         type: 'active'
       });
+      
+      console.log('Refetch complete, plan updated');
       
       if (result.isLastPhase) {
         toast.success('🎉 Glückwunsch! Du hast alle Phasen abgeschlossen!');
