@@ -27,7 +27,7 @@ export default function TrainingPlan() {
   // Get tab from URL parameter
   const urlParams = new URLSearchParams(window.location.search);
   const tabParam = urlParams.get('tab');
-  const [activeTab, setActiveTab] = useState(tabParam || 'rehab');
+  const [activeTab, setActiveTab] = useState(tabParam || 'performance');
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -160,14 +160,10 @@ export default function TrainingPlan() {
       {/* Main Content */}
       <div className="max-w-6xl mx-auto px-4 py-6 space-y-6">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-2 mb-6">
+          <TabsList className="grid w-full grid-cols-1 mb-6">
             <TabsTrigger value="performance" className="flex items-center gap-2">
               <Target className="w-4 h-4" />
               Performance
-            </TabsTrigger>
-            <TabsTrigger value="rehab" className="flex items-center gap-2">
-              <Activity className="w-4 h-4" />
-              Rehab
             </TabsTrigger>
           </TabsList>
 
@@ -374,39 +370,6 @@ export default function TrainingPlan() {
                 >
                   Zum Dashboard
                 </Button>
-              </motion.div>
-            )}
-          </TabsContent>
-
-          {/* Rehab Tab */}
-          <TabsContent value="rehab">
-            {!routines || routines.length === 0 ? (
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="glass rounded-2xl border border-cyan-500/30 p-8 text-center"
-              >
-                <Activity className="w-16 h-16 text-cyan-400 mx-auto mb-4 opacity-50" />
-                <h2 className="text-2xl font-bold text-white mb-2">Keine Rehab-Routinen vorhanden</h2>
-                <p className="text-slate-400 mb-6">
-                  Starte eine Diagnose-Session, um personalisierte Rehab-Übungen zu erhalten.
-                </p>
-                <Button
-                  onClick={() => window.location.href = createPageUrl('Dashboard')}
-                  className="bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-600 hover:to-purple-700"
-                >
-                  Zum Dashboard
-                </Button>
-              </motion.div>
-            ) : (
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="space-y-4"
-              >
-                {routines.map((routine, idx) => (
-                  <RoutineCard key={routine.id} routine={routine} index={idx} />
-                ))}
               </motion.div>
             )}
           </TabsContent>
