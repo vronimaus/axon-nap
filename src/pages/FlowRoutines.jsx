@@ -109,57 +109,100 @@ export default function FlowRoutines() {
 
       {/* Main Content */}
       <div className="max-w-6xl mx-auto px-4 py-8">
-        {categories.map((category, catIdx) => (
-          <div key={category.id} className="mb-12">
-            {/* Category Header */}
+        <AnimatePresence mode="wait">
+          {!selectedCategory ? (
+            // Category Selection View
             <motion.div
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: catIdx * 0.1 }}
-              className={`glass rounded-2xl border ${category.color.border} p-6 bg-gradient-to-r ${category.color.gradient} to-transparent mb-8`}
+              key="categories"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6"
             >
-              <h2 className={`text-xl font-bold ${category.color.text} mb-2`}>{category.name}</h2>
-              <p className="text-slate-300 text-sm">{category.description}</p>
+              {categories.map((category, idx) => (
+                <motion.button
+                  key={category.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: idx * 0.1 }}
+                  onClick={() => setSelectedCategory(category)}
+                  className={`glass rounded-2xl border ${category.color.border} p-6 bg-gradient-to-r ${category.color.gradient} to-transparent hover:border-${category.color.text.split('-')[1]}-500/60 active:border-${category.color.text.split('-')[1]}-500/80 transition-all text-left group touch-target`}
+                >
+                  <h2 className={`text-xl font-bold ${category.color.text} mb-2 group-hover:opacity-80 transition-opacity`}>{category.name}</h2>
+                  <p className="text-slate-300 text-sm">{category.description}</p>
+                </motion.button>
+              ))}
             </motion.div>
-
-            {/* Routines Grid */}
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {getRoutinesForCategory(category.id).length > 0 ? (
-                getRoutinesForCategory(category.id).map((routine, idx) => (
-                  <motion.div
-                    key={routine.id}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: (catIdx * 0.1) + (idx * 0.05) }}
-                    className="glass rounded-xl border border-slate-700 p-6 hover:border-slate-600 transition-all group flex flex-col h-full"
+          ) : (
+            // Routines View
+            <motion.div
+              key="routines"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="space-y-6"
+            >
+              {/* Category Header */}
+              <motion.div
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className={`glass rounded-2xl border ${selectedCategory.color.border} p-6 bg-gradient-to-r ${selectedCategory.color.gradient} to-transparent`}
+              >
+                <div className="flex items-start justify-between gap-4">
+                  <div>
+                    <h2 className={`text-2xl font-bold ${selectedCategory.color.text} mb-2`}>{selectedCategory.name}</h2>
+                    <p className="text-slate-300 text-sm">{selectedCategory.description}</p>
+                  </div>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => setSelectedCategory(null)}
+                    className="text-slate-400 hover:text-slate-200 flex-shrink-0"
                   >
-                    <div className="flex-1 mb-4">
-                      <h3 className="text-base font-bold text-white mb-2">{routine.routine_name}</h3>
-                      <p className="text-sm text-slate-400 line-clamp-3">{routine.description}</p>
-                    </div>
-                    <div className="flex items-center justify-between pt-4 border-t border-slate-700">
-                      <div className="flex items-center gap-2 text-sm text-slate-400">
-                        <Clock className="w-4 h-4" />
-                        <span>{routine.total_duration} Min</span>
-                      </div>
-                      <Button
-                        onClick={() => window.location.href = createPageUrl(`Flow?routine_id=${routine.id}`)}
-                        size="sm"
-                        className={`${category.color.button}`}
-                      >
-                        <Play className="w-4 h-4" />
-                      </Button>
-                    </div>
-                  </motion.div>
-                ))
-              ) : (
-                <div className="glass rounded-xl border border-slate-700 p-6 text-center col-span-full">
-                  <p className="text-slate-400">Keine Routinen in dieser Kategorie. Mehr folgen bald!</p>
+                    <ArrowLeft className="w-5 h-5" />
+                  </Button>
                 </div>
-              )}
-            </div>
-          </div>
-        ))}
+              </motion.div>
+
+              {/* Routines Grid */}
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {getRoutinesForCategory(selectedCategory.id).length > 0 ? (
+                  getRoutinesForCategory(selectedCategory.id).map((routine, idx) => (
+                    <motion.div
+                      key={routine.id}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: idx * 0.05 }}
+                      className="glass rounded-xl border border-slate-700 p-6 hover:border-slate-600 transition-all group flex flex-col h-full"
+                    >
+                      <div className="flex-1 mb-4">
+                        <h3 className="text-base font-bold text-white mb-2">{routine.routine_name}</h3>
+                        <p className="text-sm text-slate-400 line-clamp-3">{routine.description}</p>
+                      </div>
+                      <div className="flex items-center justify-between pt-4 border-t border-slate-700">
+                        <div className="flex items-center gap-2 text-sm text-slate-400">
+                          <Clock className="w-4 h-4" />
+                          <span>{routine.total_duration} Min</span>
+                        </div>
+                        <Button
+                          onClick={() => window.location.href = createPageUrl(`Flow?routine_id=${routine.id}`)}
+                          size="sm"
+                          className={`${selectedCategory.color.button}`}
+                        >
+                          <Play className="w-4 h-4" />
+                        </Button>
+                      </div>
+                    </motion.div>
+                  ))
+                ) : (
+                  <div className="glass rounded-xl border border-slate-700 p-6 text-center col-span-full">
+                    <p className="text-slate-400">Keine Routinen in dieser Kategorie. Mehr folgen bald!</p>
+                  </div>
+                )}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         {/* Recent Completions */}
         {completionHistory.length > 0 && (
