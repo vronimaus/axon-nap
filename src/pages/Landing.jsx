@@ -450,7 +450,7 @@ export default function Landing() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.1 }}
-              className="glass rounded-2xl border border-purple-500/30 p-8 bg-gradient-to-br from-purple-500/10 to-transparent"
+              className="relative glass rounded-2xl border border-purple-500/30 p-8 bg-gradient-to-br from-purple-500/10 to-transparent"
             >
               <div className="absolute top-6 right-6 px-3 py-1 rounded-full bg-gradient-to-r from-cyan-500 to-purple-600 text-white text-xs font-bold">
                 SOFORT ZUGRIFF
