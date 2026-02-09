@@ -144,7 +144,7 @@ export default function Dashboard() {
             {/* 3. FLOW (Daily Maintenance) - UNCHANGED */}
             <motion.button
               whileTap={{ scale: 0.98 }}
-              onClick={() => window.location.href = createPageUrl('FlowSelection')}
+              onClick={() => window.location.href = createPageUrl('FlowRoutines')}
               className="glass rounded-xl sm:rounded-2xl border border-cyan-500/30 p-6 sm:p-8 hover:border-cyan-500/60 active:border-cyan-500/80 transition-all group touch-target"
             >
               <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-xl sm:rounded-2xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center mb-3 sm:mb-4 mx-auto group-hover:shadow-lg group-hover:shadow-cyan-500/50 transition-all">
