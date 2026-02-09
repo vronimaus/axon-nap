@@ -321,14 +321,28 @@ export default function Dashboard() {
                     <h1 className="text-2xl sm:text-3xl font-bold text-amber-400 tracking-tight">PERFORMANCE</h1>
                   </div>
                   
-                  {/* Performance Goal Input */}
+                  {/* Instructions Card */}
                   <div className="glass rounded-xl sm:rounded-2xl border border-amber-500/30 p-4 sm:p-6 bg-gradient-to-r from-amber-500/10 to-transparent">
-                    <h2 className="text-base sm:text-lg font-semibold text-amber-400 mb-3">Welches Ziel möchtest du erreichen?</h2>
+                    <h2 className="text-base sm:text-lg font-semibold text-amber-400 mb-3">Was möchtest du schaffen?</h2>
+                    <div className="space-y-2 text-xs sm:text-sm text-slate-300 mb-4">
+                      <p className="flex items-start gap-2">
+                        <span className="text-amber-400 font-bold flex-shrink-0">•</span>
+                        <span><strong>Konkrete Übung:</strong> "10 Klimmzüge", "Pistol Squat", "Handstand 30 Sekunden"</span>
+                      </p>
+                      <p className="flex items-start gap-2">
+                        <span className="text-amber-400 font-bold flex-shrink-0">•</span>
+                        <span><strong>Skill freischalten:</strong> "Front Lever", "Muscle-Up", "Human Flag"</span>
+                      </p>
+                      <p className="flex items-start gap-2">
+                        <span className="text-amber-400 font-bold flex-shrink-0">•</span>
+                        <span><strong>Mobility-Ziel:</strong> "Middle Split", "Pancake Stretch", "Bridge"</span>
+                      </p>
+                    </div>
                     <input
                       type="text"
                       value={selectedBodyRegion || ''}
                       onChange={(e) => setSelectedBodyRegion(e.target.value)}
-                      placeholder="z.B. Klimmzug, Pistol Squat, Handstand..."
+                      placeholder="Gib dein Ziel ein..."
                       className="w-full px-4 py-3 rounded-lg bg-slate-800/50 border border-slate-700 text-white placeholder-slate-500 focus:outline-none focus:border-amber-400 text-sm sm:text-base"
                     />
                   </div>
