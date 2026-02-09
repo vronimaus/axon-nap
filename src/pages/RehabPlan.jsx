@@ -197,7 +197,7 @@ export default function RehabPlan() {
                   </div>
                   <div className="min-w-0">
                     <h4 className="font-semibold text-white">{exercise.name}</h4>
-                    <p className="text-sm text-slate-400">{exercise.reps_or_sets}</p>
+                    <p className="text-sm text-slate-400">{exercise.sets_reps_tempo}</p>
                   </div>
                 </div>
                 <ChevronDown
@@ -220,7 +220,7 @@ export default function RehabPlan() {
                     <div className="mb-6">
                       <h5 className="font-semibold text-slate-200 mb-2">So geht's:</h5>
                       <p className="text-slate-300 text-sm leading-relaxed whitespace-pre-wrap">
-                        {exercise.description}
+                        {exercise.instruction}
                       </p>
                     </div>
 
