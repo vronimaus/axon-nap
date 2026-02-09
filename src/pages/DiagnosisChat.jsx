@@ -29,7 +29,7 @@ export default function DiagnosisChat() {
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   const [showBodyMap, setShowBodyMap] = useState(false);
-  // Start with body_map if no initial data, or intensity if coming from dashboard with mapData
+  // Workflow: body_map -> intensity -> analysis_card -> retest -> chain_scan -> follow_up
   const [workflowStep, setWorkflowStep] = useState(mapDataParam && regionParam ? 'intensity' : 'body_map');
   const [diagnosisCardData, setDiagnosisCardData] = useState(null);
   const messagesEndRef = useRef(null);
@@ -138,6 +138,8 @@ export default function DiagnosisChat() {
            });
            // Move to analysis card focus screen
            setWorkflowStep('analysis_card');
+         } else if (content.includes('[TRIGGER_CHAIN_SCAN]')) {
+           setWorkflowStep('chain_scan');
          }
        }
      }
@@ -333,8 +335,18 @@ export default function DiagnosisChat() {
   };
 
   const handleRetestPositive = async () => {
-    // Success! Go directly to dashboard - no agent call needed
-    window.location.href = createPageUrl('Dashboard');
+    // User feels better - but trigger chain scan instead of ending
+    setLoading(true);
+    try {
+      await base44.agents.addMessage(conversation, {
+        role: 'user',
+        content: 'Fühlt sich tatsächlich besser an!'
+      });
+      // Agent will trigger [TRIGGER_CHAIN_SCAN] to check the full chain
+    } catch (error) {
+      console.error('Fehler:', error);
+      setLoading(false);
+    }
   };
 
   const handleRetestNegative = async () => {
@@ -437,6 +449,63 @@ export default function DiagnosisChat() {
           onPositive={handleRetestPositive}
           onNegative={handleRetestNegative}
         />
+      </FocusScreenContainer>
+    );
+  }
+
+  if (workflowStep === 'chain_scan') {
+    return (
+      <FocusScreenContainer
+        title="🔍 Erweiterte Kettenanalyse"
+        instruction="Markiere weitere Bereiche mit Spannung oder Beschwerden - auch wenn sie nicht akut schmerzen"
+        showBackButton={false}
+      >
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="space-y-6"
+        >
+          {/* Show last assistant message with chain explanation */}
+          {(() => {
+            const lastAssistantMsg = [...messages].reverse().find(m => m.role === 'assistant');
+            const lastMsgContent = lastAssistantMsg?.content?.split('[TRIGGER_CHAIN_SCAN]')[0].trim() || '';
+            
+            return lastMsgContent && (
+              <div className="glass rounded-2xl p-6 border border-cyan-500/30">
+                <ReactMarkdown
+                  className="text-slate-300 prose prose-sm prose-invert max-w-none"
+                  components={{
+                    p: ({ children }) => <p className="mb-3">{children}</p>,
+                    strong: ({ children }) => <strong className="text-cyan-400">{children}</strong>,
+                    ul: ({ children }) => <ul className="ml-4 list-disc mb-3">{children}</ul>,
+                    li: ({ children }) => <li className="mb-1">{children}</li>
+                  }}
+                >
+                  {lastMsgContent}
+                </ReactMarkdown>
+              </div>
+            );
+          })()}
+
+          {/* Body Map for marking additional areas */}
+          <InteractiveBodyMapInput
+            onSubmit={async (data) => {
+              const regions = data.detectedRegions?.join(', ') || 'weitere Bereiche';
+              setLoading(true);
+              try {
+                await base44.agents.addMessage(conversation, {
+                  role: 'user',
+                  content: `Ich habe folgende Bereiche markiert: ${regions}`
+                });
+                // Agent will provide full chain protocol
+                setWorkflowStep('follow_up');
+              } catch (error) {
+                console.error('Fehler:', error);
+                setLoading(false);
+              }
+            }}
+          />
+        </motion.div>
       </FocusScreenContainer>
     );
   }
