@@ -140,7 +140,11 @@ export default function DiagnosisChat() {
            setWorkflowStep('analysis_card');
          } else if (content.includes('[TRIGGER_CHAIN_SCAN]')) {
            setWorkflowStep('chain_scan');
-         } else if (content.includes('[CREATE_REHAB_PLAN]') || content.includes('Dein umfassender Reha-Plan wurde erstellt')) {
+         } else if (
+           content.includes('[CREATE_REHAB_PLAN]') || 
+           content.includes('Dein umfassender Reha-Plan wurde erstellt') ||
+           (content.includes('Phase 3: Langfristige Prävention') && content.includes('Ich erstelle jetzt einen umfassenden Reha-Plan'))
+         ) {
            setWorkflowStep('rehab_plan_created');
          }
        }
