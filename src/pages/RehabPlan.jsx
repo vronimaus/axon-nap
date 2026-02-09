@@ -31,7 +31,7 @@ export default function RehabPlan() {
     checkAuth();
   }, []);
 
-  const { data: rehabPlan, refetch: refetchPlan } = useQuery({
+  const { data: rehabPlan } = useQuery({
     queryKey: ['rehabPlan', user?.email],
     queryFn: async () => {
       if (!user?.email) return null;
