@@ -356,25 +356,28 @@ export default function RehabPlan() {
           </div>
 
           {/* Complete Phase Button */}
-          {rehabPlan.current_phase < rehabPlan.phases.length ? (
-            <div className="glass rounded-xl border border-cyan-500/30 p-6 bg-gradient-to-r from-cyan-500/10 to-transparent">
-              <h3 className="font-semibold text-white mb-2">Bereit für die nächste Phase?</h3>
-              <p className="text-slate-300 text-sm mb-4">
-                Wenn dein Schmerzlevel deutlich gesunken ist und du die Übungen gut beherrschst, kannst du zur nächsten Phase übergehen.
-                {getAveragePainLevel() !== null && parseFloat(getAveragePainLevel()) > 5 && (
-                  <span className="block mt-2 text-yellow-400">
-                    ⚠️ Dein durchschnittliches Schmerzlevel ist noch hoch. Es wird empfohlen, noch ein paar Tage in dieser Phase zu bleiben.
-                  </span>
-                )}
-              </p>
-              <Button
-                onClick={() => completeCurrentPhaseMutation.mutate()}
-                disabled={completeCurrentPhaseMutation.isPending}
-                className="w-full bg-cyan-500/20 text-cyan-400 hover:bg-cyan-500/30"
-              >
-                {completeCurrentPhaseMutation.isPending ? 'Wird gespeichert...' : `Zur Phase ${rehabPlan.current_phase + 1} wechseln`}
-              </Button>
-            </div>
+          {(rehabPlan.current_phase || 1) < rehabPlan.phases.length ? (
+           <div className="glass rounded-xl border border-cyan-500/30 p-6 bg-gradient-to-r from-cyan-500/10 to-transparent">
+             <h3 className="font-semibold text-white mb-2">Bereit für die nächste Phase?</h3>
+             <p className="text-slate-300 text-sm mb-4">
+               Wenn dein Schmerzlevel deutlich gesunken ist und du die Übungen gut beherrschst, kannst du zur nächsten Phase übergehen.
+               {getAveragePainLevel() !== null && parseFloat(getAveragePainLevel()) > 5 && (
+                 <span className="block mt-2 text-yellow-400">
+                   ⚠️ Dein durchschnittliches Schmerzlevel ist noch hoch. Es wird empfohlen, noch ein paar Tage in dieser Phase zu bleiben.
+                 </span>
+               )}
+             </p>
+             <Button
+               onClick={() => {
+                 console.log('Phase completion triggered for phase:', rehabPlan.current_phase);
+                 completeCurrentPhaseMutation.mutate();
+               }}
+               disabled={completeCurrentPhaseMutation.isPending}
+               className="w-full bg-cyan-500/20 text-cyan-400 hover:bg-cyan-500/30"
+             >
+               {completeCurrentPhaseMutation.isPending ? 'Wird gespeichert...' : `Zur Phase ${(rehabPlan.current_phase || 1) + 1} wechseln`}
+             </Button>
+           </div>
           ) : (
             <div className="glass rounded-xl border border-green-500/30 p-6 bg-gradient-to-r from-green-500/10 to-transparent">
               <h3 className="font-semibold text-white mb-2">🎉 Finale Phase!</h3>
