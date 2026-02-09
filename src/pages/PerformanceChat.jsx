@@ -61,7 +61,10 @@ export default function PerformanceChat() {
           }
         }
 
-        setGoalName(goal || 'Dein Ziel');
+        // Decode goal if it's URL-encoded
+        const decodedGoal = goal ? decodeURIComponent(goal) : null;
+        
+        setGoalName(decodedGoal || 'Dein Ziel');
 
         // Fetch existing performance baselines
         let baselines = [];
