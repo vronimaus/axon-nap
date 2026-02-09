@@ -204,8 +204,8 @@ export default function FlowRoutines() {
           )}
         </AnimatePresence>
 
-        {/* Recent Completions */}
-        {completionHistory.length > 0 && (
+        {/* Recent Completions - only show on category selection view */}
+        {!selectedCategory && completionHistory.length > 0 && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
