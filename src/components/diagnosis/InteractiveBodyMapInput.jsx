@@ -6,15 +6,16 @@ import { RotateCcw, ArrowRight } from 'lucide-react';
 export default function InteractiveBodyMapInput({ onSubmit }) {
   const [view, setView] = useState('front');
   const [markers, setMarkers] = useState([]);
+  const [imageLoaded, setImageLoaded] = useState(false);
+  const [imageError, setImageError] = useState(false);
   const canvasRef = useRef(null);
   const imageRef = useRef(null);
 
+  // Same URLs as in Dashboard BodyMap
   const bodyImages = {
-    front: 'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/8fa3e2584_body_front.png',
-    back: 'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/03e0e9f73_body_back.png'
+    front: 'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/ad6e52b61_generated_image.png',
+    back: 'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/ad6e52b61_generated_image.png'
   };
-
-  const [imageLoaded, setImageLoaded] = useState(false);
 
   useEffect(() => {
     drawMarkers();
