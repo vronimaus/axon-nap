@@ -92,7 +92,28 @@ export default function RehabPlan() {
     );
   }
 
-  const currentPhase = rehabPlan.phases[rehabPlan.current_phase - 1];
+  const currentPhaseIndex = (rehabPlan.current_phase || 1) - 1;
+  const currentPhase = rehabPlan.phases[currentPhaseIndex] || rehabPlan.phases[0];
+
+  if (!currentPhase) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 p-4 flex items-center justify-center">
+        <div className="max-w-md w-full glass rounded-2xl border border-slate-700 p-8 text-center">
+          <AlertCircle className="w-12 h-12 text-slate-400 mx-auto mb-4" />
+          <h2 className="text-xl font-bold text-white mb-2">Plan-Fehler</h2>
+          <p className="text-slate-300 mb-6">
+            Der Trainingsplan hat keine Phasen. Bitte erstelle einen neuen Plan.
+          </p>
+          <Button
+            onClick={() => window.location.href = createPageUrl('Dashboard')}
+            className="w-full bg-cyan-500/20 text-cyan-400 hover:bg-cyan-500/30"
+          >
+            Zum Command
+          </Button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 pb-20 md:pb-6">
