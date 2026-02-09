@@ -112,7 +112,7 @@ export default function PerformanceChat() {
         setConversation(newConversation);
 
         // Build initial prompt with goal, baseline data, and optional tension data
-        let initialPrompt = `Mein nächstes Ziel ist: ${goal}`;
+        let initialPrompt = `Mein nächstes Ziel ist: ${decodedGoal || goal}`;
 
         // Add baseline test results if available
         if (baselines.length > 0) {
