@@ -8,6 +8,7 @@ export default function InteractiveBodyMapInput({ onSubmit }) {
   const [markers, setMarkers] = useState([]);
   const [imageLoaded, setImageLoaded] = useState(false);
   const [imageError, setImageError] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const canvasRef = useRef(null);
   const imageRef = useRef(null);
 
@@ -58,7 +59,9 @@ export default function InteractiveBodyMapInput({ onSubmit }) {
   };
 
   const handleSubmit = () => {
-    if (markers.length === 0) return;
+    if (markers.length === 0 || isSubmitting) return;
+    
+    setIsSubmitting(true);
     
     const mapData = {
       view,
@@ -157,11 +160,24 @@ export default function InteractiveBodyMapInput({ onSubmit }) {
         </Button>
         <Button
           onClick={handleSubmit}
-          disabled={markers.length === 0}
+          disabled={markers.length === 0 || isSubmitting}
           className="flex-1 bg-gradient-to-r from-red-500 to-pink-600 hover:from-red-600 hover:to-pink-700 text-white font-bold"
         >
-          Weiter
-          <ArrowRight className="w-4 h-4 ml-2" />
+          {isSubmitting ? (
+            <>
+              <motion.div
+                animate={{ rotate: 360 }}
+                transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                className="w-4 h-4 border-2 border-white border-t-transparent rounded-full"
+              />
+              <span className="ml-2">Wird verarbeitet...</span>
+            </>
+          ) : (
+            <>
+              Weiter
+              <ArrowRight className="w-4 h-4 ml-2" />
+            </>
+          )}
         </Button>
       </div>
     </div>
