@@ -94,16 +94,22 @@ export default function InteractiveBodyMapInput({ onSubmit }) {
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.3 }}
-        className="relative max-w-md mx-auto bg-slate-800/30 rounded-2xl p-4"
+        className="relative w-full max-w-md mx-auto bg-slate-800/30 rounded-2xl p-4 min-h-[400px]"
       >
-        <div className="relative">
+        {!imageLoaded && (
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="text-slate-400">Lade Körperbild...</div>
+          </div>
+        )}
+        <div className="relative w-full">
           <img
             ref={imageRef}
             src={bodyImages[view]}
             alt={`Body ${view}`}
-            className="w-full h-auto rounded-xl"
-            style={{ display: 'block', maxHeight: '600px', objectFit: 'contain' }}
+            className="w-full h-auto rounded-xl mx-auto"
+            style={{ display: 'block', minHeight: '300px' }}
             onLoad={() => {
+              setImageLoaded(true);
               const canvas = canvasRef.current;
               const img = imageRef.current;
               if (canvas && img) {
@@ -114,14 +120,12 @@ export default function InteractiveBodyMapInput({ onSubmit }) {
             }}
             onError={(e) => {
               console.error('Bild konnte nicht geladen werden:', bodyImages[view]);
-              e.target.style.display = 'none';
             }}
           />
           <canvas
             ref={canvasRef}
             onClick={handleCanvasClick}
             className="absolute top-0 left-0 w-full h-full cursor-crosshair rounded-xl"
-            style={{ pointerEvents: imageRef.current ? 'auto' : 'none' }}
           />
         </div>
       </motion.div>
