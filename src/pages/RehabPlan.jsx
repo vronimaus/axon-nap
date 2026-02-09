@@ -419,10 +419,18 @@ function ExerciseFeedbackForm({ exercise, onSubmit }) {
       return;
     }
     setIsSubmitting(true);
-    await onSubmit(parseFloat(metricValue), notes);
-    setMetricValue('');
-    setNotes('');
-    setIsSubmitting(false);
+    try {
+      await onSubmit(parseFloat(metricValue), notes);
+      // Kurz auf dem Wert bleiben damit User sieht dass es gespeichert wurde, dann clearen
+      setTimeout(() => {
+        setMetricValue('');
+        setNotes('');
+      }, 500);
+    } catch (error) {
+      console.error('Submit error:', error);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const getMetricLabel = () => {
