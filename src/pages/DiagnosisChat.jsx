@@ -530,8 +530,35 @@ export default function DiagnosisChat() {
   }
 
   if (workflowStep === 'rehab_plan_created') {
-    // Show completion screen with buttons
+    // Check if plan is still being created (has tool_calls)
     const lastAssistantMsg = [...messages].reverse().find(m => m.role === 'assistant');
+    const isCreating = lastAssistantMsg?.tool_calls?.some(tc => tc.status === 'running' || tc.status === 'pending');
+
+    if (isCreating) {
+      return (
+        <FocusScreenContainer
+          title="🏗️ Dein Reha-Plan wird erstellt..."
+          instruction="Bitte warten, dies kann einen Moment dauern"
+          showBackButton={false}
+        >
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="w-full max-w-2xl mx-auto flex flex-col items-center justify-center py-12"
+          >
+            <motion.div
+              animate={{ rotate: 360 }}
+              transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+              className="w-24 h-24 border-4 border-cyan-500 border-t-transparent rounded-full mb-6"
+            />
+            <p className="text-slate-300 text-lg mb-2">Erstelle deinen persönlichen Reha-Plan...</p>
+            <p className="text-slate-500 text-sm">Phase 1: Akut-Linderung • Phase 2: Integration • Phase 3: Prävention</p>
+          </motion.div>
+        </FocusScreenContainer>
+      );
+    }
+
+    // Plan created - show completion screen
     const lastMsgContent = lastAssistantMsg?.content?.split('[CREATE_REHAB_PLAN]')[0].trim() || '';
 
     return (
