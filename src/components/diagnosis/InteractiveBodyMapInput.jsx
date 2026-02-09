@@ -90,46 +90,55 @@ export default function InteractiveBodyMapInput({ onSubmit }) {
       </div>
 
       {/* Body Map */}
-      <motion.div
-        key={view}
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.3 }}
-        className="relative w-full max-w-md mx-auto bg-slate-800/30 rounded-2xl p-4 min-h-[400px]"
-      >
-        {!imageLoaded && (
-          <div className="absolute inset-0 flex items-center justify-center">
-            <div className="text-slate-400">Lade Körperbild...</div>
+      <div className="relative w-full max-w-md mx-auto">
+        {imageError && (
+          <div className="bg-red-500/20 border border-red-500/50 rounded-xl p-4 mb-4 text-red-400 text-center">
+            Körperbild konnte nicht geladen werden
           </div>
         )}
-        <div className="relative w-full">
+        <motion.div
+          key={view}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="relative w-full aspect-[3/4] bg-slate-800/50 rounded-2xl overflow-hidden"
+        >
           <img
             ref={imageRef}
             src={bodyImages[view]}
             alt={`Body ${view}`}
-            className="w-full h-auto rounded-xl mx-auto"
-            style={{ display: 'block', minHeight: '300px' }}
-            onLoad={() => {
+            className="absolute inset-0 w-full h-full object-contain"
+            onLoad={(e) => {
+              console.log('Bild geladen:', bodyImages[view]);
               setImageLoaded(true);
+              setImageError(false);
               const canvas = canvasRef.current;
-              const img = imageRef.current;
+              const img = e.target;
               if (canvas && img) {
-                canvas.width = img.offsetWidth;
-                canvas.height = img.offsetHeight;
+                // Set canvas to match displayed image size
+                canvas.width = img.clientWidth;
+                canvas.height = img.clientHeight;
                 drawMarkers();
               }
             }}
             onError={(e) => {
-              console.error('Bild konnte nicht geladen werden:', bodyImages[view]);
+              console.error('Bild Fehler:', bodyImages[view], e);
+              setImageError(true);
+              setImageLoaded(false);
             }}
           />
           <canvas
             ref={canvasRef}
             onClick={handleCanvasClick}
-            className="absolute top-0 left-0 w-full h-full cursor-crosshair rounded-xl"
+            className="absolute inset-0 w-full h-full cursor-crosshair"
+            style={{ pointerEvents: imageLoaded ? 'auto' : 'none' }}
           />
-        </div>
-      </motion.div>
+          {!imageLoaded && !imageError && (
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="text-slate-400 text-sm">Lade Körperbild...</div>
+            </div>
+          )}
+        </motion.div>
+      </div>
 
       {/* Instructions */}
       <p className="text-center text-sm text-slate-400">
