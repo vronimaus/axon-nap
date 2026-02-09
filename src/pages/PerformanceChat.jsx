@@ -671,17 +671,7 @@ export default function PerformanceChat() {
                 </motion.div>
               )}
 
-              {/* Step 3: Simplified Chat for Follow-up */}
-              {workflowStep === 'chat' && (
-                <div className="space-y-4">
-                  {messages
-                    .filter(msg => !msg.content?.includes('[SHOW_GOAL_ANALYSIS]') && !msg.content?.includes('[SHOW_EXERCISES]'))
-                    .map((msg, idx) => (
-                      <SimpleChatBubble key={idx} message={msg} />
-                    ))}
-                  <div ref={messagesEndRef} />
-                </div>
-              )}
+
             </>
           )}
         </div>
