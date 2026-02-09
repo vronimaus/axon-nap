@@ -102,7 +102,7 @@ export default function PerformanceChat() {
         const newConversation = await base44.agents.createConversation({
           agent_name: 'performance_coach',
           metadata: {
-            goal: goal,
+            goal: decodedGoal || goal,
             has_tension_map: !!mapDataStr,
             baseline_count: baselines.length,
             complaint_history_summary: complaintHistory.length > 0 ? `${complaintHistory.length} Beschwerden` : 'Keine'
