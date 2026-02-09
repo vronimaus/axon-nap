@@ -273,18 +273,11 @@ function ExerciseFeedbackForm({ exercise, onSubmit }) {
   };
 
   const getMetricLabel = () => {
-    switch (exercise.tracking_metric) {
-      case 'pain_scale':
-        return 'Schmerzlevel (0-10)';
-      case 'angle_degrees':
-        return 'Winkel (Grad)';
-      case 'distance_cm':
-        return 'Abstand (cm)';
-      case 'reps_count':
-        return 'Wiederholungen';
-      default:
-        return 'Wert';
+    // Für Rehab-Pläne tracken wir primär Schmerzlevel
+    if (exercise.category === 'mfr' || exercise.category === 'neuro') {
+      return 'Schmerzlevel nach Übung (0-10)';
     }
+    return 'Wie fühlte es sich an? (0-10)';
   };
 
   return (
@@ -297,9 +290,11 @@ function ExerciseFeedbackForm({ exercise, onSubmit }) {
           type="number"
           value={metricValue}
           onChange={(e) => setMetricValue(e.target.value)}
-          placeholder={`z.B. ${exercise.tracking_baseline || '5'}`}
+          placeholder="0 = kein Schmerz, 10 = maximaler Schmerz"
+          min="0"
+          max="10"
           className="w-full px-3 py-2 bg-slate-800 border border-slate-600 rounded-lg text-white text-sm focus:outline-none focus:border-orange-400"
-          step="0.1"
+          step="0.5"
         />
       </div>
 
