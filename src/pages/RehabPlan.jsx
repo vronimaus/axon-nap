@@ -65,6 +65,10 @@ export default function RehabPlan() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['rehabPlan'] });
       toast.success('Fortschritt gespeichert!');
+    },
+    onError: (error) => {
+      console.error('Feedback error:', error);
+      toast.error('Fehler beim Speichern des Fortschritts');
     }
   });
 
