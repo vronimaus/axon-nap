@@ -420,24 +420,35 @@ export default function DiagnosisChat() {
         instruction="Folge den 3 Schritten und melde dich danach zurück"
         showBackButton={false}
       >
-        <DiagnosisCard
-          title={diagnosisCardData?.title || 'Diagnose'}
-          analysis={diagnosisCardData?.analysis || ''}
-          callToAction="Fertig – Übungen gemacht"
-          onActionClick={async () => {
-            setLoading(true);
-            try {
-              await base44.agents.addMessage(conversation, {
-                role: 'user',
-                content: 'Habe es gemacht'
-              });
-              // Agent will trigger [TRIGGER_RETEST] which moves to 'retest'
-            } catch (error) {
-              console.error('Fehler:', error);
-              setLoading(false);
-            }
-          }}
-        />
+        {loading ? (
+          <div className="flex flex-col items-center justify-center py-12">
+            <motion.div
+              animate={{ rotate: 360 }}
+              transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+              className="w-16 h-16 border-4 border-cyan-500 border-t-transparent rounded-full mb-4"
+            />
+            <p className="text-slate-300 text-lg">Analyse läuft...</p>
+          </div>
+        ) : (
+          <DiagnosisCard
+            title={diagnosisCardData?.title || 'Diagnose'}
+            analysis={diagnosisCardData?.analysis || ''}
+            callToAction="Fertig – Übungen gemacht"
+            onActionClick={async () => {
+              setLoading(true);
+              try {
+                await base44.agents.addMessage(conversation, {
+                  role: 'user',
+                  content: 'Habe es gemacht'
+                });
+                // Agent will trigger [TRIGGER_RETEST] which moves to 'retest'
+              } catch (error) {
+                console.error('Fehler:', error);
+                setLoading(false);
+              }
+            }}
+          />
+        )}
       </FocusScreenContainer>
     );
   }
