@@ -68,6 +68,46 @@ export default function RehabPlan() {
     }
   });
 
+  const completeCurrentPhaseMutation = useMutation({
+    mutationFn: async () => {
+      if (!rehabPlan) return;
+
+      const nextPhase = rehabPlan.current_phase + 1;
+      const isLastPhase = nextPhase > rehabPlan.phases.length;
+
+      await base44.entities.RehabPlan.update(rehabPlan.id, {
+        current_phase: isLastPhase ? rehabPlan.current_phase : nextPhase,
+        status: isLastPhase ? 'completed' : 'active',
+        phase_start_date: isLastPhase ? rehabPlan.phase_start_date : new Date().toISOString().split('T')[0]
+      });
+
+      return isLastPhase;
+    },
+    onSuccess: (isLastPhase) => {
+      queryClient.invalidateQueries({ queryKey: ['rehabPlan'] });
+      if (isLastPhase) {
+        toast.success('🎉 Glückwunsch! Du hast alle Phasen abgeschlossen!');
+      } else {
+        toast.success('✅ Phase abgeschlossen! Willkommen in der nächsten Phase.');
+      }
+    }
+  });
+
+  const getAveragePainLevel = () => {
+    if (!rehabPlan?.feedback_history?.length) return null;
+    
+    const recent = rehabPlan.feedback_history.slice(-10);
+    const sum = recent.reduce((acc, f) => acc + (f.metric_value || 0), 0);
+    return (sum / recent.length).toFixed(1);
+  };
+
+  const getDaysInCurrentPhase = () => {
+    if (!rehabPlan?.phase_start_date) return 0;
+    const start = new Date(rehabPlan.phase_start_date);
+    const now = new Date();
+    return Math.floor((now - start) / (1000 * 60 * 60 * 24));
+  };
+
   if (isLoading) {
     return <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950" />;
   }
@@ -242,13 +282,72 @@ export default function RehabPlan() {
           ))}
         </div>
 
-        {/* Progress Notes */}
-        <div className="mt-8 glass rounded-xl border border-slate-700 p-6">
-          <h3 className="font-semibold text-white mb-3">💡 Tipp</h3>
-          <p className="text-slate-300 text-sm leading-relaxed">
-            Mache diese Übungen regelmäßig - am besten täglich oder nach Bedarf. Dein Körper braucht Zeit, um sich anzupassen. 
-            Wenn dein Schmerz besser wird, wechselst du zur nächsten Phase mit Aufbauübungen.
-          </p>
+        {/* Phase Progress & Completion */}
+        <div className="mt-8 space-y-4">
+          {/* Stats */}
+          <div className="grid grid-cols-2 gap-4">
+            <div className="glass rounded-xl border border-slate-700 p-4">
+              <div className="text-sm text-slate-400 mb-1">Tage in dieser Phase</div>
+              <div className="text-2xl font-bold text-white">{getDaysInCurrentPhase()} / {currentPhase.duration_days}</div>
+            </div>
+            {getAveragePainLevel() !== null && (
+              <div className="glass rounded-xl border border-slate-700 p-4">
+                <div className="text-sm text-slate-400 mb-1">Ø Schmerzlevel</div>
+                <div className={`text-2xl font-bold ${
+                  parseFloat(getAveragePainLevel()) <= 3 ? 'text-green-400' :
+                  parseFloat(getAveragePainLevel()) <= 6 ? 'text-yellow-400' :
+                  'text-red-400'
+                }`}>
+                  {getAveragePainLevel()} / 10
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Complete Phase Button */}
+          {rehabPlan.current_phase < rehabPlan.phases.length ? (
+            <div className="glass rounded-xl border border-cyan-500/30 p-6 bg-gradient-to-r from-cyan-500/10 to-transparent">
+              <h3 className="font-semibold text-white mb-2">Bereit für die nächste Phase?</h3>
+              <p className="text-slate-300 text-sm mb-4">
+                Wenn dein Schmerzlevel deutlich gesunken ist und du die Übungen gut beherrschst, kannst du zur nächsten Phase übergehen.
+                {getAveragePainLevel() !== null && parseFloat(getAveragePainLevel()) > 5 && (
+                  <span className="block mt-2 text-yellow-400">
+                    ⚠️ Dein durchschnittliches Schmerzlevel ist noch hoch. Es wird empfohlen, noch ein paar Tage in dieser Phase zu bleiben.
+                  </span>
+                )}
+              </p>
+              <Button
+                onClick={() => completeCurrentPhaseMutation.mutate()}
+                disabled={completeCurrentPhaseMutation.isPending}
+                className="w-full bg-cyan-500/20 text-cyan-400 hover:bg-cyan-500/30"
+              >
+                {completeCurrentPhaseMutation.isPending ? 'Wird gespeichert...' : `Zur Phase ${rehabPlan.current_phase + 1} wechseln`}
+              </Button>
+            </div>
+          ) : (
+            <div className="glass rounded-xl border border-green-500/30 p-6 bg-gradient-to-r from-green-500/10 to-transparent">
+              <h3 className="font-semibold text-white mb-2">🎉 Finale Phase!</h3>
+              <p className="text-slate-300 text-sm mb-4">
+                Das ist die letzte Phase deines Reha-Plans. Wenn du diese erfolgreich abgeschlossen hast, kannst du den Plan als beendet markieren.
+              </p>
+              <Button
+                onClick={() => completeCurrentPhaseMutation.mutate()}
+                disabled={completeCurrentPhaseMutation.isPending}
+                className="w-full bg-green-500/20 text-green-400 hover:bg-green-500/30"
+              >
+                {completeCurrentPhaseMutation.isPending ? 'Wird gespeichert...' : 'Plan als abgeschlossen markieren'}
+              </Button>
+            </div>
+          )}
+
+          {/* Progress Notes */}
+          <div className="glass rounded-xl border border-slate-700 p-6">
+            <h3 className="font-semibold text-white mb-3">💡 Tipp</h3>
+            <p className="text-slate-300 text-sm leading-relaxed">
+              Mache diese Übungen regelmäßig - am besten täglich oder nach Bedarf. Dein Körper braucht Zeit, um sich anzupassen. 
+              Tracke deinen Fortschritt nach jeder Session, damit du siehst wie sich dein Schmerzlevel entwickelt.
+            </p>
+          </div>
         </div>
       </div>
     </div>
