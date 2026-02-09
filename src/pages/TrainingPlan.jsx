@@ -346,7 +346,6 @@ export default function TrainingPlan() {
               </motion.div>
             )}
       </div>
-      </div>
 
       {/* Exercise Detail Modal */}
       <AnimatePresence>
