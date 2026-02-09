@@ -234,7 +234,7 @@ export default function RehabPlan() {
         <div className="mb-8">
           <div className="flex justify-between items-center mb-3">
             <span className="text-sm font-semibold text-slate-300">
-              Phase {rehabPlan.current_phase} von {rehabPlan.phases.length}
+              Phase {rehabPlan.current_phase || 1} von {rehabPlan.phases.length}
             </span>
           </div>
           <div className="h-2 bg-slate-800 rounded-full overflow-hidden">
