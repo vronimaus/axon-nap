@@ -70,26 +70,36 @@ export default function RehabPlan() {
 
   const completeCurrentPhaseMutation = useMutation({
     mutationFn: async () => {
-      if (!rehabPlan) return;
+      if (!rehabPlan) return null;
 
-      const nextPhase = rehabPlan.current_phase + 1;
-      const isLastPhase = nextPhase > rehabPlan.phases.length;
+      const currentPhaseNum = rehabPlan.current_phase || 1;
+      const nextPhase = currentPhaseNum + 1;
+      const isLastPhase = currentPhaseNum >= rehabPlan.phases.length;
 
-      await base44.entities.RehabPlan.update(rehabPlan.id, {
-        current_phase: isLastPhase ? rehabPlan.current_phase : nextPhase,
+      const updateData = {
+        current_phase: isLastPhase ? currentPhaseNum : nextPhase,
         status: isLastPhase ? 'completed' : 'active',
         phase_start_date: isLastPhase ? rehabPlan.phase_start_date : new Date().toISOString().split('T')[0]
-      });
+      };
 
-      return isLastPhase;
+      await base44.entities.RehabPlan.update(rehabPlan.id, updateData);
+
+      return { isLastPhase, updateData };
     },
-    onSuccess: (isLastPhase) => {
+    onSuccess: (result) => {
+      if (!result) return;
+      
       queryClient.invalidateQueries({ queryKey: ['rehabPlan'] });
-      if (isLastPhase) {
+      
+      if (result.isLastPhase) {
         toast.success('🎉 Glückwunsch! Du hast alle Phasen abgeschlossen!');
       } else {
         toast.success('✅ Phase abgeschlossen! Willkommen in der nächsten Phase.');
       }
+    },
+    onError: (error) => {
+      console.error('Phase completion error:', error);
+      toast.error('Fehler beim Speichern. Bitte versuche es erneut.');
     }
   });
 
