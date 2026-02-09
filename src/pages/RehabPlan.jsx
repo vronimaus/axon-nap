@@ -96,7 +96,8 @@ export default function RehabPlan() {
       if (!result) return;
       
       console.log('Success! Invalidating query...');
-      queryClient.invalidateQueries({ queryKey: ['rehabPlan', user?.email] });
+      // Invalidate ohne Filter um sicherzustellen dass Cache gelöscht wird
+      queryClient.invalidateQueries({ queryKey: ['rehabPlan'] });
       
       if (result.isLastPhase) {
         toast.success('🎉 Glückwunsch! Du hast alle Phasen abgeschlossen!');
