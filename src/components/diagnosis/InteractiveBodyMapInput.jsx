@@ -22,6 +22,53 @@ export default function InteractiveBodyMapInput({ onSubmit }) {
     drawMarkers();
   }, [markers, view]);
 
+  // Region Detection (Canvas ist immer 400x600)
+  const detectRegionFromCoordinates = (markers, view) => {
+    if (markers.length === 0) return 'unbekannte Region';
+
+    const totalX = markers.reduce((sum, m) => sum + m.x, 0) / markers.length;
+    const totalY = markers.reduce((sum, m) => sum + m.y, 0) / markers.length;
+
+    // Normalized (0-1)
+    const normalizedY = totalY / 100;
+    const normalizedX = totalX / 100;
+
+    let laterality = '';
+    if (normalizedX < 0.35) laterality = 'links';
+    else if (normalizedX > 0.65) laterality = 'rechts';
+
+    let region = '';
+    if (view === 'front') {
+      if (normalizedY < 0.06) region = 'Kopf/Stirn';
+      else if (normalizedY < 0.11) region = (normalizedX < 0.47 || normalizedX > 0.53) ? 'Ohr/Kiefergelenk' : 'Hals vorne';
+      else if (normalizedY < 0.20) region = (normalizedX < 0.40 || normalizedX > 0.60) ? 'Schulter vorne/Acromion' : 'obere Brust/Schlüsselbein';
+      else if (normalizedY < 0.30) region = (normalizedX < 0.30 || normalizedX > 0.70) ? 'Oberarm' : 'mittlere Brust';
+      else if (normalizedY < 0.37) region = (normalizedX < 0.40 || normalizedX > 0.60) ? 'Ellenbogen-Beuge' : 'Bauch oben';
+      else if (normalizedY < 0.42) region = 'Bauch Mitte/Bauchnabel';
+      else if (normalizedY < 0.50) region = (normalizedX < 0.35 || normalizedX > 0.65) ? 'Unterarm/Handgelenk' : 'Unterbauch/Becken';
+      else if (normalizedY < 0.56) region = 'Becken/Hüfte';
+      else if (normalizedY < 0.68) region = 'Oberschenkel vorne';
+      else if (normalizedY < 0.76) region = 'Knie vorne';
+      else if (normalizedY < 0.88) region = 'Unterschenkel/Schienbein';
+      else region = 'Fuß/Knöchel vorne';
+    } else {
+      if (normalizedY < 0.06) region = 'Hinterkopf';
+      else if (normalizedY < 0.12) region = 'Nacken/obere Halswirbelsäule';
+      else if (normalizedY < 0.22) region = (normalizedX < 0.40 || normalizedX > 0.60) ? 'Schulter hinten/Acromion' : 'oberer Rücken/Nacken';
+      else if (normalizedY < 0.32) region = (normalizedX < 0.30 || normalizedX > 0.70) ? 'Schulterblatt' : 'oberer Rücken';
+      else if (normalizedY < 0.38) region = (normalizedX < 0.40 || normalizedX > 0.60) ? 'Ellenbogen' : 'mittlerer Rücken';
+      else if (normalizedY < 0.45) region = 'unterer Rücken/Lendenwirbelsäule';
+      else if (normalizedY < 0.54) region = (normalizedX < 0.35 || normalizedX > 0.65) ? 'Unterarm/Handgelenk' : 'Gesäß';
+      else if (normalizedY < 0.60) region = 'Becken/Hüfte';
+      else if (normalizedY < 0.70) region = 'Oberschenkel hinten';
+      else if (normalizedY < 0.78) region = 'Kniekehle';
+      else if (normalizedY < 0.90) region = 'Wade';
+      else region = 'Ferse/Achillessehne';
+    }
+
+    return laterality ? `${region} ${laterality}` : region;
+  };
+
   const drawMarkers = () => {
     const canvas = canvasRef.current;
     const img = imageRef.current;
