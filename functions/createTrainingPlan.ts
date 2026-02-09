@@ -179,22 +179,17 @@ Deno.serve(async (req) => {
 
     const { goal_description, training_frequency, replaceExisting } = await req.json();
 
-    // Prüfe ob bereits ein aktiver Trainingsplan existiert
-    if (replaceExisting) {
-      const existingPlans = await base44.asServiceRole.entities.TrainingPlan.filter({
-        user_email: user.email,
-        status: 'active'
-      });
+    // Lösche alte aktive Pläne, um nur einen aktiven Plan zu haben
+    const existingPlans = await base44.asServiceRole.entities.TrainingPlan.filter({
+      user_email: user.email,
+      status: 'active'
+    });
 
-      // Setze alle bestehenden aktiven Pläne auf 'completed'
-      if (existingPlans && existingPlans.length > 0) {
-        console.log('Found existing active plans:', existingPlans.length);
-        for (const plan of existingPlans) {
-          await base44.asServiceRole.entities.TrainingPlan.update(plan.id, {
-            status: 'completed'
-          });
-          console.log('Archived plan:', plan.id);
-        }
+    if (existingPlans && existingPlans.length > 0) {
+      console.log('Deleting existing active plans:', existingPlans.length);
+      for (const plan of existingPlans) {
+        await base44.asServiceRole.entities.TrainingPlan.delete(plan.id);
+        console.log('Deleted plan:', plan.id);
       }
     }
 
