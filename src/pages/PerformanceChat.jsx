@@ -27,9 +27,7 @@ export default function PerformanceChat() {
   const [workflowStep, setWorkflowStep] = useState('analysis'); // 'analysis' | 'exercises' | 'chat'
   const [goalAnalysis, setGoalAnalysis] = useState(null);
   const [exercisePhases, setExercisePhases] = useState(null);
-  const [showReplacePlanModal, setShowReplacePlanModal] = useState(false);
   const [showBaselineCheckModal, setShowBaselineCheckModal] = useState(false);
-  const [existingActivePlan, setExistingActivePlan] = useState(null);
   const messagesEndRef = useRef(null);
   const queryClient = useQueryClient();
 
