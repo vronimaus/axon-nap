@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { LayoutDashboard, LogOut, User, Target, Activity } from 'lucide-react';
+import { LayoutDashboard, LogOut, User, Target, Activity, Settings } from 'lucide-react';
 import CookieBanner from './components/CookieBanner';
 import { useTrialStatus } from './components/useTrialStatus';
 import { AnimatePresence } from 'framer-motion';
@@ -147,6 +147,15 @@ export default function Layout({ children, currentPageName }) {
                       {/* User Menu / Login */}
               {user ? (
                 <div className="flex items-center gap-2">
+                  {user.role === 'admin' && (
+                    <button
+                      onClick={() => window.location.href = createPageUrl('AdminHub')}
+                      className="p-2 rounded-xl text-slate-400 hover:text-purple-400 hover:bg-slate-800/50 transition-all"
+                      title="Admin Hub"
+                    >
+                      <Settings className="w-5 h-5" />
+                    </button>
+                  )}
                   <button
                     onClick={handleProfileClick}
                     className="p-2 rounded-xl text-slate-400 hover:text-cyan-400 hover:bg-slate-800/50 transition-all"
