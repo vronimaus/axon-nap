@@ -140,6 +140,8 @@ export default function DiagnosisChat() {
            setWorkflowStep('analysis_card');
          } else if (content.includes('[TRIGGER_CHAIN_SCAN]')) {
            setWorkflowStep('chain_scan');
+         } else if (content.includes('[CREATE_REHAB_PLAN]')) {
+           setWorkflowStep('rehab_plan_created');
          }
        }
      }
@@ -406,7 +408,7 @@ export default function DiagnosisChat() {
         instruction="Wähle die Intensität auf einer Skala von 1-10"
         showBackButton={false}
       >
-        <PainIntensitySlider onSubmit={handleIntensitySubmit} />
+        <PainIntensitySlider onSubmit={handleIntensitySubmit} loading={loading} />
       </FocusScreenContainer>
     );
   }
@@ -507,6 +509,61 @@ export default function DiagnosisChat() {
               }
             }}
           />
+        </motion.div>
+      </FocusScreenContainer>
+    );
+  }
+
+  if (workflowStep === 'rehab_plan_created') {
+    // Show completion screen with buttons
+    const lastAssistantMsg = [...messages].reverse().find(m => m.role === 'assistant');
+    const lastMsgContent = lastAssistantMsg?.content?.split('[CREATE_REHAB_PLAN]')[0].trim() || '';
+
+    return (
+      <FocusScreenContainer
+        title="✅ Reha-Plan erstellt"
+        instruction="Was möchtest du als nächstes tun?"
+        showBackButton={false}
+      >
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="w-full max-w-2xl mx-auto space-y-6"
+        >
+          {/* Summary */}
+          {lastMsgContent && (
+            <div className="glass rounded-2xl p-6 border border-cyan-500/30">
+              <ReactMarkdown
+                className="text-slate-300 prose prose-sm prose-invert max-w-none"
+                components={{
+                  p: ({ children }) => <p className="mb-3">{children}</p>,
+                  strong: ({ children }) => <strong className="text-cyan-400">{children}</strong>,
+                  ul: ({ children }) => <ul className="ml-4 list-disc mb-3">{children}</ul>,
+                  li: ({ children }) => <li className="mb-1">{children}</li>
+                }}
+              >
+                {lastMsgContent}
+              </ReactMarkdown>
+            </div>
+          )}
+
+          {/* Action Buttons */}
+          <div className="grid gap-4">
+            <Button
+              onClick={() => window.location.href = createPageUrl('RehabPlan')}
+              className="w-full h-16 bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-600 hover:to-purple-700 text-white font-bold text-lg"
+            >
+              Zum Rehab-Plan
+              <ArrowRight className="w-5 h-5 ml-2" />
+            </Button>
+            <Button
+              onClick={() => setWorkflowStep('chat')}
+              variant="outline"
+              className="w-full h-14 border-slate-600 text-slate-300 hover:bg-slate-800"
+            >
+              Hast du weitere Fragen?
+            </Button>
+          </div>
         </motion.div>
       </FocusScreenContainer>
     );
