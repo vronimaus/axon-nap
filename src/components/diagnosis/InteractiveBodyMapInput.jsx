@@ -10,28 +10,33 @@ export default function InteractiveBodyMapInput({ onSubmit }) {
   const [imageError, setImageError] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const canvasRef = useRef(null);
-  const imageRef = useRef(null);
 
-  // Same URLs as in Dashboard BodyMap
-  const bodyImages = {
-    front: 'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/ad6e52b61_generated_image.png',
-    back: 'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/ad6e52b61_generated_image.png'
-  };
+  // EXAKT die gleichen Bilder wie im Dashboard
+  const BODY_IMAGE_FRONT = "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/ad6e52b61_generated_image.png";
+  const BODY_IMAGE_BACK = "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/0df8e2e95_generated_image.png";
 
   useEffect(() => {
     drawMarkers();
-  }, [markers, view]);
+  }, [markers]);
 
-  // Region Detection (Canvas ist immer 400x600)
-  const detectRegionFromCoordinates = (markers, view) => {
-    if (markers.length === 0) return 'unbekannte Region';
+  // EXAKT die gleiche Region Detection wie im Dashboard
+  const detectRegionFromCoordinates = (markers, view, canvasWidth = 400, canvasHeight = 600) => {
+    if (markers.length === 0) return 'systemisch';
 
-    const totalX = markers.reduce((sum, m) => sum + m.x, 0) / markers.length;
-    const totalY = markers.reduce((sum, m) => sum + m.y, 0) / markers.length;
+    let totalY = 0, totalX = 0, totalPoints = 0;
+    markers.forEach(marker => {
+      if (marker.type === 'point') {
+        totalX += marker.x;
+        totalY += marker.y;
+        totalPoints += 1;
+      }
+    });
 
-    // Normalized (0-1)
-    const normalizedY = totalY / 100;
-    const normalizedX = totalX / 100;
+    const avgY = totalPoints > 0 ? totalY / totalPoints : 0;
+    const avgX = totalPoints > 0 ? totalX / totalPoints : 0;
+
+    const normalizedY = avgY / canvasHeight;
+    const normalizedX = avgX / canvasWidth;
 
     let laterality = '';
     if (normalizedX < 0.35) laterality = 'links';
@@ -71,38 +76,47 @@ export default function InteractiveBodyMapInput({ onSubmit }) {
 
   const drawMarkers = () => {
     const canvas = canvasRef.current;
-    const img = imageRef.current;
-    if (!canvas || !img) return;
-
+    if (!canvas) return;
+    
     const ctx = canvas.getContext('2d');
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-
+    
     markers.forEach(marker => {
-      const x = (marker.x / 100) * canvas.width;
-      const y = (marker.y / 100) * canvas.height;
-
-      ctx.beginPath();
-      ctx.arc(x, y, 15, 0, 2 * Math.PI);
-      ctx.fillStyle = 'rgba(239, 68, 68, 0.3)';
-      ctx.fill();
-      ctx.strokeStyle = '#ef4444';
-      ctx.lineWidth = 3;
-      ctx.stroke();
-
-      ctx.shadowBlur = 20;
-      ctx.shadowColor = '#ef4444';
-      ctx.fill();
-      ctx.shadowBlur = 0;
+      if (marker.type === 'point' && marker.x && marker.y) {
+        ctx.fillStyle = 'rgba(239, 68, 68, 0.8)';
+        ctx.beginPath();
+        ctx.arc(marker.x, marker.y, 10, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.shadowColor = '#ef4444';
+        ctx.shadowBlur = 10;
+        ctx.strokeStyle = '#ef4444';
+        ctx.lineWidth = 3;
+        ctx.stroke();
+        ctx.shadowBlur = 0;
+      }
     });
   };
 
-  const handleCanvasClick = (e) => {
+  const getCoordinates = (e) => {
     const canvas = canvasRef.current;
     const rect = canvas.getBoundingClientRect();
-    const x = ((e.clientX - rect.left) / rect.width) * 100;
-    const y = ((e.clientY - rect.top) / rect.height) * 100;
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+    
+    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+    
+    return {
+      x: (clientX - rect.left) * scaleX,
+      y: (clientY - rect.top) * scaleY
+    };
+  };
 
-    setMarkers([{ x, y, type: 'point' }]);
+  const handleCanvasClick = (e) => {
+    if (!imageLoaded) return;
+    e.preventDefault();
+    const coords = getCoordinates(e);
+    setMarkers([{ type: 'point', x: coords.x, y: coords.y }]);
   };
 
   const handleSubmit = () => {
@@ -110,7 +124,8 @@ export default function InteractiveBodyMapInput({ onSubmit }) {
     
     setIsSubmitting(true);
     
-    const detectedRegion = detectRegionFromCoordinates(markers, view);
+    // Verwende die gleiche Detection wie Dashboard (Canvas 400x600)
+    const detectedRegion = detectRegionFromCoordinates(markers, view, 400, 600);
     console.log('Detected region:', detectedRegion, 'Markers:', markers);
     
     const mapData = {
@@ -143,57 +158,71 @@ export default function InteractiveBodyMapInput({ onSubmit }) {
         </Button>
       </div>
 
-      {/* Body Map */}
-      <div className="relative w-full max-w-md mx-auto">
+      {/* Body Map - EXAKT wie im Dashboard */}
+      <div className="relative w-full max-w-md mx-auto bg-slate-900/50 rounded-2xl overflow-hidden">
         {imageError && (
           <div className="bg-red-500/20 border border-red-500/50 rounded-xl p-4 mb-4 text-red-400 text-center">
             Körperbild konnte nicht geladen werden
           </div>
         )}
-        <motion.div
-          key={view}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="relative w-full aspect-[3/4] bg-slate-800/50 rounded-2xl overflow-hidden"
-        >
-          <img
-            ref={imageRef}
-            src={bodyImages[view]}
-            alt={`Body ${view}`}
-            className="absolute inset-0 w-full h-full object-contain"
-            onLoad={(e) => {
-              console.log('Bild geladen:', bodyImages[view]);
-              setImageLoaded(true);
-              setImageError(false);
-              const canvas = canvasRef.current;
-              const img = e.target;
-              if (canvas && img) {
-                // Set canvas to match displayed image size
-                canvas.width = img.clientWidth;
-                canvas.height = img.clientHeight;
-                drawMarkers();
-              }
-            }}
-            onError={(e) => {
-              console.error('Bild Fehler:', bodyImages[view], e);
-              setImageError(true);
-              setImageLoaded(false);
-            }}
-          />
+        <div className="relative" style={{ touchAction: 'none' }}>
+          <motion.div
+            key={view}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.2 }}
+            className="relative"
+            style={{ pointerEvents: 'none' }}
+          >
+            {view === 'front' ? (
+              <img 
+                src={BODY_IMAGE_FRONT}
+                alt="Front view"
+                className="w-full h-auto"
+                draggable={false}
+                onLoad={() => {
+                  setImageLoaded(true);
+                  setImageError(false);
+                }}
+                onError={() => {
+                  setImageError(true);
+                  setImageLoaded(false);
+                }}
+              />
+            ) : (
+              <img 
+                src={BODY_IMAGE_BACK}
+                alt="Back view"
+                className="w-full h-auto"
+                draggable={false}
+                onLoad={() => {
+                  setImageLoaded(true);
+                  setImageError(false);
+                }}
+                onError={() => {
+                  setImageError(true);
+                  setImageLoaded(false);
+                }}
+              />
+            )}
+          </motion.div>
+          
           <canvas
             ref={canvasRef}
             width={400}
             height={600}
             onClick={handleCanvasClick}
+            onTouchStart={handleCanvasClick}
             className="absolute inset-0 w-full h-full cursor-crosshair"
             style={{ pointerEvents: imageLoaded ? 'auto' : 'none' }}
           />
+          
           {!imageLoaded && !imageError && (
             <div className="absolute inset-0 flex items-center justify-center">
               <div className="text-slate-400 text-sm">Lade Körperbild...</div>
             </div>
           )}
-        </motion.div>
+        </div>
       </div>
 
       {/* Instructions */}
