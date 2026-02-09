@@ -4,7 +4,6 @@ import { createPageUrl } from '@/utils';
 import { LayoutDashboard, LogOut, User, Target, Activity } from 'lucide-react';
 import CookieBanner from './components/CookieBanner';
 import { useTrialStatus } from './components/useTrialStatus';
-import DailyReadinessCheck from './components/dashboard/DailyReadinessCheck';
 import { AnimatePresence } from 'framer-motion';
 import { base44 } from '@/api/base44Client';
 import { Toaster } from 'sonner';
@@ -13,7 +12,6 @@ export default function Layout({ children, currentPageName }) {
   const { isLoading: trialLoading, hasAccess } = useTrialStatus();
   const [user, setUser] = useState(null);
   const [isChecking, setIsChecking] = useState(true);
-  const [showDailyCheck, setShowDailyCheck] = useState(false);
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -60,16 +58,8 @@ export default function Layout({ children, currentPageName }) {
         if (!currentUser?.has_paid && !isTrialActive && currentPageName !== 'Landing') {
           window.location.href = createPageUrl('Landing');
           return;
-        }
-
-        // Check if Daily Check needed today
-        const today = new Date().toISOString().split('T')[0];
-        const lastCheck = localStorage.getItem('last_daily_check_date');
-
-        if (lastCheck !== today && currentUser && currentPageName === 'Dashboard') {
-          setShowDailyCheck(true);
-        }
-      } catch (e) {
+          }
+          } catch (e) {
         // Not authenticated - that's fine for demo mode
         setUser(null);
       } finally {
@@ -101,12 +91,6 @@ export default function Layout({ children, currentPageName }) {
       return () => clearInterval(interval);
     }
     }, [currentPageName]);
-
-    const handleCloseDailyCheck = () => {
-    const today = new Date().toISOString().split('T')[0];
-    localStorage.setItem('last_daily_check_date', today);
-    setShowDailyCheck(false);
-    };
 
     // Pages ohne Navigation Header
     const pagesWithoutNav = ['Landing', 'Success', 'Checkout', 'Login'];
@@ -246,13 +230,6 @@ export default function Layout({ children, currentPageName }) {
 
       {/* Cookie Banner */}
       <CookieBanner />
-
-      {/* Daily Readiness Check */}
-      <AnimatePresence>
-        {showDailyCheck && user && (
-          <DailyReadinessCheck user={user} onClose={handleCloseDailyCheck} />
-        )}
-      </AnimatePresence>
 
       {/* Toast Notifications */}
       <Toaster position="top-center" theme="dark" />
