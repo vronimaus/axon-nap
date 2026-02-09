@@ -4,8 +4,7 @@ import { createPageUrl } from '@/utils';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { AlertCircle, Zap, BookOpen, Palette, ArrowLeft } from 'lucide-react';
-import FlowSection from '../components/flow/FlowSection';
+import { AlertCircle, Zap, BookOpen, Palette, ArrowLeft, Image } from 'lucide-react';
 
 export default function AdminHub() {
   const [user, setUser] = useState(null);
@@ -109,8 +108,21 @@ export default function AdminHub() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
+              className="glass rounded-2xl border border-cyan-500/30 p-8"
             >
-              <FlowSection />
+              <h2 className="text-2xl font-bold text-cyan-400 mb-4">Flow Routine Assets</h2>
+              <p className="text-slate-300 mb-6">
+                Verwalte und generiere Bilder und Inhalte für FLOW Routinen.
+              </p>
+              <div className="space-y-4">
+                <Button
+                  onClick={() => window.location.href = createPageUrl('ExerciseImageGenerator')}
+                  className="w-full bg-cyan-500/20 text-cyan-400 hover:bg-cyan-500/30 justify-start"
+                >
+                  <Image className="w-4 h-4 mr-2" />
+                  Übungs-Bilder generieren
+                </Button>
+              </div>
             </motion.div>
           </TabsContent>
 
