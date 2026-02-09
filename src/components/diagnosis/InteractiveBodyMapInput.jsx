@@ -14,6 +14,8 @@ export default function InteractiveBodyMapInput({ onSubmit }) {
     back: 'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/03e0e9f73_body_back.png'
   };
 
+  const [imageLoaded, setImageLoaded] = useState(false);
+
   useEffect(() => {
     drawMarkers();
   }, [markers, view]);
