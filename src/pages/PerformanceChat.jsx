@@ -393,27 +393,8 @@ export default function PerformanceChat() {
   };
 
   const handleExercisesComplete = async () => {
-    // Prüfe erst, ob bereits ein aktiver Trainingsplan existiert
-    try {
-      const user = await base44.auth.me();
-      const existingPlans = await base44.entities.TrainingPlan.filter({
-        user_email: user.email,
-        status: 'active'
-      });
-
-      // Falls aktiver Plan existiert, zeige Modal
-      if (existingPlans && existingPlans.length > 0) {
-        setExistingActivePlan(existingPlans[0]);
-        setShowReplacePlanModal(true);
-        return;
-      }
-
-      // Kein bestehender Plan - direkt zum Baseline-Check
-      setShowBaselineCheckModal(true);
-    } catch (error) {
-      console.error('❌ Error checking for existing plans:', error);
-      toast.error('Fehler beim Überprüfen bestehender Pläne');
-    }
+    // Direkt zum Baseline-Check - alte Pläne werden automatisch gelöscht
+    setShowBaselineCheckModal(true);
   };
 
   const handleReplacePlanConfirm = () => {
