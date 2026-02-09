@@ -1,12 +1,10 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { ChevronDown } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 
 export default function FlowSection() {
   const [expandedImage, setExpandedImage] = useState(null);
 
-  // Flow-Bilder mit Beschreibungen
   const flowImages = [
     {
       id: 'anterior',
