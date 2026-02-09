@@ -86,19 +86,22 @@ export default function RehabPlan() {
         phase_start_date: isLastPhase ? rehabPlan.phase_start_date : new Date().toISOString().split('T')[0]
       };
 
-      await base44.entities.RehabPlan.update(rehabPlan.id, updateData);
+      console.log('Updating phase:', { currentPhaseNum, nextPhase, isLastPhase, updateData });
+      const result = await base44.entities.RehabPlan.update(rehabPlan.id, updateData);
+      console.log('Phase update result:', result);
 
       return { isLastPhase, updateData };
     },
     onSuccess: (result) => {
       if (!result) return;
       
-      queryClient.invalidateQueries({ queryKey: ['rehabPlan'] });
+      console.log('Success! Invalidating query...');
+      queryClient.invalidateQueries({ queryKey: ['rehabPlan', user?.email] });
       
       if (result.isLastPhase) {
         toast.success('🎉 Glückwunsch! Du hast alle Phasen abgeschlossen!');
       } else {
-        toast.success('✅ Phase abgeschlossen! Willkommen in der nächsten Phase.');
+        toast.success(`✅ Phase abgeschlossen! Willkommen in Phase ${result.updateData.current_phase}.`);
       }
     },
     onError: (error) => {
