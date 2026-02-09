@@ -132,6 +132,41 @@ export default function RehabPlan() {
     );
   }
 
+  // Plan completed - show success screen
+  if (rehabPlan.status === 'completed') {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 p-4 flex items-center justify-center">
+        <div className="max-w-md w-full glass rounded-2xl border border-green-500/30 p-8 text-center bg-gradient-to-br from-green-500/10 to-transparent">
+          <div className="text-6xl mb-4">🎉</div>
+          <h2 className="text-2xl font-bold text-white mb-2">Plan abgeschlossen!</h2>
+          <p className="text-slate-300 mb-6">
+            Glückwunsch! Du hast alle {rehabPlan.phases.length} Phasen erfolgreich durchlaufen.
+            {getAveragePainLevel() !== null && (
+              <span className="block mt-3 text-green-400 font-semibold">
+                Finales Schmerzlevel: {getAveragePainLevel()} / 10
+              </span>
+            )}
+          </p>
+          <div className="space-y-3">
+            <Button
+              onClick={() => window.location.href = createPageUrl('Dashboard')}
+              className="w-full bg-cyan-500/20 text-cyan-400 hover:bg-cyan-500/30"
+            >
+              Zurück zum Command
+            </Button>
+            <Button
+              onClick={() => window.location.href = createPageUrl('DiagnosisChat')}
+              variant="outline"
+              className="w-full border-slate-600 text-slate-300 hover:bg-slate-800"
+            >
+              Neuen Plan erstellen
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   const currentPhaseIndex = (rehabPlan.current_phase || 1) - 1;
   const currentPhase = rehabPlan.phases[currentPhaseIndex] || rehabPlan.phases[0];
 
