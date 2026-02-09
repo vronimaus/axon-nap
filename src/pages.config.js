@@ -48,6 +48,7 @@
  * The mainPage value must match a key in the PAGES object exactly.
  */
 import AdminDiagnostics from './pages/AdminDiagnostics';
+import AdminHub from './pages/AdminHub';
 import Dashboard from './pages/Dashboard';
 import DebugComplaintHistory from './pages/DebugComplaintHistory';
 import DevNotes from './pages/DevNotes';
@@ -55,6 +56,7 @@ import DiagnosisChat from './pages/DiagnosisChat';
 import DiagnosisWizard from './pages/DiagnosisWizard';
 import ExerciseImageGenerator from './pages/ExerciseImageGenerator';
 import Flow from './pages/Flow';
+import FlowRoutines from './pages/FlowRoutines';
 import FlowSelection from './pages/FlowSelection';
 import Glossary from './pages/Glossary';
 import Imprint from './pages/Imprint';
@@ -73,13 +75,12 @@ import Success from './pages/Success';
 import Terms from './pages/Terms';
 import TrainingPlan from './pages/TrainingPlan';
 import TrialInfo from './pages/TrialInfo';
-import AdminHub from './pages/AdminHub';
-import FlowRoutines from './pages/FlowRoutines';
 import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
     "AdminDiagnostics": AdminDiagnostics,
+    "AdminHub": AdminHub,
     "Dashboard": Dashboard,
     "DebugComplaintHistory": DebugComplaintHistory,
     "DevNotes": DevNotes,
@@ -87,6 +88,7 @@ export const PAGES = {
     "DiagnosisWizard": DiagnosisWizard,
     "ExerciseImageGenerator": ExerciseImageGenerator,
     "Flow": Flow,
+    "FlowRoutines": FlowRoutines,
     "FlowSelection": FlowSelection,
     "Glossary": Glossary,
     "Imprint": Imprint,
@@ -105,8 +107,6 @@ export const PAGES = {
     "Terms": Terms,
     "TrainingPlan": TrainingPlan,
     "TrialInfo": TrialInfo,
-    "AdminHub": AdminHub,
-    "FlowRoutines": FlowRoutines,
 }
 
 export const pagesConfig = {
