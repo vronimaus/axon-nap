@@ -244,12 +244,7 @@ export default function PerformanceChat() {
           }
         }
 
-        // If no trigger found and we have messages, switch to chat mode
-        if (!lastMessage.content.includes('[SHOW_GOAL_ANALYSIS]') && 
-            !lastMessage.content.includes('[SHOW_EXERCISES]') && 
-            newMessages.length >= 2) {
-          setWorkflowStep('chat');
-        }
+
       }
 
       setIsLoading(prev => prev === true ? false : prev);
