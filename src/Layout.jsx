@@ -58,8 +58,8 @@ export default function Layout({ children, currentPageName }) {
         if (!currentUser?.has_paid && !isTrialActive && currentPageName !== 'Landing') {
           window.location.href = createPageUrl('Landing');
           return;
-          }
-          } catch (e) {
+        }
+      } catch (e) {
         // Not authenticated - that's fine for demo mode
         setUser(null);
       } finally {
