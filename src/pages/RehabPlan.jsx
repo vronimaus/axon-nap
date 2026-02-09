@@ -269,7 +269,7 @@ export default function RehabPlan() {
           
           {currentPhase.exercises.map((exercise, idx) => (
             <motion.div
-              key={exercise.exercise_id}
+              key={exercise.exercise_id || `exercise-${idx}`}
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: idx * 0.1 }}
