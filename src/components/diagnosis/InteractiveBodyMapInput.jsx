@@ -63,10 +63,14 @@ export default function InteractiveBodyMapInput({ onSubmit }) {
     
     setIsSubmitting(true);
     
+    const detectedRegion = detectRegionFromCoordinates(markers, view);
+    console.log('Detected region:', detectedRegion, 'Markers:', markers);
+    
     const mapData = {
       view,
       markers,
-      mode: 'rehab'
+      mode: 'rehab',
+      region: detectedRegion
     };
     
     onSubmit(mapData);
@@ -131,6 +135,8 @@ export default function InteractiveBodyMapInput({ onSubmit }) {
           />
           <canvas
             ref={canvasRef}
+            width={400}
+            height={600}
             onClick={handleCanvasClick}
             className="absolute inset-0 w-full h-full cursor-crosshair"
             style={{ pointerEvents: imageLoaded ? 'auto' : 'none' }}
