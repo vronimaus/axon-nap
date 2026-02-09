@@ -201,12 +201,12 @@ export default function PerformanceChat() {
       console.log('📨 Messages update received, count:', data.messages?.length);
       const newMessages = data.messages || [];
       setMessages(newMessages);
-      
+
       // Detect workflow triggers from last assistant message
       const lastMessage = newMessages[newMessages.length - 1];
       if (lastMessage?.role === 'assistant' && lastMessage.content) {
         console.log('🔍 Checking last message for triggers:', lastMessage.content.substring(0, 100));
-        
+
         // Check for [SHOW_GOAL_ANALYSIS] trigger
         if (lastMessage.content.includes('[SHOW_GOAL_ANALYSIS]')) {
           console.log('✅ Found SHOW_GOAL_ANALYSIS trigger');
@@ -218,7 +218,7 @@ export default function PerformanceChat() {
             callToAction: 'Übungen starten'
           });
         }
-        
+
         // Check for [SHOW_EXERCISES] trigger - allow from any workflow step
         if (lastMessage.content.includes('[SHOW_EXERCISES]')) {
           console.log('✅ Found SHOW_EXERCISES trigger, parsing...');
@@ -243,8 +243,15 @@ export default function PerformanceChat() {
             setWorkflowStep('exercises');
           }
         }
+
+        // If no trigger found and we have messages, switch to chat mode
+        if (!lastMessage.content.includes('[SHOW_GOAL_ANALYSIS]') && 
+            !lastMessage.content.includes('[SHOW_EXERCISES]') && 
+            newMessages.length >= 2) {
+          setWorkflowStep('chat');
+        }
       }
-      
+
       setIsLoading(prev => prev === true ? false : prev);
     });
 
