@@ -11,7 +11,6 @@ import { toast } from 'sonner';
 import SessionFeedbackForm from '../components/performance/SessionFeedbackForm';
 import PerformanceGoalCard from '../components/performance/PerformanceGoalCard';
 import ExerciseActionCard from '../components/performance/ExerciseActionCard';
-import ReplacePlanModal from '../components/performance/ReplacePlanModal';
 import BaselineCheckModal from '../components/performance/BaselineCheckModal';
 
 export default function PerformanceChat() {
