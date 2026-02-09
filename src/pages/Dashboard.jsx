@@ -6,13 +6,7 @@ import { createPageUrl } from '@/utils';
 import { Activity, Target, Zap, Info, Lock, ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import InteractiveBodyMap from '../components/dashboard/InteractiveBodyMap';
-import HardwarePanel from '../components/dashboard/HardwarePanel';
-import NeuroMatrix from '../components/dashboard/NeuroMatrix';
 import OnboardingModal from '../components/dashboard/OnboardingModal';
-
-import AthleteProfile from '../components/dashboard/AthleteProfile';
-import SystemStatus from '../components/dashboard/SystemStatus';
-import HardwareAlerts from '../components/dashboard/HardwareAlerts';
 
 export default function Dashboard() {
   const [mode, setMode] = useState(null); // 'rehab', 'performance', or null for selection
@@ -62,22 +56,6 @@ export default function Dashboard() {
     queryKey: ['diagnosisSessions'],
     queryFn: () => base44.entities.DiagnosisSession.list('-created_date', 5),
     enabled: !!user
-  });
-
-  const { data: goals = [] } = useQuery({
-    queryKey: ['performanceGoals'],
-    queryFn: () => base44.entities.PerformanceGoal.list(),
-    enabled: !!user
-  });
-
-  const { data: neuroProfile } = useQuery({
-    queryKey: ['neuroProfile', user?.email],
-    queryFn: async () => {
-      if (!user?.email) return null;
-      const profiles = await base44.entities.UserNeuroProfile.filter({ user_email: user.email });
-      return profiles[0] || null;
-    },
-    enabled: !!user?.email
   });
 
   const { data: performanceBaselines = [] } = useQuery({
@@ -300,11 +278,8 @@ export default function Dashboard() {
         </div>
       )}
 
-      {/* Main Grid Layout */}
-      <div className="max-w-7xl mx-auto px-3 sm:px-4 py-4 sm:py-6 pb-20 md:pb-6">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6">
-          {/* PRIMARY FOCUS - Instructions & Body Map (full width on mobile, center on desktop) */}
-          <div className="lg:col-span-12 xl:col-span-9 xl:col-start-2">
+      {/* Main Content - Centered */}
+      <div className="max-w-4xl mx-auto px-3 sm:px-4 py-4 sm:py-6 pb-20 md:pb-6">
             <motion.div
               key={mode}
               initial={{ opacity: 0, scale: 0.95 }}
@@ -348,7 +323,7 @@ export default function Dashboard() {
                   
                   {/* Performance Goal Input */}
                   <div className="glass rounded-xl sm:rounded-2xl border border-amber-500/30 p-4 sm:p-6 bg-gradient-to-r from-amber-500/10 to-transparent">
-                    <h2 className="text-base sm:text-lg font-semibold text-amber-400 mb-3">Nächstes Ziel:</h2>
+                    <h2 className="text-base sm:text-lg font-semibold text-amber-400 mb-3">Welches Ziel möchtest du erreichen?</h2>
                     <input
                       type="text"
                       value={selectedBodyRegion || ''}
@@ -358,21 +333,12 @@ export default function Dashboard() {
                     />
                   </div>
                   
-                  {/* Tension Question */}
+                  {/* Start Button */}
                   {selectedBodyRegion && selectedBodyRegion.trim() && (
                     <motion.div
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
-                      className="space-y-4"
                     >
-                      <div className="glass rounded-xl sm:rounded-2xl border border-purple-500/30 p-4 sm:p-6 bg-gradient-to-r from-purple-500/10 to-transparent">
-                        <h3 className="text-sm sm:text-base font-semibold text-purple-400 mb-2">
-                          Spürst du Spannungen oder Einschränkungen?
-                        </h3>
-                        <p className="text-xs sm:text-sm text-slate-300">
-                          Für dein Ziel "<span className="text-amber-400 font-semibold">{selectedBodyRegion}</span>" kann es hilfreich sein, bestehende Spannungen zu kennen. Falls ja, markiere sie unten auf der BodyMap. Falls nicht, starte direkt.
-                        </p>
-                      </div>
                       <Button
                         onClick={() => {
                           const encodedGoal = encodeURIComponent(selectedBodyRegion.trim());
@@ -424,27 +390,8 @@ export default function Dashboard() {
                   </Button>
                 </motion.div>
               )}
-              
 
             </motion.div>
-          </div>
-
-          {/* SECONDARY PANELS - Athlete Profile & Status (below on mobile, side panels on desktop) */}
-          <div className="lg:col-span-6 xl:col-span-4 space-y-4">
-            <AthleteProfile profile={neuroProfile} systemStatus={mode} />
-            <HardwareAlerts profile={neuroProfile} />
-          </div>
-
-          <div className="lg:col-span-6 xl:col-span-4 space-y-4">
-            <SystemStatus mode={mode} profile={neuroProfile} lastSession={sessions[0]} />
-            <NeuroMatrix
-              mode={mode}
-              goals={goals}
-              selectedRegion={selectedBodyRegion}
-              user={user}
-            />
-          </div>
-          </div>
           </div>
 
       {/* Mode Indicator Badge - Hidden on small mobile to avoid overlapping with bottom nav */}
