@@ -677,30 +677,7 @@ export default function PerformanceChat() {
         </div>
       </div>
 
-      {/* Input - only show in chat step */}
-      {workflowStep === 'chat' && (
-        <div className="sticky bottom-0 glass border-t border-amber-500/20">
-          <div className="max-w-4xl mx-auto px-4 py-4">
-            <div className="flex gap-2">
-              <Textarea
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                onKeyPress={handleKeyPress}
-                placeholder="Deine Nachricht..."
-                className="resize-none bg-slate-800/50 border-slate-700 text-white min-h-[44px] max-h-32"
-                rows={1}
-              />
-              <Button
-                onClick={handleSend}
-                disabled={!input.trim() || isSending}
-                className="bg-gradient-to-r from-amber-500 to-yellow-600 hover:from-amber-600 hover:to-yellow-700 px-4 h-auto"
-              >
-                {isSending ? <Loader2 className="w-5 h-5 animate-spin" /> : <Send className="w-5 h-5" />}
-              </Button>
-            </div>
-          </div>
-        </div>
-      )}
+
 
       {/* Feedback Form Modal */}
       <AnimatePresence>
