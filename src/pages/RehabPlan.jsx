@@ -210,9 +210,11 @@ export default function RehabPlan() {
               <h1 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-red-400">
                 Dein Wiederherstellungsplan
               </h1>
-              <p className="text-sm text-slate-400 mt-1">
-                Problem: <strong>{rehabPlan.symptom_location}</strong>
-              </p>
+              {rehabPlan.problem_summary && (
+                <p className="text-sm text-slate-400 mt-1">
+                  Problem: <strong>{rehabPlan.problem_summary}</strong>
+                </p>
+              )}
             </div>
             <Button
               variant="ghost"
