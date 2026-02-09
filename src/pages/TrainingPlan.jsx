@@ -4,7 +4,7 @@ import { base44 } from '@/api/base44Client';
 import { createPageUrl } from '@/utils';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+
 import { ArrowLeft, Zap, Target, CheckCircle2, Clock, AlertCircle, Activity, Info, TrendingUp, Sparkles, Loader2, MessageSquareText } from 'lucide-react';
 import { toast } from 'sonner';
 import { useQueryClient } from '@tanstack/react-query';
@@ -24,10 +24,7 @@ export default function TrainingPlan() {
   
   const queryClient = useQueryClient();
   
-  // Get tab from URL parameter
-  const urlParams = new URLSearchParams(window.location.search);
-  const tabParam = urlParams.get('tab');
-  const [activeTab, setActiveTab] = useState(tabParam || 'performance');
+
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -80,21 +77,7 @@ export default function TrainingPlan() {
     enabled: !!user?.email
   });
 
-  // Fetch Rehab Routines (exclude predefined Flow routines)
-  const { data: routines } = useQuery({
-    queryKey: ['routines', user?.email],
-    queryFn: async () => {
-      if (!user?.email) return [];
-      const allRoutines = await base44.entities.Routine.filter({ 
-        created_by: user.email
-      }, '-created_date');
-      // Filter out predefined Flow routines (wakeup, full_reset, evening)
-      return allRoutines.filter(r => 
-        !['wakeup', 'full_reset', 'evening'].includes(r.category)
-      );
-    },
-    enabled: !!user?.email
-  });
+
 
   const handleAcceptComplementaryDrills = async (planId) => {
     setIsAcceptingDrills(true);
@@ -159,16 +142,6 @@ export default function TrainingPlan() {
 
       {/* Main Content */}
       <div className="max-w-6xl mx-auto px-4 py-6 space-y-6">
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-1 mb-6">
-            <TabsTrigger value="performance" className="flex items-center gap-2">
-              <Target className="w-4 h-4" />
-              Performance
-            </TabsTrigger>
-          </TabsList>
-
-          {/* Performance Tab */}
-          <TabsContent value="performance">
             {activePlan ? (
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
@@ -372,8 +345,7 @@ export default function TrainingPlan() {
                 </Button>
               </motion.div>
             )}
-          </TabsContent>
-        </Tabs>
+      </div>
       </div>
 
       {/* Exercise Detail Modal */}
@@ -389,93 +361,7 @@ export default function TrainingPlan() {
   );
 }
 
-function RoutineCard({ routine, index }) {
-  const [isExpanded, setIsExpanded] = useState(false);
 
-  const typeLabels = {
-    'mfr': 'Hardware',
-    'neuro': 'Software',
-    'strength': 'Integration',
-    'breath': 'Atem',
-    'mobility': 'Mobilität'
-  };
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: index * 0.1 }}
-      className="glass rounded-xl border border-purple-500/30 bg-gradient-to-r from-purple-500/10 to-transparent"
-    >
-      <button
-        onClick={() => setIsExpanded(!isExpanded)}
-        className="w-full p-4 flex items-center justify-between hover:bg-white/5 transition-colors"
-      >
-        <div className="flex items-center gap-4 text-left">
-          <div className="w-8 h-8 rounded-lg bg-purple-500/20 flex items-center justify-center text-purple-400 font-semibold text-sm">
-            R
-          </div>
-          <div>
-            <h3 className="font-semibold text-purple-400">{routine.routine_name}</h3>
-            <p className="text-sm text-slate-400">{routine.total_duration} Min · {routine.sequence?.length || 0} Übungen</p>
-          </div>
-        </div>
-        <div className={`text-slate-400 transition-transform ${isExpanded ? 'rotate-180' : ''}`}>
-          ▼
-        </div>
-      </button>
-
-      <AnimatePresence>
-        {isExpanded && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            className="border-t border-slate-700/50"
-          >
-            <div className="p-4 space-y-4">
-              {routine.description && (
-                <div>
-                  <p className="text-sm text-slate-400 leading-relaxed">{routine.description}</p>
-                </div>
-              )}
-
-              {routine.sequence && routine.sequence.length > 0 && (
-                <div className="pt-4 border-t border-slate-700/50">
-                  <h4 className="font-semibold text-slate-200 mb-3">Übungen:</h4>
-                  <div className="space-y-3">
-                    {routine.sequence.map((step, stepIdx) => (
-                      <div key={stepIdx} className="bg-white/5 rounded-lg p-3">
-                        <div className="flex items-center justify-between mb-2">
-                          <p className="font-medium text-slate-200">
-                            {typeLabels[step.type] || step.type}
-                          </p>
-                          <span className="text-xs text-slate-500">{step.duration_seconds}s</span>
-                        </div>
-                        <p className="text-sm text-slate-400">{step.instruction}</p>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              <div className="pt-4 border-t border-slate-700/50">
-                <Button
-                  onClick={() => {
-                    toast.success('Routine wird gestartet...');
-                  }}
-                  className="w-full bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700"
-                >
-                  Routine starten
-                </Button>
-              </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </motion.div>
-  );
-}
 
 function PhaseCard({ phase, index, isExpanded, onToggle, isCompleted, onComplete, onExerciseClick }) {
   const getPhaseColor = (idx) => {

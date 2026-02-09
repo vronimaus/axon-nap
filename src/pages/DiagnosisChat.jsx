@@ -595,7 +595,7 @@ export default function DiagnosisChat() {
               onClick={() => window.location.href = createPageUrl('RehabPlan')}
               className="w-full h-16 bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-600 hover:to-purple-700 text-white font-bold text-lg"
             >
-              Zum Rehab-Plan
+              Zum Reha-Plan
               <ArrowRight className="w-5 h-5 ml-2" />
             </Button>
             <Button
