@@ -395,16 +395,7 @@ export default function PerformanceChat() {
     setShowBaselineCheckModal(true);
   };
 
-  const handleReplacePlanConfirm = () => {
-    setShowReplacePlanModal(false);
-    setShowBaselineCheckModal(true);
-  };
 
-  const handleReplacePlanCancel = () => {
-    setShowReplacePlanModal(false);
-    toast.info('Plan-Erstellung abgebrochen');
-    window.location.href = createPageUrl('Dashboard');
-  };
 
   const handleBaselineCheckComplete = async () => {
     setShowBaselineCheckModal(false);
