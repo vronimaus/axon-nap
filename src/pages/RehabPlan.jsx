@@ -95,11 +95,12 @@ export default function RehabPlan() {
     onSuccess: (result) => {
       if (!result) return;
       
-      console.log('Success! Refetching plan...');
-      // Direkter Refetch statt invalidate - das erzwingt neuen Fetch
-      setTimeout(() => {
-        refetchPlan();
-      }, 200);
+      console.log('Success! Querying updated plan...');
+      // Refetch alle queries mit dieser queryKey - das zwingt neuen Fetch
+      queryClient.refetchQueries({ 
+        queryKey: ['rehabPlan'],
+        type: 'active'
+      });
       
       if (result.isLastPhase) {
         toast.success('🎉 Glückwunsch! Du hast alle Phasen abgeschlossen!');
