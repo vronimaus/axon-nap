@@ -95,11 +95,11 @@ export default function RehabPlan() {
     onSuccess: (result) => {
       if (!result) return;
       
-      console.log('Success! Cache invalidating and refetching...');
-      // Invalidate mit exact key match damit Cache gelöscht und neu gefetcht wird
-      queryClient.invalidateQueries({ queryKey: ['rehabPlan', user?.email] });
-      
-      console.log('After invalidate, current plan should update in 1-2s');
+      console.log('Success! Refetching plan...');
+      // Direkter Refetch statt invalidate - das erzwingt neuen Fetch
+      setTimeout(() => {
+        refetchPlan();
+      }, 200);
       
       if (result.isLastPhase) {
         toast.success('🎉 Glückwunsch! Du hast alle Phasen abgeschlossen!');
