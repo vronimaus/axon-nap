@@ -719,51 +719,51 @@ export default function Landing() {
               className="glass rounded-2xl border border-red-500/30 overflow-hidden"
             >
               <img 
-                src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/6c0e02a2d_image.png"
+                src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/340d9305f_image.png"
                 alt="REHAB - Detective Mode"
                 className="w-full h-auto"
               />
               <div className="p-4 bg-gradient-to-t from-slate-900 to-transparent">
                 <h3 className="font-bold text-red-400 mb-1">REHAB</h3>
-                <p className="text-xs text-slate-400">Detective Mode: Finde die Root Cause deines Schmerzes</p>
+                <p className="text-xs text-slate-400">Präzise Schmerzlokalisierung auf der interaktiven Body Map</p>
               </div>
             </motion.div>
 
-            {/* PERFORMANCE Screenshot */}
+            {/* GOALS Screenshot */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.1 }}
-              className="glass rounded-2xl border border-yellow-500/30 overflow-hidden"
+              className="glass rounded-2xl border border-amber-500/30 overflow-hidden"
             >
               <img 
-                src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/707e1e9f9_image.png"
-                alt="PERFORMANCE - Goal Tracking"
+                src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/bb6563719_image.png"
+                alt="GOALS - Performance Coaching"
                 className="w-full h-auto"
               />
               <div className="p-4 bg-gradient-to-t from-slate-900 to-transparent">
-                <h3 className="font-bold text-yellow-400 mb-1">PERFORMANCE</h3>
-                <p className="text-xs text-slate-400">Highscores tracken: Verfolge jeden Fortschritt</p>
+                <h3 className="font-bold text-amber-400 mb-1">GOALS</h3>
+                <p className="text-xs text-slate-400">Definiere deine Ziele – dein Coach erstellt den Plan</p>
               </div>
             </motion.div>
 
-            {/* HARDWARE Screenshot */}
+            {/* FLOW Screenshot */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.2 }}
-              className="glass rounded-2xl border border-orange-500/30 overflow-hidden"
+              className="glass rounded-2xl border border-cyan-500/30 overflow-hidden"
             >
               <img 
-                src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/664fb6302_image.png"
-                alt="HARDWARE - 15-Min Reset"
+                src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/ae4e694e6_image.png"
+                alt="FLOW - Tägliche Routinen"
                 className="w-full h-auto"
               />
               <div className="p-4 bg-gradient-to-t from-slate-900 to-transparent">
-                <h3 className="font-bold text-orange-400 mb-1">HARDWARE</h3>
-                <p className="text-xs text-slate-400">15-Min Reset: Alle 12 Nodes – dein täglicher Check-up</p>
+                <h3 className="font-bold text-cyan-400 mb-1">FLOW</h3>
+                <p className="text-xs text-slate-400">5 Kategorien für deine tägliche System-Wartung</p>
               </div>
             </motion.div>
           </div>
