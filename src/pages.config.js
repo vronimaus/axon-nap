@@ -75,6 +75,7 @@ import Terms from './pages/Terms';
 import TrainingPlan from './pages/TrainingPlan';
 import TrialInfo from './pages/TrialInfo';
 import AdminHub from './pages/AdminHub';
+import ExerciseImageUpload from './pages/ExerciseImageUpload';
 import __Layout from './Layout.jsx';
 
 
@@ -107,6 +108,7 @@ export const PAGES = {
     "TrainingPlan": TrainingPlan,
     "TrialInfo": TrialInfo,
     "AdminHub": AdminHub,
+    "ExerciseImageUpload": ExerciseImageUpload,
 }
 
 export const pagesConfig = {
