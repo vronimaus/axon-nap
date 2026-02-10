@@ -75,6 +75,7 @@ import Success from './pages/Success';
 import Terms from './pages/Terms';
 import TrainingPlan from './pages/TrainingPlan';
 import TrialInfo from './pages/TrialInfo';
+import ExerciseManager from './pages/ExerciseManager';
 import __Layout from './Layout.jsx';
 
 
@@ -107,6 +108,7 @@ export const PAGES = {
     "Terms": Terms,
     "TrainingPlan": TrainingPlan,
     "TrialInfo": TrialInfo,
+    "ExerciseManager": ExerciseManager,
 }
 
 export const pagesConfig = {

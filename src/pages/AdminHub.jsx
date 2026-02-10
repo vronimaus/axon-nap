@@ -87,10 +87,14 @@ export default function AdminHub() {
       {/* Main Content */}
       <div className="max-w-6xl mx-auto px-4 py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-3 lg:w-fit mb-8 bg-slate-900 border border-cyan-500/20">
+          <TabsList className="grid w-full grid-cols-4 lg:w-fit mb-8 bg-slate-900 border border-cyan-500/20">
             <TabsTrigger value="flow" className="flex items-center gap-2">
               <Palette className="w-4 h-4" />
               <span>Flow</span>
+            </TabsTrigger>
+            <TabsTrigger value="exercises" className="flex items-center gap-2">
+              <Image className="w-4 h-4" />
+              <span>Übungen</span>
             </TabsTrigger>
             <TabsTrigger value="diagnosis" className="flex items-center gap-2">
               <Zap className="w-4 h-4" />
@@ -123,6 +127,27 @@ export default function AdminHub() {
                   Übungs-Bilder generieren
                 </Button>
               </div>
+            </motion.div>
+          </TabsContent>
+
+          {/* Exercises Tab */}
+          <TabsContent value="exercises" className="mt-0">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              className="glass rounded-2xl border border-cyan-500/30 p-8"
+            >
+              <h2 className="text-2xl font-bold text-cyan-400 mb-4">Übungsverwaltung</h2>
+              <p className="text-slate-300 mb-6">
+                Verwalte alle Übungen und lade Bilder hoch. Die Bilder werden automatisch in allen Routinen angezeigt.
+              </p>
+              <Button
+                onClick={() => window.location.href = createPageUrl('ExerciseManager')}
+                className="bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-600 hover:to-purple-700"
+              >
+                Zur Übungsverwaltung
+              </Button>
             </motion.div>
           </TabsContent>
 
