@@ -270,9 +270,9 @@ export default function ExerciseImageUpload() {
               transition={{ delay: index * 0.05 }}
               className="glass rounded-xl border border-cyan-500/20 p-4"
             >
-              <div className="flex items-center gap-4">
+              <div className="flex items-start gap-4 mb-3">
                 {/* Exercise Image Preview */}
-                <div className="w-24 h-24 rounded-lg bg-slate-800 flex items-center justify-center flex-shrink-0 overflow-hidden border border-slate-700">
+                <div className="w-20 h-20 rounded-lg bg-slate-800 flex items-center justify-center flex-shrink-0 overflow-hidden border border-slate-700">
                   {exercise.image_url ? (
                     <img
                       src={exercise.image_url}
@@ -280,13 +280,13 @@ export default function ExerciseImageUpload() {
                       className="w-full h-full object-cover"
                     />
                   ) : (
-                    <ImageIcon className="w-8 h-8 text-slate-600" />
+                    <ImageIcon className="w-6 h-6 text-slate-600" />
                   )}
                 </div>
 
                 {/* Exercise Info */}
                 <div className="flex-1 min-w-0">
-                  <h3 className="text-lg font-semibold text-white mb-1 truncate">
+                  <h3 className="text-base font-semibold text-white mb-2">
                     {exercise.name}
                   </h3>
                   <div className="flex flex-wrap gap-2 items-center">
@@ -313,42 +313,40 @@ export default function ExerciseImageUpload() {
                     )}
                   </div>
                 </div>
-
-                {/* Upload Button */}
-                <div className="flex-shrink-0">
-                  <input
-                    type="file"
-                    accept="image/*"
-                    id={`upload-${exercise.id || exercise.name}`}
-                    className="hidden"
-                    onChange={(e) => {
-                      const file = e.target.files?.[0];
-                      if (file) handleFileUpload(exercise, file);
-                    }}
-                    disabled={uploadingExerciseId === exercise.name}
-                  />
-                  <Button
-                    onClick={() => {
-                      document.getElementById(`upload-${exercise.id || exercise.name}`)?.click();
-                    }}
-                    disabled={uploadingExerciseId === exercise.name}
-                    size="sm"
-                    className="bg-cyan-500/20 text-cyan-400 hover:bg-cyan-500/30"
-                  >
-                    {uploadingExerciseId === exercise.name ? (
-                      <>
-                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                        Uploading...
-                      </>
-                    ) : (
-                      <>
-                        <Upload className="w-4 h-4 mr-2" />
-                        {exercise.image_url ? 'Ersetzen' : 'Hochladen'}
-                      </>
-                    )}
-                  </Button>
-                </div>
               </div>
+
+              {/* Upload Button */}
+              <input
+                type="file"
+                accept="image/*"
+                id={`upload-${exercise.id || exercise.name}`}
+                className="hidden"
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (file) handleFileUpload(exercise, file);
+                }}
+                disabled={uploadingExerciseId === exercise.name}
+              />
+              <Button
+                onClick={() => {
+                  document.getElementById(`upload-${exercise.id || exercise.name}`)?.click();
+                }}
+                disabled={uploadingExerciseId === exercise.name}
+                size="sm"
+                className="w-full bg-cyan-500/20 text-cyan-400 hover:bg-cyan-500/30"
+              >
+                {uploadingExerciseId === exercise.name ? (
+                  <>
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    Uploading...
+                  </>
+                ) : (
+                  <>
+                    <Upload className="w-4 h-4 mr-2" />
+                    {exercise.image_url ? 'Bild ersetzen' : 'Bild hochladen'}
+                  </>
+                )}
+              </Button>
 
               {/* Usage Info */}
               {exercise.usedIn && exercise.usedIn.length > 0 && (
