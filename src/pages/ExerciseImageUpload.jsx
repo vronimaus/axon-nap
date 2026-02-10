@@ -219,27 +219,16 @@ export default function ExerciseImageUpload() {
         }
       }
 
-      // Manually update cache for immediate UI update
-      console.log('🔄 Updating cache...');
-
-      // Update routines cache
-      queryClient.setQueryData(['routines'], (oldData) => {
-        if (!oldData) return oldData;
-        return oldData.map(routine => {
-          const updatedSequence = routine.sequence.map(step => {
-            const stepName = step.instruction?.split('\n')[0]?.replace(':', '').trim();
-            if (stepName?.toLowerCase() === exercise.name.toLowerCase()) {
-              return { ...step, image_url: imageUrl };
-            }
-            return step;
-          });
-          return { ...routine, sequence: updatedSequence };
-        });
-      });
-
-      // Also invalidate to fetch from server
+      // Invalidate and wait for refetch to complete
+      console.log('🔄 Refreshing data...');
       await queryClient.invalidateQueries({ queryKey: ['exercises'] });
       await queryClient.invalidateQueries({ queryKey: ['routines'] });
+
+      // Wait for data to be refetched
+      await queryClient.refetchQueries({ queryKey: ['exercises'] });
+      await queryClient.refetchQueries({ queryKey: ['routines'] });
+
+      console.log('✅ Data refreshed');
 
       if (updatedCount > 0) {
         toast.success(`✅ Bild erfolgreich hochgeladen und in ${updatedCount} ${updatedCount === 1 ? 'Stelle' : 'Stellen'} aktualisiert`);
@@ -247,6 +236,7 @@ export default function ExerciseImageUpload() {
         toast.success('✅ Bild erfolgreich hochgeladen');
       }
 
+      // Only clear uploading state after data has been refreshed
       setUploadingExerciseId(null);
       console.log('🎉 Upload complete!');
 
