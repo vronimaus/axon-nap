@@ -200,6 +200,10 @@ export default function ExerciseImageUpload() {
         }
       }
 
+      // Invalidate queries to refresh data
+      await queryClient.invalidateQueries({ queryKey: ['exercises'] });
+      await queryClient.invalidateQueries({ queryKey: ['routines'] });
+
       if (updatedCount > 0) {
         toast.success(`✅ Bild erfolgreich hochgeladen und in ${updatedCount} ${updatedCount === 1 ? 'Stelle' : 'Stellen'} aktualisiert`);
       } else {
