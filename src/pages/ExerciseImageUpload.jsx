@@ -166,13 +166,17 @@ export default function ExerciseImageUpload() {
   const handleFileUpload = async (exercise, file) => {
     if (!file) return;
     
+    console.log('🚀 Starting upload for:', exercise.name);
+    
     try {
       setUploadingExerciseId(exercise.name);
       toast.info('Uploading...');
       
       // Upload file to base44
+      console.log('📤 Uploading file...');
       const response = await base44.integrations.Core.UploadFile({ file });
       const imageUrl = response.file_url;
+      console.log('✅ File uploaded:', imageUrl);
 
       if (!imageUrl) {
         throw new Error('Keine URL erhalten');
@@ -182,6 +186,7 @@ export default function ExerciseImageUpload() {
 
       // Update Exercise entity if it exists
       if (exercise.id) {
+        console.log('💾 Updating Exercise entity:', exercise.id);
         await updateExerciseMutation.mutateAsync({
           exerciseId: exercise.id,
           imageUrl
@@ -197,18 +202,39 @@ export default function ExerciseImageUpload() {
         for (const usage of exercise.usedIn) {
           console.log(`🎯 Updating routine ${usage.routineId}, step ${usage.stepIndex}`);
           
-          await updateRoutineMutation.mutateAsync({
-            routineId: usage.routineId,
-            stepIndex: usage.stepIndex,
-            imageUrl
-          });
-          
-          console.log(`✅ Updated routine ${usage.routineId}`);
-          updatedCount++;
+          try {
+            // Fetch current routine directly
+            const routine = routines.find(r => r.id === usage.routineId);
+            if (!routine) {
+              console.error('❌ Routine not found:', usage.routineId);
+              continue;
+            }
+            
+            console.log('📄 Current sequence length:', routine.sequence.length);
+            console.log('🔢 Step index to update:', usage.stepIndex);
+            
+            const updatedSequence = routine.sequence.map((step, idx) => {
+              if (idx === usage.stepIndex) {
+                console.log('✏️ Updating step', idx, 'with image_url:', imageUrl);
+                return { ...step, image_url: imageUrl };
+              }
+              return step;
+            });
+            
+            console.log('💾 Saving updated sequence...');
+            await base44.entities.Routine.update(usage.routineId, { sequence: updatedSequence });
+            console.log('✅ Routine updated successfully');
+            
+            updatedCount++;
+          } catch (routineError) {
+            console.error('❌ Error updating routine:', routineError);
+            throw routineError;
+          }
         }
       }
 
       // Invalidate queries to refresh data
+      console.log('🔄 Refreshing data...');
       await queryClient.invalidateQueries({ queryKey: ['exercises'] });
       await queryClient.invalidateQueries({ queryKey: ['routines'] });
 
@@ -219,9 +245,11 @@ export default function ExerciseImageUpload() {
       }
       
       setUploadingExerciseId(null);
+      console.log('🎉 Upload complete!');
 
     } catch (error) {
-      console.error('Upload error:', error);
+      console.error('❌ Upload error:', error);
+      console.error('Error details:', error.stack);
       toast.error('❌ Upload fehlgeschlagen: ' + (error.message || 'Unbekannter Fehler'));
       setUploadingExerciseId(null);
     }
