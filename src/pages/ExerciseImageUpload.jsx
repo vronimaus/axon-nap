@@ -112,8 +112,11 @@ export default function ExerciseImageUpload() {
       if (!exists) {
         allExercises.push(routineEx);
       } else {
-        // Add usage info
+        // Add usage info and update image_url if it exists in routines but not in entity
         exists.usedIn = routineEx.usedIn;
+        if (!exists.image_url && routineEx.image_url) {
+          exists.image_url = routineEx.image_url;
+        }
       }
     });
 
