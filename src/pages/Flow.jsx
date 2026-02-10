@@ -313,6 +313,17 @@ export default function Flow() {
                   />
                 </div>
               )}
+              
+              {/* Exercise Image */}
+              {currentSequence.image_url && (
+                <div className="rounded-xl overflow-hidden mb-6 border border-cyan-500/30">
+                  <img
+                    src={currentSequence.image_url}
+                    alt={detailedContent.title}
+                    className="w-full h-auto"
+                  />
+                </div>
+              )}
             </div>
           </motion.div>
         </AnimatePresence>
