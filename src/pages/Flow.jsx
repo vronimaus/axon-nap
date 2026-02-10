@@ -15,10 +15,6 @@ export default function Flow() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [timeRemaining, setTimeRemaining] = useState(0);
   const [completed, setCompleted] = useState(false);
-  const [checkAnswers, setCheckAnswers] = useState({});
-  const [showSuccessCheck, setShowSuccessCheck] = useState(false);
-  const [showMicroTweak, setShowMicroTweak] = useState(false);
-  const [neutralCount, setNeutralCount] = useState(0);
 
   const { data: routine, isLoading } = useQuery({
     queryKey: ['routine', routineId],
@@ -66,56 +62,6 @@ export default function Flow() {
   const handleNextStep = () => {
     if (!routine) return;
     
-    // Show success check before moving to next step
-    if (currentStep < routine.sequence.length - 1) {
-      setShowSuccessCheck(true);
-    } else {
-      setCompleted(true);
-      setIsPlaying(false);
-      saveHistory();
-    }
-  };
-
-  const handleCheckResponse = (response) => {
-    const newAnswers = {
-      ...checkAnswers,
-      [currentStep]: response
-    };
-    setCheckAnswers(newAnswers);
-    
-    // Count neutral/negative responses for troubleshooting trigger
-    if (response === 'same' || response === 'no') {
-      setNeutralCount(prev => prev + 1);
-      // Show micro-tweak instead of moving forward
-      setShowMicroTweak(true);
-      setShowSuccessCheck(false);
-      return;
-    }
-    
-    setShowSuccessCheck(false);
-    setIsPlaying(false);
-    
-    // Move to next step
-    if (currentStep < routine.sequence.length - 1) {
-      setCurrentStep(prev => prev + 1);
-    } else {
-      // Check if we should show deep-dive option (more than 50% neutral)
-      const totalNeutral = Object.values(newAnswers).filter(v => v === 'same' || v === 'no').length;
-      setCompleted(true);
-      saveHistory();
-    }
-  };
-
-  const handleMicroTweakRetry = () => {
-    // User retries the same step after tweak suggestion
-    setShowMicroTweak(false);
-    setIsPlaying(false);
-    setTimeRemaining(routine.sequence[currentStep].duration_seconds);
-  };
-
-  const handleMicroTweakSkip = () => {
-    // User skips and moves to next step
-    setShowMicroTweak(false);
     setIsPlaying(false);
     if (currentStep < routine.sequence.length - 1) {
       setCurrentStep(prev => prev + 1);
@@ -164,90 +110,6 @@ export default function Flow() {
   const currentSequence = routine.sequence[currentStep];
   const progress = ((currentStep + 1) / routine.sequence.length) * 100;
 
-  // Success Check messages per flow & step
-  const successChecks = {
-    'Morning Spark': [
-      "Fühlt sich deine Haut jetzt 'elektrisiert' oder präsenter an?",
-      "Ist dein Blickfeld schärfer? Lässt der Nackendruck nach?",
-      "Kannst du den Kopf jetzt leichter drehen? (Check: N1)",
-      "Spürst du mehr Grip und Stabilität im Stand?",
-      "Fühlst du den Energie-Kick in deinem System?",
-      "Geht die Atmung jetzt leichter in den Brustkorb?",
-      "Fühlst du dich stabiler und 'verbundener' mit dem Boden?"
-    ],
-    'Office Rescue': [
-      "Spürst du einen Entspannungsimpuls oder musstest du schlucken?",
-      "Fühlt sich dein Kiefer lockerer an? (Check: N12)",
-      "Ist die Spannung in deinen Unterarmen gesunken?",
-      "Fühlt sich das aufrechte Sitzen jetzt müheloser an?",
-      "Spürst du mehr Freiheit in der Leiste beim Aufstehen?",
-      "Wirkt der Raum um dich herum gerade weiter und ruhiger?",
-      "Fühlt sich dein Gesäß wieder 'aktiv' und wach an?"
-    ],
-    'Performance Prep': [
-      "Läuft das Sprunggelenk 'runder' und ohne Blockaden?",
-      "Fühlt sich dein unterer Rücken stabiler und kontrollierter an?",
-      "Ist dein Gleichgewicht beim nächsten Test fester?",
-      "Spürst du die Kraftübertragung bis in den Rumpf?",
-      "Gleiten deine Schulterblätter jetzt flüssiger?",
-      "Ist deine Rumpfspannung ('Bracing') jetzt auf 100%?",
-      "Bist du bereit? Fühlt sich das Gewicht jetzt leichter an?"
-    ],
-    'Nightly Reset': [
-      "Ist das Schwarz vor deinen Augen tiefer geworden?",
-      "Lässt der Druck in deiner Kehle und dem Nacken nach?",
-      "Spürst du, wie dein innerer Rhythmus langsamer wird?",
-      "Wird dein Bauch warm und weich? (Check: N8)",
-      "Fällt das Ausatmen jetzt schwereloser? (Check: N4)",
-      "Fühlen sich deine Beine jetzt schwerer und entspannter an?",
-      "Ist dein Herzschlag jetzt ruhig und gleichmäßig?"
-    ]
-  };
-
-  const currentCheckQuestion = successChecks[routine.routine_name]?.[currentStep] || "Spürst du eine Verbesserung?";
-
-  // Micro-tweaks for each routine and step
-  const microTweaks = {
-    'Morning Spark': [
-      "Halte den Kiefer locker – atme flach durch die Nase und konzentriere dich auf die Bewegung.",
-      "Lasse den Nacken komplett passiv. Nur die Augen bewegen sich. Probiers nochmal.",
-      "Tiefere Augenfixation: Behalte den Blick auf einem Punkt, während sich dein Kopf bewegt.",
-      "Dein System braucht einen stärkeren Reiz. Vergrößere die Bewegung beim nächsten Versuch.",
-      "Zunge an den Gaumen – das aktiviert dein visuelles System direkt. Nochmal!",
-      "Atme vor der Bewegung tief ein, halte dann kurz an und DANN die Bewegung. Das triggert mehr Input.",
-      "Du brauchst heute mehr sensorischen Input. Berühre dabei deine Haut leicht – das hilft deinem Gehirn."
-    ],
-    'Office Rescue': [
-      "Focus: Nur der Kiefer bewegt sich. Alles andere bleibt entspannt. Und atme weiter.",
-      "Stärker komprimieren – dein Kiefer-Kaumuskel braucht heute einen intensiveren Reiz.",
-      "Verlangsamung: Super langsam kommen, 3 Sekunden halten. Das ist kein Krafttraining.",
-      "Dein Rücken ist noch angespannt. Lehne dich beim nächsten Mal leicht nach vorne – das entspannt den Nacken.",
-      "Spann die Bauchmuskulatur an, während du sitzt. Das signalisiert deinem Gehirn: ‚Sicherheit'.",
-      "Atemtiming: Ausatmen beim Dehnen. Das ist das Geheimnis. Probier es nochmal.",
-      "Dein System meldet heute ‚Schutzspannung'. Gib dir selbst 3 tiefe Atemzüge vor dem nächsten Versuch."
-    ],
-    'Performance Prep': [
-      "Die Bewegung muss explosiv sein – dein Gehirn braucht das ‚Go'-Signal. Versuch es schneller.",
-      "Stabilität checken: Kannst du die Balance halten? Wenn ja, mach die Bewegung größer.",
-      "Zunge an den Gaumen – das triggert dein posturales Kontrollsystem direkt.",
-      "Dein Rumpf braucht mehr ‚Bracing'. Spann den Bauch vorher an, als würdest du gleich einen Schlag bekommen.",
-      "Augenfokus: Fixiere einen Punkt 2 Meter weg. Das stabilisiert dein Gleichgewicht während der Bewegung.",
-      "Dein System ist heute konservativ. Starte langsamer und beschleunige dann. Das Gehirn mag Progression.",
-      "Tempo! Dein visuelles System braucht Geschwindigkeit, um ‚Kraft' freizugeben. Nochmal, schneller!"
-    ],
-    'Nightly Reset': [
-      "Verlangsame die Atmung noch mehr – 4 Sekunden rein, 6 Sekunden raus. Das ist das magische Timing.",
-      "Entspannt die Augen: Augenlider halb zu, keine fixation. Nur fühlen, nicht sehen.",
-      "Dein Parasympathikus braucht mehr Zeit. Halte die Position 10 Sekunden länger.",
-      "Komplettest Loslassen: Wenn du spannst, sabotierst du dich. Lass den Körper 100% passiv fallen.",
-      "Der Kiefer ist der Trick – komplett locker, Zunge breit auf dem Boden. Das triggert Vagus direkt.",
-      "Dunkelheit: Schließ die Augen vollständig. Dein Gehirn braucht dunkel für den Parasympathikus.",
-      "Wärmefokus: Spüre die Wärmebewegung in deinem Bauch. Das hilft dem Nervensystem, ‚entspannen' zu verstehen."
-    ]
-  };
-
-  const currentMicroTweak = microTweaks[routine.routine_name]?.[currentStep] || "Versuche es nochmal mit etwas mehr Konzentration auf die Details.";
-
   // Get detailed instruction from MFR Node or Exercise
   const getDetailedInstruction = () => {
     if (currentSequence.type === 'mfr' && currentSequence.node_id) {
@@ -274,99 +136,15 @@ export default function Flow() {
 
   const detailedContent = getDetailedInstruction();
 
-  // Micro-Tweak Layer (Phase 1)
-  if (showMicroTweak) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 flex items-center justify-center p-4 relative overflow-hidden">
-        <motion.div
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="glass rounded-2xl border border-purple-500/40 p-8 max-w-2xl w-full relative z-10 neuro-glow"
-        >
-          <div className="mb-6">
-            <h3 className="text-2xl font-bold text-purple-300 mb-4 flex items-center gap-2">
-              <span className="text-3xl">🔧</span> Neuro-Tweak: Präzisions-Abfrage
-            </h3>
-            <p className="text-slate-300 text-sm mb-4">
-              Dein System braucht heute einen anderen Input. Hier's der Trick:
-            </p>
-            <div className="bg-purple-500/10 border border-purple-500/30 rounded-xl p-4">
-              <p className="text-slate-200 text-base leading-relaxed">
-                {currentMicroTweak}
-              </p>
-            </div>
-          </div>
-
-          <div className="space-y-3">
-            <Button
-              onClick={handleMicroTweakRetry}
-              className="w-full h-12 bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 font-semibold text-white"
-            >
-              🔄 Nochmal versuchen mit dem Tweak
-            </Button>
-            <Button
-              onClick={handleMicroTweakSkip}
-              variant="outline"
-              className="w-full h-12 border-slate-600 text-slate-400 font-semibold"
-            >
-              ⏭ Weiter zum nächsten Drill
-            </Button>
-          </div>
-
-          <p className="text-xs text-slate-500 text-center mt-6">
-            💡 Das ist normal – dein Nervensystem ist heute einfach anders kalibriert. Keine Sorge!
-          </p>
-        </motion.div>
-      </div>
-    );
-  }
-
-  // Success Check Modal
-  if (showSuccessCheck) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 flex items-center justify-center p-4 relative overflow-hidden">
-        <motion.div
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="glass rounded-2xl border border-cyan-500/40 p-8 max-w-xl w-full relative z-10 neuro-glow"
-        >
-          <h3 className="text-xl font-bold text-cyan-300 mb-6 text-center">
-            {currentCheckQuestion}
-          </h3>
-
-          <div className="space-y-3">
-            <Button
-              onClick={() => handleCheckResponse('yes')}
-              className="w-full h-12 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 font-semibold text-white"
-            >
-              ✓ Ja, besser!
-            </Button>
-            <Button
-              onClick={() => handleCheckResponse('same')}
-              variant="outline"
-              className="w-full h-12 border-slate-600 text-slate-400 font-semibold"
-            >
-              — Gleich geblieben
-            </Button>
-            <Button
-              onClick={() => handleCheckResponse('no')}
-              variant="outline"
-              className="w-full h-12 border-slate-600 text-slate-400 font-semibold"
-            >
-              ✗ Noch nicht ganz
-            </Button>
-          </div>
-        </motion.div>
-      </div>
-    );
-  }
+  // Generate completion message based on routine category
+  const getCompletionMessage = () => {
+    if (routine.category === 'mobility-training') {
+      return `Du hast alle ${routine.sequence.length} Bewegungen gemeistert. Deine Gelenke sind mobilisiert, deine Bewegungsketten aktiviert.`;
+    }
+    return routine.completion_message || `Du hast "${routine.routine_name}" erfolgreich durchgeführt. Dein System ist jetzt optimiert!`;
+  };
 
   if (completed) {
-    // Phase 2: Check if we should show deep-dive option
-    const totalResponses = Object.keys(checkAnswers).length;
-    const totalNeutral = Object.values(checkAnswers).filter(v => v === 'same' || v === 'no').length;
-    const neutralPercentage = totalResponses > 0 ? (totalNeutral / totalResponses) * 100 : 0;
-    const showDeepDive = neutralPercentage >= 40; // 40% threshold for deep-dive
 
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 flex items-center justify-center p-4 relative overflow-hidden">
@@ -383,22 +161,14 @@ export default function Flow() {
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
-          className={`rounded-2xl border p-10 max-w-2xl w-full text-center relative z-10 ${
-            showDeepDive
-              ? 'glass-purple border-purple-500/40 neuro-glow-purple'
-              : 'glass-cyan border-cyan-500/40 neuro-glow'
-          }`}
+          className="glass-cyan border-cyan-500/40 neuro-glow rounded-2xl border p-10 max-w-2xl w-full text-center relative z-10"
         >
           {/* Success Icon */}
           <motion.div
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
             transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
-            className={`w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-6 shadow-2xl ${
-              showDeepDive
-                ? 'bg-gradient-to-br from-purple-500 to-pink-600'
-                : 'bg-gradient-to-br from-cyan-500 to-purple-600'
-            }`}
+            className="w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-6 shadow-2xl bg-gradient-to-br from-cyan-500 to-purple-600"
           >
             <Check className="w-12 h-12 text-white" />
           </motion.div>
@@ -408,13 +178,9 @@ export default function Flow() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
-            className={`text-3xl font-bold mb-4 ${
-              showDeepDive
-                ? 'text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-500'
-                : 'text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-500'
-            }`}
+            className="text-3xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-500"
           >
-            {routine.completion_title || "System optimiert!"}
+            {routine.completion_title || "Flow abgeschlossen!"}
           </motion.h2>
 
           {/* Message */}
@@ -424,9 +190,7 @@ export default function Flow() {
             transition={{ delay: 0.4 }}
             className="text-slate-200 text-base leading-relaxed mb-8 max-w-xl mx-auto"
           >
-            {showDeepDive
-              ? `Dein System signalisiert heute erhöhte Schutzspannung. Wir konnten mehrere Bereiche nur teilweise kalibrieren. Das ist ein wertvolles Signal!`
-              : routine.completion_message || `Du hast "${routine.routine_name}" erfolgreich durchgeführt. Dein System ist jetzt optimiert und bereit!`}
+            {getCompletionMessage()}
           </motion.p>
 
           {/* Action Buttons */}
@@ -434,33 +198,14 @@ export default function Flow() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5 }}
-            className="space-y-3"
           >
-            {showDeepDive && (
-              <Button
-                onClick={() => window.location.href = createPageUrl(`PerformanceChat?troubleshoot=${routine.routine_name}`)}
-                className="w-full h-12 bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 font-semibold text-white"
-              >
-                🔍 Analyse starten – Was blockiert dein System?
-              </Button>
-            )}
             <Button
               onClick={() => window.history.back()}
-              className={`w-full h-12 px-8 text-lg font-semibold shadow-xl ${
-                showDeepDive
-                  ? 'bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700'
-                  : 'bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-600 hover:to-purple-700'
-              }`}
+              className="w-full h-12 px-8 text-lg font-semibold shadow-xl bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-600 hover:to-purple-700"
             >
-              {showDeepDive ? '← Zurück (später analysieren)' : 'Zurück zum Dashboard'}
+              Zurück zur Übersicht
             </Button>
           </motion.div>
-
-          {showDeepDive && (
-            <p className="text-xs text-slate-400 text-center mt-6">
-              💡 Das zeigt mir, wo dein Nervensystem heute Unterstützung braucht. Lass mich kurz analysieren, damit wir die richtigen Hebel drehen.
-            </p>
-          )}
         </motion.div>
       </div>
     );
