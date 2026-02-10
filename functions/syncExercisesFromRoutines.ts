@@ -9,48 +9,51 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Admin access required' }, { status: 403 });
     }
 
-    // Fetch all routines and exercises
-    const routines = await base44.entities.Routine.list();
-    const existingExercises = await base44.entities.Exercise.list();
+    const body = await req.json();
+    const routineId = body.routineId;
 
-    const existingNames = new Set(existingExercises.map(e => e.name.toLowerCase()));
+    if (!routineId) {
+      return Response.json({ error: 'routineId required' }, { status: 400 });
+    }
+
+    // Get single routine
+    const routines = await base44.entities.Routine.filter({ id: routineId });
+    if (routines.length === 0) {
+      return Response.json({ error: 'Routine not found' }, { status: 404 });
+    }
+
+    const routine = routines[0];
     const newExercises = [];
 
-    // Extract all exercises from routines
-    routines.forEach(routine => {
-      routine.sequence?.forEach(step => {
-        if (step.instruction) {
-          const lines = step.instruction.split('\n');
-          const exerciseName = lines[0]?.replace(':', '').trim();
+    // Extract exercises from this routine
+    routine.sequence?.forEach(step => {
+      if (step.instruction) {
+        const lines = step.instruction.split('\n');
+        const exerciseName = lines[0]?.replace(':', '').trim();
 
-          if (exerciseName && exerciseName.length > 3 && !existingNames.has(exerciseName.toLowerCase())) {
-            newExercises.push({
-              name: exerciseName,
-              exercise_id: exerciseName.toLowerCase().replace(/\s+/g, '_'),
-              description: `Imported from ${routine.routine_name}`,
-              category: 'other',
-              image_url: step.image_url || ''
-            });
-
-            existingNames.add(exerciseName.toLowerCase());
-          }
+        if (exerciseName && exerciseName.length > 3) {
+          newExercises.push({
+            name: exerciseName,
+            exercise_id: exerciseName.toLowerCase().replace(/\s+/g, '_'),
+            description: `From: ${routine.routine_name}`,
+            category: 'other',
+            image_url: step.image_url || ''
+          });
         }
-      });
+      }
     });
 
-    // Bulk create new exercises
+    // Bulk create exercises
     if (newExercises.length > 0) {
-      console.log(`Creating ${newExercises.length} new exercises...`);
       await base44.entities.Exercise.bulkCreate(newExercises);
     }
 
     return Response.json({
       success: true,
-      created: newExercises.length,
-      exercises: newExercises
+      created: newExercises.length
     });
   } catch (error) {
-    console.error('Error syncing exercises:', error);
+    console.error('Error:', error);
     return Response.json({ error: error.message }, { status: 500 });
   }
 });
