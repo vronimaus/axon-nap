@@ -143,25 +143,7 @@ export default function ExerciseImageUpload() {
     }
   });
 
-  // Update mutation for routines
-  const updateRoutineMutation = useMutation({
-    mutationFn: async ({ routineId, stepIndex, imageUrl }) => {
-      // Fetch fresh routine data from DB
-      const [routine] = await base44.entities.Routine.filter({ id: routineId });
-      if (!routine) throw new Error('Routine nicht gefunden');
-      
-      const updatedSequence = [...routine.sequence];
-      updatedSequence[stepIndex] = {
-        ...updatedSequence[stepIndex],
-        image_url: imageUrl
-      };
 
-      return await base44.entities.Routine.update(routineId, { sequence: updatedSequence });
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['routines'] });
-    }
-  });
 
   const handleFileUpload = async (exercise, file) => {
     if (!file) return;
