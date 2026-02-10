@@ -190,12 +190,19 @@ export default function ExerciseImageUpload() {
 
       // Update all routines where this exercise is used
       if (exercise.usedIn && exercise.usedIn.length > 0) {
+        console.log('🔍 Updating routines for:', exercise.name);
+        console.log('📝 Usage locations:', exercise.usedIn);
+        
         for (const usage of exercise.usedIn) {
+          console.log(`🎯 Updating routine ${usage.routineId}, step ${usage.stepIndex}`);
+          
           await updateRoutineMutation.mutateAsync({
             routineId: usage.routineId,
             stepIndex: usage.stepIndex,
             imageUrl
           });
+          
+          console.log(`✅ Updated routine ${usage.routineId}`);
           updatedCount++;
         }
       }
