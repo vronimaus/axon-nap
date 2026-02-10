@@ -20,13 +20,15 @@ export default function Landing() {
     const checkAuth = async () => {
       try {
         const stayOnLanding = localStorage.getItem('stay_on_landing') === 'true';
+        const urlParams = new URLSearchParams(window.location.search);
+        const previewMode = urlParams.get('preview') === 'true';
 
                 try {
                   const currentUser = await base44.auth.me();
                   setUser(currentUser);
 
-                  // Skip redirect wenn explizit auf Landing bleiben
-                  if (stayOnLanding) {
+                  // Skip redirect wenn explizit auf Landing bleiben oder Preview-Modus
+                  if (stayOnLanding || previewMode) {
                     setIsLoading(false);
                     return;
                   }
