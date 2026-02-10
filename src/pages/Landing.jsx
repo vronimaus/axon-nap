@@ -10,6 +10,11 @@ import { toast } from 'sonner';
 export default function Landing() {
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [onboardingStep, setOnboardingStep] = useState(null); // null, 'name', 'choice', 'questions'
+  const [onboardingName, setOnboardingName] = useState('');
+  const [fitnessGoals, setFitnessGoals] = useState([]);
+  const [activityLevel, setActivityLevel] = useState('');
+  const [currentPain, setCurrentPain] = useState('');
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -54,7 +59,47 @@ export default function Landing() {
     };
     
     checkAuth();
+
+    // Check if onboarding was started
+    const onboardingStatus = localStorage.getItem('axon_onboarding_status');
+    if (!onboardingStatus && !user) {
+      setOnboardingStep('name');
+    }
   }, []);
+
+  const handleNameSubmit = () => {
+    if (onboardingName.trim()) {
+      localStorage.setItem('axon_onboarding_name', onboardingName);
+      setOnboardingStep('choice');
+    }
+  };
+
+  const handleChoice = (choice) => {
+    localStorage.setItem('axon_onboarding_choice', choice);
+    if (choice === 'guided') {
+      // Show guided tour (placeholder for now)
+      toast.success('Geführte Tour kommt bald! Lass uns direkt ein paar Fragen stellen.');
+      setOnboardingStep('questions');
+    } else {
+      setOnboardingStep('questions');
+    }
+  };
+
+  const handleQuestionsComplete = () => {
+    // Save to localStorage
+    localStorage.setItem('axon_onboarding_fitness_goals', JSON.stringify(fitnessGoals));
+    localStorage.setItem('axon_onboarding_activity_level', activityLevel);
+    localStorage.setItem('axon_onboarding_current_pain', currentPain);
+    localStorage.setItem('axon_onboarding_status', 'completed');
+    
+    setOnboardingStep(null);
+    toast.success('Perfekt! Jetzt kannst du starten.');
+  };
+
+  const skipOnboarding = () => {
+    localStorage.setItem('axon_onboarding_status', 'skipped');
+    setOnboardingStep(null);
+  };
 
   const handleSelectOption = (mode) => {
     // Speichere die gewählte Option für nach dem Login
@@ -66,6 +111,215 @@ export default function Landing() {
 
   if (isLoading) {
     return <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950" />;
+  }
+
+  // Onboarding Flow
+  if (onboardingStep === 'name') {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 flex items-center justify-center p-4">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="max-w-md w-full text-center"
+        >
+          <img 
+            src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/afa60dd62_AXONLogo.png"
+            alt="AXON"
+            className="w-20 h-20 mx-auto mb-6 object-contain drop-shadow-[0_0_30px_rgba(6,182,212,0.3)]"
+          />
+          <h1 className="text-3xl font-bold text-white mb-2">Hallo, ich bin AXON</h1>
+          <p className="text-slate-400 mb-8">Wie darf ich dich nennen?</p>
+          
+          <input
+            type="text"
+            value={onboardingName}
+            onChange={(e) => setOnboardingName(e.target.value)}
+            onKeyPress={(e) => e.key === 'Enter' && handleNameSubmit()}
+            placeholder="Dein Name"
+            className="w-full px-6 py-4 rounded-xl bg-slate-800/50 border border-slate-700 text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400 mb-4 text-center text-lg"
+            autoFocus
+          />
+          
+          <Button
+            onClick={handleNameSubmit}
+            disabled={!onboardingName.trim()}
+            className="w-full bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-600 hover:to-purple-700 h-12"
+          >
+            Weiter
+          </Button>
+          
+          <button
+            onClick={skipOnboarding}
+            className="mt-4 text-sm text-slate-500 hover:text-slate-400"
+          >
+            Überspringen
+          </button>
+        </motion.div>
+      </div>
+    );
+  }
+
+  if (onboardingStep === 'choice') {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 flex items-center justify-center p-4">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="max-w-2xl w-full text-center"
+        >
+          <h1 className="text-3xl font-bold text-white mb-2">
+            Schön dich kennenzulernen, {onboardingName}!
+          </h1>
+          <p className="text-slate-400 mb-8">
+            Möchtest du eine kurze Führung durch die App oder lieber selbst entdecken?
+          </p>
+          
+          <div className="grid md:grid-cols-2 gap-4">
+            <button
+              onClick={() => handleChoice('guided')}
+              className="glass rounded-xl border border-cyan-500/30 p-8 hover:border-cyan-500/60 transition-all group"
+            >
+              <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center mb-4 mx-auto">
+                <Zap className="w-8 h-8 text-white" />
+              </div>
+              <h3 className="text-xl font-bold text-cyan-400 mb-2">Führung starten</h3>
+              <p className="text-sm text-slate-300">Ich zeige dir die wichtigsten Features</p>
+            </button>
+            
+            <button
+              onClick={() => handleChoice('explore')}
+              className="glass rounded-xl border border-purple-500/30 p-8 hover:border-purple-500/60 transition-all group"
+            >
+              <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-purple-500 to-pink-600 flex items-center justify-center mb-4 mx-auto">
+                <Shield className="w-8 h-8 text-white" />
+              </div>
+              <h3 className="text-xl font-bold text-purple-400 mb-2">Selbst entdecken</h3>
+              <p className="text-sm text-slate-300">Ich erkunde lieber auf eigene Faust</p>
+            </button>
+          </div>
+          
+          <button
+            onClick={skipOnboarding}
+            className="mt-6 text-sm text-slate-500 hover:text-slate-400"
+          >
+            Überspringen
+          </button>
+        </motion.div>
+      </div>
+    );
+  }
+
+  if (onboardingStep === 'questions') {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 flex items-center justify-center p-4">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="max-w-2xl w-full"
+        >
+          <h1 className="text-3xl font-bold text-white mb-2 text-center">
+            Noch ein paar Fragen, {onboardingName}
+          </h1>
+          <p className="text-slate-400 mb-8 text-center">
+            So können wir deine Erfahrung optimal personalisieren
+          </p>
+          
+          <div className="space-y-6">
+            {/* Fitness Goals */}
+            <div className="glass rounded-xl border border-cyan-500/30 p-6">
+              <h3 className="text-lg font-semibold text-cyan-400 mb-2">Was ist dein Hauptziel?</h3>
+              <p className="text-xs text-slate-400 mb-4">
+                Diese Information hilft uns, die passenden Routinen für dich zu finden.
+              </p>
+              <div className="grid grid-cols-2 gap-2">
+                {[
+                  { value: 'improve_mobility', label: 'Mehr Beweglichkeit' },
+                  { value: 'reduce_pain', label: 'Schmerzen reduzieren' },
+                  { value: 'build_strength', label: 'Stärker werden' },
+                  { value: 'improve_performance', label: 'Performance steigern' }
+                ].map((goal) => (
+                  <button
+                    key={goal.value}
+                    onClick={() => setFitnessGoals(prev => 
+                      prev.includes(goal.value) 
+                        ? prev.filter(g => g !== goal.value)
+                        : [...prev, goal.value]
+                    )}
+                    className={`px-4 py-2 rounded-lg text-sm transition-all ${
+                      fitnessGoals.includes(goal.value)
+                        ? 'bg-cyan-500/30 border-cyan-400 text-cyan-400'
+                        : 'bg-slate-800/50 border-slate-700 text-slate-400 hover:border-slate-600'
+                    } border`}
+                  >
+                    {goal.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Activity Level */}
+            <div className="glass rounded-xl border border-purple-500/30 p-6">
+              <h3 className="text-lg font-semibold text-purple-400 mb-2">Wie aktiv bist du aktuell?</h3>
+              <p className="text-xs text-slate-400 mb-4">
+                So können wir die Intensität optimal anpassen.
+              </p>
+              <div className="space-y-2">
+                {[
+                  { value: 'sedentary', label: 'Wenig Bewegung' },
+                  { value: 'lightly_active', label: 'Leicht aktiv (1-2x/Woche)' },
+                  { value: 'moderately_active', label: 'Moderat aktiv (3-4x/Woche)' },
+                  { value: 'very_active', label: 'Sehr aktiv (5-6x/Woche)' },
+                  { value: 'athlete', label: 'Athlet (täglich)' }
+                ].map((level) => (
+                  <button
+                    key={level.value}
+                    onClick={() => setActivityLevel(level.value)}
+                    className={`w-full px-4 py-3 rounded-lg text-sm text-left transition-all ${
+                      activityLevel === level.value
+                        ? 'bg-purple-500/30 border-purple-400 text-purple-400'
+                        : 'bg-slate-800/50 border-slate-700 text-slate-400 hover:border-slate-600'
+                    } border`}
+                  >
+                    {level.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Current Pain */}
+            <div className="glass rounded-xl border border-orange-500/30 p-6">
+              <h3 className="text-lg font-semibold text-orange-400 mb-2">Hast du aktuell Beschwerden?</h3>
+              <p className="text-xs text-slate-400 mb-4">
+                Optional: Hilft uns, problematische Bereiche zu identifizieren.
+              </p>
+              <input
+                type="text"
+                value={currentPain}
+                onChange={(e) => setCurrentPain(e.target.value)}
+                placeholder="z.B. Nacken, unterer Rücken, Knie..."
+                className="w-full px-4 py-3 rounded-lg bg-slate-800/50 border border-slate-700 text-white placeholder-slate-500 focus:outline-none focus:border-orange-400"
+              />
+            </div>
+          </div>
+
+          <div className="flex gap-4 mt-8">
+            <button
+              onClick={skipOnboarding}
+              className="px-6 py-3 rounded-xl text-slate-400 hover:text-slate-300"
+            >
+              Überspringen
+            </button>
+            <Button
+              onClick={handleQuestionsComplete}
+              disabled={fitnessGoals.length === 0 || !activityLevel}
+              className="flex-1 bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-600 hover:to-purple-700 h-12"
+            >
+              Fertig
+            </Button>
+          </div>
+        </motion.div>
+      </div>
+    );
   }
 
   return (

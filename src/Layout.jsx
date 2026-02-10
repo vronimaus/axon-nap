@@ -19,11 +19,64 @@ export default function Layout({ children, currentPageName }) {
         const currentUser = await base44.auth.me();
         setUser(currentUser);
 
+        // Transfer onboarding data to user profile
+        const onboardingStatus = localStorage.getItem('axon_onboarding_status');
+        if (onboardingStatus === 'completed') {
+          try {
+            // Update user name if available
+            const onboardingName = localStorage.getItem('axon_onboarding_name');
+            if (onboardingName && !currentUser.full_name) {
+              await base44.auth.updateMe({ full_name: onboardingName });
+            }
+
+            // Create or update UserNeuroProfile
+            const fitnessGoals = JSON.parse(localStorage.getItem('axon_onboarding_fitness_goals') || '[]');
+            const activityLevel = localStorage.getItem('axon_onboarding_activity_level');
+            const currentPain = localStorage.getItem('axon_onboarding_current_pain');
+
+            const existingProfiles = await base44.entities.UserNeuroProfile.filter({ user_email: currentUser.email });
+
+            const profileData = {
+              user_email: currentUser.email,
+              fitness_goals: fitnessGoals,
+              activity_level: activityLevel,
+              profile_complete: false
+            };
+
+            // Add complaint history if pain was mentioned
+            if (currentPain && currentPain.trim()) {
+              profileData.complaint_history = [{
+                date: new Date().toISOString().split('T')[0],
+                location: currentPain,
+                intensity: 5,
+                description: 'Initial onboarding input',
+                status: 'active'
+              }];
+            }
+
+            if (existingProfiles.length > 0) {
+              await base44.entities.UserNeuroProfile.update(existingProfiles[0].id, profileData);
+            } else {
+              await base44.entities.UserNeuroProfile.create(profileData);
+            }
+
+            // Clear onboarding data from localStorage
+            localStorage.removeItem('axon_onboarding_name');
+            localStorage.removeItem('axon_onboarding_fitness_goals');
+            localStorage.removeItem('axon_onboarding_activity_level');
+            localStorage.removeItem('axon_onboarding_current_pain');
+            localStorage.removeItem('axon_onboarding_choice');
+            localStorage.removeItem('axon_onboarding_status');
+          } catch (error) {
+            console.error('Error transferring onboarding data:', error);
+          }
+        }
+
         // Prüfe ob nach Login eine Option gewählt wurde
         const selectedMode = localStorage.getItem('axon_selected_mode');
         if (selectedMode && currentPageName === 'Landing') {
           localStorage.removeItem('axon_selected_mode');
-          
+
           if (selectedMode === 'trial') {
             // Trial starten: trial_start_date setzen falls noch nicht gesetzt
             if (!currentUser.trial_start_date) {
