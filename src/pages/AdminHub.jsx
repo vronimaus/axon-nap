@@ -114,19 +114,13 @@ export default function AdminHub() {
               exit={{ opacity: 0, y: -20 }}
               className="glass rounded-2xl border border-cyan-500/30 p-8"
             >
-              <h2 className="text-2xl font-bold text-cyan-400 mb-4">Flow Routine Assets</h2>
+              <h2 className="text-2xl font-bold text-cyan-400 mb-4">Flow Content Management</h2>
               <p className="text-slate-300 mb-6">
-                Verwalte und generiere Bilder und Inhalte für FLOW Routinen.
+                Verwalte FLOW Routinen und deren Inhalte.
               </p>
-              <div className="space-y-4">
-                <Button
-                  onClick={() => window.location.href = createPageUrl('ExerciseImageGenerator')}
-                  className="w-full bg-cyan-500/20 text-cyan-400 hover:bg-cyan-500/30 justify-start"
-                >
-                  <Image className="w-4 h-4 mr-2" />
-                  Übungs-Bilder generieren
-                </Button>
-              </div>
+              <p className="text-slate-400 text-sm">
+                Weitere Flow-Management-Tools folgen in Kürze...
+              </p>
             </motion.div>
           </TabsContent>
 

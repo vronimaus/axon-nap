@@ -55,6 +55,7 @@ import DevNotes from './pages/DevNotes';
 import DiagnosisChat from './pages/DiagnosisChat';
 import DiagnosisWizard from './pages/DiagnosisWizard';
 import ExerciseImageGenerator from './pages/ExerciseImageGenerator';
+import ExerciseImageUpload from './pages/ExerciseImageUpload';
 import Flow from './pages/Flow';
 import FlowRoutines from './pages/FlowRoutines';
 import FlowSelection from './pages/FlowSelection';
@@ -75,7 +76,6 @@ import Success from './pages/Success';
 import Terms from './pages/Terms';
 import TrainingPlan from './pages/TrainingPlan';
 import TrialInfo from './pages/TrialInfo';
-import ExerciseImageUpload from './pages/ExerciseImageUpload';
 import __Layout from './Layout.jsx';
 
 
@@ -88,6 +88,7 @@ export const PAGES = {
     "DiagnosisChat": DiagnosisChat,
     "DiagnosisWizard": DiagnosisWizard,
     "ExerciseImageGenerator": ExerciseImageGenerator,
+    "ExerciseImageUpload": ExerciseImageUpload,
     "Flow": Flow,
     "FlowRoutines": FlowRoutines,
     "FlowSelection": FlowSelection,
@@ -108,7 +109,6 @@ export const PAGES = {
     "Terms": Terms,
     "TrainingPlan": TrainingPlan,
     "TrialInfo": TrialInfo,
-    "ExerciseImageUpload": ExerciseImageUpload,
 }
 
 export const pagesConfig = {
