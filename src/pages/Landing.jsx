@@ -10,13 +10,6 @@ import { toast } from 'sonner';
 export default function Landing() {
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [showOnboarding, setShowOnboarding] = useState(false);
-  const [onboardingStep, setOnboardingStep] = useState('name'); // 'name', 'questions'
-  const [onboardingName, setOnboardingName] = useState('');
-  const [fitnessGoals, setFitnessGoals] = useState([]);
-  const [activityLevel, setActivityLevel] = useState('');
-  const [currentPain, setCurrentPain] = useState('');
-  const [pendingMode, setPendingMode] = useState(null); // 'trial' or 'direct'
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -63,244 +56,22 @@ export default function Landing() {
     };
     
     checkAuth();
-
-    // Load saved onboarding data if exists
-    const savedName = localStorage.getItem('axon_onboarding_name');
-    if (savedName) {
-      setOnboardingName(savedName);
-    }
   }, []);
 
-  const handleStartOnboarding = (mode) => {
-    setPendingMode(mode);
-    setShowOnboarding(true);
-    setOnboardingStep('name');
-  };
-
-  const handleNameSubmit = () => {
-    if (onboardingName.trim()) {
-      localStorage.setItem('axon_onboarding_name', onboardingName);
-      setOnboardingStep('questions');
-    }
-  };
-
-  const handleQuestionsComplete = () => {
-    // Save to localStorage
-    localStorage.setItem('axon_onboarding_fitness_goals', JSON.stringify(fitnessGoals));
-    localStorage.setItem('axon_onboarding_activity_level', activityLevel);
-    localStorage.setItem('axon_onboarding_current_pain', currentPain);
-    localStorage.setItem('axon_onboarding_status', 'completed');
-    
-    setShowOnboarding(false);
-    toast.success('Perfekt! Leite dich weiter...');
-    
-    // Continue with the pending mode
-    if (pendingMode) {
-      localStorage.setItem('axon_selected_mode', pendingMode);
-      base44.auth.redirectToLogin(window.location.href);
-    }
-  };
-
-  const skipOnboarding = () => {
-    localStorage.setItem('axon_onboarding_status', 'skipped');
-    setShowOnboarding(false);
-    
-    // Continue with the pending mode
-    if (pendingMode) {
-      localStorage.setItem('axon_selected_mode', pendingMode);
-      base44.auth.redirectToLogin(window.location.href);
-    }
-  };
-
   const handleSelectOption = (mode) => {
-    // Check if we have onboarding data
-    const hasOnboardingData = localStorage.getItem('axon_onboarding_status') === 'completed';
+    // Speichere die gewählte Option für nach dem Login
+    localStorage.setItem('axon_selected_mode', mode);
     
-    if (!hasOnboardingData) {
-      // Start onboarding flow first
-      handleStartOnboarding(mode);
-    } else {
-      // Speichere die gewählte Option für nach dem Login
-      localStorage.setItem('axon_selected_mode', mode);
-      
-      // Leite zum Login/Registrierung weiter
-      base44.auth.redirectToLogin(window.location.href);
-    }
+    // Leite zum Login/Registrierung weiter
+    base44.auth.redirectToLogin(window.location.href);
   };
 
   if (isLoading) {
     return <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950" />;
   }
 
-  // Onboarding Modal
-  const OnboardingModal = () => {
-    if (onboardingStep === 'name') {
-      return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/95 backdrop-blur-sm p-4">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="max-w-md w-full text-center"
-          >
-            <img 
-              src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/afa60dd62_AXONLogo.png"
-              alt="AXON"
-              className="w-20 h-20 mx-auto mb-6 object-contain drop-shadow-[0_0_30px_rgba(6,182,212,0.3)]"
-            />
-            <h1 className="text-3xl font-bold text-white mb-2">Willkommen bei AXON</h1>
-            <p className="text-slate-400 mb-8">Damit wir dich optimal unterstützen können – wie dürfen wir dich nennen?</p>
-            
-            <input
-              type="text"
-              value={onboardingName}
-              onChange={(e) => setOnboardingName(e.target.value)}
-              onKeyPress={(e) => e.key === 'Enter' && handleNameSubmit()}
-              placeholder="Dein Vorname"
-              className="w-full px-6 py-4 rounded-xl bg-slate-800/50 border border-slate-700 text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400 mb-4 text-center text-lg"
-              autoFocus
-            />
-            
-            <Button
-              onClick={handleNameSubmit}
-              disabled={!onboardingName.trim()}
-              className="w-full bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-600 hover:to-purple-700 h-12"
-            >
-              Weiter
-            </Button>
-            
-            <button
-              onClick={skipOnboarding}
-              className="mt-4 text-sm text-slate-500 hover:text-slate-400"
-            >
-              Überspringen
-            </button>
-          </motion.div>
-        </div>
-      );
-    }
-
-    if (onboardingStep === 'questions') {
-      return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/95 backdrop-blur-sm p-4 overflow-y-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="max-w-2xl w-full my-8"
-          >
-            <h1 className="text-3xl font-bold text-white mb-2 text-center">
-              Noch ein paar Fragen, {onboardingName}
-            </h1>
-            <p className="text-slate-400 mb-8 text-center">
-              So können wir deine Erfahrung optimal personalisieren
-            </p>
-          
-          <div className="space-y-6">
-            {/* Fitness Goals */}
-            <div className="glass rounded-xl border border-cyan-500/30 p-6">
-              <h3 className="text-lg font-semibold text-cyan-400 mb-2">Was ist dein Hauptziel?</h3>
-              <p className="text-xs text-slate-400 mb-4">
-                Diese Information hilft uns, die passenden Routinen für dich zu finden.
-              </p>
-              <div className="grid grid-cols-2 gap-2">
-                {[
-                  { value: 'improve_mobility', label: 'Mehr Beweglichkeit' },
-                  { value: 'reduce_pain', label: 'Schmerzen reduzieren' },
-                  { value: 'build_strength', label: 'Stärker werden' },
-                  { value: 'improve_performance', label: 'Performance steigern' }
-                ].map((goal) => (
-                  <button
-                    key={goal.value}
-                    onClick={() => setFitnessGoals(prev => 
-                      prev.includes(goal.value) 
-                        ? prev.filter(g => g !== goal.value)
-                        : [...prev, goal.value]
-                    )}
-                    className={`px-4 py-2 rounded-lg text-sm transition-all ${
-                      fitnessGoals.includes(goal.value)
-                        ? 'bg-cyan-500/30 border-cyan-400 text-cyan-400'
-                        : 'bg-slate-800/50 border-slate-700 text-slate-400 hover:border-slate-600'
-                    } border`}
-                  >
-                    {goal.label}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Activity Level */}
-            <div className="glass rounded-xl border border-purple-500/30 p-6">
-              <h3 className="text-lg font-semibold text-purple-400 mb-2">Wie aktiv bist du aktuell?</h3>
-              <p className="text-xs text-slate-400 mb-4">
-                So können wir die Intensität optimal anpassen.
-              </p>
-              <div className="space-y-2">
-                {[
-                  { value: 'sedentary', label: 'Wenig Bewegung' },
-                  { value: 'lightly_active', label: 'Leicht aktiv (1-2x/Woche)' },
-                  { value: 'moderately_active', label: 'Moderat aktiv (3-4x/Woche)' },
-                  { value: 'very_active', label: 'Sehr aktiv (5-6x/Woche)' },
-                  { value: 'athlete', label: 'Athlet (täglich)' }
-                ].map((level) => (
-                  <button
-                    key={level.value}
-                    onClick={() => setActivityLevel(level.value)}
-                    className={`w-full px-4 py-3 rounded-lg text-sm text-left transition-all ${
-                      activityLevel === level.value
-                        ? 'bg-purple-500/30 border-purple-400 text-purple-400'
-                        : 'bg-slate-800/50 border-slate-700 text-slate-400 hover:border-slate-600'
-                    } border`}
-                  >
-                    {level.label}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Current Pain */}
-            <div className="glass rounded-xl border border-orange-500/30 p-6">
-              <h3 className="text-lg font-semibold text-orange-400 mb-2">Hast du aktuell Beschwerden?</h3>
-              <p className="text-xs text-slate-400 mb-4">
-                Optional: Hilft uns, problematische Bereiche zu identifizieren.
-              </p>
-              <input
-                type="text"
-                value={currentPain}
-                onChange={(e) => setCurrentPain(e.target.value)}
-                placeholder="z.B. Nacken, unterer Rücken, Knie..."
-                className="w-full px-4 py-3 rounded-lg bg-slate-800/50 border border-slate-700 text-white placeholder-slate-500 focus:outline-none focus:border-orange-400"
-              />
-            </div>
-          </div>
-
-          <div className="flex gap-4 mt-8">
-            <button
-              onClick={skipOnboarding}
-              className="px-6 py-3 rounded-xl text-slate-400 hover:text-slate-300"
-            >
-              Überspringen
-            </button>
-            <Button
-              onClick={handleQuestionsComplete}
-              disabled={fitnessGoals.length === 0 || !activityLevel}
-              className="flex-1 bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-600 hover:to-purple-700 h-12"
-            >
-              Fertig
-            </Button>
-            </div>
-          </motion.div>
-        </div>
-      );
-    }
-    return null;
-  };
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
-      {/* Onboarding Modal */}
-      <AnimatePresence>
-        {showOnboarding && <OnboardingModal />}
-      </AnimatePresence>
-
       {/* Top Navigation */}
       <nav className="sticky top-0 z-50 bg-slate-900/80 backdrop-blur border-b border-cyan-500/20">
         <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
