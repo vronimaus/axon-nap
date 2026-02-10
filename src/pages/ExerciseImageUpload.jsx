@@ -345,14 +345,24 @@ export default function ExerciseImageUpload() {
                 id={`upload-${exercise.id || exercise.name}`}
                 className="hidden"
                 onChange={(e) => {
+                  console.log('📁 File input changed for:', exercise.name);
                   const file = e.target.files?.[0];
-                  if (file) handleFileUpload(exercise, file);
+                  console.log('📁 Selected file:', file);
+                  if (file) {
+                    console.log('📁 Calling handleFileUpload...');
+                    handleFileUpload(exercise, file);
+                  } else {
+                    console.log('⚠️ No file selected');
+                  }
                 }}
                 disabled={uploadingExerciseId === exercise.name}
               />
               <Button
                 onClick={() => {
-                  document.getElementById(`upload-${exercise.id || exercise.name}`)?.click();
+                  console.log('🖱️ Button clicked for:', exercise.name);
+                  const input = document.getElementById(`upload-${exercise.id || exercise.name}`);
+                  console.log('🖱️ Input element found:', !!input);
+                  input?.click();
                 }}
                 disabled={uploadingExerciseId === exercise.name}
                 size="sm"
