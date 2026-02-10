@@ -146,7 +146,8 @@ export default function ExerciseImageUpload() {
   // Update mutation for routines
   const updateRoutineMutation = useMutation({
     mutationFn: async ({ routineId, stepIndex, imageUrl }) => {
-      const routine = routines.find(r => r.id === routineId);
+      // Fetch fresh routine data from DB
+      const [routine] = await base44.entities.Routine.filter({ id: routineId });
       if (!routine) throw new Error('Routine nicht gefunden');
       
       const updatedSequence = [...routine.sequence];
