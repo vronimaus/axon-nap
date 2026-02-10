@@ -62,10 +62,10 @@ export default function Landing() {
     
     checkAuth();
 
-    // Check if onboarding was started
-    const onboardingStatus = localStorage.getItem('axon_onboarding_status');
-    if (!onboardingStatus && !user) {
-      setOnboardingStep('name');
+    // Load saved onboarding data if exists
+    const savedName = localStorage.getItem('axon_onboarding_name');
+    if (savedName) {
+      setOnboardingName(savedName);
     }
   }, []);
 
@@ -96,6 +96,14 @@ export default function Landing() {
     
     setOnboardingStep(null);
     toast.success('Perfekt! Jetzt kannst du starten.');
+    
+    // Continue with the pending action
+    const pendingMode = localStorage.getItem('axon_pending_mode');
+    if (pendingMode) {
+      localStorage.setItem('axon_selected_mode', pendingMode);
+      localStorage.removeItem('axon_pending_mode');
+      base44.auth.redirectToLogin(window.location.href);
+    }
   };
 
   const skipOnboarding = () => {
@@ -104,11 +112,20 @@ export default function Landing() {
   };
 
   const handleSelectOption = (mode) => {
-    // Speichere die gewählte Option für nach dem Login
-    localStorage.setItem('axon_selected_mode', mode);
+    // Check if we have onboarding data
+    const hasOnboardingData = localStorage.getItem('axon_onboarding_status') === 'completed';
     
-    // Leite zum Login/Registrierung weiter
-    base44.auth.redirectToLogin(window.location.href);
+    if (!hasOnboardingData) {
+      // Start onboarding flow first
+      setOnboardingStep('name');
+      localStorage.setItem('axon_pending_mode', mode);
+    } else {
+      // Speichere die gewählte Option für nach dem Login
+      localStorage.setItem('axon_selected_mode', mode);
+      
+      // Leite zum Login/Registrierung weiter
+      base44.auth.redirectToLogin(window.location.href);
+    }
   };
 
   if (isLoading) {
@@ -417,6 +434,40 @@ export default function Landing() {
             Schmerz und Steifheit sind oft keine Hardware-Fehler, sondern Schutzsignale deiner Software. Nutze das AXON Protocol, um Blockaden systematisch zu deuten und dein volles Potenzial sicher freizuschalten.
           </motion.p>
 
+          {/* Personal Introduction Box */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.25 }}
+            className="glass rounded-2xl border border-cyan-500/30 p-6 mb-6 max-w-md mx-auto"
+          >
+            <p className="text-sm text-slate-300 mb-3">
+              Hallo, ich bin <span className="text-cyan-400 font-semibold">AXON</span> – dein persönlicher neuro-athletischer Coach.
+            </p>
+            <p className="text-xs text-slate-400 mb-4">
+              Damit ich dich optimal unterstützen kann, wie darf ich dich nennen?
+            </p>
+            <input
+              type="text"
+              value={onboardingName}
+              onChange={(e) => {
+                setOnboardingName(e.target.value);
+                localStorage.setItem('axon_onboarding_name', e.target.value);
+              }}
+              placeholder="Dein Vorname"
+              className="w-full px-4 py-3 rounded-lg bg-slate-800/50 border border-slate-700 text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400 text-center"
+            />
+            {onboardingName && (
+              <motion.p
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="text-sm text-cyan-400 mt-3"
+              >
+                Freut mich, {onboardingName}! 👋
+              </motion.p>
+            )}
+          </motion.div>
+
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -664,9 +715,68 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* SEKTION 6: PRICING - 2 KACHELN */}
+      {/* SEKTION 6: WARUM AXON */}
       <section className="py-20 relative">
         <div className="max-w-5xl mx-auto px-4">
+          <h2 className="text-4xl md:text-5xl font-bold text-center text-white mb-4">
+            Warum AXON?
+          </h2>
+          <p className="text-lg text-slate-400 text-center mb-12">
+            Dein persönlicher Experte – immer dabei
+          </p>
+
+          <div className="grid md:grid-cols-3 gap-6 mb-16">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="glass rounded-xl border border-cyan-500/30 p-6 text-center"
+            >
+              <div className="text-4xl mb-4">🏥</div>
+              <h3 className="text-xl font-bold text-cyan-400 mb-3">Statt jedes Mal zum Physio</h3>
+              <p className="text-sm text-slate-300">
+                Bei kleinen Beschwerden kannst du dir sofort selbst helfen – wann und wo du willst. Der Gang zum Arzt bleibt dir natürlich offen, falls nötig.
+              </p>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.1 }}
+              className="glass rounded-xl border border-purple-500/30 p-6 text-center"
+            >
+              <div className="text-4xl mb-4">💪</div>
+              <h3 className="text-xl font-bold text-purple-400 mb-3">Dein Personal Trainer</h3>
+              <p className="text-sm text-slate-300">
+                Kein Termin nötig, kein Anfänger-Coach. AXON ist 24/7 für dich da – im Gym, zuhause oder unterwegs.
+              </p>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.2 }}
+              className="glass rounded-xl border border-amber-500/30 p-6 text-center"
+            >
+              <div className="text-4xl mb-4">🧠</div>
+              <h3 className="text-xl font-bold text-amber-400 mb-3">Lerne deinen Körper kennen</h3>
+              <p className="text-sm text-slate-300">
+                Wir befähigen dich langfristig, deinem Körper zu vertrauen und Bewegung als Medizin zu nutzen.
+              </p>
+            </motion.div>
+          </div>
+
+          <div className="glass rounded-2xl border border-cyan-500/30 p-8 text-center mb-12">
+            <p className="text-xl text-white font-semibold mb-2">
+              Physio + Neuroathletik + Personal Training
+            </p>
+            <p className="text-slate-400">
+              Alles in einer App – für den Preis einer einzigen Sitzung beim Experten
+            </p>
+          </div>
+
           <h2 className="text-4xl md:text-5xl font-bold text-center text-white mb-4">
             Wähle deine Option
           </h2>
