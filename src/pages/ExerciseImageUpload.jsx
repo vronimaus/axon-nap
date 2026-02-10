@@ -171,14 +171,30 @@ export default function ExerciseImageUpload() {
       let updatedCount = 0;
 
       // Update Exercise entity if it exists
-      if (exercise.id) {
-        console.log('💾 Updating Exercise entity:', exercise.id);
-        await updateExerciseMutation.mutateAsync({
-          exerciseId: exercise.id,
-          imageUrl
-        });
-        updatedCount++;
-      }
+          if (exercise.id) {
+            console.log('💾 Updating Exercise entity:', exercise.id);
+            await updateExerciseMutation.mutateAsync({
+              exerciseId: exercise.id,
+              imageUrl
+            });
+            updatedCount++;
+          } else if (!exercise.id && exercise.usedIn) {
+            // Exercise exists in routines but not in Exercise entity - create it
+            console.log('📝 Creating Exercise entity for:', exercise.name);
+            try {
+              const newExercise = await base44.entities.Exercise.create({
+                name: exercise.name,
+                exercise_id: exercise.name.toLowerCase().replace(/\s+/g, '_'),
+                description: `Auto-created from routine`,
+                category: 'other',
+                image_url: imageUrl
+              });
+              console.log('✅ Created Exercise:', newExercise.id);
+              updatedCount++;
+            } catch (createError) {
+              console.error('Error creating exercise:', createError);
+            }
+          }
 
       // Update all routines where this exercise is used
       if (exercise.usedIn && exercise.usedIn.length > 0) {
