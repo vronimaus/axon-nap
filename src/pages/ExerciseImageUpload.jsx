@@ -220,12 +220,16 @@ export default function ExerciseImageUpload() {
       await queryClient.invalidateQueries({ queryKey: ['exercises'] });
       await queryClient.invalidateQueries({ queryKey: ['routines'] });
 
+      // Wait for queries to refetch before clearing upload state
+      await queryClient.refetchQueries({ queryKey: ['exercises'] });
+      await queryClient.refetchQueries({ queryKey: ['routines'] });
+
       if (updatedCount > 0) {
         toast.success(`✅ Bild erfolgreich hochgeladen und in ${updatedCount} ${updatedCount === 1 ? 'Stelle' : 'Stellen'} aktualisiert`);
       } else {
         toast.success('✅ Bild erfolgreich hochgeladen');
       }
-      
+
       setUploadingExerciseId(null);
       console.log('🎉 Upload complete!');
 
