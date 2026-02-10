@@ -57,9 +57,9 @@ export default function ExerciseImageUpload() {
           // Extract exercise name from instruction (first line, before colon or line break)
           const lines = step.instruction.split('\n');
           const firstLine = lines[0] || '';
-          const exerciseName = firstLine.includes(':') 
-            ? firstLine.replace(':', '').trim()
-            : firstLine.trim();
+          
+          // Remove colon and any trailing whitespace/punctuation
+          const exerciseName = firstLine.replace(':', '').trim();
 
           if (exerciseName && exerciseName.length > 3) {
             const key = exerciseName.toLowerCase();
@@ -74,7 +74,8 @@ export default function ExerciseImageUpload() {
             exerciseMap.get(key).usedIn.push({
               routine: routine.routine_name,
               routineId: routine.id,
-              stepIndex: index
+              stepIndex: index,
+              currentImageUrl: step.image_url
             });
           }
         }
