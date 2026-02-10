@@ -393,7 +393,7 @@ export default function Landing() {
             transition={{ delay: 0.2 }}
             className="text-lg md:text-xl text-slate-300 mb-10 max-w-3xl mx-auto leading-relaxed"
           >
-            AXON vereint <span className="text-cyan-400 font-semibold">Physiotherapie</span>, <span className="text-purple-400 font-semibold">Neuro-Athletik</span> und <span className="text-amber-400 font-semibold">Personal Training</span> in einer intelligenten App. Personalisiert durch KI, immer verfügbar, wissenschaftlich fundiert.
+            AXON vereint <span className="text-cyan-400 font-semibold">Physiotherapie</span>, <span className="text-purple-400 font-semibold">Neuro-Athletik</span> und <span className="text-amber-400 font-semibold">Personal Training</span> in einer intelligenten App. Maßgeschneidert für dich, immer verfügbar, wissenschaftlich fundiert.
           </motion.p>
 
           <motion.div
@@ -456,7 +456,7 @@ export default function Landing() {
               Was ist AXON?
             </h2>
             <p className="text-xl text-slate-300 leading-relaxed max-w-3xl mx-auto">
-              AXON ist dein <span className="text-cyan-400 font-semibold">persönlicher Coach</span>, der rund um die Uhr verfügbar ist. Die App nutzt modernste Erkenntnisse aus Neurowissenschaft, Faszienforschung und Trainingslehre, um dir ein völlig <span className="text-purple-400 font-semibold">individuelles Erlebnis</span> zu bieten.
+              AXON ist dein <span className="text-cyan-400 font-semibold">persönlicher Coach</span>, der rund um die Uhr verfügbar ist. Die App nutzt modernste Erkenntnisse aus Bewegungswissenschaft und Faszienforschung, um dir ein völlig <span className="text-purple-400 font-semibold">individuelles Erlebnis</span> zu bieten.
             </p>
           </motion.div>
 
@@ -470,9 +470,9 @@ export default function Landing() {
               <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-cyan-500 to-cyan-600 flex items-center justify-center mb-4 mx-auto">
                 <Brain className="w-8 h-8 text-white" />
               </div>
-              <h3 className="text-xl font-bold text-cyan-400 mb-3">KI-gestützte Personalisierung</h3>
+              <h3 className="text-xl font-bold text-cyan-400 mb-3">Intelligente Personalisierung</h3>
               <p className="text-slate-300 text-sm">
-                AXON analysiert deine Bedürfnisse, deinen Fortschritt und deine Tagesform – und passt sich dynamisch an.
+                AXON lernt dich kennen und passt sich deinem Fortschritt und deiner Tagesform an – für optimale Ergebnisse.
               </p>
             </motion.div>
 
@@ -488,7 +488,7 @@ export default function Landing() {
               </div>
               <h3 className="text-xl font-bold text-purple-400 mb-3">Wissenschaftlich fundiert</h3>
               <p className="text-slate-300 text-sm">
-                Basierend auf den Methoden von Stecco (Faszien), Gray Cook (FMS), Pavel Tsatsouline (Kraft) und weiteren Experten.
+                Basierend auf modernster Faszienforschung, Bewegungswissenschaft und bewährten Trainingsprinzipien.
               </p>
             </motion.div>
 
@@ -688,12 +688,12 @@ export default function Landing() {
               <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-cyan-500 to-cyan-600 flex items-center justify-center mb-4">
                 <Zap className="w-6 h-6 text-white" />
               </div>
-              <h3 className="text-2xl font-bold text-cyan-400 mb-3">KI-gestützte Analyse</h3>
+              <h3 className="text-2xl font-bold text-cyan-400 mb-3">Intelligente Anpassung</h3>
               <p className="text-slate-300 leading-relaxed mb-4">
-                AXON lernt dich kennen. Die App trackt deine Fortschritte, erkennt Muster und passt deine Trainingspläne dynamisch an. Je länger du AXON nutzt, desto präziser wird die Empfehlung.
+                AXON lernt dich kennen. Die App trackt deine Fortschritte, erkennt Muster und passt deine Trainingspläne dynamisch an. Je länger du AXON nutzt, desto besser werden die Empfehlungen.
               </p>
               <p className="text-sm text-slate-400">
-                Deine Daten gehören dir – AXON nutzt sie nur, um dich besser zu unterstützen.
+                Deine Daten bleiben privat – sie werden nur genutzt, um dich besser zu unterstützen.
               </p>
             </motion.div>
           </div>
@@ -777,7 +777,7 @@ export default function Landing() {
             Warum AXON?
           </h2>
           <p className="text-lg text-slate-400 text-center mb-12">
-            Dein persönlicher Experte – immer dabei
+            Dein persönlicher Coach – immer verfügbar, immer für dich da
           </p>
 
           <div className="grid md:grid-cols-3 gap-6 mb-16">
