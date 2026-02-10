@@ -112,9 +112,10 @@ export default function ExerciseImageUpload() {
       if (!exists) {
         allExercises.push(routineEx);
       } else {
-        // Add usage info and update image_url if it exists in routines but not in entity
+        // Add usage info
         exists.usedIn = routineEx.usedIn;
-        if (!exists.image_url && routineEx.image_url) {
+        // Always use image_url from routines if available (most up-to-date)
+        if (routineEx.image_url) {
           exists.image_url = routineEx.image_url;
         }
       }
