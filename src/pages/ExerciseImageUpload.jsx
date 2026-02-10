@@ -162,12 +162,21 @@ export default function ExerciseImageUpload() {
   });
 
   const handleFileUpload = async (exercise, file) => {
+    if (!file) return;
+    
     try {
       setUploadingExerciseId(exercise.name);
+      toast.info('Uploading...');
       
       // Upload file to base44
-      const { data } = await base44.integrations.Core.UploadFile({ file });
-      const imageUrl = data.file_url;
+      const response = await base44.integrations.Core.UploadFile({ file });
+      const imageUrl = response.file_url;
+
+      if (!imageUrl) {
+        throw new Error('Keine URL erhalten');
+      }
+
+      let updatedCount = 0;
 
       // Update Exercise entity if it exists
       if (exercise.id) {
@@ -175,23 +184,32 @@ export default function ExerciseImageUpload() {
           exerciseId: exercise.id,
           imageUrl
         });
+        updatedCount++;
       }
 
       // Update all routines where this exercise is used
-      if (exercise.usedIn) {
+      if (exercise.usedIn && exercise.usedIn.length > 0) {
         for (const usage of exercise.usedIn) {
           await updateRoutineMutation.mutateAsync({
             routineId: usage.routineId,
             stepIndex: usage.stepIndex,
             imageUrl
           });
+          updatedCount++;
         }
-        toast.success(`Bild in ${exercise.usedIn.length} Routine(n) aktualisiert`);
       }
+
+      if (updatedCount > 0) {
+        toast.success(`✅ Bild erfolgreich hochgeladen und in ${updatedCount} ${updatedCount === 1 ? 'Stelle' : 'Stellen'} aktualisiert`);
+      } else {
+        toast.success('✅ Bild erfolgreich hochgeladen');
+      }
+      
+      setUploadingExerciseId(null);
 
     } catch (error) {
       console.error('Upload error:', error);
-      toast.error('Upload fehlgeschlagen');
+      toast.error('❌ Upload fehlgeschlagen: ' + (error.message || 'Unbekannter Fehler'));
       setUploadingExerciseId(null);
     }
   };

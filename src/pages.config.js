@@ -48,6 +48,7 @@
  * The mainPage value must match a key in the PAGES object exactly.
  */
 import AdminDiagnostics from './pages/AdminDiagnostics';
+import AdminHub from './pages/AdminHub';
 import Dashboard from './pages/Dashboard';
 import DebugComplaintHistory from './pages/DebugComplaintHistory';
 import DevNotes from './pages/DevNotes';
@@ -74,13 +75,13 @@ import Success from './pages/Success';
 import Terms from './pages/Terms';
 import TrainingPlan from './pages/TrainingPlan';
 import TrialInfo from './pages/TrialInfo';
-import AdminHub from './pages/AdminHub';
 import ExerciseImageUpload from './pages/ExerciseImageUpload';
 import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
     "AdminDiagnostics": AdminDiagnostics,
+    "AdminHub": AdminHub,
     "Dashboard": Dashboard,
     "DebugComplaintHistory": DebugComplaintHistory,
     "DevNotes": DevNotes,
@@ -107,7 +108,6 @@ export const PAGES = {
     "Terms": Terms,
     "TrainingPlan": TrainingPlan,
     "TrialInfo": TrialInfo,
-    "AdminHub": AdminHub,
     "ExerciseImageUpload": ExerciseImageUpload,
 }
 
