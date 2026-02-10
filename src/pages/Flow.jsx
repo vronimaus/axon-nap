@@ -110,27 +110,38 @@ export default function Flow() {
   const currentSequence = routine.sequence[currentStep];
   const progress = ((currentStep + 1) / routine.sequence.length) * 100;
 
-  // Get detailed instruction from MFR Node or Exercise
+  // Get detailed instruction - extract title from instruction
   const getDetailedInstruction = () => {
+    const instruction = currentSequence.instruction || '';
+    
+    // For MFR nodes, try to get from MFR entity
     if (currentSequence.type === 'mfr' && currentSequence.node_id) {
       const node = mfrNodes.find(n => n.node_id === currentSequence.node_id);
       return {
         title: node?.name_de || currentSequence.node_id,
-        instruction: node?.user_instruction || currentSequence.instruction,
+        instruction: node?.user_instruction || instruction,
         expertTip: node?.expert_tip
       };
-    } else if (currentSequence.exercise_id) {
-      // For all exercise types (neuro, strength, mobility, breath)
-      const exercise = exercises.find(e => e.exercise_id === currentSequence.exercise_id);
+    }
+    
+    // For mobility flows: Extract title from first line (before colon or line break)
+    const lines = instruction.split('\n');
+    const firstLine = lines[0] || '';
+    
+    // Check if first line ends with colon (typical format: "Title:\n\nInstructions")
+    if (firstLine.includes(':')) {
+      const title = firstLine.replace(':', '').trim();
+      const restOfInstruction = lines.slice(1).join('\n').trim();
       return {
-        title: exercise?.name || currentSequence.exercise_id,
-        instruction: exercise?.description || currentSequence.instruction,
-        neuroInput: exercise?.neuro_input
+        title,
+        instruction: restOfInstruction
       };
     }
+    
+    // Fallback: use full instruction
     return {
-      title: currentSequence.node_id || 'Übung',
-      instruction: currentSequence.instruction
+      title: `Übung ${currentStep + 1}`,
+      instruction
     };
   };
 
