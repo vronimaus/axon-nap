@@ -2,19 +2,21 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { Button } from '@/components/ui/button';
-import { Check, Zap, Shield, ChevronDown, Loader2, LogOut, Wrench, Brain, Dumbbell } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { Check, Zap, Shield, ChevronDown, Loader2, LogOut, Wrench, Brain, Dumbbell, Target, Activity, CheckCircle2, ArrowRight } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { base44 } from '@/api/base44Client';
 import { toast } from 'sonner';
 
 export default function Landing() {
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [onboardingStep, setOnboardingStep] = useState(null); // null, 'name', 'choice', 'questions'
+  const [showOnboarding, setShowOnboarding] = useState(false);
+  const [onboardingStep, setOnboardingStep] = useState('name'); // 'name', 'questions'
   const [onboardingName, setOnboardingName] = useState('');
   const [fitnessGoals, setFitnessGoals] = useState([]);
   const [activityLevel, setActivityLevel] = useState('');
   const [currentPain, setCurrentPain] = useState('');
+  const [pendingMode, setPendingMode] = useState(null); // 'trial' or 'direct'
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -69,20 +71,15 @@ export default function Landing() {
     }
   }, []);
 
+  const handleStartOnboarding = (mode) => {
+    setPendingMode(mode);
+    setShowOnboarding(true);
+    setOnboardingStep('name');
+  };
+
   const handleNameSubmit = () => {
     if (onboardingName.trim()) {
       localStorage.setItem('axon_onboarding_name', onboardingName);
-      setOnboardingStep('choice');
-    }
-  };
-
-  const handleChoice = (choice) => {
-    localStorage.setItem('axon_onboarding_choice', choice);
-    if (choice === 'guided') {
-      // Show guided tour (placeholder for now)
-      toast.success('Geführte Tour kommt bald! Lass uns direkt ein paar Fragen stellen.');
-      setOnboardingStep('questions');
-    } else {
       setOnboardingStep('questions');
     }
   };
@@ -94,21 +91,25 @@ export default function Landing() {
     localStorage.setItem('axon_onboarding_current_pain', currentPain);
     localStorage.setItem('axon_onboarding_status', 'completed');
     
-    setOnboardingStep(null);
-    toast.success('Perfekt! Jetzt kannst du starten.');
+    setShowOnboarding(false);
+    toast.success('Perfekt! Leite dich weiter...');
     
-    // Continue with the pending action
-    const pendingMode = localStorage.getItem('axon_pending_mode');
+    // Continue with the pending mode
     if (pendingMode) {
       localStorage.setItem('axon_selected_mode', pendingMode);
-      localStorage.removeItem('axon_pending_mode');
       base44.auth.redirectToLogin(window.location.href);
     }
   };
 
   const skipOnboarding = () => {
     localStorage.setItem('axon_onboarding_status', 'skipped');
-    setOnboardingStep(null);
+    setShowOnboarding(false);
+    
+    // Continue with the pending mode
+    if (pendingMode) {
+      localStorage.setItem('axon_selected_mode', pendingMode);
+      base44.auth.redirectToLogin(window.location.href);
+    }
   };
 
   const handleSelectOption = (mode) => {
@@ -117,8 +118,7 @@ export default function Landing() {
     
     if (!hasOnboardingData) {
       // Start onboarding flow first
-      setOnboardingStep('name');
-      localStorage.setItem('axon_pending_mode', mode);
+      handleStartOnboarding(mode);
     } else {
       // Speichere die gewählte Option für nach dem Login
       localStorage.setItem('axon_selected_mode', mode);
@@ -132,116 +132,67 @@ export default function Landing() {
     return <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950" />;
   }
 
-  // Onboarding Flow
-  if (onboardingStep === 'name') {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 flex items-center justify-center p-4">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="max-w-md w-full text-center"
-        >
-          <img 
-            src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/afa60dd62_AXONLogo.png"
-            alt="AXON"
-            className="w-20 h-20 mx-auto mb-6 object-contain drop-shadow-[0_0_30px_rgba(6,182,212,0.3)]"
-          />
-          <h1 className="text-3xl font-bold text-white mb-2">Hallo, ich bin AXON</h1>
-          <p className="text-slate-400 mb-8">Wie darf ich dich nennen?</p>
-          
-          <input
-            type="text"
-            value={onboardingName}
-            onChange={(e) => setOnboardingName(e.target.value)}
-            onKeyPress={(e) => e.key === 'Enter' && handleNameSubmit()}
-            placeholder="Dein Name"
-            className="w-full px-6 py-4 rounded-xl bg-slate-800/50 border border-slate-700 text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400 mb-4 text-center text-lg"
-            autoFocus
-          />
-          
-          <Button
-            onClick={handleNameSubmit}
-            disabled={!onboardingName.trim()}
-            className="w-full bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-600 hover:to-purple-700 h-12"
+  // Onboarding Modal
+  const OnboardingModal = () => {
+    if (onboardingStep === 'name') {
+      return (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/95 backdrop-blur-sm p-4">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="max-w-md w-full text-center"
           >
-            Weiter
-          </Button>
-          
-          <button
-            onClick={skipOnboarding}
-            className="mt-4 text-sm text-slate-500 hover:text-slate-400"
-          >
-            Überspringen
-          </button>
-        </motion.div>
-      </div>
-    );
-  }
-
-  if (onboardingStep === 'choice') {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 flex items-center justify-center p-4">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="max-w-2xl w-full text-center"
-        >
-          <h1 className="text-3xl font-bold text-white mb-2">
-            Schön dich kennenzulernen, {onboardingName}!
-          </h1>
-          <p className="text-slate-400 mb-8">
-            Möchtest du eine kurze Führung durch die App oder lieber selbst entdecken?
-          </p>
-          
-          <div className="grid md:grid-cols-2 gap-4">
-            <button
-              onClick={() => handleChoice('guided')}
-              className="glass rounded-xl border border-cyan-500/30 p-8 hover:border-cyan-500/60 transition-all group"
+            <img 
+              src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/afa60dd62_AXONLogo.png"
+              alt="AXON"
+              className="w-20 h-20 mx-auto mb-6 object-contain drop-shadow-[0_0_30px_rgba(6,182,212,0.3)]"
+            />
+            <h1 className="text-3xl font-bold text-white mb-2">Willkommen bei AXON</h1>
+            <p className="text-slate-400 mb-8">Damit wir dich optimal unterstützen können – wie dürfen wir dich nennen?</p>
+            
+            <input
+              type="text"
+              value={onboardingName}
+              onChange={(e) => setOnboardingName(e.target.value)}
+              onKeyPress={(e) => e.key === 'Enter' && handleNameSubmit()}
+              placeholder="Dein Vorname"
+              className="w-full px-6 py-4 rounded-xl bg-slate-800/50 border border-slate-700 text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400 mb-4 text-center text-lg"
+              autoFocus
+            />
+            
+            <Button
+              onClick={handleNameSubmit}
+              disabled={!onboardingName.trim()}
+              className="w-full bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-600 hover:to-purple-700 h-12"
             >
-              <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center mb-4 mx-auto">
-                <Zap className="w-8 h-8 text-white" />
-              </div>
-              <h3 className="text-xl font-bold text-cyan-400 mb-2">Führung starten</h3>
-              <p className="text-sm text-slate-300">Ich zeige dir die wichtigsten Features</p>
-            </button>
+              Weiter
+            </Button>
             
             <button
-              onClick={() => handleChoice('explore')}
-              className="glass rounded-xl border border-purple-500/30 p-8 hover:border-purple-500/60 transition-all group"
+              onClick={skipOnboarding}
+              className="mt-4 text-sm text-slate-500 hover:text-slate-400"
             >
-              <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-purple-500 to-pink-600 flex items-center justify-center mb-4 mx-auto">
-                <Shield className="w-8 h-8 text-white" />
-              </div>
-              <h3 className="text-xl font-bold text-purple-400 mb-2">Selbst entdecken</h3>
-              <p className="text-sm text-slate-300">Ich erkunde lieber auf eigene Faust</p>
+              Überspringen
             </button>
-          </div>
-          
-          <button
-            onClick={skipOnboarding}
-            className="mt-6 text-sm text-slate-500 hover:text-slate-400"
-          >
-            Überspringen
-          </button>
-        </motion.div>
-      </div>
-    );
-  }
+          </motion.div>
+        </div>
+      );
+    }
 
-  if (onboardingStep === 'questions') {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 flex items-center justify-center p-4">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="max-w-2xl w-full"
-        >
-          <h1 className="text-3xl font-bold text-white mb-2 text-center">
-            Noch ein paar Fragen, {onboardingName}
-          </h1>
-          <p className="text-slate-400 mb-8 text-center">
-            So können wir deine Erfahrung optimal personalisieren
-          </p>
+    if (onboardingStep === 'questions') {
+      return (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/95 backdrop-blur-sm p-4 overflow-y-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="max-w-2xl w-full my-8"
+          >
+            <h1 className="text-3xl font-bold text-white mb-2 text-center">
+              Noch ein paar Fragen, {onboardingName}
+            </h1>
+            <p className="text-slate-400 mb-8 text-center">
+              So können wir deine Erfahrung optimal personalisieren
+            </p>
           
           <div className="space-y-6">
             {/* Fitness Goals */}
@@ -335,14 +286,21 @@ export default function Landing() {
             >
               Fertig
             </Button>
-          </div>
-        </motion.div>
-      </div>
-    );
-  }
+            </div>
+          </motion.div>
+        </div>
+      );
+    }
+    return null;
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
+      {/* Onboarding Modal */}
+      <AnimatePresence>
+        {showOnboarding && <OnboardingModal />}
+      </AnimatePresence>
+
       {/* Top Navigation */}
       <nav className="sticky top-0 z-50 bg-slate-900/80 backdrop-blur border-b border-cyan-500/20">
         <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
@@ -381,10 +339,10 @@ export default function Landing() {
         </div>
       </nav>
 
-      {/* SEKTION 1: HERO */}
+      {/* SEKTION 1: HERO - NEU */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-b from-black via-slate-950 to-slate-900">
         {/* Body Map Background */}
-        <div className="absolute inset-0 opacity-50">
+        <div className="absolute inset-0 opacity-40">
           <img 
             src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/ad6e52b61_generated_image.png"
             alt="AXON Body Map Background"
@@ -393,13 +351,13 @@ export default function Landing() {
         </div>
 
         {/* Gradient Overlays */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-slate-950/40 to-slate-900/60" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-slate-950/50 to-slate-900/70" />
         <div className="absolute inset-0">
-          <div className="absolute top-20 left-20 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl animate-pulse" />
-          <div className="absolute bottom-20 right-20 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl animate-pulse delay-1000" />
+          <div className="absolute top-20 left-20 w-96 h-96 bg-cyan-500/20 rounded-full blur-3xl animate-pulse" />
+          <div className="absolute bottom-20 right-20 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl animate-pulse delay-1000" />
         </div>
 
-        <div className="relative z-10 max-w-4xl mx-auto px-4 py-20 text-center">
+        <div className="relative z-10 max-w-5xl mx-auto px-4 py-20 text-center">
           <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -408,7 +366,7 @@ export default function Landing() {
             <img 
               src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/afa60dd62_AXONLogo.png"
               alt="AXON Logo"
-              className="w-24 h-24 mx-auto object-contain drop-shadow-[0_0_30px_rgba(6,182,212,0.3)]"
+              className="w-24 h-24 mx-auto object-contain drop-shadow-[0_0_40px_rgba(6,182,212,0.4)]"
             />
           </motion.div>
 
@@ -416,104 +374,154 @@ export default function Landing() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="text-5xl md:text-7xl font-bold mb-6"
+            className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight"
           >
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400">
-              Dein Gehirn bremst dich aus –
+              Entfessle deine Bewegung.
             </span>
             <br />
-            <span className="text-white">wir lösen die Handbremse.</span>
+            <span className="text-white">Optimiere dein System.</span>
+            <br />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-orange-400">
+              Meistere dein Potenzial.
+            </span>
           </motion.h1>
 
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="text-lg md:text-xl text-slate-300 mb-8 max-w-2xl mx-auto leading-relaxed"
+            className="text-lg md:text-xl text-slate-300 mb-10 max-w-3xl mx-auto leading-relaxed"
           >
-            Schmerz und Steifheit sind oft keine Hardware-Fehler, sondern Schutzsignale deiner Software. Nutze das AXON Protocol, um Blockaden systematisch zu deuten und dein volles Potenzial sicher freizuschalten.
+            AXON vereint <span className="text-cyan-400 font-semibold">Physiotherapie</span>, <span className="text-purple-400 font-semibold">Neuro-Athletik</span> und <span className="text-amber-400 font-semibold">Personal Training</span> in einer intelligenten App. Personalisiert durch KI, immer verfügbar, wissenschaftlich fundiert.
           </motion.p>
-
-          {/* Personal Introduction Box */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.25 }}
-            className="glass rounded-2xl border border-cyan-500/30 p-6 mb-6 max-w-md mx-auto"
-          >
-            <p className="text-sm text-slate-300 mb-3">
-              Hallo, ich bin <span className="text-cyan-400 font-semibold">AXON</span> – dein persönlicher neuro-athletischer Coach.
-            </p>
-            <p className="text-xs text-slate-400 mb-4">
-              Damit ich dich optimal unterstützen kann, wie darf ich dich nennen?
-            </p>
-            <input
-              type="text"
-              value={onboardingName}
-              onChange={(e) => {
-                setOnboardingName(e.target.value);
-                localStorage.setItem('axon_onboarding_name', e.target.value);
-              }}
-              placeholder="Dein Vorname"
-              className="w-full px-4 py-3 rounded-lg bg-slate-800/50 border border-slate-700 text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400 text-center"
-            />
-            {onboardingName && (
-              <motion.p
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="text-sm text-cyan-400 mt-3"
-              >
-                Freut mich, {onboardingName}! 👋
-              </motion.p>
-            )}
-          </motion.div>
 
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
-            className="flex flex-col sm:flex-row gap-4 justify-center mb-6"
+            className="flex flex-col sm:flex-row gap-4 justify-center mb-8"
           >
             <Button
               onClick={() => handleSelectOption('trial')}
               size="lg"
-              variant="outline"
-              className="text-lg px-8 py-6 border-cyan-500/50 text-cyan-400 hover:bg-cyan-500/10 hover:text-white active:text-white"
+              className="text-lg px-8 py-6 bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-600 hover:to-purple-700 neuro-glow"
             >
+              <Zap className="w-5 h-5 mr-2" />
               7 Tage kostenlos testen
             </Button>
             <Button
               onClick={() => handleSelectOption('direct')}
               size="lg"
-              className="text-lg px-8 py-6 bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-600 hover:to-purple-700 neuro-glow"
+              variant="outline"
+              className="text-lg px-8 py-6 border-amber-500/50 text-amber-400 hover:bg-amber-500/10"
             >
-              <Zap className="w-5 h-5 mr-2" />
               Sofort kaufen – 59€
             </Button>
           </motion.div>
 
-          {/* Info Box */}
+          {/* Trust Badges */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
-            className="glass rounded-xl border border-cyan-500/20 p-6 max-w-2xl mx-auto"
+            className="flex flex-wrap items-center justify-center gap-6 text-sm text-slate-400"
           >
-            <p className="text-sm text-slate-300 text-center">
-              <strong>7 Tage Testphase:</strong> Danach einmalig 59€. Jederzeit während der Testphase mit einem Klick kündbar. Kein Risiko.
-            </p>
+            <div className="flex items-center gap-2">
+              <CheckCircle2 className="w-5 h-5 text-green-400" />
+              <span>30 Tage Geld-zurück-Garantie</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <CheckCircle2 className="w-5 h-5 text-cyan-400" />
+              <span>Keine versteckten Kosten</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <CheckCircle2 className="w-5 h-5 text-purple-400" />
+              <span>Kein Abo</span>
+            </div>
           </motion.div>
         </div>
       </section>
 
-      {/* SEKTION 2: METHODIK */}
+      {/* SEKTION 2: WAS IST AXON? - NEU */}
       <section className="py-20 relative">
+        <div className="max-w-4xl mx-auto px-4">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-12"
+          >
+            <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
+              Was ist AXON?
+            </h2>
+            <p className="text-xl text-slate-300 leading-relaxed max-w-3xl mx-auto">
+              AXON ist dein <span className="text-cyan-400 font-semibold">persönlicher Coach</span>, der rund um die Uhr verfügbar ist. Die App nutzt modernste Erkenntnisse aus Neurowissenschaft, Faszienforschung und Trainingslehre, um dir ein völlig <span className="text-purple-400 font-semibold">individuelles Erlebnis</span> zu bieten.
+            </p>
+          </motion.div>
+
+          <div className="grid md:grid-cols-3 gap-6">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="glass rounded-2xl border border-cyan-500/30 p-6 text-center"
+            >
+              <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-cyan-500 to-cyan-600 flex items-center justify-center mb-4 mx-auto">
+                <Brain className="w-8 h-8 text-white" />
+              </div>
+              <h3 className="text-xl font-bold text-cyan-400 mb-3">KI-gestützte Personalisierung</h3>
+              <p className="text-slate-300 text-sm">
+                AXON analysiert deine Bedürfnisse, deinen Fortschritt und deine Tagesform – und passt sich dynamisch an.
+              </p>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.1 }}
+              className="glass rounded-2xl border border-purple-500/30 p-6 text-center"
+            >
+              <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center mb-4 mx-auto">
+                <Shield className="w-8 h-8 text-white" />
+              </div>
+              <h3 className="text-xl font-bold text-purple-400 mb-3">Wissenschaftlich fundiert</h3>
+              <p className="text-slate-300 text-sm">
+                Basierend auf den Methoden von Stecco (Faszien), Gray Cook (FMS), Pavel Tsatsouline (Kraft) und weiteren Experten.
+              </p>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.2 }}
+              className="glass rounded-2xl border border-amber-500/30 p-6 text-center"
+            >
+              <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-amber-500 to-amber-600 flex items-center justify-center mb-4 mx-auto">
+                <Zap className="w-8 h-8 text-white" />
+              </div>
+              <h3 className="text-xl font-bold text-amber-400 mb-3">24/7 verfügbar</h3>
+              <p className="text-slate-300 text-sm">
+                Keine Termine nötig. Trainiere wann und wo du willst – AXON ist immer für dich da.
+              </p>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* SEKTION 3: METHODIK */}
+      <section className="py-20 relative bg-slate-900/30">
         <div className="max-w-5xl mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
-              Die neurozentrierte Kette
+              Die AXON-Methode
             </h2>
             <p className="text-xl text-slate-400">Hardware ➔ Software ➔ Integration</p>
+            <p className="text-slate-400 mt-4 max-w-3xl mx-auto">
+              Dein Körper ist ein System. AXON optimiert jede Ebene: von der Struktur über die Steuerung bis zur Belastbarkeit.
+            </p>
           </div>
 
           <div className="grid md:grid-cols-3 gap-6">
@@ -527,12 +535,12 @@ export default function Landing() {
               <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center mb-6">
                 <Wrench className="w-6 h-6 text-white" />
               </div>
-              <h3 className="text-2xl font-bold text-orange-400 mb-3">Hardware-Check (MFR)</h3>
+              <h3 className="text-2xl font-bold text-orange-400 mb-3">1. Hardware-Check (MFR)</h3>
               <p className="text-slate-300 text-sm mb-2">
                 <strong>MFR = Myofasziale Release</strong> – gezielter Druck auf Faszienlinien
               </p>
               <p className="text-slate-300">
-                Wir lösen mechanische Spannungen an 12 strategischen Nodes, um die Informationsqualität deiner Sensoren zu verbessern.
+                Wir lösen Spannungen in deinem Bindegewebe an 12 strategischen Punkten. Das verbessert die Qualität der Signale, die dein Gehirn empfängt, und gibt dir mehr Bewegungsfreiheit.
               </p>
             </motion.div>
 
@@ -547,12 +555,12 @@ export default function Landing() {
               <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-cyan-500 to-cyan-600 flex items-center justify-center mb-6">
                 <Brain className="w-6 h-6 text-white" />
               </div>
-              <h3 className="text-2xl font-bold text-cyan-400 mb-3">Software-Update (Neuro)</h3>
+              <h3 className="text-2xl font-bold text-cyan-400 mb-3">2. Software-Update (Neuro)</h3>
               <p className="text-slate-300 text-sm mb-2">
                 <strong>Neuro-Drills = neurologische Übungen</strong> für Augen, Balance und Propriozeption
               </p>
               <p className="text-slate-300">
-                Wir kalibrieren dein visuelles und vestibuläres System (Augen & Gleichgewicht), um deinem Gehirn das Signal „Sicherheit" zu senden.
+                Wir trainieren dein visuelles und vestibuläres System (Augen & Gleichgewicht). Wenn dein Gehirn diese Systeme als sicher einstuft, gibt es mehr Bewegungsfreiheit und Kraft frei.
               </p>
             </motion.div>
 
@@ -567,21 +575,24 @@ export default function Landing() {
               <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center mb-6">
                 <Dumbbell className="w-6 h-6 text-white" />
               </div>
-              <h3 className="text-2xl font-bold text-purple-400 mb-3">Integration (Belastung)</h3>
+              <h3 className="text-2xl font-bold text-purple-400 mb-3">3. Integration (Kraft)</h3>
               <p className="text-slate-300">
-                Wir festigen die neue Freiheit durch gezielte Kraftreize. So speichert dein Nervensystem den Fortschritt dauerhaft.
+                Wir festigen die neu gewonnene Bewegungsfreiheit durch kontrollierte Belastung. So lernt dein Nervensystem, die neuen Muster dauerhaft zu speichern und im Alltag anzuwenden.
               </p>
             </motion.div>
           </div>
         </div>
       </section>
 
-      {/* SEKTION 3: DIE 3 SÄULEN */}
+      {/* SEKTION 4: DIE 3 SÄULEN */}
       <section className="py-20 relative">
         <div className="max-w-5xl mx-auto px-4">
-          <h2 className="text-4xl md:text-5xl font-bold text-center text-white mb-12">
-            Die 3 Säulen
+          <h2 className="text-4xl md:text-5xl font-bold text-center text-white mb-6">
+            Die 3 Säulen von AXON
           </h2>
+          <p className="text-xl text-slate-400 text-center mb-12 max-w-3xl mx-auto">
+            Egal ob du Schmerzen lösen, Performance steigern oder dein System pflegen willst – AXON begleitet dich auf jedem Schritt.
+          </p>
 
           <div className="grid md:grid-cols-3 gap-6">
             {/* REHAB */}
@@ -589,12 +600,14 @@ export default function Landing() {
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="glass rounded-2xl border border-orange-500/30 p-8"
+              className="glass rounded-2xl border border-red-500/30 p-8 hover:border-red-500/60 transition-all"
             >
-              <div className="text-5xl mb-4">🟠</div>
-              <h3 className="text-2xl font-bold text-orange-400 mb-3">REHAB</h3>
-              <p className="text-slate-300 leading-relaxed">
-                Wenn dein System „bremst", hat das einen Grund. Statt Symptome zu bekämpfen, nutzen wir die AXON-Matrix, um den Ursprung der Schutzspannung zu finden. Präzise Resets für Rücken, Nacken und Gelenke.
+              <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-red-500 to-pink-600 flex items-center justify-center mb-6 mx-auto">
+                <Target className="w-8 h-8 text-white" />
+              </div>
+              <h3 className="text-2xl font-bold text-red-400 mb-3 text-center">REHAB</h3>
+              <p className="text-slate-300 leading-relaxed text-center">
+                Akute Beschwerden? Die AXON-Diagnose findet die Root Cause deines Schmerzes. Statt Symptome zu bekämpfen, lösen wir die eigentliche Ursache – mit präzisen Resets für Hardware & Software.
               </p>
             </motion.div>
 
@@ -604,34 +617,90 @@ export default function Landing() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.1 }}
-              className="glass rounded-2xl border border-cyan-500/30 p-8"
+              className="glass rounded-2xl border border-cyan-500/30 p-8 hover:border-cyan-500/60 transition-all"
             >
-              <div className="text-5xl mb-4">🔵</div>
-              <h3 className="text-2xl font-bold text-cyan-400 mb-3">FLOW</h3>
-              <p className="text-slate-300 leading-relaxed">
-                „Zähneputzen für dein Nervensystem". Unsere 5- bis 10-minütigen Routinen sind die tägliche Wartung für deinen Körper. Einmal durch das gesamte System scannen, Steifheit lösen und Linien aktivieren – bevor Probleme entstehen.
+              <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center mb-6 mx-auto">
+                <Activity className="w-8 h-8 text-white" />
+              </div>
+              <h3 className="text-2xl font-bold text-cyan-400 mb-3 text-center">FLOW</h3>
+              <p className="text-slate-300 leading-relaxed text-center">
+                Deine tägliche Körperpflege. 5–15 Minuten Routinen scannen dein gesamtes System, lösen Steifheit und halten dich beweglich. Wie Zähneputzen – nur für dein Nervensystem.
               </p>
             </motion.div>
 
-            {/* PERFORMANCE */}
+            {/* GOALS (ehemals PERFORMANCE) */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.2 }}
-              className="glass rounded-2xl border border-yellow-500/30 p-8"
+              className="glass rounded-2xl border border-amber-500/30 p-8 hover:border-amber-500/60 transition-all"
             >
-              <div className="text-5xl mb-4">✨</div>
-              <h3 className="text-2xl font-bold text-yellow-400 mb-3">PERFORMANCE</h3>
-              <p className="text-slate-300 leading-relaxed">
-                 Wahre Stärke entsteht im Kopf. Nur wenn dein Gehirn eine Bewegung als sicher einstuft, gibt es die maximale Kraft frei. Erreiche athletische Meilensteine durch ein Protokoll, das Biologie und Trainingswissenschaften vereint. Dein persönlicher Coach verfolgt jeden Schritt mit dir – von der ersten Wiederholung bis zu deinem persönlichen Trainings-Meilenstein.
-               </p>
+              <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-amber-500 to-yellow-600 flex items-center justify-center mb-6 mx-auto">
+                <Zap className="w-8 h-8 text-white" />
+              </div>
+              <h3 className="text-2xl font-bold text-amber-400 mb-3 text-center">GOALS</h3>
+              <p className="text-slate-300 leading-relaxed text-center">
+                Schalte neue Fähigkeiten frei. Wahre Kraft entsteht im Gehirn – nur wenn es eine Bewegung als sicher einstuft, gibt es maximale Power frei. Dein persönlicher Coach begleitet dich von der ersten Wiederholung bis zum Meilenstein.
+              </p>
             </motion.div>
           </div>
         </div>
       </section>
 
-      {/* SEKTION 4: APP SCREENSHOTS */}
+      {/* SEKTION 5: PERSONALISIERUNG & KI */}
+      <section className="py-20 relative bg-slate-900/30">
+        <div className="max-w-5xl mx-auto px-4">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
+              Dein System gibt den Takt vor
+            </h2>
+            <p className="text-xl text-slate-400 max-w-3xl mx-auto">
+              AXON passt sich dir an – jeden Tag neu.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-8">
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              className="glass rounded-2xl border border-purple-500/30 p-8"
+            >
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center mb-4">
+                <Brain className="w-6 h-6 text-white" />
+              </div>
+              <h3 className="text-2xl font-bold text-purple-400 mb-3">Daily Readiness Check</h3>
+              <p className="text-slate-300 leading-relaxed mb-4">
+                Kein Körper ist jeden Tag gleich. AXON fragt dich nach deinem Energie-Level, Stress und Schlafqualität – und empfiehlt dir exakt die Routine, die dein Nervensystem heute verarbeiten kann.
+              </p>
+              <p className="text-sm text-slate-400">
+                Grün = Go Hard. Gelb = Moderate dich. Rot = Recovery First.
+              </p>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              className="glass rounded-2xl border border-cyan-500/30 p-8"
+            >
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-cyan-500 to-cyan-600 flex items-center justify-center mb-4">
+                <Zap className="w-6 h-6 text-white" />
+              </div>
+              <h3 className="text-2xl font-bold text-cyan-400 mb-3">KI-gestützte Analyse</h3>
+              <p className="text-slate-300 leading-relaxed mb-4">
+                AXON lernt dich kennen. Die App trackt deine Fortschritte, erkennt Muster und passt deine Trainingspläne dynamisch an. Je länger du AXON nutzt, desto präziser wird die Empfehlung.
+              </p>
+              <p className="text-sm text-slate-400">
+                Deine Daten gehören dir – AXON nutzt sie nur, um dich besser zu unterstützen.
+              </p>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* SEKTION 6: APP SCREENSHOTS */}
       <section className="py-20 relative">
         <div className="max-w-6xl mx-auto px-4">
           <h2 className="text-4xl md:text-5xl font-bold text-center text-white mb-4">
@@ -701,21 +770,7 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* SEKTION 5: READINESS CHECK */}
-      <section className="py-20 relative">
-        <div className="max-w-5xl mx-auto px-4">
-          <div className="glass rounded-2xl border border-purple-500/30 p-12 text-center">
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
-              Dein System gibt den Takt vor
-            </h2>
-            <p className="text-lg text-slate-300 max-w-3xl mx-auto leading-relaxed">
-              Kein Körper ist jeden Tag gleich. AXON fragt dich täglich nach deinem Energie-Level und Stress-Status. Die App empfiehlt dir daraufhin exakt die Routine, die dein Nervensystem heute verarbeiten kann.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* SEKTION 6: WARUM AXON */}
+      {/* SEKTION 7: WARUM AXON */}
       <section className="py-20 relative">
         <div className="max-w-5xl mx-auto px-4">
           <h2 className="text-4xl md:text-5xl font-bold text-center text-white mb-4">
@@ -732,10 +787,12 @@ export default function Landing() {
               viewport={{ once: true }}
               className="glass rounded-xl border border-cyan-500/30 p-6 text-center"
             >
-              <div className="text-4xl mb-4">🏥</div>
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-cyan-500 to-cyan-600 flex items-center justify-center mb-4 mx-auto">
+                <Shield className="w-6 h-6 text-white" />
+              </div>
               <h3 className="text-xl font-bold text-cyan-400 mb-3">Statt jedes Mal zum Physio</h3>
               <p className="text-sm text-slate-300">
-                Bei kleinen Beschwerden kannst du dir sofort selbst helfen – wann und wo du willst. Der Gang zum Arzt bleibt dir natürlich offen, falls nötig.
+                Bei kleinen Beschwerden kannst du dir sofort selbst helfen – wann und wo du willst. Für ernsthafte Verletzungen bleibt der Arztbesuch natürlich erste Wahl.
               </p>
             </motion.div>
 
@@ -746,10 +803,12 @@ export default function Landing() {
               transition={{ delay: 0.1 }}
               className="glass rounded-xl border border-purple-500/30 p-6 text-center"
             >
-              <div className="text-4xl mb-4">💪</div>
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center mb-4 mx-auto">
+                <Dumbbell className="w-6 h-6 text-white" />
+              </div>
               <h3 className="text-xl font-bold text-purple-400 mb-3">Dein Personal Trainer</h3>
               <p className="text-sm text-slate-300">
-                Kein Termin nötig, kein Anfänger-Coach. AXON ist 24/7 für dich da – im Gym, zuhause oder unterwegs.
+                Kein Termin nötig, keine Gruppenkurse. AXON ist 24/7 für dich da – im Gym, zuhause oder unterwegs. Maßgeschneiderte Trainingspläne für deine Ziele.
               </p>
             </motion.div>
 
@@ -760,28 +819,40 @@ export default function Landing() {
               transition={{ delay: 0.2 }}
               className="glass rounded-xl border border-amber-500/30 p-6 text-center"
             >
-              <div className="text-4xl mb-4">🧠</div>
-              <h3 className="text-xl font-bold text-amber-400 mb-3">Lerne deinen Körper kennen</h3>
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-500 to-amber-600 flex items-center justify-center mb-4 mx-auto">
+                <Brain className="w-6 h-6 text-white" />
+              </div>
+              <h3 className="text-xl font-bold text-amber-400 mb-3">Verstehe deinen Körper</h3>
               <p className="text-sm text-slate-300">
-                Wir befähigen dich langfristig, deinem Körper zu vertrauen und Bewegung als Medizin zu nutzen.
+                AXON erklärt dir, warum etwas weh tut und wie du es löst. Du lernst, deinem Körper zu vertrauen und Bewegung als präventive Medizin zu nutzen.
               </p>
             </motion.div>
           </div>
 
-          <div className="glass rounded-2xl border border-cyan-500/30 p-8 text-center mb-12">
-            <p className="text-xl text-white font-semibold mb-2">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="glass rounded-2xl border border-cyan-500/30 p-8 text-center mb-16"
+          >
+            <p className="text-2xl text-white font-semibold mb-2">
               Physio + Neuroathletik + Personal Training
             </p>
-            <p className="text-slate-400">
+            <p className="text-lg text-slate-400">
               Alles in einer App – für den Preis einer einzigen Sitzung beim Experten
             </p>
-          </div>
+          </motion.div>
+        </div>
+      </section>
 
+      {/* SEKTION 8: PREISE */}
+      <section className="py-20 relative">
+        <div className="max-w-5xl mx-auto px-4">
           <h2 className="text-4xl md:text-5xl font-bold text-center text-white mb-4">
-            Wähle deine Option
+            Dein risikofreier Start
           </h2>
           <p className="text-lg text-slate-400 text-center mb-12">
-            Kein Abo. Keine versteckten Kosten. AXON ist ein technisches Handbuch für deinen Körper, das dir für immer gehört.
+            Einmalzahlung. Kein Abo. Lebenslanger Zugriff.
           </p>
 
           <div className="grid md:grid-cols-2 gap-8">
@@ -790,23 +861,40 @@ export default function Landing() {
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="glass rounded-2xl border border-cyan-500/30 p-8"
+              className="glass rounded-2xl border border-cyan-500/30 p-8 relative"
             >
-              <h3 className="text-2xl font-bold text-white mb-2">Teste kostenlos</h3>
+              <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-gradient-to-r from-cyan-500 to-blue-600 text-white text-xs font-bold">
+                EMPFOHLEN
+              </div>
+              <h3 className="text-2xl font-bold text-white mb-2">7 Tage kostenlos testen</h3>
               <div className="flex items-baseline gap-2 mb-6">
                 <span className="text-5xl font-bold text-cyan-400">0€</span>
-                <span className="text-slate-400">7 Tage</span>
+                <span className="text-slate-400">dann 59€</span>
               </div>
-              <p className="text-slate-300 mb-8">
-                Gebe deine Zahlungsdaten ein und teste 7 Tage alle Funktionen kostenlos. Danach buchen wir 59 € ab. Solltest du mit AXON keine Spannungen lösen können, kündige einfach innerhalb der Testphase.
-              </p>
+              <ul className="space-y-3 mb-8">
+                <li className="flex items-start gap-2 text-slate-300">
+                  <CheckCircle2 className="w-5 h-5 text-cyan-400 flex-shrink-0 mt-0.5" />
+                  <span>7 Tage vollständiger Zugriff auf alle Features</span>
+                </li>
+                <li className="flex items-start gap-2 text-slate-300">
+                  <CheckCircle2 className="w-5 h-5 text-cyan-400 flex-shrink-0 mt-0.5" />
+                  <span>Danach einmalig 59€ – kein Abo</span>
+                </li>
+                <li className="flex items-start gap-2 text-slate-300">
+                  <CheckCircle2 className="w-5 h-5 text-cyan-400 flex-shrink-0 mt-0.5" />
+                  <span>Jederzeit während der Testphase kündbar</span>
+                </li>
+                <li className="flex items-start gap-2 text-slate-300">
+                  <CheckCircle2 className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />
+                  <span className="font-semibold text-green-400">30 Tage Geld-zurück-Garantie</span>
+                </li>
+              </ul>
               <Button
                 onClick={() => handleSelectOption('trial')}
                 size="lg"
-                variant="outline"
-                className="w-full text-slate-900 border-cyan-500/50 hover:bg-cyan-500/20 hover:text-slate-900 active:text-slate-900 font-semibold"
+                className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 font-semibold"
               >
-                7 Tage kostenlos testen
+                Jetzt kostenlos starten
               </Button>
             </motion.div>
 
@@ -816,25 +904,37 @@ export default function Landing() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.1 }}
-              className="relative glass rounded-2xl border border-purple-500/30 p-8 bg-gradient-to-br from-purple-500/10 to-transparent"
+              className="glass rounded-2xl border border-amber-500/30 p-8"
             >
-              <div className="absolute top-6 right-6 px-3 py-1 rounded-full bg-gradient-to-r from-cyan-500 to-purple-600 text-white text-xs font-bold">
-                SOFORT ZUGRIFF
-              </div>
-              <h3 className="text-2xl font-bold text-white mb-2">Sofort kaufen</h3>
+              <h3 className="text-2xl font-bold text-white mb-2">Sofort starten</h3>
               <div className="flex items-baseline gap-2 mb-6">
-                <span className="text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-400">59€</span>
+                <span className="text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-orange-400">59€</span>
                 <span className="text-slate-400">einmalig</span>
               </div>
-              <p className="text-slate-300 mb-8">
-                Wie eine Sitzung bei deinem persönlichen Trainer – aber 24/7 für dich da. Entlastung, Kraft und Performance auf deinem eigenen Tempo. Unbegrenzter lebenslanger Zugriff.
-              </p>
+              <ul className="space-y-3 mb-8">
+                <li className="flex items-start gap-2 text-slate-300">
+                  <CheckCircle2 className="w-5 h-5 text-amber-400 flex-shrink-0 mt-0.5" />
+                  <span>Sofortiger Zugriff auf alle Features</span>
+                </li>
+                <li className="flex items-start gap-2 text-slate-300">
+                  <CheckCircle2 className="w-5 h-5 text-amber-400 flex-shrink-0 mt-0.5" />
+                  <span>Einmalzahlung – lebenslanger Zugang</span>
+                </li>
+                <li className="flex items-start gap-2 text-slate-300">
+                  <CheckCircle2 className="w-5 h-5 text-amber-400 flex-shrink-0 mt-0.5" />
+                  <span>Kein Abo, keine versteckten Kosten</span>
+                </li>
+                <li className="flex items-start gap-2 text-slate-300">
+                  <CheckCircle2 className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />
+                  <span className="font-semibold text-green-400">30 Tage Geld-zurück-Garantie</span>
+                </li>
+              </ul>
               <Button
                 onClick={() => handleSelectOption('direct')}
                 size="lg"
-                className="w-full text-white bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-600 hover:to-purple-700 neuro-glow"
+                className="w-full bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700"
               >
-                Sofort kaufen
+                Jetzt kaufen
               </Button>
             </motion.div>
           </div>
