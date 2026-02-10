@@ -716,16 +716,23 @@ export default function Landing() {
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="glass rounded-2xl border border-red-500/30 overflow-hidden"
+              className="glass rounded-2xl border border-red-500/30 overflow-hidden group cursor-pointer"
             >
-              <img 
-                src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/340d9305f_image.png"
-                alt="REHAB - Detective Mode"
-                className="w-full h-auto"
-              />
+              <div className="relative">
+                <img 
+                  src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/340d9305f_image.png"
+                  alt="REHAB - Body Map"
+                  className="w-full h-auto transition-opacity duration-500 group-hover:opacity-0"
+                />
+                <img 
+                  src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/01a4d2bc5_image.png"
+                  alt="REHAB - Diagnose & Protokoll"
+                  className="w-full h-auto absolute top-0 left-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+                />
+              </div>
               <div className="p-4 bg-gradient-to-t from-slate-900 to-transparent">
                 <h3 className="font-bold text-red-400 mb-1">REHAB</h3>
-                <p className="text-xs text-slate-400">Präzise Schmerzlokalisierung auf der interaktiven Body Map</p>
+                <p className="text-xs text-slate-400">Body Map → Diagnose → Präzises Protokoll</p>
               </div>
             </motion.div>
 
@@ -735,16 +742,23 @@ export default function Landing() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.1 }}
-              className="glass rounded-2xl border border-amber-500/30 overflow-hidden"
+              className="glass rounded-2xl border border-amber-500/30 overflow-hidden group cursor-pointer"
             >
-              <img 
-                src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/bb6563719_image.png"
-                alt="GOALS - Performance Coaching"
-                className="w-full h-auto"
-              />
+              <div className="relative">
+                <img 
+                  src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/bb6563719_image.png"
+                  alt="GOALS - Ziel eingeben"
+                  className="w-full h-auto transition-opacity duration-500 group-hover:opacity-0"
+                />
+                <img 
+                  src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/0c5ccc3ac_image.png"
+                  alt="GOALS - Analyse & Plan"
+                  className="w-full h-auto absolute top-0 left-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+                />
+              </div>
               <div className="p-4 bg-gradient-to-t from-slate-900 to-transparent">
                 <h3 className="font-bold text-amber-400 mb-1">GOALS</h3>
-                <p className="text-xs text-slate-400">Definiere deine Ziele – dein Coach erstellt den Plan</p>
+                <p className="text-xs text-slate-400">Ziel → Analyse → Personalisierter Trainingsplan</p>
               </div>
             </motion.div>
 
@@ -754,16 +768,23 @@ export default function Landing() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.2 }}
-              className="glass rounded-2xl border border-cyan-500/30 overflow-hidden"
+              className="glass rounded-2xl border border-cyan-500/30 overflow-hidden group cursor-pointer"
             >
-              <img 
-                src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/ae4e694e6_image.png"
-                alt="FLOW - Tägliche Routinen"
-                className="w-full h-auto"
-              />
+              <div className="relative">
+                <img 
+                  src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/ae4e694e6_image.png"
+                  alt="FLOW - Kategorien"
+                  className="w-full h-auto transition-opacity duration-500 group-hover:opacity-0"
+                />
+                <img 
+                  src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/d0f3bbdb8_image.png"
+                  alt="FLOW - Trainingsplan Details"
+                  className="w-full h-auto absolute top-0 left-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+                />
+              </div>
               <div className="p-4 bg-gradient-to-t from-slate-900 to-transparent">
                 <h3 className="font-bold text-cyan-400 mb-1">FLOW</h3>
-                <p className="text-xs text-slate-400">5 Kategorien für deine tägliche System-Wartung</p>
+                <p className="text-xs text-slate-400">Kategorie → Trainingsplan mit allen Details</p>
               </div>
             </motion.div>
           </div>
