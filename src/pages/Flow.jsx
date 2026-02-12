@@ -315,7 +315,9 @@ export default function Flow() {
           <h1 className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-500 mb-2">
             {routine.routine_name}
           </h1>
-          <p className="text-slate-400">{routine.description}</p>
+          <div className="text-slate-400 max-w-2xl mx-auto">
+            <InstructionWithGlossary instruction={routine.description || ''} />
+          </div>
         </motion.div>
 
         {/* Progress Bar */}
