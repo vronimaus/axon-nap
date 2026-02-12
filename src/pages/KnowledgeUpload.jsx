@@ -95,16 +95,22 @@ export default function KnowledgeUpload() {
       });
 
       if (data.success) {
-        // Convert arrays to strings if needed
+        // Convert arrays to strings if needed for entity schema
         const analysis = { ...data.analysis };
+        
+        // key_findings must be a string (with bullet points)
         if (Array.isArray(analysis.key_findings)) {
-          analysis.key_findings = analysis.key_findings.join('\n');
+          analysis.key_findings = analysis.key_findings.map(item => `• ${item}`).join('\n');
         }
-        if (Array.isArray(analysis.target_audience)) {
-          // target_audience should stay as array
+        
+        // recommended_actions must be a string
+        if (Array.isArray(analysis.recommended_actions)) {
+          analysis.recommended_actions = analysis.recommended_actions.map(item => `• ${item}`).join('\n');
         }
-        if (Array.isArray(analysis.tags)) {
-          // tags should stay as array
+        
+        // protocol_details must be a string
+        if (Array.isArray(analysis.protocol_details)) {
+          analysis.protocol_details = analysis.protocol_details.join('\n');
         }
         
         setAnalysisResult({
