@@ -5,11 +5,14 @@ import { base44 } from '@/api/base44Client';
 import { createPageUrl } from '@/utils';
 import { ArrowLeft, Clock, Play, CheckCircle2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { PaginationControls } from '../components/ui/pagination-controls';
 
 export default function FlowRoutines() {
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 12;
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -84,6 +87,17 @@ export default function FlowRoutines() {
   const getRoutinesForCategory = (categoryId) => {
     return routines.filter(routine => routine.category === categoryId);
   };
+
+  const categoryRoutines = selectedCategory ? getRoutinesForCategory(selectedCategory.id) : [];
+  const totalRoutines = categoryRoutines.length;
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const paginatedRoutines = categoryRoutines.slice(startIndex, endIndex);
+
+  // Reset to page 1 when category changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [selectedCategory]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 pb-20 md:pb-6">
@@ -166,8 +180,8 @@ export default function FlowRoutines() {
 
               {/* Routines Grid */}
               <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {getRoutinesForCategory(selectedCategory.id).length > 0 ? (
-                  getRoutinesForCategory(selectedCategory.id).map((routine, idx) => (
+                {paginatedRoutines.length > 0 ? (
+                  paginatedRoutines.map((routine, idx) => (
                     <motion.div
                       key={routine.id}
                       initial={{ opacity: 0, y: 20 }}
@@ -200,6 +214,16 @@ export default function FlowRoutines() {
                   </div>
                 )}
               </div>
+
+              {/* Pagination Controls */}
+              {categoryRoutines.length > 0 && (
+                <PaginationControls
+                  currentPage={currentPage}
+                  totalItems={totalRoutines}
+                  itemsPerPage={itemsPerPage}
+                  onPageChange={setCurrentPage}
+                />
+              )}
             </motion.div>
           )}
         </AnimatePresence>
