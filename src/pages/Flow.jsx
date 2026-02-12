@@ -21,79 +21,70 @@ function InstructionWithGlossary({ instruction }) {
     'Couch Stretch': 'couch_stretch'
   };
 
-  const parts = [];
-  let currentText = instruction;
-
-  // Sort terms by length (longest first) to avoid partial matches
+  // Create regex pattern from all terms (case insensitive)
   const terms = Object.keys(glossaryMap).sort((a, b) => b.length - a.length);
+  const pattern = terms.map(t => t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|');
+  const regex = new RegExp(`\\b(${pattern})\\b`, 'gi');
 
-  // Split text by terms and create glossary tooltips
-  const lines = currentText.split('\n');
-  
+  const renderLineWithTooltips = (line) => {
+    const parts = [];
+    let lastIndex = 0;
+    let match;
+    let key = 0;
+
+    // Reset regex
+    regex.lastIndex = 0;
+
+    while ((match = regex.exec(line)) !== null) {
+      // Add text before match
+      if (match.index > lastIndex) {
+        parts.push(
+          <span key={`text-${key++}`}>
+            {line.slice(lastIndex, match.index)}
+          </span>
+        );
+      }
+
+      // Find the matching term (case-insensitive)
+      const matchedText = match[0];
+      const termKey = terms.find(t => t.toLowerCase() === matchedText.toLowerCase());
+      const glossaryKey = termKey ? glossaryMap[termKey] : null;
+
+      // Add glossary tooltip
+      if (glossaryKey) {
+        parts.push(
+          <GlossaryTooltip key={`glossary-${key++}`} term={glossaryKey}>
+            {matchedText}
+          </GlossaryTooltip>
+        );
+      } else {
+        parts.push(<span key={`text-${key++}`}>{matchedText}</span>);
+      }
+
+      lastIndex = match.index + match[0].length;
+    }
+
+    // Add remaining text
+    if (lastIndex < line.length) {
+      parts.push(
+        <span key={`text-${key++}`}>
+          {line.slice(lastIndex)}
+        </span>
+      );
+    }
+
+    return parts.length > 0 ? parts : line;
+  };
+
+  const lines = instruction.split('\n');
+
   return (
     <div className="text-slate-200 text-base leading-relaxed mb-6 space-y-2">
-      {lines.map((line, lineIdx) => {
-        const segments = [];
-        let remaining = line;
-        let lastIndex = 0;
-
-        terms.forEach(term => {
-          const regex = new RegExp(`\\b${term}\\b`, 'gi');
-          let match;
-          const tempRemaining = remaining;
-          
-          while ((match = regex.exec(tempRemaining)) !== null) {
-            const matchIndex = match.index;
-            
-            // Add text before match
-            if (matchIndex > lastIndex) {
-              segments.push({
-                type: 'text',
-                content: tempRemaining.slice(lastIndex, matchIndex),
-                key: `text-${lineIdx}-${lastIndex}`
-              });
-            }
-            
-            // Add glossary term
-            segments.push({
-              type: 'glossary',
-              term: glossaryMap[term],
-              content: match[0],
-              key: `glossary-${lineIdx}-${matchIndex}`
-            });
-            
-            lastIndex = matchIndex + match[0].length;
-          }
-        });
-
-        // Add remaining text
-        if (lastIndex < remaining.length) {
-          segments.push({
-            type: 'text',
-            content: remaining.slice(lastIndex),
-            key: `text-${lineIdx}-${lastIndex}`
-          });
-        }
-
-        // If no segments found, return the whole line as text
-        if (segments.length === 0) {
-          return <p key={lineIdx}>{line}</p>;
-        }
-
-        return (
-          <p key={lineIdx}>
-            {segments.map((segment) => 
-              segment.type === 'glossary' ? (
-                <GlossaryTooltip key={segment.key} term={segment.term}>
-                  {segment.content}
-                </GlossaryTooltip>
-              ) : (
-                <span key={segment.key}>{segment.content}</span>
-              )
-            )}
-          </p>
-        );
-      })}
+      {lines.map((line, idx) => (
+        <p key={idx}>
+          {line.trim() ? renderLineWithTooltips(line) : <br />}
+        </p>
+      ))}
     </div>
   );
 }
