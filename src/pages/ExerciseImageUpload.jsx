@@ -7,12 +7,15 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ArrowLeft, Upload, Check, Loader2, Image as ImageIcon, Search } from 'lucide-react';
 import { toast } from 'sonner';
+import { PaginationControls } from '../components/ui/pagination-controls';
 
 export default function ExerciseImageUpload() {
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [uploadingExerciseId, setUploadingExerciseId] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 20;
   const queryClient = useQueryClient();
 
   useEffect(() => {
@@ -130,6 +133,17 @@ export default function ExerciseImageUpload() {
   const filteredExercises = allExercises.filter(ex =>
     ex.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  // Pagination
+  const totalItems = filteredExercises.length;
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const paginatedExercises = filteredExercises.slice(startIndex, endIndex);
+
+  // Reset to page 1 when search changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm]);
 
   // Upload mutation for Exercise entity
   const updateExerciseMutation = useMutation({
@@ -312,7 +326,7 @@ export default function ExerciseImageUpload() {
 
         {/* Exercise List */}
         <div className="grid gap-4">
-          {filteredExercises.map((exercise, index) => (
+          {paginatedExercises.map((exercise, index) => (
             <motion.div
               key={exercise.id || exercise.name}
               initial={{ opacity: 0, y: 20 }}
@@ -432,9 +446,17 @@ export default function ExerciseImageUpload() {
               )}
             </motion.div>
           ))}
-        </div>
+          </div>
 
-        {filteredExercises.length === 0 && (
+          {/* Pagination Controls */}
+          <PaginationControls
+          currentPage={currentPage}
+          totalItems={totalItems}
+          itemsPerPage={itemsPerPage}
+          onPageChange={setCurrentPage}
+          />
+
+          {filteredExercises.length === 0 && (
           <div className="text-center py-12">
             <ImageIcon className="w-16 h-16 text-slate-600 mx-auto mb-4" />
             <p className="text-slate-400">Keine Übungen gefunden</p>
