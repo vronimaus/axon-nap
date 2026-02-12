@@ -232,7 +232,7 @@ export default function AxonBotTest() {
             onChange={(e) => setInputMessage(e.target.value)}
             onKeyPress={handleKeyPress}
             placeholder="Frage AXON etwas..."
-            className="flex-1 bg-slate-800/50 border-slate-700"
+            className="flex-1 bg-slate-800/50 border-slate-700 text-white placeholder:text-slate-500"
             disabled={isSending}
           />
           <Button
