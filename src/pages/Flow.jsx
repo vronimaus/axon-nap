@@ -131,6 +131,10 @@ export default function Flow() {
     queryFn: () => base44.entities.Exercise.list()
   });
 
+  // Get current exercise details if exercise_id is set
+  const currentExerciseId = routine?.sequence?.[currentStep]?.exercise_id;
+  const currentExercise = exercises.find(e => e.exercise_id === currentExerciseId);
+
   useEffect(() => {
     if (!routine || !isPlaying) return;
 
@@ -359,6 +363,17 @@ export default function Flow() {
             transition={{ duration: 0.3 }}
           >
             <div className="glass rounded-2xl border border-cyan-500/20 p-8 mb-6 bg-slate-900/50 backdrop-blur-xl neuro-glow">
+              {/* Exercise Image - show at top */}
+              {currentExercise?.image_url && (
+                <div className="rounded-xl overflow-hidden mb-6 border border-cyan-500/30">
+                  <img
+                    src={currentExercise.image_url}
+                    alt={currentExercise.name || detailedContent.title}
+                    className="w-full h-auto object-cover"
+                  />
+                </div>
+              )}
+              
               {/* Step Type Badge */}
               <div className="flex items-center justify-between mb-6">
                 <div className={`px-4 py-2 rounded-full text-sm font-bold border ${
@@ -408,16 +423,7 @@ export default function Flow() {
                 </div>
               )}
               
-              {/* Exercise Image */}
-              {currentSequence.image_url && (
-                <div className="rounded-xl overflow-hidden mb-6 border border-cyan-500/30">
-                  <img
-                    src={currentSequence.image_url}
-                    alt={detailedContent.title}
-                    className="w-full h-auto"
-                  />
-                </div>
-              )}
+
             </div>
           </motion.div>
         </AnimatePresence>
