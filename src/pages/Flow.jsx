@@ -12,8 +12,9 @@ import GlossaryTooltip from '../components/glossary/GlossaryTooltip';
 // Helper: Replace glossary terms in text with tooltips
 function InstructionWithGlossary({ instruction }) {
   const glossaryMap = {
-    'Flossing': 'flossing',
     'Voodoo Floss': 'flossing',
+    'Flossing': 'flossing',
+    'Floss': 'flossing',
     'Dorsiflexion': 'dorsiflexion',
     'Torque': 'torque',
     'Bracing': 'bracing',
@@ -21,60 +22,72 @@ function InstructionWithGlossary({ instruction }) {
     'Couch Stretch': 'couch_stretch'
   };
 
-  // Create regex pattern from all terms (case insensitive)
-  const terms = Object.keys(glossaryMap).sort((a, b) => b.length - a.length);
-  const pattern = terms.map(t => t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|');
-  const regex = new RegExp(`\\b(${pattern})\\b`, 'gi');
+  const renderWithGlossary = (text) => {
+    if (!text || typeof text !== 'string') return text;
 
-  const renderLineWithTooltips = (line) => {
     const parts = [];
-    let lastIndex = 0;
-    let match;
-    let key = 0;
+    let remaining = text;
+    let keyCounter = 0;
 
-    // Reset regex
-    regex.lastIndex = 0;
+    // Sort by length (longest first to match "Voodoo Floss" before "Floss")
+    const sortedTerms = Object.keys(glossaryMap).sort((a, b) => b.length - a.length);
 
-    while ((match = regex.exec(line)) !== null) {
-      // Add text before match
-      if (match.index > lastIndex) {
-        parts.push(
-          <span key={`text-${key++}`}>
-            {line.slice(lastIndex, match.index)}
-          </span>
-        );
+    sortedTerms.forEach((term) => {
+      const newParts = [];
+      
+      parts.length === 0 ? [remaining] : parts.forEach((part) => {
+        if (typeof part === 'string') {
+          // Case-insensitive split while preserving the original case
+          const regex = new RegExp(`(${term})`, 'gi');
+          const segments = part.split(regex);
+          
+          segments.forEach((segment, i) => {
+            if (segment && regex.test(segment)) {
+              // Reset regex after test
+              regex.lastIndex = 0;
+              newParts.push(
+                <GlossaryTooltip key={`g-${keyCounter++}`} term={glossaryMap[term]}>
+                  {segment}
+                </GlossaryTooltip>
+              );
+            } else if (segment) {
+              newParts.push(segment);
+            }
+          });
+        } else {
+          newParts.push(part);
+        }
+      });
+
+      if (parts.length === 0) {
+        // First iteration
+        const regex = new RegExp(`(${term})`, 'gi');
+        const segments = remaining.split(regex);
+        
+        segments.forEach((segment) => {
+          if (segment && regex.test(segment)) {
+            regex.lastIndex = 0;
+            newParts.push(
+              <GlossaryTooltip key={`g-${keyCounter++}`} term={glossaryMap[term]}>
+                {segment}
+              </GlossaryTooltip>
+            );
+          } else if (segment) {
+            newParts.push(segment);
+          }
+        });
       }
 
-      // Find the matching term (case-insensitive)
-      const matchedText = match[0];
-      const termKey = terms.find(t => t.toLowerCase() === matchedText.toLowerCase());
-      const glossaryKey = termKey ? glossaryMap[termKey] : null;
-
-      // Add glossary tooltip
-      if (glossaryKey) {
-        parts.push(
-          <GlossaryTooltip key={`glossary-${key++}`} term={glossaryKey}>
-            {matchedText}
-          </GlossaryTooltip>
-        );
-      } else {
-        parts.push(<span key={`text-${key++}`}>{matchedText}</span>);
+      if (newParts.length > 0) {
+        parts.length = 0;
+        parts.push(...newParts);
       }
+    });
 
-      lastIndex = match.index + match[0].length;
-    }
-
-    // Add remaining text
-    if (lastIndex < line.length) {
-      parts.push(
-        <span key={`text-${key++}`}>
-          {line.slice(lastIndex)}
-        </span>
-      );
-    }
-
-    return parts.length > 0 ? parts : line;
+    return parts.length > 0 ? parts : remaining;
   };
+
+  if (!instruction) return null;
 
   const lines = instruction.split('\n');
 
@@ -82,7 +95,7 @@ function InstructionWithGlossary({ instruction }) {
     <div className="text-slate-200 text-base leading-relaxed mb-6 space-y-2">
       {lines.map((line, idx) => (
         <p key={idx}>
-          {line.trim() ? renderLineWithTooltips(line) : <br />}
+          {line.trim() ? renderWithGlossary(line) : <br />}
         </p>
       ))}
     </div>
