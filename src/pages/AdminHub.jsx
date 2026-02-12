@@ -173,19 +173,44 @@ export default function AdminHub() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
-              className="glass rounded-2xl border border-cyan-500/30 p-8"
+              className="space-y-6"
             >
-              <h2 className="text-2xl font-bold text-cyan-400 mb-4">Zukünftige Tools</h2>
-              <p className="text-slate-300 mb-6">
-                Dieser Bereich wird mit weiteren Admin-Tools erweitert:
-              </p>
-              <ul className="space-y-2 text-slate-300">
-                <li>• Benutzer-Management & Coaching-Zuweisungen</li>
-                <li>• Reporting & Analytics</li>
-                <li>• Inhalts-Management (Bilder, Übungen, Routinen)</li>
-                <li>• Marketing & Promotion-Tools</li>
-                <li>• System-Monitoring & Logs</li>
-              </ul>
+              {/* AXON Wissensdatenbank */}
+              <div className="glass rounded-2xl border border-purple-500/30 p-8">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center">
+                    <span className="text-2xl">📚</span>
+                  </div>
+                  <div>
+                    <h2 className="text-2xl font-bold text-purple-400">AXON Wissensdatenbank</h2>
+                    <p className="text-sm text-slate-400">Paper hochladen & KI-gestützt analysieren</p>
+                  </div>
+                </div>
+                <p className="text-slate-300 mb-6">
+                  Füttere den AXON-Bot mit wissenschaftlichem Wissen. Paper hochladen, automatisch analysieren und für personalisierte Empfehlungen nutzen.
+                </p>
+                <Button
+                  onClick={() => window.location.href = createPageUrl('KnowledgeUpload')}
+                  className="bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700"
+                >
+                  Zur Wissensdatenbank
+                </Button>
+              </div>
+
+              {/* Kommende Tools */}
+              <div className="glass rounded-2xl border border-cyan-500/30 p-8">
+                <h2 className="text-2xl font-bold text-cyan-400 mb-4">Kommende Tools</h2>
+                <p className="text-slate-300 mb-6">
+                  Weitere Admin-Tools in Entwicklung:
+                </p>
+                <ul className="space-y-2 text-slate-300">
+                  <li>• Benutzer-Management & Coaching-Zuweisungen</li>
+                  <li>• Reporting & Analytics</li>
+                  <li>• Inhalts-Management (Bilder, Übungen, Routinen)</li>
+                  <li>• Marketing & Promotion-Tools</li>
+                  <li>• System-Monitoring & Logs</li>
+                </ul>
+              </div>
             </motion.div>
           </TabsContent>
         </Tabs>
