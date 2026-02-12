@@ -59,6 +59,12 @@ export default function Landing() {
   }, []);
 
   const handleSelectOption = (mode) => {
+    // Track conversion event
+    base44.analytics.track({
+      eventName: mode === 'trial' ? 'trial_started' : 'direct_purchase_initiated',
+      properties: { source: 'landing_page' }
+    });
+
     // Speichere die gewählte Option für nach dem Login
     localStorage.setItem('axon_selected_mode', mode);
     

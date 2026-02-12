@@ -184,6 +184,16 @@ export default function Flow() {
         completed: true,
         duration_actual: routine.total_duration
       });
+      
+      // Track completion
+      base44.analytics.track({
+        eventName: 'flow_completed',
+        properties: { 
+          routine_name: routine.routine_name,
+          category: routine.category,
+          duration: routine.total_duration
+        }
+      });
     } catch (error) {
       console.error('Fehler beim Speichern:', error);
     }

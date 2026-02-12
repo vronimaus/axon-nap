@@ -7,6 +7,8 @@ import { useTrialStatus } from './components/useTrialStatus';
 import { AnimatePresence } from 'framer-motion';
 import { base44 } from '@/api/base44Client';
 import { Toaster } from 'sonner';
+import ErrorBoundary from './components/ErrorBoundary';
+import OfflineDetector from './components/OfflineDetector';
 
 export default function Layout({ children, currentPageName }) {
   const { isLoading: trialLoading, hasAccess } = useTrialStatus();
@@ -81,6 +83,10 @@ export default function Layout({ children, currentPageName }) {
             // Trial starten: trial_start_date setzen falls noch nicht gesetzt
             if (!currentUser.trial_start_date) {
               await base44.auth.updateMe({ trial_start_date: new Date().toISOString() });
+              base44.analytics.track({
+                eventName: 'trial_activated',
+                properties: { user_email: currentUser.email }
+              });
             }
             // Zum Dashboard weiterleiten
             window.location.href = createPageUrl('Dashboard');
@@ -160,8 +166,9 @@ export default function Layout({ children, currentPageName }) {
   };
   
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
-      {/* Navigation - nur für eingeloggte User UND auf relevanten Pages */}
+    <ErrorBoundary>
+      <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
+        {/* Navigation - nur für eingeloggte User UND auf relevanten Pages */}
       {!isChecking && user && showNav && (
         <nav className="sticky top-0 z-50 bg-slate-900 border-b border-cyan-500/20">
           <div className="max-w-6xl mx-auto px-4">
@@ -296,6 +303,10 @@ export default function Layout({ children, currentPageName }) {
 
       {/* Toast Notifications */}
       <Toaster position="top-center" theme="dark" />
+      
+      {/* Offline Detector */}
+      <OfflineDetector />
       </div>
-      );
-      }
+    </ErrorBoundary>
+  );
+}

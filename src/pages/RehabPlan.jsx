@@ -90,6 +90,15 @@ export default function RehabPlan() {
       const result = await base44.entities.RehabPlan.update(rehabPlan.id, updateData);
       console.log('Phase update result:', result);
 
+      // Track completion
+      base44.analytics.track({
+        eventName: isLastPhase ? 'rehab_plan_completed' : 'rehab_phase_completed',
+        properties: { 
+          phase: currentPhaseNum,
+          total_phases: rehabPlan.phases.length
+        }
+      });
+
       return { isLastPhase, updateData };
     },
     onSuccess: async (result) => {

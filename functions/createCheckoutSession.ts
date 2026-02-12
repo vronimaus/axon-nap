@@ -9,6 +9,12 @@ Deno.serve(async (req) => {
 
     console.log('[createCheckoutSession] Request:', { mode, email, baseUrl });
 
+    // Validate Stripe keys
+    if (!Deno.env.get('STRIPE_SECRET_KEY')) {
+      console.error('[createCheckoutSession] Missing STRIPE_SECRET_KEY');
+      return Response.json({ error: 'Stripe not configured' }, { status: 500 });
+    }
+
     // Checkout Session erstellen (Hosted Checkout)
     const session = await stripeClient.checkout.sessions.create({
       mode: 'payment',

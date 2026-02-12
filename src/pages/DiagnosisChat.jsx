@@ -327,6 +327,12 @@ export default function DiagnosisChat() {
   };
 
   const handleIntensitySubmit = async (intensity) => {
+    // Track diagnosis start
+    base44.analytics.track({
+      eventName: 'diagnosis_started',
+      properties: { pain_intensity: intensity }
+    });
+
     // Stay in workflow - wait for agent to trigger next step
     setLoading(true);
     

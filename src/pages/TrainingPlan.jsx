@@ -85,6 +85,12 @@ export default function TrainingPlan() {
       await base44.entities.TrainingPlan.update(planId, {
         complementary_drills_accepted: true
       });
+      
+      base44.analytics.track({
+        eventName: 'complementary_drills_accepted',
+        properties: { plan_goal: activePlan?.goal_description }
+      });
+      
       await queryClient.invalidateQueries({ queryKey: ['activePlan'] });
       toast.success('Ergänzende Übungen wurden zu deinem Plan hinzugefügt!');
     } catch (error) {
