@@ -94,6 +94,24 @@ export const glossaryTerms = {
     shortDesc: 'Intensive Hip Flexor Dehnung',
     fullDesc: 'Eine tiefe Dehnung für die Hüftbeuger (Hip Flexors). Ein Knie an die Wand, das andere Bein vorne. Drücke die Hüfte nach vorne. Brennt wie Hölle – aber löst jahrelange Sitz-Schäden.',
     category: 'basics'
+  },
+  smr_3d: {
+    term: '3D SMR (Self-Myofascial Release)',
+    shortDesc: 'Dreidimensionale Selbstbehandlung',
+    fullDesc: `**Anleitung für 3D Self-Myofascial Release:**
+
+1) **Baseline finden:** Taste zunächst Muskelgewebe in Bereichen, die sich normal anfühlen (keine Verspannungen, Schmerzen oder Bewegungseinschränkungen). Funktionelle Muskeln fühlen sich schwammartig und nachgiebig an, wenn sie nicht angespannt sind. Das ist deine Referenz.
+
+2) **Zielbereich identifizieren:** Taste das Muskelgewebe in Bereichen mit Symptomen (Schmerz, Verspannung, Instabilität, Entzündung). Du wirst wahrscheinlich steinharte oder seilförmige Verhärtungen finden – verknotetes, fibrotisches Gewebe. Das ist dein Ziel.
+
+3) **SMR-Werkzeug positionieren:** Nutze einen Faszienball oder ein ähnliches (winkliges) SMR-Werkzeug und drücke es gegen eine feste oder halbfeste Oberfläche (Boden, Wand, Stuhl, Couch), um Druck auf das Zielgewebe auszuüben. Wähle eine Spitze oder Kante, die am besten zur Größe des Zielbereichs passt.
+
+4) **Druck anwenden:** Halte den Druck für 3-5 Sekunden, löse ihn dann und bewege dich zu einer benachbarten Stelle. Wiederhole diesen Vorgang.
+
+5) **Winkel variieren:** Wende kurze Druckimpulse (rein/raus, rein/raus) in verschiedenen Winkeln auf verspannte, fibrotische Bereiche an und spüre, wie das Gewebe reagiert. Arbeite dich dann nach außen vor und "sprenge" alle Knoten und Stränge fibrotischen Gewebes, die du auf dem Weg fühlst. Vergiss nicht: Du kannst auch die Kanten des Werkzeugs nutzen.
+
+**Hinweise:** Je härter das Gewebe, desto älter und fibrotischer ist es. Wenn der Zielbereich zu empfindlich ist oder zu viel Entzündung aufweist, beginne an den Rändern und arbeite dich langsam über Zeit zum Ziel vor. **Profi-Tipp:** Du kannst auch Scherkräfte anwenden, indem du das Werkzeug rollst, während du es bewegst, um den optimalen Punkt oder die optimale Kante zu finden.`,
+    category: 'deepdive'
   }
 };
 
