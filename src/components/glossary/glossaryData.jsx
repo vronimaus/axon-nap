@@ -58,6 +58,42 @@ export const glossaryTerms = {
     shortDesc: 'Deine tägliche Belastbarkeit',
     fullDesc: 'Eine Einschätzung deiner täglichen Belastbarkeit basierend auf Energie, Stress und (optional) deiner Herzratenvariabilität (HRV). Er verhindert, dass du dich überforderst oder unterforderst.',
     category: 'deepdive'
+  },
+  flossing: {
+    term: 'Flossing (Voodoo Floss)',
+    shortDesc: 'Kompressionsband für Gelenke',
+    fullDesc: 'Ein elastisches Kompressionsband, das um ein Gelenk gewickelt wird. Durch die Kompression + Bewegung wird alte Flüssigkeit "herausgepresst" und frische strömt nach. Wie ein Reset-Button für steife Gelenke.',
+    category: 'basics'
+  },
+  dorsiflexion: {
+    term: 'Dorsiflexion',
+    shortDesc: 'Zehen zum Schienbein ziehen',
+    fullDesc: 'Die Bewegung, bei der du deine Zehen in Richtung Schienbein ziehst. Wichtig für Squats, Lunges und Sprint. Wenn deine Ankle hier eingeschränkt ist, kompensiert dein Knie – Verletzungsgefahr!',
+    category: 'basics'
+  },
+  torque: {
+    term: 'Torque (Drehmoment)',
+    shortDesc: 'Stabilität durch Rotation',
+    fullDesc: 'Das Prinzip, Gelenke durch "Raus-Drehen" zu stabilisieren. Beispiel: "Schraube deine Füße in den Boden" beim Squat. Dadurch aktivierst du die richtigen Muskeln und schützt das Gelenk.',
+    category: 'basics'
+  },
+  bracing: {
+    term: 'Bracing',
+    shortDesc: 'Core-Spannung für Stabilität',
+    fullDesc: 'Eine 360-Grad-Anspannung deiner Core-Muskulatur (nicht nur die Bauchmuskeln!). Wie ein innerer Gewichthebergürtel. Schützt deine Wirbelsäule und überträgt Kraft effizienter.',
+    category: 'basics'
+  },
+  smash: {
+    term: 'Smash (Tissue Work)',
+    shortDesc: 'Gezielter Druck auf Gewebe',
+    fullDesc: 'Mit einem Ball oder Roller gezielt Druck auf verspanntes Gewebe ausüben. Ziel: "Tender spots" (schmerzhafte Punkte) finden und dort 10-30 Sekunden bleiben, bis das Gewebe nachgibt.',
+    category: 'basics'
+  },
+  couch_stretch: {
+    term: 'Couch Stretch',
+    shortDesc: 'Intensive Hip Flexor Dehnung',
+    fullDesc: 'Eine tiefe Dehnung für die Hüftbeuger (Hip Flexors). Ein Knie an die Wand, das andere Bein vorne. Drücke die Hüfte nach vorne. Brennt wie Hölle – aber löst jahrelange Sitz-Schäden.',
+    category: 'basics'
   }
 };
 
