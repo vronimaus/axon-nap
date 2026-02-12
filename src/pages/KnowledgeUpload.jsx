@@ -203,17 +203,21 @@ export default function KnowledgeUpload() {
                 {/* File Upload */}
                 {uploadMode === 'file' && (
                   <div>
-                    <Input
-                      type="file"
-                      accept=".pdf,.txt"
-                      onChange={handleFileUpload}
-                      className="cursor-pointer"
-                    />
-                    {selectedFile && (
-                      <p className="text-sm text-slate-400 mt-2">
-                        Ausgewählt: {selectedFile.name}
-                      </p>
-                    )}
+                    <label className="block">
+                      <div className="border-2 border-dashed border-slate-600 hover:border-cyan-500 rounded-lg p-8 text-center cursor-pointer transition-all">
+                        <Upload className="w-12 h-12 mx-auto mb-3 text-slate-400" />
+                        <p className="text-slate-300 font-medium mb-1">
+                          {selectedFile ? selectedFile.name : 'Klicke hier oder ziehe eine Datei'}
+                        </p>
+                        <p className="text-sm text-slate-500">PDF oder TXT (max 10MB)</p>
+                      </div>
+                      <input
+                        type="file"
+                        accept=".pdf,.txt"
+                        onChange={handleFileUpload}
+                        className="hidden"
+                      />
+                    </label>
                   </div>
                 )}
 
