@@ -342,27 +342,54 @@ export default function RehabPlan() {
           ))}
         </div>
 
+        {/* Recommended MFR Routines */}
+        {rehabPlan.recommended_mfr_routines?.length > 0 && (
+          <div className="mb-8 glass rounded-xl border border-purple-500/30 p-6 bg-gradient-to-r from-purple-500/10 to-transparent">
+            <h3 className="font-semibold text-white mb-2">🎯 Empfohlene MFR-Routinen</h3>
+            <p className="text-slate-300 text-sm mb-4">
+              Diese Routinen unterstützen deine Rehabilitation optimal:
+            </p>
+            <div className="grid gap-3">
+              {rehabPlan.recommended_mfr_routines.map((routine, idx) => (
+                <div key={routine.routine_id || idx} className="flex items-center justify-between p-3 rounded-lg bg-slate-800/50 border border-slate-700">
+                  <div>
+                    <p className="font-semibold text-white text-sm">{routine.routine_name}</p>
+                    <p className="text-xs text-slate-400">{routine.reason}</p>
+                  </div>
+                  <Button
+                    onClick={() => window.location.href = createPageUrl(`Flow?routine_id=${routine.routine_id}`)}
+                    size="sm"
+                    className="bg-purple-500/20 text-purple-400 hover:bg-purple-500/30"
+                  >
+                    Starten
+                  </Button>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* Phase Progress & Completion */}
         <div className="mt-8 space-y-4">
-          {/* Stats */}
-          <div className="grid grid-cols-2 gap-4">
-            <div className="glass rounded-xl border border-slate-700 p-4">
-              <div className="text-sm text-slate-400 mb-1">Tage in dieser Phase</div>
-              <div className="text-2xl font-bold text-white">{getDaysInCurrentPhase()} / {currentPhase.duration_days}</div>
-            </div>
-            {getAveragePainLevel() !== null && (
-              <div className="glass rounded-xl border border-slate-700 p-4">
-                <div className="text-sm text-slate-400 mb-1">Ø Schmerzlevel</div>
-                <div className={`text-2xl font-bold ${
-                  parseFloat(getAveragePainLevel()) <= 3 ? 'text-green-400' :
-                  parseFloat(getAveragePainLevel()) <= 6 ? 'text-yellow-400' :
-                  'text-red-400'
-                }`}>
-                  {getAveragePainLevel()} / 10
-                </div>
-              </div>
-            )}
+        {/* Stats */}
+        <div className="grid grid-cols-2 gap-4">
+          <div className="glass rounded-xl border border-slate-700 p-4">
+            <div className="text-sm text-slate-400 mb-1">Tage in dieser Phase</div>
+            <div className="text-2xl font-bold text-white">{getDaysInCurrentPhase()} / {currentPhase.duration_days}</div>
           </div>
+          {getAveragePainLevel() !== null && (
+            <div className="glass rounded-xl border border-slate-700 p-4">
+              <div className="text-sm text-slate-400 mb-1">Ø Schmerzlevel</div>
+              <div className={`text-2xl font-bold ${
+                parseFloat(getAveragePainLevel()) <= 3 ? 'text-green-400' :
+                parseFloat(getAveragePainLevel()) <= 6 ? 'text-yellow-400' :
+                'text-red-400'
+              }`}>
+                {getAveragePainLevel()} / 10
+              </div>
+            </div>
+          )}
+        </div>
 
           {/* Complete Phase Button */}
           {(rehabPlan.current_phase || 1) < rehabPlan.phases.length ? (
