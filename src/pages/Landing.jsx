@@ -117,6 +117,8 @@ export default function Landing() {
           <img 
             src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/ad6e52b61_generated_image.png"
             alt="AXON Body Map Background"
+            loading="eager"
+            decoding="async"
             className="w-full h-full object-cover"
           />
         </div>
@@ -137,6 +139,8 @@ export default function Landing() {
             <img 
               src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/afa60dd62_AXONLogo.png"
               alt="AXON Logo"
+              loading="eager"
+              decoding="async"
               className="w-24 h-24 mx-auto object-contain drop-shadow-[0_0_40px_rgba(6,182,212,0.4)]"
             />
           </motion.div>
@@ -493,11 +497,15 @@ export default function Landing() {
                 <img 
                   src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/340d9305f_image.png"
                   alt="REHAB - Body Map"
+                  loading="lazy"
+                  decoding="async"
                   className="w-full h-auto transition-opacity duration-500 group-hover:opacity-0"
                 />
                 <img 
                   src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/01a4d2bc5_image.png"
                   alt="REHAB - Diagnose & Protokoll"
+                  loading="lazy"
+                  decoding="async"
                   className="w-full h-auto absolute top-0 left-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100"
                 />
               </div>
@@ -519,11 +527,15 @@ export default function Landing() {
                 <img 
                   src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/bb6563719_image.png"
                   alt="GOALS - Ziel eingeben"
+                  loading="lazy"
+                  decoding="async"
                   className="w-full h-auto transition-opacity duration-500 group-hover:opacity-0"
                 />
                 <img 
                   src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/0c5ccc3ac_image.png"
                   alt="GOALS - Analyse & Plan"
+                  loading="lazy"
+                  decoding="async"
                   className="w-full h-auto absolute top-0 left-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100"
                 />
               </div>
@@ -545,11 +557,15 @@ export default function Landing() {
                 <img 
                   src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/ae4e694e6_image.png"
                   alt="FLOW - Kategorien"
+                  loading="lazy"
+                  decoding="async"
                   className="w-full h-auto transition-opacity duration-500 group-hover:opacity-0"
                 />
                 <img 
                   src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/d0f3bbdb8_image.png"
                   alt="FLOW - Trainingsplan Details"
+                  loading="lazy"
+                  decoding="async"
                   className="w-full h-auto absolute top-0 left-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100"
                 />
               </div>
