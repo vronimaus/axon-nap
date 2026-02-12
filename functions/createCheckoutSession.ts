@@ -20,14 +20,7 @@ Deno.serve(async (req) => {
       mode: 'payment',
       customer_email: email || undefined,
       line_items: [{
-        price_data: {
-          currency: 'eur',
-          unit_amount: 5900,
-          product_data: {
-            name: 'AXON Protocol - Lebenslanger Zugriff',
-            description: 'Einmalige Zahlung für unbegrenzten Zugriff auf alle AXON Features'
-          }
-        },
+        price: 'price_1T05KL7Pl2EHjBzr4GJT5KiK', // Fixed price for AXON Protocol
         quantity: 1
       }],
       success_url: `${baseUrl}/Success?session_id={CHECKOUT_SESSION_ID}`,
