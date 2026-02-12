@@ -182,19 +182,28 @@ export default function AdminHub() {
                     <span className="text-2xl">📚</span>
                   </div>
                   <div>
-                    <h2 className="text-2xl font-bold text-purple-400">AXON Wissensdatenbank</h2>
-                    <p className="text-sm text-slate-400">Paper hochladen & KI-gestützt analysieren</p>
+                    <h2 className="text-2xl font-bold text-purple-400">AXON Knowledge Bot</h2>
+                    <p className="text-sm text-slate-400">Wissenschaftsbasierter KI-Coach</p>
                   </div>
                 </div>
                 <p className="text-slate-300 mb-6">
                   Füttere den AXON-Bot mit wissenschaftlichem Wissen. Paper hochladen, automatisch analysieren und für personalisierte Empfehlungen nutzen.
                 </p>
-                <Button
-                  onClick={() => window.location.href = createPageUrl('KnowledgeUpload')}
-                  className="bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700"
-                >
-                  Zur Wissensdatenbank
-                </Button>
+                <div className="flex gap-3">
+                  <Button
+                    onClick={() => window.location.href = createPageUrl('KnowledgeUpload')}
+                    className="bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700"
+                  >
+                    📚 Wissensdatenbank
+                  </Button>
+                  <Button
+                    onClick={() => window.location.href = createPageUrl('AxonBotTest')}
+                    variant="outline"
+                    className="border-cyan-500/50 text-cyan-400 hover:bg-cyan-500/10"
+                  >
+                    🤖 Bot testen
+                  </Button>
+                </div>
               </div>
 
               {/* Kommende Tools */}
