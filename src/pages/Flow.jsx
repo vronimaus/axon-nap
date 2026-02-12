@@ -7,6 +7,96 @@ import { Card } from '@/components/ui/card';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Play, Pause, SkipForward, Check, Timer, Activity } from 'lucide-react';
 import { createPageUrl } from '@/utils';
+import GlossaryTooltip from '../components/glossary/GlossaryTooltip';
+
+// Helper: Replace glossary terms in text with tooltips
+function InstructionWithGlossary({ instruction }) {
+  const glossaryMap = {
+    'Flossing': 'flossing',
+    'Voodoo Floss': 'flossing',
+    'Dorsiflexion': 'dorsiflexion',
+    'Torque': 'torque',
+    'Bracing': 'bracing',
+    'Smash': 'smash',
+    'Couch Stretch': 'couch_stretch'
+  };
+
+  const parts = [];
+  let currentText = instruction;
+
+  // Sort terms by length (longest first) to avoid partial matches
+  const terms = Object.keys(glossaryMap).sort((a, b) => b.length - a.length);
+
+  // Split text by terms and create glossary tooltips
+  const lines = currentText.split('\n');
+  
+  return (
+    <div className="text-slate-200 text-base leading-relaxed mb-6 space-y-2">
+      {lines.map((line, lineIdx) => {
+        const segments = [];
+        let remaining = line;
+        let lastIndex = 0;
+
+        terms.forEach(term => {
+          const regex = new RegExp(`\\b${term}\\b`, 'gi');
+          let match;
+          const tempRemaining = remaining;
+          
+          while ((match = regex.exec(tempRemaining)) !== null) {
+            const matchIndex = match.index;
+            
+            // Add text before match
+            if (matchIndex > lastIndex) {
+              segments.push({
+                type: 'text',
+                content: tempRemaining.slice(lastIndex, matchIndex),
+                key: `text-${lineIdx}-${lastIndex}`
+              });
+            }
+            
+            // Add glossary term
+            segments.push({
+              type: 'glossary',
+              term: glossaryMap[term],
+              content: match[0],
+              key: `glossary-${lineIdx}-${matchIndex}`
+            });
+            
+            lastIndex = matchIndex + match[0].length;
+          }
+        });
+
+        // Add remaining text
+        if (lastIndex < remaining.length) {
+          segments.push({
+            type: 'text',
+            content: remaining.slice(lastIndex),
+            key: `text-${lineIdx}-${lastIndex}`
+          });
+        }
+
+        // If no segments found, return the whole line as text
+        if (segments.length === 0) {
+          return <p key={lineIdx}>{line}</p>;
+        }
+
+        return (
+          <p key={lineIdx}>
+            {segments.map((segment) => 
+              segment.type === 'glossary' ? (
+                <GlossaryTooltip key={segment.key} term={segment.term}>
+                  {segment.content}
+                </GlossaryTooltip>
+              ) : (
+                <span key={segment.key}>{segment.content}</span>
+              )
+            )}
+          </p>
+        );
+      })}
+    </div>
+  );
+}
 
 export default function Flow() {
   const [searchParams] = useSearchParams();
@@ -290,9 +380,7 @@ export default function Flow() {
               <h2 className="text-xl font-bold text-cyan-300 mb-4">
                 {detailedContent.title}
               </h2>
-              <p className="text-slate-200 text-base leading-relaxed mb-6">
-                {detailedContent.instruction}
-              </p>
+              <InstructionWithGlossary instruction={detailedContent.instruction} />
 
               {/* Expert Tip or Neuro Input */}
               {(detailedContent.expertTip || detailedContent.neuroInput) && (

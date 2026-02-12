@@ -49,6 +49,7 @@
  */
 import AdminDiagnostics from './pages/AdminDiagnostics';
 import AdminHub from './pages/AdminHub';
+import AxonBotTest from './pages/AxonBotTest';
 import Dashboard from './pages/Dashboard';
 import DebugComplaintHistory from './pages/DebugComplaintHistory';
 import DevNotes from './pages/DevNotes';
@@ -61,6 +62,7 @@ import FlowRoutines from './pages/FlowRoutines';
 import FlowSelection from './pages/FlowSelection';
 import Glossary from './pages/Glossary';
 import Imprint from './pages/Imprint';
+import KnowledgeUpload from './pages/KnowledgeUpload';
 import Landing from './pages/Landing';
 import MFRIntegration from './pages/MFRIntegration';
 import Performance from './pages/Performance';
@@ -76,14 +78,13 @@ import Success from './pages/Success';
 import Terms from './pages/Terms';
 import TrainingPlan from './pages/TrainingPlan';
 import TrialInfo from './pages/TrialInfo';
-import KnowledgeUpload from './pages/KnowledgeUpload';
-import AxonBotTest from './pages/AxonBotTest';
 import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
     "AdminDiagnostics": AdminDiagnostics,
     "AdminHub": AdminHub,
+    "AxonBotTest": AxonBotTest,
     "Dashboard": Dashboard,
     "DebugComplaintHistory": DebugComplaintHistory,
     "DevNotes": DevNotes,
@@ -96,6 +97,7 @@ export const PAGES = {
     "FlowSelection": FlowSelection,
     "Glossary": Glossary,
     "Imprint": Imprint,
+    "KnowledgeUpload": KnowledgeUpload,
     "Landing": Landing,
     "MFRIntegration": MFRIntegration,
     "Performance": Performance,
@@ -111,8 +113,6 @@ export const PAGES = {
     "Terms": Terms,
     "TrainingPlan": TrainingPlan,
     "TrialInfo": TrialInfo,
-    "KnowledgeUpload": KnowledgeUpload,
-    "AxonBotTest": AxonBotTest,
 }
 
 export const pagesConfig = {
