@@ -77,6 +77,7 @@ import Terms from './pages/Terms';
 import TrainingPlan from './pages/TrainingPlan';
 import TrialInfo from './pages/TrialInfo';
 import KnowledgeUpload from './pages/KnowledgeUpload';
+import AxonBotTest from './pages/AxonBotTest';
 import __Layout from './Layout.jsx';
 
 
@@ -111,6 +112,7 @@ export const PAGES = {
     "TrainingPlan": TrainingPlan,
     "TrialInfo": TrialInfo,
     "KnowledgeUpload": KnowledgeUpload,
+    "AxonBotTest": AxonBotTest,
 }
 
 export const pagesConfig = {
