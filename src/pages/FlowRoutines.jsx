@@ -47,6 +47,11 @@ export default function FlowRoutines() {
     enabled: !!user?.email
   });
 
+  // Reset to page 1 when category changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [selectedCategory]);
+
   if (isLoading || !user) {
     return <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950" />;
   }
@@ -93,11 +98,6 @@ export default function FlowRoutines() {
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
   const paginatedRoutines = categoryRoutines.slice(startIndex, endIndex);
-
-  // Reset to page 1 when category changes
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [selectedCategory]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 pb-20 md:pb-6">
