@@ -15,39 +15,10 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Text or file_url required' }, { status: 400 });
     }
 
-    // Wenn ein Paper-PDF hochgeladen wurde, extrahiere zuerst den Text
-    let paperContent = text;
-    if (file_url) {
-      try {
-        const extractResult = await base44.integrations.Core.ExtractDataFromUploadedFile({
-          file_url: file_url,
-          json_schema: {
-            type: "object",
-            properties: {
-              full_text: { type: "string" }
-            }
-          }
-        });
-        
-        if (extractResult.status === 'success' && extractResult.output?.full_text) {
-          paperContent = extractResult.output.full_text;
-        }
-      } catch (e) {
-        console.error('Failed to extract PDF text:', e);
-        // Fahre mit dem ursprünglichen Text fort, falls vorhanden
-      }
-    }
-
-    if (!paperContent) {
-      return Response.json({ error: 'Could not extract paper content' }, { status: 400 });
-    }
-
-    // Analysiere das Paper mit LLM
-    const analysis = await base44.integrations.Core.InvokeLLM({
+    // Analysiere das Paper mit LLM (direkt mit file_url oder text)
+    const llmParams = {
       prompt: `Du bist ein Wissenschaftsexperte für Trainingswissenschaft, Physiotherapie und Neuro-Athletik. Analysiere das folgende wissenschaftliche Paper und extrahiere die wichtigsten Informationen für AXON (eine Neuro-Athletic Training App).
-
-Paper-Inhalt:
-${paperContent}
+${text ? `\nPaper-Inhalt:\n${text}` : ''}
 
 Extrahiere folgende Informationen:
 1. Titel der Studie
@@ -62,6 +33,7 @@ Extrahiere folgende Informationen:
 10. 3-5 relevante Tags
 
 Gib die Informationen strukturiert zurück.`,
+      file_urls: file_url ? [file_url] : undefined,
       response_json_schema: {
         type: "object",
         properties: {
@@ -84,7 +56,9 @@ Gib die Informationen strukturiert zurück.`,
           }
         }
       }
-    });
+    };
+
+    const analysis = await base44.integrations.Core.InvokeLLM(llmParams);
 
     return Response.json({
       success: true,
