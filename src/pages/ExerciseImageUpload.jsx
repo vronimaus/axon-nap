@@ -327,6 +327,7 @@ export default function ExerciseImageUpload() {
                     <img
                       src={exercise.image_url}
                       alt={exercise.name}
+                      loading="lazy"
                       className="w-full h-full object-cover"
                     />
                   ) : (
