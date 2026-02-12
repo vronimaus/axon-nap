@@ -27,7 +27,7 @@ Deno.serve(async (req) => {
       cancel_url: `${baseUrl}/Landing`,
       metadata: {
         base44_app_id: Deno.env.get('BASE44_APP_ID'),
-        checkout_mode: mode,
+        trial_mode: mode === 'trial' ? 'true' : 'false',
         customer_email: email || 'unknown'
       }
     });
