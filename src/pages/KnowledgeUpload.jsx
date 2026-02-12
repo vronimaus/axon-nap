@@ -95,8 +95,20 @@ export default function KnowledgeUpload() {
       });
 
       if (data.success) {
+        // Convert arrays to strings if needed
+        const analysis = { ...data.analysis };
+        if (Array.isArray(analysis.key_findings)) {
+          analysis.key_findings = analysis.key_findings.join('\n');
+        }
+        if (Array.isArray(analysis.target_audience)) {
+          // target_audience should stay as array
+        }
+        if (Array.isArray(analysis.tags)) {
+          // tags should stay as array
+        }
+        
         setAnalysisResult({
-          ...data.analysis,
+          ...analysis,
           file_url: data.original_file_url
         });
         toast.success('Analyse abgeschlossen!');
