@@ -252,19 +252,19 @@ export default function Layout({ children, currentPageName }) {
       {/* Mobile Bottom Navigation - nur für eingeloggte User UND auf relevanten Pages */}
           {!isChecking && user && showNav && (
             <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-slate-900/95 backdrop-blur border-t border-cyan-500/20 safe-area-pb">
-              <div className="grid grid-cols-4 gap-1 px-2 py-2">
+              <div className="flex justify-center items-center gap-2 px-4 py-2">
                 {navItems.map((item) => (
                   <Link
                     key={item.page}
                     to={createPageUrl(item.page)}
-                    className={`flex flex-col items-center justify-center py-2 px-1 rounded-xl transition-all touch-target ${
+                    className={`flex flex-col items-center justify-center py-2 px-3 rounded-xl transition-all touch-target ${
                       currentPageName === item.page
                         ? 'bg-cyan-500/20 text-cyan-400'
                         : 'text-slate-400 active:bg-slate-800/50'
                     }`}
                   >
                     <item.icon className="w-5 h-5 mb-1" />
-                    <span className="text-xs font-medium truncate w-full text-center">{item.name}</span>
+                    <span className="text-xs font-medium whitespace-nowrap">{item.name}</span>
                   </Link>
                 ))}
               </div>

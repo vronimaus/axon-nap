@@ -429,29 +429,27 @@ export default function Flow() {
         </AnimatePresence>
 
         {/* Controls */}
-        <div className="flex gap-4 justify-center">
+        <div className="flex gap-2 sm:gap-4 justify-center">
           <Button
             onClick={handlePrevStep}
             disabled={currentStep === 0}
             variant="outline"
-            size="lg"
-            className="border-slate-600 text-slate-400"
+            className="border-slate-600 text-slate-400 text-xs sm:text-sm px-3 sm:px-4 h-10 sm:h-11"
           >
             ← Zurück
           </Button>
           <Button
             onClick={() => setIsPlaying(!isPlaying)}
-            size="lg"
-            className="bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-600 hover:to-purple-700 px-12"
+            className="bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-600 hover:to-purple-700 px-6 sm:px-12 text-xs sm:text-sm h-10 sm:h-11"
           >
             {isPlaying ? (
               <>
-                <Pause className="w-5 h-5 mr-2" />
+                <Pause className="w-4 h-4 sm:w-5 sm:h-5 mr-1 sm:mr-2" />
                 Pause
               </>
             ) : (
               <>
-                <Play className="w-5 h-5 mr-2" />
+                <Play className="w-4 h-4 sm:w-5 sm:h-5 mr-1 sm:mr-2" />
                 Start
               </>
             )}
@@ -467,12 +465,11 @@ export default function Flow() {
               }
             }}
             variant="outline"
-            size="lg"
-            className="border-slate-600 text-slate-400"
+            className="border-slate-600 text-slate-400 text-xs sm:text-sm px-3 sm:px-4 h-10 sm:h-11"
           >
             {currentStep === routine.sequence.length - 1 ? (
               <>
-                <Check className="w-5 h-5 mr-2" />
+                <Check className="w-4 h-4 sm:w-5 sm:h-5 mr-1 sm:mr-2" />
                 Beenden
               </>
             ) : (
