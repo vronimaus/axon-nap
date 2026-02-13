@@ -145,7 +145,7 @@ export default function Layout({ children, currentPageName }) {
           // Silent fail on polling - don't redirect on error
           console.warn('User status poll failed:', e.message);
         }
-      }, 60000);
+      }, 120000);
 
       return () => clearInterval(interval);
     }

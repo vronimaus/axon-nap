@@ -6,8 +6,8 @@ import { createPageUrl } from '@/utils';
 import { ChevronDown, Check, AlertCircle, ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
-import ExerciseCoachingPanel from '../components/rehab/ExerciseCoachingPanel';
-import WeaknessGenerator from '../components/rehab/WeaknessGenerator';
+const ExerciseCoachingPanel = React.lazy(() => import('../components/rehab/ExerciseCoachingPanel'));
+const WeaknessGenerator = React.lazy(() => import('../components/rehab/WeaknessGenerator'));
 
 export default function RehabPlan() {
   const [user, setUser] = useState(null);
@@ -284,7 +284,8 @@ export default function RehabPlan() {
         </motion.div>
 
         {/* AI-Powered Weakness Generator */}
-        <WeaknessGenerator
+        <React.Suspense fallback={<div className="glass rounded-xl p-6 border border-slate-700 text-center text-slate-400">Lädt...</div>}>
+          <WeaknessGenerator
           rehabPlan={rehabPlan}
           currentExercises={currentPhase.exercises}
           onExerciseGenerated={async (newExercise) => {
@@ -297,8 +298,9 @@ export default function RehabPlan() {
               phases: updatedPhases
             });
             queryClient.invalidateQueries({ queryKey: ['rehabPlan'] });
-          }}
-        />
+            }}
+            />
+            </React.Suspense>
 
         {/* Exercises */}
         <div className="space-y-4">
@@ -377,13 +379,15 @@ export default function RehabPlan() {
                     </div>
 
                     {/* AI Coaching Panel */}
-                    <ExerciseCoachingPanel
+                    <React.Suspense fallback={<div className="text-slate-400 text-sm">Lädt Coaching-Panel...</div>}>
+                      <ExerciseCoachingPanel
                       exercise={exercise}
                       rehabPlan={rehabPlan}
                       feedbackHistory={(rehabPlan.feedback_history || []).filter(
                         f => f.exercise_id === exercise.exercise_id
-                      )}
-                    />
+                        )}
+                        />
+                        </React.Suspense>
 
                     {/* Feedback Form */}
                     <ExerciseFeedbackForm
