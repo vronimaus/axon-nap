@@ -54,21 +54,8 @@ export default function PainIntensitySlider({ onSubmit, loading, initialValue = 
         disabled={loading}
         className="w-full h-14 bg-gradient-to-r from-red-500 to-pink-600 hover:from-red-600 hover:to-pink-700 text-white font-bold text-lg"
       >
-        {loading ? (
-          <>
-            <motion.div
-              animate={{ rotate: 360 }}
-              transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-              className="w-5 h-5 border-2 border-white border-t-transparent rounded-full"
-            />
-            <span className="ml-2">Analysiere...</span>
-          </>
-        ) : (
-          <>
-            Weiter
-            <ArrowRight className="w-5 h-5 ml-2" />
-          </>
-        )}
+        Weiter
+        <ArrowRight className="w-5 h-5 ml-2" />
       </Button>
     </div>
   );
