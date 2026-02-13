@@ -3,9 +3,10 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { createPageUrl } from '@/utils';
-import { ChevronDown, Check, AlertCircle, ArrowLeft } from 'lucide-react';
+import { ChevronDown, Check, AlertCircle, ArrowLeft, AlertTriangle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
+import DailyReadinessCheck from '../components/dashboard/DailyReadinessCheck';
 const ExerciseCoachingPanel = React.lazy(() => import('../components/rehab/ExerciseCoachingPanel'));
 const WeaknessGenerator = React.lazy(() => import('../components/rehab/WeaknessGenerator'));
 
@@ -13,6 +14,8 @@ export default function RehabPlan() {
   const [user, setUser] = useState(null);
   const [expandedExercise, setExpandedExercise] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [showReadinessCheck, setShowReadinessCheck] = useState(false);
+  const [readinessStatus, setReadinessStatus] = useState(null);
   const queryClient = useQueryClient();
 
   useEffect(() => {
@@ -24,6 +27,16 @@ export default function RehabPlan() {
           return;
         }
         setUser(currentUser);
+        
+        // Check if readiness check needed for today
+        const today = new Date().toISOString().split('T')[0];
+        const lastCheck = currentUser.last_readiness_check;
+        
+        if (lastCheck !== today) {
+          setShowReadinessCheck(true);
+        } else {
+          setReadinessStatus(currentUser.daily_readiness_status);
+        }
       } catch (e) {
         window.location.href = createPageUrl('Landing');
       } finally {
@@ -142,6 +155,17 @@ export default function RehabPlan() {
     return Math.floor((now - start) / (1000 * 60 * 60 * 24));
   };
 
+  const handleReadinessCheckClose = async () => {
+    setShowReadinessCheck(false);
+    // Refresh user data to get updated readiness status
+    try {
+      const updatedUser = await base44.auth.me();
+      setReadinessStatus(updatedUser.daily_readiness_status);
+    } catch (e) {
+      console.error('Error refreshing user:', e);
+    }
+  };
+
   if (isLoading) {
     return <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950" />;
   }
@@ -229,6 +253,32 @@ export default function RehabPlan() {
 
       {/* Main Content */}
       <div className="max-w-4xl mx-auto px-4 py-6">
+        {/* Readiness Recommendation */}
+        {readinessStatus && readinessStatus === 'green' && (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mb-6 glass rounded-xl p-6 border border-green-500/30 bg-gradient-to-r from-green-500/10 to-transparent"
+          >
+            <div className="flex items-start gap-3">
+              <Check className="w-6 h-6 flex-shrink-0 text-green-400" />
+              <div>
+                <h3 className="font-bold text-green-400 mb-2">Top-Form erkannt! 💪</h3>
+                <p className="text-slate-300 text-sm leading-relaxed mb-3">
+                  Dein System ist heute bereit für Performance-Training. Falls du heute statt Reha lieber an deinen sportlichen Zielen arbeiten möchtest, schau dir unsere Performance-Pläne an.
+                </p>
+                <Button
+                  onClick={() => window.location.href = createPageUrl('Dashboard')}
+                  size="sm"
+                  className="bg-green-500/20 text-green-400 hover:bg-green-500/30 border border-green-500/50"
+                >
+                  Zu Performance Goals
+                </Button>
+              </div>
+            </div>
+          </motion.div>
+        )}
+
         {/* Completion Banner */}
         {showCompletionBanner && (
           <motion.div
