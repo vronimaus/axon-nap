@@ -334,7 +334,8 @@ export default function DiagnosisChat() {
       properties: { pain_intensity: intensity }
     });
 
-    // Stay in workflow - wait for agent to trigger next step
+    // Immediately switch to analysis_card with loading state
+    setWorkflowStep('analysis_card');
     setLoading(true);
     
     try {
@@ -342,7 +343,7 @@ export default function DiagnosisChat() {
         role: 'user',
         content: `Schmerzintensität: ${intensity}/10. Bitte analysiere jetzt mein Problem und gib mir ein konkretes Protokoll.`
       });
-      // Agent will trigger [SHOW_DIAGNOSIS_CARD] which moves to 'analysis_card'
+      // Agent will trigger [SHOW_DIAGNOSIS_CARD] which updates diagnosisCardData
     } catch (error) {
       console.error('Fehler beim Senden:', error);
       setLoading(false);
