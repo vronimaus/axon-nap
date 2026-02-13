@@ -173,6 +173,8 @@ export default function DiagnosisChat() {
            setWorkflowStep('intensity');
          } else if (content.includes('[TRIGGER_RETEST]')) {
            setWorkflowStep('retest');
+         } else if (content.includes('[TRIGGER_CHAIN_SCAN]')) {
+           setWorkflowStep('chain_scan');
          } else if (content.includes('[SHOW_DIAGNOSIS_CARD]')) {
            // Extract full diagnosis text (everything before the trigger)
            const diagnosisText = content.split('[SHOW_DIAGNOSIS_CARD]')[0].trim();
