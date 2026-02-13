@@ -442,7 +442,7 @@ export default function DiagnosisChat() {
             onActionClick={async () => {
               // Sofort zum Retest wechseln, um Flackern zu vermeiden
               setWorkflowStep('retest');
-              setLoading(true);
+              setLoading(false);
               try {
                 await base44.agents.addMessage(conversation, {
                   role: 'user',
@@ -451,7 +451,6 @@ export default function DiagnosisChat() {
                 // Agent will trigger [TRIGGER_RETEST] which keeps us in 'retest'
               } catch (error) {
                 console.error('Fehler:', error);
-                setLoading(false);
               }
             }}
           />
