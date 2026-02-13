@@ -466,14 +466,10 @@ export default function DiagnosisChat() {
         instruction="Wie fühlt sich die Bewegung jetzt an?"
         showBackButton={false}
       >
-        {loading ? (
-          <DiagnosisLoadingAnimation message="Bereite Erfolgs-Check vor..." />
-        ) : (
-          <BinaryChoiceButtons
-            onPositive={handleRetestPositive}
-            onNegative={handleRetestNegative}
-          />
-        )}
+        <BinaryChoiceButtons
+          onPositive={handleRetestPositive}
+          onNegative={handleRetestNegative}
+        />
       </FocusScreenContainer>
     );
   }
