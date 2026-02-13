@@ -91,6 +91,13 @@ export default function DiagnosisChat() {
           }
         }
 
+        // Clear all cached workflow state for fresh start
+        sessionStorage.removeItem('diagnosis_workflow_step');
+        sessionStorage.removeItem('diagnosis_card_data');
+        sessionStorage.removeItem('current_pain_map');
+        setWorkflowStep(mapDataParam && regionParam ? 'intensity' : 'body_map');
+        setDiagnosisCardData(null);
+
         const isContinuation = sessionId && searchParams.get('continue') === 'true';
 
         const metadata = {
