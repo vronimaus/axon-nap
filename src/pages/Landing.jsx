@@ -193,7 +193,7 @@ export default function Landing() {
               onClick={() => handleSelectOption('direct')}
               size="lg"
               variant="outline"
-              className="text-lg px-8 py-6 border-amber-500/50 text-amber-400 hover:bg-amber-500/10"
+              className="text-lg px-8 py-6 border-amber-500/50 text-amber-400 hover:bg-amber-500/20 hover:text-amber-300"
             >
               Sofort kaufen – 59€
             </Button>
