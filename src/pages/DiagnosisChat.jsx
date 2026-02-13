@@ -31,9 +31,36 @@ export default function DiagnosisChat() {
   const [loading, setLoading] = useState(false);
   const [showBodyMap, setShowBodyMap] = useState(false);
   // Workflow: body_map -> intensity -> analysis_card -> retest -> chain_scan -> follow_up
-  const [workflowStep, setWorkflowStep] = useState(mapDataParam && regionParam ? 'intensity' : 'body_map');
-  const [diagnosisCardData, setDiagnosisCardData] = useState(null);
+  const [workflowStep, setWorkflowStep] = useState(() => {
+    // Restore from cache if available
+    const cached = sessionStorage.getItem('diagnosis_workflow_step');
+    return cached || (mapDataParam && regionParam ? 'intensity' : 'body_map');
+  });
+  const [diagnosisCardData, setDiagnosisCardData] = useState(() => {
+    const cached = sessionStorage.getItem('diagnosis_card_data');
+    return cached ? JSON.parse(cached) : null;
+  });
   const messagesEndRef = useRef(null);
+
+  // Persist workflow state to cache
+  useEffect(() => {
+    if (workflowStep) {
+      sessionStorage.setItem('diagnosis_workflow_step', workflowStep);
+    }
+  }, [workflowStep]);
+
+  useEffect(() => {
+    if (diagnosisCardData) {
+      sessionStorage.setItem('diagnosis_card_data', JSON.stringify(diagnosisCardData));
+    }
+  }, [diagnosisCardData]);
+
+  // Persist conversation ID
+  useEffect(() => {
+    if (conversation?.id) {
+      sessionStorage.setItem('diagnosis_conversation_id', conversation.id);
+    }
+  }, [conversation?.id]);
 
   // Fetch wizard results if session_id provided
   const { data: wizardSession } = useQuery({
