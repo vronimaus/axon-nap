@@ -194,6 +194,13 @@ export default function RehabPlan() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 pb-20 md:pb-6">
+      {/* Readiness Check Modal */}
+      <AnimatePresence>
+        {showReadinessCheck && (
+          <DailyReadinessCheck user={user} onClose={handleReadinessCheckClose} />
+        )}
+      </AnimatePresence>
+
       {/* Header */}
       <div className="sticky top-0 z-40 bg-slate-900 border-b border-cyan-500/20">
         <div className="max-w-4xl mx-auto px-4 py-4">

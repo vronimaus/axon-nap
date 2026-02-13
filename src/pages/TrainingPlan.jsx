@@ -5,12 +5,13 @@ import { createPageUrl } from '@/utils';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 
-import { ArrowLeft, Zap, Target, CheckCircle2, Clock, Info, TrendingUp, Sparkles, Loader2, MessageSquareText } from 'lucide-react';
+import { ArrowLeft, Zap, Target, CheckCircle2, Clock, Info, TrendingUp, Sparkles, Loader2, MessageSquareText, AlertTriangle } from 'lucide-react';
 import { toast } from 'sonner';
 import { useQueryClient } from '@tanstack/react-query';
 import GoalCard from '../components/performance/GoalCard';
 import ExerciseDetailModal from '../components/performance/ExerciseDetailModal';
 import TrainingPlanChat from '../components/performance/TrainingPlanChat';
+import DailyReadinessCheck from '../components/dashboard/DailyReadinessCheck';
 
 export default function TrainingPlan() {
   const [user, setUser] = useState(null);
@@ -21,6 +22,8 @@ export default function TrainingPlan() {
   const [showComplementaryDrills, setShowComplementaryDrills] = useState(true);
   const [isAcceptingDrills, setIsAcceptingDrills] = useState(false);
   const [showChat, setShowChat] = useState(false);
+  const [showReadinessCheck, setShowReadinessCheck] = useState(false);
+  const [readinessStatus, setReadinessStatus] = useState(null);
   
   const queryClient = useQueryClient();
   
@@ -35,6 +38,16 @@ export default function TrainingPlan() {
           return;
         }
         setUser(currentUser);
+        
+        // Check if readiness check needed for today
+        const today = new Date().toISOString().split('T')[0];
+        const lastCheck = currentUser.last_readiness_check;
+        
+        if (lastCheck !== today) {
+          setShowReadinessCheck(true);
+        } else {
+          setReadinessStatus(currentUser.daily_readiness_status);
+        }
       } catch (e) {
         window.location.href = createPageUrl('Landing');
       } finally {
@@ -117,6 +130,17 @@ export default function TrainingPlan() {
     return <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950" />;
   }
 
+  const handleReadinessCheckClose = async () => {
+    setShowReadinessCheck(false);
+    // Refresh user data to get updated readiness status
+    try {
+      const updatedUser = await base44.auth.me();
+      setReadinessStatus(updatedUser.daily_readiness_status);
+    } catch (e) {
+      console.error('Error refreshing user:', e);
+    }
+  };
+
   const categoryLabels = {
     'mobility': 'Mobilität',
     'neuro_drill': 'Neuro-Drill',
@@ -146,8 +170,57 @@ export default function TrainingPlan() {
         </div>
       </div>
 
+      {/* Readiness Check Modal */}
+      <AnimatePresence>
+        {showReadinessCheck && (
+          <DailyReadinessCheck user={user} onClose={handleReadinessCheckClose} />
+        )}
+      </AnimatePresence>
+
       {/* Main Content */}
       <div className="max-w-6xl mx-auto px-4 py-6 space-y-6">
+            {/* Readiness Recommendation */}
+            {readinessStatus && readinessStatus !== 'green' && (
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className={`glass rounded-xl p-6 border ${
+                  readinessStatus === 'yellow' 
+                    ? 'border-amber-500/30 bg-gradient-to-r from-amber-500/10 to-transparent'
+                    : 'border-red-500/30 bg-gradient-to-r from-red-500/10 to-transparent'
+                }`}
+              >
+                <div className="flex items-start gap-3">
+                  <AlertTriangle className={`w-6 h-6 flex-shrink-0 ${
+                    readinessStatus === 'yellow' ? 'text-amber-400' : 'text-red-400'
+                  }`} />
+                  <div>
+                    <h3 className={`font-bold mb-2 ${
+                      readinessStatus === 'yellow' ? 'text-amber-400' : 'text-red-400'
+                    }`}>
+                      {readinessStatus === 'yellow' 
+                        ? 'Dein System ist heute im Pflegemodus' 
+                        : 'Heute: Recovery First'}
+                    </h3>
+                    <p className="text-slate-300 text-sm leading-relaxed mb-3">
+                      {readinessStatus === 'yellow'
+                        ? 'Basierend auf deinem Daily Check empfehlen wir dir heute eine sanfte Mobilitäts-Routine statt intensivem Training. Dein Körper braucht Pflege, keine Belastung.'
+                        : 'Dein System ist heute im roten Bereich. Wir empfehlen dir dringend, heute auf intensives Training zu verzichten und dich auf Entspannung und Schmerz-Release zu konzentrieren.'}
+                    </p>
+                    <Button
+                      onClick={() => window.location.href = createPageUrl('FlowRoutines')}
+                      size="sm"
+                      className={readinessStatus === 'yellow'
+                        ? 'bg-amber-500/20 text-amber-400 hover:bg-amber-500/30 border border-amber-500/50'
+                        : 'bg-red-500/20 text-red-400 hover:bg-red-500/30 border border-red-500/50'}
+                    >
+                      Zu den Mobility Flows
+                    </Button>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+
             {activePlan ? (
               <motion.div
                 initial={{ opacity: 0, y: 20 }}

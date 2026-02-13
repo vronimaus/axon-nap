@@ -5,9 +5,10 @@ import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Play, Pause, SkipForward, Check, Timer, Activity } from 'lucide-react';
+import { Play, Pause, SkipForward, Check, Timer, Activity, AlertTriangle } from 'lucide-react';
 import { createPageUrl } from '@/utils';
 import GlossaryTooltip from '../components/glossary/GlossaryTooltip';
+import DailyReadinessCheck from '../components/dashboard/DailyReadinessCheck';
 
 // Helper: Replace glossary terms in text with tooltips
 function InstructionWithGlossary({ instruction }) {
@@ -109,6 +110,33 @@ export default function Flow() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [timeRemaining, setTimeRemaining] = useState(0);
   const [completed, setCompleted] = useState(false);
+  const [showReadinessCheck, setShowReadinessCheck] = useState(false);
+  const [readinessStatus, setReadinessStatus] = useState(null);
+  const [user, setUser] = useState(null);
+
+  // Check auth and readiness
+  useEffect(() => {
+    const checkAuthAndReadiness = async () => {
+      try {
+        const currentUser = await base44.auth.me();
+        setUser(currentUser);
+        
+        // Check if readiness check needed for today
+        const today = new Date().toISOString().split('T')[0];
+        const lastCheck = currentUser?.last_readiness_check;
+        
+        if (lastCheck !== today) {
+          setShowReadinessCheck(true);
+        } else {
+          setReadinessStatus(currentUser?.daily_readiness_status);
+        }
+      } catch (e) {
+        // User not logged in - that's ok for demo flows
+        setUser(null);
+      }
+    };
+    checkAuthAndReadiness();
+  }, []);
 
   const { data: routine, isLoading } = useQuery({
     queryKey: ['routine', routineId],
@@ -255,6 +283,17 @@ export default function Flow() {
 
   const detailedContent = getDetailedInstruction();
 
+  const handleReadinessCheckClose = async () => {
+    setShowReadinessCheck(false);
+    // Refresh user data to get updated readiness status
+    try {
+      const updatedUser = await base44.auth.me();
+      setReadinessStatus(updatedUser?.daily_readiness_status);
+    } catch (e) {
+      console.error('Error refreshing user:', e);
+    }
+  };
+
   // Generate completion message based on routine category
   const getCompletionMessage = () => {
     if (routine.category === 'mobility-training') {
@@ -332,7 +371,33 @@ export default function Flow() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 p-4 pb-20 md:pb-4">
+      {/* Readiness Check Modal */}
+      <AnimatePresence>
+        {showReadinessCheck && user && (
+          <DailyReadinessCheck user={user} onClose={handleReadinessCheckClose} />
+        )}
+      </AnimatePresence>
+
       <div className="max-w-4xl mx-auto">
+        {/* Readiness Recommendation */}
+        {readinessStatus && readinessStatus === 'red' && (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="glass rounded-xl p-4 mb-6 border border-red-500/30 bg-gradient-to-r from-red-500/10 to-transparent"
+          >
+            <div className="flex items-start gap-3">
+              <AlertTriangle className="w-6 h-6 flex-shrink-0 text-red-400" />
+              <div>
+                <h3 className="font-bold text-red-400 mb-1 text-sm">Dein System braucht heute Ruhe</h3>
+                <p className="text-slate-300 text-xs leading-relaxed">
+                  Basierend auf deinem Daily Check empfehlen wir dir heute nur sanfte Atemübungen oder MFR-Release. Keine aktiven Flows.
+                </p>
+              </div>
+            </div>
+          </motion.div>
+        )}
+
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
