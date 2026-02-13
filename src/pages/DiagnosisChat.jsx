@@ -575,9 +575,17 @@ export default function DiagnosisChat() {
   }
 
   if (workflowStep === 'rehab_plan_created') {
-    // Check if plan is still being created (has tool_calls)
+    // Clear cache when rehab plan is fully created
     const lastAssistantMsg = [...messages].reverse().find(m => m.role === 'assistant');
     const isCreating = lastAssistantMsg?.tool_calls?.some(tc => tc.status === 'running' || tc.status === 'pending');
+
+    if (!isCreating) {
+      // Plan complete - clear cache so user starts fresh next time
+      sessionStorage.removeItem('diagnosis_workflow_step');
+      sessionStorage.removeItem('diagnosis_card_data');
+      sessionStorage.removeItem('diagnosis_conversation_id');
+      sessionStorage.removeItem('current_pain_map');
+    }
 
     if (isCreating) {
       return (
