@@ -440,13 +440,15 @@ export default function DiagnosisChat() {
             analysis={diagnosisCardData?.analysis || ''}
             callToAction="Fertig – Übungen gemacht"
             onActionClick={async () => {
+              // Sofort zum Retest wechseln, um Flackern zu vermeiden
+              setWorkflowStep('retest');
               setLoading(true);
               try {
                 await base44.agents.addMessage(conversation, {
                   role: 'user',
                   content: 'Habe es gemacht'
                 });
-                // Agent will trigger [TRIGGER_RETEST] which moves to 'retest'
+                // Agent will trigger [TRIGGER_RETEST] which keeps us in 'retest'
               } catch (error) {
                 console.error('Fehler:', error);
                 setLoading(false);
