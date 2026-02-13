@@ -339,7 +339,7 @@ export default function DiagnosisChat() {
     try {
       await base44.agents.addMessage(conversation, {
         role: 'user',
-        content: `Schmerzintensität: ${intensity}/10`
+        content: `Schmerzintensität: ${intensity}/10. Bitte analysiere jetzt mein Problem und gib mir ein konkretes Protokoll.`
       });
       // Agent will trigger [SHOW_DIAGNOSIS_CARD] which moves to 'analysis_card'
     } catch (error) {
