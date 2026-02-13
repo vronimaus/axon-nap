@@ -316,9 +316,9 @@ export default function Landing() {
               <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center mb-6">
                 <Wrench className="w-6 h-6 text-white" />
               </div>
-              <h3 className="text-2xl font-bold text-orange-400 mb-3">1. Hardware-Check (MFR)</h3>
+              <h3 className="text-2xl font-bold text-orange-400 mb-3">1. Struktur (Faszien)</h3>
               <p className="text-slate-300 text-sm mb-2">
-                <strong>MFR = Myofasziale Release</strong> – gezielter Druck auf Faszienlinien
+                <strong>Löse Verspannungen im Bindegewebe</strong> – gezielter Druck an den richtigen Stellen
               </p>
               <p className="text-slate-300">
                 Wir lösen Spannungen in deinem Bindegewebe an 12 strategischen Punkten. Das verbessert die Qualität der Signale, die dein Gehirn empfängt, und gibt dir mehr Bewegungsfreiheit.
@@ -336,9 +336,9 @@ export default function Landing() {
               <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-cyan-500 to-cyan-600 flex items-center justify-center mb-6">
                 <Brain className="w-6 h-6 text-white" />
               </div>
-              <h3 className="text-2xl font-bold text-cyan-400 mb-3">2. Software-Update (Neuro)</h3>
+              <h3 className="text-2xl font-bold text-cyan-400 mb-3">2. Steuerung (Gehirn)</h3>
               <p className="text-slate-300 text-sm mb-2">
-                <strong>Neuro-Drills = neurologische Übungen</strong> für Augen, Balance und Propriozeption
+                <strong>Trainiere deine Körperwahrnehmung</strong> – für Augen, Balance und Koordination
               </p>
               <p className="text-slate-300">
                 Wir trainieren dein visuelles und vestibuläres System (Augen & Gleichgewicht). Wenn dein Gehirn diese Systeme als sicher einstuft, gibt es mehr Bewegungsfreiheit und Kraft frei.
