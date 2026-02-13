@@ -222,6 +222,33 @@ export default function RehabPlan() {
 
       {/* Main Content */}
       <div className="max-w-4xl mx-auto px-4 py-6">
+        {/* Completion Banner */}
+        {showCompletionBanner && (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mb-6 glass rounded-2xl border border-green-500/30 p-6 bg-gradient-to-br from-green-500/10 to-transparent"
+          >
+            <div className="flex items-center gap-4">
+              <div className="text-4xl">🎉</div>
+              <div className="flex-1">
+                <h3 className="text-xl font-bold text-green-400 mb-1">Plan erfolgreich abgeschlossen!</h3>
+                <p className="text-slate-300 text-sm">
+                  Du hast alle {rehabPlan.phases.length} Phasen durchlaufen. Du kannst den Plan weiterhin als Referenz nutzen.
+                </p>
+              </div>
+            </div>
+            <div className="mt-4 flex gap-3">
+              <Button
+                onClick={() => window.location.href = createPageUrl('DiagnosisChat')}
+                className="bg-green-500/20 text-green-400 hover:bg-green-500/30"
+              >
+                Neuen Plan erstellen
+              </Button>
+            </div>
+          </motion.div>
+        )}
+
         {/* Progress Indicator */}
         <div className="mb-8">
           <div className="flex justify-between items-center mb-3">
