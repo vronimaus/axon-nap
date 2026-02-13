@@ -6,6 +6,8 @@ import { createPageUrl } from '@/utils';
 import { ChevronDown, Check, AlertCircle, ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
+import ExerciseCoachingPanel from '../components/rehab/ExerciseCoachingPanel';
+import WeaknessGenerator from '../components/rehab/WeaknessGenerator';
 
 export default function RehabPlan() {
   const [user, setUser] = useState(null);
@@ -281,6 +283,23 @@ export default function RehabPlan() {
           </div>
         </motion.div>
 
+        {/* AI-Powered Weakness Generator */}
+        <WeaknessGenerator
+          rehabPlan={rehabPlan}
+          currentExercises={currentPhase.exercises}
+          onExerciseGenerated={async (newExercise) => {
+            const updatedPhases = [...rehabPlan.phases];
+            updatedPhases[currentPhaseIndex].exercises.push({
+              exercise_id: `custom_${Date.now()}`,
+              ...newExercise
+            });
+            await base44.entities.RehabPlan.update(rehabPlan.id, {
+              phases: updatedPhases
+            });
+            queryClient.invalidateQueries({ queryKey: ['rehabPlan'] });
+          }}
+        />
+
         {/* Exercises */}
         <div className="space-y-4">
           <h3 className="text-lg font-semibold text-white mb-4">Deine Übungen für diese Phase</h3>
@@ -356,6 +375,15 @@ export default function RehabPlan() {
                         {exercise.instruction}
                       </p>
                     </div>
+
+                    {/* AI Coaching Panel */}
+                    <ExerciseCoachingPanel
+                      exercise={exercise}
+                      rehabPlan={rehabPlan}
+                      feedbackHistory={(rehabPlan.feedback_history || []).filter(
+                        f => f.exercise_id === exercise.exercise_id
+                      )}
+                    />
 
                     {/* Feedback Form */}
                     <ExerciseFeedbackForm
