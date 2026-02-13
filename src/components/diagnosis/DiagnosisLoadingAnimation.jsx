@@ -1,8 +1,25 @@
-import React from 'react';
-import { motion } from 'framer-motion';
+import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Brain, Activity, Sparkles, Zap } from 'lucide-react';
 
+const facts = [
+  "Faszien speichern 10x mehr sensorische Informationen als Muskeln",
+  "Dein Nervensystem entscheidet, wie viel Bewegungsfreiheit es dir gibt",
+  "Schmerz entsteht im Gehirn, nicht im Gewebe",
+  "Myofasziale Ketten verbinden deinen ganzen Körper wie ein 3D-Netz",
+  "Neuro-Drills können Bewegungsfreiheit in Sekunden freischalten",
+  "80% aller Rückenschmerzen haben keine strukturelle Ursache"
+];
+
 export default function DiagnosisLoadingAnimation({ message = "Analysiere dein Problem..." }) {
+  const [currentFact, setCurrentFact] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentFact((prev) => (prev + 1) % facts.length);
+    }, 4000);
+    return () => clearInterval(interval);
+  }, []);
   return (
     <div className="flex flex-col items-center justify-center py-12 px-4">
       {/* Animated Icons */}
@@ -122,13 +139,22 @@ export default function DiagnosisLoadingAnimation({ message = "Analysiere dein P
           ))}
         </motion.div>
 
-        <motion.p
-          animate={{ opacity: [0.5, 1, 0.5] }}
-          transition={{ duration: 2, repeat: Infinity }}
-          className="text-xs text-slate-500 mt-6"
-        >
-          Dies kann einen Moment dauern...
-        </motion.p>
+        {/* Did You Know? Facts */}
+        <div className="mt-8 px-6 py-4 rounded-xl bg-slate-800/30 border border-cyan-500/20 max-w-md mx-auto">
+          <p className="text-xs font-semibold text-cyan-400 mb-2">💡 Wusstest du?</p>
+          <AnimatePresence mode="wait">
+            <motion.p
+              key={currentFact}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.5 }}
+              className="text-sm text-slate-300 leading-relaxed"
+            >
+              {facts[currentFact]}
+            </motion.p>
+          </AnimatePresence>
+        </div>
       </motion.div>
     </div>
   );
