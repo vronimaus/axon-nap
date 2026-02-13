@@ -158,13 +158,11 @@ export default function Landing() {
             className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight"
           >
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400">
-              Entfessle deine Bewegung.
+              Bewegung neu definiert.
             </span>
             <br />
-            <span className="text-white">Optimiere dein System.</span>
-            <br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-orange-400">
-              Meistere dein Potenzial.
+              Schmerz an der Wurzel lösen.
             </span>
           </motion.h1>
 
@@ -174,7 +172,7 @@ export default function Landing() {
             transition={{ delay: 0.2 }}
             className="text-lg md:text-xl text-slate-300 mb-10 max-w-3xl mx-auto leading-relaxed"
           >
-            AXON vereint <span className="text-cyan-400 font-semibold">Physiotherapie</span>, <span className="text-purple-400 font-semibold">Neuro-Athletik</span> und <span className="text-amber-400 font-semibold">Personal Training</span> in einer intelligenten App. Maßgeschneidert für dich, immer verfügbar, wissenschaftlich fundiert.
+            AXON vereint die Logik der Physiotherapie mit modernem Nervensystem-Training. Ein intelligenter Dialog für deinen Körper – jederzeit griffbereit.
           </motion.p>
 
           <motion.div
@@ -237,7 +235,7 @@ export default function Landing() {
               Was ist AXON?
             </h2>
             <p className="text-xl text-slate-300 leading-relaxed max-w-3xl mx-auto">
-              AXON ist dein <span className="text-cyan-400 font-semibold">persönlicher Coach</span>, der rund um die Uhr verfügbar ist. Die App nutzt modernste Erkenntnisse aus Bewegungswissenschaft und Faszienforschung, um dir ein völlig <span className="text-purple-400 font-semibold">individuelles Erlebnis</span> zu bieten.
+              AXON ist mehr als eine Trainings-App. Es ist dein <span className="text-cyan-400 font-semibold">persönlicher System-Spezialist</span>. Anstatt nur Symptome zu behandeln, führt dich AXON durch einen interaktiven Prozess, um Blockaden in deinen Kraftketten zu finden und gezielt zu lösen.
             </p>
           </motion.div>
 
@@ -251,9 +249,9 @@ export default function Landing() {
               <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-cyan-500 to-cyan-600 flex items-center justify-center mb-4 mx-auto">
                 <Brain className="w-8 h-8 text-white" />
               </div>
-              <h3 className="text-xl font-bold text-cyan-400 mb-3">Intelligente Personalisierung</h3>
+              <h3 className="text-xl font-bold text-cyan-400 mb-3">Intelligenter Diagnose-Chat</h3>
               <p className="text-slate-300 text-sm">
-                AXON lernt dich kennen und passt sich deinem Fortschritt und deiner Tagesform an – für optimale Ergebnisse.
+                Kein langes Suchen. Ein digitaler Assistent analysiert deine Bewegung und findet die Ursache für deine Beschwerden.
               </p>
             </motion.div>
 
@@ -267,9 +265,9 @@ export default function Landing() {
               <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center mb-4 mx-auto">
                 <Shield className="w-8 h-8 text-white" />
               </div>
-              <h3 className="text-xl font-bold text-purple-400 mb-3">Wissenschaftlich fundiert</h3>
+              <h3 className="text-xl font-bold text-purple-400 mb-3">Präzision ohne Ablenkung</h3>
               <p className="text-slate-300 text-sm">
-                Basierend auf modernster Faszienforschung, Bewegungswissenschaft und bewährten Trainingsprinzipien.
+                Wir verzichten auf schnelle Videos. Klare, hochwertige Illustrationen zeigen dir exakt, was zu tun ist – in deinem eigenen Tempo.
               </p>
             </motion.div>
 
@@ -283,9 +281,9 @@ export default function Landing() {
               <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-amber-500 to-amber-600 flex items-center justify-center mb-4 mx-auto">
                 <Zap className="w-8 h-8 text-white" />
               </div>
-              <h3 className="text-xl font-bold text-amber-400 mb-3">24/7 verfügbar</h3>
+              <h3 className="text-xl font-bold text-amber-400 mb-3">Unabhängigkeit</h3>
               <p className="text-slate-300 text-sm">
-                Keine Termine nötig. Trainiere wann und wo du willst – AXON ist immer für dich da.
+                Warte nicht auf Termine. Werde dein eigener Experte und hilf dir selbst, wann und wo du es brauchst.
               </p>
             </motion.div>
           </div>
@@ -297,11 +295,10 @@ export default function Landing() {
         <div className="max-w-5xl mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
-              Die AXON-Methode
+              Die AXON-Methode: Das 3-Stufen-Protokoll
             </h2>
-            <p className="text-xl text-slate-400">Hardware ➔ Software ➔ Integration</p>
             <p className="text-slate-400 mt-4 max-w-3xl mx-auto">
-              Dein Körper ist ein System. AXON optimiert jede Ebene: von der Struktur über die Steuerung bis zur Belastbarkeit.
+              Dein Körper funktioniert in Ketten. AXON optimiert jede Ebene für ein reibungsloses Zusammenspiel.
             </p>
           </div>
 
@@ -316,12 +313,9 @@ export default function Landing() {
               <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center mb-6">
                 <Wrench className="w-6 h-6 text-white" />
               </div>
-              <h3 className="text-2xl font-bold text-orange-400 mb-3">1. Struktur (Faszien)</h3>
-              <p className="text-slate-300 text-sm mb-2">
-                <strong>Löse Verspannungen im Bindegewebe</strong> – gezielter Druck an den richtigen Stellen
-              </p>
+              <h3 className="text-2xl font-bold text-orange-400 mb-3">Basis-Korrektur (Gewebe)</h3>
               <p className="text-slate-300">
-                Wir lösen Spannungen in deinem Bindegewebe an 12 strategischen Punkten. Das verbessert die Qualität der Signale, die dein Gehirn empfängt, und gibt dir mehr Bewegungsfreiheit.
+                Wir lösen mechanische Spannungen an 12 strategischen Punkten (AXON Nodes). Das befreit dein Bindegewebe und verbessert die Signalqualität an dein Gehirn.
               </p>
             </motion.div>
 
@@ -336,12 +330,9 @@ export default function Landing() {
               <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-cyan-500 to-cyan-600 flex items-center justify-center mb-6">
                 <Brain className="w-6 h-6 text-white" />
               </div>
-              <h3 className="text-2xl font-bold text-cyan-400 mb-3">2. Steuerung (Gehirn)</h3>
-              <p className="text-slate-300 text-sm mb-2">
-                <strong>Trainiere deine Körperwahrnehmung</strong> – für Augen, Balance und Koordination
-              </p>
+              <h3 className="text-2xl font-bold text-cyan-400 mb-3">Steuerungs-Update (Nerven)</h3>
               <p className="text-slate-300">
-                Wir trainieren dein visuelles und vestibuläres System (Augen & Gleichgewicht). Wenn dein Gehirn diese Systeme als sicher einstuft, gibt es mehr Bewegungsfreiheit und Kraft frei.
+                Über gezielte Impulse für Augen und Gleichgewicht signalisieren wir deinem Nervensystem „Sicherheit". Dein Gehirn lässt die Schutzspannung los und gibt neue Bewegungsfreiheit frei.
               </p>
             </motion.div>
 
@@ -356,9 +347,9 @@ export default function Landing() {
               <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center mb-6">
                 <Dumbbell className="w-6 h-6 text-white" />
               </div>
-              <h3 className="text-2xl font-bold text-purple-400 mb-3">3. Integration (Kraft)</h3>
+              <h3 className="text-2xl font-bold text-purple-400 mb-3">Festigung (Integration)</h3>
               <p className="text-slate-300">
-                Wir festigen die neu gewonnene Bewegungsfreiheit durch kontrollierte Belastung. So lernt dein Nervensystem, die neuen Muster dauerhaft zu speichern und im Alltag anzuwenden.
+                Wir verankern die neue Freiheit in stabilen Mustern. Dein System lernt, die gewonnene Beweglichkeit dauerhaft in Kraft und schmerzfreie Bewegung umzusetzen.
               </p>
             </motion.div>
           </div>
@@ -369,7 +360,7 @@ export default function Landing() {
       <section className="py-20 relative">
         <div className="max-w-5xl mx-auto px-4">
           <h2 className="text-4xl md:text-5xl font-bold text-center text-white mb-6">
-            Die 3 Säulen von AXON
+            Drei Wege zu deinem Ziel
           </h2>
           <p className="text-xl text-slate-400 text-center mb-12 max-w-3xl mx-auto">
             Egal ob du Schmerzen lösen, Performance steigern oder dein System pflegen willst – AXON begleitet dich auf jedem Schritt.
@@ -386,9 +377,9 @@ export default function Landing() {
               <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-red-500 to-pink-600 flex items-center justify-center mb-6 mx-auto">
                 <Target className="w-8 h-8 text-white" />
               </div>
-              <h3 className="text-2xl font-bold text-red-400 mb-3 text-center">REHAB</h3>
+              <h3 className="text-2xl font-bold text-red-400 mb-3 text-center">REHAB – Ursachen lösen</h3>
               <p className="text-slate-300 leading-relaxed text-center">
-                Akute Beschwerden? Die AXON-Diagnose findet die Root Cause deines Schmerzes. Statt Symptome zu bekämpfen, lösen wir die eigentliche Ursache – mit präzisen Resets für Hardware & Software.
+                Akute Blockaden? Der AXON-Check scannt deine Kraftlinien (Front-Drive, Back-Power, Torque-Flow) und findet den Ursprung deiner Beschwerden. Du erhältst ein präzises Protokoll, um dein System Schritt für Schritt wieder schmerzfrei zu machen.
               </p>
             </motion.div>
 
@@ -403,9 +394,9 @@ export default function Landing() {
               <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center mb-6 mx-auto">
                 <Activity className="w-8 h-8 text-white" />
               </div>
-              <h3 className="text-2xl font-bold text-cyan-400 mb-3 text-center">FLOW</h3>
+              <h3 className="text-2xl font-bold text-cyan-400 mb-3 text-center">FLOW – Den Körper pflegen</h3>
               <p className="text-slate-300 leading-relaxed text-center">
-                Deine tägliche Körperpflege. 5–15 Minuten Routinen für ein bewegliches System – löse Steifheit und halte dich fit. Wie Zähneputzen – nur für deinen Körper.
+                Deine tägliche Wartung in 5–15 Minuten. Kurze, bebilderte Routinen scannen dein System, lösen Steifheit aus dem Alltag und halten deine Gelenke geschmeidig. Wie Zähneputzen – nur für deine Beweglichkeit.
               </p>
             </motion.div>
 
@@ -420,9 +411,9 @@ export default function Landing() {
               <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-amber-500 to-yellow-600 flex items-center justify-center mb-6 mx-auto">
                 <Zap className="w-8 h-8 text-white" />
               </div>
-              <h3 className="text-2xl font-bold text-amber-400 mb-3 text-center">GOALS</h3>
+              <h3 className="text-2xl font-bold text-amber-400 mb-3 text-center">GOALS – Potenziale nutzen</h3>
               <p className="text-slate-300 leading-relaxed text-center">
-                Schalte neue Fähigkeiten frei. Wahre Kraft entsteht im Gehirn – nur wenn es eine Bewegung als sicher einstuft, gibt es maximale Power frei. Dein persönlicher Coach begleitet dich von der ersten Wiederholung bis zum Meilenstein.
+                Setze dir sportliche Meilensteine. Ob die ersten 10 Klimmzüge oder mehr Stabilität beim Laufen: AXON analysiert deine Voraussetzungen und baut dein Training logisch auf, damit dein Nervensystem maximale Leistung freigibt.
               </p>
             </motion.div>
           </div>
@@ -436,9 +427,6 @@ export default function Landing() {
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
               Dein System gibt den Takt vor
             </h2>
-            <p className="text-xl text-slate-400 max-w-3xl mx-auto">
-              AXON passt sich dir an – jeden Tag neu.
-            </p>
           </div>
 
           <div className="grid md:grid-cols-2 gap-8">
@@ -451,12 +439,14 @@ export default function Landing() {
               <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center mb-4">
                 <Brain className="w-6 h-6 text-white" />
               </div>
-              <h3 className="text-2xl font-bold text-purple-400 mb-3">Wie geht's dir heute?</h3>
+              <h3 className="text-2xl font-bold text-purple-400 mb-3">Der Daily Readiness Check</h3>
               <p className="text-slate-300 leading-relaxed mb-4">
-                Kein Körper ist jeden Tag gleich. AXON fragt dich nach deinem Energie-Level, Stress und Schlafqualität – und empfiehlt dir exakt die Routine, die dein Körper heute braucht.
+                Kein Tag ist wie der andere. AXON fragt dich morgens kurz nach Energie, Schlaf und Stress. Die App passt deine Empfehlungen sofort an deine Tagesform an.
               </p>
               <p className="text-sm text-slate-400">
-                Grün = Go Hard. Gelb = Moderate dich. Rot = Recovery First.
+                <strong>Grün:</strong> Dein System ist bereit für volle Belastung.<br />
+                <strong>Gelb:</strong> Moderates Training zur Erhaltung.<br />
+                <strong>Rot:</strong> Fokus auf Erholung und sanfte Impulse.
               </p>
             </motion.div>
 
@@ -590,9 +580,6 @@ export default function Landing() {
           <h2 className="text-4xl md:text-5xl font-bold text-center text-white mb-4">
             Warum AXON?
           </h2>
-          <p className="text-lg text-slate-400 text-center mb-12">
-            Dein persönlicher Coach – immer verfügbar, immer für dich da
-          </p>
 
           <div className="grid md:grid-cols-3 gap-6 mb-16">
             <motion.div
@@ -604,9 +591,9 @@ export default function Landing() {
               <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-cyan-500 to-cyan-600 flex items-center justify-center mb-4 mx-auto">
                 <Shield className="w-6 h-6 text-white" />
               </div>
-              <h3 className="text-xl font-bold text-cyan-400 mb-3">Statt jedes Mal zum Physio</h3>
+              <h3 className="text-xl font-bold text-cyan-400 mb-3">Wissenschaft statt Spielerei</h3>
               <p className="text-sm text-slate-300">
-                Bei kleinen Beschwerden kannst du dir sofort selbst helfen – wann und wo du willst. Für ernsthafte Verletzungen bleibt der Arztbesuch natürlich erste Wahl.
+                Basierend auf globalen Standards der Biomechanik und Neuro-Athletik.
               </p>
             </motion.div>
 
@@ -620,9 +607,9 @@ export default function Landing() {
               <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center mb-4 mx-auto">
                 <Dumbbell className="w-6 h-6 text-white" />
               </div>
-              <h3 className="text-xl font-bold text-purple-400 mb-3">Dein Personal Trainer</h3>
+              <h3 className="text-xl font-bold text-purple-400 mb-3">Verstehe deinen Körper</h3>
               <p className="text-sm text-slate-300">
-                Kein Termin nötig, keine Gruppenkurse. AXON ist 24/7 für dich da – im Gym, zuhause oder unterwegs. Maßgeschneiderte Trainingspläne für deine Ziele.
+                AXON erklärt dir nicht nur, was du tun sollst, sondern auch warum. Du lernst die Zusammenhänge deines Körpers verstehen.
               </p>
             </motion.div>
 
@@ -636,9 +623,9 @@ export default function Landing() {
               <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-500 to-amber-600 flex items-center justify-center mb-4 mx-auto">
                 <Brain className="w-6 h-6 text-white" />
               </div>
-              <h3 className="text-xl font-bold text-amber-400 mb-3">Verstehe deinen Körper</h3>
+              <h3 className="text-xl font-bold text-amber-400 mb-3">Einmal zahlen, ewig nutzen</h3>
               <p className="text-sm text-slate-300">
-                AXON erklärt dir, warum etwas weh tut und wie du es löst. Du lernst, deinem Körper zu vertrauen und Bewegung als präventive Medizin zu nutzen.
+                Wir glauben nicht an Abos. Einmaliger Kauf, lebenslange Unterstützung für dein System.
               </p>
             </motion.div>
           </div>
@@ -649,12 +636,7 @@ export default function Landing() {
             viewport={{ once: true }}
             className="glass rounded-2xl border border-cyan-500/30 p-8 text-center mb-16"
           >
-            <p className="text-2xl text-white font-semibold mb-2">
-              Physio + Neuroathletik + Personal Training
-            </p>
-            <p className="text-lg text-slate-400">
-              Alles in einer App – für den Preis einer einzigen Sitzung beim Experten
-            </p>
+
           </motion.div>
         </div>
       </section>
@@ -663,7 +645,7 @@ export default function Landing() {
       <section className="py-20 relative">
         <div className="max-w-5xl mx-auto px-4">
           <h2 className="text-4xl md:text-5xl font-bold text-center text-white mb-4">
-            Dein risikofreier Start
+            Wähle deinen Einstieg
           </h2>
           <p className="text-lg text-slate-400 text-center mb-12">
             Einmalzahlung. Kein Abo. Lebenslanger Zugriff.
@@ -680,7 +662,7 @@ export default function Landing() {
               <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-gradient-to-r from-cyan-500 to-blue-600 text-white text-xs font-bold">
                 EMPFOHLEN
               </div>
-              <h3 className="text-2xl font-bold text-white mb-2">7 Tage kostenlos testen</h3>
+              <h3 className="text-2xl font-bold text-white mb-2">TEST-PHASE</h3>
               <div className="flex items-baseline gap-2 mb-6">
                 <span className="text-5xl font-bold text-cyan-400">0€</span>
                 <span className="text-slate-400">dann 59€</span>
@@ -720,7 +702,7 @@ export default function Landing() {
               transition={{ delay: 0.1 }}
               className="glass rounded-2xl border border-amber-500/30 p-8"
             >
-              <h3 className="text-2xl font-bold text-white mb-2">Sofort starten</h3>
+              <h3 className="text-2xl font-bold text-white mb-2">VOLLE FREIHEIT</h3>
               <div className="flex items-baseline gap-2 mb-6">
                 <span className="text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-orange-400">59€</span>
                 <span className="text-slate-400">einmalig</span>
