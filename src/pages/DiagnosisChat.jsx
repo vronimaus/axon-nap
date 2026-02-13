@@ -432,7 +432,7 @@ export default function DiagnosisChat() {
         instruction="Folge den 3 Schritten und melde dich danach zurück"
         showBackButton={false}
       >
-        {loading ? (
+        {loading || !diagnosisCardData ? (
           <DiagnosisLoadingAnimation message="Erstelle dein Protokoll..." />
         ) : (
           <DiagnosisCard
