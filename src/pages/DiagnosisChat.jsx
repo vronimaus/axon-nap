@@ -75,6 +75,22 @@ export default function DiagnosisChat() {
   useEffect(() => {
     const initConversation = async () => {
       try {
+        // Check if we have a cached conversation to resume
+        const cachedConvId = sessionStorage.getItem('diagnosis_conversation_id');
+        
+        if (cachedConvId) {
+          try {
+            // Try to resume cached conversation
+            const cachedConv = await base44.agents.getConversation(cachedConvId);
+            setConversation(cachedConv);
+            setMessages(cachedConv.messages || []);
+            return;
+          } catch (error) {
+            console.log('Cached conversation not found, creating new one');
+            sessionStorage.removeItem('diagnosis_conversation_id');
+          }
+        }
+
         const isContinuation = sessionId && searchParams.get('continue') === 'true';
 
         const metadata = {
