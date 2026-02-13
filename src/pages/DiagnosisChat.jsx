@@ -184,8 +184,6 @@ export default function DiagnosisChat() {
            });
            // Move to analysis card focus screen
            setWorkflowStep('analysis_card');
-         } else if (content.includes('[TRIGGER_CHAIN_SCAN]')) {
-           setWorkflowStep('chain_scan');
          } else if (
            content.includes('[CREATE_REHAB_PLAN]') || 
            content.includes('Dein umfassender Reha-Plan wurde erstellt') ||
