@@ -325,6 +325,30 @@ export default function RehabPlan() {
                     exit={{ opacity: 0, height: 0 }}
                     className="border-t border-slate-700 px-6 py-4 bg-slate-800/20"
                   >
+                    {/* Goal Explanation */}
+                    {exercise.goal_explanation && (
+                      <div className="mb-4 p-4 rounded-lg bg-orange-500/10 border border-orange-500/30">
+                        <h5 className="font-semibold text-orange-400 mb-2 flex items-center gap-2">
+                          <span>🎯</span> Worum geht's?
+                        </h5>
+                        <p className="text-slate-300 text-sm leading-relaxed">
+                          {exercise.goal_explanation}
+                        </p>
+                      </div>
+                    )}
+
+                    {/* Benefits */}
+                    {exercise.benefits && (
+                      <div className="mb-4 p-4 rounded-lg bg-green-500/10 border border-green-500/30">
+                        <h5 className="font-semibold text-green-400 mb-2 flex items-center gap-2">
+                          <span>✨</span> Das bringt's dir:
+                        </h5>
+                        <p className="text-slate-300 text-sm leading-relaxed">
+                          {exercise.benefits}
+                        </p>
+                      </div>
+                    )}
+
                     {/* Instructions */}
                     <div className="mb-6">
                       <h5 className="font-semibold text-slate-200 mb-2">So geht's:</h5>
