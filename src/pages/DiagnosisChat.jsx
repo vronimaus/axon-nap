@@ -17,6 +17,7 @@ import InteractiveBodyMapInput from '../components/diagnosis/InteractiveBodyMapI
 import PainIntensitySlider from '../components/diagnosis/PainIntensitySlider';
 import BinaryChoiceButtons from '../components/diagnosis/BinaryChoiceButtons';
 import DiagnosisCard from '../components/diagnosis/DiagnosisCard';
+import DiagnosisLoadingAnimation from '../components/diagnosis/DiagnosisLoadingAnimation';
 
 export default function DiagnosisChat() {
   const [searchParams] = useSearchParams();
@@ -431,14 +432,7 @@ export default function DiagnosisChat() {
         showBackButton={false}
       >
         {loading ? (
-          <div className="flex flex-col items-center justify-center py-12">
-            <motion.div
-              animate={{ rotate: 360 }}
-              transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-              className="w-16 h-16 border-4 border-cyan-500 border-t-transparent rounded-full mb-4"
-            />
-            <p className="text-slate-300 text-lg">Analyse läuft...</p>
-          </div>
+          <DiagnosisLoadingAnimation message="Erstelle dein Protokoll..." />
         ) : (
           <DiagnosisCard
             title={diagnosisCardData?.title || 'Diagnose'}
@@ -681,8 +675,8 @@ export default function DiagnosisChat() {
             >
               {loading ? (
                 <>
-                  <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-                  Analysiere...
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  Wird gesendet...
                 </>
               ) : (
                 <>
