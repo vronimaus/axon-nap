@@ -380,18 +380,43 @@ export default function Flow() {
 
       <div className="max-w-4xl mx-auto">
         {/* Readiness Recommendation */}
-        {readinessStatus && readinessStatus === 'red' && (
+        {readinessStatus && (
           <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="glass rounded-xl p-4 mb-6 border border-red-500/30 bg-gradient-to-r from-red-500/10 to-transparent"
+            className={`glass rounded-xl p-4 mb-6 border ${
+              readinessStatus === 'green'
+                ? 'border-green-500/30 bg-gradient-to-r from-green-500/10 to-transparent'
+                : readinessStatus === 'yellow'
+                ? 'border-amber-500/30 bg-gradient-to-r from-amber-500/10 to-transparent'
+                : 'border-red-500/30 bg-gradient-to-r from-red-500/10 to-transparent'
+            }`}
           >
             <div className="flex items-start gap-3">
-              <AlertTriangle className="w-6 h-6 flex-shrink-0 text-red-400" />
+              {readinessStatus === 'green' ? (
+                <Check className="w-6 h-6 flex-shrink-0 text-green-400" />
+              ) : (
+                <AlertTriangle className={`w-6 h-6 flex-shrink-0 ${
+                  readinessStatus === 'yellow' ? 'text-amber-400' : 'text-red-400'
+                }`} />
+              )}
               <div>
-                <h3 className="font-bold text-red-400 mb-1 text-sm">Dein System braucht heute Ruhe</h3>
+                <h3 className={`font-bold mb-1 text-sm ${
+                  readinessStatus === 'green' ? 'text-green-400' :
+                  readinessStatus === 'yellow' ? 'text-amber-400' : 'text-red-400'
+                }`}>
+                  {readinessStatus === 'green'
+                    ? 'Top-Form! Leg einen Zahn zu 💪'
+                    : readinessStatus === 'yellow'
+                    ? 'Sanfter Flow empfohlen'
+                    : 'Dein System braucht heute Ruhe'}
+                </h3>
                 <p className="text-slate-300 text-xs leading-relaxed">
-                  Basierend auf deinem Daily Check empfehlen wir dir heute nur sanfte Atemübungen oder MFR-Release. Keine aktiven Flows.
+                  {readinessStatus === 'green'
+                    ? 'Dein System ist bereit! Perfekter Tag für intensivere Varianten oder längere Flow-Sessions.'
+                    : readinessStatus === 'yellow'
+                    ? 'Dein System braucht heute eher Pflege als Belastung. Wähle eine entspannte Routine.'
+                    : 'Basierend auf deinem Daily Check empfehlen wir dir heute nur sanfte Atemübungen oder MFR-Release. Keine aktiven Flows.'}
                 </p>
               </div>
             </div>
