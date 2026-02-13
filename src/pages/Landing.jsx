@@ -451,7 +451,7 @@ export default function Landing() {
               <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center mb-4">
                 <Brain className="w-6 h-6 text-white" />
               </div>
-              <h3 className="text-2xl font-bold text-purple-400 mb-3">Dein täglicher Körper-Check</h3>
+              <h3 className="text-2xl font-bold text-purple-400 mb-3">Wie geht's dir heute?</h3>
               <p className="text-slate-300 leading-relaxed mb-4">
                 Kein Körper ist jeden Tag gleich. AXON fragt dich nach deinem Energie-Level, Stress und Schlafqualität – und empfiehlt dir exakt die Routine, die dein Körper heute braucht.
               </p>
