@@ -5,7 +5,7 @@ import { createPageUrl } from '@/utils';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 
-import { ArrowLeft, Zap, Target, CheckCircle2, Clock, AlertCircle, Activity, Info, TrendingUp, Sparkles, Loader2, MessageSquareText } from 'lucide-react';
+import { ArrowLeft, Zap, Target, CheckCircle2, Clock, Info, TrendingUp, Sparkles, Loader2, MessageSquareText } from 'lucide-react';
 import { toast } from 'sonner';
 import { useQueryClient } from '@tanstack/react-query';
 import GoalCard from '../components/performance/GoalCard';
