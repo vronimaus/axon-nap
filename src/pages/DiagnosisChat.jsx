@@ -394,14 +394,15 @@ export default function DiagnosisChat() {
   };
 
   const handleRetestPositive = async () => {
-    // User feels better - but trigger chain scan instead of ending
+    // User feels better - force chain scan to ensure full chain check
+    setWorkflowStep('chain_scan');
     setLoading(true);
     try {
       await base44.agents.addMessage(conversation, {
         role: 'user',
         content: 'Fühlt sich tatsächlich besser an!'
       });
-      // Agent will trigger [TRIGGER_CHAIN_SCAN] to check the full chain
+      setLoading(false);
     } catch (error) {
       console.error('Fehler:', error);
       setLoading(false);
