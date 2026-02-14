@@ -69,6 +69,8 @@ export default function Layout({ children, currentPageName }) {
             localStorage.removeItem('axon_onboarding_current_pain');
             localStorage.removeItem('axon_onboarding_choice');
             localStorage.removeItem('axon_onboarding_status');
+            // Remove legacy field
+            localStorage.removeItem('last_daily_check_date');
           } catch (error) {
             console.error('Error transferring onboarding data:', error);
           }
