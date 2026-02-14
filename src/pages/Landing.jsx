@@ -172,7 +172,7 @@ export default function Landing() {
             transition={{ delay: 0.2 }}
             className="text-lg md:text-xl text-slate-300 mb-10 max-w-3xl mx-auto leading-relaxed"
           >
-            Werde dein eigener Experte. AXON nutzt die Prinzipien der Neuro-Athletik, um neuronale Bremsen zu lösen – für absolute Freiheit im Alltag und maximale Präzision im Sport.
+            Werde dein eigener Experte. AXON vereint Faszien-Release, Neuro-Athletik und funktionelles Training – für absolute Freiheit im Alltag und maximale Präzision im Sport.
           </motion.p>
 
           <motion.div
