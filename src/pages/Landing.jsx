@@ -578,8 +578,15 @@ export default function Landing() {
       <section className="py-20 relative">
         <div className="max-w-5xl mx-auto px-4">
           <h2 className="text-4xl md:text-5xl font-bold text-center text-white mb-4">
-            Warum AXON?
+            Warum nur 59€?
           </h2>
+          <p className="text-lg text-slate-300 text-center mb-12 max-w-3xl mx-auto">
+            Wir glauben, dass das Wissen über den eigenen Körper kein Luxusgut sein sollte. Während eine einzelne Sitzung beim Spezialisten oft über 100€ kostet, bieten wir dir mit AXON das gebündelte Wissen aus Biomechanik und Neurologie zum Preis eines Abendessens an. <span className="text-amber-400 font-semibold">Einmalzahlung. Kein Abo. Dein lebenslanges Upgrade.</span>
+          </p>
+
+          <h3 className="text-3xl md:text-4xl font-bold text-center text-white mb-8 mt-16">
+            Warum AXON?
+          </h3>
 
           <div className="grid md:grid-cols-3 gap-6 mb-16">
             <motion.div
@@ -647,9 +654,14 @@ export default function Landing() {
           <h2 className="text-4xl md:text-5xl font-bold text-center text-white mb-4">
             Wähle deinen Einstieg
           </h2>
-          <p className="text-lg text-slate-400 text-center mb-12">
+          <p className="text-lg text-slate-400 text-center mb-4">
             Einmalzahlung. Kein Abo. Lebenslanger Zugriff.
           </p>
+          <div className="text-center mb-8">
+            <p className="text-sm text-amber-400 font-semibold">
+              🚀 Launch-Special: Nur für die ersten 1.000 Founding Members
+            </p>
+          </div>
 
           <div className="grid md:grid-cols-2 gap-8">
             {/* Test Card */}
@@ -700,12 +712,19 @@ export default function Landing() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.1 }}
-              className="glass rounded-2xl border border-amber-500/30 p-8"
+              className="glass rounded-2xl border border-amber-500/30 p-8 relative"
             >
+              <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-gradient-to-r from-amber-500 to-orange-600 text-white text-xs font-bold">
+                🚀 LAUNCH SPECIAL
+              </div>
               <h3 className="text-2xl font-bold text-white mb-2">VOLLE FREIHEIT</h3>
-              <div className="flex items-baseline gap-2 mb-6">
-                <span className="text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-orange-400">59€</span>
-                <span className="text-slate-400">einmalig</span>
+              <div className="mb-6">
+                <div className="flex items-baseline gap-3 mb-1">
+                  <span className="text-2xl font-bold text-slate-500 line-through">149€</span>
+                  <span className="text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-orange-400">59€</span>
+                  <span className="text-slate-400">einmalig</span>
+                </div>
+                <p className="text-xs text-amber-400 font-semibold">Du sparst 90€ als Founding Member</p>
               </div>
               <ul className="space-y-3 mb-8">
                 <li className="flex items-start gap-2 text-slate-300">
