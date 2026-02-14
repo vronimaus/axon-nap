@@ -249,26 +249,51 @@ export default function RehabPlan() {
       {/* Main Content */}
       <div className="max-w-4xl mx-auto px-4 py-6">
         {/* Readiness Recommendation */}
-        {readinessStatus && readinessStatus === 'green' && (
+        {readinessStatus && (
           <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="mb-6 glass rounded-xl p-6 border border-green-500/30 bg-gradient-to-r from-green-500/10 to-transparent"
+            className={`mb-6 glass rounded-xl p-6 border ${
+              readinessStatus === 'green' 
+                ? 'border-green-500/30 bg-gradient-to-r from-green-500/10 to-transparent'
+                : readinessStatus === 'yellow'
+                ? 'border-yellow-500/30 bg-gradient-to-r from-yellow-500/10 to-transparent'
+                : 'border-red-500/30 bg-gradient-to-r from-red-500/10 to-transparent'
+            }`}
           >
             <div className="flex items-start gap-3">
-              <Check className="w-6 h-6 flex-shrink-0 text-green-400" />
+              {readinessStatus === 'green' ? (
+                <Check className="w-6 h-6 flex-shrink-0 text-green-400" />
+              ) : readinessStatus === 'yellow' ? (
+                <AlertTriangle className="w-6 h-6 flex-shrink-0 text-yellow-400" />
+              ) : (
+                <AlertCircle className="w-6 h-6 flex-shrink-0 text-red-400" />
+              )}
               <div>
-                <h3 className="font-bold text-green-400 mb-2">Top-Form erkannt! 💪</h3>
-                <p className="text-slate-300 text-sm leading-relaxed mb-3">
-                  Dein System ist heute bereit für Performance-Training. Falls du heute statt Reha lieber an deinen sportlichen Zielen arbeiten möchtest, schau dir unsere Performance-Pläne an.
-                </p>
-                <Button
-                  onClick={() => window.location.href = createPageUrl('Dashboard')}
-                  size="sm"
-                  className="bg-green-500/20 text-green-400 hover:bg-green-500/30 border border-green-500/50"
-                >
-                  Zu Performance Goals
-                </Button>
+                {readinessStatus === 'green' && (
+                  <>
+                    <h3 className="font-bold text-green-400 mb-2">Top-Form erkannt! 💪</h3>
+                    <p className="text-slate-300 text-sm leading-relaxed mb-3">
+                      Dein System ist heute bereit für volle Performance. Du kannst alle Übungen wie geplant durchführen.
+                    </p>
+                  </>
+                )}
+                {readinessStatus === 'yellow' && (
+                  <>
+                    <h3 className="font-bold text-yellow-400 mb-2">Moderate Belastung empfohlen ⚡</h3>
+                    <p className="text-slate-300 text-sm leading-relaxed">
+                      Dein System braucht heute etwas Schonung. Fokussiere dich auf leichte Mobilität und MFR-Übungen. Reduziere Intensität und Wiederholungen bei Kraftübungen um 30-50%.
+                    </p>
+                  </>
+                )}
+                {readinessStatus === 'red' && (
+                  <>
+                    <h3 className="font-bold text-red-400 mb-2">Erholung priorisieren 🛑</h3>
+                    <p className="text-slate-300 text-sm leading-relaxed">
+                      Dein System ist im Regenerationsmodus. Fokussiere dich heute ausschließlich auf sanfte MFR-Arbeit und Atemübungen. Krafttraining sollte pausiert werden.
+                    </p>
+                  </>
+                )}
               </div>
             </div>
           </motion.div>

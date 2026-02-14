@@ -125,7 +125,10 @@ export default function DailyReadinessCheck({ user, onClose }) {
                 max="10"
                 value={feeling}
                 onChange={(e) => setFeeling(parseInt(e.target.value))}
-                className="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-orange-500"
+                className="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer"
+                style={{
+                  accentColor: feeling <= 4 ? '#ef4444' : feeling <= 7 ? '#f59e0b' : '#22c55e'
+                }}
               />
               <div className="flex justify-between text-xs text-slate-500 mt-1">
                 <span>🔴 Steif (eingerostet)</span>
@@ -146,7 +149,10 @@ export default function DailyReadinessCheck({ user, onClose }) {
                 max="10"
                 value={focus}
                 onChange={(e) => setFocus(parseInt(e.target.value))}
-                className="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-cyan-500"
+                className="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer"
+                style={{
+                  accentColor: focus <= 4 ? '#ef4444' : focus <= 7 ? '#f59e0b' : '#22c55e'
+                }}
               />
               <div className="flex justify-between text-xs text-slate-500 mt-1">
                 <span>🔴 Müde (Tunnelblick)</span>
@@ -167,7 +173,10 @@ export default function DailyReadinessCheck({ user, onClose }) {
                 max="10"
                 value={energy}
                 onChange={(e) => setEnergy(parseInt(e.target.value))}
-                className="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-amber-500"
+                className="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer"
+                style={{
+                  accentColor: energy <= 4 ? '#ef4444' : energy <= 7 ? '#f59e0b' : '#22c55e'
+                }}
               />
               <div className="flex justify-between text-xs text-slate-500 mt-1">
                 <span>🔴 Akku leer</span>
