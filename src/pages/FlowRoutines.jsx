@@ -136,14 +136,14 @@ export default function FlowRoutines() {
   const shouldDisableRoutine = (routine) => {
     if (!readinessStatus) return false;
     
-    // Red status: disable high intensity routines
-    if (readinessStatus === 'red' && routine.intensity_level === 'high') {
+    // Red status: disable high AND medium intensity routines
+    if (readinessStatus === 'red' && (routine.intensity_level === 'high' || routine.intensity_level === 'medium')) {
       return true;
     }
     
-    // Yellow status: warn for high intensity
+    // Yellow status: disable high intensity routines
     if (readinessStatus === 'yellow' && routine.intensity_level === 'high') {
-      return false; // Don't disable, but show warning
+      return true;
     }
     
     return false;
@@ -216,7 +216,7 @@ export default function FlowRoutines() {
                   {readinessStatus === 'green'
                     ? 'Dein System ist bereit. Wähle jede Routine, die du möchtest.'
                     : readinessStatus === 'yellow'
-                    ? 'Wähle heute moderate Routinen. Intensive Flows kannst du machen, aber höre auf deinen Körper.'
+                    ? 'Wähle heute moderate oder leichte Routinen. Intensive Flows sind ausgegraut zum Schutz deines Systems.'
                     : 'Intensive Routinen sind heute ausgegraut. Fokussiere dich auf Atemtechniken, sanfte Mobilität und MFR.'}
                 </p>
               </div>
@@ -284,7 +284,6 @@ export default function FlowRoutines() {
                 {paginatedRoutines.length > 0 ? (
                   paginatedRoutines.map((routine, idx) => {
                     const isDisabled = shouldDisableRoutine(routine);
-                    const showWarning = readinessStatus === 'yellow' && routine.intensity_level === 'high';
                     
                     return (
                     <motion.div
@@ -303,21 +302,13 @@ export default function FlowRoutines() {
                           <h3 className={`text-base font-bold ${isDisabled ? 'text-slate-500' : 'text-white'}`}>
                             {routine.routine_name}
                           </h3>
-                          {showWarning && (
-                            <AlertTriangle className="w-4 h-4 text-amber-400 flex-shrink-0" />
-                          )}
                         </div>
                         <p className={`text-sm line-clamp-3 ${isDisabled ? 'text-slate-600' : 'text-slate-400'}`}>
                           {routine.description}
                         </p>
                         {isDisabled && (
                           <p className="text-xs text-red-400 mt-2">
-                            🛑 Heute nicht empfohlen
-                          </p>
-                        )}
-                        {showWarning && !isDisabled && (
-                          <p className="text-xs text-amber-400 mt-2">
-                            ⚠️ Mit Vorsicht durchführen
+                            🛑 Heute nicht empfohlen - dein System braucht Schonung
                           </p>
                         )}
                       </div>
