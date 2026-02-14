@@ -378,7 +378,15 @@ export default function RehabPlan() {
         <div className="space-y-4">
           <h3 className="text-lg font-semibold text-white mb-4">Deine Übungen für diese Phase</h3>
           
-          {currentPhase.exercises.map((exercise, idx) => (
+          {currentPhase.exercises.map((exercise, idx) => {
+            // Filter exercises based on readiness status
+            const isStrengthExercise = exercise.category && ['strength', 'functional'].includes(exercise.category.toLowerCase());
+            const shouldShowWarning = readinessStatus === 'yellow' && isStrengthExercise;
+            const shouldSkip = readinessStatus === 'red' && isStrengthExercise;
+            
+            if (shouldSkip) return null;
+            
+            return (
             <motion.div
               key={exercise.exercise_id || `exercise-${idx}`}
               initial={{ opacity: 0, y: 10 }}
@@ -394,12 +402,25 @@ export default function RehabPlan() {
                 className="w-full px-6 py-4 flex items-center justify-between hover:bg-slate-800/50 transition-colors"
               >
                 <div className="flex items-center gap-3 text-left flex-1">
-                  <div className="w-8 h-8 rounded-full bg-orange-500/20 flex items-center justify-center text-orange-400 font-bold text-sm">
+                  <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm ${
+                    shouldShowWarning 
+                      ? 'bg-yellow-500/20 text-yellow-400' 
+                      : 'bg-orange-500/20 text-orange-400'
+                  }`}>
                     {idx + 1}
                   </div>
-                  <div className="min-w-0">
-                    <h4 className="font-semibold text-white">{exercise.name}</h4>
-                    <p className="text-sm text-slate-400">{exercise.sets_reps_tempo}</p>
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center gap-2">
+                      <h4 className="font-semibold text-white">{exercise.name}</h4>
+                      {shouldShowWarning && (
+                        <span className="text-yellow-400 text-xs">⚠️ Reduzieren</span>
+                      )}
+                    </div>
+                    <p className="text-sm text-slate-400">
+                      {shouldShowWarning 
+                        ? `${exercise.sets_reps_tempo} → Intensität um 30-50% reduzieren`
+                        : exercise.sets_reps_tempo}
+                    </p>
                   </div>
                 </div>
                 <ChevronDown
@@ -418,8 +439,20 @@ export default function RehabPlan() {
                     exit={{ opacity: 0, height: 0 }}
                     className="border-t border-slate-700 px-6 py-4 bg-slate-800/20"
                   >
+                    {/* Readiness Warning */}
+                    {shouldShowWarning && (
+                      <div className="mb-4 p-4 rounded-lg bg-yellow-500/10 border border-yellow-500/30">
+                        <h5 className="font-semibold text-yellow-400 mb-2 flex items-center gap-2">
+                          <AlertTriangle className="w-5 h-5" /> Moderate Belastung empfohlen
+                        </h5>
+                        <p className="text-slate-300 text-sm leading-relaxed">
+                          Reduziere heute Intensität und Wiederholungen um 30-50%. Höre auf deinen Körper und pausiere bei Schmerzen.
+                        </p>
+                      </div>
+                    )}
+
                     {/* Goal Explanation */}
-                    {exercise.goal_explanation && (
+                    {exercise.goal_explanation ? (
                       <div className="mb-4 p-4 rounded-lg bg-orange-500/10 border border-orange-500/30">
                         <h5 className="font-semibold text-orange-400 mb-2 flex items-center gap-2">
                           <span>🎯</span> Worum geht's?
@@ -428,9 +461,15 @@ export default function RehabPlan() {
                           {exercise.goal_explanation}
                         </p>
                       </div>
+                    ) : (
+                      <div className="mb-4 p-3 rounded-lg bg-slate-700/30 border border-slate-600">
+                        <p className="text-slate-400 text-xs">
+                          💡 Dieser Plan wurde vor unserem Update erstellt. Detaillierte Erklärungen sind für neuere Pläne verfügbar.
+                        </p>
+                      </div>
                     )}
 
-                    {/* Benefits */}
+                    {/* Benefits - only show if available */}
                     {exercise.benefits && (
                       <div className="mb-4 p-4 rounded-lg bg-green-500/10 border border-green-500/30">
                         <h5 className="font-semibold text-green-400 mb-2 flex items-center gap-2">
@@ -476,8 +515,18 @@ export default function RehabPlan() {
                 )}
               </AnimatePresence>
             </motion.div>
-          ))}
+            );
+          })}
         </div>
+
+        {/* Red Status: Show filtered exercises info */}
+        {readinessStatus === 'red' && currentPhase.exercises.some(ex => ex.category && ['strength', 'functional'].includes(ex.category.toLowerCase())) && (
+          <div className="mt-4 p-4 rounded-lg bg-red-500/10 border border-red-500/30">
+            <p className="text-slate-300 text-sm">
+              ℹ️ Kraft- und funktionelle Übungen werden heute ausgeblendet. Fokussiere dich auf die sanften Mobilisations- und MFR-Übungen oben.
+            </p>
+          </div>
+        )}
 
         {/* Recommended MFR Routines */}
         {rehabPlan.recommended_mfr_routines?.length > 0 && (
