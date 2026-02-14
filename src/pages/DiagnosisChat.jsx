@@ -816,9 +816,13 @@ export default function DiagnosisChat() {
                   className="flex justify-start"
                 >
                   <div className="glass-cyan rounded-2xl px-4 py-3 border border-cyan-500/30">
-                    <div className="flex items-center gap-2">
-                      <Loader2 className="w-4 h-4 animate-spin text-cyan-400" />
-                      <span className="text-sm text-slate-300">Analysiere...</span>
+                    <div className="flex items-center gap-3">
+                      <motion.div
+                        animate={{ rotate: 360 }}
+                        transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                        className="w-5 h-5 border-2 border-cyan-400 border-t-transparent rounded-full"
+                      />
+                      <span className="text-sm text-slate-300">Verarbeite deine Eingabe...</span>
                     </div>
                   </div>
                 </motion.div>
