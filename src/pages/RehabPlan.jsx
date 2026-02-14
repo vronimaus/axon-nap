@@ -191,9 +191,8 @@ export default function RehabPlan() {
     );
   }
 
-  // Show completion banner if plan is completed AND all phases are done
-  const allPhasesCompleted = (rehabPlan.current_phase || 1) >= rehabPlan.phases.length;
-  const showCompletionBanner = rehabPlan.status === 'completed' && allPhasesCompleted;
+  // Show completion banner only if status is explicitly 'completed'
+  const showCompletionBanner = rehabPlan.status === 'completed';
 
   const currentPhaseIndex = (rehabPlan.current_phase || 1) - 1;
   const currentPhase = rehabPlan.phases[currentPhaseIndex] || rehabPlan.phases[0];
