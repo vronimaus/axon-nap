@@ -229,6 +229,7 @@ export default function Layout({ children, currentPageName }) {
                   <button
                     onClick={() => {
                       localStorage.removeItem('stay_on_landing');
+                      sessionStorage.removeItem('readiness_check_done');
                       base44.auth.logout(createPageUrl('Landing'));
                     }}
                     className="p-2 rounded-xl text-slate-400 hover:text-cyan-400 hover:bg-slate-800/50 transition-all"

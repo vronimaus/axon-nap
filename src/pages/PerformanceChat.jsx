@@ -528,7 +528,7 @@ export default function PerformanceChat() {
 
             createPlan();
             }
-  }, [messages, conversation, goalName]);
+  }, [messages, conversation, goalName, isPlanCreating]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 flex flex-col pb-20 md:pb-0">
