@@ -59,7 +59,7 @@ export default function DailyReadinessCheck({ user, onClose }) {
 
       // Update user metadata with last check date
       await base44.auth.updateMe({
-        last_daily_check_date: today,
+        last_readiness_check: today,
         current_readiness_status: readiness.status
       });
 
