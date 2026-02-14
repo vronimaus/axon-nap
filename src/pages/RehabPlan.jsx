@@ -44,11 +44,21 @@ export default function RehabPlan() {
     queryKey: ['rehabPlan', user?.email],
     queryFn: async () => {
       if (!user?.email) return null;
-      const plans = await base44.entities.RehabPlan.filter({
+      // Try both user_email and created_by for backwards compatibility
+      const plansByEmail = await base44.entities.RehabPlan.filter({
         user_email: user.email,
         status: 'active'
       }, '-plan_generated_date', 1);
-      return plans[0] || null;
+      
+      if (plansByEmail.length > 0) return plansByEmail[0];
+      
+      // Fallback: check by created_by
+      const plansByCreator = await base44.entities.RehabPlan.filter({
+        created_by: user.email,
+        status: 'active'
+      }, '-plan_generated_date', 1);
+      
+      return plansByCreator[0] || null;
     },
     enabled: !!user?.email
   });
