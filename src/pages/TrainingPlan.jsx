@@ -46,7 +46,7 @@ export default function TrainingPlan() {
         if (lastCheck !== today) {
           setShowReadinessCheck(true);
         } else {
-          setReadinessStatus(currentUser.daily_readiness_status);
+          setReadinessStatus(currentUser.current_readiness_status);
         }
       } catch (e) {
         window.location.href = createPageUrl('Landing');
@@ -135,7 +135,7 @@ export default function TrainingPlan() {
     // Refresh user data to get updated readiness status
     try {
       const updatedUser = await base44.auth.me();
-      setReadinessStatus(updatedUser.daily_readiness_status);
+      setReadinessStatus(updatedUser.current_readiness_status);
     } catch (e) {
       console.error('Error refreshing user:', e);
     }
