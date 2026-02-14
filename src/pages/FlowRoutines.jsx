@@ -3,15 +3,18 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { createPageUrl } from '@/utils';
-import { ArrowLeft, Clock, Play, CheckCircle2 } from 'lucide-react';
+import { ArrowLeft, Clock, Play, CheckCircle2, AlertTriangle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { PaginationControls } from '../components/ui/pagination-controls';
+import DailyReadinessCheck from '../components/dashboard/DailyReadinessCheck';
 
 export default function FlowRoutines() {
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
+  const [showReadinessCheck, setShowReadinessCheck] = useState(false);
+  const [readinessStatus, setReadinessStatus] = useState(null);
   const itemsPerPage = 12;
 
   useEffect(() => {
@@ -23,6 +26,16 @@ export default function FlowRoutines() {
           return;
         }
         setUser(currentUser);
+        
+        // Check if readiness check needed for today
+        const today = new Date().toISOString().split('T')[0];
+        const lastCheck = currentUser.last_readiness_check;
+        
+        if (lastCheck !== today) {
+          setShowReadinessCheck(true);
+        } else {
+          setReadinessStatus(currentUser.current_readiness_status);
+        }
       } catch (e) {
         window.location.href = createPageUrl('Landing');
       } finally {
@@ -51,6 +64,17 @@ export default function FlowRoutines() {
   useEffect(() => {
     setCurrentPage(1);
   }, [selectedCategory]);
+
+  const handleReadinessCheckClose = async () => {
+    setShowReadinessCheck(false);
+    // Refresh user data to get updated readiness status
+    try {
+      const updatedUser = await base44.auth.me();
+      setReadinessStatus(updatedUser.current_readiness_status);
+    } catch (e) {
+      console.error('Error refreshing user:', e);
+    }
+  };
 
   if (isLoading || !user) {
     return <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950" />;
@@ -99,8 +123,32 @@ export default function FlowRoutines() {
   const endIndex = startIndex + itemsPerPage;
   const paginatedRoutines = categoryRoutines.slice(startIndex, endIndex);
 
+  // Filter routines based on readiness status
+  const shouldDisableRoutine = (routine) => {
+    if (!readinessStatus) return false;
+    
+    // Red status: disable high intensity routines
+    if (readinessStatus === 'red' && routine.intensity_level === 'high') {
+      return true;
+    }
+    
+    // Yellow status: warn for high intensity
+    if (readinessStatus === 'yellow' && routine.intensity_level === 'high') {
+      return false; // Don't disable, but show warning
+    }
+    
+    return false;
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 pb-20 md:pb-6">
+      {/* Readiness Check Modal */}
+      <AnimatePresence>
+        {showReadinessCheck && (
+          <DailyReadinessCheck user={user} onClose={handleReadinessCheckClose} />
+        )}
+      </AnimatePresence>
+
       {/* Header */}
       <div className="sticky top-0 z-40 bg-slate-900 border-b border-cyan-500/20">
         <div className="max-w-6xl mx-auto px-4 py-4">
@@ -123,6 +171,50 @@ export default function FlowRoutines() {
 
       {/* Main Content */}
       <div className="max-w-6xl mx-auto px-4 py-8">
+        {/* Readiness Recommendation */}
+        {readinessStatus && !selectedCategory && (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className={`mb-6 glass rounded-xl p-6 border ${
+              readinessStatus === 'green'
+                ? 'border-green-500/30 bg-gradient-to-r from-green-500/10 to-transparent'
+                : readinessStatus === 'yellow' 
+                ? 'border-amber-500/30 bg-gradient-to-r from-amber-500/10 to-transparent'
+                : 'border-red-500/30 bg-gradient-to-r from-red-500/10 to-transparent'
+            }`}
+          >
+            <div className="flex items-start gap-3">
+              {readinessStatus === 'green' ? (
+                <CheckCircle2 className="w-6 h-6 flex-shrink-0 text-green-400" />
+              ) : (
+                <AlertTriangle className={`w-6 h-6 flex-shrink-0 ${
+                  readinessStatus === 'yellow' ? 'text-amber-400' : 'text-red-400'
+                }`} />
+              )}
+              <div>
+                <h3 className={`font-bold mb-2 ${
+                  readinessStatus === 'green' ? 'text-green-400' :
+                  readinessStatus === 'yellow' ? 'text-amber-400' : 'text-red-400'
+                }`}>
+                  {readinessStatus === 'green' 
+                    ? 'Perfekte Tagesform! 💪' 
+                    : readinessStatus === 'yellow' 
+                    ? 'Moderate Belastung empfohlen ⚡' 
+                    : 'Fokus auf sanfte Routinen 🛑'}
+                </h3>
+                <p className="text-slate-300 text-sm leading-relaxed">
+                  {readinessStatus === 'green'
+                    ? 'Dein System ist bereit. Wähle jede Routine, die du möchtest.'
+                    : readinessStatus === 'yellow'
+                    ? 'Wähle heute moderate Routinen. Intensive Flows kannst du machen, aber höre auf deinen Körper.'
+                    : 'Intensive Routinen sind heute ausgegraut. Fokussiere dich auf Atemtechniken, sanfte Mobilität und MFR.'}
+                </p>
+              </div>
+            </div>
+          </motion.div>
+        )}
+
         <AnimatePresence mode="wait">
           {!selectedCategory ? (
             // Category Selection View
@@ -181,33 +273,62 @@ export default function FlowRoutines() {
               {/* Routines Grid */}
               <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 {paginatedRoutines.length > 0 ? (
-                  paginatedRoutines.map((routine, idx) => (
+                  paginatedRoutines.map((routine, idx) => {
+                    const isDisabled = shouldDisableRoutine(routine);
+                    const showWarning = readinessStatus === 'yellow' && routine.intensity_level === 'high';
+                    
+                    return (
                     <motion.div
                       key={routine.id}
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: idx * 0.05 }}
-                      className="glass rounded-xl border border-slate-700 p-6 hover:border-slate-600 transition-all group flex flex-col h-full"
+                      className={`glass rounded-xl border p-6 transition-all group flex flex-col h-full ${
+                        isDisabled 
+                          ? 'border-slate-800 opacity-50 cursor-not-allowed' 
+                          : 'border-slate-700 hover:border-slate-600'
+                      }`}
                     >
                       <div className="flex-1 mb-4">
-                        <h3 className="text-base font-bold text-white mb-2">{routine.routine_name}</h3>
-                        <p className="text-sm text-slate-400 line-clamp-3">{routine.description}</p>
+                        <div className="flex items-start justify-between gap-2 mb-2">
+                          <h3 className={`text-base font-bold ${isDisabled ? 'text-slate-500' : 'text-white'}`}>
+                            {routine.routine_name}
+                          </h3>
+                          {showWarning && (
+                            <AlertTriangle className="w-4 h-4 text-amber-400 flex-shrink-0" />
+                          )}
+                        </div>
+                        <p className={`text-sm line-clamp-3 ${isDisabled ? 'text-slate-600' : 'text-slate-400'}`}>
+                          {routine.description}
+                        </p>
+                        {isDisabled && (
+                          <p className="text-xs text-red-400 mt-2">
+                            🛑 Heute nicht empfohlen
+                          </p>
+                        )}
+                        {showWarning && !isDisabled && (
+                          <p className="text-xs text-amber-400 mt-2">
+                            ⚠️ Mit Vorsicht durchführen
+                          </p>
+                        )}
                       </div>
                       <div className="flex items-center justify-between pt-4 border-t border-slate-700">
-                        <div className="flex items-center gap-2 text-sm text-slate-400">
+                        <div className={`flex items-center gap-2 text-sm ${isDisabled ? 'text-slate-600' : 'text-slate-400'}`}>
                           <Clock className="w-4 h-4" />
                           <span>{routine.total_duration} Min</span>
                         </div>
                         <Button
-                          onClick={() => window.location.href = createPageUrl(`Flow?routine_id=${routine.id}`)}
+                          onClick={() => !isDisabled && (window.location.href = createPageUrl(`Flow?routine_id=${routine.id}`))}
                           size="sm"
-                          className={`${selectedCategory.color.button}`}
+                          disabled={isDisabled}
+                          className={`${isDisabled ? 'opacity-30' : selectedCategory.color.button}`}
                         >
                           <Play className="w-4 h-4" />
                         </Button>
                       </div>
                     </motion.div>
-                  ))
+                    );
+                  })
                 ) : (
                   <div className="glass rounded-xl border border-slate-700 p-6 text-center col-span-full">
                     <p className="text-slate-400">Keine Routinen in dieser Kategorie. Mehr folgen bald!</p>
