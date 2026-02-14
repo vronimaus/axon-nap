@@ -170,45 +170,45 @@ export default function DiagnosisChat() {
      (data) => {
        const newMessages = data.messages || [];
        setMessages(newMessages);
-       setLoading(false);
-       
-       // Check last assistant message for workflow triggers
+
+       // Only process triggers when NOT loading (message is complete)
        const lastMessage = newMessages[newMessages.length - 1];
-       if (lastMessage?.role === 'assistant' && lastMessage?.content) {
+       const isMessageComplete = lastMessage?.role === 'assistant' && 
+         !lastMessage?.tool_calls?.some(tc => tc.status === 'running' || tc.status === 'pending');
+
+       if (!isMessageComplete) return;
+
+       setLoading(false);
+
+       // Check last assistant message for workflow triggers
+       if (lastMessage?.content) {
          const content = lastMessage.content;
 
-         // Trigger workflow steps based on agent's response
-         // Check in all workflow modes (not just 'chat') to ensure transitions work
-         if (content.includes('[TRIGGER_BODY_MAP]') && workflowStep === 'chat') {
-           setWorkflowStep('body_map');
-         } else if (content.includes('[TRIGGER_INTENSITY]')) {
-           setWorkflowStep('intensity');
-         } else if (content.includes('[TRIGGER_RETEST]')) {
-           setWorkflowStep('post_exercise_feedback');
-         } else if (content.includes('[TRIGGER_CHAIN_SCAN]')) {
-           setWorkflowStep('chain_scan');
+         // Priority-based trigger detection (most specific first)
+         if (content.includes('[CREATE_REHAB_PLAN]')) {
+           setWorkflowStep('rehab_plan_created');
          } else if (content.includes('[SHOW_DIAGNOSIS_CARD]')) {
-           // Extract full diagnosis text (everything before the trigger)
            const diagnosisText = content.split('[SHOW_DIAGNOSIS_CARD]')[0].trim();
            setDiagnosisCardData({
              title: 'Deine AXON-Diagnose',
              analysis: diagnosisText
            });
-           // Move to analysis card focus screen
            setWorkflowStep('analysis_card');
-         } else if (
-           content.includes('[CREATE_REHAB_PLAN]') || 
-           content.includes('Dein umfassender Reha-Plan wurde erstellt') ||
-           (content.includes('Phase 3: Langfristige Prävention') && content.includes('Ich erstelle jetzt einen umfassenden Reha-Plan'))
-         ) {
-           setWorkflowStep('rehab_plan_created');
+         } else if (content.includes('[TRIGGER_CHAIN_SCAN]')) {
+           setWorkflowStep('chain_scan');
+         } else if (content.includes('[TRIGGER_RETEST]')) {
+           setWorkflowStep('post_exercise_feedback');
+         } else if (content.includes('[TRIGGER_INTENSITY]')) {
+           setWorkflowStep('intensity');
+         } else if (content.includes('[TRIGGER_BODY_MAP]') && workflowStep === 'chat') {
+           setWorkflowStep('body_map');
          }
        }
      }
    );
 
    return () => unsubscribe();
-  }, [conversation?.id]);
+  }, [conversation?.id, workflowStep]);
 
   // Auto-scroll to bottom (optimized with debounce)
   useEffect(() => {
