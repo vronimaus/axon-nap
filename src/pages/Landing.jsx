@@ -659,8 +659,9 @@ export default function Landing() {
           </p>
           <div className="text-center mb-8">
             <p className="text-sm text-amber-400 font-semibold">
-              🚀 Launch-Special: Nur für die ersten 1.000 Founding Members
+              🚀 Launch-Special: Nur für die ersten 1.000 Members
             </p>
+            <p className="text-xs text-slate-500 mt-2">⏰ Noch 351 Plätze zum Sonderpreis verfügbar</p>
           </div>
 
           <div className="grid md:grid-cols-2 gap-8">
@@ -724,7 +725,8 @@ export default function Landing() {
                   <span className="text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-orange-400">59€</span>
                   <span className="text-slate-400">einmalig</span>
                 </div>
-                <p className="text-xs text-amber-400 font-semibold">Du sparst 90€ als Founding Member</p>
+                <p className="text-xs text-amber-400 font-semibold">Du sparst 90€ als Early Member</p>
+                <p className="text-xs text-slate-500 mt-2">⏰ Nur noch 351 Plätze zu diesem Preis</p>
               </div>
               <ul className="space-y-3 mb-8">
                 <li className="flex items-start gap-2 text-slate-300">
