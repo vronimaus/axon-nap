@@ -318,10 +318,10 @@ export default function DiagnosisChat() {
 
   const handlePostExerciseFeedback = async () => {
     if (!input.trim() || !conversation) return;
-    
-    setLoading(true);
+
     const messageText = input.trim();
     setInput('');
+    setLoading(true);
 
     try {
       await base44.agents.addMessage(conversation, {
@@ -337,10 +337,10 @@ export default function DiagnosisChat() {
 
   const handleFollowUpSubmit = async () => {
     if (!input.trim() || !conversation) return;
-    
-    setLoading(true);
+
     const messageText = input.trim();
     setInput('');
+    setLoading(true);
 
     try {
       await base44.agents.addMessage(conversation, {
@@ -420,45 +420,40 @@ export default function DiagnosisChat() {
         instruction="Fühlen sich deine Beschwerden nun leichter oder schwerer an und gab es Schwierigkeiten oder Spannungen bei der Ausführung der Übungen?"
         showBackButton={false}
       >
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="w-full max-w-2xl mx-auto"
-        >
-          <div className="glass rounded-2xl p-4 border border-cyan-500/30">
-            <Textarea
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' && !e.shiftKey) {
-                  e.preventDefault();
-                  handlePostExerciseFeedback();
-                }
-              }}
-              placeholder="Z.B. 'Es fühlt sich leichter an, aber ich hatte Schwierigkeiten bei der zweiten Übung im Nacken...'"
-              className="w-full min-h-[120px] bg-slate-900/50 border-slate-700 text-slate-200 placeholder:text-slate-500 resize-none mb-3"
-              disabled={loading}
-              autoFocus
-            />
-            <Button
-              onClick={handlePostExerciseFeedback}
-              disabled={!input.trim() || loading}
-              className="w-full h-12 bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-600 hover:to-purple-700 text-white font-semibold"
-            >
-              {loading ? (
-                <>
-                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  Wird gesendet...
-                </>
-              ) : (
-                <>
-                  Weiter zur Kettenanalyse
-                  <Send className="w-5 h-5 ml-2" />
-                </>
-              )}
-            </Button>
-          </div>
-        </motion.div>
+        {loading ? (
+          <DiagnosisLoadingAnimation message="Analysiere dein Feedback..." />
+        ) : (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="w-full max-w-2xl mx-auto"
+          >
+            <div className="glass rounded-2xl p-4 border border-cyan-500/30">
+              <Textarea
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    handlePostExerciseFeedback();
+                  }
+                }}
+                placeholder="Z.B. 'Es fühlt sich leichter an, aber ich hatte Schwierigkeiten bei der zweiten Übung im Nacken...'"
+                className="w-full min-h-[120px] bg-slate-900/50 border-slate-700 text-slate-200 placeholder:text-slate-500 resize-none mb-3"
+                disabled={loading}
+                autoFocus
+              />
+              <Button
+                onClick={handlePostExerciseFeedback}
+                disabled={!input.trim() || loading}
+                className="w-full h-12 bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-600 hover:to-purple-700 text-white font-semibold"
+              >
+                Weiter zur Kettenanalyse
+                <Send className="w-5 h-5 ml-2" />
+              </Button>
+            </div>
+          </motion.div>
+        )}
       </FocusScreenContainer>
     );
   }
@@ -621,71 +616,66 @@ export default function DiagnosisChat() {
         instruction="Beantworte kurz, damit wir weiter analysieren können"
         showBackButton={false}
       >
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="w-full max-w-2xl mx-auto space-y-6"
-        >
-          {/* Last Agent Message */}
-          {lastMsgContent && (
-            <div className="glass rounded-2xl p-6 border border-cyan-500/30">
-              <ReactMarkdown
-                className="text-slate-300 prose prose-sm prose-invert max-w-none"
-                components={{
-                  p: ({ children }) => {
-                    const cleanChildren = typeof children === 'string' 
-                      ? children
-                          .replace(/\[TRIGGER_BODY_MAP\]/g, '')
-                          .replace(/\[TRIGGER_INTENSITY\]/g, '')
-                          .replace(/\[TRIGGER_RETEST\]/g, '')
-                          .replace(/\[SHOW_DIAGNOSIS_CARD\][\s\S]*/g, '')
-                          .trim()
-                      : children;
-                    return cleanChildren ? <p className="mb-3">{cleanChildren}</p> : null;
-                  },
-                  strong: ({ children }) => <strong className="text-cyan-400">{children}</strong>
-                }}
-              >
-                {lastMsgContent}
-              </ReactMarkdown>
-            </div>
-          )}
+        {loading ? (
+          <DiagnosisLoadingAnimation message="Erstelle deinen Plan..." />
+        ) : (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="w-full max-w-2xl mx-auto space-y-6"
+          >
+            {/* Last Agent Message */}
+            {lastMsgContent && (
+              <div className="glass rounded-2xl p-6 border border-cyan-500/30">
+                <ReactMarkdown
+                  className="text-slate-300 prose prose-sm prose-invert max-w-none"
+                  components={{
+                    p: ({ children }) => {
+                      const cleanChildren = typeof children === 'string' 
+                        ? children
+                            .replace(/\[TRIGGER_BODY_MAP\]/g, '')
+                            .replace(/\[TRIGGER_INTENSITY\]/g, '')
+                            .replace(/\[TRIGGER_RETEST\]/g, '')
+                            .replace(/\[SHOW_DIAGNOSIS_CARD\][\s\S]*/g, '')
+                            .trim()
+                        : children;
+                      return cleanChildren ? <p className="mb-3">{cleanChildren}</p> : null;
+                    },
+                    strong: ({ children }) => <strong className="text-cyan-400">{children}</strong>
+                  }}
+                >
+                  {lastMsgContent}
+                </ReactMarkdown>
+              </div>
+            )}
 
-          {/* Minimal Input */}
-          <div className="glass rounded-2xl p-4 border border-cyan-500/30">
-            <Textarea
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' && !e.shiftKey) {
-                  e.preventDefault();
-                  handleFollowUpSubmit();
-                }
-              }}
-              placeholder="Deine Antwort..."
-              className="w-full min-h-[80px] bg-slate-900/50 border-slate-700 text-slate-200 placeholder:text-slate-500 resize-none mb-3"
-              disabled={loading}
-              autoFocus
-            />
-            <Button
-              onClick={handleFollowUpSubmit}
-              disabled={!input.trim() || loading}
-              className="w-full h-12 bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-600 hover:to-purple-700 text-white font-semibold"
-            >
-              {loading ? (
-                <>
-                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  Wird gesendet...
-                </>
-              ) : (
-                <>
-                  Senden
-                  <Send className="w-5 h-5 ml-2" />
-                </>
-              )}
-            </Button>
-          </div>
-        </motion.div>
+            {/* Minimal Input */}
+            <div className="glass rounded-2xl p-4 border border-cyan-500/30">
+              <Textarea
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    handleFollowUpSubmit();
+                  }
+                }}
+                placeholder="Deine Antwort..."
+                className="w-full min-h-[80px] bg-slate-900/50 border-slate-700 text-slate-200 placeholder:text-slate-500 resize-none mb-3"
+                disabled={loading}
+                autoFocus
+              />
+              <Button
+                onClick={handleFollowUpSubmit}
+                disabled={!input.trim() || loading}
+                className="w-full h-12 bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-600 hover:to-purple-700 text-white font-semibold"
+              >
+                Senden
+                <Send className="w-5 h-5 ml-2" />
+              </Button>
+            </div>
+          </motion.div>
+        )}
       </FocusScreenContainer>
     );
   }
