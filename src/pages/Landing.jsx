@@ -158,11 +158,11 @@ export default function Landing() {
             className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight"
           >
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400">
-              Bewegung neu definiert.
+              Verstehe dein System.
             </span>
             <br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-orange-400">
-              Schmerz an der Wurzel lösen.
+              Optimiere deine Bewegung.
             </span>
           </motion.h1>
 
@@ -172,7 +172,7 @@ export default function Landing() {
             transition={{ delay: 0.2 }}
             className="text-lg md:text-xl text-slate-300 mb-10 max-w-3xl mx-auto leading-relaxed"
           >
-            AXON vereint die Logik der Physiotherapie mit modernem Nervensystem-Training. Ein intelligenter Dialog für deinen Körper – jederzeit griffbereit.
+            Werde dein eigener Experte. AXON nutzt die Prinzipien der Neuro-Athletik, um neuronale Bremsen zu lösen – für absolute Freiheit im Alltag und maximale Präzision im Sport.
           </motion.p>
 
           <motion.div
@@ -222,7 +222,7 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* SEKTION 2: WAS IST AXON? - NEU */}
+      {/* SEKTION 2: WARUM AXON? - Autonomie-Faktor */}
       <section className="py-20 relative">
         <div className="max-w-4xl mx-auto px-4">
           <motion.div
@@ -232,10 +232,13 @@ export default function Landing() {
             className="text-center mb-12"
           >
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
-              Was ist AXON?
+              Warum AXON?
             </h2>
-            <p className="text-xl text-slate-300 leading-relaxed max-w-3xl mx-auto">
-              AXON ist mehr als eine Trainings-App. Es ist dein <span className="text-cyan-400 font-semibold">persönlicher System-Spezialist</span>. Anstatt nur Symptome zu behandeln, führt dich AXON durch einen interaktiven Prozess, um Blockaden in deinen Kraftketten zu finden und gezielt zu lösen.
+            <h3 className="text-2xl md:text-3xl font-bold text-cyan-400 mb-6">
+              Schluss mit dem Wartezimmer. Willkommen im System-Check.
+            </h3>
+            <p className="text-xl text-slate-300 leading-relaxed max-w-3xl mx-auto mb-8">
+              Du kennst deinen Körper am besten – AXON liefert dir das Werkzeug, um ihn zu steuern. Ob es das Zwicken im unteren Rücken nach dem Büro ist oder das Leistungsplateau beim Training: Die Ursache liegt fast immer in der Kommunikation zwischen Gehirn und Muskulatur.
             </p>
           </motion.div>
 
@@ -244,14 +247,14 @@ export default function Landing() {
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="glass rounded-2xl border border-cyan-500/30 p-6 text-center"
+              className="glass rounded-2xl border border-cyan-500/30 p-6"
             >
               <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-cyan-500 to-cyan-600 flex items-center justify-center mb-4 mx-auto">
-                <Brain className="w-8 h-8 text-white" />
+                <Zap className="w-8 h-8 text-white" />
               </div>
-              <h3 className="text-xl font-bold text-cyan-400 mb-3">Intelligenter Diagnose-Chat</h3>
-              <p className="text-slate-300 text-sm">
-                Kein langes Suchen. Ein digitaler Assistent analysiert deine Bewegung und findet die Ursache für deine Beschwerden.
+              <h3 className="text-xl font-bold text-cyan-400 mb-3 text-center">Kein Warten mehr</h3>
+              <p className="text-slate-300 text-sm leading-relaxed">
+                Löse Spannungen genau dann, wenn sie entstehen. 24/7, direkt in deiner Hosentasche.
               </p>
             </motion.div>
 
@@ -260,14 +263,14 @@ export default function Landing() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.1 }}
-              className="glass rounded-2xl border border-purple-500/30 p-6 text-center"
+              className="glass rounded-2xl border border-purple-500/30 p-6"
             >
               <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center mb-4 mx-auto">
-                <Shield className="w-8 h-8 text-white" />
+                <Brain className="w-8 h-8 text-white" />
               </div>
-              <h3 className="text-xl font-bold text-purple-400 mb-3">Präzision ohne Ablenkung</h3>
-              <p className="text-slate-300 text-sm">
-                Wir verzichten auf schnelle Videos. Klare, hochwertige Illustrationen zeigen dir exakt, was zu tun ist – in deinem eigenen Tempo.
+              <h3 className="text-xl font-bold text-purple-400 mb-3 text-center">Kein Rätselraten</h3>
+              <p className="text-slate-300 text-sm leading-relaxed">
+                Der intelligente Diagnose-Chat findet die Schwachstelle in deiner Kette, während andere noch Symptome massieren.
               </p>
             </motion.div>
 
@@ -276,26 +279,26 @@ export default function Landing() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.2 }}
-              className="glass rounded-2xl border border-amber-500/30 p-6 text-center"
+              className="glass rounded-2xl border border-amber-500/30 p-6"
             >
               <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-amber-500 to-amber-600 flex items-center justify-center mb-4 mx-auto">
-                <Zap className="w-8 h-8 text-white" />
+                <Shield className="w-8 h-8 text-white" />
               </div>
-              <h3 className="text-xl font-bold text-amber-400 mb-3">Unabhängigkeit</h3>
-              <p className="text-slate-300 text-sm">
-                Warte nicht auf Termine. Werde dein eigener Experte und hilf dir selbst, wann und wo du es brauchst.
+              <h3 className="text-xl font-bold text-amber-400 mb-3 text-center">Echte Expertise</h3>
+              <p className="text-slate-300 text-sm leading-relaxed">
+                Wir geben dir nicht nur Übungen, sondern das Wissen dahinter. Verstehe, wie deine Augen, dein Gleichgewicht und dein Gewebe zusammenspielen.
               </p>
             </motion.div>
           </div>
         </div>
       </section>
 
-      {/* SEKTION 3: METHODIK */}
+      {/* SEKTION 3: IN 3 SCHRITTEN ZUR MEISTERSCHAFT */}
       <section className="py-20 relative bg-slate-900/30">
         <div className="max-w-5xl mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
-              Die AXON-Methode: Das 3-Stufen-Protokoll
+              In 3 Schritten zur Meisterschaft
             </h2>
             <p className="text-slate-400 mt-4 max-w-3xl mx-auto">
               Dein Körper funktioniert in Ketten. AXON optimiert jede Ebene für ein reibungsloses Zusammenspiel.
@@ -303,7 +306,7 @@ export default function Landing() {
           </div>
 
           <div className="grid md:grid-cols-3 gap-6">
-            {/* Hardware */}
+            {/* System-Audit */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -313,13 +316,13 @@ export default function Landing() {
               <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center mb-6">
                 <Wrench className="w-6 h-6 text-white" />
               </div>
-              <h3 className="text-2xl font-bold text-orange-400 mb-3">Basis-Korrektur (Gewebe)</h3>
+              <h3 className="text-2xl font-bold text-orange-400 mb-3">System-Audit (Der Dialog)</h3>
               <p className="text-slate-300">
-                Wir lösen mechanische Spannungen an 12 strategischen Punkten (AXON Nodes). Das befreit dein Bindegewebe und verbessert die Signalqualität an dein Gehirn.
+                Per Chat analysieren wir deinen aktuellen Status. Wir scannen deine Kraftketten (Front-Drive, Back-Power, Torque-Flow) und identifizieren die neuronale Bremse.
               </p>
             </motion.div>
 
-            {/* Software */}
+            {/* Bio-Sync */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -330,9 +333,9 @@ export default function Landing() {
               <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-cyan-500 to-cyan-600 flex items-center justify-center mb-6">
                 <Brain className="w-6 h-6 text-white" />
               </div>
-              <h3 className="text-2xl font-bold text-cyan-400 mb-3">Steuerungs-Update (Nerven)</h3>
+              <h3 className="text-2xl font-bold text-cyan-400 mb-3">Bio-Sync (Die Kalibrierung)</h3>
               <p className="text-slate-300">
-                Über gezielte Impulse für Augen und Gleichgewicht signalisieren wir deinem Nervensystem „Sicherheit". Dein Gehirn lässt die Schutzspannung los und gibt neue Bewegungsfreiheit frei.
+                Vor jeder Einheit checken wir deine Tagesform. Wir passen die Belastung in Echtzeit an dein Nervensystem an. Das ist intelligentes Training, das dich schützt und gleichzeitig fordert.
               </p>
             </motion.div>
 
@@ -347,9 +350,9 @@ export default function Landing() {
               <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center mb-6">
                 <Dumbbell className="w-6 h-6 text-white" />
               </div>
-              <h3 className="text-2xl font-bold text-purple-400 mb-3">Festigung (Integration)</h3>
+              <h3 className="text-2xl font-bold text-purple-400 mb-3">Integration (Das Upgrade)</h3>
               <p className="text-slate-300">
-                Wir verankern die neue Freiheit in stabilen Mustern. Dein System lernt, die gewonnene Beweglichkeit dauerhaft in Kraft und schmerzfreie Bewegung umzusetzen.
+                Wir festigen die neue Bewegungsfreiheit durch gezielte Reize. Dein Gehirn lernt, dass die neue Kraft sicher ist und gibt sie dauerhaft frei.
               </p>
             </motion.div>
           </div>
@@ -425,7 +428,7 @@ export default function Landing() {
         <div className="max-w-5xl mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
-              Dein System gibt den Takt vor
+              Du verstehst dein System – AXON passt sich an
             </h2>
           </div>
 
@@ -578,10 +581,10 @@ export default function Landing() {
       <section className="py-20 relative">
         <div className="max-w-5xl mx-auto px-4">
           <h2 className="text-4xl md:text-5xl font-bold text-center text-white mb-4">
-            Warum nur 59€?
+            Werde Early Member
           </h2>
-          <p className="text-lg text-slate-300 text-center mb-12 max-w-3xl mx-auto">
-            Wir glauben, dass das Wissen über den eigenen Körper kein Luxusgut sein sollte. Während eine einzelne Sitzung beim Spezialisten oft über 100€ kostet, bieten wir dir mit AXON das gebündelte Wissen aus Biomechanik und Neurologie zum Preis eines Abendessens an. <span className="text-amber-400 font-semibold">Einmalzahlung. Kein Abo. Dein lebenslanges Upgrade.</span>
+          <p className="text-lg text-slate-300 text-center mb-8 max-w-3xl mx-auto">
+            Wir glauben an Wissen, das bleibt. Deshalb gibt es bei AXON keine Abos und keine versteckten Kosten. Du sicherst dir den lebenslangen Zugang zu deinem persönlichen System-Experten <span className="text-amber-400 font-semibold">für weniger als eine einzige Physiotherapie-Sitzung.</span>
           </p>
 
           <h3 className="text-3xl md:text-4xl font-bold text-center text-white mb-8 mt-16">
