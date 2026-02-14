@@ -74,7 +74,8 @@ export default function DailyReadinessCheck({ user, onClose }) {
 
   const handleCloseResults = () => {
     setShowResults(false);
-    onClose();
+    // Ensure state is synced before closing
+    setTimeout(() => onClose(), 100);
   };
 
   return (
