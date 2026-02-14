@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
@@ -76,26 +75,12 @@ export default function DiagnosisChat() {
   useEffect(() => {
     const initConversation = async () => {
       try {
-        // Check if we have a cached conversation to resume
-        const cachedConvId = sessionStorage.getItem('diagnosis_conversation_id');
-        
-        if (cachedConvId) {
-          try {
-            // Try to resume cached conversation
-            const cachedConv = await base44.agents.getConversation(cachedConvId);
-            setConversation(cachedConv);
-            setMessages(cachedConv.messages || []);
-            return;
-          } catch (error) {
-            console.log('Cached conversation not found, creating new one');
-            sessionStorage.removeItem('diagnosis_conversation_id');
-          }
-        }
-
-        // Clear all cached workflow state for fresh start
+        // ALWAYS clear cache for fresh start - no conversation resume
+        sessionStorage.removeItem('diagnosis_conversation_id');
         sessionStorage.removeItem('diagnosis_workflow_step');
         sessionStorage.removeItem('diagnosis_card_data');
         sessionStorage.removeItem('current_pain_map');
+        
         setWorkflowStep(mapDataParam && regionParam ? 'intensity' : 'body_map');
         setDiagnosisCardData(null);
 
