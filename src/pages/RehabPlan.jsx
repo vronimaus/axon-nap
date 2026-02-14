@@ -30,12 +30,12 @@ export default function RehabPlan() {
         
         // Check if readiness check needed for today
         const today = new Date().toISOString().split('T')[0];
-        const lastCheck = currentUser.last_readiness_check;
+        const lastCheck = currentUser.last_daily_check_date;
         
         if (lastCheck !== today) {
           setShowReadinessCheck(true);
         } else {
-          setReadinessStatus(currentUser.daily_readiness_status);
+          setReadinessStatus(currentUser.current_readiness_status);
         }
       } catch (e) {
         window.location.href = createPageUrl('Landing');
@@ -160,7 +160,8 @@ export default function RehabPlan() {
     // Refresh user data to get updated readiness status
     try {
       const updatedUser = await base44.auth.me();
-      setReadinessStatus(updatedUser.daily_readiness_status);
+      setReadinessStatus(updatedUser.current_readiness_status);
+      setUser(updatedUser);
     } catch (e) {
       console.error('Error refreshing user:', e);
     }
@@ -190,8 +191,9 @@ export default function RehabPlan() {
     );
   }
 
-  // Show completion banner if plan is completed, but still allow viewing
-  const showCompletionBanner = rehabPlan.status === 'completed';
+  // Show completion banner if plan is completed AND all phases are done
+  const allPhasesCompleted = (rehabPlan.current_phase || 1) >= rehabPlan.phases.length;
+  const showCompletionBanner = rehabPlan.status === 'completed' && allPhasesCompleted;
 
   const currentPhaseIndex = (rehabPlan.current_phase || 1) - 1;
   const currentPhase = rehabPlan.phases[currentPhaseIndex] || rehabPlan.phases[0];
