@@ -28,9 +28,21 @@ export default function RehabPlan() {
         }
         setUser(currentUser);
         
-        // Always show readiness check on RehabPlan page
-        setShowReadinessCheck(true);
-        setReadinessStatus(currentUser.current_readiness_status);
+        // Check if readiness check already done today (via sessionStorage)
+        const today = new Date().toISOString().split('T')[0];
+        const checkDone = sessionStorage.getItem('readiness_check_done');
+        
+        if (checkDone !== today) {
+          const lastCheck = currentUser.last_readiness_check;
+          if (lastCheck !== today) {
+            setShowReadinessCheck(true);
+          } else {
+            setReadinessStatus(currentUser.current_readiness_status);
+            sessionStorage.setItem('readiness_check_done', today);
+          }
+        } else {
+          setReadinessStatus(currentUser.current_readiness_status);
+        }
       } catch (e) {
         window.location.href = createPageUrl('Landing');
       } finally {
@@ -162,6 +174,9 @@ export default function RehabPlan() {
 
   const handleReadinessCheckClose = async () => {
     setShowReadinessCheck(false);
+    // Mark check as done for today
+    const today = new Date().toISOString().split('T')[0];
+    sessionStorage.setItem('readiness_check_done', today);
     // Refresh user data to get updated readiness status
     try {
       const updatedUser = await base44.auth.me();
