@@ -80,9 +80,28 @@ export default function DiagnosisChat() {
         sessionStorage.removeItem('diagnosis_workflow_step');
         sessionStorage.removeItem('diagnosis_card_data');
         sessionStorage.removeItem('current_pain_map');
-        
+
         setWorkflowStep(mapDataParam && regionParam ? 'intensity' : 'body_map');
         setDiagnosisCardData(null);
+
+        // Archive any active RehabPlans before starting new diagnosis
+        try {
+          const currentUser = await base44.auth.me();
+          if (currentUser?.email) {
+            const activePlans = await base44.entities.RehabPlan.filter({
+              user_email: currentUser.email,
+              status: 'active'
+            });
+
+            for (const plan of activePlans) {
+              await base44.entities.RehabPlan.update(plan.id, {
+                status: 'completed'
+              });
+            }
+          }
+        } catch (archiveError) {
+          console.log('No active plans to archive or user not logged in');
+        }
 
         const isContinuation = sessionId && searchParams.get('continue') === 'true';
 

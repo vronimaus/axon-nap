@@ -45,7 +45,8 @@ export default function RehabPlan() {
     queryFn: async () => {
       if (!user?.email) return null;
       const plans = await base44.entities.RehabPlan.filter({
-        user_email: user.email
+        user_email: user.email,
+        status: 'active'
       }, '-plan_generated_date', 1);
       return plans[0] || null;
     },
