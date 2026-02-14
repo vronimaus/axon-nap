@@ -28,15 +28,9 @@ export default function RehabPlan() {
         }
         setUser(currentUser);
         
-        // Check if readiness check needed for today
-        const today = new Date().toISOString().split('T')[0];
-        const lastCheck = currentUser.last_daily_check_date;
-        
-        if (lastCheck !== today) {
-          setShowReadinessCheck(true);
-        } else {
-          setReadinessStatus(currentUser.current_readiness_status);
-        }
+        // Always show readiness check on RehabPlan page
+        setShowReadinessCheck(true);
+        setReadinessStatus(currentUser.current_readiness_status);
       } catch (e) {
         window.location.href = createPageUrl('Landing');
       } finally {
