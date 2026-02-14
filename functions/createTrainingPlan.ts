@@ -107,7 +107,7 @@ async function generateComplementaryDrills(user, goal_description, base44) {
             });
         }
         
-        // 3. Fascial chain drill if complaints present
+        // 2. Fascial chain drill if complaints present
         if (complaintHistory.length > 0) {
             const recentComplaint = complaintHistory[0];
             const location = recentComplaint.location?.toLowerCase() || '';
@@ -135,7 +135,7 @@ async function generateComplementaryDrills(user, goal_description, base44) {
             }
         }
         
-        // 4. Neuro drill for athletic performance
+        // 3. Neuro drill for athletic performance
         if (activityLevel === 'very_active' || activityLevel === 'athlete') {
             drills.push({
                 exercise_id: 'vestibular_drill',
@@ -165,6 +165,167 @@ async function generateComplementaryDrills(user, goal_description, base44) {
         console.error('Error generating complementary drills:', error);
         // Return empty array on error - complementary drills are optional
         return [];
+    }
+}
+
+// Helper function to generate training plan phases via LLM
+async function generateTrainingPlanPhases(user, goal_description, training_frequency, base44) {
+    try {
+        // Fetch user context
+        const neuroProfiles = await base44.asServiceRole.entities.UserNeuroProfile.filter({
+            user_email: user.email
+        });
+        const neuroProfile = neuroProfiles?.[0] || {};
+        const complaintHistory = neuroProfile?.complaint_history || [];
+        
+        // Fetch performance baselines
+        const baselines = await base44.asServiceRole.entities.PerformanceBaseline.filter({
+            user_email: user.email
+        });
+        
+        // Calculate estimated duration based on frequency
+        const frequencyMap = {
+            '2_3_times_week': 8,
+            '4_5_times_week': 6,
+            'daily': 4
+        };
+        const estimated_duration_weeks = frequencyMap[training_frequency] || 8;
+        
+        // Build context for LLM
+        let contextInfo = `User Goal: ${goal_description}\n`;
+        contextInfo += `Training Frequency: ${training_frequency}\n`;
+        contextInfo += `Estimated Duration: ${estimated_duration_weeks} weeks\n\n`;
+        
+        if (baselines.length > 0) {
+            contextInfo += `Current Performance Baselines:\n`;
+            baselines.forEach(b => {
+                contextInfo += `- ${b.test_name}: ${b.result_value} ${b.result_unit} (Level: ${b.baseline_level})\n`;
+            });
+            contextInfo += '\n';
+        }
+        
+        if (complaintHistory.length > 0) {
+            contextInfo += `Active Complaints:\n`;
+            complaintHistory.forEach(c => {
+                if (c.status === 'active') {
+                    contextInfo += `- ${c.location} (Intensity: ${c.intensity}/10)\n`;
+                }
+            });
+            contextInfo += '\n';
+        }
+        
+        const prompt = `${contextInfo}
+Create a detailed 3-phase training plan to achieve: "${goal_description}"
+
+CRITICAL REQUIREMENTS:
+1. Exercises MUST be 100% SPECIFIC to the goal "${goal_description}" - NOT generic pull-up progressions
+2. If goal is "Pistol Squat" → squat progressions, single-leg work, ankle/hip mobility
+3. If goal is "Handstand" → wrist prep, shoulder stability, wall handstand progressions, kick-up drills
+4. If goal is "10 Klimmzüge" → pull-up progressions (negatives, bands, assisted, full pull-ups)
+5. If goal is "Middle Split" → hip mobility, adductor stretching, active flexibility
+6. Take into account user's current baselines and complaints
+7. Use AXON methodology: Hardware (Mobility) → Software (Neuro-Reset) → Integration (Strength)
+
+Return ONLY valid JSON (no markdown, no code blocks):
+{
+  "phases": [
+    {
+      "phase_number": 1,
+      "title": "Phase title in German",
+      "description": "Phase description in German - explain the focus",
+      "duration_weeks": ${Math.ceil(estimated_duration_weeks / 3)},
+      "exercises": [
+        {
+          "exercise_id": "unique_id_lowercase",
+          "name": "Exercise name in German - SPECIFIC to the goal",
+          "sets_reps_tempo": "e.g. 3 Sets × 8-12 Reps @ 2-1-2 Tempo",
+          "instruction": "Detailed step-by-step instruction in German (5-8 sentences)",
+          "notes": "Why this exercise and what to focus on (2-3 sentences in German)",
+          "cues": ["Cue 1", "Cue 2", "Cue 3", "Cue 4", "Cue 5"],
+          "common_mistakes": ["Mistake 1", "Mistake 2", "Mistake 3"],
+          "progression_strategy": "How to progress this exercise (in German)",
+          "progression_milestones": [
+            {"level": "Woche 1-2", "description": "description"},
+            {"level": "Woche 3-4", "description": "description"}
+          ],
+          "expert_insight": {
+            "quote": "Expert quote",
+            "source": "Source name - Methodology",
+            "explanation": "Why this matters (in German)"
+          },
+          "scientific_background": "Scientific explanation in German",
+          "fms_relevance": "How it relates to movement patterns (in German)",
+          "deload_protocol": "What to do when overtrained (in German)"
+        }
+      ]
+    }
+  ]
+}
+
+Each phase should have 3-4 exercises. Make phases progressive (Phase 1 = Foundation, Phase 2 = Build Strength, Phase 3 = Mastery).`;
+
+        const response = await base44.asServiceRole.integrations.Core.InvokeLLM({
+            prompt,
+            response_json_schema: {
+                type: "object",
+                properties: {
+                    phases: {
+                        type: "array",
+                        items: {
+                            type: "object",
+                            properties: {
+                                phase_number: { type: "integer" },
+                                title: { type: "string" },
+                                description: { type: "string" },
+                                duration_weeks: { type: "integer" },
+                                exercises: {
+                                    type: "array",
+                                    items: {
+                                        type: "object",
+                                        properties: {
+                                            exercise_id: { type: "string" },
+                                            name: { type: "string" },
+                                            sets_reps_tempo: { type: "string" },
+                                            instruction: { type: "string" },
+                                            notes: { type: "string" },
+                                            cues: { type: "array", items: { type: "string" } },
+                                            common_mistakes: { type: "array", items: { type: "string" } },
+                                            progression_strategy: { type: "string" },
+                                            progression_milestones: {
+                                                type: "array",
+                                                items: {
+                                                    type: "object",
+                                                    properties: {
+                                                        level: { type: "string" },
+                                                        description: { type: "string" }
+                                                    }
+                                                }
+                                            },
+                                            expert_insight: {
+                                                type: "object",
+                                                properties: {
+                                                    quote: { type: "string" },
+                                                    source: { type: "string" },
+                                                    explanation: { type: "string" }
+                                                }
+                                            },
+                                            scientific_background: { type: "string" },
+                                            fms_relevance: { type: "string" },
+                                            deload_protocol: { type: "string" }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        });
+        
+        return response.phases || [];
+    } catch (error) {
+        console.error('Error generating plan phases via LLM:', error);
+        throw error;
     }
 }
 
@@ -202,332 +363,9 @@ Deno.serve(async (req) => {
 
     const estimated_duration_weeks = frequencyMap[training_frequency] || 8;
 
-    // Define 3 phases with detailed exercises
-    const phases = [
-      {
-        phase_number: 1,
-        title: 'Fundament & Bewegungskontrolle',
-        description: 'In dieser Phase bauen wir die Grundlagen auf: Griffkraft, Schulterstabilität und korrekte Bewegungsmuster. Der Fokus liegt auf Qualität über Quantität.',
-        duration_weeks: Math.ceil(estimated_duration_weeks / 3),
-        exercises: [
-          {
-            exercise_id: 'foundation_1',
-            name: 'Negativ-Wiederholungen (Eccentric Pull-ups)',
-            sets_reps_tempo: '3 Sets × 5 Reps @ 4-5 Sekunden exzentrisch',
-            instruction: 'Startposition: Kinn über der Stange (hochspringen oder Hilfsmittel nutzen)\nBewegung: Langsam und kontrolliert über 4-5 Sekunden absenken\nEndposition: Vollständig gestreckte Arme\nPause: 90-120 Sekunden zwischen Sets\nWiederhole für 5 saubere Wiederholungen',
-            notes: 'Die exzentrische Phase ist der Schlüssel zum Aufbau von Kraft. Dein Körper kann mehr Gewicht kontrolliert absenken als hochziehen - nutze das zu deinem Vorteil.',
-            cues: [
-              'Schultern aktiv halten - nicht in die Schultern hängen',
-              'Körper bleibt stabil - kein Schwingen',
-              'Langsam und kontrolliert - 4-5 Sekunden zählen',
-              'Volle Range of Motion - bis die Arme komplett gestreckt sind',
-              'Atmen nicht vergessen - ausatmen beim Absenken'
-            ],
-            common_mistakes: [
-              'Zu schnelles Absenken - die Zeit unter Spannung ist entscheidend',
-              'Schultern hängen lassen statt aktiv zu halten',
-              'Schwung nutzen statt kontrollierter Bewegung'
-            ],
-            progression_strategy: 'Steigere zuerst die Dauer der exzentrischen Phase (bis 6-7 Sekunden), dann die Anzahl der Wiederholungen (bis 8), dann füge Gewicht hinzu (Gewichtsweste oder Gürtel).',
-            progression_milestones: [
-              { level: 'Woche 1-2', description: '3×5 @ 4 Sekunden' },
-              { level: 'Woche 3-4', description: '3×6 @ 5 Sekunden' },
-              { level: 'Woche 5-6', description: '3×8 @ 5 Sekunden oder mit 2.5kg Zusatzgewicht' }
-            ],
-            expert_insight: {
-              quote: 'Eccentric strength is the foundation of concentric power.',
-              source: 'Pavel Tsatsouline - Strength Protocol',
-              explanation: 'Die exzentrische Phase (Absenken) trainiert die Muskulatur unter maximaler Spannung und aktiviert mehr Muskelfasern als die konzentrische Phase (Hochziehen). Dadurch baust du schneller Kraft auf und vorbereitest den Körper auf vollständige Pull-ups.'
-            },
-            scientific_background: 'Exzentrisches Training erzeugt größere Kraftzuwächse als konzentrisches Training, da es zu mehr Mikrotrauma in den Muskelfasern führt und die neuronale Anpassung verstärkt.',
-            fms_relevance: 'Trainiert das Pull-Pattern und verbessert die Schulterstabilität, essentiell für FMS Shoulder Mobility Pattern.',
-            deload_protocol: 'Bei Übertraining: Reduziere auf 2×3 @ 3 Sekunden für eine Woche'
-          },
-          {
-            exercise_id: 'foundation_2',
-            name: 'Dead Hang (Aktives Hängen)',
-            sets_reps_tempo: '3 Sets × 30-60 Sekunden',
-            instruction: 'Startposition: Griff etwas breiter als schulterbreit, voller Griff (Daumen umschließt die Stange)\nAktivierung: Schulterblätter leicht nach unten und zusammen ziehen - aktive Position\nKörperspannung: Beine gestreckt, Füße zusammen, Rumpf angespannt\nHalten: Atme ruhig und gleichmäßig, halte die Spannung\nZiel: 30-60 Sekunden pro Set',
-            notes: 'Dies ist keine passive Übung - du sollst aktiv hängen. Die Schultern sind engagiert, nicht entspannt. Dies baut Griffkraft auf und bereitet die Schultern auf Pull-ups vor.',
-            cues: [
-              'Schultern weg von den Ohren - aktiv nach unten ziehen',
-              'Voller Griff - Daumen umschließt die Stange',
-              'Körper wie ein Brett - keine Hohlkreuz-Position',
-              'Atme ruhig - halte nicht die Luft an',
-              'Blick geradeaus oder leicht nach oben'
-            ],
-            common_mistakes: [
-              'Passives Hängen mit entspannten Schultern',
-              'Zu weiter Griff - bleib bei schulterbreit',
-              'Schwingen oder Pendeln des Körpers'
-            ],
-            progression_strategy: 'Verlängere die Haltezeit von 30 auf 60 Sekunden, dann füge Gewicht hinzu (Gewichtsweste), dann wechsle zu einarmigem Hang.',
-            progression_milestones: [
-              { level: 'Woche 1-2', description: '3×30 Sekunden' },
-              { level: 'Woche 3-4', description: '3×45 Sekunden' },
-              { level: 'Woche 5-6', description: '3×60 Sekunden' }
-            ],
-            expert_insight: {
-              quote: 'Grip strength is the gateway to upper body power.',
-              source: 'Dan John - Foundation Principles',
-              explanation: 'Griffkraft ist oft der limitierende Faktor bei Pull-ups. Wenn du nicht halten kannst, kannst du nicht ziehen. Der Dead Hang baut diese fundamentale Kraft auf und lehrt die Schultern, Last zu tragen.'
-            },
-            scientific_background: 'Isometrisches Training (wie Dead Hang) verbessert die Sehnengesundheit und die neuronale Rekrutierung, besonders im Schulter-Komplex.',
-            fms_relevance: 'Verbessert die Schulterstabilität und ist ein Assessment für Overhead Movement Pattern.',
-            deload_protocol: 'Reduziere auf 3×20 Sekunden bei Ermüdung der Unterarme'
-          },
-          {
-            exercise_id: 'foundation_3',
-            name: 'Scapula Pull-ups (Schulterblattzieher)',
-            sets_reps_tempo: '3 Sets × 8-12 Reps @ 2 Sekunden Hold',
-            instruction: 'Startposition: Dead Hang mit gestreckten Armen\nBewegung: Ziehe nur mit den Schulterblättern - Ellbogen bleiben gestreckt\nEndposition: Schulterblätter zusammen und nach unten, kurz halten\nRückkehr: Kontrolliert zurück in die Startposition\nWiederhole für 8-12 saubere Wiederholungen',
-            notes: 'Dies ist eine isolierte Schulterblatt-Übung - die Arme bewegen sich NICHT. Du trainierst die Fähigkeit, die Schulterblätter zu kontrollieren, was essentiell für sichere und starke Pull-ups ist.',
-            cues: [
-              'Arme bleiben gestreckt - keine Ellbogenbeugung',
-              'Denke daran, die Schulterblätter in die Gesäßtaschen zu ziehen',
-              'Kleine Bewegung - nur 2-3 cm Bewegung des Körpers',
-              'Halte die Position kurz oben - 1-2 Sekunden',
-              'Kontrolliere die Rückkehr - nicht einfach fallen lassen'
-            ],
-            common_mistakes: [
-              'Ellbogen beugen statt nur Schulterblätter zu bewegen',
-              'Zu große Bewegung - halte es klein und kontrolliert',
-              'Keine Pause am obersten Punkt'
-            ],
-            progression_strategy: 'Steigere die Wiederholungen von 8 auf 15, verlängere die Haltezeit auf 3-5 Sekunden, füge dann Gewicht hinzu.',
-            progression_milestones: [
-              { level: 'Woche 1-2', description: '3×8 Reps @ 2 Sekunden' },
-              { level: 'Woche 3-4', description: '3×12 Reps @ 3 Sekunden' },
-              { level: 'Woche 5-6', description: '3×15 Reps @ 3 Sekunden' }
-            ],
-            expert_insight: {
-              quote: 'Scapular control is the key to healthy shoulder function.',
-              source: 'Gray Cook - FMS Movement Principles',
-              explanation: 'Die meisten Schulterprobleme entstehen durch mangelnde Schulterblattkontrolle. Scapula Pull-ups trainieren genau diese Kontrolle und aktivieren die Muskeln, die für stabile und kraftvolle Pull-ups nötig sind.'
-            },
-            scientific_background: 'Aktiviert primär den unteren Trapezius und Serratus anterior, essentiell für Schulterstabilität und Verletzungsprävention.',
-            fms_relevance: 'Direkt relevant für FMS Shoulder Mobility und Rotary Stability Pattern.',
-            deload_protocol: 'Bei Schulterermüdung: 2×5 Reps mit längeren Pausen'
-          }
-        ]
-      },
-      {
-        phase_number: 2,
-        title: 'Kraftaufbau & Volumen',
-        description: 'Jetzt wird es ernst: Wir steigern das Trainingsvolumen und die Intensität. Du wirst erste vollständige Pull-ups schaffen und die Kraft konsolidieren.',
-        duration_weeks: Math.ceil(estimated_duration_weeks / 3),
-        exercises: [
-          {
-            exercise_id: 'progression_1',
-            name: 'Assisted Pull-ups (Band oder Maschine)',
-            sets_reps_tempo: '4 Sets × 4-6 Reps @ kontrolliertes Tempo',
-            instruction: 'Setup: Widerstandsband um die Stange und unter die Füße, oder Assisted Pull-up Maschine\nGriff: Schulterbreit, Handflächen nach vorne\nBewegung: Ziehe dich hoch bis das Kinn über der Stange ist\nKontrolle: 2 Sekunden hoch, 1 Sekunde halten, 2 Sekunden runter\nPause: 2 Minuten zwischen Sets',
-            notes: 'Wähle ein Band/Gewicht, das dir 4-6 saubere Wiederholungen ermöglicht. Sobald du 6 Reps schaffst, wechsle zu einem leichteren Band oder weniger Unterstützung.',
-            cues: [
-              'Starte mit aktivierten Schulterblättern - wie bei Scapula Pull-ups',
-              'Ellbogen ziehen nach unten und hinten - nicht zur Seite',
-              'Brust zur Stange - denke daran, die Brust hochzuziehen',
-              'Kontrolliertes Tempo - keine ruckartigen Bewegungen',
-              'Volle Range of Motion - komplett hoch und komplett runter'
-            ],
-            common_mistakes: [
-              'Zu viel Unterstützung - fordere dich heraus',
-              'Schwung nutzen statt Muskelkraft',
-              'Nicht vollständig hochziehen (Kinn muss über Stange)',
-              'Zu schnelle Bewegung - Tempo ist wichtig'
-            ],
-            progression_strategy: 'Reduziere die Unterstützung schrittweise. Beginne mit schwerem Band, wechsle zu mittlerem Band, dann zu leichtem Band, dann zu keiner Unterstützung.',
-            progression_milestones: [
-              { level: 'Woche 7-8', description: '4×4 mit starkem Band' },
-              { level: 'Woche 9-10', description: '4×5 mit mittlerem Band' },
-              { level: 'Woche 11-12', description: '4×6 mit leichtem Band' }
-            ],
-            expert_insight: {
-              quote: 'Volume before intensity - earn the right to progress.',
-              source: 'Dan John - 40-30-30 Strength Protocol',
-              explanation: 'In dieser Phase geht es um Volumen-Akkumulation. Du baust eine solide Basis mit höherem Volumen auf, bevor du zu schwereren Varianten wechselst. Das reduziert Verletzungsrisiko und maximiert langfristige Kraft.'
-            },
-            scientific_background: 'Assisted Pull-ups erlauben dir, in der vollen Range of Motion zu trainieren, während du deine Kraft aufbaust - besser als partielle Bewegungen.',
-            fms_relevance: 'Verbessert Pull Pattern und Shoulder Mobility gleichzeitig.',
-            deload_protocol: 'Reduziere auf 3×3 mit mehr Unterstützung für eine Woche'
-          },
-          {
-            exercise_id: 'progression_2',
-            name: 'Weighted Negatives (Belastete Exzentriks)',
-            sets_reps_tempo: '3 Sets × 3-5 Reps @ 5-6 Sekunden',
-            instruction: 'Setup: Gewichtsweste (2.5-5kg) oder Gewichtsgürtel anlegen\nStartposition: Hochspringen oder Hilfsmittel nutzen, Kinn über Stange\nBewegung: Extrem langsam und kontrolliert absenken (5-6 Sekunden)\nEndposition: Arme vollständig gestreckt\nPause: 2-3 Minuten zwischen Sets',
-            notes: 'Dies ist eine fortgeschrittene Version der Negativ-Wiederholungen. Das zusätzliche Gewicht intensiviert den Trainingsreiz massiv. Beginne konservativ mit wenig Gewicht.',
-            cues: [
-              'Noch langsamer als in Phase 1 - 5-6 Sekunden',
-              'Totale Körperkontrolle - kein Schwingen',
-              'Schultern bleiben aktiv während der gesamten Bewegung',
-              'Mentaler Fokus auf jeden Zentimeter der Bewegung',
-              'Atme gleichmäßig - nicht die Luft anhalten'
-            ],
-            common_mistakes: [
-              'Zu viel Gewicht zu früh - starte leicht',
-              'Zu schnelles Absenken - Zeit unter Spannung ist der Schlüssel',
-              'Schultern fallen nach oben (zu den Ohren)'
-            ],
-            progression_strategy: 'Steigere zuerst die Wiederholungen (bis 5), dann verlängere die Zeit (bis 7 Sekunden), dann erhöhe das Gewicht (in 2.5kg Schritten).',
-            progression_milestones: [
-              { level: 'Woche 7-8', description: '3×3 @ 5 Sek mit 2.5kg' },
-              { level: 'Woche 9-10', description: '3×4 @ 6 Sek mit 2.5kg' },
-              { level: 'Woche 11-12', description: '3×5 @ 6 Sek mit 5kg' }
-            ],
-            expert_insight: {
-              quote: 'Add load, not complexity.',
-              source: 'Pavel Tsatsouline - Simple & Sinister',
-              explanation: 'Statt zu komplexeren Übungen zu wechseln, fügen wir einfach Gewicht zu einer Übung hinzu, die bereits funktioniert. Das ist der direkte Weg zu mehr Kraft.'
-            },
-            scientific_background: 'Weighted eccentrics erzeugen maximales Muskelwachstum durch erhöhtes mechanisches Trauma bei gleichzeitiger neuronaler Adaptation.',
-            fms_relevance: 'Maximiert die exzentrische Kontrolle, essentiell für Injury Prevention.',
-            deload_protocol: 'Entferne Gewicht und reduziere auf 2×3 bei Übertraining'
-          },
-          {
-            exercise_id: 'progression_3',
-            name: 'Inverted Rows (Australische Klimmzüge)',
-            sets_reps_tempo: '3 Sets × 8-12 Reps @ 2 Sekunden hoch, 2 Sekunden runter',
-            instruction: 'Setup: Stange auf Hüfthöhe, lege dich darunter\nGriff: Schulterbreit, Handflächen zu dir\nKörper: Gerade wie ein Brett, Fersen am Boden\nBewegung: Ziehe die Brust zur Stange, Ellbogen nah am Körper\nRückkehr: Kontrolliert zurück, Arme gestreckt\nWiederhole für 8-12 Reps',
-            notes: 'Dies ist eine horizontale Zugübung und perfektes Ergänzungstraining zu vertikalen Zügen (Pull-ups). Trainiert die gleichen Muskeln aus einem anderen Winkel.',
-            cues: [
-              'Körper bleibt gerade - keine Hüfte durchhängen lassen',
-              'Ziehe mit den Ellbogen, nicht mit den Händen',
-              'Brust zur Stange - berühre sie wenn möglich',
-              'Schulterblätter zusammen am höchsten Punkt',
-              'Kontrolliertes Tempo - 2 Sekunden hoch, 2 Sekunden runter'
-            ],
-            common_mistakes: [
-              'Hüfte sackt durch - halte Körperspannung',
-              'Ellbogen gehen zu weit nach außen',
-              'Nicht volle Range of Motion - Brust muss zur Stange'
-            ],
-            progression_strategy: 'Senke die Stange schrittweise ab für einen steileren Winkel, steigere dann Wiederholungen, dann füge Gewicht hinzu (Gewichtsweste).',
-            progression_milestones: [
-              { level: 'Woche 7-8', description: '3×8 Reps @ Hüfthöhe' },
-              { level: 'Woche 9-10', description: '3×10 Reps @ Hüfthöhe' },
-              { level: 'Woche 11-12', description: '3×12 Reps @ Hüfthöhe oder 3×8 @ niedriger' }
-            ],
-            expert_insight: {
-              quote: 'Horizontal pulling creates balanced strength and prevents injury.',
-              source: 'Vern Gambetta - Movement Pattern Training',
-              explanation: 'Viele fokussieren sich nur auf vertikale Züge (Pull-ups) und vernachlässigen horizontale Züge. Das führt zu muskulären Dysbalancen. Rows balancieren das System aus und stärken die Schultergesundheit.'
-            },
-            scientific_background: 'Horizontale Zugübungen aktivieren verstärkt die Rhomboiden und mittleren Trapezius-Fasern, essentiell für Schultergesundheit.',
-            fms_relevance: 'Trainiert Trunk Stability und verbessert das Pull Pattern aus verschiedenen Winkeln.',
-            deload_protocol: 'Erhöhe die Stangenhöhe und reduziere auf 2×6 Reps'
-          }
-        ]
-      },
-      {
-        phase_number: 3,
-        title: 'Mastery & Konsolidierung',
-        description: 'Du hast das Fundament gelegt und Kraft aufgebaut - jetzt meisterst du das Ziel. Vollständige Pull-ups werden zur Routine, und wir erkunden fortgeschrittene Varianten.',
-        duration_weeks: Math.ceil(estimated_duration_weeks / 3),
-        exercises: [
-          {
-            exercise_id: 'mastery_1',
-            name: 'Full Pull-ups (Komplette Klimmzüge)',
-            sets_reps_tempo: '5 Sets × 1-5 Reps @ kontrolliertes Tempo',
-            instruction: 'Startposition: Dead Hang, Arme komplett gestreckt\nAktivierung: Beginne mit Schulterblatt-Aktivierung\nZugphase: Ziehe dich hoch bis Kinn über der Stange\nHold: Kurz halten am höchsten Punkt (1 Sekunde)\nAbsenkphase: Kontrolliert zurück in Dead Hang\nPause: 2-3 Minuten zwischen Sets',
-            notes: 'DU HAST ES GESCHAFFT! Dies ist das Ziel. Fokussiere dich auf perfekte Form bei jeder Wiederholung. Qualität über Quantität - jede Rep sollte identisch aussehen.',
-            cues: [
-              'Starte jeden Rep wie der erste - keine Ermüdung zeigen',
-              'Schulterblätter zuerst aktivieren, dann ziehen',
-              'Denke daran, die Ellbogen nach unten zu ziehen',
-              'Brust hoch - nicht nur das Kinn',
-              'Vollständiger Dead Hang zwischen Reps - keine halben Bewegungen'
-            ],
-            common_mistakes: [
-              'Kipping (Schwung mit den Beinen) - halte es strict',
-              'Nicht vollständig runtergehen zwischen Reps',
-              'Form verschlechtert sich im letzten Rep - stoppe bevor das passiert',
-              'Zu lange Pausen zwischen Reps im selben Set'
-            ],
-            progression_strategy: 'Steigere die Wiederholungen schrittweise von 5×1 auf 5×5. Dann wechsle zu 3×8 für Volumen. Dann beginne mit Weighted Pull-ups.',
-            progression_milestones: [
-              { level: 'Woche 13-14', description: '5×2 Reps strict' },
-              { level: 'Woche 15-16', description: '5×3-4 Reps strict' },
-              { level: 'Woche 17-18', description: '5×5 Reps oder 3×8 Reps' }
-            ],
-            expert_insight: {
-              quote: 'Mastery is not about doing more - it is about doing it better.',
-              source: 'Pavel Tsatsouline - Grease the Groove Method',
-              explanation: 'Jetzt wo du Pull-ups kannst, ist die Versuchung groß, so viele wie möglich zu machen. Aber Mastery kommt von perfekter Ausführung bei jedem Rep. Trainiere mehrmals pro Woche mit niedrigem Volumen aber perfekter Form - Grease the Groove.'
-            },
-            scientific_background: 'Neuronale Anpassung erreicht ihr Maximum bei niedrigem Volumen aber hoher Frequenz - perfekt für Pull-up Mastery.',
-            fms_relevance: 'Vollständige Integration des Pull Pattern mit optimaler Shoulder Mobility.',
-            deload_protocol: 'Reduziere auf 3×1 mit 3-4 Minuten Pause zwischen Sets'
-          },
-          {
-            exercise_id: 'mastery_2',
-            name: 'Weighted Pull-ups (Belastete Klimmzüge)',
-            sets_reps_tempo: '4 Sets × 3-5 Reps @ 2.5-10kg Zusatzgewicht',
-            instruction: 'Setup: Gewichtsweste oder Dip-Gürtel mit Gewicht (beginne mit 2.5kg)\nGriff: Standard Overhand Grip, schulterbreit\nBewegung: Identisch zu normalen Pull-ups - perfekte Form\nTempo: Kontrolliert, 2 Sekunden hoch, 1 Sekunde halten, 2 Sekunden runter\nPause: 3 Minuten zwischen Sets',
-            notes: 'Weighted Pull-ups sind der nächste Level. Sie bauen maximale Kraft auf und bereiten dich auf fortgeschrittene Varianten vor. Beginne leicht - 2.5kg ist perfekt für den Start.',
-            cues: [
-              'Form bleibt identisch - Gewicht ändert nichts an der Technik',
-              'Kein Kompensieren - wenn Form leidet, ist es zu schwer',
-              'Noch kontrollierter als ohne Gewicht',
-              'Volle Range of Motion beibehalten',
-              'Mentale Fokus auf jeden Zentimeter'
-            ],
-            common_mistakes: [
-              'Zu viel Gewicht zu früh - starte mit 2.5kg',
-              'Form verschlechtert sich - reduziere Gewicht',
-              'Reps erzwingen - stoppe bei technischem Failure'
-            ],
-            progression_strategy: 'Steigere die Wiederholungen bei einem Gewicht, bevor du das Gewicht erhöhst. 4×5 @ 2.5kg → 4×3 @ 5kg → 4×5 @ 5kg, usw.',
-            progression_milestones: [
-              { level: 'Woche 13-15', description: '4×3 @ 2.5kg' },
-              { level: 'Woche 16-17', description: '4×5 @ 2.5kg oder 4×3 @ 5kg' },
-              { level: 'Woche 18+', description: '4×5 @ 5kg' }
-            ],
-            expert_insight: {
-              quote: 'Strength is a skill. Practice it often with perfect form.',
-              source: 'Pavel Tsatsouline - Power to the People',
-              explanation: 'Weighted Pull-ups sind eine der besten Übungen für Oberkörper-Kraft. Sie transferieren zu allen anderen Zugbewegungen und bauen funktionelle, dichte Muskulatur auf.'
-            },
-            scientific_background: 'Progressives Overload durch Gewicht ist effektiver für Kraft als durch Wiederholungen - wenn Form perfekt bleibt.',
-            fms_relevance: 'Maximiert die Kraft im Pull Pattern bei gleichzeitiger Beibehaltung optimaler Bewegungsqualität.',
-            deload_protocol: 'Entferne Gewicht komplett und mache 3×3 normale Pull-ups'
-          },
-          {
-            exercise_id: 'mastery_3',
-            name: 'Volume Training (Volumen-Akkumulation)',
-            sets_reps_tempo: 'Ziel: 30-50 Gesamtwiederholungen über mehrere Sets',
-            instruction: 'Methode: Ladder Training oder EMOM (Every Minute on the Minute)\nBeispiel Ladder: 1-2-3-4-5 Reps, pause, repeat\nBeispiel EMOM: 5 Reps jeden Minute für 8 Minuten\nFokus: Jeder Rep ist perfekt - keine Ermüdung zeigen\nZiel: Erreiche 30 saubere Reps, dann 40, dann 50\nFrequenz: 2x pro Woche',
-            notes: 'Volume Training baut Work Capacity auf - die Fähigkeit, viele Reps über Zeit zu machen. Dies konsolidiert deine Kraft und macht Pull-ups zur zweiten Natur.',
-            cues: [
-              'Halte Reserve - stoppe 1-2 Reps vor dem Failure',
-              'Jeder Rep identisch - keine Ermüdung zeigen',
-              'Atme zwischen Sets - volle Erholung',
-              'Mentale Frische ist wichtig - keine gegrindeten Reps',
-              'Tracke Gesamt-Volume - das ist deine Metrik'
-            ],
-            common_mistakes: [
-              'Zu viele Reps pro Set - halte Reserve',
-              'Form verschlechtert sich - stoppe früher',
-              'Zu wenig Pause zwischen Sets'
-            ],
-            progression_strategy: 'Erhöhe das Gesamt-Volume schrittweise. 30 Reps → 35 Reps → 40 Reps → 50 Reps über mehrere Wochen.',
-            progression_milestones: [
-              { level: 'Woche 13-14', description: '30 Reps total' },
-              { level: 'Woche 15-16', description: '40 Reps total' },
-              { level: 'Woche 17-18', description: '50 Reps total' }
-            ],
-            expert_insight: {
-              quote: 'Volume creates the foundation for long-term strength.',
-              source: 'Dan John - Easy Strength Protocol',
-              explanation: 'Volume Training an einem Tag pro Woche baut Work Capacity auf und sorgt dafür, dass Pull-ups nie wieder schwer werden. Dies ist die langfristige Strategie für bulletproof Kraft.'
-            },
-            scientific_background: 'Hohe Frequenz mit moderatem Volumen verbessert neuronale Effizienz und macht Bewegungen automatisch.',
-            fms_relevance: 'Konsolidiert Movement Pattern und macht es zum Standard-Bewegungsmuster.',
-            deload_protocol: 'Reduziere auf 20 Reps total mit längeren Pausen'
-          }
-        ]
-      }
-    ];
+    // Generate plan phases via LLM - goal-specific!
+    console.log('Generating goal-specific plan phases via LLM for:', goal_description);
+    const phases = await generateTrainingPlanPhases(user, goal_description, training_frequency, base44);
 
     // Create the training plan
     console.log('Creating training plan with data:', {
