@@ -99,7 +99,7 @@ export default function FlowRoutines() {
     {
       id: 'mobility-training',
       name: 'Mobility-Training',
-      description: 'Fördere deine Beweglichkeit in Gelenken und Muskeln. Löse Steifheit und erweitere deinen Bewegungsradius.',
+      description: 'Fördere deine Beweglichkeit in Gelenken und Muskeln. Mit federnden Bewegungen und dynamischem Stretch erweiterst du spielerisch deinen Bewegungsradius und löst Steifheit.',
       color: { gradient: 'from-amber-500/20', border: 'border-amber-500/30', text: 'text-amber-400', button: 'bg-amber-500/20 text-amber-400 hover:bg-amber-500/30' }
     },
     {
@@ -117,7 +117,7 @@ export default function FlowRoutines() {
     {
       id: 'funktionelles-training',
       name: 'Funktionelles Kraft- & Bewegungstraining',
-      description: 'Baue alltagsrelevante Kraft auf und verbessere deine Bewegungseffizienz durch ganzheitliche Übungen.',
+      description: 'Baue alltagsrelevante Kraft auf und verbessere deine Bewegungseffizienz durch ganzheitliche Übungen – mit Bounce-Elementen für federnde Kraft und Leichtigkeit.',
       color: { gradient: 'from-purple-500/20', border: 'border-purple-500/30', text: 'text-purple-400', button: 'bg-purple-500/20 text-purple-400 hover:bg-purple-500/30' }
     }
   ];
