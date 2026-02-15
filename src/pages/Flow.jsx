@@ -113,6 +113,7 @@ export default function Flow() {
   const [showReadinessCheck, setShowReadinessCheck] = useState(false);
   const [readinessStatus, setReadinessStatus] = useState(null);
   const [user, setUser] = useState(null);
+  const [expandedProgression, setExpandedProgression] = useState(null);
 
   // Check auth and readiness
   useEffect(() => {
