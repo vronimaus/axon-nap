@@ -92,31 +92,31 @@ export default function FlowRoutines() {
   const categories = [
     {
       id: 'neuro',
-      name: 'Neuro-Athletik',
+      name: 'Neuro',
       description: 'Gezielte Übungen für dein Nervensystem: Verbessere Augen, Gleichgewicht und Körperwahrnehmung für mehr Stabilität und schnelle Reaktionen.',
       color: { gradient: 'from-cyan-500/20', border: 'border-cyan-500/30', text: 'text-cyan-400', button: 'bg-cyan-500/20 text-cyan-400 hover:bg-cyan-500/30' }
     },
     {
       id: 'mobility',
-      name: 'Mobility-Training',
+      name: 'Mobility',
       description: 'Fördere deine Beweglichkeit in Gelenken und Muskeln. Mit federnden Bewegungen und dynamischem Stretch erweiterst du spielerisch deinen Bewegungsradius und löst Steifheit.',
       color: { gradient: 'from-amber-500/20', border: 'border-amber-500/30', text: 'text-amber-400', button: 'bg-amber-500/20 text-amber-400 hover:bg-amber-500/30' }
     },
     {
       id: 'breathwork',
-      name: 'Atemtechniken',
+      name: 'Breathwork',
       description: 'Meistere die Kraft deines Atems. Ob für mehr Energie, zur Beruhigung oder zur Verbesserung deiner Ausdauer.',
       color: { gradient: 'from-green-500/20', border: 'border-green-500/30', text: 'text-green-400', button: 'bg-green-500/20 text-green-400 hover:bg-green-500/30' }
     },
     {
       id: 'faszien',
-      name: 'Myofasziale Release (MFR)',
+      name: 'Faszien',
       description: 'Löse Verspannungen im Fasziengewebe. Gezielter Druck hilft, Schmerzen zu lindern und die Geschmeidigkeit zu erhöhen.',
       color: { gradient: 'from-red-500/20', border: 'border-red-500/30', text: 'text-red-400', button: 'bg-red-500/20 text-red-400 hover:bg-red-500/30' }
     },
     {
       id: 'funktionale-bewegung',
-      name: 'Funktionelles Kraft- & Bewegungstraining',
+      name: 'Funktionale Bewegung',
       description: 'Baue alltagsrelevante Kraft auf und verbessere deine Bewegungseffizienz durch ganzheitliche Übungen – mit Bounce-Elementen für federnde Kraft und Leichtigkeit.',
       color: { gradient: 'from-purple-500/20', border: 'border-purple-500/30', text: 'text-purple-400', button: 'bg-purple-500/20 text-purple-400 hover:bg-purple-500/30' }
     }
