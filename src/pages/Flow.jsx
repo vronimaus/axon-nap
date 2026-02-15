@@ -5,7 +5,7 @@ import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Play, Pause, SkipForward, Check, Timer, Activity, AlertTriangle } from 'lucide-react';
+import { Play, Pause, SkipForward, Check, Timer, Activity, AlertTriangle, ChevronDown } from 'lucide-react';
 import { createPageUrl } from '@/utils';
 import GlossaryTooltip from '../components/glossary/GlossaryTooltip';
 import DailyReadinessCheck from '../components/dashboard/DailyReadinessCheck';
