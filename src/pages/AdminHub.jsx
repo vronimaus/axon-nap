@@ -87,24 +87,28 @@ export default function AdminHub() {
       {/* Main Content */}
       <div className="max-w-6xl mx-auto px-4 py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-4 lg:w-fit mb-8 bg-slate-900 border border-cyan-500/20">
-            <TabsTrigger value="flow" className="flex items-center gap-2">
-              <Palette className="w-4 h-4" />
-              <span>Flow</span>
-            </TabsTrigger>
-            <TabsTrigger value="exercises" className="flex items-center gap-2">
-              <Image className="w-4 h-4" />
-              <span>Übungen</span>
-            </TabsTrigger>
-            <TabsTrigger value="diagnosis" className="flex items-center gap-2">
-              <Zap className="w-4 h-4" />
-              <span>Diagnose</span>
-            </TabsTrigger>
-            <TabsTrigger value="tools" className="flex items-center gap-2">
-              <BookOpen className="w-4 h-4" />
-              <span>Tools</span>
-            </TabsTrigger>
-          </TabsList>
+          <TabsList className="grid w-full grid-cols-5 lg:w-fit mb-8 bg-slate-900 border border-cyan-500/20">
+              <TabsTrigger value="flow" className="flex items-center gap-2">
+                <Palette className="w-4 h-4" />
+                <span>Flow</span>
+              </TabsTrigger>
+              <TabsTrigger value="exercises" className="flex items-center gap-2">
+                <Image className="w-4 h-4" />
+                <span>Übungen</span>
+              </TabsTrigger>
+              <TabsTrigger value="diagnosis" className="flex items-center gap-2">
+                <Zap className="w-4 h-4" />
+                <span>Diagnose</span>
+              </TabsTrigger>
+              <TabsTrigger value="tools" className="flex items-center gap-2">
+                <BookOpen className="w-4 h-4" />
+                <span>Tools</span>
+              </TabsTrigger>
+              <TabsTrigger value="roadmap" className="flex items-center gap-2">
+                <Zap className="w-4 h-4" />
+                <span>Roadmap</span>
+              </TabsTrigger>
+            </TabsList>
 
           {/* Flow Tab */}
           <TabsContent value="flow" className="mt-0">
