@@ -532,7 +532,89 @@ export default function Flow() {
                   />
                 </div>
               )}
-              
+
+              {/* Progression Variants */}
+              {currentExercise && (
+                <div className="space-y-3">
+                  {/* Basic Progression */}
+                  {currentExercise.progression_basic && (
+                    <motion.div
+                      className="glass-cyan rounded-xl border border-cyan-500/30 overflow-hidden"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                    >
+                      <button
+                        onClick={() => setExpandedProgression(expandedProgression === 'basic' ? null : 'basic')}
+                        className="w-full flex items-center justify-between p-4 hover:bg-cyan-500/10 transition-colors"
+                      >
+                        <span className="text-sm font-bold text-cyan-300">
+                          📉 {currentExercise.progression_basic.label}
+                        </span>
+                        <ChevronDown
+                          className={`w-5 h-5 text-cyan-400 transition-transform ${
+                            expandedProgression === 'basic' ? 'rotate-180' : ''
+                          }`}
+                        />
+                      </button>
+                      <AnimatePresence>
+                        {expandedProgression === 'basic' && (
+                          <motion.div
+                            initial={{ opacity: 0, height: 0 }}
+                            animate={{ opacity: 1, height: 'auto' }}
+                            exit={{ opacity: 0, height: 0 }}
+                            transition={{ duration: 0.2 }}
+                            className="px-4 pb-4 border-t border-cyan-500/20"
+                          >
+                            <p className="text-xs text-cyan-200 mb-2">{currentExercise.progression_basic.description}</p>
+                            <p className="text-xs text-cyan-300">
+                              <span className="font-bold">Fokus:</span> {currentExercise.progression_basic.focus}
+                            </p>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </motion.div>
+                  )}
+
+                  {/* Advanced Progression */}
+                  {currentExercise.progression_advanced && (
+                    <motion.div
+                      className="glass-purple rounded-xl border border-purple-500/30 overflow-hidden"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                    >
+                      <button
+                        onClick={() => setExpandedProgression(expandedProgression === 'advanced' ? null : 'advanced')}
+                        className="w-full flex items-center justify-between p-4 hover:bg-purple-500/10 transition-colors"
+                      >
+                        <span className="text-sm font-bold text-purple-300">
+                          📈 {currentExercise.progression_advanced.label}
+                        </span>
+                        <ChevronDown
+                          className={`w-5 h-5 text-purple-400 transition-transform ${
+                            expandedProgression === 'advanced' ? 'rotate-180' : ''
+                          }`}
+                        />
+                      </button>
+                      <AnimatePresence>
+                        {expandedProgression === 'advanced' && (
+                          <motion.div
+                            initial={{ opacity: 0, height: 0 }}
+                            animate={{ opacity: 1, height: 'auto' }}
+                            exit={{ opacity: 0, height: 0 }}
+                            transition={{ duration: 0.2 }}
+                            className="px-4 pb-4 border-t border-purple-500/20"
+                          >
+                            <p className="text-xs text-purple-200 mb-2">{currentExercise.progression_advanced.description}</p>
+                            <p className="text-xs text-purple-300">
+                              <span className="font-bold">Fokus:</span> {currentExercise.progression_advanced.focus}
+                            </p>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </motion.div>
+                  )}
+                </div>
+              )}
 
             </div>
           </motion.div>
