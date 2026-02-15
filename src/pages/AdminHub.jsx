@@ -7,6 +7,122 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { AlertCircle, Zap, BookOpen, Palette, ArrowLeft, Image, Trash2 } from 'lucide-react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
+function RoadmapTab() {
+  const queryClient = useQueryClient();
+  const [statusFilter, setStatusFilter] = useState('all');
+
+  const { data: notes = [], isLoading } = useQuery({
+    queryKey: ['developerNotes'],
+    queryFn: () => base44.entities.DeveloperNote.list(),
+  });
+
+  const deleteNoteMutation = useMutation({
+    mutationFn: (id) => base44.entities.DeveloperNote.delete(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['developerNotes'] });
+    },
+  });
+
+  const filteredNotes = statusFilter === 'all' 
+    ? notes 
+    : notes.filter(note => note.status === statusFilter);
+
+  const statusColors = {
+    active: 'bg-green-500/20 text-green-400 border-green-500/50',
+    disabled: 'bg-yellow-500/20 text-yellow-400 border-yellow-500/50',
+    archived: 'bg-red-500/20 text-red-400 border-red-500/50'
+  };
+
+  const categoryIcons = {
+    feature: '✨',
+    bug_fix: '🐛',
+    config: '⚙️',
+    integration: '🔗',
+    ui_component: '🎨',
+    other: '📝'
+  };
+
+  if (isLoading) {
+    return <div className="glass rounded-2xl border border-cyan-500/30 p-8 text-slate-400">Laden...</div>;
+  }
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -20 }}
+      className="space-y-6"
+    >
+      <div className="glass rounded-2xl border border-cyan-500/30 p-8">
+        <h2 className="text-2xl font-bold text-cyan-400 mb-6">📋 Roadmap & zukünftige Vorhaben</h2>
+        
+        {/* Status Filter */}
+        <div className="flex gap-2 mb-6">
+          {['all', 'active', 'disabled', 'archived'].map(status => (
+            <button
+              key={status}
+              onClick={() => setStatusFilter(status)}
+              className={`px-3 py-1 rounded-lg text-sm font-medium transition-all ${
+                statusFilter === status
+                  ? 'bg-cyan-500/30 text-cyan-400'
+                  : 'bg-slate-800 text-slate-400 hover:bg-slate-700'
+              }`}
+            >
+              {status === 'all' ? 'Alle' : status === 'active' ? 'Aktiv' : status === 'disabled' ? 'Deaktiviert' : 'Archiviert'}
+            </button>
+          ))}
+        </div>
+
+        {/* Notes List */}
+        {filteredNotes.length === 0 ? (
+          <p className="text-slate-400">Keine Notes gefunden</p>
+        ) : (
+          <div className="space-y-3">
+            {filteredNotes.map(note => (
+              <div
+                key={note.id}
+                className="bg-slate-800/50 border border-slate-700 rounded-lg p-4"
+              >
+                <div className="flex items-start justify-between gap-4">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 mb-2">
+                      <span className="text-lg">{categoryIcons[note.category]}</span>
+                      <h3 className="font-semibold text-slate-200">{note.title}</h3>
+                      <span className={`text-xs px-2 py-1 rounded border ${statusColors[note.status]}`}>
+                        {note.status === 'active' ? 'Aktiv' : note.status === 'disabled' ? 'Deaktiviert' : 'Archiviert'}
+                      </span>
+                    </div>
+                    <p className="text-sm text-slate-400 mb-2">{note.description}</p>
+                    {note.file_paths && (
+                      <p className="text-xs text-slate-500">📁 {note.file_paths}</p>
+                    )}
+                    {note.tags && (
+                      <div className="flex gap-1 mt-2 flex-wrap">
+                        {note.tags.split(',').map(tag => (
+                          <span key={tag} className="text-xs bg-slate-700 text-slate-300 px-2 py-1 rounded">
+                            {tag.trim()}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                  <button
+                    onClick={() => deleteNoteMutation.mutate(note.id)}
+                    className="p-2 text-slate-400 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-all"
+                    title="Löschen"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </motion.div>
+  );
+}
+
 export default function AdminHub() {
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
