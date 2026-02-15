@@ -260,6 +260,15 @@ export default function Flow() {
       };
     }
     
+    // If exercise details are in the sequence, use them
+    if (currentSequence.exercise_name) {
+      return {
+        title: currentSequence.exercise_name,
+        instruction: currentSequence.exercise_description || '',
+        axonMoment: currentSequence.axon_moment
+      };
+    }
+    
     // For mobility flows: Extract title from first line (before colon or line break)
     const lines = instruction.split('\n');
     const firstLine = lines[0] || '';
@@ -503,11 +512,11 @@ export default function Flow() {
               </h2>
               <InstructionWithGlossary instruction={detailedContent.instruction} />
 
-              {/* Expert Tip or Neuro Input */}
-              {(detailedContent.expertTip || detailedContent.neuroInput) && (
+              {/* AXON-Moment or Expert Tip */}
+              {(detailedContent.axonMoment || detailedContent.expertTip || detailedContent.neuroInput) && (
                 <div className="bg-purple-500/10 border border-purple-500/30 rounded-xl p-4 mb-6">
                   <p className="text-sm text-purple-300 leading-relaxed">
-                    <span className="font-bold text-purple-400">💡 {detailedContent.expertTip ? 'Experten-Tipp' : 'Neuro-Input'}:</span> {detailedContent.expertTip || detailedContent.neuroInput}
+                    <span className="font-bold text-purple-400">✨ {detailedContent.axonMoment ? 'AXON-Check' : detailedContent.expertTip ? 'Experten-Tipp' : 'Neuro-Input'}:</span> {detailedContent.axonMoment || detailedContent.expertTip || detailedContent.neuroInput}
                   </p>
                 </div>
               )}
