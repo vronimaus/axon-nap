@@ -244,6 +244,11 @@ export default function RehabPlan() {
         <title>Rehabilitation - AXON Rehab</title>
         <meta name="description" content={rehabPlan?.problem_summary ? `Dein Wiederherstellungsplan für: ${rehabPlan.problem_summary}` : 'Dein personalisierter AXON Rehabilitationsplan.'} />
         <meta name="robots" content="noindex, nofollow" />
+        
+        {/* Open Graph */}
+        <meta property="og:title" content="AXON Rehabilitationsplan" />
+        <meta property="og:description" content={rehabPlan?.problem_summary ? `Wiederherstellung: ${rehabPlan.problem_summary}` : 'Dein personalisierter Rehab-Plan'} />
+        <meta property="og:type" content="article" />
       </Helmet>
 
       {/* Readiness Check Modal */}

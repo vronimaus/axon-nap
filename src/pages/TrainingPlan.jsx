@@ -164,6 +164,11 @@ export default function TrainingPlan() {
         <title>Trainingsplan - AXON Performance</title>
         <meta name="description" content={activePlan ? `Dein personalisierter Trainingsplan: ${activePlan.goal_description}` : 'Dein AXON Performance Trainingsplan für optimale Ergebnisse.'} />
         <meta name="robots" content="noindex, nofollow" />
+        
+        {/* Open Graph */}
+        <meta property="og:title" content="AXON Trainingsplan" />
+        <meta property="og:description" content={activePlan ? `Personalisierter Plan: ${activePlan.goal_description}` : 'Dein Performance Trainingsplan'} />
+        <meta property="og:type" content="article" />
       </Helmet>
 
       {/* Header */}

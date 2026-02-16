@@ -385,8 +385,18 @@ export default function Flow() {
       <Helmet>
         <title>{routine.routine_name} - AXON Flow</title>
         <meta name="description" content={routine.description || `Erlebe ${routine.routine_name} - Ein ${routine.total_duration}-Minuten ${routine.category} Flow für optimale Performance.`} />
+        <meta name="robots" content="noindex, nofollow" />
+
+        {/* Open Graph */}
         <meta property="og:title" content={`${routine.routine_name} - AXON Flow`} />
         <meta property="og:description" content={routine.description || `${routine.total_duration} Minuten ${routine.category} Training`} />
+        <meta property="og:type" content="article" />
+        <meta property="og:image" content="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/afa60dd62_AXONLogo.png" />
+
+        {/* Twitter */}
+        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:title" content={`${routine.routine_name} - AXON Flow`} />
+        <meta name="twitter:description" content={routine.description || `${routine.total_duration} Minuten ${routine.category} Training`} />
       </Helmet>
 
       {/* Readiness Check Modal */}

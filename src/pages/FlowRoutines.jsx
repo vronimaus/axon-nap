@@ -155,6 +155,17 @@ export default function FlowRoutines() {
         <title>Flow Routines - AXON Training</title>
         <meta name="description" content="Entdecke AXON Flow Routines: MFR, Neuro-Drills, Mobility-Flows und funktionelle Bewegungen für optimale Performance und Regeneration." />
         <meta name="robots" content="noindex, nofollow" />
+        
+        {/* Open Graph */}
+        <meta property="og:title" content="AXON Flow Routines" />
+        <meta property="og:description" content="MFR, Neuro-Drills, Mobility-Flows für optimale Performance" />
+        <meta property="og:type" content="website" />
+        <meta property="og:image" content="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/afa60dd62_AXONLogo.png" />
+        
+        {/* Twitter */}
+        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:title" content="AXON Flow Routines" />
+        <meta name="twitter:description" content="MFR, Neuro-Drills, Mobility-Flows für optimale Performance" />
       </Helmet>
 
       {/* Readiness Check Modal */}
