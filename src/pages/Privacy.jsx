@@ -99,7 +99,33 @@ export default function Privacy() {
             </section>
 
             <section>
-              <h2 className="text-2xl font-bold text-cyan-400 mb-4">5. Cookies</h2>
+              <h2 className="text-2xl font-bold text-cyan-400 mb-4">5. Datenverarbeitung in der AXON App</h2>
+              
+              <h3 className="text-xl font-semibold text-white mb-3 mt-6">Gesundheitsbezogene Daten</h3>
+              <p className="leading-relaxed mb-4">
+                Im Rahmen der Nutzung von AXON verarbeiten wir folgende gesundheitsbezogene Daten:
+              </p>
+              <ul className="list-disc list-inside space-y-2 mb-4">
+                <li><strong className="text-cyan-400">Daily Readiness Check:</strong> Täglich erfassen wir Ihre subjektive Einschätzung zu Gefühl (Hardware: 1-10), Fokus (Software: 1-10) und Energie (Batterie: 1-10). Diese Daten dienen der individualisierten Trainingssteuerung und werden ausschließlich für die Funktionalität der App verwendet.</li>
+                <li><strong className="text-cyan-400">Schmerzpunkte und Beschwerden:</strong> Sie können Schmerzstellen auf einer interaktiven Körperkarte markieren und Intensität angeben. Diese Informationen werden zur Erstellung personalisierter Rehabilitationspläne verwendet.</li>
+                <li><strong className="text-cyan-400">Trainingspläne und Fortschritte:</strong> Ihre Trainingshistorie, Performance-Ziele und Fortschritte werden gespeichert, um Ihnen adaptive Trainingsprogramme bereitzustellen.</li>
+                <li><strong className="text-cyan-400">Bewegungs- und Assessments:</strong> Ergebnisse von Bewegungstests und neurologischen Drills werden zur Analyse Ihres aktuellen Status gespeichert.</li>
+              </ul>
+              <p className="leading-relaxed mb-4">
+                <strong className="text-white">Rechtsgrundlage:</strong> Die Verarbeitung erfolgt auf Grundlage Ihrer Einwilligung (Art. 6 Abs. 1 lit. a, Art. 9 Abs. 2 lit. a DSGVO), da Sie diese Daten freiwillig zur Nutzung der App-Funktionen bereitstellen.
+              </p>
+              <p className="leading-relaxed">
+                <strong className="text-white">Datenspeicherung:</strong> Ihre Daten werden solange gespeichert, wie Sie die App nutzen. Sie können Ihr Konto und alle damit verbundenen Daten jederzeit über die Profil-Einstellungen löschen oder uns per E-Mail kontaktieren.
+              </p>
+
+              <h3 className="text-xl font-semibold text-white mb-3 mt-6">Keine Weitergabe an Dritte</h3>
+              <p className="leading-relaxed">
+                Ihre gesundheitsbezogenen Daten werden <strong className="text-cyan-400">nicht an Dritte weitergegeben, verkauft oder für Werbezwecke verwendet</strong>. Die Datenverarbeitung erfolgt ausschließlich zur Bereitstellung der App-Funktionalität.
+              </p>
+            </section>
+
+            <section>
+              <h2 className="text-2xl font-bold text-cyan-400 mb-4">6. Cookies</h2>
               <p className="leading-relaxed mb-4">
                 Unsere Website verwendet Cookies. Cookies sind kleine Textdateien, die auf Ihrem Endgerät 
                 gespeichert werden und die Ihr Browser speichert. Sie dienen dazu, unser Angebot nutzerfreundlicher, 
@@ -113,7 +139,7 @@ export default function Privacy() {
             </section>
 
             <section>
-              <h2 className="text-2xl font-bold text-cyan-400 mb-4">6. Zahlungsdienstleister</h2>
+              <h2 className="text-2xl font-bold text-cyan-400 mb-4">7. Zahlungsdienstleister</h2>
               <p className="leading-relaxed">
                 Wir nutzen Stripe für die Zahlungsabwicklung. Anbieter ist die Stripe Inc., 510 Townsend Street, 
                 San Francisco, CA 94103, USA. Bei der Nutzung von Stripe werden Daten an Stripe übermittelt. 
