@@ -7,6 +7,7 @@ import { ChevronDown, Check, AlertCircle, ArrowLeft, AlertTriangle } from 'lucid
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 import DailyReadinessCheck from '../components/dashboard/DailyReadinessCheck';
+import { Helmet } from 'react-helmet-async';
 const ExerciseCoachingPanel = React.lazy(() => import('../components/rehab/ExerciseCoachingPanel'));
 const WeaknessGenerator = React.lazy(() => import('../components/rehab/WeaknessGenerator'));
 
@@ -239,6 +240,12 @@ export default function RehabPlan() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 pb-20 md:pb-6">
+      <Helmet>
+        <title>Rehabilitation - AXON Rehab</title>
+        <meta name="description" content={rehabPlan?.problem_summary ? `Dein Wiederherstellungsplan für: ${rehabPlan.problem_summary}` : 'Dein personalisierter AXON Rehabilitationsplan.'} />
+        <meta name="robots" content="noindex, nofollow" />
+      </Helmet>
+
       {/* Readiness Check Modal */}
       <AnimatePresence>
         {showReadinessCheck && (

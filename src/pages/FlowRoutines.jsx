@@ -151,6 +151,12 @@ export default function FlowRoutines() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 pb-20 md:pb-6">
+      <Helmet>
+        <title>Flow Routines - AXON Training</title>
+        <meta name="description" content="Entdecke AXON Flow Routines: MFR, Neuro-Drills, Mobility-Flows und funktionelle Bewegungen für optimale Performance und Regeneration." />
+        <meta name="robots" content="noindex, nofollow" />
+      </Helmet>
+
       {/* Readiness Check Modal */}
       <AnimatePresence>
         {showReadinessCheck && (

@@ -12,6 +12,7 @@ import GoalCard from '../components/performance/GoalCard';
 import ExerciseDetailModal from '../components/performance/ExerciseDetailModal';
 import TrainingPlanChat from '../components/performance/TrainingPlanChat';
 import DailyReadinessCheck from '../components/dashboard/DailyReadinessCheck';
+import { Helmet } from 'react-helmet-async';
 
 export default function TrainingPlan() {
   const [user, setUser] = useState(null);
@@ -159,6 +160,12 @@ export default function TrainingPlan() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 pb-20 md:pb-6">
+      <Helmet>
+        <title>Trainingsplan - AXON Performance</title>
+        <meta name="description" content={activePlan ? `Dein personalisierter Trainingsplan: ${activePlan.goal_description}` : 'Dein AXON Performance Trainingsplan für optimale Ergebnisse.'} />
+        <meta name="robots" content="noindex, nofollow" />
+      </Helmet>
+
       {/* Header */}
       <div className="sticky top-0 z-40 glass border-b border-cyan-500/20">
         <div className="max-w-6xl mx-auto px-4 py-4">
