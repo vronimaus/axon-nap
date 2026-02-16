@@ -21,7 +21,7 @@ export default function FAQ() {
     },
     {
       question: "Wie funktioniert der Daily Readiness Check?",
-      answer: "Jeden Tag bewertest du kurz drei Bereiche: Gefühl (Hardware), Fokus (Software) und Energie (Batterie) auf einer Skala von 1-10. AXON passt dann deine Trainingsempfehlungen automatisch an deine Tagesform an. Grün = volle Belastung, Gelb = moderate Intensität, Rot = Fokus auf Erholung."
+      answer: "Der Daily Readiness Check basiert auf wissenschaftlichen Erkenntnissen aus der HRV-Forschung (Heart Rate Variability) und Neuro-Athletik. Jeden Tag bewertest du drei Bereiche: **Gefühl (Hardware)** = Wie beweglich fühlt sich dein Gewebe an? Studien zeigen, dass subjektive Steifheit stark mit faszialer Dehydrierung korreliert. **Fokus (Software)** = Wie klar ist deine kognitive Leistung? Die Pupillenweite und Reaktionszeit korrelieren direkt mit ZNS-Müdigkeit. **Energie (Batterie)** = Wie voll sind deine Reserven? Dies reflektiert HRV und autonome Balance. AXON kombiniert diese 3 Dimensionen zu einem Readiness-Score (Grün/Gelb/Rot) und passt deine Trainingsempfehlungen automatisch an. Das Prinzip: Wenn dein Nervensystem gestresst ist (Rot), erhöht intensives Training das Verletzungsrisiko – stattdessen fokussiert AXON auf Regeneration und sanfte Reize."
     },
     {
       question: "Was sind MFR-Nodes und wie setze ich sie ein?",
@@ -57,7 +57,7 @@ export default function FAQ() {
     },
     {
       question: "Funktioniert AXON auf meinem Smartphone?",
-      answer: "Ja, AXON ist eine Web-App und funktioniert auf jedem modernen Smartphone, Tablet oder Desktop-Browser. Du brauchst keine native App herunterzuladen – einfach einloggen und loslegen."
+      answer: "Ja, AXON ist eine Progressive Web App (PWA) und funktioniert auf jedem modernen Smartphone, Tablet oder Desktop-Browser. Du brauchst keine native App herunterzuladen. **Tipp: Installiere AXON auf deinem Homescreen für App-ähnliche Erfahrung.** So geht's: iPhone: Safari öffnen → Teilen-Icon → 'Zum Home-Bildschirm'. Android: Chrome öffnen → Menü (3 Punkte) → 'Zum Startbildschirm hinzufügen'. Danach startet AXON wie eine native App – kein Browser-Interface, Vollbild-Modus und schnellerer Zugriff."
     },
     {
       question: "Was ist, wenn ich eine Übung nicht verstehe?",
