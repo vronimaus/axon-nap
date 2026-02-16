@@ -7,6 +7,7 @@ import { Activity, Target, Zap, Info, Lock, ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import InteractiveBodyMap from '../components/dashboard/InteractiveBodyMap';
 import OnboardingModal from '../components/dashboard/OnboardingModal';
+import { Helmet } from 'react-helmet-async';
 
 export default function Dashboard() {
   const [mode, setMode] = useState(null); // 'rehab', 'performance', or null for selection
@@ -80,6 +81,15 @@ export default function Dashboard() {
   if (!mode) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 flex items-center justify-center p-4 pb-20 md:pb-4">
+        <Helmet>
+          <title>Command - AXON Dashboard</title>
+          <meta name="description" content="Dein persönliches AXON Command Center. Wähle zwischen Performance-Training, Rehabilitation oder Flow-Routinen." />
+          <meta name="robots" content="noindex, nofollow" />
+          <meta property="og:title" content="AXON Command Center" />
+          <meta property="og:description" content="Dein persönliches Training Dashboard" />
+          <meta property="og:type" content="website" />
+        </Helmet>
+
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -198,6 +208,12 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 flex flex-col">
+      <Helmet>
+        <title>{mode === 'rehab' ? 'REHAB' : 'PERFORMANCE'} - AXON Command</title>
+        <meta name="description" content={mode === 'rehab' ? 'Analysiere und löse deine Beschwerden mit AXON Rehabilitation' : 'Erreiche deine Performance-Ziele mit AXON Training'} />
+        <meta name="robots" content="noindex, nofollow" />
+      </Helmet>
+
       {/* Onboarding Modal */}
       <AnimatePresence>
         {showOnboarding && <OnboardingModal onClose={handleCloseOnboarding} />}
