@@ -9,6 +9,7 @@ import { Play, Pause, SkipForward, Check, Timer, Activity, AlertTriangle, Chevro
 import { createPageUrl } from '@/utils';
 import GlossaryTooltip from '../components/glossary/GlossaryTooltip';
 import DailyReadinessCheck from '../components/dashboard/DailyReadinessCheck';
+import { Helmet } from 'react-helmet-async';
 
 // Helper: Replace glossary terms in text with tooltips
 function InstructionWithGlossary({ instruction }) {
@@ -381,6 +382,13 @@ export default function Flow() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 p-4 pb-20 md:pb-4">
+      <Helmet>
+        <title>{routine.routine_name} - AXON Flow</title>
+        <meta name="description" content={routine.description || `Erlebe ${routine.routine_name} - Ein ${routine.total_duration}-Minuten ${routine.category} Flow für optimale Performance.`} />
+        <meta property="og:title" content={`${routine.routine_name} - AXON Flow`} />
+        <meta property="og:description" content={routine.description || `${routine.total_duration} Minuten ${routine.category} Training`} />
+      </Helmet>
+
       {/* Readiness Check Modal */}
       <AnimatePresence>
         {showReadinessCheck && user && (

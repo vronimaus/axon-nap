@@ -9,6 +9,7 @@ import { base44 } from '@/api/base44Client';
 import { Toaster } from 'sonner';
 import ErrorBoundary from './components/ErrorBoundary';
 import OfflineDetector from './components/OfflineDetector';
+import { HelmetProvider } from 'react-helmet-async';
 
 export default function Layout({ children, currentPageName }) {
   const { isLoading: trialLoading, hasAccess } = useTrialStatus();
@@ -168,8 +169,9 @@ export default function Layout({ children, currentPageName }) {
   };
   
   return (
-    <ErrorBoundary>
-      <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
+    <HelmetProvider>
+      <ErrorBoundary>
+        <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
         {/* Navigation - nur für eingeloggte User UND auf relevanten Pages */}
       {!isChecking && user && showNav && (
         <nav className="sticky top-0 z-50 bg-slate-900 border-b border-cyan-500/20">
@@ -309,6 +311,7 @@ export default function Layout({ children, currentPageName }) {
       {/* Offline Detector */}
       <OfflineDetector />
       </div>
-    </ErrorBoundary>
-  );
-}
+      </ErrorBoundary>
+      </HelmetProvider>
+      );
+      }
