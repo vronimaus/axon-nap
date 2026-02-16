@@ -115,11 +115,11 @@ export default function Dashboard() {
                 <Zap className="w-7 h-7 sm:w-8 sm:h-8 text-white" />
               </div>
               <h2 className="text-xl sm:text-2xl font-bold text-amber-400 mb-2 sm:mb-3">GOALS</h2>
-              <p className="text-sm sm:text-base text-slate-300 mb-3 sm:mb-4">
-                Schalte neue Fähigkeiten frei.
+              <p className="text-sm sm:text-base text-slate-300 mb-3 sm:mb-4 leading-relaxed">
+                Schalte neue Fähigkeiten frei: Von ersten Klimmzügen bis zum Human Flag. Dein personalisierter Trainingsplan basiert auf deinen Baselines.
               </p>
-              <p className="text-xs sm:text-sm text-slate-500">
-                12 Meilensteine → Mobility + Kraft → Performance
+              <p className="text-xs sm:text-sm text-slate-500 leading-relaxed">
+                Progressive Trainingsplanung • Mobility + Kraft • Messbare Fortschritte • Skill-Progression
               </p>
             </motion.button>
 
@@ -133,11 +133,11 @@ export default function Dashboard() {
                 <Target className="w-7 h-7 sm:w-8 sm:h-8 text-white" />
               </div>
               <h2 className="text-xl sm:text-2xl font-bold text-red-400 mb-2 sm:mb-3">REHAB</h2>
-              <p className="text-sm sm:text-base text-slate-300 mb-3 sm:mb-4">
-                Akuter Schmerz? Löse dein Problem jetzt.
+              <p className="text-sm sm:text-base text-slate-300 mb-3 sm:mb-4 leading-relaxed">
+                Akuter Schmerz? AXON analysiert die Root Cause über Hardware-Tests und Neuro-Drills, dann gibt dir einen phasierten Reha-Plan.
               </p>
-              <p className="text-xs sm:text-sm text-slate-500">
-                Detective-Diagnose → 20 Scenarios → MFR + Neuro-Reset
+              <p className="text-xs sm:text-sm text-slate-500 leading-relaxed">
+                Detective-Diagnose • Faszien-Release (MFR) • Neuro-Reset • Strukturierte Wiederherstellung
               </p>
             </motion.button>
 
@@ -151,11 +151,11 @@ export default function Dashboard() {
                 <Activity className="w-7 h-7 sm:w-8 sm:h-8 text-white" />
               </div>
               <h2 className="text-xl sm:text-2xl font-bold text-cyan-400 mb-2 sm:mb-3">FLOW</h2>
-              <p className="text-sm sm:text-base text-slate-300 mb-3 sm:mb-4">
-                Pflege dein System täglich.
+              <p className="text-sm sm:text-base text-slate-300 mb-3 sm:mb-4 leading-relaxed">
+                Tägliche Pflegeroutinen für dein System: Faszien-Release, Neuro-Drills, Mobility-Flows und Atemarbeit in 5-30 Min Sessions.
               </p>
-              <p className="text-xs sm:text-sm text-slate-500">
-                Body Journey → Neural Hygiene → Erhaltung
+              <p className="text-xs sm:text-sm text-slate-500 leading-relaxed">
+                12 MFR-Nodes • Mobility-CARs • Neuro-Hygiene • Regeneration • Daily Maintenance
               </p>
             </motion.button>
           </div>
