@@ -90,7 +90,7 @@ export default function FlowRoutines() {
     return <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950" />;
   }
 
-  const categories = [
+  const allCategories = [
     {
       id: 'neuro',
       name: 'Neuro',
@@ -124,8 +124,13 @@ export default function FlowRoutines() {
   ];
 
   const getRoutinesForCategory = (categoryId) => {
-    return routines.filter(routine => routine.category === categoryId);
+    return routines
+      .filter(routine => routine.category === categoryId)
+      .sort((a, b) => a.routine_name.localeCompare(b.routine_name));
   };
+
+  // Filter out empty categories
+  const categories = allCategories.filter(cat => getRoutinesForCategory(cat.id).length > 0);
 
   const categoryRoutines = selectedCategory ? getRoutinesForCategory(selectedCategory.id) : [];
   const totalRoutines = categoryRoutines.length;
