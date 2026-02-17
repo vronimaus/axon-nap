@@ -184,9 +184,22 @@ export default function KnowledgeHubArticle() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
-          className="prose prose-invert prose-cyan max-w-none mb-12"
+          className="prose prose-lg max-w-none mb-12"
         >
-          <ReactMarkdown>{article.deep_dive_content}</ReactMarkdown>
+          <ReactMarkdown
+            components={{
+              p: ({ children }) => <p className="text-slate-300 leading-relaxed mb-4">{children}</p>,
+              h2: ({ children }) => <h2 className="text-2xl font-bold text-white mt-8 mb-4">{children}</h2>,
+              h3: ({ children }) => <h3 className="text-xl font-bold text-cyan-400 mt-6 mb-3">{children}</h3>,
+              ul: ({ children }) => <ul className="text-slate-300 space-y-2 mb-4 ml-6 list-disc">{children}</ul>,
+              ol: ({ children }) => <ol className="text-slate-300 space-y-2 mb-4 ml-6 list-decimal">{children}</ol>,
+              li: ({ children }) => <li className="text-slate-300">{children}</li>,
+              strong: ({ children }) => <strong className="text-white font-semibold">{children}</strong>,
+              em: ({ children }) => <em className="text-cyan-400 italic">{children}</em>
+            }}
+          >
+            {article.deep_dive_content}
+          </ReactMarkdown>
         </motion.div>
 
         {/* Triage Ampel */}
