@@ -211,6 +211,9 @@ export default function KnowledgeHubArticle() {
             className="glass rounded-2xl border border-slate-700 p-6 mb-8"
           >
             <h3 className="text-2xl font-bold text-white mb-6">Die AXON-Ampel (Triage)</h3>
+            <p className="text-sm text-slate-400 mb-6 leading-relaxed">
+              Die AXON-Ampel hilft dir einzuschätzen, ob deine Beschwerden medizinische Abklärung benötigen oder ob AXON die richtige Lösung für dich ist. Diese Orientierung ersetzt keine ärztliche Diagnose.
+            </p>
             
             <div className="space-y-4">
               {article.triage_red && (

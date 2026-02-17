@@ -327,25 +327,6 @@ export default function Dashboard() {
                       </p>
                     </div>
                   </div>
-                  
-                  {/* Triage-Ampel Erklärung */}
-                  <div className="glass rounded-xl border border-slate-700 p-4 sm:p-5">
-                    <h3 className="text-sm font-bold text-white mb-3">Die AXON-Ampel (Triage)</h3>
-                    <div className="space-y-2 text-xs text-slate-300">
-                      <div className="flex items-start gap-2">
-                        <span className="text-red-500 font-bold flex-shrink-0">🔴 Rot:</span>
-                        <span>Bei ausstrahlenden Schmerzen in die Beine oder Kraftverlust sofort zum Arzt.</span>
-                      </div>
-                      <div className="flex items-start gap-2">
-                        <span className="text-amber-500 font-bold flex-shrink-0">🟡 Gelb:</span>
-                        <span>Bei Fehlhaltungen (Rundrücken, Hohlkreuz) bietet AXON die perfekte myofasziale Korrektur.</span>
-                      </div>
-                      <div className="flex items-start gap-2">
-                        <span className="text-green-500 font-bold flex-shrink-0">🟢 Grün:</span>
-                        <span>Nutze die „Ketten-Flows" zur Optimierung deiner sportlichen Leistung.</span>
-                      </div>
-                    </div>
-                  </div>
                 </div>
               )}
               
