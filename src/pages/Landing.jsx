@@ -166,6 +166,11 @@ export default function Landing() {
             <span className="font-bold text-cyan-400">AXON</span>
           </div>
           <div className="flex items-center gap-3">
+            <Link to={createPageUrl('KnowledgeHub')}>
+              <Button size="sm" variant="ghost" className="text-slate-400 hover:text-cyan-400">
+                Knowledge Hub
+              </Button>
+            </Link>
             {user ? (
               <>
                 <Link to={createPageUrl('Dashboard')}>
