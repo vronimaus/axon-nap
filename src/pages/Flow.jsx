@@ -130,7 +130,7 @@ export default function Flow() {
         if (lastCheck !== today) {
           setShowReadinessCheck(true);
         } else {
-          setReadinessStatus(currentUser?.daily_readiness_status);
+          setReadinessStatus(currentUser?.current_readiness_status);
         }
       } catch (e) {
         // User not logged in - that's ok for demo flows
@@ -299,7 +299,7 @@ export default function Flow() {
     // Refresh user data to get updated readiness status
     try {
       const updatedUser = await base44.auth.me();
-      setReadinessStatus(updatedUser?.daily_readiness_status);
+      setReadinessStatus(updatedUser?.current_readiness_status);
     } catch (e) {
       console.error('Error refreshing user:', e);
     }
