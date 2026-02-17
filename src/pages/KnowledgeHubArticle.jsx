@@ -195,7 +195,8 @@ export default function KnowledgeHubArticle() {
               ol: ({ children }) => <ol className="text-slate-300 space-y-2 mb-4 ml-6 list-decimal">{children}</ol>,
               li: ({ children }) => <li className="text-slate-300">{children}</li>,
               strong: ({ children }) => <strong className="text-white font-semibold">{children}</strong>,
-              em: ({ children }) => <em className="text-cyan-400 italic">{children}</em>
+              em: ({ children }) => <em className="text-cyan-400 italic">{children}</em>,
+              a: ({ children, href }) => <a href={href} target="_blank" rel="noopener noreferrer" className="text-amber-400 hover:text-amber-300 underline font-medium">{children}</a>
             }}
           >
             {article.deep_dive_content}

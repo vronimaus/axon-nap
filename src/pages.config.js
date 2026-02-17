@@ -63,6 +63,8 @@ import FlowRoutines from './pages/FlowRoutines';
 import FlowSelection from './pages/FlowSelection';
 import Glossary from './pages/Glossary';
 import Imprint from './pages/Imprint';
+import KnowledgeHub from './pages/KnowledgeHub';
+import KnowledgeHubArticle from './pages/KnowledgeHubArticle';
 import KnowledgeUpload from './pages/KnowledgeUpload';
 import Landing from './pages/Landing';
 import MFRIntegration from './pages/MFRIntegration';
@@ -79,8 +81,6 @@ import Success from './pages/Success';
 import Terms from './pages/Terms';
 import TrainingPlan from './pages/TrainingPlan';
 import TrialInfo from './pages/TrialInfo';
-import KnowledgeHubArticle from './pages/KnowledgeHubArticle';
-import KnowledgeHub from './pages/KnowledgeHub';
 import __Layout from './Layout.jsx';
 
 
@@ -101,6 +101,8 @@ export const PAGES = {
     "FlowSelection": FlowSelection,
     "Glossary": Glossary,
     "Imprint": Imprint,
+    "KnowledgeHub": KnowledgeHub,
+    "KnowledgeHubArticle": KnowledgeHubArticle,
     "KnowledgeUpload": KnowledgeUpload,
     "Landing": Landing,
     "MFRIntegration": MFRIntegration,
@@ -117,8 +119,6 @@ export const PAGES = {
     "Terms": Terms,
     "TrainingPlan": TrainingPlan,
     "TrialInfo": TrialInfo,
-    "KnowledgeHubArticle": KnowledgeHubArticle,
-    "KnowledgeHub": KnowledgeHub,
 }
 
 export const pagesConfig = {
