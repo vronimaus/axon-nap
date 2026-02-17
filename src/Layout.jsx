@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { LayoutDashboard, LogOut, User, Target, Activity, Settings } from 'lucide-react';
+import { LayoutDashboard, LogOut, User, Target, Activity, Settings, Menu, X } from 'lucide-react';
 import CookieBanner from './components/CookieBanner';
 import { useTrialStatus } from './components/useTrialStatus';
 import { AnimatePresence } from 'framer-motion';
@@ -14,7 +14,8 @@ import { HelmetProvider } from 'react-helmet-async';
 export default function Layout({ children, currentPageName }) {
   const { isLoading: trialLoading, hasAccess } = useTrialStatus();
   const [user, setUser] = useState(null);
-  const [isChecking, setIsChecking] = useState(true);
+        const [isChecking, setIsChecking] = useState(true);
+        const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -282,24 +283,57 @@ export default function Layout({ children, currentPageName }) {
       
       {/* Mobile Bottom Navigation - nur für eingeloggte User UND auf relevanten Pages */}
           {!isChecking && user && showNav && (
-            <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-slate-900/95 backdrop-blur border-t border-cyan-500/20 safe-area-pb">
-              <div className="flex justify-around items-center px-2 py-3 overflow-x-auto">
-                {navItems.map((item) => (
-                  <Link
-                    key={item.page}
-                    to={createPageUrl(item.page)}
-                    title={item.name}
-                    className={`flex items-center justify-center p-3 rounded-xl transition-all touch-target ${
-                      currentPageName === item.page
-                        ? 'bg-cyan-500/20 text-cyan-400'
-                        : 'text-slate-400 active:bg-slate-800/50'
-                    }`}
-                  >
-                    <item.icon className="w-6 h-6" />
-                  </Link>
-                ))}
-              </div>
-            </nav>
+            <>
+              <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-slate-900/95 backdrop-blur border-t border-cyan-500/20 safe-area-pb">
+                <div className="flex justify-around items-center px-2 py-3">
+                  {navItems.map((item) => (
+                    <Link
+                      key={item.page}
+                      to={createPageUrl(item.page)}
+                      title={item.name}
+                      className={`flex items-center justify-center p-3 rounded-xl transition-all touch-target ${
+                        currentPageName === item.page
+                          ? 'bg-cyan-500/20 text-cyan-400'
+                          : 'text-slate-400 active:bg-slate-800/50'
+                      }`}
+                    >
+                      <item.icon className="w-6 h-6" />
+                    </Link>
+                  ))}
+
+                  {/* More Menu */}
+                  <div className="relative">
+                    <button
+                      onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                      title="Mehr"
+                      className="flex items-center justify-center p-3 rounded-xl transition-all text-slate-400 active:bg-slate-800/50"
+                    >
+                      {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+                    </button>
+
+                    {mobileMenuOpen && (
+                      <div className="absolute bottom-full right-0 mb-2 glass rounded-xl border border-slate-700 overflow-hidden min-w-max">
+                        {publicNavItems.map((item) => (
+                          <Link
+                            key={item.page}
+                            to={createPageUrl(item.page)}
+                            onClick={() => setMobileMenuOpen(false)}
+                            className="block px-4 py-2 text-sm text-slate-300 hover:bg-slate-800 hover:text-cyan-400 transition-colors border-b border-slate-700 last:border-b-0"
+                          >
+                            {item.name}
+                          </Link>
+                        ))}
+                        <div className="border-t border-slate-700">
+                          <Link to={createPageUrl('Imprint')} onClick={() => setMobileMenuOpen(false)} className="block px-4 py-2 text-sm text-slate-400 hover:bg-slate-800 hover:text-slate-300 transition-colors">Impressum</Link>
+                          <Link to={createPageUrl('Privacy')} onClick={() => setMobileMenuOpen(false)} className="block px-4 py-2 text-sm text-slate-400 hover:bg-slate-800 hover:text-slate-300 transition-colors border-t border-slate-700">Datenschutz</Link>
+                          <Link to={createPageUrl('Terms')} onClick={() => setMobileMenuOpen(false)} className="block px-4 py-2 text-sm text-slate-400 hover:bg-slate-800 hover:text-slate-300 transition-colors border-t border-slate-700">AGB</Link>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </nav>
+            </>
           )}
 
       {/* Footer */}
