@@ -312,7 +312,7 @@ export default function Layout({ children, currentPageName }) {
                     </button>
 
                     {mobileMenuOpen && (
-                      <div className="absolute bottom-full right-0 mb-2 glass rounded-xl border border-slate-700 overflow-hidden min-w-max">
+                      <div className="absolute bottom-full right-0 mb-2 rounded-xl border border-slate-600 overflow-hidden min-w-max bg-slate-800/95 backdrop-blur-md">
                         {publicNavItems.map((item) => (
                           <Link
                             key={item.page}
