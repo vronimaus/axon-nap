@@ -391,24 +391,7 @@ export default function AdminHub() {
 
           {/* Exercises Tab */}
           <TabsContent value="exercises" className="mt-0">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              className="glass rounded-2xl border border-cyan-500/30 p-8"
-            >
-              <h2 className="text-2xl font-bold text-cyan-400 mb-4">Übungs-Bilder hochladen</h2>
-              <p className="text-slate-300 mb-6">
-                Lade Bilder für alle Übungen hoch. Diese werden automatisch in den Flows angezeigt.
-              </p>
-              <Button
-                onClick={() => window.location.href = createPageUrl('ExerciseImageUpload')}
-                className="bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-600 hover:to-purple-700"
-              >
-                <Image className="w-4 h-4 mr-2" />
-                Übungs-Bilder verwalten
-              </Button>
-            </motion.div>
+            <ExercisesTab />
           </TabsContent>
 
           {/* Diagnosis Tab */}
