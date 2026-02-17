@@ -92,8 +92,18 @@ export default function FAQWidget({ faqIds = [], category = null, tags = [], lim
                   className="overflow-hidden"
                 >
                   <div className="px-4 py-3 bg-slate-800/30 border-t border-slate-700">
-                    <div className="prose prose-sm prose-invert max-w-none">
-                      <ReactMarkdown>{faq.answer}</ReactMarkdown>
+                    <div className="prose prose-sm max-w-none">
+                      <ReactMarkdown
+                        components={{
+                          p: ({ children }) => <p className="mb-2 text-slate-300">{children}</p>,
+                          ul: ({ children }) => <ul className="list-disc ml-6 mb-2 text-slate-300">{children}</ul>,
+                          ol: ({ children }) => <ol className="list-decimal ml-6 mb-2 text-slate-300">{children}</ol>,
+                          li: ({ children }) => <li className="mb-1 text-slate-300">{children}</li>,
+                          strong: ({ children }) => <strong className="font-semibold text-white">{children}</strong>
+                        }}
+                      >
+                        {faq.answer}
+                      </ReactMarkdown>
                     </div>
                     {faq.tags && faq.tags.length > 0 && (
                       <div className="flex flex-wrap gap-2 mt-3">
