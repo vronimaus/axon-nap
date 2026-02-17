@@ -7,6 +7,150 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { AlertCircle, Zap, BookOpen, Palette, ArrowLeft, Image, Trash2, Filter, ChevronUp, ChevronDown } from 'lucide-react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
+function ExercisesTab() {
+  const [categoryFilter, setCategoryFilter] = useState('all');
+  const [difficultyFilter, setDifficultyFilter] = useState('all');
+  const [sortBy, setSortBy] = useState('name');
+  const [sortOrder, setSortOrder] = useState('asc');
+
+  const { data: exercises = [], isLoading } = useQuery({
+    queryKey: ['exercises'],
+    queryFn: () => base44.entities.Exercise.list('-updated_date', 500),
+  });
+
+  const categories = [...new Set(exercises.map(e => e.category))].filter(Boolean).sort();
+  const difficulties = ['beginner', 'intermediate', 'advanced'];
+
+  let filtered = exercises.filter(ex => {
+    const catMatch = categoryFilter === 'all' || ex.category === categoryFilter;
+    const diffMatch = difficultyFilter === 'all' || ex.difficulty === difficultyFilter;
+    return catMatch && diffMatch;
+  });
+
+  filtered.sort((a, b) => {
+    let aVal = a[sortBy] || '';
+    let bVal = b[sortBy] || '';
+    if (typeof aVal === 'string') aVal = aVal.toLowerCase();
+    if (typeof bVal === 'string') bVal = bVal.toLowerCase();
+    
+    const comparison = aVal < bVal ? -1 : aVal > bVal ? 1 : 0;
+    return sortOrder === 'asc' ? comparison : -comparison;
+  });
+
+  if (isLoading) {
+    return <div className="glass rounded-2xl border border-cyan-500/30 p-8 text-slate-400">Laden...</div>;
+  }
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="space-y-6"
+    >
+      <div className="glass rounded-2xl border border-cyan-500/30 p-8">
+        <h2 className="text-2xl font-bold text-cyan-400 mb-6">💪 Exercises Library ({filtered.length})</h2>
+        
+        {/* Filters */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+          <div>
+            <label className="block text-sm text-slate-300 mb-2">Kategorie</label>
+            <select
+              value={categoryFilter}
+              onChange={(e) => setCategoryFilter(e.target.value)}
+              className="w-full px-3 py-2 rounded-lg bg-slate-800 border border-slate-600 text-white text-sm"
+            >
+              <option value="all">Alle</option>
+              {categories.map(cat => (
+                <option key={cat} value={cat}>{cat}</option>
+              ))}
+            </select>
+          </div>
+          
+          <div>
+            <label className="block text-sm text-slate-300 mb-2">Schwierigkeit</label>
+            <select
+              value={difficultyFilter}
+              onChange={(e) => setDifficultyFilter(e.target.value)}
+              className="w-full px-3 py-2 rounded-lg bg-slate-800 border border-slate-600 text-white text-sm"
+            >
+              <option value="all">Alle</option>
+              {difficulties.map(diff => (
+                <option key={diff} value={diff}>{diff}</option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <label className="block text-sm text-slate-300 mb-2">Sortierung</label>
+            <div className="flex gap-2">
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value)}
+                className="flex-1 px-3 py-2 rounded-lg bg-slate-800 border border-slate-600 text-white text-sm"
+              >
+                <option value="name">Name</option>
+                <option value="category">Kategorie</option>
+                <option value="difficulty">Schwierigkeit</option>
+              </select>
+              <button
+                onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
+                className="px-3 py-2 rounded-lg bg-slate-800 border border-slate-600 text-slate-300 hover:text-white transition-colors"
+              >
+                {sortOrder === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Exercises Table */}
+        {filtered.length === 0 ? (
+          <p className="text-slate-400">Keine Exercises gefunden</p>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-slate-700">
+                  <th className="text-left py-3 px-4 text-slate-300 font-semibold">Name</th>
+                  <th className="text-left py-3 px-4 text-slate-300 font-semibold">Kategorie</th>
+                  <th className="text-left py-3 px-4 text-slate-300 font-semibold">Schwierigkeit</th>
+                  <th className="text-left py-3 px-4 text-slate-300 font-semibold">Parent</th>
+                  <th className="text-left py-3 px-4 text-slate-300 font-semibold">Level</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filtered.map(ex => (
+                  <tr key={ex.id} className="border-b border-slate-800 hover:bg-slate-800/50 transition-colors">
+                    <td className="py-3 px-4">
+                      <div>
+                        <p className="font-medium text-slate-100">{ex.name}</p>
+                        {ex.description && <p className="text-xs text-slate-400 mt-1 line-clamp-1">{ex.description}</p>}
+                      </div>
+                    </td>
+                    <td className="py-3 px-4">
+                      <span className="px-2 py-1 rounded text-xs bg-cyan-500/20 text-cyan-300">{ex.category}</span>
+                    </td>
+                    <td className="py-3 px-4">
+                      <span className={`px-2 py-1 rounded text-xs ${
+                        ex.difficulty === 'beginner' ? 'bg-green-500/20 text-green-300' :
+                        ex.difficulty === 'intermediate' ? 'bg-yellow-500/20 text-yellow-300' :
+                        'bg-red-500/20 text-red-300'
+                      }`}>
+                        {ex.difficulty || '-'}
+                      </span>
+                    </td>
+                    <td className="py-3 px-4 text-slate-400">{ex.parent_exercise || '-'}</td>
+                    <td className="py-3 px-4 text-slate-400">{ex.progression_level || '-'}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
+    </motion.div>
+  );
+}
+
 function RoadmapTab() {
   const queryClient = useQueryClient();
   const [statusFilter, setStatusFilter] = useState('all');
