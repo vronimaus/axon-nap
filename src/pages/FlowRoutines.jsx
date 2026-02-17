@@ -7,6 +7,7 @@ import { ArrowLeft, Clock, Play, CheckCircle2, AlertTriangle } from 'lucide-reac
 import { Button } from '@/components/ui/button';
 import { PaginationControls } from '../components/ui/pagination-controls';
 import DailyReadinessCheck from '../components/dashboard/DailyReadinessCheck';
+import { Helmet } from 'react-helmet-async';
 
 export default function FlowRoutines() {
   const [user, setUser] = useState(null);
