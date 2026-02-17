@@ -16,6 +16,7 @@ export default function FlowRoutines() {
   const [currentPage, setCurrentPage] = useState(1);
   const [showReadinessCheck, setShowReadinessCheck] = useState(false);
   const [readinessStatus, setReadinessStatus] = useState(null);
+  const [expandedLevels, setExpandedLevels] = useState([1]); // Level 1 standardmäßig offen
   const itemsPerPage = 12;
 
   useEffect(() => {
@@ -246,25 +247,25 @@ export default function FlowRoutines() {
                     className="space-y-4"
                   >
                     {/* Level Header */}
-                    <div className={`glass rounded-2xl border ${levelData.border} p-6 bg-gradient-to-r ${levelData.color} to-transparent`}>
+                    <button
+                      onClick={() => setExpandedLevels(prev => 
+                        prev.includes(level) ? prev.filter(l => l !== level) : [...prev, level]
+                      )}
+                      className={`glass rounded-2xl border ${levelData.border} p-6 bg-gradient-to-r ${levelData.color} to-transparent w-full text-left hover:border-opacity-80 transition-all`}
+                    >
                       <div className="flex items-center justify-between">
                         <div>
                           <h2 className={`text-2xl font-bold ${levelData.text} mb-2`}>Level {level}: {levelData.name}</h2>
                           <p className="text-slate-300 text-sm">{levelData.description}</p>
                         </div>
-                        <Button
-                          onClick={() => setSelectedLevel(level)}
-                          size="sm"
-                          className="bg-slate-800/50 text-slate-200 hover:bg-slate-700/50"
-                        >
-                          Alle anzeigen
-                        </Button>
+                        <ChevronDown className={`w-6 h-6 text-slate-400 transition-transform ${expandedLevels.includes(level) ? 'rotate-180' : ''}`} />
                       </div>
-                    </div>
+                    </button>
 
-                    {/* Preview of first 3 routines */}
+                    {/* Routines */}
+                    {expandedLevels.includes(level) && (
                     <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                      {routinesInLevel.slice(0, 3).map((routine) => {
+                      {routinesInLevel.map((routine) => {
                         const isDisabled = shouldDisableRoutine(routine);
 
                         return (
@@ -309,20 +310,9 @@ export default function FlowRoutines() {
                             </div>
                           </motion.div>
                         );
-                      })}
-                    </div>
-
-                    {routinesInLevel.length > 3 && (
-                      <div className="text-center">
-                        <Button
-                          onClick={() => setSelectedLevel(level)}
-                          variant="outline"
-                          className="border-slate-700 text-slate-300"
-                        >
-                          +{routinesInLevel.length - 3} weitere Routinen anzeigen
-                        </Button>
-                      </div>
-                    )}
+                        })}
+                        </div>
+                        )}
                   </motion.div>
                 );
               })}
