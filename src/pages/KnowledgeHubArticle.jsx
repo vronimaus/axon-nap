@@ -261,11 +261,23 @@ export default function KnowledgeHubArticle() {
           </motion.div>
         )}
 
-        {/* App CTA */}
+        {/* Rechtlicher Disclaimer */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.6 }}
+          className="glass rounded-2xl border border-slate-700 p-6 mb-8"
+        >
+          <p className="text-xs text-slate-400 leading-relaxed">
+            <strong className="text-slate-300">Rechtlicher Hinweis:</strong> AXON ist ein Informations- und Trainingstool zur Steigerung der körperlichen Mobilität und Performance. Die Inhalte dienen der allgemeinen Information und ersetzen keine ärztliche Diagnose oder Behandlung. Bei akuten Schmerzen konsultieren Sie bitte einen Arzt oder Physiotherapeuten. Die Nennung von Experten wie Dr. Robert Schleip, Thomas W. Myers, Kelly Starrett oder Gray Cook dient der Erläuterung der sportwissenschaftlichen Theorien, auf denen AXON basiert. Es besteht keine geschäftliche Verbindung oder offizielle Partnerschaft mit den genannten Personen oder deren Marken (wie z.B. FMS, Anatomy Trains oder The Ready State).
+          </p>
+        </motion.div>
+
+        {/* App CTA */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.7 }}
           className="glass rounded-2xl border border-cyan-500/30 p-8 text-center bg-gradient-to-r from-cyan-500/10 to-purple-500/10"
         >
           <h3 className="text-2xl font-bold text-white mb-4">
