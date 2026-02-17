@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { createPageUrl } from '@/utils';
-import { ArrowLeft, Clock, Play, CheckCircle2, AlertTriangle } from 'lucide-react';
+import { ArrowLeft, Clock, Play, CheckCircle2, AlertTriangle, ChevronDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { PaginationControls } from '../components/ui/pagination-controls';
 import DailyReadinessCheck from '../components/dashboard/DailyReadinessCheck';
