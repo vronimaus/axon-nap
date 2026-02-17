@@ -12,7 +12,7 @@ import { Helmet } from 'react-helmet-async';
 export default function FlowRoutines() {
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [selectedLevel, setSelectedLevel] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [showReadinessCheck, setShowReadinessCheck] = useState(false);
   const [readinessStatus, setReadinessStatus] = useState(null);
@@ -67,10 +67,10 @@ export default function FlowRoutines() {
     enabled: !!user?.email
   });
 
-  // Reset to page 1 when category changes
+  // Reset to page 1 when level changes
   useEffect(() => {
     setCurrentPage(1);
-  }, [selectedCategory]);
+  }, [selectedLevel]);
 
   const handleReadinessCheckClose = async () => {
     setShowReadinessCheck(false);
@@ -90,53 +90,27 @@ export default function FlowRoutines() {
     return <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950" />;
   }
 
-  const allCategories = [
-    {
-      id: 'neuro',
-      name: 'Neuro',
-      description: 'Gezielte Übungen für dein Nervensystem: Verbessere Augen, Gleichgewicht und Körperwahrnehmung für mehr Stabilität und schnelle Reaktionen.',
-      color: { gradient: 'from-cyan-500/20', border: 'border-cyan-500/30', text: 'text-cyan-400', button: 'bg-cyan-500/20 text-cyan-400 hover:bg-cyan-500/30' }
-    },
-    {
-      id: 'mobility',
-      name: 'Mobility',
-      description: 'Fördere deine Beweglichkeit in Gelenken und Muskeln. Mit federnden Bewegungen und dynamischem Stretch erweiterst du spielerisch deinen Bewegungsradius und löst Steifheit.',
-      color: { gradient: 'from-amber-500/20', border: 'border-amber-500/30', text: 'text-amber-400', button: 'bg-amber-500/20 text-amber-400 hover:bg-amber-500/30' }
-    },
-    {
-      id: 'breathwork',
-      name: 'Breathwork',
-      description: 'Meistere die Kraft deines Atems. Ob für mehr Energie, zur Beruhigung oder zur Verbesserung deiner Ausdauer.',
-      color: { gradient: 'from-green-500/20', border: 'border-green-500/30', text: 'text-green-400', button: 'bg-green-500/20 text-green-400 hover:bg-green-500/30' }
-    },
-    {
-      id: 'faszien',
-      name: 'Faszien',
-      description: 'Löse Verspannungen im Fasziengewebe. Gezielter Druck hilft, Schmerzen zu lindern und die Geschmeidigkeit zu erhöhen.',
-      color: { gradient: 'from-red-500/20', border: 'border-red-500/30', text: 'text-red-400', button: 'bg-red-500/20 text-red-400 hover:bg-red-500/30' }
-    },
-    {
-      id: 'funktionale-bewegung',
-      name: 'Funktionale Bewegung',
-      description: 'Baue alltagsrelevante Kraft auf und verbessere deine Bewegungseffizienz durch ganzheitliche Übungen – mit Bounce-Elementen für federnde Kraft und Leichtigkeit.',
-      color: { gradient: 'from-purple-500/20', border: 'border-purple-500/30', text: 'text-purple-400', button: 'bg-purple-500/20 text-purple-400 hover:bg-purple-500/30' }
-    }
-  ];
+  // Sort all routines by name (01, 02, 03...)
+  const sortedRoutines = [...routines].sort((a, b) => a.routine_name.localeCompare(b.routine_name));
 
-  const getRoutinesForCategory = (categoryId) => {
-    return routines
-      .filter(routine => routine.category === categoryId)
-      .sort((a, b) => a.routine_name.localeCompare(b.routine_name));
+  // Group routines by progression level
+  const routinesByLevel = {
+    1: sortedRoutines.filter(r => r.progression_level === 1),
+    2: sortedRoutines.filter(r => r.progression_level === 2),
+    3: sortedRoutines.filter(r => r.progression_level === 3)
   };
 
-  // Filter out empty categories
-  const categories = allCategories.filter(cat => getRoutinesForCategory(cat.id).length > 0);
+  const levelInfo = {
+    1: { name: 'Foundation', description: 'Grundlagen für ein stabiles System', color: 'from-green-500/20', border: 'border-green-500/30', text: 'text-green-400' },
+    2: { name: 'Development', description: 'Aufbau von Kraft und Kontrolle', color: 'from-cyan-500/20', border: 'border-cyan-500/30', text: 'text-cyan-400' },
+    3: { name: 'Mastery', description: 'Maximale Performance und Athletik', color: 'from-purple-500/20', border: 'border-purple-500/30', text: 'text-purple-400' }
+  };
 
-  const categoryRoutines = selectedCategory ? getRoutinesForCategory(selectedCategory.id) : [];
-  const totalRoutines = categoryRoutines.length;
+  const levelRoutines = selectedLevel ? routinesByLevel[selectedLevel] : [];
+  const totalRoutines = levelRoutines.length;
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
-  const paginatedRoutines = categoryRoutines.slice(startIndex, endIndex);
+  const paginatedRoutines = levelRoutines.slice(startIndex, endIndex);
 
   // Filter routines based on readiness status
   const shouldDisableRoutine = (routine) => {
@@ -204,7 +178,7 @@ export default function FlowRoutines() {
       {/* Main Content */}
       <div className="max-w-6xl mx-auto px-4 py-8">
         {/* Readiness Recommendation */}
-        {readinessStatus && !selectedCategory && (
+        {readinessStatus && !selectedLevel && (
           <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
@@ -248,31 +222,113 @@ export default function FlowRoutines() {
         )}
 
         <AnimatePresence mode="wait">
-          {!selectedCategory ? (
-            // Category Selection View
+          {!selectedLevel ? (
+            // Level Selection View
             <motion.div
-              key="categories"
+              key="levels"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6"
+              className="space-y-8"
             >
-              {categories.map((category, idx) => (
-                <motion.button
-                  key={category.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: idx * 0.1 }}
-                  onClick={() => setSelectedCategory(category)}
-                  className={`glass rounded-2xl border ${category.color.border} p-6 bg-gradient-to-r ${category.color.gradient} to-transparent hover:border-${category.color.text.split('-')[1]}-500/60 active:border-${category.color.text.split('-')[1]}-500/80 transition-all text-left group touch-target`}
-                >
-                  <h2 className={`text-xl font-bold ${category.color.text} mb-2 group-hover:opacity-80 transition-opacity`}>{category.name}</h2>
-                  <p className="text-slate-300 text-sm">{category.description}</p>
-                </motion.button>
-              ))}
+              {[1, 2, 3].map((level, idx) => {
+                const levelData = levelInfo[level];
+                const routinesInLevel = routinesByLevel[level];
+
+                if (routinesInLevel.length === 0) return null;
+
+                return (
+                  <motion.div
+                    key={level}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: idx * 0.1 }}
+                    className="space-y-4"
+                  >
+                    {/* Level Header */}
+                    <div className={`glass rounded-2xl border ${levelData.border} p-6 bg-gradient-to-r ${levelData.color} to-transparent`}>
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <h2 className={`text-2xl font-bold ${levelData.text} mb-2`}>Level {level}: {levelData.name}</h2>
+                          <p className="text-slate-300 text-sm">{levelData.description}</p>
+                        </div>
+                        <Button
+                          onClick={() => setSelectedLevel(level)}
+                          size="sm"
+                          className="bg-slate-800/50 text-slate-200 hover:bg-slate-700/50"
+                        >
+                          Alle anzeigen
+                        </Button>
+                      </div>
+                    </div>
+
+                    {/* Preview of first 3 routines */}
+                    <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                      {routinesInLevel.slice(0, 3).map((routine) => {
+                        const isDisabled = shouldDisableRoutine(routine);
+
+                        return (
+                          <motion.div
+                            key={routine.id}
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            className={`glass rounded-xl border p-6 transition-all group flex flex-col h-full ${
+                              isDisabled 
+                                ? 'border-slate-800 opacity-50 cursor-not-allowed' 
+                                : 'border-slate-700 hover:border-slate-600'
+                            }`}
+                          >
+                            <div className="flex-1 mb-4">
+                              <div className="flex items-start justify-between gap-2 mb-2">
+                                <h3 className={`text-base font-bold ${isDisabled ? 'text-slate-500' : 'text-white'}`}>
+                                  {routine.routine_name}
+                                </h3>
+                              </div>
+                              <p className={`text-sm line-clamp-3 ${isDisabled ? 'text-slate-600' : 'text-slate-400'}`}>
+                                {routine.description}
+                              </p>
+                              {isDisabled && (
+                                <p className="text-xs text-red-400 mt-2">
+                                  🛑 Heute nicht empfohlen
+                                </p>
+                              )}
+                            </div>
+                            <div className="flex items-center justify-between pt-4 border-t border-slate-700">
+                              <div className={`flex items-center gap-2 text-sm ${isDisabled ? 'text-slate-600' : 'text-slate-400'}`}>
+                                <Clock className="w-4 h-4" />
+                                <span>{routine.total_duration} Min</span>
+                              </div>
+                              <Button
+                                onClick={() => !isDisabled && (window.location.href = createPageUrl(`Flow?routine_id=${routine.id}`))}
+                                size="sm"
+                                disabled={isDisabled}
+                                className={`${isDisabled ? 'opacity-30' : 'bg-cyan-500/20 text-cyan-400 hover:bg-cyan-500/30'}`}
+                              >
+                                <Play className="w-4 h-4" />
+                              </Button>
+                            </div>
+                          </motion.div>
+                        );
+                      })}
+                    </div>
+
+                    {routinesInLevel.length > 3 && (
+                      <div className="text-center">
+                        <Button
+                          onClick={() => setSelectedLevel(level)}
+                          variant="outline"
+                          className="border-slate-700 text-slate-300"
+                        >
+                          +{routinesInLevel.length - 3} weitere Routinen anzeigen
+                        </Button>
+                      </div>
+                    )}
+                  </motion.div>
+                );
+              })}
             </motion.div>
           ) : (
-            // Routines View
+            // Routines View (Full Level)
             <motion.div
               key="routines"
               initial={{ opacity: 0 }}
@@ -280,21 +336,23 @@ export default function FlowRoutines() {
               exit={{ opacity: 0 }}
               className="space-y-6"
             >
-              {/* Category Header */}
+              {/* Level Header */}
               <motion.div
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className={`glass rounded-2xl border ${selectedCategory.color.border} p-6 bg-gradient-to-r ${selectedCategory.color.gradient} to-transparent`}
+                className={`glass rounded-2xl border ${levelInfo[selectedLevel].border} p-6 bg-gradient-to-r ${levelInfo[selectedLevel].color} to-transparent`}
               >
                 <div className="flex items-start justify-between gap-4">
                   <div>
-                    <h2 className={`text-2xl font-bold ${selectedCategory.color.text} mb-2`}>{selectedCategory.name}</h2>
-                    <p className="text-slate-300 text-sm">{selectedCategory.description}</p>
+                    <h2 className={`text-2xl font-bold ${levelInfo[selectedLevel].text} mb-2`}>
+                      Level {selectedLevel}: {levelInfo[selectedLevel].name}
+                    </h2>
+                    <p className="text-slate-300 text-sm">{levelInfo[selectedLevel].description}</p>
                   </div>
                   <Button
                     variant="ghost"
                     size="icon"
-                    onClick={() => setSelectedCategory(null)}
+                    onClick={() => setSelectedLevel(null)}
                     className="text-slate-400 hover:text-slate-200 flex-shrink-0"
                   >
                     <ArrowLeft className="w-5 h-5" />
@@ -307,7 +365,7 @@ export default function FlowRoutines() {
                 {paginatedRoutines.length > 0 ? (
                   paginatedRoutines.map((routine, idx) => {
                     const isDisabled = shouldDisableRoutine(routine);
-                    
+
                     return (
                     <motion.div
                       key={routine.id}
@@ -344,7 +402,7 @@ export default function FlowRoutines() {
                           onClick={() => !isDisabled && (window.location.href = createPageUrl(`Flow?routine_id=${routine.id}`))}
                           size="sm"
                           disabled={isDisabled}
-                          className={`${isDisabled ? 'opacity-30' : selectedCategory.color.button}`}
+                          className={`${isDisabled ? 'opacity-30' : 'bg-cyan-500/20 text-cyan-400 hover:bg-cyan-500/30'}`}
                         >
                           <Play className="w-4 h-4" />
                         </Button>
@@ -354,13 +412,13 @@ export default function FlowRoutines() {
                   })
                 ) : (
                   <div className="glass rounded-xl border border-slate-700 p-6 text-center col-span-full">
-                    <p className="text-slate-400">Keine Routinen in dieser Kategorie. Mehr folgen bald!</p>
+                    <p className="text-slate-400">Keine Routinen in diesem Level verfügbar.</p>
                   </div>
                 )}
               </div>
 
               {/* Pagination Controls */}
-              {categoryRoutines.length > 0 && (
+              {levelRoutines.length > 0 && (
                 <PaginationControls
                   currentPage={currentPage}
                   totalItems={totalRoutines}
@@ -372,8 +430,8 @@ export default function FlowRoutines() {
           )}
         </AnimatePresence>
 
-        {/* Recent Completions - only show on category selection view */}
-        {!selectedCategory && completionHistory.length > 0 && (
+        {/* Recent Completions - only show on level selection view */}
+        {!selectedLevel && completionHistory.length > 0 && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
