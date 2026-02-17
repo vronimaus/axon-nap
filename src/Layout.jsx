@@ -283,34 +283,19 @@ export default function Layout({ children, currentPageName }) {
       {/* Mobile Bottom Navigation - nur für eingeloggte User UND auf relevanten Pages */}
           {!isChecking && user && showNav && (
             <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-slate-900/95 backdrop-blur border-t border-cyan-500/20 safe-area-pb">
-              <div className="flex justify-center items-center gap-2 px-4 py-2 overflow-x-auto">
+              <div className="flex justify-around items-center px-2 py-3 overflow-x-auto">
                 {navItems.map((item) => (
                   <Link
                     key={item.page}
                     to={createPageUrl(item.page)}
-                    className={`flex flex-col items-center justify-center py-2 px-3 rounded-xl transition-all touch-target ${
+                    title={item.name}
+                    className={`flex items-center justify-center p-3 rounded-xl transition-all touch-target ${
                       currentPageName === item.page
                         ? 'bg-cyan-500/20 text-cyan-400'
                         : 'text-slate-400 active:bg-slate-800/50'
                     }`}
                   >
-                    <item.icon className="w-5 h-5 mb-1" />
-                    <span className="text-xs font-medium whitespace-nowrap">{item.name}</span>
-                  </Link>
-                ))}
-
-                {/* Public Nav Items for Mobile */}
-                {publicNavItems.map((item) => (
-                  <Link
-                    key={item.page}
-                    to={createPageUrl(item.page)}
-                    className={`flex flex-col items-center justify-center py-2 px-3 rounded-xl transition-all touch-target ${
-                      currentPageName === item.page
-                        ? 'bg-purple-500/20 text-purple-400'
-                        : 'text-slate-400 active:bg-slate-800/50'
-                    }`}
-                  >
-                    <span className="text-xs font-medium whitespace-nowrap">{item.name}</span>
+                    <item.icon className="w-6 h-6" />
                   </Link>
                 ))}
               </div>
