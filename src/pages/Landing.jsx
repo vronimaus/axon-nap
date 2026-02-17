@@ -206,6 +206,7 @@ export default function Landing() {
             alt="AXON Body Map Background"
             loading="eager"
             decoding="async"
+            srcSet="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/ad6e52b61_generated_image.png 1920w, https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/ad6e52b61_generated_image.png 1280w"
             className="w-full h-full object-cover"
           />
         </div>
