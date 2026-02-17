@@ -60,11 +60,11 @@ export default function OfflineDetector() {
           initial={{ opacity: 0, y: -50 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -50 }}
-          className="fixed top-20 left-1/2 -translate-x-1/2 z-[100] glass rounded-xl border border-red-500/50 px-6 py-3 shadow-2xl"
+          className="fixed top-20 left-1/2 -translate-x-1/2 z-[100] rounded-xl border border-red-500/70 px-6 py-3 shadow-2xl bg-red-950/80 backdrop-blur-md"
         >
           <div className="flex items-center gap-3">
-            <WifiOff className="w-5 h-5 text-red-400" />
-            <p className="text-sm font-medium text-slate-200">
+            <WifiOff className="w-5 h-5 text-red-300" />
+            <p className="text-sm font-semibold text-red-100">
               Offline-Modus • Viele Features sind begrenzt
             </p>
           </div>
@@ -76,11 +76,11 @@ export default function OfflineDetector() {
           initial={{ opacity: 0, y: -50 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -50 }}
-          className="fixed top-20 left-1/2 -translate-x-1/2 z-[100] glass-cyan rounded-xl border border-cyan-500/50 px-6 py-3 shadow-2xl"
+          className="fixed top-20 left-1/2 -translate-x-1/2 z-[100] rounded-xl border border-cyan-500/70 px-6 py-3 shadow-2xl bg-cyan-950/80 backdrop-blur-md"
         >
           <div className="flex items-center gap-3">
-            <Loader2 className="w-5 h-5 text-cyan-400 animate-spin" />
-            <p className="text-sm font-medium text-slate-200">
+            <Loader2 className="w-5 h-5 text-cyan-300 animate-spin" />
+            <p className="text-sm font-semibold text-cyan-100">
               Synchronisiere Daten...
             </p>
           </div>
@@ -93,11 +93,11 @@ export default function OfflineDetector() {
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -50 }}
           transition={{ delay: 2 }}
-          className="fixed top-20 left-1/2 -translate-x-1/2 z-[100] glass rounded-xl border border-green-500/50 px-6 py-3 shadow-2xl"
+          className="fixed top-20 left-1/2 -translate-x-1/2 z-[100] rounded-xl border border-green-500/70 px-6 py-3 shadow-2xl bg-green-950/80 backdrop-blur-md"
         >
           <div className="flex items-center gap-3">
-            <Wifi className="w-5 h-5 text-green-400" />
-            <p className="text-sm font-medium text-slate-200">
+            <Wifi className="w-5 h-5 text-green-300" />
+            <p className="text-sm font-semibold text-green-100">
               Zurück online
             </p>
           </div>
