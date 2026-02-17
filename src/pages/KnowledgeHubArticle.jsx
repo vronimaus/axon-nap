@@ -117,7 +117,7 @@ export default function KnowledgeHubArticle() {
           <Button
             variant="ghost"
             size="sm"
-            onClick={() => window.location.href = createPageUrl('Landing')}
+            onClick={() => window.location.href = createPageUrl('KnowledgeHub')}
             className="text-slate-400 hover:text-slate-200"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
