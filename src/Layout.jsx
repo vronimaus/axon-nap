@@ -165,6 +165,7 @@ export default function Layout({ children, currentPageName }) {
             ];
 
     const publicNavItems = [
+      { name: 'Knowledge Hub', page: 'KnowledgeHub' },
       { name: 'FAQ', page: 'FAQ' }
     ];
 
@@ -282,7 +283,7 @@ export default function Layout({ children, currentPageName }) {
       {/* Mobile Bottom Navigation - nur für eingeloggte User UND auf relevanten Pages */}
           {!isChecking && user && showNav && (
             <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-slate-900/95 backdrop-blur border-t border-cyan-500/20 safe-area-pb">
-              <div className="flex justify-center items-center gap-2 px-4 py-2">
+              <div className="flex justify-center items-center gap-2 px-4 py-2 overflow-x-auto">
                 {navItems.map((item) => (
                   <Link
                     key={item.page}
@@ -294,6 +295,21 @@ export default function Layout({ children, currentPageName }) {
                     }`}
                   >
                     <item.icon className="w-5 h-5 mb-1" />
+                    <span className="text-xs font-medium whitespace-nowrap">{item.name}</span>
+                  </Link>
+                ))}
+
+                {/* Public Nav Items for Mobile */}
+                {publicNavItems.map((item) => (
+                  <Link
+                    key={item.page}
+                    to={createPageUrl(item.page)}
+                    className={`flex flex-col items-center justify-center py-2 px-3 rounded-xl transition-all touch-target ${
+                      currentPageName === item.page
+                        ? 'bg-purple-500/20 text-purple-400'
+                        : 'text-slate-400 active:bg-slate-800/50'
+                    }`}
+                  >
                     <span className="text-xs font-medium whitespace-nowrap">{item.name}</span>
                   </Link>
                 ))}

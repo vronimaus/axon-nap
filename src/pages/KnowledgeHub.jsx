@@ -12,7 +12,10 @@ export default function KnowledgeHub() {
 
   const { data: articles = [], isLoading } = useQuery({
     queryKey: ['knowledgeArticles'],
-    queryFn: () => base44.entities.KnowledgeArticle.filter({ published: true })
+    queryFn: async () => {
+      const allArticles = await base44.entities.KnowledgeArticle.list();
+      return allArticles.filter(a => a.published === true);
+    }
   });
 
   const categories = {
