@@ -80,6 +80,7 @@ import Terms from './pages/Terms';
 import TrainingPlan from './pages/TrainingPlan';
 import TrialInfo from './pages/TrialInfo';
 import KnowledgeHubArticle from './pages/KnowledgeHubArticle';
+import KnowledgeHub from './pages/KnowledgeHub';
 import __Layout from './Layout.jsx';
 
 
@@ -117,6 +118,7 @@ export const PAGES = {
     "TrainingPlan": TrainingPlan,
     "TrialInfo": TrialInfo,
     "KnowledgeHubArticle": KnowledgeHubArticle,
+    "KnowledgeHub": KnowledgeHub,
 }
 
 export const pagesConfig = {
