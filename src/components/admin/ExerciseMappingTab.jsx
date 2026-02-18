@@ -120,7 +120,7 @@ export default function ExerciseMappingTab() {
     }));
   }, [exercises]);
 
-  // Find duplicates by exercise_id
+  // Find duplicates by exercise_id — only groups where names are similar (real duplicates)
   const idCounts = useMemo(() => {
     return exercises.reduce((acc, ex) => {
       const id = ex.exercise_id || '';
@@ -130,8 +130,18 @@ export default function ExerciseMappingTab() {
     }, {});
   }, [exercises]);
 
+  // Normalize name for comparison
+  const normalizeName = (name = '') => name.toLowerCase().replace(/[^a-z0-9]/g, '');
+
   const duplicateGroups = useMemo(() => {
-    return Object.entries(idCounts).filter(([, arr]) => arr.length > 1);
+    return Object.entries(idCounts).filter(([, arr]) => {
+      if (arr.length < 2) return false;
+      // Only treat as duplicates if at least 2 entries share a very similar name
+      const names = arr.map(e => normalizeName(e.name));
+      return names.some((n, i) =>
+        names.some((m, j) => i !== j && (n === m || (n.length > 5 && m.includes(n.slice(0, 8)))))
+      );
+    });
   }, [idCounts]);
 
   // Filter
