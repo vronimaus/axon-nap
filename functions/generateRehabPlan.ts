@@ -78,17 +78,57 @@ Deno.serve(async (req) => {
         properties: {
           phases: { 
             type: 'array',
-            items: { type: 'object' }
+            items: { 
+              type: 'object',
+              properties: {
+                phase_number: { type: 'integer' },
+                title: { type: 'string' },
+                description: { type: 'string' },
+                duration_days: { type: 'integer' },
+                exercises: {
+                  type: 'array',
+                  items: {
+                    type: 'object',
+                    properties: {
+                      exercise_id: { type: 'string' },
+                      name: { type: 'string' },
+                      sets_reps_tempo: { type: 'string' },
+                      instruction: { type: 'string' },
+                      notes: { type: 'string' }
+                    },
+                    required: ['exercise_id', 'name', 'sets_reps_tempo', 'instruction', 'notes']
+                  }
+                }
+              },
+              required: ['phase_number', 'title', 'description', 'duration_days', 'exercises']
+            }
           },
           recommended_mfr_routines: { 
             type: 'array',
-            items: { type: 'object' }
+            items: { 
+              type: 'object',
+              properties: {
+                routine_id: { type: 'string' },
+                routine_name: { type: 'string' },
+                reason: { type: 'string' }
+              },
+              required: ['routine_id', 'routine_name', 'reason']
+            }
           },
           recommended_faqs: { 
             type: 'array',
-            items: { type: 'object' }
+            items: { 
+              type: 'object',
+              properties: {
+                faq_id: { type: 'string' },
+                question: { type: 'string' },
+                reason: { type: 'string' }
+              },
+              required: ['faq_id', 'question', 'reason']
+            }
           }
-        }
+        },
+        required: ['phases', 'recommended_mfr_routines', 'recommended_faqs']
       }
     });
 
