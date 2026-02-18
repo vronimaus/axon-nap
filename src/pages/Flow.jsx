@@ -9,6 +9,7 @@ import { Play, Pause, SkipForward, Check, Timer, Activity, AlertTriangle, Chevro
 import { createPageUrl } from '@/utils';
 import GlossaryTooltip from '../components/glossary/GlossaryTooltip';
 import DailyReadinessCheck from '../components/dashboard/DailyReadinessCheck';
+import RehabCoachingPanel from '../components/flow/RehabCoachingPanel';
 import { Helmet } from 'react-helmet-async';
 
 // Helper: Replace glossary terms in text with tooltips
