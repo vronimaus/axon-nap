@@ -116,6 +116,8 @@ export default function Flow() {
   const [readinessStatus, setReadinessStatus] = useState(null);
   const [user, setUser] = useState(null);
   const [expandedProgression, setExpandedProgression] = useState(null);
+  const [currentNRS, setCurrentNRS] = useState(null);
+  const [coachingActive, setCoachingActive] = useState(true);
 
   // Check auth and readiness
   useEffect(() => {
