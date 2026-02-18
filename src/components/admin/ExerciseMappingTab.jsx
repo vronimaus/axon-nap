@@ -145,10 +145,16 @@ export default function ExerciseMappingTab() {
 
     setSaving({ _all: true });
     let success = 0;
-    for (const { id, newId } of updates) {
-      await base44.entities.Exercise.update(id, { exercise_id: newId });
-      success++;
-      await new Promise(r => setTimeout(r, 200));
+    const BATCH_SIZE = 5;
+    for (let i = 0; i < updates.length; i += BATCH_SIZE) {
+      const batch = updates.slice(i, i + BATCH_SIZE);
+      await Promise.all(batch.map(({ id, newId }) =>
+        base44.entities.Exercise.update(id, { exercise_id: newId })
+      ));
+      success += batch.length;
+      if (i + BATCH_SIZE < updates.length) {
+        await new Promise(r => setTimeout(r, 1000));
+      }
     }
     queryClient.invalidateQueries({ queryKey: ['exercises'] });
     setAssignments({});
