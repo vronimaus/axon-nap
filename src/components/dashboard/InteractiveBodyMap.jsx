@@ -36,11 +36,12 @@ export default function InteractiveBodyMap({ mode, onRegionSelect, sessions }) {
   }, [mode, sessions]);
 
   useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    
-    const ctx = canvas.getContext('2d');
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    const id = requestAnimationFrame(() => {
+      const canvas = canvasRef.current;
+      if (!canvas) return;
+
+      const ctx = canvas.getContext('2d');
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
     
     // Draw markers with neon-red glow effect for rehab mode
     markers.forEach(marker => {
@@ -98,8 +99,10 @@ export default function InteractiveBodyMap({ mode, onRegionSelect, sessions }) {
       currentPath.forEach(p => ctx.lineTo(p.x, p.y));
       ctx.stroke();
       ctx.shadowBlur = 0;
-    }
-  }, [markers, currentPath, mode]);
+      }
+      });
+      return () => cancelAnimationFrame(id);
+      }, [markers, currentPath, mode]);
 
   const getCoordinates = (e) => {
     const canvas = canvasRef.current;
@@ -331,17 +334,26 @@ export default function InteractiveBodyMap({ mode, onRegionSelect, sessions }) {
 
       {/* Body Canvas */}
       <div 
-        ref={containerRef}
-        className="relative bg-slate-900/50 cursor-crosshair"
-        style={{ touchAction: 'none' }}
-        onMouseDown={startDrawing}
-        onMouseMove={draw}
-        onMouseUp={stopDrawing}
-        onMouseLeave={stopDrawing}
-        onTouchStart={startDrawing}
-        onTouchMove={draw}
-        onTouchEnd={stopDrawing}
-      >
+         ref={containerRef}
+         className="relative bg-slate-900/50 cursor-crosshair"
+         style={{ touchAction: 'none' }}
+         onMouseDown={startDrawing}
+         onMouseMove={draw}
+         onMouseUp={stopDrawing}
+         onMouseLeave={stopDrawing}
+         onTouchStart={(e) => {
+           if (e.cancelable) e.preventDefault();
+           startDrawing(e);
+         }}
+         onTouchMove={(e) => {
+           if (e.cancelable) e.preventDefault();
+           draw(e);
+         }}
+         onTouchEnd={(e) => {
+           if (e.cancelable) e.preventDefault();
+           stopDrawing();
+         }}
+       >
         <AnimatePresence mode="wait">
           <motion.div
             key={view}
