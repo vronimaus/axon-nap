@@ -12,14 +12,23 @@ const facts = [
 ];
 
 export default function DiagnosisLoadingAnimation({ message = "Analysiere dein Problem..." }) {
-  const [currentFact, setCurrentFact] = useState(0);
+   const [currentFact, setCurrentFact] = useState(0);
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentFact((prev) => (prev + 1) % facts.length);
-    }, 4000);
-    return () => clearInterval(interval);
-  }, []);
+   useEffect(() => {
+     const interval = setInterval(() => {
+       setCurrentFact((prev) => (prev + 1) % facts.length);
+     }, 4000);
+     return () => clearInterval(interval);
+   }, []);
+
+   // Disable GPU acceleration for heavy animations
+   const animationConfig = {
+     duration: 2,
+     repeat: Infinity,
+     ease: "easeInOut",
+     // Reduce repaints
+     shouldResetOrigin: false
+   };
   return (
     <div className="flex flex-col items-center justify-center py-12 px-4">
       {/* Animated Icons */}
@@ -42,36 +51,18 @@ export default function DiagnosisLoadingAnimation({ message = "Analysiere dein P
           </div>
         </motion.div>
 
-        {/* Orbiting Icons */}
-        {[0, 120, 240].map((rotation, idx) => (
+        {/* Orbiting Icons - Simplified */}
+        {[0].map((_, idx) => (
           <motion.div
             key={idx}
-            animate={{
-              rotate: rotation + 360
-            }}
-            transition={{
-              duration: 3,
-              repeat: Infinity,
-              ease: "linear"
-            }}
+            animate={{ rotate: 360 }}
+            transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
             className="absolute inset-0"
+            style={{ willChange: 'transform' }}
           >
-            <motion.div
-              animate={{
-                scale: [1, 1.2, 1],
-                opacity: [0.7, 1, 0.7]
-              }}
-              transition={{
-                duration: 1.5,
-                repeat: Infinity,
-                delay: idx * 0.5
-              }}
-              className="absolute top-0 left-1/2 -translate-x-1/2"
-            >
-              {idx === 0 && <Activity className="w-6 h-6 text-cyan-400" />}
-              {idx === 1 && <Sparkles className="w-6 h-6 text-purple-400" />}
-              {idx === 2 && <Zap className="w-6 h-6 text-amber-400" />}
-            </motion.div>
+            <div className="absolute top-0 left-1/2 -translate-x-1/2">
+              <Activity className="w-5 h-5 text-cyan-400" />
+            </div>
           </motion.div>
         ))}
       </div>
@@ -103,41 +94,22 @@ export default function DiagnosisLoadingAnimation({ message = "Analysiere dein P
           ))}
         </div>
 
-        {/* Process Steps */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.5 }}
-          className="mt-6 space-y-2"
-        >
-          {[
-            { icon: Brain, text: "Analysiere Symptome", delay: 0 },
-            { icon: Activity, text: "Identifiziere Ketten", delay: 0.3 },
-            { icon: Sparkles, text: "Erstelle Protokoll", delay: 0.6 }
-          ].map((step, idx) => (
-            <motion.div
-              key={idx}
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: step.delay }}
-              className="flex items-center gap-3 text-slate-400 text-sm"
-            >
-              <step.icon className="w-4 h-4 text-cyan-400" />
-              <span>{step.text}</span>
-              <motion.div
-                animate={{ width: ["0%", "100%"] }}
-                transition={{ duration: 2, repeat: Infinity, delay: step.delay }}
-                className="flex-1 h-1 bg-gradient-to-r from-cyan-500/30 to-transparent rounded-full overflow-hidden"
-              >
-                <motion.div
-                  animate={{ x: ["0%", "100%"] }}
-                  transition={{ duration: 1.5, repeat: Infinity }}
-                  className="h-full w-1/3 bg-cyan-400 rounded-full"
-                />
-              </motion.div>
-            </motion.div>
-          ))}
-        </motion.div>
+        {/* Process Steps - Simplified */}
+         <div className="mt-6 space-y-2">
+           {[
+             { icon: Brain, text: "Analysiere Symptome" },
+             { icon: Activity, text: "Identifiziere Ketten" },
+             { icon: Sparkles, text: "Erstelle Protokoll" }
+           ].map((step, idx) => (
+             <div
+               key={idx}
+               className="flex items-center gap-3 text-slate-400 text-sm"
+             >
+               <step.icon className="w-4 h-4 text-cyan-400" />
+               <span>{step.text}</span>
+             </div>
+           ))}
+         </div>
 
         {/* Did You Know? Facts */}
         <div className="mt-8 px-6 py-4 rounded-xl bg-slate-800/30 border border-cyan-500/20 max-w-md mx-auto">
