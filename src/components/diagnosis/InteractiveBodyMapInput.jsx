@@ -16,7 +16,9 @@ export default function InteractiveBodyMapInput({ onSubmit }) {
   const BODY_IMAGE_BACK = "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/0df8e2e95_generated_image.png";
 
   useEffect(() => {
-    drawMarkers();
+    // Use requestAnimationFrame to batch reflows
+    const id = requestAnimationFrame(drawMarkers);
+    return () => cancelAnimationFrame(id);
   }, [markers]);
 
   // EXAKT die gleiche Region Detection wie im Dashboard
@@ -212,9 +214,12 @@ export default function InteractiveBodyMapInput({ onSubmit }) {
             width={400}
             height={600}
             onClick={handleCanvasClick}
-            onTouchStart={handleCanvasClick}
+            onTouchStart={(e) => {
+              if (e.cancelable) e.preventDefault();
+              handleCanvasClick(e);
+            }}
             className="absolute inset-0 w-full h-full cursor-crosshair"
-            style={{ pointerEvents: imageLoaded ? 'auto' : 'none' }}
+            style={{ pointerEvents: imageLoaded ? 'auto' : 'none', touchAction: 'none' }}
           />
           
           {!imageLoaded && !imageError && (

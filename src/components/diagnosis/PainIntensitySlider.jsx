@@ -36,7 +36,10 @@ export default function PainIntensitySlider({ onSubmit, loading, initialValue = 
       <div className="px-8">
         <Slider
           value={[intensity]}
-          onValueChange={(value) => setIntensity(value[0])}
+          onValueChange={(value) => {
+            // Batch updates using requestAnimationFrame
+            requestAnimationFrame(() => setIntensity(value[0]));
+          }}
           min={1}
           max={10}
           step={1}
