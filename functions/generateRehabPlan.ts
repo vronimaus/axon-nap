@@ -46,15 +46,24 @@ Deno.serve(async (req) => {
       .join('\n');
 
     // Call LLM for plan generation
+    const availableRoutineIds = allRoutines.slice(0, 5).map(r => r.id).filter(id => id);
+    const availableFaqIds = allFaqs.slice(0, 5).map(f => f.faq_id).filter(id => id);
+
     const planData = await base44.integrations.Core.InvokeLLM({
       prompt: `Create a 3-phase rehab plan for: ${diagnosisSession.symptom_location} (${diagnosisSession.symptom_description}).
 
-    Type: ${diagnosisSession.diagnosis_type}. Select 3 routines (IDs only) and 3 FAQs (IDs only) from available:
+    Diagnosis Type: ${diagnosisSession.diagnosis_type}
 
-    Routines: ${allRoutines.slice(0, 10).map(r => `${r.id}: ${r.routine_name}`).join(', ')}
-    FAQs: ${allFaqs.slice(0, 10).map(f => `${f.faq_id}: ${f.question}`).join(', ')}
+    IMPORTANT: You MUST choose routine IDs ONLY from this list:
+    ${availableRoutineIds.map((id, i) => `${i+1}. ${id}`).join('\n')}
 
-    JSON format with phases (3), exercises per phase (4-5), recommended_mfr_routines, recommended_faqs.`,
+    IMPORTANT: You MUST choose FAQ IDs ONLY from this list:
+    ${availableFaqIds.map((id, i) => `${i+1}. ${id}`).join('\n')}
+
+    Return JSON with:
+    - phases: array of 3 objects (phase_number, title, description, duration_days, exercises array)
+    - recommended_mfr_routines: array of 3 objects with ONLY routine_id (from list above), routine_name, reason
+    - recommended_faqs: array of 3 objects with ONLY faq_id (from list above), question, reason`,
       response_json_schema: {
         type: 'object',
         properties: {
