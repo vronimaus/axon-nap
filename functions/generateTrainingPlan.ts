@@ -23,11 +23,16 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'UserNeuroProfile not found' }, { status: 404 });
     }
 
-    // Fetch all routines and FAQs for matching
+    // Fetch all exercises, routines and FAQs for matching
+    const allExercises = await base44.entities.Exercise.list('-updated_date', 200);
     const allRoutines = await base44.entities.Routine.list('-updated_date', 100);
     const allFaqs = await base44.entities.FAQ.list('-updated_date', 100);
 
     // Prepare context for AI
+    const exercisesContext = allExercises
+      .map(e => `ID: ${e.exercise_id}, Name: ${e.name}, Category: ${e.category}, Difficulty: ${e.difficulty}`)
+      .join('\n');
+
     const routinesContext = allRoutines
       .filter(r => r.published !== false)
       .map(r => `ID: ${r.id}, Name: ${r.routine_name}, Category: ${r.category}, Duration: ${r.total_duration}min, Description: ${r.description}`)
@@ -39,33 +44,38 @@ Deno.serve(async (req) => {
       .join('\n');
 
     // Call LLM for plan generation
+    const availableExerciseIds = allExercises.map(e => e.exercise_id).filter(id => id);
+
     const planData = await base44.integrations.Core.InvokeLLM({
       prompt: `You are an expert in AXON Protocol training planning.
 
-Benutzer-Profil:
-- Activity Level: ${profile.activity_level}
-- Training Experience: ${profile.training_experience}
-- Fitness Goals: ${profile.fitness_goals?.join(', ')}
-- Primary Sport: ${profile.primary_sport}
+    Benutzer-Profil:
+    - Activity Level: ${profile.activity_level}
+    - Training Experience: ${profile.training_experience}
+    - Fitness Goals: ${profile.fitness_goals?.join(', ')}
+    - Primary Sport: ${profile.primary_sport}
 
-Trainings-Ziel: ${goal_description}
+    Trainings-Ziel: ${goal_description}
 
-Verfügbare Routines (für Empfehlungen):
-${routinesContext}
+    WICHTIG: Du DARFST NUR Exercise IDs aus dieser Liste verwenden:
+    ${exercisesContext}
 
-Verfügbare FAQs (für Empfehlungen):
-${faqsContext}
+    Verfügbare Routines (für Empfehlungen):
+    ${routinesContext}
 
-Generiere einen strukturierten Trainingsplan als JSON mit:
-1. 3 Phasen (je 2-3 Wochen)
-2. Pro Phase: 4-6 Übungen mit Sets/Reps/Tempo
-3. 3 empfohlene Routines (nur IDs aus der Liste oben!)
-4. 3 empfohlene FAQs (nur IDs aus der Liste oben!)
+    Verfügbare FAQs (für Empfehlungen):
+    ${faqsContext}
 
-Für jede Empfehlung: nur die ID + ein 1-2 Satz reason warum.
+    Generiere einen strukturierten Trainingsplan als JSON mit:
+    1. 3 Phasen (je 2-3 Wochen)
+    2. Pro Phase: 4-6 Übungen mit Sets/Reps/Tempo - NUR exercise_id IDs aus der Liste oben!
+    3. 3 empfohlene Routines (nur IDs aus der Liste oben!)
+    4. 3 empfohlene FAQs (nur IDs aus der Liste oben!)
 
-Format: {
-  "phases": [
+    Für jede Empfehlung: nur die ID + ein 1-2 Satz reason warum.
+
+    Format: {
+    "phases": [
     {
       "phase_number": 1,
       "title": "...",
@@ -81,23 +91,23 @@ Format: {
         }
       ]
     }
-  ],
-  "recommended_routines": [
+    ],
+    "recommended_routines": [
     {
       "routine_id": "...",
       "routine_name": "...",
       "reason": "...",
       "frequency": "2x pro Woche"
     }
-  ],
-  "recommended_faqs": [
+    ],
+    "recommended_faqs": [
     {
       "faq_id": "...",
       "question": "...",
       "reason": "..."
     }
-  ]
-}`,
+    ]
+    }`,
       response_json_schema: {
         type: 'object',
         properties: {
