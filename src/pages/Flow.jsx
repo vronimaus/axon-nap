@@ -533,11 +533,27 @@ export default function Flow() {
               <InstructionWithGlossary instruction={detailedContent.instruction} />
 
               {/* AXON-Moment or Expert Tip */}
-              {(detailedContent.axonMoment || detailedContent.expertTip || detailedContent.neuroInput) && (
-                <div className="bg-purple-500/10 border border-purple-500/30 rounded-xl p-4 mb-6">
+              {(detailedContent.axonMoment || detailedContent.expertTip) && (
+                <div className="bg-purple-500/10 border border-purple-500/30 rounded-xl p-4 mb-4">
                   <p className="text-sm text-purple-300 leading-relaxed">
-                    <span className="font-bold text-purple-400">✨ {detailedContent.axonMoment ? 'AXON-Check' : detailedContent.expertTip ? 'Experten-Tipp' : 'Neuro-Input'}:</span> {detailedContent.axonMoment || detailedContent.expertTip || detailedContent.neuroInput}
+                    <span className="font-bold text-purple-400">✨ {detailedContent.axonMoment ? 'AXON-Moment' : 'Experten-Tipp'}:</span> {detailedContent.axonMoment || detailedContent.expertTip}
                   </p>
+                </div>
+              )}
+
+              {/* Purpose Explanation */}
+              {detailedContent.purposeExplanation && (
+                <div className="bg-cyan-500/10 border border-cyan-500/30 rounded-xl p-4 mb-4">
+                  <p className="text-xs font-bold text-cyan-400 mb-1">🧠 Warum diese Übung?</p>
+                  <p className="text-sm text-cyan-200 leading-relaxed">{detailedContent.purposeExplanation}</p>
+                </div>
+              )}
+
+              {/* Benefits */}
+              {detailedContent.benefits && (
+                <div className="bg-green-500/10 border border-green-500/30 rounded-xl p-4 mb-6">
+                  <p className="text-xs font-bold text-green-400 mb-1">💪 Was du danach spürst</p>
+                  <p className="text-sm text-green-200 leading-relaxed">{detailedContent.benefits}</p>
                 </div>
               )}
 
