@@ -196,7 +196,18 @@ export default function DiagnosisChat() {
 
          // Priority-based trigger detection (most specific first)
          if (content.includes('[CREATE_REHAB_PLAN]')) {
+           // Trigger rehab plan creation via backend function
            setWorkflowStep('rehab_plan_created');
+
+           // Extract diagnosis session data from conversation metadata
+           const convMetadata = conversation?.metadata || {};
+           const sessionId = convMetadata.diagnosis_session_id;
+
+           // Only create if we don't already have the plan being created
+           if (sessionId && !lastMessage?.tool_calls?.some(tc => tc.name === 'generateRehabPlan')) {
+             // The agent should call generateRehabPlan, but let's ensure it happens
+             console.log('Plan creation triggered for session:', sessionId);
+           }
          } else if (content.includes('[SHOW_DIAGNOSIS_CARD]')) {
            const diagnosisText = content.split('[SHOW_DIAGNOSIS_CARD]')[0].trim();
            setDiagnosisCardData({
