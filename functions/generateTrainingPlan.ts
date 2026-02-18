@@ -1,0 +1,152 @@
+import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
+
+Deno.serve(async (req) => {
+  try {
+    const base44 = createClientFromRequest(req);
+    const user = await base44.auth.me();
+
+    if (!user) {
+      return Response.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const { goal_description } = await req.json();
+
+    if (!goal_description) {
+      return Response.json({ error: 'goal_description required' }, { status: 400 });
+    }
+
+    // Fetch user's neuro profile
+    const profiles = await base44.entities.UserNeuroProfile.filter({ user_email: user.email });
+    const profile = profiles[0];
+
+    if (!profile) {
+      return Response.json({ error: 'UserNeuroProfile not found' }, { status: 404 });
+    }
+
+    // Fetch all routines and FAQs for matching
+    const allRoutines = await base44.entities.Routine.list('-updated_date', 100);
+    const allFaqs = await base44.entities.FAQ.list('-updated_date', 100);
+
+    // Prepare context for AI
+    const routinesContext = allRoutines
+      .filter(r => r.published !== false)
+      .map(r => `ID: ${r.id}, Name: ${r.routine_name}, Category: ${r.category}, Duration: ${r.total_duration}min, Description: ${r.description}`)
+      .join('\n');
+
+    const faqsContext = allFaqs
+      .filter(f => f.published !== false)
+      .map(f => `ID: ${f.faq_id}, Q: ${f.question}, Category: ${f.category}`)
+      .join('\n');
+
+    // Call LLM for plan generation
+    const planData = await base44.integrations.Core.InvokeLLM({
+      prompt: `Du bist ein Experte für Trainingsplanung im AXON Protocol.
+
+Benutzer-Profil:
+- Activity Level: ${profile.activity_level}
+- Training Experience: ${profile.training_experience}
+- Fitness Goals: ${profile.fitness_goals?.join(', ')}
+- Primary Sport: ${profile.primary_sport}
+
+Trainings-Ziel: ${goal_description}
+
+Verfügbare Routines (für Empfehlungen):
+${routinesContext}
+
+Verfügbare FAQs (für Empfehlungen):
+${faqsContext}
+
+Generiere einen strukturierten Trainingsplan als JSON mit:
+1. 3 Phasen (je 2-3 Wochen)
+2. Pro Phase: 4-6 Übungen mit Sets/Reps/Tempo
+3. 3 empfohlene Routines (nur IDs aus der Liste oben!)
+4. 3 empfohlene FAQs (nur IDs aus der Liste oben!)
+
+Für jede Empfehlung: nur die ID + ein 1-2 Satz reason warum.
+
+Format: {
+  "phases": [
+    {
+      "phase_number": 1,
+      "title": "...",
+      "description": "...",
+      "duration_weeks": 2,
+      "exercises": [
+        {
+          "exercise_id": "...",
+          "name": "...",
+          "sets_reps_tempo": "3x5 @ 3-1-1",
+          "instruction": "...",
+          "notes": "..."
+        }
+      ]
+    }
+  ],
+  "recommended_routines": [
+    {
+      "routine_id": "...",
+      "routine_name": "...",
+      "reason": "...",
+      "frequency": "2x pro Woche"
+    }
+  ],
+  "recommended_faqs": [
+    {
+      "faq_id": "...",
+      "question": "...",
+      "reason": "..."
+    }
+  ]
+}`,
+      response_json_schema: {
+        type: 'object',
+        properties: {
+          phases: { type: 'array' },
+          recommended_routines: { type: 'array' },
+          recommended_faqs: { type: 'array' }
+        }
+      }
+    });
+
+    // Validate referenced IDs exist
+    for (const routine of planData.recommended_routines || []) {
+      const exists = allRoutines.find(r => r.id === routine.routine_id);
+      if (!exists) {
+        return Response.json({ 
+          error: `Routine ${routine.routine_id} not found` 
+        }, { status: 400 });
+      }
+    }
+
+    for (const faq of planData.recommended_faqs || []) {
+      const exists = allFaqs.find(f => f.faq_id === faq.faq_id);
+      if (!exists) {
+        return Response.json({ 
+          error: `FAQ ${faq.faq_id} not found` 
+        }, { status: 400 });
+      }
+    }
+
+    // Create training plan
+    const plan = await base44.entities.TrainingPlan.create({
+      user_email: user.email,
+      goal_description,
+      phases: planData.phases,
+      recommended_routines: planData.recommended_routines,
+      recommended_faqs: planData.recommended_faqs,
+      plan_generated_date: new Date().toISOString().split('T')[0],
+      current_phase: 1,
+      status: 'active'
+    });
+
+    return Response.json({ 
+      success: true, 
+      plan_id: plan.id,
+      plan 
+    });
+
+  } catch (error) {
+    console.error('generateTrainingPlan error:', error);
+    return Response.json({ error: error.message }, { status: 500 });
+  }
+});
