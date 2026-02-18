@@ -516,15 +516,14 @@ export default function DiagnosisChat() {
           {/* Body Map for marking additional areas */}
           <InteractiveBodyMapInput
             onSubmit={async (data) => {
-              const regions = data.detectedRegions?.join(', ') || 'weitere Bereiche';
+              const region = data.region || 'weitere Bereiche';
               setLoading(true);
               try {
                 await base44.agents.addMessage(conversation, {
                   role: 'user',
-                  content: `Ich habe folgende Bereiche markiert: ${regions}`
+                  content: `Ich habe auch im Bereich "${region}" eine Spannung. Bitte erstelle jetzt meinen personaliserten Reha-Plan basierend auf allen Ergebnissen.`
                 });
-                // Agent will provide full chain protocol
-                setWorkflowStep('follow_up');
+                // Agent will trigger [CREATE_REHAB_PLAN]
               } catch (error) {
                 console.error('Fehler:', error);
                 setLoading(false);
