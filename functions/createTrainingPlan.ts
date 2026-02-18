@@ -298,7 +298,8 @@ Each phase should have 3-4 exercises. Make phases progressive (Phase 1 = Foundat
                                                     properties: {
                                                         level: { type: "string" },
                                                         description: { type: "string" }
-                                                    }
+                                                    },
+                                                    required: ["level", "description"]
                                                 }
                                             },
                                             expert_insight: {
@@ -307,18 +308,22 @@ Each phase should have 3-4 exercises. Make phases progressive (Phase 1 = Foundat
                                                     quote: { type: "string" },
                                                     source: { type: "string" },
                                                     explanation: { type: "string" }
-                                                }
+                                                },
+                                                required: ["quote", "source", "explanation"]
                                             },
                                             scientific_background: { type: "string" },
                                             fms_relevance: { type: "string" },
                                             deload_protocol: { type: "string" }
-                                        }
+                                        },
+                                        required: ["exercise_id", "name", "sets_reps_tempo", "instruction", "notes"]
                                     }
                                 }
-                            }
+                            },
+                            required: ["phase_number", "title", "description", "duration_weeks", "exercises"]
                         }
                     }
-                }
+                },
+                required: ["phases"]
             }
         });
         
