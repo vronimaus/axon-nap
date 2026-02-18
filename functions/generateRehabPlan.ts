@@ -122,20 +122,6 @@ Deno.serve(async (req) => {
       }, { status: 400 });
     }
 
-    // Validate that all exercise IDs exist
-    const invalidExercises = [];
-    for (const phase of enrichedPhases) {
-      for (const exercise of phase.exercises) {
-        const exists = allExercises.find(e => e.exercise_id === exercise.exercise_id);
-        if (!exists) invalidExercises.push(exercise.exercise_id);
-      }
-    }
-    if (invalidExercises.length > 0) {
-      return Response.json({ 
-        error: `Exercises not found: ${invalidExercises.join(', ')}` 
-      }, { status: 400 });
-    }
-
     // Enrich phases with full Exercise details
     const enrichedPhases = await Promise.all(
       planData.phases.map(async (phase) => {
