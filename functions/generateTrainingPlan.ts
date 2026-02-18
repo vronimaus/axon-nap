@@ -212,19 +212,33 @@ Deno.serve(async (req) => {
       plan 
     });
 
-  } catch (error) {
-    console.error('generateTrainingPlan error:', error);
-
-    // Detailed error logging
-    if (error.message.includes('JSON')) {
-      return Response.json({ 
-        error: 'LLM returned invalid JSON - plan generation failed' 
-      }, { status: 502 });
+  // Validate that all exercise IDs exist
+  const invalidExercises = [];
+  for (const phase of enrichedPhases) {
+    for (const exercise of phase.exercises) {
+      const exists = allExercises.find(e => e.exercise_id === exercise.exercise_id);
+      if (!exists) invalidExercises.push(exercise.exercise_id);
     }
-
-    return Response.json({ 
-      error: error.message || 'Unknown error during plan generation',
-      type: 'PLAN_GENERATION_ERROR'
-    }, { status: 500 });
   }
-});
+  if (invalidExercises.length > 0) {
+    return Response.json({ 
+      error: `Exercises not found: ${invalidExercises.join(', ')}` 
+    }, { status: 400 });
+  }
+
+  } catch (error) {
+  console.error('generateTrainingPlan error:', error);
+
+  // Detailed error logging
+  if (error.message.includes('JSON')) {
+    return Response.json({ 
+      error: 'LLM returned invalid JSON - plan generation failed' 
+    }, { status: 502 });
+  }
+
+  return Response.json({ 
+    error: error.message || 'Unknown error during plan generation',
+    type: 'PLAN_GENERATION_ERROR'
+  }, { status: 500 });
+  }
+  });
