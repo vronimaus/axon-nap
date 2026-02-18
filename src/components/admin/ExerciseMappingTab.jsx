@@ -191,7 +191,7 @@ export default function ExerciseMappingTab() {
     } catch (e) {
       toast.error('Fehler: ' + e.message);
     } finally {
-      setSaving(prev => { const n = { ...prev }; delete n[`name_${ex.id}`]: true; return n; });
+      setSaving(prev => { const n = { ...prev }; delete n[`name_${ex.id}`]; return n; });
     }
   };
 
