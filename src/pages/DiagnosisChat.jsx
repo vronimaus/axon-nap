@@ -627,9 +627,9 @@ export default function DiagnosisChat() {
 
   // Removed follow_up step - agent now directly triggers rehab plan creation
 
-  // Only show chat when in 'chat' workflow step
+  // Show nothing while processing workflows - prevents dialog sticking
   if (workflowStep !== 'chat') {
-    return null; // Focus screens are rendered above
+    return null;
   }
 
   return (
