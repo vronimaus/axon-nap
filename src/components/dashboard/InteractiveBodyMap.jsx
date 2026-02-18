@@ -333,25 +333,25 @@ export default function InteractiveBodyMap({ mode, onRegionSelect, sessions }) {
 
       {/* Body Canvas */}
       <div 
-         ref={containerRef}
+         ref={(el) => {
+           containerRef.current = el;
+           if (el) {
+             el.addEventListener('touchstart', startDrawing, { passive: false });
+             el.addEventListener('touchmove', draw, { passive: false });
+             el.addEventListener('touchend', stopDrawing, { passive: false });
+             return () => {
+               el.removeEventListener('touchstart', startDrawing);
+               el.removeEventListener('touchmove', draw);
+               el.removeEventListener('touchend', stopDrawing);
+             };
+           }
+         }}
          className="relative bg-slate-900/50 cursor-crosshair"
          style={{ touchAction: 'none' }}
          onMouseDown={startDrawing}
          onMouseMove={draw}
          onMouseUp={stopDrawing}
          onMouseLeave={stopDrawing}
-         onTouchStart={(e) => {
-           if (e.cancelable) e.preventDefault();
-           startDrawing(e);
-         }}
-         onTouchMove={(e) => {
-           if (e.cancelable) e.preventDefault();
-           draw(e);
-         }}
-         onTouchEnd={(e) => {
-           if (e.cancelable) e.preventDefault();
-           stopDrawing();
-         }}
        >
         <AnimatePresence mode="wait">
           <motion.div
