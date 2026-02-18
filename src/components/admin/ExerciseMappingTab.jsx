@@ -186,7 +186,7 @@ export default function ExerciseMappingTab() {
     }
   };
 
-  // Apply ALL legacy suggestions at once
+  // Apply ALL legacy suggestions at once (with rate-limit delay)
   const applyAll = async () => {
     const legacy = mapped.filter(e => e.isLegacy);
     let success = 0;
@@ -195,6 +195,7 @@ export default function ExerciseMappingTab() {
       if (newId && newId !== ex.exercise_id) {
         await base44.entities.Exercise.update(ex.id, { exercise_id: newId });
         success++;
+        await new Promise(r => setTimeout(r, 300)); // avoid rate limit
       }
     }
     queryClient.invalidateQueries({ queryKey: ['exercises'] });
