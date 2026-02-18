@@ -144,12 +144,13 @@ export default function ExerciseMappingTab() {
     });
   }, [idCounts]);
 
-  // Filter
-  const filtered = useMemo(() => {
-    if (filterMode === 'legacy') return mapped.filter(e => e.isLegacy);
-    if (filterMode === 'duplicates') return mapped.filter(e => idCounts[e.exercise_id]?.length > 1);
-    return mapped;
-  }, [mapped, filterMode, idCounts]);
+  // Filter + sort by old exercise_id
+        const filtered = useMemo(() => {
+          let result = mapped;
+          if (filterMode === 'legacy') result = mapped.filter(e => e.isLegacy);
+          if (filterMode === 'duplicates') result = mapped.filter(e => idCounts[e.exercise_id]?.length > 1);
+          return [...result].sort((a, b) => (a.exercise_id || '').localeCompare(b.exercise_id || ''));
+        }, [mapped, filterMode, idCounts]);
 
   // Apply single ID change
   const applyId = async (ex) => {
