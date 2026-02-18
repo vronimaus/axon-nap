@@ -358,19 +358,7 @@ export default function InteractiveBodyMap({ mode, onRegionSelect, sessions }) {
 
       {/* Body Canvas */}
       <div 
-         ref={(el) => {
-           containerRef.current = el;
-           if (el) {
-             el.addEventListener('touchstart', startDrawing, { passive: false });
-             el.addEventListener('touchmove', draw, { passive: false });
-             el.addEventListener('touchend', stopDrawing, { passive: false });
-             return () => {
-               el.removeEventListener('touchstart', startDrawing);
-               el.removeEventListener('touchmove', draw);
-               el.removeEventListener('touchend', stopDrawing);
-             };
-           }
-         }}
+         ref={containerRef}
          className="relative bg-slate-900/50 cursor-crosshair"
          style={{ touchAction: 'none' }}
          onMouseDown={startDrawing}
