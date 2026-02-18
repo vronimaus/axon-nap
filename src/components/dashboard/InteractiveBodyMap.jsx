@@ -35,6 +35,47 @@ export default function InteractiveBodyMap({ mode, onRegionSelect, sessions }) {
     }
   }, [mode, sessions]);
 
+  const getCoordinates = (e) => {
+    const canvas = canvasRef.current;
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+    
+    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+    
+    return {
+      x: (clientX - rect.left) * scaleX,
+      y: (clientY - rect.top) * scaleY
+    };
+  };
+
+  const startDrawing = (e) => {
+    // preventDefault already called by wrapper
+    const coords = getCoordinates(e);
+    if (drawMode === 'point') {
+      setMarkers([...markers, { type: 'point', x: coords.x, y: coords.y }]);
+    } else {
+      setIsDrawing(true);
+      setCurrentPath([coords]);
+    }
+  };
+
+  const draw = (e) => {
+    if (!isDrawing || drawMode === 'point') return;
+    // preventDefault already called by wrapper
+    const coords = getCoordinates(e);
+    setCurrentPath([...currentPath, coords]);
+  };
+
+  const stopDrawing = () => {
+    if (isDrawing && currentPath.length > 1) {
+      setMarkers([...markers, { type: 'line', points: currentPath }]);
+    }
+    setIsDrawing(false);
+    setCurrentPath([]);
+  };
+
   useEffect(() => {
     const id = requestAnimationFrame(() => {
       const canvas = canvasRef.current;
