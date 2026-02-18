@@ -42,26 +42,47 @@ export default function InteractiveBodyMap({ mode, onRegionSelect, sessions }) {
 
       const ctx = canvas.getContext('2d');
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-    
-    // Draw markers with neon-red glow effect for rehab mode
-    markers.forEach(marker => {
-      if (marker.type === 'point' && marker.x && marker.y) {
-        const color = mode === 'rehab' ? 'rgba(239, 68, 68, 0.8)' : 'rgba(168, 85, 247, 0.8)';
-        ctx.fillStyle = color;
-        ctx.beginPath();
-        ctx.arc(marker.x, marker.y, 10, 0, Math.PI * 2);
-        ctx.fill();
 
-        // Neon glow effect for rehab
-        if (mode === 'rehab') {
-          ctx.shadowColor = '#ef4444';
-          ctx.shadowBlur = 10;
+      // Draw markers with neon-red glow effect for rehab mode
+      markers.forEach(marker => {
+        if (marker.type === 'point' && marker.x && marker.y) {
+          const color = mode === 'rehab' ? 'rgba(239, 68, 68, 0.8)' : 'rgba(168, 85, 247, 0.8)';
+          ctx.fillStyle = color;
+          ctx.beginPath();
+          ctx.arc(marker.x, marker.y, 10, 0, Math.PI * 2);
+          ctx.fill();
+
+          // Neon glow effect for rehab
+          if (mode === 'rehab') {
+            ctx.shadowColor = '#ef4444';
+            ctx.shadowBlur = 10;
+          }
+          ctx.strokeStyle = mode === 'rehab' ? '#ef4444' : '#a855f7';
+          ctx.lineWidth = 3;
+          ctx.stroke();
+          ctx.shadowBlur = 0;
+        } else if (marker.points?.length > 1) {
+          const color = mode === 'rehab' ? 'rgba(239, 68, 68, 0.9)' : 'rgba(168, 85, 247, 0.9)';
+
+          // Neon glow effect for rehab
+          if (mode === 'rehab') {
+            ctx.shadowColor = '#ef4444';
+            ctx.shadowBlur = 10;
+          }
+          ctx.strokeStyle = color;
+          ctx.lineWidth = 5;
+          ctx.lineCap = 'round';
+          ctx.lineJoin = 'round';
+          ctx.beginPath();
+          ctx.moveTo(marker.points[0].x, marker.points[0].y);
+          marker.points.forEach(p => ctx.lineTo(p.x, p.y));
+          ctx.stroke();
+          ctx.shadowBlur = 0;
         }
-        ctx.strokeStyle = mode === 'rehab' ? '#ef4444' : '#a855f7';
-        ctx.lineWidth = 3;
-        ctx.stroke();
-        ctx.shadowBlur = 0;
-      } else if (marker.points?.length > 1) {
+      });
+
+      // Draw current path with neon-red glow
+      if (currentPath.length > 1) {
         const color = mode === 'rehab' ? 'rgba(239, 68, 68, 0.9)' : 'rgba(168, 85, 247, 0.9)';
 
         // Neon glow effect for rehab
@@ -74,35 +95,39 @@ export default function InteractiveBodyMap({ mode, onRegionSelect, sessions }) {
         ctx.lineCap = 'round';
         ctx.lineJoin = 'round';
         ctx.beginPath();
-        ctx.moveTo(marker.points[0].x, marker.points[0].y);
-        marker.points.forEach(p => ctx.lineTo(p.x, p.y));
+        ctx.moveTo(currentPath[0].x, currentPath[0].y);
+        currentPath.forEach(p => ctx.lineTo(p.x, p.y));
         ctx.stroke();
         ctx.shadowBlur = 0;
       }
     });
+    return () => cancelAnimationFrame(id);
+  }, [markers, currentPath, mode]);
 
-    // Draw current path with neon-red glow
-    if (currentPath.length > 1) {
-      const color = mode === 'rehab' ? 'rgba(239, 68, 68, 0.9)' : 'rgba(168, 85, 247, 0.9)';
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
 
-      // Neon glow effect for rehab
-      if (mode === 'rehab') {
-        ctx.shadowColor = '#ef4444';
-        ctx.shadowBlur = 10;
-      }
-      ctx.strokeStyle = color;
-      ctx.lineWidth = 5;
-      ctx.lineCap = 'round';
-      ctx.lineJoin = 'round';
-      ctx.beginPath();
-      ctx.moveTo(currentPath[0].x, currentPath[0].y);
-      currentPath.forEach(p => ctx.lineTo(p.x, p.y));
-      ctx.stroke();
-      ctx.shadowBlur = 0;
-      }
-      });
-      return () => cancelAnimationFrame(id);
-      }, [markers, currentPath, mode]);
+    const handleTouchStart = (e) => {
+      e.preventDefault();
+      startDrawing(e);
+    };
+    const handleTouchMove = (e) => {
+      e.preventDefault();
+      draw(e);
+    };
+    const handleTouchEnd = () => stopDrawing();
+
+    container.addEventListener('touchstart', handleTouchStart, { passive: false });
+    container.addEventListener('touchmove', handleTouchMove, { passive: false });
+    container.addEventListener('touchend', handleTouchEnd, { passive: false });
+
+    return () => {
+      container.removeEventListener('touchstart', handleTouchStart);
+      container.removeEventListener('touchmove', handleTouchMove);
+      container.removeEventListener('touchend', handleTouchEnd);
+    };
+  }, [startDrawing, draw, stopDrawing]);
 
   const getCoordinates = (e) => {
     const canvas = canvasRef.current;
