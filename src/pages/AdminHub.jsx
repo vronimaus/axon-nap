@@ -7,10 +7,33 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { AlertCircle, Zap, BookOpen, Palette, ArrowLeft, Image, Trash2, Filter, ChevronUp, ChevronDown } from 'lucide-react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
+// Prefix-Definitionen
+const PREFIXES = {
+  KB:  { label: 'KB',  color: 'bg-orange-500/20 text-orange-300 border-orange-500/40',  desc: 'Kettlebell' },
+  BW:  { label: 'BW',  color: 'bg-cyan-500/20 text-cyan-300 border-cyan-500/40',         desc: 'Bodyweight' },
+  RB:  { label: 'RB',  color: 'bg-green-500/20 text-green-300 border-green-500/40',      desc: 'Resistance Band' },
+  SL:  { label: 'SL',  color: 'bg-teal-500/20 text-teal-300 border-teal-500/40',         desc: 'Sliders' },
+  MB:  { label: 'MB',  color: 'bg-blue-500/20 text-blue-300 border-blue-500/40',         desc: 'Mobility / CARs' },
+  NR:  { label: 'NR',  color: 'bg-purple-500/20 text-purple-300 border-purple-500/40',   desc: 'Neuro Drill' },
+  BR:  { label: 'BR',  color: 'bg-pink-500/20 text-pink-300 border-pink-500/40',         desc: 'Breathwork' },
+  MFR: { label: 'MFR', color: 'bg-red-500/20 text-red-300 border-red-500/40',            desc: 'Faszien / MFR' },
+};
+
+function getPrefix(exercise_id) {
+  if (!exercise_id) return null;
+  for (const key of Object.keys(PREFIXES)) {
+    if (exercise_id.startsWith(key + '_') || exercise_id.startsWith(key)) {
+      return key;
+    }
+  }
+  return null;
+}
+
 function ExercisesTab() {
-  const [categoryFilter, setCategoryFilter] = useState('all');
+  const [prefixFilter, setPrefixFilter] = useState('all');
+  const [searchQuery, setSearchQuery] = useState('');
   const [difficultyFilter, setDifficultyFilter] = useState('all');
-  const [sortBy, setSortBy] = useState('name');
+  const [sortBy, setSortBy] = useState('exercise_id');
   const [sortOrder, setSortOrder] = useState('asc');
 
   const { data: exercises = [], isLoading } = useQuery({
@@ -18,13 +41,23 @@ function ExercisesTab() {
     queryFn: () => base44.entities.Exercise.list('-updated_date', 500),
   });
 
-  const categories = [...new Set(exercises.map(e => e.category))].filter(Boolean).sort();
+  // Detect duplicates by exercise_id
+  const idCounts = exercises.reduce((acc, ex) => {
+    const id = ex.exercise_id || '';
+    acc[id] = (acc[id] || 0) + 1;
+    return acc;
+  }, {});
+
   const difficulties = ['beginner', 'intermediate', 'advanced'];
 
   let filtered = exercises.filter(ex => {
-    const catMatch = categoryFilter === 'all' || ex.category === categoryFilter;
+    const prefix = getPrefix(ex.exercise_id);
+    const prefixMatch = prefixFilter === 'all' || prefix === prefixFilter || (prefixFilter === 'legacy' && !prefix);
     const diffMatch = difficultyFilter === 'all' || ex.difficulty === difficultyFilter;
-    return catMatch && diffMatch;
+    const searchMatch = !searchQuery || 
+      ex.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      ex.exercise_id?.toLowerCase().includes(searchQuery.toLowerCase());
+    return prefixMatch && diffMatch && searchMatch;
   });
 
   filtered.sort((a, b) => {
@@ -32,10 +65,18 @@ function ExercisesTab() {
     let bVal = b[sortBy] || '';
     if (typeof aVal === 'string') aVal = aVal.toLowerCase();
     if (typeof bVal === 'string') bVal = bVal.toLowerCase();
-    
     const comparison = aVal < bVal ? -1 : aVal > bVal ? 1 : 0;
     return sortOrder === 'asc' ? comparison : -comparison;
   });
+
+  // Count per prefix for badges
+  const prefixCounts = exercises.reduce((acc, ex) => {
+    const p = getPrefix(ex.exercise_id) || 'legacy';
+    acc[p] = (acc[p] || 0) + 1;
+    return acc;
+  }, {});
+
+  const duplicateCount = Object.values(idCounts).filter(c => c > 1).length;
 
   if (isLoading) {
     return <div className="glass rounded-2xl border border-cyan-500/30 p-8 text-slate-400">Laden...</div>;
@@ -47,62 +88,104 @@ function ExercisesTab() {
       animate={{ opacity: 1, y: 0 }}
       className="space-y-6"
     >
-      <div className="glass rounded-2xl border border-cyan-500/30 p-8">
-        <h2 className="text-2xl font-bold text-cyan-400 mb-6">💪 Exercises Library ({filtered.length})</h2>
-        
-        {/* Filters */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+      <div className="glass rounded-2xl border border-cyan-500/30 p-6">
+        {/* Header */}
+        <div className="flex items-center justify-between mb-6">
           <div>
-            <label className="block text-sm text-slate-300 mb-2">Kategorie</label>
-            <select
-              value={categoryFilter}
-              onChange={(e) => setCategoryFilter(e.target.value)}
-              className="w-full px-3 py-2 rounded-lg bg-slate-800 border border-slate-600 text-white text-sm"
-            >
-              <option value="all">Alle</option>
-              {categories.map(cat => (
-                <option key={cat} value={cat}>{cat}</option>
-              ))}
-            </select>
-          </div>
-          
-          <div>
-            <label className="block text-sm text-slate-300 mb-2">Schwierigkeit</label>
-            <select
-              value={difficultyFilter}
-              onChange={(e) => setDifficultyFilter(e.target.value)}
-              className="w-full px-3 py-2 rounded-lg bg-slate-800 border border-slate-600 text-white text-sm"
-            >
-              <option value="all">Alle</option>
-              {difficulties.map(diff => (
-                <option key={diff} value={diff}>{diff}</option>
-              ))}
-            </select>
-          </div>
-
-          <div>
-            <label className="block text-sm text-slate-300 mb-2">Sortierung</label>
-            <div className="flex gap-2">
-              <select
-                value={sortBy}
-                onChange={(e) => setSortBy(e.target.value)}
-                className="flex-1 px-3 py-2 rounded-lg bg-slate-800 border border-slate-600 text-white text-sm"
-              >
-                <option value="name">Name</option>
-                <option value="category">Kategorie</option>
-                <option value="difficulty">Schwierigkeit</option>
-              </select>
-              <button
-                onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
-                className="px-3 py-2 rounded-lg bg-slate-800 border border-slate-600 text-slate-300 hover:text-white transition-colors"
-              >
-                {sortOrder === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
-              </button>
-            </div>
+            <h2 className="text-2xl font-bold text-cyan-400">💪 Exercises Library</h2>
+            <p className="text-sm text-slate-400 mt-1">
+              {filtered.length} von {exercises.length} Übungen
+              {duplicateCount > 0 && (
+                <span className="ml-2 px-2 py-0.5 rounded bg-red-500/20 text-red-400 text-xs border border-red-500/40">
+                  ⚠ {duplicateCount} Duplikate
+                </span>
+              )}
+            </p>
           </div>
         </div>
 
-        {/* Exercises Table */}
+        {/* Prefix Filter Badges */}
+        <div className="mb-4">
+          <p className="text-xs text-slate-500 mb-2 uppercase tracking-wider">Prefix / Gruppe</p>
+          <div className="flex flex-wrap gap-2">
+            <button
+              onClick={() => setPrefixFilter('all')}
+              className={`px-3 py-1.5 rounded-lg text-xs font-bold border transition-all ${
+                prefixFilter === 'all'
+                  ? 'bg-slate-300/20 text-white border-slate-400'
+                  : 'bg-slate-800 text-slate-400 border-slate-700 hover:border-slate-500'
+              }`}
+            >
+              Alle ({exercises.length})
+            </button>
+            {Object.entries(PREFIXES).map(([key, def]) => (
+              <button
+                key={key}
+                onClick={() => setPrefixFilter(key)}
+                title={def.desc}
+                className={`px-3 py-1.5 rounded-lg text-xs font-bold border transition-all ${
+                  prefixFilter === key
+                    ? def.color + ' border-current'
+                    : 'bg-slate-800 text-slate-400 border-slate-700 hover:border-slate-500'
+                }`}
+              >
+                {key} {prefixCounts[key] ? `(${prefixCounts[key]})` : '(0)'}
+              </button>
+            ))}
+            {prefixCounts['legacy'] > 0 && (
+              <button
+                onClick={() => setPrefixFilter('legacy')}
+                className={`px-3 py-1.5 rounded-lg text-xs font-bold border transition-all ${
+                  prefixFilter === 'legacy'
+                    ? 'bg-yellow-500/20 text-yellow-300 border-yellow-500/40'
+                    : 'bg-slate-800 text-slate-400 border-slate-700 hover:border-slate-500'
+                }`}
+              >
+                Legacy ({prefixCounts['legacy']})
+              </button>
+            )}
+          </div>
+        </div>
+
+        {/* Search + Difficulty + Sort */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-6">
+          <input
+            type="text"
+            placeholder="Name oder ID suchen..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="px-3 py-2 rounded-lg bg-slate-800 border border-slate-600 text-white text-sm placeholder-slate-500"
+          />
+          <select
+            value={difficultyFilter}
+            onChange={(e) => setDifficultyFilter(e.target.value)}
+            className="px-3 py-2 rounded-lg bg-slate-800 border border-slate-600 text-white text-sm"
+          >
+            <option value="all">Alle Schwierigkeiten</option>
+            {difficulties.map(diff => (
+              <option key={diff} value={diff}>{diff}</option>
+            ))}
+          </select>
+          <div className="flex gap-2">
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value)}
+              className="flex-1 px-3 py-2 rounded-lg bg-slate-800 border border-slate-600 text-white text-sm"
+            >
+              <option value="exercise_id">ID</option>
+              <option value="name">Name</option>
+              <option value="difficulty">Schwierigkeit</option>
+            </select>
+            <button
+              onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
+              className="px-3 py-2 rounded-lg bg-slate-800 border border-slate-600 text-slate-300 hover:text-white transition-colors"
+            >
+              {sortOrder === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+            </button>
+          </div>
+        </div>
+
+        {/* Table */}
         {filtered.length === 0 ? (
           <p className="text-slate-400">Keine Exercises gefunden</p>
         ) : (
@@ -110,38 +193,67 @@ function ExercisesTab() {
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-slate-700">
-                  <th className="text-left py-3 px-4 text-slate-300 font-semibold">Name</th>
-                  <th className="text-left py-3 px-4 text-slate-300 font-semibold">Kategorie</th>
-                  <th className="text-left py-3 px-4 text-slate-300 font-semibold">Schwierigkeit</th>
-                  <th className="text-left py-3 px-4 text-slate-300 font-semibold">Parent</th>
-                  <th className="text-left py-3 px-4 text-slate-300 font-semibold">Level</th>
+                  <th className="text-left py-3 px-3 text-slate-300 font-semibold">ID</th>
+                  <th className="text-left py-3 px-3 text-slate-300 font-semibold">Name</th>
+                  <th className="text-left py-3 px-3 text-slate-300 font-semibold">Prefix</th>
+                  <th className="text-left py-3 px-3 text-slate-300 font-semibold">Schwierigkeit</th>
+                  <th className="text-left py-3 px-3 text-slate-300 font-semibold">Felder</th>
                 </tr>
               </thead>
               <tbody>
-                {filtered.map(ex => (
-                  <tr key={ex.id} className="border-b border-slate-800 hover:bg-slate-800/50 transition-colors">
-                    <td className="py-3 px-4">
-                      <div>
+                {filtered.map(ex => {
+                  const prefix = getPrefix(ex.exercise_id);
+                  const prefixDef = prefix ? PREFIXES[prefix] : null;
+                  const isDuplicate = idCounts[ex.exercise_id] > 1;
+                  const hasAxonMoment = !!ex.axon_moment;
+                  const hasPurpose = !!ex.purpose_explanation;
+                  const hasBenefits = !!ex.benefits;
+                  return (
+                    <tr key={ex.id} className={`border-b border-slate-800 hover:bg-slate-800/50 transition-colors ${isDuplicate ? 'bg-red-500/5' : ''}`}>
+                      <td className="py-3 px-3">
+                        <div className="flex items-center gap-2">
+                          <code className="text-xs font-mono text-slate-300 bg-slate-800 px-2 py-1 rounded">
+                            {ex.exercise_id || '—'}
+                          </code>
+                          {isDuplicate && (
+                            <span className="text-xs text-red-400" title="Doppelte ID">⚠</span>
+                          )}
+                        </div>
+                      </td>
+                      <td className="py-3 px-3">
                         <p className="font-medium text-slate-100">{ex.name}</p>
-                        {ex.description && <p className="text-xs text-slate-400 mt-1 line-clamp-1">{ex.description}</p>}
-                      </div>
-                    </td>
-                    <td className="py-3 px-4">
-                      <span className="px-2 py-1 rounded text-xs bg-cyan-500/20 text-cyan-300">{ex.category}</span>
-                    </td>
-                    <td className="py-3 px-4">
-                      <span className={`px-2 py-1 rounded text-xs ${
-                        ex.difficulty === 'beginner' ? 'bg-green-500/20 text-green-300' :
-                        ex.difficulty === 'intermediate' ? 'bg-yellow-500/20 text-yellow-300' :
-                        'bg-red-500/20 text-red-300'
-                      }`}>
-                        {ex.difficulty || '-'}
-                      </span>
-                    </td>
-                    <td className="py-3 px-4 text-slate-400">{ex.parent_exercise || '-'}</td>
-                    <td className="py-3 px-4 text-slate-400">{ex.progression_level || '-'}</td>
-                  </tr>
-                ))}
+                      </td>
+                      <td className="py-3 px-3">
+                        {prefixDef ? (
+                          <span className={`px-2 py-1 rounded text-xs font-bold border ${prefixDef.color}`} title={prefixDef.desc}>
+                            {prefixDef.label}
+                          </span>
+                        ) : (
+                          <span className="px-2 py-1 rounded text-xs border bg-yellow-500/10 text-yellow-400 border-yellow-500/30">
+                            Legacy
+                          </span>
+                        )}
+                      </td>
+                      <td className="py-3 px-3">
+                        <span className={`px-2 py-1 rounded text-xs ${
+                          ex.difficulty === 'beginner' ? 'bg-green-500/20 text-green-300' :
+                          ex.difficulty === 'intermediate' ? 'bg-yellow-500/20 text-yellow-300' :
+                          ex.difficulty === 'advanced' ? 'bg-red-500/20 text-red-300' :
+                          'bg-slate-700 text-slate-400'
+                        }`}>
+                          {ex.difficulty || '—'}
+                        </span>
+                      </td>
+                      <td className="py-3 px-3">
+                        <div className="flex gap-1">
+                          <span className={`text-xs px-1.5 py-0.5 rounded ${hasAxonMoment ? 'bg-cyan-500/20 text-cyan-400' : 'bg-slate-700 text-slate-600'}`} title="axon_moment">A</span>
+                          <span className={`text-xs px-1.5 py-0.5 rounded ${hasPurpose ? 'bg-purple-500/20 text-purple-400' : 'bg-slate-700 text-slate-600'}`} title="purpose_explanation">P</span>
+                          <span className={`text-xs px-1.5 py-0.5 rounded ${hasBenefits ? 'bg-green-500/20 text-green-400' : 'bg-slate-700 text-slate-600'}`} title="benefits">B</span>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
