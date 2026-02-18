@@ -429,56 +429,7 @@ export default function PerformanceChat() {
 
 
 
-  const handleBaselineCheckComplete = async () => {
-    setShowBaselineCheckModal(false);
-    setIsPlanCreating(true);
-    
-    try {
-      // Extract training frequency from conversation
-      const conversationText = messages.map(m => m.content).join(' ');
 
-      let frequency = '2_3_times_week'; // default
-      if (conversationText.toLowerCase().includes('4-5') || conversationText.toLowerCase().includes('4 bis 5')) {
-        frequency = '4_5_times_week';
-      } else if (conversationText.toLowerCase().includes('täglich') || conversationText.toLowerCase().includes('jeden tag')) {
-        frequency = 'daily';
-      } else if (conversationText.toLowerCase().includes('2') && (conversationText.toLowerCase().includes('2 mal') || conversationText.toLowerCase().includes('2x'))) {
-        frequency = '2_3_times_week';
-      }
-
-      console.log('📋 Creating training plan with frequency:', frequency, 'Goal:', goalName);
-
-      // Call createTrainingPlan function with replace flag
-      const response = await base44.functions.invoke('createTrainingPlan', {
-        goal_description: goalName,
-        training_frequency: frequency,
-        replaceExisting: true
-      });
-
-      console.log('✅ Training plan response:', response);
-
-      if (response.data?.success) {
-        console.log('✨ Training plan created successfully:', response.data.plan?.id);
-        
-        // Invalidiere Query Cache für TrainingPlan-Seite
-        await queryClient.invalidateQueries({ queryKey: ['activePlan'] });
-        
-        toast.success('Trainingsplan erfolgreich erstellt! 🎉');
-        
-        // Warte kurz für Animation, dann weiterleiten zum Performance Tab
-        setTimeout(() => {
-          window.location.href = createPageUrl('TrainingPlan') + '?tab=performance';
-        }, 2000);
-      } else {
-        toast.error('Fehler beim Erstellen des Plans');
-        setIsPlanCreating(false);
-      }
-    } catch (error) {
-      console.error('❌ Error creating training plan:', error);
-      toast.error('Fehler beim Erstellen des Trainingsplans');
-      setIsPlanCreating(false);
-    }
-  };
 
   const handleDoneClick = () => {
     setShowFeedbackForm(true);
