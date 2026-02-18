@@ -219,62 +219,7 @@ export default function ExerciseMappingTab() {
   return (
     <div className="space-y-6">
 
-      {/* ── Duplicate Groups ─────────────────────────────────────────── */}
-      {duplicateGroups.length > 0 && (
-        <div className="glass rounded-2xl border border-red-500/30 p-6">
-          <button
-            onClick={() => setShowDuplicates(!showDuplicates)}
-            className="flex items-center justify-between w-full mb-2"
-          >
-            <h3 className="text-lg font-bold text-red-400 flex items-center gap-2">
-              <AlertTriangle className="w-5 h-5" />
-              {duplicateGroups.length} Duplikat-Gruppen gefunden
-            </h3>
-            {showDuplicates ? <ChevronUp className="w-4 h-4 text-slate-400" /> : <ChevronDown className="w-4 h-4 text-slate-400" />}
-          </button>
 
-          {showDuplicates && (
-            <div className="space-y-4 mt-4">
-              {duplicateGroups.map(([dupId, entries]) => {
-                const score = (ex) => Object.values(ex).filter(v => v !== null && v !== undefined && v !== '').length;
-                const sorted = [...entries].sort((a, b) => score(b) - score(a));
-                return (
-                  <div key={dupId} className="bg-red-500/5 border border-red-500/20 rounded-xl p-4">
-                    <div className="flex items-center justify-between mb-3">
-                      <div>
-                        <code className="text-red-300 font-mono text-sm">{dupId}</code>
-                        <span className="ml-2 text-xs text-slate-500">{entries.length}x vorhanden</span>
-                      </div>
-                      <Button
-                        size="sm"
-                        onClick={() => mergeDuplicates([dupId, entries])}
-                        className="bg-red-500/20 text-red-300 hover:bg-red-500/30 border border-red-500/40 text-xs"
-                      >
-                        <GitMerge className="w-3 h-3 mr-1" />
-                        Jetzt mergen
-                      </Button>
-                    </div>
-                    <div className="space-y-2">
-                      {sorted.map((ex, i) => (
-                        <div key={ex.id} className={`flex items-center gap-3 text-xs rounded-lg px-3 py-2 ${i === 0 ? 'bg-green-500/10 border border-green-500/20' : 'bg-slate-800/50'}`}>
-                          <span className={`font-bold ${i === 0 ? 'text-green-400' : 'text-slate-500'}`}>
-                            {i === 0 ? '✓ Behalten' : '✗ Löschen'}
-                          </span>
-                          <span className="text-slate-300">{ex.name}</span>
-                          <span className="text-slate-500 ml-auto">{score(ex)} Felder</span>
-                          {ex.axon_moment && <span className="text-cyan-400" title="hat axon_moment">A</span>}
-                          {ex.purpose_explanation && <span className="text-purple-400" title="hat purpose">P</span>}
-                          {ex.benefits && <span className="text-green-400" title="hat benefits">B</span>}
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          )}
-        </div>
-      )}
 
       {/* ── ID Mapping Table ─────────────────────────────────────────── */}
       <div className="glass rounded-2xl border border-cyan-500/30 p-6">
