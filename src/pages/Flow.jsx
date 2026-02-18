@@ -258,7 +258,9 @@ export default function Flow() {
       return {
         title: node?.name_de || currentSequence.node_id,
         instruction: node?.user_instruction || instruction,
-        expertTip: node?.expert_tip
+        expertTip: node?.expert_tip,
+        purposeExplanation: currentSequence.purpose_explanation,
+        benefits: currentSequence.benefits
       };
     }
     
@@ -266,8 +268,10 @@ export default function Flow() {
     if (currentSequence.exercise_name) {
       return {
         title: currentSequence.exercise_name,
-        instruction: currentSequence.exercise_description || '',
-        axonMoment: currentSequence.axon_moment
+        instruction: currentSequence.instruction || currentSequence.exercise_description || '',
+        axonMoment: currentSequence.axon_moment,
+        purposeExplanation: currentSequence.purpose_explanation,
+        benefits: currentSequence.benefits
       };
     }
     
@@ -275,20 +279,17 @@ export default function Flow() {
     const lines = instruction.split('\n');
     const firstLine = lines[0] || '';
     
-    // Check if first line ends with colon (typical format: "Title:\n\nInstructions")
     if (firstLine.includes(':')) {
       const title = firstLine.replace(':', '').trim();
       const restOfInstruction = lines.slice(1).join('\n').trim();
-      return {
-        title,
-        instruction: restOfInstruction
-      };
+      return { title, instruction: restOfInstruction };
     }
     
-    // Fallback: use full instruction
     return {
       title: `Übung ${currentStep + 1}`,
-      instruction
+      instruction,
+      purposeExplanation: currentSequence.purpose_explanation,
+      benefits: currentSequence.benefits
     };
   };
 
