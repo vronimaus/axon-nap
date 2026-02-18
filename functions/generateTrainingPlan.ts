@@ -108,23 +108,34 @@ Format: {
       }
     });
 
-    // Validate referenced IDs exist
-    for (const routine of planData.recommended_routines || []) {
-      const exists = allRoutines.find(r => r.id === routine.routine_id);
-      if (!exists) {
-        return Response.json({ 
-          error: `Routine ${routine.routine_id} not found` 
-        }, { status: 400 });
-      }
+    // Validate response structure
+    if (!planData.phases || !Array.isArray(planData.phases) || planData.phases.length === 0) {
+      return Response.json({ 
+        error: 'LLM response missing valid phases array' 
+      }, { status: 502 });
     }
 
+    // Validate referenced IDs exist
+    const invalidRoutines = [];
+    for (const routine of planData.recommended_routines || []) {
+      const exists = allRoutines.find(r => r.id === routine.routine_id);
+      if (!exists) invalidRoutines.push(routine.routine_id);
+    }
+    if (invalidRoutines.length > 0) {
+      return Response.json({ 
+        error: `Routines not found: ${invalidRoutines.join(', ')}` 
+      }, { status: 400 });
+    }
+
+    const invalidFaqs = [];
     for (const faq of planData.recommended_faqs || []) {
       const exists = allFaqs.find(f => f.faq_id === faq.faq_id);
-      if (!exists) {
-        return Response.json({ 
-          error: `FAQ ${faq.faq_id} not found` 
-        }, { status: 400 });
-      }
+      if (!exists) invalidFaqs.push(faq.faq_id);
+    }
+    if (invalidFaqs.length > 0) {
+      return Response.json({ 
+        error: `FAQs not found: ${invalidFaqs.join(', ')}` 
+      }, { status: 400 });
     }
 
     // Create training plan
@@ -147,6 +158,17 @@ Format: {
 
   } catch (error) {
     console.error('generateTrainingPlan error:', error);
-    return Response.json({ error: error.message }, { status: 500 });
+
+    // Detailed error logging
+    if (error.message.includes('JSON')) {
+      return Response.json({ 
+        error: 'LLM returned invalid JSON - plan generation failed' 
+      }, { status: 502 });
+    }
+
+    return Response.json({ 
+      error: error.message || 'Unknown error during plan generation',
+      type: 'PLAN_GENERATION_ERROR'
+    }, { status: 500 });
   }
 });
