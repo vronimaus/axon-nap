@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
-import { Check, Hash } from 'lucide-react';
+import { Check, Hash, Trash2, Pencil, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 
@@ -53,7 +53,6 @@ function alreadyNewFormat(id) {
 }
 
 function parseExistingId(id = '') {
-  // Try to extract prefix and group from existing new-format ID
   for (const p of KNOWN_PREFIXES) {
     if (id.startsWith(p + '_')) {
       const rest = id.slice(p.length + 1);
@@ -71,17 +70,18 @@ function parseExistingId(id = '') {
 export default function ExerciseMappingTab() {
   const queryClient = useQueryClient();
 
-  // { [dbId]: { prefix: 'BW', group: 'SQU' } }
   const [assignments, setAssignments] = useState({});
   const [saving, setSaving] = useState({});
-  const [filterMode, setFilterMode] = useState('all'); // all | legacy | assigned
+  const [filterMode, setFilterMode] = useState('all');
+  const [editingName, setEditingName] = useState({}); // { [id]: newName }
+  const [deletingId, setDeletingId] = useState(null);
 
   const { data: exercises = [], isLoading } = useQuery({
     queryKey: ['exercises'],
     queryFn: () => base44.entities.Exercise.list('-updated_date', 500),
   });
 
-  // Sorted alphabetically by exercise_id
+  // Sort by exercise_id (groups exercises together by prefix_group)
   const sorted = useMemo(() => {
     return [...exercises].sort((a, b) => (a.exercise_id || '').localeCompare(b.exercise_id || ''));
   }, [exercises]);
@@ -97,9 +97,7 @@ export default function ExerciseMappingTab() {
 
   const getAssignment = (ex) => {
     if (assignments[ex.id]) return assignments[ex.id];
-    if (alreadyNewFormat(ex.exercise_id)) {
-      return parseExistingId(ex.exercise_id);
-    }
+    if (alreadyNewFormat(ex.exercise_id)) return parseExistingId(ex.exercise_id);
     return { prefix: '', group: '' };
   };
 
@@ -110,15 +108,13 @@ export default function ExerciseMappingTab() {
     }));
   };
 
-  // Assign numbers: for each unique prefix+group combo, sort by name and assign _001, _002, ...
+  // ── Assign numbers ───────────────────────────────────────────────────────────
   const assignNumbers = async () => {
-    // Collect all exercises that have a prefix+group (either from assignments or already new format)
     const toProcess = sorted.map(ex => {
       const { prefix, group } = getAssignment(ex);
       return { ex, prefix, group };
     }).filter(({ prefix, group }) => prefix && group);
 
-    // Group by prefix+group
     const grouped = {};
     for (const item of toProcess) {
       const key = `${item.prefix}_${item.group}`;
@@ -126,7 +122,6 @@ export default function ExerciseMappingTab() {
       grouped[key].push(item);
     }
 
-    // Sort each group by name, then assign numbers
     const updates = [];
     for (const [, items] of Object.entries(grouped)) {
       items.sort((a, b) => (a.ex.name || '').localeCompare(b.ex.name || ''));
@@ -162,7 +157,7 @@ export default function ExerciseMappingTab() {
     toast.success(`${success} IDs mit Nummern vergeben`);
   };
 
-  // Save single exercise prefix+group (without number yet, store as BW_SQU)
+  // ── Save prefix+group ────────────────────────────────────────────────────────
   const saveAssignment = async (ex) => {
     const { prefix, group } = getAssignment(ex);
     if (!prefix || !group) return;
@@ -180,6 +175,40 @@ export default function ExerciseMappingTab() {
     }
   };
 
+  // ── Rename exercise ──────────────────────────────────────────────────────────
+  const saveName = async (ex) => {
+    const newName = editingName[ex.id];
+    if (!newName || newName === ex.name) {
+      setEditingName(prev => { const n = { ...prev }; delete n[ex.id]; return n; });
+      return;
+    }
+    setSaving(prev => ({ ...prev, [`name_${ex.id}`]: true }));
+    try {
+      await base44.entities.Exercise.update(ex.id, { name: newName });
+      queryClient.invalidateQueries({ queryKey: ['exercises'] });
+      setEditingName(prev => { const n = { ...prev }; delete n[ex.id]; return n; });
+      toast.success(`✓ Umbenannt zu "${newName}"`);
+    } catch (e) {
+      toast.error('Fehler: ' + e.message);
+    } finally {
+      setSaving(prev => { const n = { ...prev }; delete n[`name_${ex.id}`]: true; return n; });
+    }
+  };
+
+  // ── Delete exercise ──────────────────────────────────────────────────────────
+  const deleteExercise = async (ex) => {
+    setDeletingId(ex.id);
+    try {
+      await base44.entities.Exercise.delete(ex.id);
+      queryClient.invalidateQueries({ queryKey: ['exercises'] });
+      toast.success(`✓ "${ex.name}" gelöscht`);
+    } catch (e) {
+      toast.error('Fehler: ' + e.message);
+    } finally {
+      setDeletingId(null);
+    }
+  };
+
   if (isLoading) return <div className="glass rounded-2xl border border-cyan-500/30 p-8 text-slate-400">Laden...</div>;
 
   return (
@@ -189,9 +218,9 @@ export default function ExerciseMappingTab() {
         {/* Header */}
         <div className="flex items-center justify-between mb-2">
           <div>
-            <h3 className="text-xl font-bold text-cyan-400">Schritt 1 – Gruppe zuweisen</h3>
+            <h3 className="text-xl font-bold text-cyan-400">Exercise ID Mapping</h3>
             <p className="text-sm text-slate-400 mt-1">
-              Wähle für jede Übung Prefix und Gruppe. Nummern werden danach automatisch vergeben.
+              Prefix + Gruppe zuweisen, dann Nummern automatisch vergeben lassen.
             </p>
           </div>
           <Button
@@ -200,14 +229,14 @@ export default function ExerciseMappingTab() {
             className="bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-sm flex items-center gap-2"
           >
             <Hash className="w-4 h-4" />
-            {saving._all ? 'Vergebe Nummern...' : 'Schritt 2: Nummern vergeben'}
+            {saving._all ? 'Vergebe Nummern...' : 'Nummern vergeben'}
           </Button>
         </div>
 
         {/* Info Box */}
         <div className="mb-5 bg-slate-800/50 border border-slate-700 rounded-xl p-3 text-xs text-slate-400">
           <span className="text-cyan-400 font-semibold">Workflow:</span>{' '}
-          1. Prefix + Gruppe wählen → Speichern → 2. „Nummern vergeben" klicken → IDs werden automatisch durchnummeriert (z.B. <code className="text-cyan-300">BW_SQU_001</code>)
+          1. Prefix + Gruppe wählen → Speichern → 2. „Nummern vergeben" → IDs werden automatisch durchnummeriert (z.B. <code className="text-cyan-300">BW_SQU_001</code>). Sortierung nach ID.
         </div>
 
         {/* Filter */}
@@ -236,11 +265,11 @@ export default function ExerciseMappingTab() {
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-slate-700">
+                <th className="text-left py-2 px-3 text-slate-400 font-medium text-xs w-48">ID</th>
                 <th className="text-left py-2 px-3 text-slate-400 font-medium text-xs">Name</th>
-                <th className="text-left py-2 px-3 text-slate-400 font-medium text-xs">Alte ID</th>
-                <th className="text-left py-2 px-3 text-slate-400 font-medium text-xs">Prefix</th>
-                <th className="text-left py-2 px-3 text-slate-400 font-medium text-xs">Gruppe</th>
-                <th className="py-2 px-3"></th>
+                <th className="text-left py-2 px-3 text-slate-400 font-medium text-xs w-32">Prefix</th>
+                <th className="text-left py-2 px-3 text-slate-400 font-medium text-xs w-40">Gruppe</th>
+                <th className="py-2 px-3 w-28"></th>
               </tr>
             </thead>
             <tbody>
@@ -250,17 +279,50 @@ export default function ExerciseMappingTab() {
                 const isDirty = !!assignments[ex.id];
                 const canSave = prefix && group && isDirty;
                 const isSaving = saving[ex.id];
+                const isEditingName = editingName[ex.id] !== undefined;
+                const isDeleting = deletingId === ex.id;
 
                 return (
                   <tr key={ex.id} className={`border-b border-slate-800/50 hover:bg-slate-800/30 transition-colors ${isDirty ? 'bg-cyan-500/5' : ''}`}>
-                    <td className="py-2 px-3">
-                      <span className="text-slate-200 text-xs">{ex.name}</span>
-                    </td>
+                    {/* ID */}
                     <td className="py-2 px-3">
                       <code className={`text-xs font-mono px-2 py-0.5 rounded ${isNew ? 'text-green-400 bg-green-500/10' : 'text-yellow-400 bg-yellow-500/10'}`}>
                         {ex.exercise_id || '—'}
                       </code>
                     </td>
+
+                    {/* Name – inline edit */}
+                    <td className="py-2 px-3">
+                      {isEditingName ? (
+                        <div className="flex items-center gap-1">
+                          <input
+                            autoFocus
+                            value={editingName[ex.id]}
+                            onChange={e => setEditingName(prev => ({ ...prev, [ex.id]: e.target.value }))}
+                            onKeyDown={e => { if (e.key === 'Enter') saveName(ex); if (e.key === 'Escape') setEditingName(prev => { const n = { ...prev }; delete n[ex.id]; return n; }); }}
+                            className="text-xs px-2 py-1 rounded bg-slate-700 border border-cyan-500/50 text-white focus:outline-none w-40"
+                          />
+                          <button onClick={() => saveName(ex)} className="text-cyan-400 hover:text-cyan-300">
+                            <Check className="w-3.5 h-3.5" />
+                          </button>
+                          <button onClick={() => setEditingName(prev => { const n = { ...prev }; delete n[ex.id]; return n; })} className="text-slate-500 hover:text-slate-300">
+                            <X className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      ) : (
+                        <div className="flex items-center gap-1 group">
+                          <span className="text-slate-200 text-xs">{ex.name}</span>
+                          <button
+                            onClick={() => setEditingName(prev => ({ ...prev, [ex.id]: ex.name }))}
+                            className="opacity-0 group-hover:opacity-100 text-slate-500 hover:text-cyan-400 transition-all"
+                          >
+                            <Pencil className="w-3 h-3" />
+                          </button>
+                        </div>
+                      )}
+                    </td>
+
+                    {/* Prefix */}
                     <td className="py-2 px-3">
                       <select
                         value={prefix}
@@ -273,6 +335,8 @@ export default function ExerciseMappingTab() {
                         ))}
                       </select>
                     </td>
+
+                    {/* Gruppe */}
                     <td className="py-2 px-3">
                       <select
                         value={group}
@@ -285,18 +349,30 @@ export default function ExerciseMappingTab() {
                         ))}
                       </select>
                     </td>
+
+                    {/* Actions */}
                     <td className="py-2 px-3">
-                      <button
-                        onClick={() => saveAssignment(ex)}
-                        disabled={!canSave || isSaving}
-                        className={`px-3 py-1 rounded-lg text-xs font-medium transition-all flex items-center gap-1 ${
-                          canSave
-                            ? 'bg-cyan-500/20 text-cyan-400 hover:bg-cyan-500/30 border border-cyan-500/30'
-                            : 'text-slate-600 cursor-not-allowed'
-                        }`}
-                      >
-                        {isSaving ? '...' : <><Check className="w-3 h-3" /> OK</>}
-                      </button>
+                      <div className="flex items-center gap-1">
+                        <button
+                          onClick={() => saveAssignment(ex)}
+                          disabled={!canSave || isSaving}
+                          className={`px-2.5 py-1 rounded-lg text-xs font-medium transition-all flex items-center gap-1 ${
+                            canSave
+                              ? 'bg-cyan-500/20 text-cyan-400 hover:bg-cyan-500/30 border border-cyan-500/30'
+                              : 'text-slate-700 cursor-not-allowed'
+                          }`}
+                        >
+                          {isSaving ? '...' : <><Check className="w-3 h-3" /> OK</>}
+                        </button>
+                        <button
+                          onClick={() => { if (window.confirm(`"${ex.name}" wirklich löschen?`)) deleteExercise(ex); }}
+                          disabled={isDeleting}
+                          className="p-1.5 rounded-lg text-slate-600 hover:text-red-400 hover:bg-red-500/10 transition-all"
+                          title="Löschen"
+                        >
+                          {isDeleting ? '...' : <Trash2 className="w-3.5 h-3.5" />}
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 );
