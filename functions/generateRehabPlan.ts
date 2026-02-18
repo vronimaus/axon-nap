@@ -47,65 +47,14 @@ Deno.serve(async (req) => {
 
     // Call LLM for plan generation
     const planData = await base44.integrations.Core.InvokeLLM({
-      prompt: `Du bist ein Experte für Rehabilitations-Planung im AXON Protocol.
+      prompt: `Create a 3-phase rehab plan for: ${diagnosisSession.symptom_location} (${diagnosisSession.symptom_description}).
 
-Diagnose-Informationen:
-- Symptom-Ort: ${diagnosisSession.symptom_location}
-- Symptom-Beschreibung: ${diagnosisSession.symptom_description}
-- Diagnose-Typ: ${diagnosisSession.diagnosis_type}
-- Getestete Ketten: ${diagnosisSession.tested_chains?.join(', ')}
-- Empfehlungen aus Diagnose: ${diagnosisSession.recommendations?.join(', ')}
+    Type: ${diagnosisSession.diagnosis_type}. Select 3 routines (IDs only) and 3 FAQs (IDs only) from available:
 
-Problem-Zusammenfassung: ${diagnosisSession.symptom_location} - ${diagnosisSession.symptom_description}
+    Routines: ${allRoutines.slice(0, 10).map(r => `${r.id}: ${r.routine_name}`).join(', ')}
+    FAQs: ${allFaqs.slice(0, 10).map(f => `${f.faq_id}: ${f.question}`).join(', ')}
 
-Verfügbare Routines (für Empfehlungen):
-${routinesContext}
-
-Verfügbare FAQs (für Empfehlungen):
-${faqsContext}
-
-Generiere einen strukturierten Rehab-Plan als JSON mit:
-1. 3 Phasen (je 3-7 Tage), progressiv aufbauend
-2. Pro Phase: 4-6 Rehabilitations-Übungen
-3. 3 empfohlene MFR/Mobility Routines (nur IDs aus der Liste oben!)
-4. 3 empfohlene FAQs (nur IDs aus der Liste oben!)
-
-Für jede Empfehlung: nur die ID + ein 1-2 Satz reason warum es relevant ist.
-
-Format: {
-  "phases": [
-    {
-      "phase_number": 1,
-      "title": "...",
-      "description": "...",
-      "duration_days": 5,
-      "exercises": [
-        {
-          "exercise_id": "...",
-          "name": "...",
-          "sets_reps_tempo": "2x8 @ 2-1-2",
-          "instruction": "...",
-          "notes": "...",
-          "category": "mobility"
-        }
-      ]
-    }
-  ],
-  "recommended_mfr_routines": [
-    {
-      "routine_id": "...",
-      "routine_name": "...",
-      "reason": "..."
-    }
-  ],
-  "recommended_faqs": [
-    {
-      "faq_id": "...",
-      "question": "...",
-      "reason": "..."
-    }
-  ]
-}`,
+    JSON format with phases (3), exercises per phase (4-5), recommended_mfr_routines, recommended_faqs.`,
       response_json_schema: {
         type: 'object',
         properties: {
