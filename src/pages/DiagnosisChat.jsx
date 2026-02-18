@@ -84,33 +84,40 @@ export default function DiagnosisChat() {
         setWorkflowStep(mapDataParam && regionParam ? 'intensity' : 'body_map');
         setDiagnosisCardData(null);
 
-        // Archive any active RehabPlans before starting new diagnosis
-        try {
-          const currentUser = await base44.auth.me();
-          if (currentUser?.email) {
-            const activePlans = await base44.entities.RehabPlan.filter({
-              user_email: currentUser.email,
-              status: 'active'
-            });
+        // Timeout für das Archivieren (max 2 Sekunden)
+        const archiveTimeout = new Promise((resolve) =>
+          setTimeout(() => resolve(null), 2000)
+        );
 
-            for (const plan of activePlans) {
-              await base44.entities.RehabPlan.update(plan.id, {
-                status: 'completed'
-              });
+        // Archive any active RehabPlans (non-blocking)
+        Promise.race([
+          (async () => {
+            try {
+              const currentUser = await base44.auth.me();
+              if (currentUser?.email) {
+                const activePlans = await base44.entities.RehabPlan.filter({
+                  user_email: currentUser.email,
+                  status: 'active'
+                });
+                for (const plan of activePlans) {
+                  await base44.entities.RehabPlan.update(plan.id, {
+                    status: 'completed'
+                  });
+                }
+              }
+            } catch (e) {
+              console.log('Archive skipped');
             }
-          }
-        } catch (archiveError) {
-          console.log('No active plans to archive or user not logged in');
-        }
+          })(),
+          archiveTimeout
+        ]);
 
         const isContinuation = sessionId && searchParams.get('continue') === 'true';
-
         const metadata = {
           name: 'MFR Detective Session',
           description: '4-Phasen Diagnostic Protocol: Assessment → Hardware → Software → Validation'
         };
 
-        // If we have wizard results, add them as context
         if (wizardSession) {
           metadata.wizard_results = {
             region: wizardSession.symptom_location,
@@ -127,39 +134,42 @@ export default function DiagnosisChat() {
         setConversation(conv);
         setMessages(conv.messages || []);
 
-        // If from wizard, send initial context message
+        // Send initial message non-blocking
         if (wizardSession) {
           setLoading(true);
           const contextMsg = isContinuation 
             ? `Ich habe den Wizard durchlaufen und es ist zwar besser geworden, aber nicht vollständig weg.\n- Region: ${wizardSession.symptom_location}\n- Symptom: ${wizardSession.symptom_description}\n\nWo tut es noch weh und wie können wir die verbleibenden Beschwerden angehen?`
             : `Ich habe gerade den Diagnose-Wizard abgeschlossen:\n- Region: ${wizardSession.symptom_location}\n- Symptom: ${wizardSession.symptom_description}\n- Diagnose-Typ: ${wizardSession.diagnosis_type}\n\nBitte verfeinere die Diagnose und empfehle mir die spezifischen MFR-Nodes.`;
-          
-          await base44.agents.addMessage(conv, {
+
+          base44.agents.addMessage(conv, {
             role: 'user',
             content: contextMsg
-          });
-        }
-        // If from Dashboard with body map, skip Body Map and go straight to intensity
-        else if (mapDataParam && regionParam) {
+          }).catch(e => console.error('Message send failed:', e));
+        } else if (mapDataParam && regionParam) {
           setLoading(true);
-          const mapData = JSON.parse(mapDataParam);
-          const fullRegion = regionParam;
-          const markerType = mapData.markers.length === 1 && mapData.markers[0].type === 'point'
-            ? 'einen Schmerzpunkt'
-            : 'eine Schmerzlinie';
-          
-          // Send body map data as if user just completed it
-          await base44.agents.addMessage(conv, {
-            role: 'user',
-            content: `Ich habe auf der Body Map (${mapData.view === 'front' ? 'Vorderseite' : 'Rückseite'}) ${markerType} markiert. Die Markierung ist im Bereich: ${fullRegion}`
-          });
+          try {
+            const mapData = JSON.parse(mapDataParam);
+            const fullRegion = regionParam;
+            const markerType = mapData.markers.length === 1 && mapData.markers[0].type === 'point'
+              ? 'einen Schmerzpunkt'
+              : 'eine Schmerzlinie';
+
+            await base44.agents.addMessage(conv, {
+              role: 'user',
+              content: `Ich habe auf der Body Map (${mapData.view === 'front' ? 'Vorderseite' : 'Rückseite'}) ${markerType} markiert. Die Markierung ist im Bereich: ${fullRegion}`
+            });
+          } catch (parseError) {
+            console.error('Parse error:', parseError);
+            setLoading(false);
+          }
         }
       } catch (error) {
         console.error('Fehler beim Erstellen der Konversation:', error);
+        setLoading(false);
       }
     };
     initConversation();
-  }, [wizardSession, mapDataParam, regionParam]);
+  }, [wizardSession, mapDataParam, regionParam, searchParams, sessionId]);
 
   // Subscribe to conversation updates and detect workflow triggers
   useEffect(() => {
