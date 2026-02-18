@@ -16,11 +16,15 @@ Deno.serve(async (req) => {
     }
 
     // Fetch diagnosis session
-    const diagnosis = await base44.asServiceRole.entities.DiagnosisSession.list(
-      '-updated_date',
-      1
-    );
-    const diagnosisSession = diagnosis.find(d => d.id === diagnosis_session_id);
+    let diagnosisSession;
+    try {
+      diagnosisSession = await base44.asServiceRole.entities.DiagnosisSession.filter(
+        { id: diagnosis_session_id }
+      );
+      diagnosisSession = diagnosisSession[0];
+    } catch {
+      diagnosisSession = null;
+    }
 
     if (!diagnosisSession) {
       return Response.json({ error: 'DiagnosisSession not found' }, { status: 404 });
