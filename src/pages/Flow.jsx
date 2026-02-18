@@ -411,19 +411,32 @@ export default function Flow() {
       </AnimatePresence>
 
       <div className="max-w-4xl mx-auto">
+        {/* RehabCoaching Panel - Shows RIS Status & Recommendations */}
+        {coachingActive && currentExerciseId && (
+          <RehabCoachingPanel
+            exerciseId={currentExerciseId}
+            nrsScore={currentNRS || 2}
+            recentSessions={[]}
+            onProgramUpdate={(data) => {
+              // Update UI based on coaching data if needed
+              console.log('RehabCoaching update:', data);
+            }}
+          />
+        )}
+
         {/* Readiness Recommendation */}
-        {readinessStatus && (
-          <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className={`glass rounded-xl p-4 mb-6 border ${
-              readinessStatus === 'green'
-                ? 'border-green-500/30 bg-gradient-to-r from-green-500/10 to-transparent'
-                : readinessStatus === 'yellow'
-                ? 'border-amber-500/30 bg-gradient-to-r from-amber-500/10 to-transparent'
-                : 'border-red-500/30 bg-gradient-to-r from-red-500/10 to-transparent'
-            }`}
-          >
+         {readinessStatus && (
+           <motion.div
+             initial={{ opacity: 0, y: -10 }}
+             animate={{ opacity: 1, y: 0 }}
+             className={`glass rounded-xl p-4 mb-6 border ${
+               readinessStatus === 'green'
+                 ? 'border-green-500/30 bg-gradient-to-r from-green-500/10 to-transparent'
+                 : readinessStatus === 'yellow'
+                 ? 'border-amber-500/30 bg-gradient-to-r from-amber-500/10 to-transparent'
+                 : 'border-red-500/30 bg-gradient-to-r from-red-500/10 to-transparent'
+             }`}
+           >
             <div className="flex items-start gap-3">
               {readinessStatus === 'green' ? (
                 <Check className="w-6 h-6 flex-shrink-0 text-green-400" />
