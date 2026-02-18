@@ -646,19 +646,7 @@ export default function PerformanceChat() {
         )}
       </AnimatePresence>
 
-      {/* Baseline Check Modal */}
-      <AnimatePresence>
-        {showBaselineCheckModal && (
-          <BaselineCheckModal
-            goalName={goalName}
-            onComplete={handleBaselineCheckComplete}
-            onCancel={() => {
-              setShowBaselineCheckModal(false);
-              toast.info('Plan-Erstellung abgebrochen');
-            }}
-          />
-        )}
-      </AnimatePresence>
+
       </div>
       );
       }
