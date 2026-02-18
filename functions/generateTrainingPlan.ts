@@ -40,7 +40,7 @@ Deno.serve(async (req) => {
 
     // Call LLM for plan generation
     const planData = await base44.integrations.Core.InvokeLLM({
-      prompt: `Du bist ein Experte für Trainingsplanung im AXON Protocol.
+      prompt: `You are an expert in AXON Protocol training planning.
 
 Benutzer-Profil:
 - Activity Level: ${profile.activity_level}
@@ -101,9 +101,18 @@ Format: {
       response_json_schema: {
         type: 'object',
         properties: {
-          phases: { type: 'array' },
-          recommended_routines: { type: 'array' },
-          recommended_faqs: { type: 'array' }
+          phases: { 
+            type: 'array',
+            items: { type: 'object' }
+          },
+          recommended_routines: { 
+            type: 'array',
+            items: { type: 'object' }
+          },
+          recommended_faqs: { 
+            type: 'array',
+            items: { type: 'object' }
+          }
         }
       }
     });

@@ -105,9 +105,18 @@ Format: {
       response_json_schema: {
         type: 'object',
         properties: {
-          phases: { type: 'array' },
-          recommended_mfr_routines: { type: 'array' },
-          recommended_faqs: { type: 'array' }
+          phases: { 
+            type: 'array',
+            items: { type: 'object' }
+          },
+          recommended_mfr_routines: { 
+            type: 'array',
+            items: { type: 'object' }
+          },
+          recommended_faqs: { 
+            type: 'array',
+            items: { type: 'object' }
+          }
         }
       }
     });
