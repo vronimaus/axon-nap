@@ -588,6 +588,11 @@ export default function AdminHub() {
             </motion.div>
           </TabsContent>
 
+          {/* Mapping Tab */}
+          <TabsContent value="mapping" className="mt-0">
+            <ExerciseMappingTab />
+          </TabsContent>
+
           {/* Roadmap Tab */}
           <TabsContent value="roadmap" className="mt-0">
             <RoadmapTab />
