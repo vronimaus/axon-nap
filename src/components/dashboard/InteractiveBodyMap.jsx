@@ -109,11 +109,23 @@ export default function InteractiveBodyMap({ mode, onRegionSelect, sessions }) {
     if (!container) return;
 
     const handleTouchStart = (e) => {
-      e.preventDefault();
+      if (drawMode !== 'point') {
+        try {
+          e.preventDefault();
+        } catch (err) {
+          // Ignore passive listener errors
+        }
+      }
       startDrawing(e);
     };
     const handleTouchMove = (e) => {
-      e.preventDefault();
+      if (isDrawing && drawMode !== 'point') {
+        try {
+          e.preventDefault();
+        } catch (err) {
+          // Ignore passive listener errors
+        }
+      }
       draw(e);
     };
     const handleTouchEnd = () => stopDrawing();
@@ -127,7 +139,7 @@ export default function InteractiveBodyMap({ mode, onRegionSelect, sessions }) {
       container.removeEventListener('touchmove', handleTouchMove);
       container.removeEventListener('touchend', handleTouchEnd);
     };
-  }, [startDrawing, draw, stopDrawing]);
+  }, [startDrawing, draw, stopDrawing, drawMode, isDrawing]);
 
   const getCoordinates = (e) => {
     const canvas = canvasRef.current;
