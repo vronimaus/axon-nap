@@ -117,9 +117,9 @@ export default function InteractiveBodyMap({ mode, onRegionSelect, sessions }) {
   };
 
   const startDrawing = (e) => {
-    e.preventDefault();
+    if (e.cancelable) e.preventDefault();
     const coords = getCoordinates(e);
-    
+
     if (drawMode === 'point') {
       setMarkers([...markers, { type: 'point', x: coords.x, y: coords.y }]);
     } else {
@@ -130,7 +130,7 @@ export default function InteractiveBodyMap({ mode, onRegionSelect, sessions }) {
 
   const draw = (e) => {
     if (!isDrawing || drawMode === 'point') return;
-    e.preventDefault();
+    if (e.cancelable) e.preventDefault();
     const coords = getCoordinates(e);
     setCurrentPath([...currentPath, coords]);
   };
