@@ -322,7 +322,13 @@ Each phase should have 3-4 exercises. Make phases progressive (Phase 1 = Foundat
             }
         });
         
-        return response.phases || [];
+        console.log('LLM Response:', JSON.stringify(response).substring(0, 200));
+        
+        if (!response || !response.phases || !Array.isArray(response.phases) || response.phases.length === 0) {
+            throw new Error(`Invalid LLM response format: ${JSON.stringify(response).substring(0, 200)}`);
+        }
+        
+        return response.phases;
     } catch (error) {
         console.error('Error generating plan phases via LLM:', error);
         throw error;
