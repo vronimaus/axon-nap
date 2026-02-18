@@ -390,8 +390,41 @@ export default function PerformanceChat() {
   };
 
   const handleExercisesComplete = async () => {
-    // Direkt zum Baseline-Check - alte Pläne werden automatisch gelöscht
-    setShowBaselineCheckModal(true);
+    // Skip baseline modal, directly create plan
+    setIsPlanCreating(true);
+    try {
+      const conversationText = messages.map(m => m.content).join(' ');
+      let frequency = '2_3_times_week';
+      
+      if (conversationText.toLowerCase().includes('4-5') || conversationText.toLowerCase().includes('4 bis 5')) {
+        frequency = '4_5_times_week';
+      } else if (conversationText.toLowerCase().includes('täglich') || conversationText.toLowerCase().includes('jeden tag')) {
+        frequency = 'daily';
+      } else if (conversationText.toLowerCase().includes('2') && (conversationText.toLowerCase().includes('2 mal') || conversationText.toLowerCase().includes('2x'))) {
+        frequency = '2_3_times_week';
+      }
+
+      const response = await base44.functions.invoke('createTrainingPlan', {
+        goal_description: goalName,
+        training_frequency: frequency,
+        replaceExisting: true
+      });
+
+      if (response.data?.success) {
+        await queryClient.invalidateQueries({ queryKey: ['activePlan'] });
+        toast.success('Trainingsplan erfolgreich erstellt! 🎉');
+        setTimeout(() => {
+          window.location.href = createPageUrl('TrainingPlan') + '?tab=performance';
+        }, 1500);
+      } else {
+        toast.error('Fehler beim Erstellen des Plans');
+        setIsPlanCreating(false);
+      }
+    } catch (error) {
+      console.error('Error creating plan:', error);
+      toast.error('Fehler beim Trainingsplan');
+      setIsPlanCreating(false);
+    }
   };
 
 
