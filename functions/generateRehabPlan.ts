@@ -30,11 +30,16 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'DiagnosisSession not found' }, { status: 404 });
     }
 
-    // Fetch all routines and FAQs for matching
+    // Fetch all exercises, routines and FAQs for matching
+    const allExercises = await base44.entities.Exercise.list('-updated_date', 200);
     const allRoutines = await base44.entities.Routine.list('-updated_date', 100);
     const allFaqs = await base44.entities.FAQ.list('-updated_date', 100);
 
     // Prepare context for AI
+    const exercisesContext = allExercises
+      .map(e => `ID: ${e.exercise_id}, Name: ${e.name}, Category: ${e.category}, Difficulty: ${e.difficulty}`)
+      .join('\n');
+
     const routinesContext = allRoutines
       .filter(r => r.published !== false)
       .map(r => `ID: ${r.id}, Name: ${r.routine_name}, Category: ${r.category}, Duration: ${r.total_duration}min, Description: ${r.description}`)
@@ -46,6 +51,7 @@ Deno.serve(async (req) => {
       .join('\n');
 
     // Call LLM for plan generation
+    const availableExerciseIds = allExercises.map(e => e.exercise_id).filter(id => id);
     const availableRoutineIds = allRoutines.slice(0, 5).map(r => r.id).filter(id => id);
     const availableFaqIds = allFaqs.slice(0, 5).map(f => f.faq_id).filter(id => id);
 
@@ -54,6 +60,9 @@ Deno.serve(async (req) => {
 
     Diagnosis Type: ${diagnosisSession.diagnosis_type}
 
+    IMPORTANT: You MUST choose exercise IDs ONLY from this list:
+    ${availableExerciseIds.map((id, i) => `${i+1}. ${id}`).join('\n')}
+
     IMPORTANT: You MUST choose routine IDs ONLY from this list:
     ${availableRoutineIds.map((id, i) => `${i+1}. ${id}`).join('\n')}
 
@@ -61,7 +70,7 @@ Deno.serve(async (req) => {
     ${availableFaqIds.map((id, i) => `${i+1}. ${id}`).join('\n')}
 
     Return JSON with:
-    - phases: array of 3 objects (phase_number, title, description, duration_days, exercises array)
+    - phases: array of 3 objects (phase_number, title, description, duration_days, exercises array with ONLY exercise_id from list above, name, sets_reps_tempo, instruction, notes)
     - recommended_mfr_routines: array of 3 objects with ONLY routine_id (from list above), routine_name, reason
     - recommended_faqs: array of 3 objects with ONLY faq_id (from list above), question, reason`,
       response_json_schema: {
