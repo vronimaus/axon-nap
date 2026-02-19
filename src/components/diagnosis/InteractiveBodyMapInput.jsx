@@ -124,11 +124,7 @@ export default function InteractiveBodyMapInput({ onSubmit }) {
   const handleSubmit = () => {
     if (markers.length === 0 || isSubmitting) return;
     
-    setIsSubmitting(true);
-    
-    // Verwende die gleiche Detection wie Dashboard (Canvas 400x600)
     const detectedRegion = detectRegionFromCoordinates(markers, view, 400, 600);
-    console.log('Detected region:', detectedRegion, 'Markers:', markers);
     
     const mapData = {
       view,
