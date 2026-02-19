@@ -181,10 +181,10 @@ export default function DiagnosisChat() {
        const newMessages = data.messages || [];
        setMessages(newMessages);
 
-       // Only process triggers when NOT loading (message is complete)
+       // Only process triggers when all tool calls are done
        const lastMessage = newMessages[newMessages.length - 1];
        const isMessageComplete = lastMessage?.role === 'assistant' && 
-         !lastMessage?.tool_calls?.some(tc => tc.status === 'running' || tc.status === 'pending');
+         !lastMessage?.tool_calls?.some(tc => tc.status === 'running' || tc.status === 'pending' || tc.status === 'in_progress');
 
        if (!isMessageComplete) return;
 
@@ -194,8 +194,6 @@ export default function DiagnosisChat() {
        if (lastMessage?.content) {
          const content = lastMessage.content;
 
-         // Priority-based trigger detection (most specific first)
-         // Use functional updater to read current step without stale closure
          setWorkflowStep(currentStep => {
            // Never go backwards from rehab_plan_created
            if (currentStep === 'rehab_plan_created') return currentStep;
@@ -225,7 +223,8 @@ export default function DiagnosisChat() {
    );
 
    return () => unsubscribe();
-  }, [conversation?.id, workflowStep]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [conversation?.id]); // Remove workflowStep from deps - functional updater handles current state
 
   // Auto-scroll to bottom (optimized with debounce)
   useEffect(() => {
