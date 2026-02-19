@@ -407,40 +407,18 @@ export default function Dashboard() {
                 </div>
               )}
 
-              {/* Body Map - ONLY in Rehab Mode */}
+              {/* Diagnose Button - Rehab Mode */}
               {mode === 'rehab' && (
-               <InteractiveBodyMap
-                 mode={mode}
-                 onRegionSelect={setSelectedBodyRegion}
-                 sessions={sessions}
-               />
-              )}
-              {mode === 'rehab' && selectedBodyRegion && (
                 <motion.div
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   className="mt-4 sm:mt-6"
                 >
                   <Button
-                    onClick={() => {
-                      // Hole die Map-Daten aus sessionStorage
-                      const mapData = sessionStorage.getItem('bodyMapData');
-                      if (mapData) {
-                        const data = JSON.parse(mapData);
-                        // Navigiere zum Chat mit den Map-Daten als URL-Parameter
-                        const params = new URLSearchParams({
-                          mapData: JSON.stringify(data),
-                          region: selectedBodyRegion
-                        });
-                        window.location.href = createPageUrl(`DiagnosisChat?${params.toString()}`);
-                      } else {
-                        // Fallback falls keine Map-Daten vorhanden
-                        window.location.href = createPageUrl(`DiagnosisChat?region=${selectedBodyRegion}`);
-                      }
-                    }}
+                    onClick={() => window.location.href = createPageUrl('DiagnosisChat')}
                     className="w-full h-12 sm:h-14 bg-gradient-to-r from-red-500 to-pink-600 hover:from-red-600 hover:to-pink-700 text-white font-bold text-sm sm:text-base"
                   >
-                    Analysieren starten →
+                    Zur Diagnose →
                   </Button>
                 </motion.div>
               )}
