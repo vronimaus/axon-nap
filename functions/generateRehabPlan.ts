@@ -55,19 +55,24 @@ ${extraContext}
 
 Erstelle einen realistischen, detaillierten Plan. Jede Phase MUSS mindestens 3-5 Übungen enthalten.
 
-    IMPORTANT: You MUST choose exercise IDs ONLY from this list:
-    ${availableExerciseIds.map((id, i) => `${i+1}. ${id}`).join('\n')}
+Verfügbare Übungs-IDs (wähle NUR aus dieser Liste):
+${availableExerciseIds.map((id, i) => `${i+1}. ${id}`).join('\n')}
 
-    IMPORTANT: You MUST choose routine IDs ONLY from this list:
-    ${availableRoutineIds.map((id, i) => `${i+1}. ${id}`).join('\n')}
+Verfügbare Routine-IDs:
+${availableRoutineIds.map((id, i) => `${i+1}. ${id}`).join('\n')}
 
-    IMPORTANT: You MUST choose FAQ IDs ONLY from this list:
-    ${availableFaqIds.map((id, i) => `${i+1}. ${id}`).join('\n')}
+Verfügbare FAQ-IDs:
+${availableFaqIds.map((id, i) => `${i+1}. ${id}`).join('\n')}
 
-    Return JSON with:
-    - phases: array of 3 objects (phase_number, title, description, duration_days, exercises array with ONLY exercise_id from list above, name, sets_reps_tempo, instruction, notes)
-    - recommended_mfr_routines: array of 3 objects with ONLY routine_id (from list above), routine_name, reason
-    - recommended_faqs: array of 3 objects with ONLY faq_id (from list above), question, reason`,
+WICHTIG: Gib für jede Übung konkrete Anweisungen auf Deutsch.
+Phase 1 (Akut, 7 Tage): Schmerzlinderung, MFR, sanfte Mobilisation
+Phase 2 (Aufbau, 14 Tage): Kräftigung, Stabilität, Bewegungsmuster
+Phase 3 (Integration, 14 Tage): Funktionelle Bewegung, Prävention, Performance
+
+Antworte mit JSON:
+- phases: 3 Objekte mit phase_number, title, description, duration_days, exercises (mind. 3-5 Übungen mit exercise_id, name, sets_reps_tempo, instruction, notes)
+- recommended_mfr_routines: 3 Objekte mit routine_id, routine_name, reason
+- recommended_faqs: 3 Objekte mit faq_id, question, reason`,
       response_json_schema: {
         type: 'object',
         properties: {
