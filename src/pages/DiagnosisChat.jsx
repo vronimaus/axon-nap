@@ -195,35 +195,31 @@ export default function DiagnosisChat() {
          const content = lastMessage.content;
 
          // Priority-based trigger detection (most specific first)
-         if (content.includes('[CREATE_REHAB_PLAN]')) {
-           // Trigger rehab plan creation via backend function
-           setWorkflowStep('rehab_plan_created');
+         // Use functional updater to read current step without stale closure
+         setWorkflowStep(currentStep => {
+           // Never go backwards from rehab_plan_created
+           if (currentStep === 'rehab_plan_created') return currentStep;
 
-           // Extract diagnosis session data from conversation metadata
-           const convMetadata = conversation?.metadata || {};
-           const sessionId = convMetadata.diagnosis_session_id;
-
-           // Only create if we don't already have the plan being created
-           if (sessionId && !lastMessage?.tool_calls?.some(tc => tc.name === 'generateRehabPlan')) {
-             // The agent should call generateRehabPlan, but let's ensure it happens
-             console.log('Plan creation triggered for session:', sessionId);
+           if (content.includes('[CREATE_REHAB_PLAN]')) {
+             return 'rehab_plan_created';
+           } else if (content.includes('[SHOW_DIAGNOSIS_CARD]')) {
+             const diagnosisText = content.split('[SHOW_DIAGNOSIS_CARD]')[0].trim();
+             setDiagnosisCardData({
+               title: 'Deine AXON-Diagnose',
+               analysis: diagnosisText
+             });
+             return 'analysis_card';
+           } else if (content.includes('[TRIGGER_CHAIN_SCAN]')) {
+             return 'chain_scan';
+           } else if (content.includes('[TRIGGER_RETEST]')) {
+             return 'post_exercise_feedback';
+           } else if (content.includes('[TRIGGER_INTENSITY]')) {
+             return 'intensity';
+           } else if (content.includes('[TRIGGER_BODY_MAP]') && currentStep === 'chat') {
+             return 'body_map';
            }
-         } else if (content.includes('[SHOW_DIAGNOSIS_CARD]')) {
-           const diagnosisText = content.split('[SHOW_DIAGNOSIS_CARD]')[0].trim();
-           setDiagnosisCardData({
-             title: 'Deine AXON-Diagnose',
-             analysis: diagnosisText
-           });
-           setWorkflowStep('analysis_card');
-         } else if (content.includes('[TRIGGER_CHAIN_SCAN]')) {
-           setWorkflowStep('chain_scan');
-         } else if (content.includes('[TRIGGER_RETEST]')) {
-           setWorkflowStep('post_exercise_feedback');
-         } else if (content.includes('[TRIGGER_INTENSITY]')) {
-           setWorkflowStep('intensity');
-         } else if (content.includes('[TRIGGER_BODY_MAP]') && workflowStep === 'chat') {
-           setWorkflowStep('body_map');
-         }
+           return currentStep;
+         });
        }
      }
    );
