@@ -57,21 +57,27 @@ export default function RehabPlan() {
     queryKey: ['rehabPlan', user?.email],
     queryFn: async () => {
       if (!user?.email) return null;
-      // Try both user_email and created_by for backwards compatibility
-      const plansByEmail = await base44.entities.RehabPlan.filter({
-        user_email: user.email,
-        status: 'active'
-      }, '-plan_generated_date', 1);
-      
-      if (plansByEmail.length > 0) return plansByEmail[0];
-      
+
+      // Helper: find first plan that has valid phases
+      const findValidPlan = async (filter) => {
+        const plans = await base44.entities.RehabPlan.filter(filter, '-plan_generated_date', 5);
+        for (const plan of plans) {
+          if (plan.phases && Array.isArray(plan.phases) && plan.phases.length > 0) {
+            return plan;
+          }
+          // Auto-archive broken plans (no phases)
+          try {
+            await base44.entities.RehabPlan.update(plan.id, { status: 'completed' });
+          } catch (_e) { /* ignore */ }
+        }
+        return null;
+      };
+
+      const byEmail = await findValidPlan({ user_email: user.email, status: 'active' });
+      if (byEmail) return byEmail;
+
       // Fallback: check by created_by
-      const plansByCreator = await base44.entities.RehabPlan.filter({
-        created_by: user.email,
-        status: 'active'
-      }, '-plan_generated_date', 1);
-      
-      return plansByCreator[0] || null;
+      return await findValidPlan({ created_by: user.email, status: 'active' });
     },
     enabled: !!user?.email
   });
