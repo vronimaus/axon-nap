@@ -158,38 +158,51 @@ ${availableFaqIds.map((id, i) => `${i + 1}. ${id}`).join('\n')}`,
       allFaqs.find(af => af.faq_id === f.faq_id)
     );
 
-    // Enrich exercises with DB data
-    const enrichedPhases = await Promise.all(
-      planData.phases.map(async (phase) => {
-        const enrichedExercises = await Promise.all(
-          (phase.exercises || []).map(async (exercise) => {
-            try {
-              const matches = await base44.asServiceRole.entities.Exercise.filter({ exercise_id: exercise.exercise_id });
-              if (matches.length > 0) {
-                const ex = matches[0];
-                return {
-                  ...exercise,
-                  description: ex.description || exercise.instruction,
-                  axon_moment: ex.axon_moment,
-                  breathing_instruction: ex.breathing_instruction,
-                  purpose_explanation: ex.purpose_explanation,
-                  cues: ex.cues,
-                  category: ex.category,
-                  difficulty: ex.difficulty,
-                  image_url: ex.image_url,
-                  gif_url: ex.gif_url,
-                  benefits: ex.benefits
-                };
-              }
-              return exercise;
-            } catch (_e) {
-              return exercise;
-            }
-          })
-        );
-        return { ...phase, exercises: enrichedExercises };
-      })
-    );
+    // Build a lookup map for fast exercise enrichment
+    const exerciseMap = {};
+    allExercises.forEach(e => {
+      if (e.exercise_id) exerciseMap[e.exercise_id] = e;
+    });
+
+    // Enrich exercises with DB data - skip exercises with invalid/missing IDs
+    const enrichedPhases = planData.phases.map((phase) => {
+      const enrichedExercises = (phase.exercises || [])
+        .filter(exercise => {
+          // Only keep exercises with a valid exercise_id from our catalog
+          const isValid = exercise.exercise_id && exerciseMap[exercise.exercise_id];
+          if (!isValid) {
+            console.log(`[generateRehabPlan] Skipping exercise with invalid ID: "${exercise.exercise_id}" (${exercise.name})`);
+          }
+          return isValid;
+        })
+        .map(exercise => {
+          const ex = exerciseMap[exercise.exercise_id];
+          return {
+            exercise_id: ex.exercise_id,
+            name: ex.name,
+            sets_reps_tempo: exercise.sets_reps_tempo,
+            notes: exercise.notes,
+            description: ex.description,
+            axon_moment: ex.axon_moment,
+            breathing_instruction: ex.breathing_instruction,
+            purpose_explanation: ex.purpose_explanation,
+            cues: ex.cues,
+            category: ex.category,
+            difficulty: ex.difficulty,
+            image_url: ex.image_url,
+            gif_url: ex.gif_url,
+            benefits: ex.benefits,
+            completed: false
+          };
+        });
+
+      console.log(`[generateRehabPlan] Phase ${phase.phase_number}: ${enrichedExercises.length}/${(phase.exercises||[]).length} exercises valid`);
+      return { ...phase, exercises: enrichedExercises };
+    }).filter(phase => phase.exercises.length > 0); // Remove phases with no valid exercises
+
+    if (enrichedPhases.length === 0) {
+      return Response.json({ error: 'No valid exercises found from catalog - all LLM exercise_ids were invalid' }, { status: 502 });
+    }
 
     const plan = await base44.asServiceRole.entities.RehabPlan.create({
       user_email: user.email,
