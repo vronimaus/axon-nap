@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
-import { Sparkles, Lightbulb, Plus, Loader2 } from 'lucide-react';
+import { Sparkles, Lightbulb, Loader2 } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { toast } from 'sonner';
 
@@ -15,13 +15,37 @@ export default function ExerciseCoachingPanel({ exercise, rehabPlan, feedbackHis
     setIsLoading(true);
     setActiveTab('variations');
     try {
-      const { data } = await base44.functions.invoke('rehabCoach', {
-        action: 'suggest_variations',
-        rehabPlan,
-        exercise,
-        feedbackHistory: feedbackHistory || []
+      const result = await base44.integrations.Core.InvokeLLM({
+        prompt: `Du bist ein erfahrener Reha-Therapeut. Schlage 3 Variationen der folgenden Übung vor.
+
+Übung: ${exercise.name}
+Beschreibung: ${exercise.description || ''}
+Schwierigkeit: ${exercise.difficulty || ''}
+Kategorie: ${exercise.category || ''}
+AXON-Moment: ${exercise.axon_moment || ''}
+
+Problem des Nutzers: ${rehabPlan?.problem_summary || ''}
+
+Antworte mit 3 konkreten Variationen: 1x leichter, 1x gleich schwer aber anders, 1x schwerer.`,
+        response_json_schema: {
+          type: 'object',
+          properties: {
+            variations: {
+              type: 'array',
+              items: {
+                type: 'object',
+                properties: {
+                  name: { type: 'string' },
+                  difficulty: { type: 'string', enum: ['easier', 'similar', 'harder'] },
+                  description: { type: 'string' },
+                  why: { type: 'string' }
+                }
+              }
+            }
+          }
+        }
       });
-      setVariations(data.variations);
+      setVariations(result.variations || []);
     } catch (error) {
       console.error('Error loading variations:', error);
       toast.error('Fehler beim Laden der Variationen');
@@ -34,13 +58,29 @@ export default function ExerciseCoachingPanel({ exercise, rehabPlan, feedbackHis
     setIsLoading(true);
     setActiveTab('cues');
     try {
-      const { data } = await base44.functions.invoke('rehabCoach', {
-        action: 'adapt_cues',
-        rehabPlan,
-        exercise,
-        feedbackHistory: feedbackHistory || []
+      const result = await base44.integrations.Core.InvokeLLM({
+        prompt: `Du bist ein erfahrener Reha-Coach. Gib personalisierte Coaching-Cues für diese Übung.
+
+Übung: ${exercise.name}
+Anleitung: ${exercise.description || ''}
+AXON-Moment: ${exercise.axon_moment || ''}
+Atemhinweis: ${exercise.breathing_instruction || ''}
+Standard-Cues: ${(exercise.cues || []).join(', ')}
+
+Problem des Nutzers: ${rehabPlan?.problem_summary || ''}
+Feedback-Historie: ${feedbackHistory?.length ? `${feedbackHistory.length} Einträge` : 'Keine'}
+
+Gib 3-5 präzise, motivierende Cues und eine kurze Erklärung warum diese Übung wichtig ist.`,
+        response_json_schema: {
+          type: 'object',
+          properties: {
+            motivation: { type: 'string' },
+            adapted_explanation: { type: 'string' },
+            cues: { type: 'array', items: { type: 'string' } }
+          }
+        }
       });
-      setAdaptedContent(data);
+      setAdaptedContent(result);
     } catch (error) {
       console.error('Error loading cues:', error);
       toast.error('Fehler beim Laden der Tipps');
@@ -51,7 +91,6 @@ export default function ExerciseCoachingPanel({ exercise, rehabPlan, feedbackHis
 
   return (
     <div className="mt-4 space-y-3">
-      {/* Action Buttons */}
       <div className="flex gap-2">
         <Button
           onClick={loadVariations}
@@ -81,7 +120,6 @@ export default function ExerciseCoachingPanel({ exercise, rehabPlan, feedbackHis
         </Button>
       </div>
 
-      {/* Variations Display */}
       <AnimatePresence>
         {variations && activeTab === 'variations' && (
           <motion.div
@@ -90,14 +128,9 @@ export default function ExerciseCoachingPanel({ exercise, rehabPlan, feedbackHis
             exit={{ opacity: 0, height: 0 }}
             className="space-y-2"
           >
-            <h6 className="text-sm font-semibold text-purple-400 mb-2">
-              🎯 Personalisierte Variationen
-            </h6>
+            <h6 className="text-sm font-semibold text-purple-400 mb-2">🎯 Personalisierte Variationen</h6>
             {variations.map((variation, idx) => (
-              <div
-                key={idx}
-                className="p-3 rounded-lg bg-slate-800/50 border border-slate-700"
-              >
+              <div key={idx} className="p-3 rounded-lg bg-slate-800/50 border border-slate-700">
                 <div className="flex items-start justify-between mb-2">
                   <h6 className="font-semibold text-white text-sm">{variation.name}</h6>
                   <span className={`text-xs px-2 py-0.5 rounded ${
@@ -106,7 +139,7 @@ export default function ExerciseCoachingPanel({ exercise, rehabPlan, feedbackHis
                     'bg-blue-500/20 text-blue-400'
                   }`}>
                     {variation.difficulty === 'easier' ? 'Einfacher' :
-                     variation.difficulty === 'harder' ? 'Schwerer' : 'Gleich'}
+                     variation.difficulty === 'harder' ? 'Schwerer' : 'Ähnlich'}
                   </span>
                 </div>
                 <p className="text-slate-300 text-xs mb-2">{variation.description}</p>
@@ -117,7 +150,6 @@ export default function ExerciseCoachingPanel({ exercise, rehabPlan, feedbackHis
         )}
       </AnimatePresence>
 
-      {/* Adapted Cues Display */}
       <AnimatePresence>
         {adaptedContent && activeTab === 'cues' && (
           <motion.div
@@ -128,21 +160,14 @@ export default function ExerciseCoachingPanel({ exercise, rehabPlan, feedbackHis
           >
             <h6 className="text-sm font-semibold text-cyan-400 mb-2 flex items-center gap-2">
               <Lightbulb className="w-4 h-4" />
-              Angepasst an deinen Fortschritt
+              Angepasst an dein Problem
             </h6>
-            
             {adaptedContent.motivation && (
               <div className="mb-3 p-2 rounded bg-cyan-500/10">
-                <p className="text-cyan-300 text-sm font-medium">
-                  {adaptedContent.motivation}
-                </p>
+                <p className="text-cyan-300 text-sm font-medium">{adaptedContent.motivation}</p>
               </div>
             )}
-
-            <p className="text-slate-300 text-sm mb-3 leading-relaxed">
-              {adaptedContent.adapted_explanation}
-            </p>
-
+            <p className="text-slate-300 text-sm mb-3 leading-relaxed">{adaptedContent.adapted_explanation}</p>
             {adaptedContent.cues?.length > 0 && (
               <div className="space-y-1">
                 <p className="text-xs font-semibold text-slate-400 mb-1">Wichtige Cues:</p>
