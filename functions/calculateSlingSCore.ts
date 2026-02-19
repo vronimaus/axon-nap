@@ -170,15 +170,16 @@ Deno.serve(async (req) => {
     return Response.json({
       success: true,
       slingScore: {
-        anterior: parseFloat(anterior.toFixed(2)),
-        posterior: parseFloat(posterior.toFixed(2)),
-        lateral: parseFloat(lateral.toFixed(2)),
+        anterior,
+        posterior,
+        lateral,
         overallReadiness,
         imbalance: parseFloat(imbalance.toFixed(2))
       },
       trend,
       contributing_exercises: contributingExercises,
-      message: `Sling-Scores berechnet: Anterior ${anterior.toFixed(1)}, Posterior ${posterior.toFixed(1)}, Lateral ${lateral.toFixed(1)}`
+      sling_progress_id: savedProgress.id,
+      message: `Sling-Scores berechnet: Anterior ${anterior.toFixed(1)}, Posterior ${posterior.toFixed(1)}, Lateral ${lateral.toFixed(1)} (Basis: ${exerciseCount} Übungen)`
     });
   } catch (error) {
     console.error('Calculate Sling Score Error:', error);
