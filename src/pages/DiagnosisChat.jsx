@@ -379,6 +379,18 @@ export default function DiagnosisChat() {
     );
   }
 
+  if (workflowStep === 'waiting_analysis') {
+    return (
+      <FocusScreenContainer
+        title="Deine Diagnose & Protokoll"
+        instruction="Analysiere dein Problem..."
+        showBackButton={false}
+      >
+        <DiagnosisLoadingAnimation message="Erstelle dein Protokoll..." />
+      </FocusScreenContainer>
+    );
+  }
+
   if (workflowStep === 'analysis_card') {
     return (
       <FocusScreenContainer
