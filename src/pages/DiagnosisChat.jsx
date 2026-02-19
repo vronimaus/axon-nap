@@ -291,50 +291,35 @@ export default function DiagnosisChat() {
   }
 
   // === WORKFLOW STEP HANDLERS ===
-  const handleBodyMapSubmitFocus = async (mapData) => {
-    // Use detected region from mapData
+  const handleBodyMapSubmitFocus = (mapData) => {
     const region = mapData.region || 'unbekannte Region';
-
-    console.log('Body Map submitted - Region:', region, 'Map data:', mapData);
-
-    // Store full data in session
+    // Store region+map data for use in intensity submit - NO agent message yet
     sessionStorage.setItem('current_pain_map', JSON.stringify({ ...mapData, region }));
-
-    // Move to intensity IMMEDIATELY (no chat screen)
     setWorkflowStep('intensity');
-
-    // Send to agent in background with region info
-    try {
-      const markerType = mapData.markers.length === 1 && mapData.markers[0].type === 'point'
-        ? 'einen Schmerzpunkt'
-        : 'eine Schmerzlinie';
-
-      base44.agents.addMessage(conversation, {
-        role: 'user',
-        content: `Ich habe auf der Body Map (${mapData.view === 'front' ? 'Vorderseite' : 'Rückseite'}) ${markerType} markiert. Die Markierung ist im Bereich: ${region}`
-      });
-    } catch (error) {
-      console.error('Fehler beim Senden:', error);
-    }
   };
 
   const handleIntensitySubmit = async (intensity) => {
-    // Track diagnosis start
     base44.analytics.track({
       eventName: 'diagnosis_started',
       properties: { pain_intensity: intensity }
     });
 
-    // Immediately switch to analysis_card with loading state
+    // Read stored map data to include region in the combined message
+    const storedMap = JSON.parse(sessionStorage.getItem('current_pain_map') || '{}');
+    const region = storedMap.region || 'unbekannte Region';
+    const view = storedMap.view === 'front' ? 'Vorderseite' : 'Rückseite';
+    const markerType = storedMap.markers?.length === 1 && storedMap.markers[0].type === 'point'
+      ? 'einen Schmerzpunkt'
+      : 'eine Schmerzlinie';
+
     setWorkflowStep('analysis_card');
     setLoading(true);
-    
+
     try {
       await base44.agents.addMessage(conversation, {
         role: 'user',
-        content: `Schmerzintensität: ${intensity}/10. Bitte analysiere jetzt mein Problem und gib mir ein konkretes Protokoll.`
+        content: `Ich habe auf der Body Map (${view}) ${markerType} markiert. Die Markierung ist im Bereich: ${region}. Schmerzintensität: ${intensity}/10. Bitte analysiere jetzt mein Problem und gib mir ein konkretes Protokoll.`
       });
-      // Agent will trigger [SHOW_DIAGNOSIS_CARD] which updates diagnosisCardData
     } catch (error) {
       console.error('Fehler beim Senden:', error);
       setLoading(false);
