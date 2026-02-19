@@ -57,6 +57,12 @@ Deno.serve(async (req) => {
     const availableRoutineIds = allRoutines.slice(0, 10).map(r => r.id).filter(Boolean);
     const availableFaqIds = allFaqs.slice(0, 10).map(f => f.faq_id).filter(Boolean);
 
+    // Build a rich exercise catalog so the LLM can pick based on real descriptions
+    const exerciseCatalog = allExercises
+      .filter(e => e.exercise_id)
+      .map(e => `ID: ${e.exercise_id} | Name: ${e.name} | Kategorie: ${e.category || '-'} | Schwierigkeit: ${e.difficulty || '-'} | Zweck: ${e.purpose_explanation || e.description?.slice(0, 120) || '-'}`)
+      .join('\n');
+
     console.log(`[generateRehabPlan] Problem: ${problemDescription}, Exercises: ${availableExerciseIds.length}, Routines: ${availableRoutineIds.length}`);
 
     const planData = await base44.integrations.Core.InvokeLLM({
@@ -66,14 +72,15 @@ Problem: ${problemDescription}
 Diagnose-Typ: ${diagnosisType}
 ${extraContext}
 
-Jede Phase MUSS mindestens 4 Übungen enthalten mit konkreten deutschen Anweisungen.
+Jede Phase MUSS mindestens 4 Übungen enthalten. Wähle passende Übungen aus dem Katalog und gib EXAKT die exercise_id an.
+Die sets_reps_tempo und instruction sollen kurze Ergänzungen zur Ausführung sein (1-2 Sätze), da die vollständige Beschreibung aus der Datenbank geladen wird.
 
-Phase 1 (Akut, 7 Tage): Schmerzlinderung, MFR, sanfte Mobilisation und Entspannung
-Phase 2 (Aufbau, 14 Tage): Kräftigung, Stabilität, Bewegungsmuster wiederherstellen
+Phase 1 (Akut, 7 Tage): Schmerzlinderung, MFR, sanfte Mobilisation
+Phase 2 (Aufbau, 14 Tage): Kräftigung, Stabilität, Bewegungsmuster
 Phase 3 (Integration, 14 Tage): Funktionelle Bewegung, Prävention, Performance
 
-Verfügbare Übungs-IDs (verwende NUR diese):
-${availableExerciseIds.map((id, i) => `${i + 1}. ${id}`).join('\n')}
+ÜBUNGSKATALOG (wähle NUR exercise_ids aus dieser Liste):
+${exerciseCatalog}
 
 Verfügbare Routine-IDs:
 ${availableRoutineIds.map((id, i) => `${i + 1}. ${id}`).join('\n')}
