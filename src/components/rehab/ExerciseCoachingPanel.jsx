@@ -184,6 +184,32 @@ Gib 3-5 präzise, motivierende Cues und eine kurze Erklärung warum diese Übung
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Ouch Button - Always Available */}
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="mt-6 pt-6 border-t border-slate-700"
+      >
+        <Button
+          onClick={() => setIsOuchModalOpen(true)}
+          variant="outline"
+          className="w-full h-12 border-red-500/30 hover:border-red-500/60 hover:bg-red-500/10 text-red-400 hover:text-red-300 gap-2"
+        >
+          <AlertCircle className="w-5 h-5" />
+          Schmerz oder Unwohlsein?
+        </Button>
+      </motion.div>
+
+      {/* Ouch Intervention Modal */}
+      <OuchInterventionModal
+        isOpen={isOuchModalOpen}
+        onClose={() => setIsOuchModalOpen(false)}
+        exerciseId={exercise.exercise_id}
+        exerciseName={exercise.name}
+        rehabPlanId={rehabPlan.id}
+        onExerciseSubstituted={onExerciseSubstituted}
+      />
     </div>
   );
 }
