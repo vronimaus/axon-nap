@@ -139,28 +139,15 @@ Antworte mit JSON:
       }, { status: 502 });
     }
 
-    // Validate referenced IDs exist
-    const invalidRoutines = [];
-    for (const routine of planData.recommended_mfr_routines || []) {
-      const exists = allRoutines.find(r => r.id === routine.routine_id);
-      if (!exists) invalidRoutines.push(routine.routine_id);
-    }
-    if (invalidRoutines.length > 0) {
-      return Response.json({ 
-        error: `Routines not found: ${invalidRoutines.join(', ')}` 
-      }, { status: 400 });
-    }
-
-    const invalidFaqs = [];
-    for (const faq of planData.recommended_faqs || []) {
-      const exists = allFaqs.find(f => f.faq_id === faq.faq_id);
-      if (!exists) invalidFaqs.push(faq.faq_id);
-    }
-    if (invalidFaqs.length > 0) {
-      return Response.json({ 
-        error: `FAQs not found: ${invalidFaqs.join(', ')}` 
-      }, { status: 400 });
-    }
+    // Soft-validate: filter out invalid IDs instead of failing
+    const validRoutines = (planData.recommended_mfr_routines || []).filter(r =>
+      allRoutines.find(ar => ar.id === r.routine_id)
+    );
+    const validFaqs = (planData.recommended_faqs || []).filter(f =>
+      allFaqs.find(af => af.faq_id === f.faq_id)
+    );
+    planData.recommended_mfr_routines = validRoutines;
+    planData.recommended_faqs = validFaqs;
 
     // Enrich phases with full Exercise details
     const enrichedPhases = await Promise.all(
