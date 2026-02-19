@@ -533,17 +533,15 @@ export default function DiagnosisChat() {
   }
 
   if (workflowStep === 'rehab_plan_created') {
-    // Clear cache when rehab plan is fully created
-    const lastAssistantMsg = [...messages].reverse().find(m => m.role === 'assistant');
-    const isCreating = lastAssistantMsg?.tool_calls?.some(tc => tc.status === 'running' || tc.status === 'pending');
-
-    if (!isCreating) {
-      // Plan complete - clear cache so user starts fresh next time
-      sessionStorage.removeItem('diagnosis_workflow_step');
-      sessionStorage.removeItem('diagnosis_card_data');
-      sessionStorage.removeItem('diagnosis_conversation_id');
-      sessionStorage.removeItem('current_pain_map');
-    }
+    // Find the last assistant message that contains [CREATE_REHAB_PLAN]
+    const planMsg = [...messages].reverse().find(m => m.role === 'assistant' && m.content?.includes('[CREATE_REHAB_PLAN]'));
+    
+    // Plan is done when: the generateRehabPlan tool_call is completed (success/error)
+    const planToolCall = planMsg?.tool_calls?.find(tc => tc.name === 'generateRehabPlan');
+    const isPlanDone = planToolCall?.status === 'completed' || planToolCall?.status === 'success' || planToolCall?.status === 'error';
+    
+    // Still creating if: no planMsg yet, or tool is still running, or tool hasn't started
+    const isCreating = !planMsg || !planToolCall || !isPlanDone;
 
     if (isCreating) {
       return (
@@ -569,8 +567,14 @@ export default function DiagnosisChat() {
       );
     }
 
+    // Plan done - clear cache
+    sessionStorage.removeItem('diagnosis_workflow_step');
+    sessionStorage.removeItem('diagnosis_card_data');
+    sessionStorage.removeItem('diagnosis_conversation_id');
+    sessionStorage.removeItem('current_pain_map');
+
     // Plan created - show completion screen
-    const lastMsgContent = lastAssistantMsg?.content?.split('[CREATE_REHAB_PLAN]')[0].trim() || '';
+    const lastMsgContent = planMsg?.content?.split('[CREATE_REHAB_PLAN]')[0].trim() || '';
 
     return (
       <FocusScreenContainer
