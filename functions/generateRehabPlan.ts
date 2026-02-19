@@ -70,11 +70,12 @@ Deno.serve(async (req) => {
     }
     const extraContext = contextParts.join('\n');
 
-    // Fetch exercises, routines, FAQs
-    const [allExercises, allRoutines, allFaqs] = await Promise.all([
-      base44.asServiceRole.entities.Exercise.list('-updated_date', 200),
+    // Fetch exercises, routines, FAQs, and MFRNodes (GOLDEN SOURCE)
+    const [allExercises, allRoutines, allFaqs, allMFRNodes] = await Promise.all([
+      base44.asServiceRole.entities.Exercise.list('-updated_date', 500),
       base44.asServiceRole.entities.Routine.list('-updated_date', 100),
-      base44.asServiceRole.entities.FAQ.list('-updated_date', 100)
+      base44.asServiceRole.entities.FAQ.list('-updated_date', 100),
+      base44.asServiceRole.entities.MFRNode.list('-updated_date', 50)
     ]);
 
     const validExercises = allExercises.filter(e => e.exercise_id && e.name);
@@ -82,20 +83,48 @@ Deno.serve(async (req) => {
     const availableRoutineIds = allRoutines.slice(0, 10).map(r => r.id).filter(Boolean);
     const availableFaqIds = allFaqs.slice(0, 10).map(f => f.faq_id).filter(Boolean);
 
+    // GOLDEN SOURCE: Map region/problem to MFRNodes and extract target chains/slings
+    const regionLower = (region || problemDescription || '').toLowerCase();
+    const relevantMFRNodes = allMFRNodes.filter(node => {
+      const targetChain = (node.target_chain || '').toLowerCase();
+      const bodyArea = (node.body_area || '').toLowerCase();
+      return targetChain.length > 0 || bodyArea.includes(regionLower.substring(0, 8));
+    }).slice(0, 5);
+    
+    const targetSlings = [...new Set(
+      relevantMFRNodes
+        .map(node => {
+          const chain = node.target_chain || '';
+          return chain.split('/').map(c => c.toLowerCase().trim()).filter(Boolean);
+        })
+        .flat()
+    )];
+
+    console.log(`[generateRehabPlan] Region "${region}" → MFR Nodes: ${relevantMFRNodes.length}, Target Slings: [${targetSlings.join(', ')}]`);
+
+    // Smart filtering: exercises matching target slings via smart_tags.kinetic_chain_slings.primary_sling
+    const smartFilteredExercises = validExercises.filter(e => {
+      if (!targetSlings.length) return true;
+      const primarySling = (e.smart_tags?.kinetic_chain_slings?.primary_sling || '').toLowerCase();
+      return targetSlings.some(sling => primarySling.includes(sling));
+    });
+
+    const bestExercises = smartFilteredExercises.length >= 15 ? smartFilteredExercises : validExercises;
+
     // Build a rich catalog: each exercise on its own line with all relevant fields
-    const exerciseCatalog = validExercises
+    const exerciseCatalog = bestExercises
       .map(e => [
         `ID: ${e.exercise_id}`,
         `Name: ${e.name}`,
         `Kategorie: ${e.category || '-'}`,
         `Schwierigkeit: ${e.difficulty || '-'}`,
+        `Sling: ${e.smart_tags?.kinetic_chain_slings?.primary_sling || '-'}`,
         `Zweck: ${e.purpose_explanation || '-'}`,
-        `Beschreibung: ${e.description || '-'}`,
         `AXONMoment: ${e.axon_moment || '-'}`
       ].join(' | '))
       .join('\n');
 
-    console.log(`[generateRehabPlan] Problem: ${problemDescription}, Exercises: ${validExercises.length}, Routines: ${availableRoutineIds.length}`);
+    console.log(`[generateRehabPlan] Filtered exercises: ${bestExercises.length}/${validExercises.length}`);
 
     const planData = await base44.integrations.Core.InvokeLLM({
       prompt: `Du bist ein erfahrener Reha-Therapeut und erstellst einen personalisierten 3-Phasen-Rehabilitationsplan.
