@@ -44,12 +44,12 @@ Deno.serve(async (req) => {
       const smartTags = ex.smart_tags || {};
       const kinetics = smartTags.kinetic_chain_slings || {};
 
-      // CRITICAL: Calculate Quality Factor based on NRS
-      // Formula: Quality Factor = 1 - (NRS / 10) * 0.4
+      // CRITICAL: Calculate Quality Factor based on NRS (AXON Formula)
+      // Formula: Quality_Factor = (10 - NRS) / 10
       // At NRS 0: QF = 1.0 (perfect quality)
-      // At NRS 5: QF = 0.8 (80% quality - some pain tolerance)
-      // At NRS 10: QF = 0.6 (60% quality - significant pain, less integration)
-      const qualityFactor = Math.max(0.4, 1 - (pain_nrs / 10) * 0.4);
+      // At NRS 5: QF = 0.5 (quality halved - significant pain disrupts integration)
+      // At NRS 10: QF = 0.0 (no quality - exercise invalid)
+      const qualityFactor = Math.max(0, (10 - pain_nrs) / 10);
 
       // Base score from progression level (1-10 scale, capped at 10)
       const baseScore = Math.min(ex.progression_level || 1, 10);
