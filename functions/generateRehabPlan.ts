@@ -40,10 +40,28 @@ Deno.serve(async (req) => {
 
     const diagnosisType = (diagnosisSession && diagnosisSession.diagnosis_type) ? diagnosisSession.diagnosis_type : 'mixed';
 
+    // Fetch UserNeuroProfile for richer context
+    let neuroProfile = null;
+    try {
+      const profiles = await base44.asServiceRole.entities.UserNeuroProfile.filter({ user_email: user.email });
+      neuroProfile = profiles[0] || null;
+    } catch (_e) { /* non-blocking */ }
+
     const contextParts = [];
     if (affected_chains) contextParts.push(`Betroffene Faszien-Ketten: ${affected_chains}`);
     if (pain_intensity) contextParts.push(`Schmerzintensität: ${pain_intensity}/10`);
     if (feedback_summary) contextParts.push(`Feedback nach Übungen: ${feedback_summary}`);
+    if (neuroProfile) {
+      if (neuroProfile.activity_level) contextParts.push(`Aktivitätslevel: ${neuroProfile.activity_level}`);
+      if (neuroProfile.training_experience) contextParts.push(`Trainingserfahrung: ${neuroProfile.training_experience}`);
+      if (neuroProfile.fitness_goals?.length) contextParts.push(`Fitnessziele: ${neuroProfile.fitness_goals.join(', ')}`);
+      if (neuroProfile.injury_history_major) contextParts.push(`Verletzungshistorie: ${neuroProfile.injury_history_major}`);
+      if (neuroProfile.primary_posture) contextParts.push(`Haltung im Alltag: ${neuroProfile.primary_posture}`);
+      if (neuroProfile.complaint_history?.length) {
+        const activeComplaints = neuroProfile.complaint_history.filter(c => c.status === 'active');
+        if (activeComplaints.length) contextParts.push(`Weitere aktive Beschwerden: ${activeComplaints.map(c => c.location).join(', ')}`);
+      }
+    }
     const extraContext = contextParts.join('\n');
 
     // Fetch exercises, routines, FAQs
