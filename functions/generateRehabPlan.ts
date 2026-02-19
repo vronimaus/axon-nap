@@ -187,10 +187,10 @@ Antworte mit JSON:
     );
 
     // Create rehab plan
-    const plan = await base44.entities.RehabPlan.create({
+    const plan = await base44.asServiceRole.entities.RehabPlan.create({
       user_email: user.email,
-      diagnosis_session_id,
-      problem_summary: `${diagnosisSession.symptom_location} - ${diagnosisSession.symptom_description}`,
+      diagnosis_session_id: diagnosis_session_id || null,
+      problem_summary: problemDescription,
       phases: enrichedPhases,
       recommended_mfr_routines: planData.recommended_mfr_routines,
       recommended_faqs: planData.recommended_faqs,
