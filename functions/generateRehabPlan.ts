@@ -9,46 +9,37 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { diagnosis_session_id } = await req.json();
+    const body = await req.json();
+    const { diagnosis_session_id, problem_summary, region, affected_chains, pain_intensity, feedback_summary } = body;
 
-    if (!diagnosis_session_id) {
-      return Response.json({ error: 'diagnosis_session_id required' }, { status: 400 });
+    // Support both: session-based OR direct input from agent
+    let diagnosisSession = null;
+
+    if (diagnosis_session_id) {
+      try {
+        const sessions = await base44.asServiceRole.entities.DiagnosisSession.filter({ id: diagnosis_session_id });
+        diagnosisSession = sessions[0] || null;
+      } catch {
+        diagnosisSession = null;
+      }
     }
 
-    // Fetch diagnosis session
-    let diagnosisSession;
-    try {
-      diagnosisSession = await base44.asServiceRole.entities.DiagnosisSession.filter(
-        { id: diagnosis_session_id }
-      );
-      diagnosisSession = diagnosisSession[0];
-    } catch {
-      diagnosisSession = null;
-    }
+    // Build problem description from available data
+    const problemDescription = diagnosisSession
+      ? `${diagnosisSession.symptom_location} - ${diagnosisSession.symptom_description}`
+      : (problem_summary || region || 'Unbekanntes Problem');
 
-    if (!diagnosisSession) {
-      return Response.json({ error: 'DiagnosisSession not found' }, { status: 404 });
-    }
+    const diagnosisType = diagnosisSession?.diagnosis_type || 'mixed';
+    const extraContext = [
+      affected_chains ? `Betroffene Ketten: ${affected_chains}` : '',
+      pain_intensity ? `Schmerzintensität: ${pain_intensity}/10` : '',
+      feedback_summary ? `Feedback nach Übungen: ${feedback_summary}` : ''
+    ].filter(Boolean).join('\n');
 
     // Fetch all exercises, routines and FAQs for matching
-    const allExercises = await base44.entities.Exercise.list('-updated_date', 200);
-    const allRoutines = await base44.entities.Routine.list('-updated_date', 100);
-    const allFaqs = await base44.entities.FAQ.list('-updated_date', 100);
-
-    // Prepare context for AI
-    const exercisesContext = allExercises
-      .map(e => `ID: ${e.exercise_id}, Name: ${e.name}, Category: ${e.category}, Difficulty: ${e.difficulty}`)
-      .join('\n');
-
-    const routinesContext = allRoutines
-      .filter(r => r.published !== false)
-      .map(r => `ID: ${r.id}, Name: ${r.routine_name}, Category: ${r.category}, Duration: ${r.total_duration}min, Description: ${r.description}`)
-      .join('\n');
-
-    const faqsContext = allFaqs
-      .filter(f => f.published !== false)
-      .map(f => `ID: ${f.faq_id}, Q: ${f.question}, Category: ${f.category}`)
-      .join('\n');
+    const allExercises = await base44.asServiceRole.entities.Exercise.list('-updated_date', 200);
+    const allRoutines = await base44.asServiceRole.entities.Routine.list('-updated_date', 100);
+    const allFaqs = await base44.asServiceRole.entities.FAQ.list('-updated_date', 100);
 
     // Call LLM for plan generation
     const availableExerciseIds = allExercises.map(e => e.exercise_id).filter(id => id);
@@ -56,9 +47,13 @@ Deno.serve(async (req) => {
     const availableFaqIds = allFaqs.slice(0, 5).map(f => f.faq_id).filter(id => id);
 
     const planData = await base44.integrations.Core.InvokeLLM({
-      prompt: `Create a 3-phase rehab plan for: ${diagnosisSession.symptom_location} (${diagnosisSession.symptom_description}).
+      prompt: `Erstelle einen strukturierten 3-Phasen Reha-Plan für folgendes Problem:
 
-    Diagnosis Type: ${diagnosisSession.diagnosis_type}
+Problem: ${problemDescription}
+Diagnose-Typ: ${diagnosisType}
+${extraContext}
+
+Erstelle einen realistischen, detaillierten Plan. Jede Phase MUSS mindestens 3-5 Übungen enthalten.
 
     IMPORTANT: You MUST choose exercise IDs ONLY from this list:
     ${availableExerciseIds.map((id, i) => `${i+1}. ${id}`).join('\n')}
