@@ -6,11 +6,12 @@ import { base44 } from '@/api/base44Client';
 import { toast } from 'sonner';
 import OuchInterventionModal from './OuchInterventionModal';
 
-export default function ExerciseCoachingPanel({ exercise, rehabPlan, feedbackHistory }) {
+export default function ExerciseCoachingPanel({ exercise, rehabPlan, feedbackHistory, onExerciseSubstituted }) {
   const [variations, setVariations] = useState(null);
   const [adaptedContent, setAdaptedContent] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [activeTab, setActiveTab] = useState(null);
+  const [isOuchModalOpen, setIsOuchModalOpen] = useState(false);
 
   const loadVariations = async () => {
     setIsLoading(true);
