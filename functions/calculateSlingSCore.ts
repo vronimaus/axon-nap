@@ -153,7 +153,7 @@ Deno.serve(async (req) => {
     };
 
     // Save to database
-    await base44.entities.SlingProgress.create(slingProgress);
+    const savedProgress = await base44.entities.SlingProgress.create(slingProgress);
 
     // Track event
     base44.analytics.track({
