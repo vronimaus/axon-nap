@@ -230,61 +230,75 @@ ${availableFaqIds.join(', ')}`,
       allFaqs.find(af => af.faq_id === f.faq_id)
     );
 
-    // Enrich exercises with DB data - use active DB queries like TrainingPlan does
+    // STRICT VALIDATION: Golden Source mapping (exercise_id → DB object)
+    const exerciseIdMap = Object.fromEntries(validExercises.map(e => [e.exercise_id, e]));
+    const hallucinations = [];
+
     const enrichedPhases = await Promise.all(
       planData.phases.map(async (phase) => {
         const enrichedExercises = await Promise.all(
           (phase.exercises || []).map(async (exercise) => {
-            try {
-              // Active query: look up exercise in DB by exercise_id
-              const matches = await base44.asServiceRole.entities.Exercise.filter({ exercise_id: exercise.exercise_id });
-              if (matches.length > 0) {
-                const ex = matches[0];
-                return {
-                  exercise_id: ex.exercise_id,
-                  name: ex.name,
-                  sets_reps_tempo: exercise.sets_reps_tempo,
-                  // instruction: DB description takes priority (the real coaching content)
-                  instruction: ex.description || null,
-                  // notes: LLM-generated AXON moment / what to feel, enriched with DB axon_moment
-                  notes: ex.axon_moment || exercise.notes || null,
-                  // Full DB richness
-                  description: ex.description || null,
-                  axon_moment: ex.axon_moment || null,
-                  breathing_instruction: ex.breathing_instruction || null,
-                  purpose_explanation: ex.purpose_explanation || null,
-                  goal_explanation: ex.goal_explanation || null,
-                  benefits: ex.benefits || null,
-                  cues: ex.cues || [],
-                  category: ex.category || null,
-                  difficulty: ex.difficulty || null,
-                  image_url: ex.image_url || null,
-                  gif_url: ex.gif_url || null,
-                  progression_basic: ex.progression_basic || null,
-                  progression_advanced: ex.progression_advanced || null,
-                  modification_suggestions_yellow: ex.modification_suggestions_yellow || null,
-                  modification_suggestions_red: ex.modification_suggestions_red || null,
-                  completed: false
-                };
-              } else {
-                console.log(`[generateRehabPlan] Exercise not found in DB: "${exercise.exercise_id}"`);
-                return null;
-              }
-            } catch (e) {
-              console.log(`[generateRehabPlan] Error enriching exercise "${exercise.exercise_id}":`, e.message);
+            const requestedId = exercise.exercise_id;
+            let ex = exerciseIdMap[requestedId];
+
+            // If not found, log hallucination and use fallback
+            if (!ex) {
+              hallucinations.push(requestedId);
+              console.warn(`[generateRehabPlan] HALLUCINATION: "${requestedId}" not in Golden Source`);
+              
+              // Fallback: use random valid exercise matching phase difficulty
+              ex = validExercises.find(e => {
+                if (phase.phase_number === 1) return e.difficulty === 'beginner';
+                if (phase.phase_number === 2) return e.difficulty === 'intermediate';
+                return e.difficulty === 'advanced' || e.difficulty === 'intermediate';
+              }) || validExercises[Math.floor(Math.random() * validExercises.length)];
+              
+              if (ex) console.log(`  → Using fallback: "${ex.exercise_id}" (${ex.name})`);
+            }
+
+            if (!ex) {
+              console.error(`[generateRehabPlan] No valid exercise found for phase ${phase.phase_number}`);
               return null;
             }
+
+            return {
+              exercise_id: ex.exercise_id,
+              name: ex.name,
+              sets_reps_tempo: exercise.sets_reps_tempo,
+              instruction: ex.description || null,
+              notes: ex.axon_moment || exercise.notes || null,
+              description: ex.description || null,
+              axon_moment: ex.axon_moment || null,
+              breathing_instruction: ex.breathing_instruction || null,
+              purpose_explanation: ex.purpose_explanation || null,
+              goal_explanation: ex.goal_explanation || null,
+              benefits: ex.benefits || null,
+              cues: ex.cues || [],
+              category: ex.category || null,
+              difficulty: ex.difficulty || null,
+              image_url: ex.image_url || null,
+              gif_url: ex.gif_url || null,
+              progression_basic: ex.progression_basic || null,
+              progression_advanced: ex.progression_advanced || null,
+              modification_suggestions_yellow: ex.modification_suggestions_yellow || null,
+              modification_suggestions_red: ex.modification_suggestions_red || null,
+              completed: false
+            };
           })
         );
-        // Filter out null (exercises not found in DB)
-        const validExercises = enrichedExercises.filter(ex => ex !== null);
-        console.log(`[generateRehabPlan] Phase ${phase.phase_number}: ${validExercises.length}/${(phase.exercises||[]).length} exercises valid`);
-        return { ...phase, exercises: validExercises };
+        
+        const validPhaseExercises = enrichedExercises.filter(ex => ex !== null);
+        console.log(`[generateRehabPlan] Phase ${phase.phase_number}: ${validPhaseExercises.length}/${(phase.exercises||[]).length} valid`);
+        return { ...phase, exercises: validPhaseExercises };
       })
-    ).then(phases => phases.filter(phase => phase.exercises.length > 0)); // Remove phases with no valid exercises
+    ).then(phases => phases.filter(phase => phase.exercises.length > 0));
+
+    if (hallucinations.length > 0) {
+      console.error(`[generateRehabPlan] HALLUCINATION REPORT: ${hallucinations.length} invalid IDs:`, hallucinations);
+    }
 
     if (enrichedPhases.length === 0) {
-      return Response.json({ error: 'No valid exercises found from catalog - all LLM exercise_ids were invalid' }, { status: 502 });
+      return Response.json({ error: 'No valid exercises generated', hallucinations }, { status: 502 });
     }
 
     const plan = await base44.asServiceRole.entities.RehabPlan.create({
