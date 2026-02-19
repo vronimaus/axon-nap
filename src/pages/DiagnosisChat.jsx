@@ -203,9 +203,8 @@ export default function DiagnosisChat() {
            // Never go backwards from rehab_plan_created
            if (currentStep === 'rehab_plan_created') return currentStep;
 
-           // For rehab plan: only trigger if the message actually contains the marker
-           // AND we're coming from chain_scan
-           if (content.includes('[CREATE_REHAB_PLAN]') && currentStep === 'chain_scan') {
+           // Trigger rehab plan from any step
+           if (content.includes('[CREATE_REHAB_PLAN]')) {
              return 'rehab_plan_created';
            } else if (content.includes('[SHOW_DIAGNOSIS_CARD]') && currentStep !== 'analysis_card' && currentStep !== 'post_exercise_feedback' && currentStep !== 'chain_scan' && currentStep !== 'rehab_plan_created') {
              const diagnosisText = content.split('[SHOW_DIAGNOSIS_CARD]')[0].trim();
