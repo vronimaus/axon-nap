@@ -81,8 +81,19 @@ export default function DiagnosisChat() {
         sessionStorage.removeItem('diagnosis_card_data');
         sessionStorage.removeItem('current_pain_map');
 
-        setWorkflowStep(mapDataParam && regionParam ? 'intensity' : 'body_map');
+        const startStep = mapDataParam && regionParam ? 'intensity' : 'body_map';
+        setWorkflowStep(startStep);
         setDiagnosisCardData(null);
+
+        // If coming from dashboard body map, pre-populate sessionStorage for handleIntensitySubmit
+        if (mapDataParam && regionParam) {
+          try {
+            const parsedMap = JSON.parse(mapDataParam);
+            sessionStorage.setItem('current_pain_map', JSON.stringify({ ...parsedMap, region: regionParam }));
+          } catch (e) {
+            // ignore parse errors
+          }
+        }
 
         // Timeout für das Archivieren (max 2 Sekunden)
         const archiveTimeout = new Promise((resolve) =>
