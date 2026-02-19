@@ -196,7 +196,7 @@ export default function DiagnosisChat() {
            // AND we're coming from chain_scan
            if (content.includes('[CREATE_REHAB_PLAN]') && currentStep === 'chain_scan') {
              return 'rehab_plan_created';
-           } else if (content.includes('[SHOW_DIAGNOSIS_CARD]') && currentStep !== 'analysis_card') {
+           } else if (content.includes('[SHOW_DIAGNOSIS_CARD]') && currentStep !== 'analysis_card' && currentStep !== 'post_exercise_feedback' && currentStep !== 'chain_scan' && currentStep !== 'rehab_plan_created') {
              const diagnosisText = content.split('[SHOW_DIAGNOSIS_CARD]')[0].trim();
              setDiagnosisCardData({
                title: 'Deine AXON-Diagnose',
