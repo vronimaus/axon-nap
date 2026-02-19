@@ -10,75 +10,82 @@ Deno.serve(async (req) => {
     }
 
     const body = await req.json();
-    const { diagnosis_session_id, problem_summary, region, affected_chains, pain_intensity, feedback_summary } = body;
+    const {
+      diagnosis_session_id,
+      problem_summary,
+      region,
+      affected_chains,
+      pain_intensity,
+      feedback_summary
+    } = body;
 
-    // Support both: session-based OR direct input from agent
+    // Optionally fetch diagnosis session if ID provided
     let diagnosisSession = null;
-
     if (diagnosis_session_id) {
       try {
         const sessions = await base44.asServiceRole.entities.DiagnosisSession.filter({ id: diagnosis_session_id });
         diagnosisSession = sessions[0] || null;
-      } catch {
+      } catch (_e) {
         diagnosisSession = null;
       }
     }
 
-    // Build problem description from available data
-    const problemDescription = diagnosisSession
-      ? `${diagnosisSession.symptom_location} - ${diagnosisSession.symptom_description}`
-      : (problem_summary || region || 'Unbekanntes Problem');
+    // Build problem description from available data (safe regardless of diagnosisSession)
+    const symptomLocation = diagnosisSession && diagnosisSession.symptom_location ? diagnosisSession.symptom_location : null;
+    const symptomDescription = diagnosisSession && diagnosisSession.symptom_description ? diagnosisSession.symptom_description : null;
 
-    const diagnosisType = diagnosisSession?.diagnosis_type || 'mixed';
-    const extraContext = [
-      affected_chains ? `Betroffene Ketten: ${affected_chains}` : '',
-      pain_intensity ? `Schmerzintensität: ${pain_intensity}/10` : '',
-      feedback_summary ? `Feedback nach Übungen: ${feedback_summary}` : ''
-    ].filter(Boolean).join('\n');
+    const problemDescription = symptomLocation
+      ? `${symptomLocation}${symptomDescription ? ' - ' + symptomDescription : ''}`
+      : (problem_summary || region || 'Allgemeine Beschwerden');
 
-    // Fetch all exercises, routines and FAQs for matching
-    const allExercises = await base44.asServiceRole.entities.Exercise.list('-updated_date', 200);
-    const allRoutines = await base44.asServiceRole.entities.Routine.list('-updated_date', 100);
-    const allFaqs = await base44.asServiceRole.entities.FAQ.list('-updated_date', 100);
+    const diagnosisType = (diagnosisSession && diagnosisSession.diagnosis_type) ? diagnosisSession.diagnosis_type : 'mixed';
 
-    // Call LLM for plan generation
-    const availableExerciseIds = allExercises.map(e => e.exercise_id).filter(id => id);
-    const availableRoutineIds = allRoutines.slice(0, 5).map(r => r.id).filter(id => id);
-    const availableFaqIds = allFaqs.slice(0, 5).map(f => f.faq_id).filter(id => id);
+    const contextParts = [];
+    if (affected_chains) contextParts.push(`Betroffene Faszien-Ketten: ${affected_chains}`);
+    if (pain_intensity) contextParts.push(`Schmerzintensität: ${pain_intensity}/10`);
+    if (feedback_summary) contextParts.push(`Feedback nach Übungen: ${feedback_summary}`);
+    const extraContext = contextParts.join('\n');
+
+    // Fetch exercises, routines, FAQs
+    const [allExercises, allRoutines, allFaqs] = await Promise.all([
+      base44.asServiceRole.entities.Exercise.list('-updated_date', 200),
+      base44.asServiceRole.entities.Routine.list('-updated_date', 100),
+      base44.asServiceRole.entities.FAQ.list('-updated_date', 100)
+    ]);
+
+    const availableExerciseIds = allExercises.map(e => e.exercise_id).filter(Boolean);
+    const availableRoutineIds = allRoutines.slice(0, 10).map(r => r.id).filter(Boolean);
+    const availableFaqIds = allFaqs.slice(0, 10).map(f => f.faq_id).filter(Boolean);
+
+    console.log(`[generateRehabPlan] Problem: ${problemDescription}, Exercises: ${availableExerciseIds.length}, Routines: ${availableRoutineIds.length}`);
 
     const planData = await base44.integrations.Core.InvokeLLM({
-      prompt: `Erstelle einen strukturierten 3-Phasen Reha-Plan für folgendes Problem:
+      prompt: `Erstelle einen detaillierten 3-Phasen Rehabilitationsplan auf Deutsch.
 
 Problem: ${problemDescription}
 Diagnose-Typ: ${diagnosisType}
 ${extraContext}
 
-Erstelle einen realistischen, detaillierten Plan. Jede Phase MUSS mindestens 3-5 Übungen enthalten.
+Jede Phase MUSS mindestens 4 Übungen enthalten mit konkreten deutschen Anweisungen.
 
-Verfügbare Übungs-IDs (wähle NUR aus dieser Liste):
-${availableExerciseIds.map((id, i) => `${i+1}. ${id}`).join('\n')}
-
-Verfügbare Routine-IDs:
-${availableRoutineIds.map((id, i) => `${i+1}. ${id}`).join('\n')}
-
-Verfügbare FAQ-IDs:
-${availableFaqIds.map((id, i) => `${i+1}. ${id}`).join('\n')}
-
-WICHTIG: Gib für jede Übung konkrete Anweisungen auf Deutsch.
-Phase 1 (Akut, 7 Tage): Schmerzlinderung, MFR, sanfte Mobilisation
-Phase 2 (Aufbau, 14 Tage): Kräftigung, Stabilität, Bewegungsmuster
+Phase 1 (Akut, 7 Tage): Schmerzlinderung, MFR, sanfte Mobilisation und Entspannung
+Phase 2 (Aufbau, 14 Tage): Kräftigung, Stabilität, Bewegungsmuster wiederherstellen
 Phase 3 (Integration, 14 Tage): Funktionelle Bewegung, Prävention, Performance
 
-Antworte mit JSON:
-- phases: 3 Objekte mit phase_number, title, description, duration_days, exercises (mind. 3-5 Übungen mit exercise_id, name, sets_reps_tempo, instruction, notes)
-- recommended_mfr_routines: 3 Objekte mit routine_id, routine_name, reason
-- recommended_faqs: 3 Objekte mit faq_id, question, reason`,
+Verfügbare Übungs-IDs (verwende NUR diese):
+${availableExerciseIds.map((id, i) => `${i + 1}. ${id}`).join('\n')}
+
+Verfügbare Routine-IDs:
+${availableRoutineIds.map((id, i) => `${i + 1}. ${id}`).join('\n')}
+
+Verfügbare FAQ-IDs:
+${availableFaqIds.map((id, i) => `${i + 1}. ${id}`).join('\n')}`,
       response_json_schema: {
         type: 'object',
         properties: {
-          phases: { 
+          phases: {
             type: 'array',
-            items: { 
+            items: {
               type: 'object',
               properties: {
                 phase_number: { type: 'integer' },
@@ -96,16 +103,16 @@ Antworte mit JSON:
                       instruction: { type: 'string' },
                       notes: { type: 'string' }
                     },
-                    required: ['exercise_id', 'name', 'sets_reps_tempo', 'instruction', 'notes']
+                    required: ['exercise_id', 'name', 'sets_reps_tempo', 'instruction']
                   }
                 }
               },
               required: ['phase_number', 'title', 'description', 'duration_days', 'exercises']
             }
           },
-          recommended_mfr_routines: { 
+          recommended_mfr_routines: {
             type: 'array',
-            items: { 
+            items: {
               type: 'object',
               properties: {
                 routine_id: { type: 'string' },
@@ -115,9 +122,9 @@ Antworte mit JSON:
               required: ['routine_id', 'routine_name', 'reason']
             }
           },
-          recommended_faqs: { 
+          recommended_faqs: {
             type: 'array',
-            items: { 
+            items: {
               type: 'object',
               properties: {
                 faq_id: { type: 'string' },
@@ -132,37 +139,29 @@ Antworte mit JSON:
       }
     });
 
-    // Validate response structure
     if (!planData.phases || !Array.isArray(planData.phases) || planData.phases.length === 0) {
-      return Response.json({ 
-        error: 'LLM response missing valid phases array' 
-      }, { status: 502 });
+      return Response.json({ error: 'LLM returned no phases' }, { status: 502 });
     }
 
-    // Soft-validate: filter out invalid IDs instead of failing
+    // Filter to valid IDs only (soft validation)
     const validRoutines = (planData.recommended_mfr_routines || []).filter(r =>
       allRoutines.find(ar => ar.id === r.routine_id)
     );
     const validFaqs = (planData.recommended_faqs || []).filter(f =>
       allFaqs.find(af => af.faq_id === f.faq_id)
     );
-    planData.recommended_mfr_routines = validRoutines;
-    planData.recommended_faqs = validFaqs;
 
-    // Enrich phases with full Exercise details
+    // Enrich exercises with DB data
     const enrichedPhases = await Promise.all(
       planData.phases.map(async (phase) => {
         const enrichedExercises = await Promise.all(
-          phase.exercises.map(async (exercise) => {
+          (phase.exercises || []).map(async (exercise) => {
             try {
-              const fullExercise = await base44.entities.Exercise.filter(
-                { exercise_id: exercise.exercise_id }
-              );
-              if (fullExercise.length > 0) {
-                const ex = fullExercise[0];
+              const matches = await base44.asServiceRole.entities.Exercise.filter({ exercise_id: exercise.exercise_id });
+              if (matches.length > 0) {
+                const ex = matches[0];
                 return {
                   ...exercise,
-                  // Add rich details from Exercise entity
                   description: ex.description || exercise.instruction,
                   axon_moment: ex.axon_moment,
                   breathing_instruction: ex.breathing_instruction,
@@ -176,8 +175,7 @@ Antworte mit JSON:
                 };
               }
               return exercise;
-            } catch (e) {
-              console.warn(`Could not enrich exercise ${exercise.exercise_id}:`, e);
+            } catch (_e) {
               return exercise;
             }
           })
@@ -186,37 +184,26 @@ Antworte mit JSON:
       })
     );
 
-    // Create rehab plan
     const plan = await base44.asServiceRole.entities.RehabPlan.create({
       user_email: user.email,
       diagnosis_session_id: diagnosis_session_id || null,
       problem_summary: problemDescription,
       phases: enrichedPhases,
-      recommended_mfr_routines: planData.recommended_mfr_routines,
-      recommended_faqs: planData.recommended_faqs,
+      recommended_mfr_routines: validRoutines,
+      recommended_faqs: validFaqs,
       plan_generated_date: new Date().toISOString().split('T')[0],
       current_phase: 1,
       status: 'active'
     });
 
-    return Response.json({ 
-      success: true, 
-      plan_id: plan.id,
-      plan 
-    });
+    console.log(`[generateRehabPlan] Plan created: ${plan.id} with ${enrichedPhases.length} phases`);
+
+    return Response.json({ success: true, plan_id: plan.id, plan });
 
   } catch (error) {
-    console.error('generateRehabPlan error:', error);
-
-    // Detailed error logging
-    if (error.message.includes('JSON')) {
-      return Response.json({ 
-        error: 'LLM returned invalid JSON - plan generation failed' 
-      }, { status: 502 });
-    }
-
-    return Response.json({ 
-      error: error.message || 'Unknown error during plan generation',
+    console.error('generateRehabPlan error:', error.message);
+    return Response.json({
+      error: error.message || 'Unknown error',
       type: 'PLAN_GENERATION_ERROR'
     }, { status: 500 });
   }
