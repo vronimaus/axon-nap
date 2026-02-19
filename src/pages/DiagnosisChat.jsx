@@ -134,7 +134,9 @@ export default function DiagnosisChat() {
         setConversation(conv);
         setMessages(conv.messages || []);
 
-        // Send initial message non-blocking
+        // Send initial message only for wizard sessions
+        // For mapData/region params: user goes through body_map → intensity flow,
+        // the combined message is sent in handleIntensitySubmit
         if (wizardSession) {
           setLoading(true);
           const contextMsg = isContinuation 
@@ -145,24 +147,9 @@ export default function DiagnosisChat() {
             role: 'user',
             content: contextMsg
           }).catch(e => console.error('Message send failed:', e));
-        } else if (mapDataParam && regionParam) {
-          setLoading(true);
-          try {
-            const mapData = JSON.parse(mapDataParam);
-            const fullRegion = regionParam;
-            const markerType = mapData.markers.length === 1 && mapData.markers[0].type === 'point'
-              ? 'einen Schmerzpunkt'
-              : 'eine Schmerzlinie';
-
-            await base44.agents.addMessage(conv, {
-              role: 'user',
-              content: `Ich habe auf der Body Map (${mapData.view === 'front' ? 'Vorderseite' : 'Rückseite'}) ${markerType} markiert. Die Markierung ist im Bereich: ${fullRegion}`
-            });
-          } catch (parseError) {
-            console.error('Parse error:', parseError);
-            setLoading(false);
-          }
         }
+        // mapDataParam/regionParam case: no message sent here - 
+        // user will go through body_map→intensity screens and send combined message
       } catch (error) {
         console.error('Fehler beim Erstellen der Konversation:', error);
         setLoading(false);
