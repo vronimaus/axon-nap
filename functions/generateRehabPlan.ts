@@ -90,7 +90,7 @@ Deno.serve(async (req) => {
         `Kategorie: ${e.category || '-'}`,
         `Schwierigkeit: ${e.difficulty || '-'}`,
         `Zweck: ${e.purpose_explanation || '-'}`,
-        `Beschreibung: ${(e.description || '').slice(0, 150)}`,
+        `Beschreibung: ${e.description || '-'}`,
         `AXONMoment: ${e.axon_moment || '-'}`
       ].join(' | '))
       .join('\n');
