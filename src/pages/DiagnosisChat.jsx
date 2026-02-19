@@ -64,13 +64,19 @@ export default function DiagnosisChat() {
     await archiveOldPlans();
 
     try {
-      const response = await base44.functions.invoke('generateRehabPlan', {
+      const payload = {
         problem_summary: `Schmerzen im Bereich: ${painMap?.region || 'unbekannte Region'}`,
         region: painMap?.region || 'unbekannte Region',
         pain_intensity: intensity,
         affected_chains: '',
         feedback_summary: ''
-      });
+      };
+      
+      console.log('Calling generateRehabPlan with payload:', JSON.stringify(payload));
+      
+      const response = await base44.functions.invoke('generateRehabPlan', payload);
+
+      console.log('generateRehabPlan response:', response);
 
       if (response.data?.plan_id || response.data?.success) {
         setStep('done');
@@ -78,8 +84,8 @@ export default function DiagnosisChat() {
         throw new Error(response.data?.error || 'Plan konnte nicht erstellt werden');
       }
     } catch (err) {
-      console.error('generateRehabPlan failed:', err);
-      setError(err.message || 'Unbekannter Fehler');
+      console.error('generateRehabPlan failed:', err.response?.data || err.message || err);
+      setError(err.response?.data?.error || err.message || 'Unbekannter Fehler');
       setStep('error');
     }
   };
