@@ -20,30 +20,65 @@ export default function RehabCoachingPanel({
 
     const fetchCoachingData = async () => {
       try {
-        const response = await base44.functions.invoke('rehabCoach', {
-          current_exercise_id: exerciseId,
+        // Determine RIS status locally based on nrsScore and stable sessions
+        const stableSessions = (recentSessions || []).filter(s =>
+          s.nrs_score >= (nrsScore - 1) && s.nrs_score <= (nrsScore + 1)
+        ).length;
+
+        let ris_status = 'STUCK';
+        let safety_flare_triggered = false;
+        let recommended_action = 'hold';
+
+        if (nrsScore > 3) {
+          ris_status = 'STUCK';
+          safety_flare_triggered = true;
+          recommended_action = 'regression';
+        } else if (nrsScore >= 0 && nrsScore <= 2 && stableSessions >= 3) {
+          ris_status = 'READY';
+          recommended_action = 'progression';
+        } else if (nrsScore >= 1 && nrsScore <= 3 && stableSessions >= 1) {
+          ris_status = 'TESTING';
+          recommended_action = 'hybrid_bridge';
+        }
+
+        const coaching_message =
+          safety_flare_triggered
+            ? 'Schmerz überschreitet die Sicherheitsschwelle. Regression aktiviert – weniger ist mehr.'
+            : ris_status === 'READY'
+            ? '3+ stabile Sessions nachgewiesen. Du bist bereit für Progression!'
+            : ris_status === 'TESTING'
+            ? 'Erste stabile Sessions – bleib in der Hybrid-Bridge Zone.'
+            : 'Noch keine stabilen Sessions. Bleib konsistent und geduldig.';
+
+        setCoachingData({
+          success: true,
+          ris_status,
+          safety_flare_triggered,
+          recommended_action,
+          use_hybrid_bridge: ris_status === 'TESTING',
+          coaching_message,
+          stable_sessions: stableSessions,
           nrs_score: nrsScore,
-          hardware_score: 7,
-          software_score: 7,
-          battery_score: 7,
-          recent_sessions: recentSessions || [],
-          current_plan_id: null
-        });
-
-        if (response.data?.success) {
-          setCoachingData(response.data);
-          setError(null);
-
-          // Call parent callback with updated program
-          if (onProgramUpdate) {
-            onProgramUpdate(response.data);
+          session_structure: {
+            phase_1_primer: { description: 'Neural calibration + Gelenkvorbereitung' },
+            phase_2_engine: {
+              sets_reps: ris_status === 'STUCK'
+                ? { sets: 2, reps: 5, tempo: '2-1-2', intensity: 'Leicht' }
+                : ris_status === 'TESTING'
+                ? { sets: 3, reps: 5, tempo: '2-2-3', intensity: 'Moderat (Isometrisch)' }
+                : { sets: 3, reps: 8, tempo: '2-1-2', intensity: 'Moderat-Hoch' }
+            },
+            phase_3_reset: { description: 'Vagus-Aktivierung, parasympathische Erholung – NICHT überspringen.' }
           }
-        } else {
-          setError('Coaching-Logik konnte nicht berechnet werden');
+        });
+        setError(null);
+
+        if (onProgramUpdate) {
+          onProgramUpdate({ ris_status, recommended_action });
         }
       } catch (err) {
         console.error('RehabCoachingPanel error:', err);
-        setError('Fehler beim Abrufen der Coaching-Empfehlung');
+        setError('Fehler beim Berechnen der Coaching-Empfehlung');
       }
     };
 
