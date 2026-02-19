@@ -17,6 +17,7 @@ export default function RehabPlan() {
   const [isLoading, setIsLoading] = useState(true);
   const [showReadinessCheck, setShowReadinessCheck] = useState(false);
   const [readinessStatus, setReadinessStatus] = useState(null);
+  const [currentExerciseIndex, setCurrentExerciseIndex] = useState(null);
   const queryClient = useQueryClient();
 
   useEffect(() => {
