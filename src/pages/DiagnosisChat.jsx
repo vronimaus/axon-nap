@@ -64,7 +64,20 @@ export default function DiagnosisChat() {
     await archiveOldPlans();
 
     try {
+      // Create DiagnosisSession first
+      const diagSession = await base44.entities.DiagnosisSession.create({
+        symptom_location: painMap?.region || 'unbekannte Region',
+        symptom_description: '',
+        tested_chains: [],
+        hardware_results: {},
+        software_results: {},
+        diagnosis_type: 'mixed',
+        recommendations: [],
+        completed: false
+      });
+
       const payload = {
+        diagnosis_session_id: diagSession.id,
         problem_summary: `Schmerzen im Bereich: ${painMap?.region || 'unbekannte Region'}`,
         region: painMap?.region || 'unbekannte Region',
         pain_intensity: intensity,
