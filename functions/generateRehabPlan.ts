@@ -65,27 +65,36 @@ Deno.serve(async (req) => {
 
     console.log(`[generateRehabPlan] Problem: ${problemDescription}, Exercises: ${availableExerciseIds.length}, Routines: ${availableRoutineIds.length}`);
 
+    // Build a simple list of valid IDs only (for strict selection)
+    const validIdList = availableExerciseIds.join(', ');
+
     const planData = await base44.integrations.Core.InvokeLLM({
-      prompt: `Erstelle einen detaillierten 3-Phasen Rehabilitationsplan auf Deutsch.
+      prompt: `Erstelle einen 3-Phasen Rehabilitationsplan auf Deutsch.
 
 Problem: ${problemDescription}
 Diagnose-Typ: ${diagnosisType}
 ${extraContext}
 
-Jede Phase MUSS mindestens 4 Übungen enthalten. Wähle passende Übungen aus dem Katalog und gib EXAKT die exercise_id an.
-Die sets_reps_tempo und instruction sollen kurze Ergänzungen zur Ausführung sein (1-2 Sätze), da die vollständige Beschreibung aus der Datenbank geladen wird.
+KRITISCH - PFLICHTREGELN:
+1. Du MUSST für jede Übung eine exercise_id aus der folgenden ERLAUBTEN ID-LISTE verwenden.
+2. ERFINDE NIEMALS eigene exercise_ids. Nur IDs aus der ERLAUBTEN ID-LISTE sind gültig.
+3. Jede Phase soll 4-6 Übungen enthalten.
+4. Wähle die passendsten Übungen für das Problem aus.
 
-Phase 1 (Akut, 7 Tage): Schmerzlinderung, MFR, sanfte Mobilisation
-Phase 2 (Aufbau, 14 Tage): Kräftigung, Stabilität, Bewegungsmuster
-Phase 3 (Integration, 14 Tage): Funktionelle Bewegung, Prävention, Performance
+ERLAUBTE exercise_ids (NUR diese verwenden!):
+${validIdList}
 
-ÜBUNGSKATALOG (wähle NUR exercise_ids aus dieser Liste):
+ÜBUNGSKATALOG (Details zu den IDs):
 ${exerciseCatalog}
 
-Verfügbare Routine-IDs:
+Phase 1 (Akut, 7 Tage): Schmerzlinderung, MFR, sanfte Mobilisation
+Phase 2 (Aufbau, 14 Tage): Kräftigung, Stabilität, Bewegungsmuster  
+Phase 3 (Integration, 14 Tage): Funktionelle Bewegung, Prävention
+
+Verfügbare Routine-IDs (nur diese verwenden):
 ${availableRoutineIds.map((id, i) => `${i + 1}. ${id}`).join('\n')}
 
-Verfügbare FAQ-IDs:
+Verfügbare FAQ-IDs (nur diese verwenden, falls vorhanden):
 ${availableFaqIds.map((id, i) => `${i + 1}. ${id}`).join('\n')}`,
       response_json_schema: {
         type: 'object',
