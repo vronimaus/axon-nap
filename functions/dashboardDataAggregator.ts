@@ -125,8 +125,9 @@ Deno.serve(async (req) => {
         // Node heatmap (12 nodes with color coding)
         heatmap_nodes: heatmapNodes,
 
-        // Imbalance warnings
-        sling_imbalance_alerts: imbalanceAlerts,
+        // Imbalance warnings (now with detailed coaching context)
+        sling_alerts: imbalanceAlerts,
+        primary_coaching_focus: imbalanceAlerts.find(a => a.type === 'critical_imbalance' || a.type === 'moderate_imbalance')?.sling || null,
 
         // Top exercises that contributed
         top_contributing_exercises: topContributors.map(ex => ({
