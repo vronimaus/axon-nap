@@ -197,56 +197,58 @@ ${availableFaqIds.join(', ')}`,
       allFaqs.find(af => af.faq_id === f.faq_id)
     );
 
-    // Build a lookup map for fast exercise enrichment
-    const exerciseMap = {};
-    allExercises.forEach(e => {
-      if (e.exercise_id) exerciseMap[e.exercise_id] = e;
-    });
-
-    // Enrich exercises with DB data - skip exercises with invalid/missing IDs
-    const enrichedPhases = planData.phases.map((phase) => {
-      const enrichedExercises = (phase.exercises || [])
-        .filter(exercise => {
-          // Only keep exercises with a valid exercise_id from our catalog
-          const isValid = exercise.exercise_id && exerciseMap[exercise.exercise_id];
-          if (!isValid) {
-            console.log(`[generateRehabPlan] Skipping exercise with invalid ID: "${exercise.exercise_id}" (${exercise.name})`);
-          }
-          return isValid;
-        })
-        .map(exercise => {
-          const ex = exerciseMap[exercise.exercise_id];
-          return {
-            exercise_id: ex.exercise_id,
-            name: ex.name,
-            sets_reps_tempo: exercise.sets_reps_tempo,
-            // instruction: DB description takes priority (the real coaching content)
-            instruction: ex.description || null,
-            // notes: LLM-generated AXON moment / what to feel, enriched with DB axon_moment
-            notes: ex.axon_moment || exercise.notes || null,
-            // Full DB richness
-            description: ex.description || null,
-            axon_moment: ex.axon_moment || null,
-            breathing_instruction: ex.breathing_instruction || null,
-            purpose_explanation: ex.purpose_explanation || null,
-            goal_explanation: ex.goal_explanation || null,
-            benefits: ex.benefits || null,
-            cues: ex.cues || [],
-            category: ex.category || null,
-            difficulty: ex.difficulty || null,
-            image_url: ex.image_url || null,
-            gif_url: ex.gif_url || null,
-            progression_basic: ex.progression_basic || null,
-            progression_advanced: ex.progression_advanced || null,
-            modification_suggestions_yellow: ex.modification_suggestions_yellow || null,
-            modification_suggestions_red: ex.modification_suggestions_red || null,
-            completed: false
-          };
-        });
-
-      console.log(`[generateRehabPlan] Phase ${phase.phase_number}: ${enrichedExercises.length}/${(phase.exercises||[]).length} exercises valid`);
-      return { ...phase, exercises: enrichedExercises };
-    }).filter(phase => phase.exercises.length > 0); // Remove phases with no valid exercises
+    // Enrich exercises with DB data - use active DB queries like TrainingPlan does
+    const enrichedPhases = await Promise.all(
+      planData.phases.map(async (phase) => {
+        const enrichedExercises = await Promise.all(
+          (phase.exercises || []).map(async (exercise) => {
+            try {
+              // Active query: look up exercise in DB by exercise_id
+              const matches = await base44.asServiceRole.entities.Exercise.filter({ exercise_id: exercise.exercise_id });
+              if (matches.length > 0) {
+                const ex = matches[0];
+                return {
+                  exercise_id: ex.exercise_id,
+                  name: ex.name,
+                  sets_reps_tempo: exercise.sets_reps_tempo,
+                  // instruction: DB description takes priority (the real coaching content)
+                  instruction: ex.description || null,
+                  // notes: LLM-generated AXON moment / what to feel, enriched with DB axon_moment
+                  notes: ex.axon_moment || exercise.notes || null,
+                  // Full DB richness
+                  description: ex.description || null,
+                  axon_moment: ex.axon_moment || null,
+                  breathing_instruction: ex.breathing_instruction || null,
+                  purpose_explanation: ex.purpose_explanation || null,
+                  goal_explanation: ex.goal_explanation || null,
+                  benefits: ex.benefits || null,
+                  cues: ex.cues || [],
+                  category: ex.category || null,
+                  difficulty: ex.difficulty || null,
+                  image_url: ex.image_url || null,
+                  gif_url: ex.gif_url || null,
+                  progression_basic: ex.progression_basic || null,
+                  progression_advanced: ex.progression_advanced || null,
+                  modification_suggestions_yellow: ex.modification_suggestions_yellow || null,
+                  modification_suggestions_red: ex.modification_suggestions_red || null,
+                  completed: false
+                };
+              } else {
+                console.log(`[generateRehabPlan] Exercise not found in DB: "${exercise.exercise_id}"`);
+                return null;
+              }
+            } catch (e) {
+              console.log(`[generateRehabPlan] Error enriching exercise "${exercise.exercise_id}":`, e.message);
+              return null;
+            }
+          })
+        );
+        // Filter out null (exercises not found in DB)
+        const validExercises = enrichedExercises.filter(ex => ex !== null);
+        console.log(`[generateRehabPlan] Phase ${phase.phase_number}: ${validExercises.length}/${(phase.exercises||[]).length} exercises valid`);
+        return { ...phase, exercises: validExercises };
+      })
+    ).then(phases => phases.filter(phase => phase.exercises.length > 0)); // Remove phases with no valid exercises
 
     if (enrichedPhases.length === 0) {
       return Response.json({ error: 'No valid exercises found from catalog - all LLM exercise_ids were invalid' }, { status: 502 });
