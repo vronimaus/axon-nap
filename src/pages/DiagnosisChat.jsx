@@ -519,12 +519,12 @@ export default function DiagnosisChat() {
             onSubmit={async (data) => {
               const region = data.region || 'weitere Bereiche';
               setLoading(true);
+              setWorkflowStep('rehab_plan_created');
               try {
                 await base44.agents.addMessage(conversation, {
                   role: 'user',
                   content: `Ich habe auch im Bereich "${region}" eine Spannung. Bitte erstelle jetzt meinen personaliserten Reha-Plan basierend auf allen Ergebnissen.`
                 });
-                // Agent will trigger [CREATE_REHAB_PLAN]
               } catch (error) {
                 console.error('Fehler:', error);
                 setLoading(false);
