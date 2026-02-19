@@ -71,49 +71,55 @@ Deno.serve(async (req) => {
       base44.asServiceRole.entities.FAQ.list('-updated_date', 100)
     ]);
 
-    const availableExerciseIds = allExercises.map(e => e.exercise_id).filter(Boolean);
+    const validExercises = allExercises.filter(e => e.exercise_id && e.name);
+    const availableExerciseIds = validExercises.map(e => e.exercise_id);
     const availableRoutineIds = allRoutines.slice(0, 10).map(r => r.id).filter(Boolean);
     const availableFaqIds = allFaqs.slice(0, 10).map(f => f.faq_id).filter(Boolean);
 
-    // Build a rich exercise catalog so the LLM can pick based on real descriptions
-    const exerciseCatalog = allExercises
-      .filter(e => e.exercise_id)
-      .map(e => `ID: ${e.exercise_id} | Name: ${e.name} | Kategorie: ${e.category || '-'} | Schwierigkeit: ${e.difficulty || '-'} | Zweck: ${e.purpose_explanation || e.description?.slice(0, 120) || '-'}`)
+    // Build a rich catalog: each exercise on its own line with all relevant fields
+    const exerciseCatalog = validExercises
+      .map(e => [
+        `ID: ${e.exercise_id}`,
+        `Name: ${e.name}`,
+        `Kategorie: ${e.category || '-'}`,
+        `Schwierigkeit: ${e.difficulty || '-'}`,
+        `Zweck: ${e.purpose_explanation || '-'}`,
+        `Beschreibung: ${(e.description || '').slice(0, 150)}`,
+        `AXONMoment: ${e.axon_moment || '-'}`
+      ].join(' | '))
       .join('\n');
 
-    console.log(`[generateRehabPlan] Problem: ${problemDescription}, Exercises: ${availableExerciseIds.length}, Routines: ${availableRoutineIds.length}`);
-
-    // Build a simple list of valid IDs only (for strict selection)
-    const validIdList = availableExerciseIds.join(', ');
+    console.log(`[generateRehabPlan] Problem: ${problemDescription}, Exercises: ${validExercises.length}, Routines: ${availableRoutineIds.length}`);
 
     const planData = await base44.integrations.Core.InvokeLLM({
-      prompt: `Erstelle einen 3-Phasen Rehabilitationsplan auf Deutsch.
+      prompt: `Du bist ein erfahrener Reha-Therapeut und erstellst einen personalisierten 3-Phasen-Rehabilitationsplan.
 
-Problem: ${problemDescription}
-Diagnose-Typ: ${diagnosisType}
-${extraContext}
+PROBLEM DES NUTZERS:
+${problemDescription}
+${extraContext ? '\nNUTZERKONTEXT:\n' + extraContext : ''}
 
-KRITISCH - PFLICHTREGELN:
-1. Du MUSST für jede Übung eine exercise_id aus der folgenden ERLAUBTEN ID-LISTE verwenden.
-2. ERFINDE NIEMALS eigene exercise_ids. Nur IDs aus der ERLAUBTEN ID-LISTE sind gültig.
-3. Jede Phase soll 4-6 Übungen enthalten.
-4. Wähle die passendsten Übungen für das Problem aus.
+=== PFLICHTREGELN (ABSOLUT ZWINGEND) ===
+1. Du MUSST ausschließlich exercise_ids aus dem ÜBUNGSKATALOG unten verwenden.
+2. ERFINDE NIEMALS exercise_ids. Kopiere sie EXAKT so wie sie im Katalog stehen (z.B. "pushup_wall" nicht "wall_push_up").
+3. Jede Phase MUSS 5-7 verschiedene Übungen enthalten.
+4. Wähle Übungen die thematisch zum Problem passen (Kategorie, Körperregion, Zweck).
+5. Verteile die Schwierigkeiten sinnvoll: Phase 1 = beginner, Phase 2 = intermediate, Phase 3 = advanced/intermediate.
+6. Das Feld "sets_reps_tempo" muss konkret sein (z.B. "3x12 langsam und kontrolliert", "2x45 Sek. halten").
+7. Das Feld "notes" muss den AXON-Moment beschreiben: was soll der Nutzer spüren/lernen?
 
-ERLAUBTE exercise_ids (NUR diese verwenden!):
-${validIdList}
+PHASEN-STRUKTUR:
+- Phase 1 (Akut, 7 Tage): Schmerzlinderung, MFR, sanfte Mobilisation – nur beginner/leichte Übungen
+- Phase 2 (Aufbau, 14 Tage): Kräftigung, Stabilität, Bewegungsmuster – intermediate
+- Phase 3 (Integration, 14 Tage): Funktionelle Bewegung, Prävention, Performance – intermediate/advanced
 
-ÜBUNGSKATALOG (Details zu den IDs):
+=== ÜBUNGSKATALOG (NUR diese IDs sind erlaubt) ===
 ${exerciseCatalog}
 
-Phase 1 (Akut, 7 Tage): Schmerzlinderung, MFR, sanfte Mobilisation
-Phase 2 (Aufbau, 14 Tage): Kräftigung, Stabilität, Bewegungsmuster  
-Phase 3 (Integration, 14 Tage): Funktionelle Bewegung, Prävention
+=== VERFÜGBARE ROUTINE-IDs ===
+${availableRoutineIds.join(', ')}
 
-Verfügbare Routine-IDs (nur diese verwenden):
-${availableRoutineIds.map((id, i) => `${i + 1}. ${id}`).join('\n')}
-
-Verfügbare FAQ-IDs (nur diese verwenden, falls vorhanden):
-${availableFaqIds.map((id, i) => `${i + 1}. ${id}`).join('\n')}`,
+=== VERFÜGBARE FAQ-IDs ===
+${availableFaqIds.join(', ')}`,
       response_json_schema: {
         type: 'object',
         properties: {
