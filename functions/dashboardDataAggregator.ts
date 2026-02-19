@@ -1,5 +1,13 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
 
+// Alert trigger thresholds
+const ALERT_THRESHOLDS = {
+  CRITICAL_IMBALANCE_DELTA: 4.0,
+  MODERATE_IMBALANCE_DELTA: 2.5,
+  LOW_PERFORMER_SCORE: 4.0,
+  PAIN_FREE_NRS: 2.0
+};
+
 Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
