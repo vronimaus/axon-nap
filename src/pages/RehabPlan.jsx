@@ -563,7 +563,7 @@ export default function RehabPlan() {
                       </div>
                     )}
 
-                    {/* AI Coaching Panel */}
+                    {/* AI Coaching Panel with Live-Adjust Integration */}
                     <React.Suspense fallback={<div className="text-slate-400 text-sm">Lädt Coaching-Panel...</div>}>
                       <ExerciseCoachingPanel
                       exercise={exercise}
@@ -571,6 +571,10 @@ export default function RehabPlan() {
                       feedbackHistory={(rehabPlan.feedback_history || []).filter(
                         f => f.exercise_id === exercise.exercise_id
                         )}
+                      onExerciseSubstituted={() => {
+                        queryClient.invalidateQueries({ queryKey: ['rehabPlan'] });
+                        toast.success('Übung wurde angepasst');
+                      }}
                         />
                         </React.Suspense>
 
