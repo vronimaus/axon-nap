@@ -563,7 +563,7 @@ export default function RehabPlan() {
                       </div>
                     )}
 
-                    {/* AI Coaching Panel with Live-Adjust Integration */}
+                    {/* AI Coaching Panel with Details - NEW SYSTEM */}
                     <React.Suspense fallback={<div className="text-slate-400 text-sm">Lädt Coaching-Panel...</div>}>
                       <ExerciseCoachingPanel
                       exercise={exercise}
@@ -577,18 +577,6 @@ export default function RehabPlan() {
                       }}
                         />
                         </React.Suspense>
-
-                    {/* Feedback Form */}
-                    <ExerciseFeedbackForm
-                      exercise={exercise}
-                      onSubmit={(metricValue, notes) =>
-                        submitFeedbackMutation.mutate({
-                          exerciseId: exercise.exercise_id,
-                          metricValue,
-                          notes
-                        })
-                      }
-                    />
                   </motion.div>
                 )}
               </AnimatePresence>
