@@ -346,6 +346,16 @@ export default function Dashboard() {
               
               {mode === 'performance' && (
                 <div className="space-y-4">
+                  {/* Sling Spider Chart - Live Balance Monitor */}
+                  {dashboardData?.today_stats && (
+                    <SlingSpiderChart 
+                      anterior={dashboardData.today_stats.anterior_score || 0}
+                      posterior={dashboardData.today_stats.posterior_score || 0}
+                      lateral={dashboardData.today_stats.lateral_score || 0}
+                      alerts={dashboardData.sling_alerts || []}
+                    />
+                  )}
+
                   {/* Mode Title */}
                   <div className="bg-gradient-to-r from-amber-500/20 to-transparent border-l-4 border-amber-500 px-6 py-3 rounded-r-xl">
                     <h1 className="text-2xl sm:text-3xl font-bold text-amber-400 tracking-tight">PERFORMANCE</h1>
