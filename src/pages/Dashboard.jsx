@@ -70,6 +70,19 @@ export default function Dashboard() {
     enabled: !!user?.email
   });
 
+   const { data: dashboardData = {} } = useQuery({
+     queryKey: ['dashboardData', user?.email],
+     queryFn: async () => {
+       if (!user?.email) return {};
+       const response = await base44.functions.invoke('dashboardDataAggregator', { daysBack: 30 });
+       return response?.data || {};
+     },
+     enabled: !!user?.email,
+     refetchInterval: 60000
+   });
+
+
+
   if (isLoading) {
     return <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950" />;
   }
