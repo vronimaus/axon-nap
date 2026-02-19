@@ -9,168 +9,147 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { goal_description } = await req.json();
+    const body = await req.json();
+    const { goal_description, baseline, activity_level, experience_level, primary_sport } = body;
 
     if (!goal_description) {
       return Response.json({ error: 'goal_description required' }, { status: 400 });
     }
 
-    // Fetch user's neuro profile
-    const profiles = await base44.entities.UserNeuroProfile.filter({ user_email: user.email });
-    const profile = profiles[0];
-
-    if (!profile) {
-      return Response.json({ error: 'UserNeuroProfile not found' }, { status: 404 });
+    // Fetch user's neuro profile (optional - use body params as fallback)
+    let profile = null;
+    try {
+      const profiles = await base44.entities.UserNeuroProfile.filter({ user_email: user.email });
+      profile = profiles[0] || null;
+    } catch (_e) {
+      profile = null;
     }
 
-    // Fetch all exercises, routines and FAQs for matching
-    const allExercises = await base44.entities.Exercise.list('-updated_date', 200);
-    const allRoutines = await base44.entities.Routine.list('-updated_date', 100);
-    const allFaqs = await base44.entities.FAQ.list('-updated_date', 100);
+    const activityLvl = activity_level || profile?.activity_level || 'moderately_active';
+    const expLvl = experience_level || profile?.training_experience || 'intermediate';
+    const sport = primary_sport || profile?.primary_sport || '';
+    const fitnessGoals = profile?.fitness_goals?.join(', ') || 'improve_performance';
 
-    // Prepare context for AI
-    const exercisesContext = allExercises
-      .map(e => `ID: ${e.exercise_id}, Name: ${e.name}, Category: ${e.category}, Difficulty: ${e.difficulty}`)
-      .join('\n');
+    // Fetch exercises, routines, FAQs
+    const [allExercises, allRoutines, allFaqs] = await Promise.all([
+      base44.asServiceRole.entities.Exercise.list('-updated_date', 200),
+      base44.asServiceRole.entities.Routine.list('-updated_date', 100),
+      base44.asServiceRole.entities.FAQ.list('-updated_date', 100)
+    ]);
 
-    const routinesContext = allRoutines
-      .filter(r => r.published !== false)
-      .map(r => `ID: ${r.id}, Name: ${r.routine_name}, Category: ${r.category}, Duration: ${r.total_duration}min, Description: ${r.description}`)
-      .join('\n');
+    const availableExerciseIds = allExercises.map(e => e.exercise_id).filter(Boolean);
+    const availableRoutineIds = allRoutines.slice(0, 10).map(r => r.id).filter(Boolean);
+    const availableFaqIds = allFaqs.slice(0, 10).map(f => f.faq_id).filter(Boolean);
 
-    const faqsContext = allFaqs
-      .filter(f => f.published !== false)
-      .map(f => `ID: ${f.faq_id}, Q: ${f.question}, Category: ${f.category}`)
-      .join('\n');
-
-    // Call LLM for plan generation
-    const availableExerciseIds = allExercises.map(e => e.exercise_id).filter(id => id);
+    console.log(`[generateTrainingPlan] Goal: ${goal_description}, Exercises: ${availableExerciseIds.length}`);
 
     const planData = await base44.integrations.Core.InvokeLLM({
-      prompt: `You are an expert in AXON Protocol training planning.
+      prompt: `Erstelle einen detaillierten 3-Phasen Trainingsplan auf Deutsch für folgendes Ziel:
 
-    Benutzer-Profil:
-    - Activity Level: ${profile.activity_level}
-    - Training Experience: ${profile.training_experience}
-    - Fitness Goals: ${profile.fitness_goals?.join(', ')}
-    - Primary Sport: ${profile.primary_sport}
+Ziel: ${goal_description}
+Baseline: ${baseline || 'Nicht angegeben'}
+Activity Level: ${activityLvl}
+Erfahrung: ${expLvl}
+Sport: ${sport}
+Fitness Goals: ${fitnessGoals}
 
-    Trainings-Ziel: ${goal_description}
+Jede Phase MUSS mindestens 4 Übungen enthalten mit konkreten deutschen Anweisungen.
 
-    WICHTIG: Du DARFST NUR Exercise IDs aus dieser Liste verwenden:
-    ${exercisesContext}
+Phase 1 (Foundation, 2 Wochen): Grundlagen, Mobilisation, neuronale Aktivierung
+Phase 2 (Development, 3 Wochen): Kraftaufbau, Progressionen, Bewegungsmuster
+Phase 3 (Mastery, 3 Wochen): Performance, Zielübung, funktionelle Integration
 
-    Verfügbare Routines (für Empfehlungen):
-    ${routinesContext}
+Verfügbare Übungs-IDs (verwende NUR diese):
+${availableExerciseIds.map((id, i) => `${i + 1}. ${id}`).join('\n')}
 
-    Verfügbare FAQs (für Empfehlungen):
-    ${faqsContext}
+Verfügbare Routine-IDs:
+${availableRoutineIds.map((id, i) => `${i + 1}. ${id}`).join('\n')}
 
-    Generiere einen strukturierten Trainingsplan als JSON mit:
-    1. 3 Phasen (je 2-3 Wochen)
-    2. Pro Phase: 4-6 Übungen mit Sets/Reps/Tempo - NUR exercise_id IDs aus der Liste oben!
-    3. 3 empfohlene Routines (nur IDs aus der Liste oben!)
-    4. 3 empfohlene FAQs (nur IDs aus der Liste oben!)
-
-    Für jede Empfehlung: nur die ID + ein 1-2 Satz reason warum.
-
-    Format: {
-    "phases": [
-    {
-      "phase_number": 1,
-      "title": "...",
-      "description": "...",
-      "duration_weeks": 2,
-      "exercises": [
-        {
-          "exercise_id": "...",
-          "name": "...",
-          "sets_reps_tempo": "3x5 @ 3-1-1",
-          "instruction": "...",
-          "notes": "..."
-        }
-      ]
-    }
-    ],
-    "recommended_routines": [
-    {
-      "routine_id": "...",
-      "routine_name": "...",
-      "reason": "...",
-      "frequency": "2x pro Woche"
-    }
-    ],
-    "recommended_faqs": [
-    {
-      "faq_id": "...",
-      "question": "...",
-      "reason": "..."
-    }
-    ]
-    }`,
+Verfügbare FAQ-IDs:
+${availableFaqIds.map((id, i) => `${i + 1}. ${id}`).join('\n')}`,
       response_json_schema: {
         type: 'object',
         properties: {
-          phases: { 
+          phases: {
             type: 'array',
-            items: { type: 'object' }
+            items: {
+              type: 'object',
+              properties: {
+                phase_number: { type: 'integer' },
+                title: { type: 'string' },
+                description: { type: 'string' },
+                duration_weeks: { type: 'integer' },
+                exercises: {
+                  type: 'array',
+                  items: {
+                    type: 'object',
+                    properties: {
+                      exercise_id: { type: 'string' },
+                      name: { type: 'string' },
+                      sets_reps_tempo: { type: 'string' },
+                      instruction: { type: 'string' },
+                      notes: { type: 'string' }
+                    },
+                    required: ['exercise_id', 'name', 'sets_reps_tempo', 'instruction']
+                  }
+                }
+              },
+              required: ['phase_number', 'title', 'description', 'duration_weeks', 'exercises']
+            }
           },
-          recommended_routines: { 
+          recommended_routines: {
             type: 'array',
-            items: { type: 'object' }
+            items: {
+              type: 'object',
+              properties: {
+                routine_id: { type: 'string' },
+                routine_name: { type: 'string' },
+                reason: { type: 'string' },
+                frequency: { type: 'string' }
+              },
+              required: ['routine_id', 'routine_name', 'reason']
+            }
           },
-          recommended_faqs: { 
+          recommended_faqs: {
             type: 'array',
-            items: { type: 'object' }
+            items: {
+              type: 'object',
+              properties: {
+                faq_id: { type: 'string' },
+                question: { type: 'string' },
+                reason: { type: 'string' }
+              },
+              required: ['faq_id', 'question', 'reason']
+            }
           }
-        }
+        },
+        required: ['phases', 'recommended_routines', 'recommended_faqs']
       }
     });
 
-    // Validate response structure
     if (!planData.phases || !Array.isArray(planData.phases) || planData.phases.length === 0) {
-      return Response.json({ 
-        error: 'LLM response missing valid phases array' 
-      }, { status: 502 });
+      return Response.json({ error: 'LLM returned no phases' }, { status: 502 });
     }
 
-    // Validate referenced IDs exist
-    const invalidRoutines = [];
-    for (const routine of planData.recommended_routines || []) {
-      const exists = allRoutines.find(r => r.id === routine.routine_id);
-      if (!exists) invalidRoutines.push(routine.routine_id);
-    }
-    if (invalidRoutines.length > 0) {
-      return Response.json({ 
-        error: `Routines not found: ${invalidRoutines.join(', ')}` 
-      }, { status: 400 });
-    }
+    // Soft-validate: filter invalid IDs instead of failing
+    const validRoutines = (planData.recommended_routines || []).filter(r =>
+      allRoutines.find(ar => ar.id === r.routine_id)
+    );
+    const validFaqs = (planData.recommended_faqs || []).filter(f =>
+      allFaqs.find(af => af.faq_id === f.faq_id)
+    );
 
-    const invalidFaqs = [];
-    for (const faq of planData.recommended_faqs || []) {
-      const exists = allFaqs.find(f => f.faq_id === faq.faq_id);
-      if (!exists) invalidFaqs.push(faq.faq_id);
-    }
-    if (invalidFaqs.length > 0) {
-      return Response.json({ 
-        error: `FAQs not found: ${invalidFaqs.join(', ')}` 
-      }, { status: 400 });
-    }
-
-    // Enrich phases with full Exercise details
+    // Enrich exercises with DB data
     const enrichedPhases = await Promise.all(
       planData.phases.map(async (phase) => {
         const enrichedExercises = await Promise.all(
-          phase.exercises.map(async (exercise) => {
+          (phase.exercises || []).map(async (exercise) => {
             try {
-              const fullExercise = await base44.entities.Exercise.filter(
-                { exercise_id: exercise.exercise_id }
-              );
-              if (fullExercise.length > 0) {
-                const ex = fullExercise[0];
+              const matches = await base44.asServiceRole.entities.Exercise.filter({ exercise_id: exercise.exercise_id });
+              if (matches.length > 0) {
+                const ex = matches[0];
                 return {
                   ...exercise,
-                  // Add rich details from Exercise entity
                   description: ex.description || exercise.instruction,
                   axon_moment: ex.axon_moment,
                   breathing_instruction: ex.breathing_instruction,
@@ -184,8 +163,7 @@ Deno.serve(async (req) => {
                 };
               }
               return exercise;
-            } catch (e) {
-              console.warn(`Could not enrich exercise ${exercise.exercise_id}:`, e);
+            } catch (_e) {
               return exercise;
             }
           })
@@ -194,51 +172,26 @@ Deno.serve(async (req) => {
       })
     );
 
-    // Create training plan
-    const plan = await base44.entities.TrainingPlan.create({
+    const plan = await base44.asServiceRole.entities.TrainingPlan.create({
       user_email: user.email,
       goal_description,
       phases: enrichedPhases,
-      recommended_routines: planData.recommended_routines,
-      recommended_faqs: planData.recommended_faqs,
+      recommended_routines: validRoutines,
+      recommended_faqs: validFaqs,
       plan_generated_date: new Date().toISOString().split('T')[0],
       current_phase: 1,
       status: 'active'
     });
 
-    return Response.json({ 
-      success: true, 
-      plan_id: plan.id,
-      plan 
-    });
+    console.log(`[generateTrainingPlan] Plan created: ${plan.id} with ${enrichedPhases.length} phases`);
 
-  // Validate that all exercise IDs exist
-  const invalidExercises = [];
-  for (const phase of enrichedPhases) {
-    for (const exercise of phase.exercises) {
-      const exists = allExercises.find(e => e.exercise_id === exercise.exercise_id);
-      if (!exists) invalidExercises.push(exercise.exercise_id);
-    }
-  }
-  if (invalidExercises.length > 0) {
-    return Response.json({ 
-      error: `Exercises not found: ${invalidExercises.join(', ')}` 
-    }, { status: 400 });
-  }
+    return Response.json({ success: true, plan_id: plan.id, plan });
 
   } catch (error) {
-  console.error('generateTrainingPlan error:', error);
-
-  // Detailed error logging
-  if (error.message.includes('JSON')) {
-    return Response.json({ 
-      error: 'LLM returned invalid JSON - plan generation failed' 
-    }, { status: 502 });
+    console.error('generateTrainingPlan error:', error.message);
+    return Response.json({
+      error: error.message || 'Unknown error',
+      type: 'PLAN_GENERATION_ERROR'
+    }, { status: 500 });
   }
-
-  return Response.json({ 
-    error: error.message || 'Unknown error during plan generation',
-    type: 'PLAN_GENERATION_ERROR'
-  }, { status: 500 });
-  }
-  });
+});
