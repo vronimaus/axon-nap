@@ -263,7 +263,16 @@ ${availableFaqIds.join(', ')}`,
       recommended_faqs: validFaqs,
       plan_generated_date: new Date().toISOString().split('T')[0],
       current_phase: 1,
-      status: 'active'
+      status: 'active',
+      // Initialize new "Ouch!" scenario fields
+      session_status: 'active',
+      current_exercise_substituted: false,
+      substituted_exercise_id: null,
+      pain_feedback_node: null,
+      pain_nrs: null,
+      intervention_mode: 'none',
+      live_adjust_log: [],
+      feedback_history: []
     });
 
     console.log(`[generateRehabPlan] Plan created: ${plan.id} with ${enrichedPhases.length} phases`);
