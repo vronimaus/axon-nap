@@ -181,16 +181,23 @@ export default function DiagnosisChat() {
        const newMessages = data.messages || [];
        setMessages(newMessages);
 
-       // Only process triggers when all tool calls are done
        const lastMessage = newMessages[newMessages.length - 1];
-       const isMessageComplete = lastMessage?.role === 'assistant' && 
-         !lastMessage?.tool_calls?.some(tc => tc.status === 'running' || tc.status === 'pending' || tc.status === 'in_progress');
+       if (!lastMessage) return;
+
+       // Always update loading state based on message completion
+       const hasActiveToolCall = lastMessage?.tool_calls?.some(
+         tc => tc.status === 'running' || tc.status === 'pending' || tc.status === 'in_progress'
+       );
+       const isAssistantStreaming = lastMessage?.role === 'assistant' && !lastMessage?.content && !lastMessage?.tool_calls?.length;
+       
+       // Message is complete when it's an assistant message with no active tool calls
+       const isMessageComplete = lastMessage?.role === 'assistant' && !hasActiveToolCall && !isAssistantStreaming;
 
        if (!isMessageComplete) return;
 
        setLoading(false);
 
-       // Check last assistant message for workflow triggers
+       // Only check triggers on assistant messages with content
        if (lastMessage?.content) {
          const content = lastMessage.content;
 
@@ -198,18 +205,20 @@ export default function DiagnosisChat() {
            // Never go backwards from rehab_plan_created
            if (currentStep === 'rehab_plan_created') return currentStep;
 
-           if (content.includes('[CREATE_REHAB_PLAN]')) {
+           // For rehab plan: only trigger if the message actually contains the marker
+           // AND we're coming from chain_scan
+           if (content.includes('[CREATE_REHAB_PLAN]') && currentStep === 'chain_scan') {
              return 'rehab_plan_created';
-           } else if (content.includes('[SHOW_DIAGNOSIS_CARD]')) {
+           } else if (content.includes('[SHOW_DIAGNOSIS_CARD]') && currentStep !== 'analysis_card') {
              const diagnosisText = content.split('[SHOW_DIAGNOSIS_CARD]')[0].trim();
              setDiagnosisCardData({
                title: 'Deine AXON-Diagnose',
                analysis: diagnosisText
              });
              return 'analysis_card';
-           } else if (content.includes('[TRIGGER_CHAIN_SCAN]')) {
+           } else if (content.includes('[TRIGGER_CHAIN_SCAN]') && currentStep === 'post_exercise_feedback') {
              return 'chain_scan';
-           } else if (content.includes('[TRIGGER_RETEST]')) {
+           } else if (content.includes('[TRIGGER_RETEST]') && currentStep === 'post_exercise_feedback') {
              return 'post_exercise_feedback';
            } else if (content.includes('[TRIGGER_INTENSITY]')) {
              return 'intensity';
