@@ -115,6 +115,14 @@ Deno.serve(async (req) => {
       success: true,
       substituted_exercise_id: bestCandidate.exercise_id,
       exercise_name: bestCandidate.name,
+      exercise_data: {
+        exercise_id: bestCandidate.exercise_id,
+        name: bestCandidate.name,
+        description: bestCandidate.description,
+        axon_moment: bestCandidate.axon_moment,
+        cues: bestCandidate.cues || [],
+        breathing_instruction: bestCandidate.breathing_instruction
+      },
       reasoning: isYellowMode 
         ? `Deine Schmerzintensität (${pain_nrs}/10) erfordert eine modifizierte Übung. ${bestCandidate.name} reduziert die Belastung auf ${pain_node_id}, während wir die Kette aktiv halten.`
         : `Eine Schmerzintensität von ${pain_nrs}/10 ist kritisch. Wir stoppen die aktuelle Übung und nutzen ${bestCandidate.name} – eine isometrische, sichere Alternative.`,
