@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
-import { Sparkles, Lightbulb, Loader2 } from 'lucide-react';
+import { Sparkles, Lightbulb, Loader2, AlertCircle } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { toast } from 'sonner';
+import OuchInterventionModal from './OuchInterventionModal';
 
 export default function ExerciseCoachingPanel({ exercise, rehabPlan, feedbackHistory }) {
   const [variations, setVariations] = useState(null);
