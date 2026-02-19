@@ -94,19 +94,13 @@ Deno.serve(async (req) => {
       });
     }
 
-    // Normalize scores to 0-10 scale
-    // Each sling can theoretically reach 100 (10 points * 10 exercises)
-    // We normalize to 0-10 scale with diminishing returns
-    const normalizeScore = (score) => {
-      // Use logarithmic scale to show progress but prevent infinite scaling
-      // Formula: (log(score + 1) / log(101)) * 10
-      if (score === 0) return 0;
-      return Math.min(10, (Math.log(score + 1) / Math.log(101)) * 10);
-    };
-
-    const anterior = normalizeScore(anteriorScore);
-    const posterior = normalizeScore(posteriorScore);
-    const lateral = normalizeScore(lateralScore);
+    // Calculate average sling scores
+    // Each sling's final score is the average contribution across all exercises targeting it
+    // This prevents score inflation from doing many exercises
+    const exerciseCount = Math.max(1, exercises.length);
+    const anterior = parseFloat(Math.min(10, anteriorScore / exerciseCount).toFixed(2));
+    const posterior = parseFloat(Math.min(10, posteriorScore / exerciseCount).toFixed(2));
+    const lateral = parseFloat(Math.min(10, lateralScore / exerciseCount).toFixed(2));
 
     // Determine overall readiness based on sling balance
     // Green: All slings >= 5, lateral >= 6
