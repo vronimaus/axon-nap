@@ -343,13 +343,14 @@ export default function DiagnosisChat() {
     const messageText = input.trim();
     setInput('');
     setLoading(true);
+    // Immediately skip to chain_scan to avoid flicker back to this screen
+    setWorkflowStep('chain_scan');
 
     try {
       await base44.agents.addMessage(conversation, {
         role: 'user',
         content: messageText
       });
-      // Agent will decide next step via triggers (usually chain_scan)
     } catch (error) {
       console.error('Fehler:', error);
       setLoading(false);
