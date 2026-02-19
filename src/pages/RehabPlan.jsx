@@ -489,25 +489,31 @@ export default function RehabPlan() {
                       </div>
                     )}
 
-                    {/* Goal Explanation */}
-                    {exercise.goal_explanation ? (
+                    {/* Goal / Purpose Explanation */}
+                    {(exercise.goal_explanation || exercise.purpose_explanation) && (
                       <div className="mb-4 p-4 rounded-lg bg-orange-500/10 border border-orange-500/30">
                         <h5 className="font-semibold text-orange-400 mb-2 flex items-center gap-2">
                           <span>🎯</span> Worum geht's?
                         </h5>
                         <p className="text-slate-300 text-sm leading-relaxed">
-                          {exercise.goal_explanation}
-                        </p>
-                      </div>
-                    ) : (
-                      <div className="mb-4 p-3 rounded-lg bg-slate-700/30 border border-slate-600">
-                        <p className="text-slate-400 text-xs">
-                          💡 Dieser Plan wurde vor unserem Update erstellt. Detaillierte Erklärungen sind für neuere Pläne verfügbar.
+                          {exercise.goal_explanation || exercise.purpose_explanation}
                         </p>
                       </div>
                     )}
 
-                    {/* Benefits - only show if available */}
+                    {/* AXON Moment */}
+                    {exercise.axon_moment && (
+                      <div className="mb-4 p-4 rounded-lg bg-cyan-500/10 border border-cyan-500/30">
+                        <h5 className="font-semibold text-cyan-400 mb-2 flex items-center gap-2">
+                          <span>⚡</span> AXON Moment: Was du spüren sollst
+                        </h5>
+                        <p className="text-slate-300 text-sm leading-relaxed">
+                          {exercise.axon_moment}
+                        </p>
+                      </div>
+                    )}
+
+                    {/* Benefits */}
                     {exercise.benefits && (
                       <div className="mb-4 p-4 rounded-lg bg-green-500/10 border border-green-500/30">
                         <h5 className="font-semibold text-green-400 mb-2 flex items-center gap-2">
@@ -519,13 +525,36 @@ export default function RehabPlan() {
                       </div>
                     )}
 
-                    {/* Instructions */}
-                    <div className="mb-6">
+                    {/* Instructions - prefer DB description, fallback to instruction */}
+                    <div className="mb-4">
                       <h5 className="font-semibold text-slate-200 mb-2">So geht's:</h5>
                       <p className="text-slate-300 text-sm leading-relaxed whitespace-pre-wrap">
-                        {exercise.instruction}
+                        {exercise.description || exercise.instruction}
                       </p>
                     </div>
+
+                    {/* Cues */}
+                    {exercise.cues?.length > 0 && (
+                      <div className="mb-4 p-4 rounded-lg bg-purple-500/10 border border-purple-500/30">
+                        <h5 className="font-semibold text-purple-400 mb-2">💡 Ausführungs-Tipps:</h5>
+                        <ul className="space-y-1">
+                          {exercise.cues.map((cue, i) => (
+                            <li key={i} className="text-slate-300 text-sm flex items-start gap-2">
+                              <span className="text-purple-400 mt-0.5">•</span>
+                              {cue}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+
+                    {/* Breathing */}
+                    {exercise.breathing_instruction && (
+                      <div className="mb-4 p-3 rounded-lg bg-blue-500/10 border border-blue-500/30">
+                        <h5 className="font-semibold text-blue-400 mb-1 text-sm">🫁 Atmung:</h5>
+                        <p className="text-slate-300 text-sm">{exercise.breathing_instruction}</p>
+                      </div>
+                    )}
 
                     {/* AI Coaching Panel */}
                     <React.Suspense fallback={<div className="text-slate-400 text-sm">Lädt Coaching-Panel...</div>}>
