@@ -299,7 +299,9 @@ export default function DiagnosisChat() {
       ? 'einen Schmerzpunkt'
       : 'eine Schmerzlinie';
 
-    setWorkflowStep('analysis_card');
+    // Show loading screen but stay in a neutral 'loading' step
+    // so the subscriber can correctly detect [SHOW_DIAGNOSIS_CARD] and transition to analysis_card
+    setWorkflowStep('waiting_analysis');
     setLoading(true);
 
     try {
