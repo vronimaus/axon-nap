@@ -11,6 +11,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import GoalCard from '../components/performance/GoalCard';
 import ExerciseDetailModal from '../components/performance/ExerciseDetailModal';
 import TrainingPlanChat from '../components/performance/TrainingPlanChat';
+import TrainingExerciseCard from '../components/performance/TrainingExerciseCard';
 import DailyReadinessCheck from '../components/dashboard/DailyReadinessCheck';
 import { Helmet } from 'react-helmet-async';
 
