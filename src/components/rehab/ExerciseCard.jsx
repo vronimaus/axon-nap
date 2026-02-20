@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronDown, AlertTriangle, Zap, Timer, RotateCcw } from 'lucide-react';
+import { ChevronDown, AlertTriangle, Zap, Timer, RotateCcw, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import OuchInterventionModal from './OuchInterventionModal';
+import { base44 } from '@/api/base44Client';
+import { toast } from 'sonner';
 const ExerciseCoachingPanel = React.lazy(() => import('./ExerciseCoachingPanel'));
 
 export default function ExerciseCard({ exercise, idx, readinessStatus, rehabPlan, queryClient, onFeedbackSubmit }) {
