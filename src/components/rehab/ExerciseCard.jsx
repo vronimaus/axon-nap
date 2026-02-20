@@ -209,20 +209,46 @@ export default function ExerciseCard({ exercise, idx, readinessStatus, rehabPlan
                   </p>
                 </div>
               )}
-
-              {/* AI Coaching Panel */}
-              <React.Suspense fallback={<div className="text-slate-400 text-sm">Lädt Coaching-Panel...</div>}>
-                <ExerciseCoachingPanel
-                  exercise={exercise}
-                  rehabPlan={rehabPlan}
-                  feedbackHistory={(rehabPlan?.feedback_history || []).filter(f => f.exercise_id === exercise.exercise_id)}
-                  onExerciseFeedback={onFeedbackSubmit}
-                />
-              </React.Suspense>
             </div>
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* ── STICKY FOOTER: Daumen-Zone ── */}
+      <div className="border-t border-slate-700/60 px-4 py-3 bg-slate-900/60 space-y-2">
+        {/* Secondary row: Ouch + Boost */}
+        <div className="flex gap-2">
+          <Button
+            onClick={() => setIsOuchModalOpen(true)}
+            className="flex-1 h-11 bg-red-500/15 border border-red-500/40 hover:bg-red-500/25 text-red-400 hover:text-red-300 gap-2 font-semibold text-sm"
+          >
+            <AlertCircle className="w-4 h-4" />
+            Ouch!
+          </Button>
+          {exercise.next_progression_id && (
+            <Button
+              onClick={handlePerformanceBoost}
+              disabled={isUpgrading}
+              className="flex-1 h-11 bg-green-500/15 border border-green-500/40 hover:bg-green-500/25 text-green-400 hover:text-green-300 gap-2 font-semibold text-sm"
+            >
+              <Zap className="w-4 h-4" />
+              {isUpgrading ? 'Lädt...' : '⭐ Zu einfach?'}
+            </Button>
+          )}
+        </div>
+      </div>
+
+      {/* Ouch Intervention Modal */}
+      <OuchInterventionModal
+        isOpen={isOuchModalOpen}
+        onClose={() => setIsOuchModalOpen(false)}
+        exerciseId={exercise.exercise_id}
+        exerciseName={exercise.name}
+        rehabPlanId={rehabPlan?.id}
+        onExerciseSubstituted={() => {
+          if (queryClient) queryClient.invalidateQueries({ queryKey: ['rehabPlan'] });
+        }}
+      />
     </motion.div>
   );
 }
