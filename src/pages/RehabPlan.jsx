@@ -3,12 +3,12 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { createPageUrl } from '@/utils';
-import { ChevronDown, Check, AlertCircle, ArrowLeft, AlertTriangle } from 'lucide-react';
+import { Check, AlertCircle, ArrowLeft, AlertTriangle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 import DailyReadinessCheck from '../components/dashboard/DailyReadinessCheck';
 import { Helmet } from 'react-helmet-async';
-const ExerciseCoachingPanel = React.lazy(() => import('../components/rehab/ExerciseCoachingPanel'));
+import ExerciseCard from '../components/rehab/ExerciseCard';
 const WeaknessGenerator = React.lazy(() => import('../components/rehab/WeaknessGenerator'));
 
 export default function RehabPlan() {
