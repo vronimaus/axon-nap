@@ -16,9 +16,7 @@ Deno.serve(async (req) => {
   if (!entityId) return Response.json({ error: 'exercise_id required' }, { status: 400 });
 
   // Load the exercise record
-  const exercises = await base44.asServiceRole.entities.Exercise.filter({ id: entityId });
-  if (!exercises.length) return Response.json({ error: 'Exercise not found' }, { status: 404 });
-  const ex = exercises[0];
+  const ex = await base44.asServiceRole.entities.Exercise.get(entityId);
 
   // Determine which fields need filling
   const needsFill = (v) => !v || (typeof v === 'string' && v.trim() === '') || (Array.isArray(v) && v.length === 0);
