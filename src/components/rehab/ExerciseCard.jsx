@@ -78,15 +78,15 @@ export default function ExerciseCard({ exercise, idx, readinessStatus, rehabPlan
           </div>
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 flex-wrap mb-2">
-              <h4 className="font-bold text-white text-base leading-tight">{exercise.name}</h4>
+              <h4 className="font-bold text-white text-base leading-tight">{fullExercise.name}</h4>
               {shouldShowWarning && (
                 <span className="text-yellow-400 text-xs flex items-center gap-1 bg-yellow-500/10 px-2 py-0.5 rounded-full">
                   <AlertTriangle className="w-3 h-3" /> Reduzieren
                 </span>
               )}
-              {exercise.category && (
+              {fullExercise.category && (
                 <span className="text-xs bg-orange-500/10 border border-orange-500/20 text-orange-400 rounded-full px-2 py-0.5 capitalize">
-                  {exercise.category}
+                  {fullExercise.category}
                 </span>
               )}
             </div>
