@@ -175,19 +175,19 @@ export default function ExerciseCard({ exercise, idx, readinessStatus, rehabPlan
               )}
 
               {/* Goal */}
-              {(exercise.goal_explanation || exercise.purpose_explanation) && (
+              {(fullExercise.goal_explanation || fullExercise.purpose_explanation) && (
                 <div className="p-3 rounded-xl bg-orange-500/10 border border-orange-500/20">
                   <p className="text-xs font-semibold text-orange-400 mb-1">🎯 Worum geht's?</p>
-                  <p className="text-sm text-slate-300 leading-snug">{exercise.goal_explanation || exercise.purpose_explanation}</p>
+                  <p className="text-sm text-slate-300 leading-snug">{fullExercise.goal_explanation || fullExercise.purpose_explanation}</p>
                 </div>
               )}
 
               {/* Cues */}
-              {exercise.cues?.length > 0 && (
+              {fullExercise.cues?.length > 0 && (
                 <div className="p-3 rounded-xl bg-purple-500/10 border border-purple-500/20">
                   <p className="text-xs font-semibold text-purple-400 mb-2">💡 Ausführungs-Tipps</p>
                   <ul className="space-y-1">
-                    {exercise.cues.map((cue, i) => (
+                    {fullExercise.cues.map((cue, i) => (
                       <li key={i} className="text-sm text-slate-300 flex gap-2 leading-snug">
                         <span className="text-purple-400 flex-shrink-0">•</span>
                         <span>{cue}</span>
@@ -198,18 +198,18 @@ export default function ExerciseCard({ exercise, idx, readinessStatus, rehabPlan
               )}
 
               {/* Benefits */}
-              {exercise.benefits && (
+              {fullExercise.benefits && (
                 <div className="p-3 rounded-xl bg-green-500/10 border border-green-500/20">
                   <p className="text-xs font-semibold text-green-400 mb-1">✨ Das bringt's dir</p>
-                  <p className="text-sm text-slate-300 leading-snug">{exercise.benefits}</p>
+                  <p className="text-sm text-slate-300 leading-snug">{fullExercise.benefits}</p>
                 </div>
               )}
 
               {/* Breathing */}
-              {exercise.breathing_instruction && (
+              {fullExercise.breathing_instruction && (
                 <div className="p-3 rounded-xl bg-blue-500/10 border border-blue-500/20">
                   <p className="text-xs font-semibold text-blue-400 mb-1">🫁 Atmung</p>
-                  <p className="text-sm text-slate-300 leading-snug">{exercise.breathing_instruction}</p>
+                  <p className="text-sm text-slate-300 leading-snug">{fullExercise.breathing_instruction}</p>
                 </div>
               )}
 
