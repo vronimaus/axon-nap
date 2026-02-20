@@ -274,8 +274,8 @@ function ExerciseRow({ ex }) {
             ))}
           </div>
 
-          {/* AI Enrich + Save / Discard */}
-          <div className="flex flex-wrap gap-2 pt-2 border-t border-slate-700/50">
+          {/* AI Enrich + Save / Discard + Delete */}
+          <div className="flex flex-wrap gap-2 pt-2 border-t border-slate-700/50 items-center">
             {/* AI Enrich Button - always visible */}
             <Button
               onClick={handleEnrich}
@@ -309,6 +309,20 @@ function ExerciseRow({ ex }) {
                 </Button>
               </>
             )}
+
+            {/* Delete Button - right side */}
+            <div className="ml-auto">
+              <Button
+                onClick={handleDelete}
+                disabled={deleting}
+                size="sm"
+                variant="outline"
+                className={`gap-2 transition-all ${confirmDelete ? 'border-red-500 bg-red-500/20 text-red-400 animate-pulse' : 'border-slate-600 text-slate-500 hover:border-red-500/50 hover:text-red-400'}`}
+              >
+                <Trash2 className="w-4 h-4" />
+                {deleting ? 'Löschen...' : confirmDelete ? '⚠ Wirklich löschen?' : 'Löschen'}
+              </Button>
+            </div>
           </div>
         </div>
       )}
