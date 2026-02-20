@@ -516,6 +516,11 @@ export default function AdminHub() {
             <ExercisesTab />
           </TabsContent>
 
+          {/* Exercise Editor Tab */}
+          <TabsContent value="exercise-editor" className="mt-0">
+            <ExerciseEditorTab />
+          </TabsContent>
+
           {/* Diagnosis Tab */}
           <TabsContent value="diagnosis" className="mt-0">
             <motion.div
