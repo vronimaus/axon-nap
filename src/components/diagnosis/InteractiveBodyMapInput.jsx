@@ -116,7 +116,6 @@ export default function InteractiveBodyMapInput({ onSubmit }) {
 
   const handleCanvasClick = (e) => {
     if (!imageLoaded) return;
-    e.preventDefault();
     const coords = getCoordinates(e);
     setMarkers([{ type: 'point', x: coords.x, y: coords.y }]);
   };
