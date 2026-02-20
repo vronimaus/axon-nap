@@ -44,6 +44,7 @@ function ExerciseRow({ ex }) {
   const [expanded, setExpanded] = useState(false);
   const [edits, setEdits] = useState({});
   const [saving, setSaving] = useState(false);
+  const [enriching, setEnriching] = useState(false);
   const [imageError, setImageError] = useState(false);
   const [gifError, setGifError] = useState(false);
 
