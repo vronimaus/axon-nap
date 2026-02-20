@@ -211,7 +211,6 @@ export default function InteractiveBodyMapInput({ onSubmit }) {
             height={600}
             onClick={handleCanvasClick}
             onTouchStart={(e) => {
-              if (e.cancelable) e.preventDefault();
               handleCanvasClick(e);
             }}
             className="absolute inset-0 w-full h-full cursor-crosshair"
