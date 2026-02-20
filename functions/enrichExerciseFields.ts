@@ -36,25 +36,28 @@ Deno.serve(async (req) => {
       return Response.json({ success: true, message: 'Alle Felder bereits befüllt', updated: {} });
     }
 
-    const context = `
-Übung: ${ex.name}
-Exercise ID: ${ex.exercise_id}
-Kategorie: ${ex.category}
-Schwierigkeit: ${ex.difficulty}
-Progressions-Level: ${ex.progression_level}
-Faszien-Kette (Stecco): ${ex.stecco_chain || 'nicht angegeben'}
-FMS Pattern: ${ex.fms_pattern || 'nicht angegeben'}
-Beschreibung (Ausführung): ${ex.description || 'nicht vorhanden'}
-AXON Moment: ${ex.axon_moment || 'nicht vorhanden'}
-Purpose Explanation: ${ex.purpose_explanation || 'nicht vorhanden'}
-Atemführung: ${ex.breathing_instruction || 'nicht vorhanden'}
-Cues: ${(ex.cues || []).join(', ') || 'nicht vorhanden'}
-Benefits: ${ex.benefits || 'nicht vorhanden'}
-Ziel-Erklärung: ${ex.goal_explanation || 'nicht vorhanden'}
-Neuro Impact: ${(ex.neuro_impact_type || []).join(', ') || 'nicht angegeben'}
-Mechanischer Impact: ${(ex.mechanical_impact_type || []).join(', ') || 'nicht angegeben'}
-McGill Safety: ${ex.mcgill_safety || 'nicht angegeben'}
-`.trim();
+    // Only include existing (non-missing) fields as context so the LLM isn't confused
+    const existingLines = [
+      `Übung: ${ex.name}`,
+      `Exercise ID: ${ex.exercise_id}`,
+      `Kategorie: ${ex.category}`,
+      `Schwierigkeit: ${ex.difficulty}`,
+      `Progressions-Level: ${ex.progression_level}`,
+      ex.stecco_chain ? `Faszien-Kette (Stecco): ${ex.stecco_chain}` : null,
+      ex.fms_pattern ? `FMS Pattern: ${ex.fms_pattern}` : null,
+      !needsFill(ex.description) ? `Beschreibung (Ausführung): ${ex.description}` : null,
+      !needsFill(ex.axon_moment) ? `AXON Moment: ${ex.axon_moment}` : null,
+      !needsFill(ex.purpose_explanation) ? `Purpose Explanation: ${ex.purpose_explanation}` : null,
+      !needsFill(ex.breathing_instruction) ? `Atemführung: ${ex.breathing_instruction}` : null,
+      !needsFill(ex.cues) ? `Cues: ${ex.cues.join(', ')}` : null,
+      !needsFill(ex.benefits) ? `Benefits: ${ex.benefits}` : null,
+      !needsFill(ex.goal_explanation) ? `Ziel-Erklärung: ${ex.goal_explanation}` : null,
+      ex.neuro_impact_type?.length ? `Neuro Impact: ${ex.neuro_impact_type.join(', ')}` : null,
+      ex.mechanical_impact_type?.length ? `Mechanischer Impact: ${ex.mechanical_impact_type.join(', ')}` : null,
+      ex.mcgill_safety ? `McGill Safety: ${ex.mcgill_safety}` : null,
+    ].filter(Boolean);
+
+    const context = existingLines.join('\n');
 
     const fieldDescriptions = {
       description: '"description": Schritt-für-Schritt Ausführungsanleitung der Übung. Klar, präzise, in 3-5 Schritten. Auf Deutsch.',
