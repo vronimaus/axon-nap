@@ -57,6 +57,7 @@ McGill Safety: ${ex.mcgill_safety || 'nicht angegeben'}
 `.trim();
 
     const fieldDescriptions = {
+      description: '"description": Schritt-für-Schritt Ausführungsanleitung der Übung. Klar, präzise, in 3-5 Schritten. Auf Deutsch.',
       benefits: '"benefits": Konkrete, spürbare Vorteile für den User in 2-3 Sätzen. Alltagsrelevant & motivierend formuliert.',
       goal_explanation: '"goal_explanation": Warum ist diese Übung im Rehab-/Trainingskontext wichtig? 2-3 Sätze, wissenschaftlich aber verständlich.',
       axon_moment: '"axon_moment": EIN prägnanter Satz was der User jetzt in seinem Körper/Gehirn spüren soll. Beginnt mit "Du spürst..." oder "Dein Gehirn...". Max. 1-2 Sätze.',
