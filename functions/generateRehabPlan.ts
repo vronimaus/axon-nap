@@ -127,37 +127,50 @@ Deno.serve(async (req) => {
     console.log(`[generateRehabPlan] Filtered exercises: ${bestExercises.length}/${validExercises.length}`);
 
     const planData = await base44.integrations.Core.InvokeLLM({
-      prompt: `Du bist ein erfahrener Reha-Therapeut und erstellst einen personalisierten 3-Phasen-Rehabilitationsplan.
+      prompt: `Du bist ein Experte für neuro-athletische Rehabilitation (AXON-Methode). Erstelle einen hochwertig personalisierten 3-Phasen-Reha-Plan.
 
 PROBLEM DES NUTZERS:
 ${problemDescription}
 ${extraContext ? '\nNUTZERKONTEXT:\n' + extraContext : ''}
 
-TARGET FASCIA CHAINS (GOLDEN SOURCE - aus Schmerzregion erkannt):
-Zielketten: ${targetSlings.length > 0 ? targetSlings.join(', ') : 'alle Ketten'}
+ZIEL-FASZIEN-KETTEN (aus Schmerzregion erkannt):
+${targetSlings.length > 0 ? targetSlings.join(', ') : 'alle Ketten berücksichtigen'}
 
-=== PFLICHTREGELN (ABSOLUT ZWINGEND) ===
-1. Du MUSST ausschließlich exercise_ids aus dem ÜBUNGSKATALOG unten verwenden.
-2. ERFINDE NIEMALS exercise_ids. Kopiere sie EXAKT so wie sie im Katalog stehen (z.B. "KB_GEN_005" nicht "KB_general_5").
-3. Priorisiere Übungen mit "Sling: ${targetSlings[0] || 'posterior'}" wenn möglich.
-4. Jede Phase MUSS 5-7 verschiedene Übungen enthalten.
-5. Wähle Übungen die thematisch zum Problem passen (Kategorie, Schwierigkeit, Sling).
-6. Verteile die Schwierigkeiten sinnvoll: Phase 1 = beginner, Phase 2 = intermediate, Phase 3 = advanced/intermediate.
-7. Das Feld "sets_reps_tempo" muss konkret sein (z.B. "3x12 langsam und kontrolliert", "2x45 Sek. halten").
-8. Das Feld "notes" muss den AXON-Moment beschreiben: was soll der Nutzer spüren/lernen?
+===== ABSOLUT ZWINGENDE REGELN =====
+1. Verwende NUR exercise_ids aus dem ÜBUNGSKATALOG unten. NIEMALS erfinden.
+2. Kopiere die exercise_id EXAKT so wie sie im Katalog steht.
+3. JEDE Phase MUSS 5-7 VERSCHIEDENE Übungen enthalten.
+4. Die 3 Phasen MÜSSEN sich deutlich voneinander unterscheiden – andere Übungen, andere Progression.
+5. sets_reps_tempo MUSS sehr konkret sein, z.B. "3×10 langsam (3 Sek. runter, 1 Sek. oben)", "2×60 Sek. halten", "4×8 explosiv".
+6. notes MUSS den AXON-Moment beschreiben (was der User fühlen/lernen soll). Sei spezifisch.
 
-PHASEN-STRUKTUR:
-- Phase 1 (Akut, 7 Tage): Schmerzlinderung, MFR, sanfte Mobilisation – nur beginner/leichte Übungen
-- Phase 2 (Aufbau, 14 Tage): Kräftigung, Stabilität, Bewegungsmuster – intermediate
-- Phase 3 (Integration, 14 Tage): Funktionelle Bewegung, Prävention, Performance – intermediate/advanced
+===== PHASEN-PHILOSOPHIE (CRITICAL – unterschiedliche Übungen pro Phase!) =====
 
-=== ÜBUNGSKATALOG (NUR diese IDs sind erlaubt - ALLE sind REAL und GETESTET) ===
+PHASE 1 – "RELEASE & CALM" (7 Tage, Akut-Phase):
+→ Ziel: Schmerzlinderung, parasympathische Aktivierung, MFR, Atemarbeit
+→ Nur beginner-Übungen: Kategorie neuro, breath, mfr, mobility
+→ Sanft: Kein Kraft, kein Impuls
+→ Beispiel-Fokus: Nervenberuhigung, Faszienentspannung, Körperwahrnehmung
+
+PHASE 2 – "BUILD & STABILIZE" (14 Tage, Aufbau-Phase):
+→ Ziel: Kräftigung, Stabilität, Bewegungsmuster neu lernen
+→ intermediate-Übungen: Kategorie core, mobility, plank, row, pull, push
+→ Aufbau der neuronalen Ansteuerung, tiefe Stabilisatoren aktivieren
+→ ANDERE Übungen als Phase 1 – Progression!
+
+PHASE 3 – "INTEGRATE & PERFORM" (14 Tage, Performance-Phase):
+→ Ziel: Funktionelle Bewegung, Alltagsintegration, Prävention, Performance
+→ intermediate/advanced: Komplexe Bewegungen, Kraft + Neuro kombiniert
+→ Kategorie: squat, hinge, carry, functional, strength
+→ ANDERE Übungen als Phase 1 & 2 – deutlicher Schwierigkeitssprung
+
+===== ÜBUNGSKATALOG (ALLE IDs sind real – EXAKT so übernehmen) =====
 ${exerciseCatalog}
 
-=== VERFÜGBARE ROUTINE-IDs ===
+===== VERFÜGBARE ROUTINE-IDs =====
 ${availableRoutineIds.join(', ')}
 
-=== VERFÜGBARE FAQ-IDs ===
+===== VERFÜGBARE FAQ-IDs =====
 ${availableFaqIds.join(', ')}`,
       response_json_schema: {
         type: 'object',
