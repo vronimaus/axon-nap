@@ -48,17 +48,17 @@ export default function ExerciseCard({ exercise, idx, readinessStatus, rehabPlan
     }
   };
 
-  const isStrengthExercise = exercise.category && ['strength', 'functional'].includes(exercise.category.toLowerCase());
+  const isStrengthExercise = fullExercise.category && ['strength', 'functional'].includes(fullExercise.category.toLowerCase());
   const shouldShowWarning = readinessStatus === 'yellow' && isStrengthExercise;
 
   // Parse instruction lines into bullet points
-  const instructionLines = (exercise.description || exercise.instruction || '')
+  const instructionLines = (fullExercise.description || fullExercise.instruction || '')
     .split('\n')
     .map(l => l.replace(/^\d+\.\s*/, '').trim())
     .filter(l => l.length > 0);
 
   // Parse sets/reps/tempo from string like "3x10 @ 3s" into parts
-  const specsRaw = exercise.sets_reps_tempo || '';
+  const specsRaw = fullExercise.sets_reps_tempo || '';
   const specsDisplay = shouldShowWarning ? `${specsRaw} → −50%` : specsRaw;
 
   return (
