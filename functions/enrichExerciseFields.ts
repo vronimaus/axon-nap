@@ -1,4 +1,4 @@
-// v2
+// v3 - gemini-1.5-flash
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
 
 Deno.serve(async (req) => {
