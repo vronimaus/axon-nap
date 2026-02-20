@@ -73,6 +73,25 @@ function ExerciseRow({ ex }) {
 
   const handleDiscard = () => setEdits({});
 
+  const handleDelete = async () => {
+    if (!confirmDelete) {
+      setConfirmDelete(true);
+      setTimeout(() => setConfirmDelete(false), 4000);
+      return;
+    }
+    setDeleting(true);
+    try {
+      await base44.entities.Exercise.delete(ex.id);
+      queryClient.invalidateQueries({ queryKey: ['exercises-editor'] });
+      toast.success(`🗑 "${ex.name}" gelöscht`);
+    } catch (e) {
+      toast.error('Löschen fehlgeschlagen: ' + e.message);
+    } finally {
+      setDeleting(false);
+      setConfirmDelete(false);
+    }
+  };
+
   const handleEnrich = async () => {
     setEnriching(true);
     try {
