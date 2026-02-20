@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronDown, AlertTriangle } from 'lucide-react';
+import { ChevronDown, AlertTriangle, Zap, Timer, RotateCcw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 const ExerciseCoachingPanel = React.lazy(() => import('./ExerciseCoachingPanel'));
 
@@ -10,84 +10,105 @@ export default function ExerciseCard({ exercise, idx, readinessStatus, rehabPlan
   const isStrengthExercise = exercise.category && ['strength', 'functional'].includes(exercise.category.toLowerCase());
   const shouldShowWarning = readinessStatus === 'yellow' && isStrengthExercise;
 
+  // Parse instruction lines into bullet points
+  const instructionLines = (exercise.description || exercise.instruction || '')
+    .split('\n')
+    .map(l => l.replace(/^\d+\.\s*/, '').trim())
+    .filter(l => l.length > 0);
+
+  // Parse sets/reps/tempo from string like "3x10 @ 3s" into parts
+  const specsRaw = exercise.sets_reps_tempo || '';
+  const specsDisplay = shouldShowWarning ? `${specsRaw} → −50%` : specsRaw;
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: idx * 0.07 }}
-      className="glass rounded-2xl border border-slate-700 overflow-hidden"
+      className="glass rounded-2xl border border-slate-700 overflow-hidden flex flex-col"
     >
-      {/* ── BLOCK 1: Titel + Specs ── */}
+      {/* ── BLOCK 1: Nummer + Titel + Specs ── */}
       <div className="px-4 pt-4 pb-3">
         <div className="flex items-start gap-3">
-          <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm flex-shrink-0 ${
+          <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm flex-shrink-0 mt-0.5 ${
             shouldShowWarning ? 'bg-yellow-500/20 text-yellow-400' : 'bg-orange-500/20 text-orange-400'
           }`}>
             {idx + 1}
           </div>
           <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2 flex-wrap">
+            <div className="flex items-center gap-2 flex-wrap mb-2">
               <h4 className="font-bold text-white text-base leading-tight">{exercise.name}</h4>
               {shouldShowWarning && (
-                <span className="text-yellow-400 text-xs flex items-center gap-1">
+                <span className="text-yellow-400 text-xs flex items-center gap-1 bg-yellow-500/10 px-2 py-0.5 rounded-full">
                   <AlertTriangle className="w-3 h-3" /> Reduzieren
                 </span>
               )}
-            </div>
-            {/* Specs row */}
-            <div className="flex flex-wrap gap-2 mt-2">
-              {exercise.sets_reps_tempo && (
-                <span className="text-xs bg-slate-800 border border-slate-700 text-slate-300 rounded-lg px-2 py-1">
-                  {shouldShowWarning ? `${exercise.sets_reps_tempo} → −50%` : exercise.sets_reps_tempo}
-                </span>
-              )}
               {exercise.category && (
-                <span className="text-xs bg-orange-500/10 border border-orange-500/20 text-orange-400 rounded-lg px-2 py-1 capitalize">
+                <span className="text-xs bg-orange-500/10 border border-orange-500/20 text-orange-400 rounded-full px-2 py-0.5 capitalize">
                   {exercise.category}
                 </span>
               )}
             </div>
+
+            {/* Specs Pills – Hard Facts */}
+            {specsDisplay && (
+              <div className="flex flex-wrap gap-2">
+                {/* Try to split "3 Sätze × 10 Wdh. @ 3s" */}
+                {specsDisplay.split(/[×x@·|]/).map((part, i) => {
+                  const icons = [
+                    <RotateCcw key={0} className="w-3 h-3" />,
+                    <Zap key={1} className="w-3 h-3" />,
+                    <Timer key={2} className="w-3 h-3" />
+                  ];
+                  return (
+                    <span key={i} className="flex items-center gap-1 text-xs font-semibold bg-slate-800 border border-slate-600 text-slate-200 rounded-lg px-2.5 py-1">
+                      {icons[i] || null}
+                      {part.trim()}
+                    </span>
+                  );
+                })}
+              </div>
+            )}
           </div>
         </div>
       </div>
 
-      {/* ── BLOCK 2: Anleitung (immer sichtbar, kompakt) ── */}
-      <div className="px-4 pb-3">
+      {/* ── BLOCK 2: Anleitung (Bullets) + AXON-Moment ── */}
+      <div className="px-4 pb-4 space-y-3">
+        {/* Instruction Bullets – immer sichtbar (max 3) */}
+        {instructionLines.length > 0 && (
+          <div>
+            <p className="text-xs font-semibold text-slate-400 uppercase tracking-wide mb-2">So geht's:</p>
+            <ul className="space-y-1.5">
+              {instructionLines.slice(0, 3).map((line, i) => (
+                <li key={i} className="text-sm text-slate-300 flex gap-2 leading-snug">
+                  <span className="text-orange-400 font-bold flex-shrink-0">{i + 1}.</span>
+                  <span>{line}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
         {/* AXON-Moment – immer sichtbar */}
         {exercise.axon_moment && (
-          <div className="bg-cyan-500/10 border border-cyan-500/20 rounded-xl p-3 mb-3">
+          <div className="bg-cyan-500/10 border border-cyan-500/25 rounded-xl p-3">
             <p className="text-xs font-semibold text-cyan-400 mb-1">⚡ AXON-Moment</p>
-            <p className="text-sm text-slate-300 leading-snug">{exercise.axon_moment}</p>
+            <p className="text-sm text-slate-300 leading-snug italic">{exercise.axon_moment}</p>
           </div>
         )}
 
-        {/* Kurzanleitung: max 3 Stichpunkte aus der Beschreibung */}
-        {(exercise.description || exercise.instruction) && (
-          <div className="space-y-1">
-            {(exercise.description || exercise.instruction)
-              .split('\n')
-              .filter(l => l.trim())
-              .slice(0, 3)
-              .map((line, i) => (
-                <p key={i} className="text-sm text-slate-400 flex gap-2">
-                  <span className="text-orange-400 font-semibold flex-shrink-0">{i + 1}.</span>
-                  <span className="leading-snug">{line.replace(/^\d+\.\s*/, '').trim()}</span>
-                </p>
-              ))}
-          </div>
-        )}
-
-        {/* "Mehr anzeigen" Toggle */}
+        {/* "Details & Coaching" Toggle */}
         <button
           onClick={() => setExpanded(!expanded)}
-          className="mt-3 flex items-center gap-1 text-xs text-slate-500 hover:text-slate-300 transition-colors"
+          className="flex items-center gap-1 text-xs text-slate-500 hover:text-slate-300 transition-colors"
         >
           <ChevronDown className={`w-3 h-3 transition-transform ${expanded ? 'rotate-180' : ''}`} />
           {expanded ? 'Weniger anzeigen' : 'Details & Coaching'}
         </button>
       </div>
 
-      {/* ── BLOCK 3 (expanded): Details & Coaching Panel ── */}
+      {/* ── BLOCK 3 (expanded): Vollständige Details ── */}
       <AnimatePresence>
         {expanded && (
           <motion.div
@@ -97,6 +118,21 @@ export default function ExerciseCard({ exercise, idx, readinessStatus, rehabPlan
             className="border-t border-slate-700/60 bg-slate-800/20"
           >
             <div className="px-4 py-4 space-y-3">
+              {/* Remaining instruction steps */}
+              {instructionLines.length > 3 && (
+                <div>
+                  <p className="text-xs font-semibold text-slate-400 uppercase tracking-wide mb-2">Weiter:</p>
+                  <ul className="space-y-1.5">
+                    {instructionLines.slice(3).map((line, i) => (
+                      <li key={i} className="text-sm text-slate-400 flex gap-2 leading-snug">
+                        <span className="text-orange-400 font-bold flex-shrink-0">{i + 4}.</span>
+                        <span>{line}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
               {/* Goal */}
               {(exercise.goal_explanation || exercise.purpose_explanation) && (
                 <div className="p-3 rounded-xl bg-orange-500/10 border border-orange-500/20">
@@ -105,31 +141,15 @@ export default function ExerciseCard({ exercise, idx, readinessStatus, rehabPlan
                 </div>
               )}
 
-              {/* Full instructions (rest of lines) */}
-              {(exercise.description || exercise.instruction) && (() => {
-                const lines = (exercise.description || exercise.instruction).split('\n').filter(l => l.trim());
-                const rest = lines.slice(3);
-                return rest.length > 0 ? (
-                  <div className="space-y-1">
-                    {rest.map((line, i) => (
-                      <p key={i} className="text-sm text-slate-400 flex gap-2">
-                        <span className="text-orange-400 font-semibold flex-shrink-0">{i + 4}.</span>
-                        <span className="leading-snug">{line.replace(/^\d+\.\s*/, '').trim()}</span>
-                      </p>
-                    ))}
-                  </div>
-                ) : null;
-              })()}
-
               {/* Cues */}
               {exercise.cues?.length > 0 && (
                 <div className="p-3 rounded-xl bg-purple-500/10 border border-purple-500/20">
                   <p className="text-xs font-semibold text-purple-400 mb-2">💡 Ausführungs-Tipps</p>
                   <ul className="space-y-1">
                     {exercise.cues.map((cue, i) => (
-                      <li key={i} className="text-sm text-slate-300 flex gap-2">
-                        <span className="text-purple-400">•</span>
-                        <span className="leading-snug">{cue}</span>
+                      <li key={i} className="text-sm text-slate-300 flex gap-2 leading-snug">
+                        <span className="text-purple-400 flex-shrink-0">•</span>
+                        <span>{cue}</span>
                       </li>
                     ))}
                   </ul>
