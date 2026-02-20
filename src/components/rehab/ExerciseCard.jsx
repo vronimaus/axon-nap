@@ -16,9 +16,9 @@ export default function ExerciseCard({ exercise, idx, readinessStatus, rehabPlan
     if (exercise.exercise_id) {
       base44.entities.Exercise.filter({ exercise_id: exercise.exercise_id })
         .then(results => {
+          console.log(`[ExerciseCard] exercise_id="${exercise.exercise_id}" → DB results:`, results?.length, results?.[0]?.axon_moment ? 'has axon_moment' : 'NO axon_moment');
           if (results?.length > 0) {
             const dbEx = results[0];
-            // DB fields take priority for content; plan fields only override sets_reps_tempo
             setFullExercise({
               ...exercise,
               ...dbEx,
@@ -26,7 +26,7 @@ export default function ExerciseCard({ exercise, idx, readinessStatus, rehabPlan
             });
           }
         })
-        .catch(() => {}); // fallback to plan data silently
+        .catch(err => console.error('[ExerciseCard] DB fetch error:', err));
     }
   }, [exercise.exercise_id]);
   const [isOuchModalOpen, setIsOuchModalOpen] = useState(false);
