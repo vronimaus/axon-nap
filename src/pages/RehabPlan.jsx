@@ -424,154 +424,24 @@ export default function RehabPlan() {
           <h3 className="text-lg font-semibold text-white mb-4">Deine Übungen für diese Phase</h3>
           
           {currentPhase.exercises.map((exercise, idx) => {
-            // Filter exercises based on readiness status
             const isStrengthExercise = exercise.category && ['strength', 'functional'].includes(exercise.category.toLowerCase());
-            const shouldShowWarning = readinessStatus === 'yellow' && isStrengthExercise;
             const shouldSkip = readinessStatus === 'red' && isStrengthExercise;
-            
             if (shouldSkip) return null;
-            
+
             return (
-            <motion.div
-              key={exercise.exercise_id || `exercise-${idx}`}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: idx * 0.1 }}
-              className="glass rounded-xl border border-slate-700 overflow-hidden"
-            >
-              {/* Exercise Header */}
-              <button
-                onClick={() => setExpandedExercise(
-                  expandedExercise === exercise.exercise_id ? null : exercise.exercise_id
-                )}
-                className="w-full px-6 py-4 flex items-center justify-between hover:bg-slate-800/50 transition-colors"
-              >
-                <div className="flex items-center gap-3 text-left flex-1">
-                  <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm ${
-                    shouldShowWarning 
-                      ? 'bg-yellow-500/20 text-yellow-400' 
-                      : 'bg-orange-500/20 text-orange-400'
-                  }`}>
-                    {idx + 1}
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <div className="flex items-center gap-2">
-                      <h4 className="font-semibold text-white">{exercise.name}</h4>
-                      {shouldShowWarning && (
-                        <span className="text-yellow-400 text-xs">⚠️ Reduzieren</span>
-                      )}
-                    </div>
-                    <p className="text-sm text-slate-400">
-                      {shouldShowWarning 
-                        ? `${exercise.sets_reps_tempo} → Intensität um 30-50% reduzieren`
-                        : exercise.sets_reps_tempo}
-                    </p>
-                  </div>
-                </div>
-                <ChevronDown
-                  className={`w-5 h-5 text-slate-400 transition-transform ${
-                    expandedExercise === exercise.exercise_id ? 'rotate-180' : ''
-                  }`}
-                />
-              </button>
-
-              {/* Exercise Details */}
-              <AnimatePresence>
-                {expandedExercise === exercise.exercise_id && (
-                  <motion.div
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: 'auto' }}
-                    exit={{ opacity: 0, height: 0 }}
-                    className="border-t border-slate-700 px-6 py-4 bg-slate-800/20"
-                  >
-                    {/* Readiness Warning */}
-                    {shouldShowWarning && (
-                      <div className="mb-4 p-4 rounded-lg bg-yellow-500/10 border border-yellow-500/30">
-                        <h5 className="font-semibold text-yellow-400 mb-2 flex items-center gap-2">
-                          <AlertTriangle className="w-5 h-5" /> Moderate Belastung empfohlen
-                        </h5>
-                        <p className="text-slate-300 text-sm leading-relaxed">
-                          Reduziere heute Intensität und Wiederholungen um 30-50%. Höre auf deinen Körper und pausiere bei Schmerzen.
-                        </p>
-                      </div>
-                    )}
-
-                    {/* Goal / Purpose Explanation */}
-                    {(exercise.goal_explanation || exercise.purpose_explanation) && (
-                      <div className="mb-4 p-4 rounded-lg bg-orange-500/10 border border-orange-500/30">
-                        <h5 className="font-semibold text-orange-400 mb-2 flex items-center gap-2">
-                          <span>🎯</span> Worum geht's?
-                        </h5>
-                        <p className="text-slate-300 text-sm leading-relaxed">
-                          {exercise.goal_explanation || exercise.purpose_explanation}
-                        </p>
-                      </div>
-                    )}
-
-                    {/* AXON Moment */}
-                    {exercise.axon_moment && (
-                      <div className="mb-4 p-4 rounded-lg bg-cyan-500/10 border border-cyan-500/30">
-                        <h5 className="font-semibold text-cyan-400 mb-2 flex items-center gap-2">
-                          <span>⚡</span> AXON Moment: Was du spüren sollst
-                        </h5>
-                        <p className="text-slate-300 text-sm leading-relaxed">
-                          {exercise.axon_moment}
-                        </p>
-                      </div>
-                    )}
-
-                    {/* Benefits */}
-                    {exercise.benefits && (
-                      <div className="mb-4 p-4 rounded-lg bg-green-500/10 border border-green-500/30">
-                        <h5 className="font-semibold text-green-400 mb-2 flex items-center gap-2">
-                          <span>✨</span> Das bringt's dir:
-                        </h5>
-                        <p className="text-slate-300 text-sm leading-relaxed">
-                          {exercise.benefits}
-                        </p>
-                      </div>
-                    )}
-
-                    {/* Instructions - prefer DB description, fallback to instruction */}
-                    <div className="mb-4">
-                      <h5 className="font-semibold text-slate-200 mb-2">So geht's:</h5>
-                      <p className="text-slate-300 text-sm leading-relaxed whitespace-pre-wrap">
-                        {exercise.description || exercise.instruction}
-                      </p>
-                    </div>
-
-                    {/* Cues */}
-                    {exercise.cues?.length > 0 && (
-                      <div className="mb-4 p-4 rounded-lg bg-purple-500/10 border border-purple-500/30">
-                        <h5 className="font-semibold text-purple-400 mb-2">💡 Ausführungs-Tipps:</h5>
-                        <ul className="space-y-1">
-                          {exercise.cues.map((cue, i) => (
-                            <li key={i} className="text-slate-300 text-sm flex items-start gap-2">
-                              <span className="text-purple-400 mt-0.5">•</span>
-                              {cue}
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    )}
-
-                    {/* Breathing */}
-                    {exercise.breathing_instruction && (
-                      <div className="mb-4 p-3 rounded-lg bg-blue-500/10 border border-blue-500/30">
-                        <h5 className="font-semibold text-blue-400 mb-1 text-sm">🫁 Atmung:</h5>
-                        <p className="text-slate-300 text-sm">{exercise.breathing_instruction}</p>
-                      </div>
-                    )}
-
-                    {/* AI Coaching Panel with Details - NEW SYSTEM */}
-                    <React.Suspense fallback={<div className="text-slate-400 text-sm">Lädt Coaching-Panel...</div>}>
-                      <ExerciseCoachingPanel
-                      exercise={exercise}
-                      rehabPlan={rehabPlan}
-                      feedbackHistory={(rehabPlan.feedback_history || []).filter(
-                        f => f.exercise_id === exercise.exercise_id
-                        )}
-                      onExerciseSubstituted={() => {
+              <ExerciseCard
+                key={exercise.exercise_id || `exercise-${idx}`}
+                exercise={exercise}
+                idx={idx}
+                readinessStatus={readinessStatus}
+                rehabPlan={rehabPlan}
+                queryClient={queryClient}
+                onFeedbackSubmit={({ exerciseId, metricValue, notes }) =>
+                  submitFeedbackMutation.mutate({ exerciseId, metricValue, notes })
+                }
+              />
+            );
+          })ciseSubstituted={() => {
                         queryClient.invalidateQueries({ queryKey: ['rehabPlan'] });
                         toast.success('Übung wurde angepasst');
                       }}
