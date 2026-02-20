@@ -151,6 +151,11 @@ function ExerciseRow({ ex }) {
           <span className={`text-xs px-1.5 py-0.5 rounded ${ex.axon_moment ? 'bg-cyan-500/20 text-cyan-400' : 'bg-slate-700 text-slate-500'}`} title="axon_moment">A</span>
           <span className={`text-xs px-1.5 py-0.5 rounded ${ex.description ? 'bg-blue-500/20 text-blue-400' : 'bg-slate-700 text-slate-500'}`} title="description">D</span>
           <span className={`text-xs px-1.5 py-0.5 rounded ${ex.benefits ? 'bg-green-500/20 text-green-400' : 'bg-slate-700 text-slate-500'}`} title="benefits">B</span>
+          {emptyCount > 0 && (
+            <span className="text-xs px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-400 border border-amber-500/30" title="Fehlende Felder">
+              {emptyCount} leer
+            </span>
+          )}
         </div>
 
         {expanded ? <ChevronUp className="w-4 h-4 text-slate-400 flex-shrink-0" /> : <ChevronDown className="w-4 h-4 text-slate-400 flex-shrink-0" />}
