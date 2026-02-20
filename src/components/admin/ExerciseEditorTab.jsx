@@ -253,29 +253,42 @@ function ExerciseRow({ ex }) {
             ))}
           </div>
 
-          {/* Save / Discard */}
-          {isDirty && (
-            <div className="flex gap-2 pt-2 border-t border-slate-700/50">
-              <Button
-                onClick={handleSave}
-                disabled={saving}
-                className="bg-green-600 hover:bg-green-700 text-white gap-2"
-                size="sm"
-              >
-                <Save className="w-4 h-4" />
-                {saving ? 'Speichern...' : 'Speichern'}
-              </Button>
-              <Button
-                onClick={handleDiscard}
-                variant="outline"
-                size="sm"
-                className="border-slate-600 text-slate-400 gap-2"
-              >
-                <X className="w-4 h-4" />
-                Verwerfen
-              </Button>
-            </div>
-          )}
+          {/* AI Enrich + Save / Discard */}
+          <div className="flex flex-wrap gap-2 pt-2 border-t border-slate-700/50">
+            {/* AI Enrich Button - always visible */}
+            <Button
+              onClick={handleEnrich}
+              disabled={enriching}
+              size="sm"
+              className="bg-gradient-to-r from-purple-600 to-cyan-600 hover:from-purple-700 hover:to-cyan-700 text-white gap-2"
+            >
+              {enriching ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
+              {enriching ? 'KI befüllt...' : 'KI Felder befüllen'}
+            </Button>
+
+            {isDirty && (
+              <>
+                <Button
+                  onClick={handleSave}
+                  disabled={saving}
+                  className="bg-green-600 hover:bg-green-700 text-white gap-2"
+                  size="sm"
+                >
+                  <Save className="w-4 h-4" />
+                  {saving ? 'Speichern...' : 'Speichern'}
+                </Button>
+                <Button
+                  onClick={handleDiscard}
+                  variant="outline"
+                  size="sm"
+                  className="border-slate-600 text-slate-400 gap-2"
+                >
+                  <X className="w-4 h-4" />
+                  Verwerfen
+                </Button>
+              </>
+            )}
+          </div>
         </div>
       )}
     </div>
