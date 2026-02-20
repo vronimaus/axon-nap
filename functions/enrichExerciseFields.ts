@@ -140,4 +140,8 @@ ${missingFields.map(f => `  "${f}": ...`).join(',\n')}
   }
 
   return Response.json({ success: true, updated: update, fields: Object.keys(update) });
+  } catch (error) {
+    console.error('enrichExerciseFields error:', error);
+    return Response.json({ error: error.message }, { status: 500 });
+  }
 });
