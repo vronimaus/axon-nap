@@ -3,7 +3,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
-import { Search, ChevronDown, ChevronUp, Save, Image, X, Check, Edit2, AlertTriangle, Sparkles, RefreshCw } from 'lucide-react';
+import { Search, ChevronDown, ChevronUp, Save, Image, X, Check, Edit2, AlertTriangle, Sparkles, RefreshCw, Trash2 } from 'lucide-react';
 
 const PREFIXES = {
   KB:  { label: 'KB',  color: 'bg-orange-500/20 text-orange-300 border-orange-500/40' },
