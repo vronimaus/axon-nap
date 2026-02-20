@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import InteractiveBodyMap from '../components/dashboard/InteractiveBodyMap';
 import SlingSpiderChart from '../components/dashboard/SlingSpiderChart';
 import OnboardingModal from '../components/dashboard/OnboardingModal';
+import SessionDecision from '../components/dashboard/SessionDecision';
 import { Helmet } from 'react-helmet-async';
 
 export default function Dashboard() {
