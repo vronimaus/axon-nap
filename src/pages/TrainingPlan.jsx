@@ -554,7 +554,6 @@ function PhaseCard({ phase, index, isExpanded, onToggle, isCompleted, onComplete
                         idx={exIdx}
                         onDetailClick={onExerciseClick}
                       />
-                      </button>
                     ))}
                   </div>
                 </div>
