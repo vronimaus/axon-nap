@@ -22,6 +22,7 @@ Deno.serve(async (req) => {
     const needsFill = (v) => !v || (typeof v === 'string' && v.trim() === '') || (Array.isArray(v) && v.length === 0);
 
     const missingFields = [];
+    if (needsFill(ex.description)) missingFields.push('description');
     if (needsFill(ex.benefits)) missingFields.push('benefits');
     if (needsFill(ex.goal_explanation)) missingFields.push('goal_explanation');
     if (needsFill(ex.axon_moment)) missingFields.push('axon_moment');
