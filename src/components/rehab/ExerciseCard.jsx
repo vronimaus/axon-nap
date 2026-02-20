@@ -9,6 +9,29 @@ const ExerciseCoachingPanel = React.lazy(() => import('./ExerciseCoachingPanel')
 
 export default function ExerciseCard({ exercise, idx, readinessStatus, rehabPlan, queryClient, onFeedbackSubmit }) {
   const [expanded, setExpanded] = useState(false);
+  const [isOuchModalOpen, setIsOuchModalOpen] = useState(false);
+  const [isUpgrading, setIsUpgrading] = useState(false);
+
+  const handlePerformanceBoost = async () => {
+    setIsUpgrading(true);
+    try {
+      const { data } = await base44.functions.invoke('performanceBoost', {
+        rehabPlanId: rehabPlan.id,
+        exerciseId: exercise.exercise_id,
+        currentPhaseIndex: (rehabPlan.current_phase || 1) - 1
+      });
+      if (data.blocked) {
+        toast.error(data.reason || 'Upgrade nicht möglich');
+      } else if (data.success) {
+        toast.success(data.message || '🚀 Übung upgraded!', { duration: 5000 });
+        if (queryClient) queryClient.invalidateQueries({ queryKey: ['rehabPlan'] });
+      }
+    } catch (error) {
+      toast.error('Fehler beim Upgrade');
+    } finally {
+      setIsUpgrading(false);
+    }
+  };
 
   const isStrengthExercise = exercise.category && ['strength', 'functional'].includes(exercise.category.toLowerCase());
   const shouldShowWarning = readinessStatus === 'yellow' && isStrengthExercise;
