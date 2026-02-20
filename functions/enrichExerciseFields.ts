@@ -95,35 +95,23 @@ Antwort-Format (nur die fehlenden Felder):
 ${missingFields.map(f => `  "${f}": ...`).join(',\n')}
 }`;
 
-  const apiKey = Deno.env.get('GEMINI_API_KEY');
-  const geminiRes = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
-    {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        contents: [{ parts: [{ text: prompt }] }],
-        generationConfig: { temperature: 0.7, responseMimeType: 'application/json' }
-      })
+  // Build JSON schema for the missing fields only
+  const schemaProps = {};
+  for (const f of missingFields) {
+    if (f === 'cues') {
+      schemaProps[f] = { type: 'array', items: { type: 'string' } };
+    } else {
+      schemaProps[f] = { type: 'string' };
     }
-  );
-
-  if (!geminiRes.ok) {
-    const err = await geminiRes.text();
-    console.error('Gemini error:', err);
-    return Response.json({ error: 'LLM-Fehler: ' + err }, { status: 500 });
   }
 
-  const geminiData = await geminiRes.json();
-  const raw = geminiData.candidates?.[0]?.content?.parts?.[0]?.text;
-
-  let generated;
-  try {
-    generated = JSON.parse(raw);
-  } catch (e) {
-    console.error('JSON parse error:', e, 'Raw:', raw);
-    return Response.json({ error: 'LLM-Antwort konnte nicht geparst werden', raw }, { status: 500 });
-  }
+  const generated = await base44.asServiceRole.integrations.Core.InvokeLLM({
+    prompt,
+    response_json_schema: {
+      type: 'object',
+      properties: schemaProps
+    }
+  });
 
   // Only update fields that were actually missing and generated
   const update = {};
