@@ -19,7 +19,16 @@ Deno.serve(async (req) => {
     const ex = await base44.asServiceRole.entities.Exercise.get(entityId);
 
     // Determine which fields need filling
-    const needsFill = (v) => !v || (typeof v === 'string' && v.trim() === '') || (Array.isArray(v) && v.length === 0);
+    const needsFill = (v) => {
+      if (!v || (Array.isArray(v) && v.length === 0)) return true;
+      if (typeof v === 'string') {
+        const trimmed = v.trim().toLowerCase();
+        if (trimmed === '') return true;
+        // Recognize placeholder/auto-generated content
+        if (trimmed === 'auto-created from routine' || trimmed.startsWith('auto-created')) return true;
+      }
+      return false;
+    };
 
     const missingFields = [];
     if (needsFill(ex.description)) missingFields.push('description');
