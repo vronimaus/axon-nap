@@ -548,23 +548,12 @@ function PhaseCard({ phase, index, isExpanded, onToggle, isCompleted, onComplete
                   </h4>
                   <div className="space-y-3">
                     {phase.exercises.map((exercise, exIdx) => (
-                      <button
+                      <TrainingExerciseCard
                         key={exIdx}
-                        onClick={() => onExerciseClick(exercise)}
-                        className="w-full bg-white/5 hover:bg-white/10 rounded-lg p-4 text-left transition-all group border border-transparent hover:border-cyan-500/30"
-                      >
-                        <div className="flex items-start justify-between mb-2">
-                          <div className="flex-1">
-                            <p className="font-medium text-slate-200 group-hover:text-cyan-400 transition-colors">
-                              {exercise.name}
-                            </p>
-                            <p className="text-xs text-slate-400 mt-1">{exercise.sets_reps_tempo}</p>
-                          </div>
-                          <div className="flex items-center gap-2 text-slate-500 group-hover:text-cyan-400 transition-colors">
-                            <Info className="w-4 h-4" />
-                          </div>
-                        </div>
-                        <p className="text-sm text-slate-400 line-clamp-2">{exercise.instruction?.split('\n')[0]}</p>
+                        exercise={exercise}
+                        idx={exIdx}
+                        onDetailClick={onExerciseClick}
+                      />
                       </button>
                     ))}
                   </div>
