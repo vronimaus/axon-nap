@@ -132,10 +132,10 @@ export default function ExerciseCard({ exercise, idx, readinessStatus, rehabPlan
         )}
 
         {/* AXON-Moment – immer sichtbar */}
-        {exercise.axon_moment && (
+        {fullExercise.axon_moment && (
           <div className="bg-cyan-500/10 border border-cyan-500/25 rounded-xl p-3">
             <p className="text-xs font-semibold text-cyan-400 mb-1">⚡ AXON-Moment</p>
-            <p className="text-sm text-slate-300 leading-snug italic">{exercise.axon_moment}</p>
+            <p className="text-sm text-slate-300 leading-snug italic">{fullExercise.axon_moment}</p>
           </div>
         )}
 
