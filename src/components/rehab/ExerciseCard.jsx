@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown, AlertTriangle, Zap, Timer, RotateCcw, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -9,6 +9,21 @@ const ExerciseCoachingPanel = React.lazy(() => import('./ExerciseCoachingPanel')
 
 export default function ExerciseCard({ exercise, idx, readinessStatus, rehabPlan, queryClient, onFeedbackSubmit }) {
   const [expanded, setExpanded] = useState(false);
+  // Merge plan-exercise data with full exercise data from DB
+  const [fullExercise, setFullExercise] = useState(exercise);
+
+  useEffect(() => {
+    if (exercise.exercise_id) {
+      base44.entities.Exercise.filter({ exercise_id: exercise.exercise_id })
+        .then(results => {
+          if (results?.length > 0) {
+            // Merge: plan fields take priority for sets/reps, DB fills in the rest
+            setFullExercise({ ...results[0], ...exercise });
+          }
+        })
+        .catch(() => {}); // fallback to plan data silently
+    }
+  }, [exercise.exercise_id]);
   const [isOuchModalOpen, setIsOuchModalOpen] = useState(false);
   const [isUpgrading, setIsUpgrading] = useState(false);
 
