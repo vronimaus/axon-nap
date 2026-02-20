@@ -119,6 +119,11 @@ export default function Dashboard() {
             </p>
           </div>
 
+          {/* Session Decision — AXON Triage */}
+          <div className="mb-6">
+            <SessionDecision user={user} />
+          </div>
+
           <div className="grid sm:grid-cols-3 gap-4 sm:gap-6">
             {/* 1. PERFORMANCE (Goals) - NOW FIRST */}
             <motion.button
