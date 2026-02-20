@@ -541,14 +541,7 @@ export default function RehabPlan() {
             </div>
           )}
 
-          {/* Progress Notes */}
-          <div className="glass rounded-xl border border-slate-700 p-6">
-            <h3 className="font-semibold text-white mb-3">💡 Tipp</h3>
-            <p className="text-slate-300 text-sm leading-relaxed">
-              Mache diese Übungen regelmäßig - am besten täglich oder nach Bedarf. Dein Körper braucht Zeit, um sich anzupassen. 
-              Tracke deinen Fortschritt nach jeder Session, damit du siehst wie sich dein Schmerzlevel entwickelt.
-            </p>
-          </div>
+
         </div>
       </div>
     </div>
