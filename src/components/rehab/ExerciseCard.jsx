@@ -17,8 +17,13 @@ export default function ExerciseCard({ exercise, idx, readinessStatus, rehabPlan
       base44.entities.Exercise.filter({ exercise_id: exercise.exercise_id })
         .then(results => {
           if (results?.length > 0) {
-            // Merge: plan fields take priority for sets/reps, DB fills in the rest
-            setFullExercise({ ...results[0], ...exercise });
+            const dbEx = results[0];
+            // DB fields take priority for content; plan fields only override sets_reps_tempo
+            setFullExercise({
+              ...exercise,
+              ...dbEx,
+              sets_reps_tempo: exercise.sets_reps_tempo || dbEx.sets_reps_tempo,
+            });
           }
         })
         .catch(() => {}); // fallback to plan data silently
