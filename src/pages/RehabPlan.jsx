@@ -441,17 +441,6 @@ export default function RehabPlan() {
                 }
               />
             );
-          })ciseSubstituted={() => {
-                        queryClient.invalidateQueries({ queryKey: ['rehabPlan'] });
-                        toast.success('Übung wurde angepasst');
-                      }}
-                        />
-                        </React.Suspense>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </motion.div>
-            );
           })}
         </div>
 
