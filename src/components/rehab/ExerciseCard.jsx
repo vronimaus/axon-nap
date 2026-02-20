@@ -257,8 +257,8 @@ export default function ExerciseCard({ exercise, idx, readinessStatus, rehabPlan
       <OuchInterventionModal
         isOpen={isOuchModalOpen}
         onClose={() => setIsOuchModalOpen(false)}
-        exerciseId={exercise.exercise_id}
-        exerciseName={exercise.name}
+        exerciseId={fullExercise.exercise_id}
+        exerciseName={fullExercise.name}
         rehabPlanId={rehabPlan?.id}
         onExerciseSubstituted={() => {
           if (queryClient) queryClient.invalidateQueries({ queryKey: ['rehabPlan'] });
