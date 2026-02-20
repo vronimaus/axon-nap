@@ -234,7 +234,7 @@ ${availableFaqIds.join(', ')}`,
     const exerciseIdMap = Object.fromEntries(validExercises.map(e => [e.exercise_id, e]));
     const hallucinations = [];
 
-    const enrichedPhases = await Promise.all(
+    const rawEnrichedPhases = await Promise.all(
       planData.phases.map(async (phase) => {
         const enrichedExercises = await Promise.all(
           (phase.exercises || []).map(async (exercise) => {
@@ -291,7 +291,8 @@ ${availableFaqIds.join(', ')}`,
         console.log(`[generateRehabPlan] Phase ${phase.phase_number}: ${validPhaseExercises.length}/${(phase.exercises||[]).length} valid`);
         return { ...phase, exercises: validPhaseExercises };
       })
-    ).then(phases => phases.filter(phase => phase.exercises.length > 0));
+    );
+    const enrichedPhases = rawEnrichedPhases.filter(phase => phase.exercises.length > 0);
 
     if (hallucinations.length > 0) {
       console.error(`[generateRehabPlan] HALLUCINATION REPORT: ${hallucinations.length} invalid IDs:`, hallucinations);
