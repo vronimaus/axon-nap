@@ -247,25 +247,21 @@ ${availableFaqIds.join(', ')}`,
     const exerciseIdMap = Object.fromEntries(validExercises.map(e => [e.exercise_id, e]));
     const hallucinations = [];
 
-    const rawEnrichedPhases = await Promise.all(
+    const enrichedPhases = (await Promise.all(
       planData.phases.map(async (phase) => {
-        const enrichedExercises = await Promise.all(
+        const enrichedExercises = (await Promise.all(
           (phase.exercises || []).map(async (exercise) => {
             const requestedId = exercise.exercise_id;
             let ex = exerciseIdMap[requestedId];
 
-            // If not found, log hallucination and use fallback
             if (!ex) {
               hallucinations.push(requestedId);
               console.warn(`[generateRehabPlan] HALLUCINATION: "${requestedId}" not in Golden Source`);
-              
-              // Fallback: use random valid exercise matching phase difficulty
               ex = validExercises.find(e => {
                 if (phase.phase_number === 1) return e.difficulty === 'beginner';
                 if (phase.phase_number === 2) return e.difficulty === 'intermediate';
                 return e.difficulty === 'advanced' || e.difficulty === 'intermediate';
               }) || validExercises[Math.floor(Math.random() * validExercises.length)];
-              
               if (ex) console.log(`  → Using fallback: "${ex.exercise_id}" (${ex.name})`);
             }
 
@@ -298,14 +294,12 @@ ${availableFaqIds.join(', ')}`,
               completed: false
             };
           })
-        );
-        
-        const validPhaseExercises = enrichedExercises.filter(ex => ex !== null);
-        console.log(`[generateRehabPlan] Phase ${phase.phase_number}: ${validPhaseExercises.length}/${(phase.exercises||[]).length} valid`);
-        return { ...phase, exercises: validPhaseExercises };
+        )).filter(ex => ex !== null);
+
+        console.log(`[generateRehabPlan] Phase ${phase.phase_number}: ${enrichedExercises.length}/${(phase.exercises||[]).length} valid`);
+        return { ...phase, exercises: enrichedExercises };
       })
-    );
-    const enrichedPhases = rawEnrichedPhases.filter(phase => phase.exercises.length > 0);
+    )).filter(phase => phase.exercises.length > 0);
 
     if (hallucinations.length > 0) {
       console.error(`[generateRehabPlan] HALLUCINATION REPORT: ${hallucinations.length} invalid IDs:`, hallucinations);
