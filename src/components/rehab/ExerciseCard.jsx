@@ -32,7 +32,7 @@ export default function ExerciseCard({ exercise, idx, readinessStatus, rehabPlan
     try {
       const { data } = await base44.functions.invoke('performanceBoost', {
         rehabPlanId: rehabPlan.id,
-        exerciseId: exercise.exercise_id,
+        exerciseId: fullExercise.exercise_id,
         currentPhaseIndex: (rehabPlan.current_phase || 1) - 1
       });
       if (data.blocked) {
