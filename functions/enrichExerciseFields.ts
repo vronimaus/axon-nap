@@ -2,13 +2,17 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
 
 Deno.serve(async (req) => {
+  try {
   const base44 = createClientFromRequest(req);
-  const user = await base44.auth.me();
+  
+  let user = null;
+  try { user = await base44.auth.me(); } catch (_e) { /* not authenticated */ }
   if (!user || user.role !== 'admin') {
     return Response.json({ error: 'Forbidden' }, { status: 403 });
   }
 
-  const { exercise_id: entityId } = await req.json();
+  const body = await req.json();
+  const entityId = body.exercise_id;
   if (!entityId) return Response.json({ error: 'exercise_id required' }, { status: 400 });
 
   // Load the exercise record
