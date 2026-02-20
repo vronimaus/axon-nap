@@ -71,6 +71,34 @@ function ExerciseRow({ ex }) {
 
   const handleDiscard = () => setEdits({});
 
+  const handleEnrich = async () => {
+    setEnriching(true);
+    try {
+      const res = await base44.functions.invoke('enrichExerciseFields', { exercise_id: ex.id });
+      const { updated, fields, message } = res.data;
+      if (message) {
+        toast.info(message);
+      } else if (fields?.length > 0) {
+        // Merge enriched values into edits so user can review before saving
+        setEdits(prev => ({ ...prev, ...updated }));
+        toast.success(`✨ ${fields.length} Felder von KI befüllt – bitte prüfen & speichern`);
+      } else {
+        toast.info('Keine neuen Felder befüllt');
+      }
+    } catch (e) {
+      toast.error('Fehler: ' + e.message);
+    } finally {
+      setEnriching(false);
+    }
+  };
+
+  // Check how many key fields are empty
+  const emptyCount = ['benefits', 'goal_explanation', 'axon_moment', 'purpose_explanation', 'breathing_instruction', 'cues']
+    .filter(f => {
+      const v = ex[f];
+      return !v || (typeof v === 'string' && !v.trim()) || (Array.isArray(v) && v.length === 0);
+    }).length;
+
   const imageUrl = val('image_url');
   const gifUrl = val('gif_url');
 
