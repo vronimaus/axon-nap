@@ -402,13 +402,46 @@ export default function Dashboard() {
                       animate={{ opacity: 1, y: 0 }}
                     >
                       <Button
-                        onClick={() => {
-                          const encodedGoal = encodeURIComponent(selectedBodyRegion.trim());
-                          window.location.href = createPageUrl(`PerformanceChat?goal=${encodedGoal}`);
+                        disabled={isGeneratingPlan}
+                        onClick={async () => {
+                          const goal = selectedBodyRegion.trim();
+                          setIsGeneratingPlan(true);
+                          try {
+                            // Archive any existing active plan first
+                            const existingPlans = await base44.entities.TrainingPlan.filter({
+                              user_email: user.email,
+                              status: 'active'
+                            });
+                            for (const plan of existingPlans) {
+                              await base44.entities.TrainingPlan.update(plan.id, { status: 'paused' });
+                            }
+
+                            const response = await base44.functions.invoke('generateTrainingPlan', {
+                              goal_description: goal,
+                            });
+
+                            if (response.data?.plan_id) {
+                              base44.analytics.track({ eventName: 'training_plan_created', properties: { goal } });
+                              window.location.href = createPageUrl('TrainingPlan');
+                            } else {
+                              throw new Error('Plan konnte nicht erstellt werden');
+                            }
+                          } catch (err) {
+                            console.error(err);
+                            toast.error('Fehler beim Erstellen deines Plans. Bitte versuche es erneut.');
+                            setIsGeneratingPlan(false);
+                          }
                         }}
                         className="w-full h-12 sm:h-14 bg-gradient-to-r from-amber-500 to-yellow-600 hover:from-amber-600 hover:to-yellow-700 text-white font-bold text-sm sm:text-base"
                       >
-                        Coaching starten →
+                        {isGeneratingPlan ? (
+                          <span className="flex items-center gap-2 justify-center">
+                            <Loader2 className="w-5 h-5 animate-spin" />
+                            Plan wird erstellt…
+                          </span>
+                        ) : (
+                          'Trainingsplan erstellen →'
+                        )}
                       </Button>
                     </motion.div>
                   )}
