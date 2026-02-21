@@ -37,6 +37,8 @@ const EDITABLE_FIELDS = [
   { key: 'gif_url', label: 'GIF URL (gif_url)', type: 'text' },
   { key: 'difficulty', label: 'Schwierigkeit', type: 'select', options: ['beginner', 'intermediate', 'advanced'] },
   { key: 'category', label: 'Kategorie', type: 'select', options: ['pull','push','squat','hinge','carry','core','mobility','plank','row','dip','neuro','breath','mfr','other'] },
+  { key: 'progression_basic', label: 'Progression Basic (JSON)', type: 'textarea' },
+  { key: 'progression_advanced', label: 'Progression Advanced (JSON)', type: 'textarea' },
 ];
 
 function ExerciseRow({ ex }) {
