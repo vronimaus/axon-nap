@@ -469,23 +469,25 @@ export default function TrainingPlan() {
                 </AnimatePresence>
               </motion.div>
             ) : (
+            <div className="flex items-center justify-center min-h-[50vh]">
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="glass rounded-2xl border border-cyan-500/30 p-8 text-center"
+                className="max-w-md w-full glass rounded-2xl border border-slate-700 p-8 text-center"
               >
-                <Target className="w-16 h-16 text-amber-400 mx-auto mb-4 opacity-50" />
-                <h2 className="text-2xl font-bold text-white mb-2">Kein aktiver Trainingsplan</h2>
-                <p className="text-slate-400 mb-6">
+                <Target className="w-12 h-12 text-slate-400 mx-auto mb-4" />
+                <h2 className="text-xl font-bold text-white mb-2">Kein aktiver Trainingsplan</h2>
+                <p className="text-slate-300 mb-6">
                   Starte eine Performance Coaching Session, um deinen personalisierten Plan zu erstellen.
                 </p>
                 <Button
                   onClick={() => window.location.href = createPageUrl('Dashboard')}
-                  className="bg-gradient-to-r from-amber-500 to-yellow-600 hover:from-amber-600 hover:to-yellow-700"
+                  className="w-full bg-amber-500/20 text-amber-400 hover:bg-amber-500/30"
                 >
                   Zum Dashboard
                 </Button>
               </motion.div>
+            </div>
             )}
       </div>
 
