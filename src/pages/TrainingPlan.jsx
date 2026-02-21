@@ -538,7 +538,7 @@ export default function TrainingPlan() {
 
 
 
-function PhaseCard({ phase, index, isExpanded, onToggle, isCompleted, onComplete, onExerciseClick }) {
+function PhaseCard({ phase, index, totalPhases, isCompleted, onComplete, onNext, onPrev, onExerciseClick }) {
   const getPhaseColor = (idx) => {
     if (idx === 0) return { bg: 'from-amber-500/20', border: 'border-amber-500/30', text: 'text-amber-400', icon: Target };
     if (idx === 1) return { bg: 'from-cyan-500/20', border: 'border-cyan-500/30', text: 'text-cyan-400', icon: TrendingUp };
@@ -550,95 +550,80 @@ function PhaseCard({ phase, index, isExpanded, onToggle, isCompleted, onComplete
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: index * 0.1 }}
-      className={`glass rounded-xl border transition-all bg-gradient-to-r ${colors.bg} to-transparent ${colors.border}`}
+      key={index}
+      initial={{ opacity: 0, x: 20 }}
+      animate={{ opacity: 1, x: 0 }}
+      exit={{ opacity: 0, x: -20 }}
+      className={`glass rounded-xl border bg-gradient-to-r ${colors.bg} to-transparent ${colors.border}`}
     >
-      <button
-        onClick={onToggle}
-        className="w-full p-4 flex items-center justify-between hover:bg-white/5 transition-colors"
-      >
-        <div className="flex items-center gap-4 text-left">
-          <div className={`w-12 h-12 rounded-xl ${colors.bg} border ${colors.border} flex items-center justify-center`}>
+      {/* Phase Header */}
+      <div className="p-5 border-b border-slate-700/50">
+        <div className="flex items-center gap-4">
+          <div className={`w-12 h-12 rounded-xl ${colors.bg} border ${colors.border} flex items-center justify-center flex-shrink-0`}>
             <PhaseIcon className={`w-6 h-6 ${colors.text}`} />
           </div>
-          <div>
-            <h3 className={`font-semibold ${colors.text}`}>
+          <div className="flex-1">
+            <div className="flex items-center gap-2 mb-1">
+              <span className={`text-xs font-bold tracking-widest uppercase ${colors.text}`}>Phase {index + 1} / {totalPhases}</span>
+              {isCompleted && <span className="text-xs bg-green-500/20 text-green-400 border border-green-500/40 px-2 py-0.5 rounded-full font-semibold">✓ Abgeschlossen</span>}
+            </div>
+            <h3 className="text-xl font-bold text-white">
               {phase.title || `Phase ${phase.phase_number || index + 1}`}
             </h3>
-            <p className="text-sm text-slate-400">
-              {phase.duration_weeks || 2} Wochen · {phase.exercises?.length || 0} Übungen
-            </p>
+            <p className="text-sm text-slate-400 mt-0.5">{phase.duration_weeks || 2} Wochen · {phase.exercises?.length || 0} Übungen</p>
           </div>
         </div>
-        <div className="flex items-center gap-3">
-          <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all ${
-            isCompleted 
-              ? 'bg-green-500/30 border-green-500' 
-              : 'border-slate-600'
-          }`}>
-            {isCompleted && <CheckCircle2 className="w-4 h-4 text-green-400" />}
-          </div>
-          <div className={`text-slate-400 transition-transform ${isExpanded ? 'rotate-180' : ''}`}>
-            ▼
-          </div>
-        </div>
-      </button>
-
-      <AnimatePresence>
-        {isExpanded && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            className="border-t border-slate-700/50"
-          >
-            <div className="p-4 space-y-4">
-              {/* Phase Description */}
-              <div>
-                <h4 className="font-semibold text-slate-200 mb-2">Fokus:</h4>
-                <p className="text-sm text-slate-400 leading-relaxed">{phase.description}</p>
-              </div>
-
-              {/* Exercises */}
-              {phase.exercises && phase.exercises.length > 0 && (
-                <div className="pt-4 border-t border-slate-700/50">
-                  <h4 className="font-semibold text-slate-200 mb-3 flex items-center gap-2">
-                    <Zap className="w-4 h-4 text-cyan-400" />
-                    Übungen
-                  </h4>
-                  <div className="space-y-3">
-                    {phase.exercises.map((exercise, exIdx) => (
-                      <TrainingExerciseCard
-                        key={exIdx}
-                        exercise={exercise}
-                        idx={exIdx}
-                        onDetailClick={onExerciseClick}
-                      />
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* Complete Button */}
-              <div className="pt-4 border-t border-slate-700/50 flex gap-2">
-                <Button
-                  onClick={onComplete}
-                  variant={isCompleted ? 'outline' : 'default'}
-                  className={`flex-1 ${
-                    isCompleted
-                      ? 'border-green-500/50 text-green-400'
-                      : 'bg-gradient-to-r from-cyan-500 to-blue-600'
-                  }`}
-                >
-                  {isCompleted ? 'Abgeschlossen' : 'Als erledigt markieren'}
-                </Button>
-              </div>
-            </div>
-          </motion.div>
+        {phase.description && (
+          <p className="text-sm text-slate-300 leading-relaxed mt-4">{phase.description}</p>
         )}
-      </AnimatePresence>
+      </div>
+
+      {/* Exercises */}
+      {phase.exercises && phase.exercises.length > 0 && (
+        <div className="p-5 space-y-4">
+          <h4 className="font-semibold text-slate-200 flex items-center gap-2 text-sm">
+            <Zap className="w-4 h-4 text-cyan-400" />
+            Übungen dieser Phase
+          </h4>
+          <div className="space-y-4">
+            {phase.exercises.map((exercise, exIdx) => (
+              <TrainingExerciseCard
+                key={exIdx}
+                exercise={exercise}
+                idx={exIdx}
+                onDetailClick={onExerciseClick}
+              />
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Footer Navigation */}
+      <div className="p-4 border-t border-slate-700/50 flex gap-3">
+        {index > 0 && (
+          <Button variant="outline" onClick={onPrev} className="border-slate-600 text-slate-400">
+            ← Vorherige
+          </Button>
+        )}
+        <div className="flex-1" />
+        {!isCompleted ? (
+          <Button
+            onClick={onComplete}
+            className="bg-gradient-to-r from-amber-500 to-yellow-500 text-black font-bold"
+          >
+            <CheckCircle2 className="w-4 h-4 mr-2" />
+            Phase abschließen
+          </Button>
+        ) : index < totalPhases - 1 ? (
+          <Button onClick={onNext} className="bg-gradient-to-r from-cyan-500 to-blue-600">
+            Nächste Phase →
+          </Button>
+        ) : (
+          <div className="text-green-400 font-bold flex items-center gap-2">
+            <CheckCircle2 className="w-5 h-5" /> Plan abgeschlossen! 🎉
+          </div>
+        )}
+      </div>
     </motion.div>
   );
 }
