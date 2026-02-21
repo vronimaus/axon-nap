@@ -86,8 +86,8 @@ Deno.serve(async (req) => {
     Bestimme target_nodes (z.B. N10_Shoulder_Complex, N11_LSO_Pelvis, N12_Hip_Ankle).
     Erstelle eine progression_matrix mit 4-5 aufbauenden Übungen vom einfachsten bis zum Ziel.
 
-    ✅ ERLAUBTE exercise_ids (NUR diese verwenden!):
-    ${availableExerciseIds.map((id, i) => `${i + 1}. ${id}`).join('\n')}
+    ✅ ERLAUBTE Übungen mit Metadaten (NUR diese exercise_ids verwenden!):
+    ${exerciseCatalog}
 
     Verfügbare Routine-IDs:
     ${availableRoutineIds.map((id, i) => `${i + 1}. ${id}`).join('\n')}
