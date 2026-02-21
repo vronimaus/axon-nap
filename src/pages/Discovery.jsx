@@ -309,29 +309,52 @@ export default function Discovery() {
             exit={{ opacity: 0, y: -20 }}
             className="max-w-lg w-full text-center space-y-6"
           >
-            <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-amber-500 to-yellow-600 flex items-center justify-center mx-auto shadow-lg shadow-amber-500/30">
-              <Brain className="w-10 h-10 text-white" />
+            <div className={`w-20 h-20 rounded-2xl flex items-center justify-center mx-auto shadow-lg ${goalKey ? 'bg-gradient-to-br from-amber-500 to-yellow-600 shadow-amber-500/30' : 'bg-gradient-to-br from-cyan-500 to-blue-600 shadow-cyan-500/30'}`}>
+              {goalKey ? <Target className="w-10 h-10 text-white" /> : <Brain className="w-10 h-10 text-white" />}
             </div>
             <div>
               <h1 className="text-3xl sm:text-4xl font-bold text-white mb-3">AXON Discovery</h1>
-              <p className="text-slate-400 text-base leading-relaxed">
-                5 kurze Tests. AXON scannt deine <strong className="text-amber-400">Baseline-Kapazitäten</strong> – und passt jeden Trainingsplan von Anfang an präzise auf dich an.
-              </p>
+              {goalKey ? (
+                <div className="space-y-2">
+                  <p className="text-amber-400 font-semibold text-lg">Ziel erkannt: {goalLabel}</p>
+                  <p className="text-slate-400 text-base leading-relaxed">
+                    Für <strong className="text-white">{goalLabel}</strong> brauchen wir nur <strong className="text-amber-400">2 gezielte Tests</strong>. AXON kalibriert deinen Plan exakt auf die relevanten Schwachstellen.
+                  </p>
+                </div>
+              ) : (
+                <p className="text-slate-400 text-base leading-relaxed">
+                  {TESTS.length} kurze Tests. AXON scannt deine <strong className="text-amber-400">Baseline-Kapazitäten</strong> – und passt jeden Trainingsplan von Anfang an präzise auf dich an.
+                </p>
+              )}
             </div>
+
+            {goalKey && (
+              <div className="glass rounded-xl border border-amber-500/40 p-4 text-left bg-amber-500/5">
+                <p className="text-xs text-amber-400 font-semibold uppercase tracking-wider mb-2">Zielgerichtete Analyse</p>
+                <p className="text-sm text-slate-300">
+                  Wir testen nur, was für <strong className="text-white">{goalLabel}</strong> wirklich relevant ist – kein unnötiger Aufwand.
+                </p>
+              </div>
+            )}
+
             <div className="glass rounded-xl border border-amber-500/30 p-5 text-left space-y-3">
-              {TESTS.map((t) => (
+              {TESTS.map((t, i) => (
                 <div key={t.id} className="flex items-center gap-3 text-sm text-slate-300">
                   <span className="text-xl w-8 text-center">{t.icon}</span>
-                  <span><strong className="text-white">{t.name}</strong> — {t.question.slice(0, 50)}…</span>
+                  <div>
+                    <strong className="text-white">{t.name}</strong>
+                    {goalKey && <span className="ml-2 text-xs text-amber-400 font-mono">Test {i+1}</span>}
+                    <span className="text-slate-500"> — {t.question.slice(0, 50)}…</span>
+                  </div>
                 </div>
               ))}
             </div>
-            <p className="text-xs text-slate-500">Dauer: ~3 Minuten • Einmalig • Kein Equipment nötig</p>
+            <p className="text-xs text-slate-500">Dauer: ~{TESTS.length <= 2 ? '2' : '3-5'} Minuten • Kein Equipment nötig</p>
             <Button
               onClick={() => setPhase('testing')}
               className="w-full h-14 bg-gradient-to-r from-amber-500 to-yellow-600 hover:from-amber-600 hover:to-yellow-700 text-white font-bold text-lg"
             >
-              Assessment starten →
+              {goalKey ? `Baseline für ${goalLabel} messen →` : 'Assessment starten →'}
             </Button>
             <button
               onClick={() => window.location.href = createPageUrl('Dashboard')}
