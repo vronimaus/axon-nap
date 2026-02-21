@@ -41,6 +41,17 @@ Deno.serve(async (req) => {
     const availableRoutineIds = allRoutines.slice(0, 10).map(r => r.id).filter(Boolean);
     const availableFaqIds = allFaqs.slice(0, 10).map(f => f.faq_id).filter(Boolean);
 
+    // Build rich exercise catalog for the LLM (id + name + category + goals + difficulty)
+    const exerciseCatalog = allExercises
+      .filter(e => e.exercise_id)
+      .map(e => {
+        const goals = (e.related_performance_goals || []).join(', ');
+        const tags = [e.category, e.difficulty, e.stecco_chain].filter(Boolean).join(' | ');
+        const goalStr = goals ? ` → Ziele: ${goals}` : '';
+        return `- ${e.exercise_id}: "${e.name}" [${tags}]${goalStr}`;
+      })
+      .join('\n');
+
     console.log(`[generateTrainingPlan] Goal: ${goal_description}, Exercises: ${availableExerciseIds.length}`);
 
     // Build exercise lookup for enrichment
