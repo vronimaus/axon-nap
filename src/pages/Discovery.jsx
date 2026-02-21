@@ -474,7 +474,9 @@ export default function Discovery() {
             key="results"
             tests={TESTS}
             answers={answers}
-            onContinue={() => window.location.href = createPageUrl('Dashboard')}
+            goalLabel={goalParam ? (goalLabel || goalParam) : null}
+            isGeneratingPlan={isGeneratingPlan}
+            onContinue={handleContinue}
           />
         )}
       </AnimatePresence>
