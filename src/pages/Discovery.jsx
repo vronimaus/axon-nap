@@ -221,9 +221,10 @@ export default function Discovery() {
         if (!u) { window.location.href = createPageUrl('Landing'); return; }
         setUser(u);
 
-        // Check if coming from a specific goal
+        // Check if coming from a specific goal (from Dashboard)
         const urlParams = new URLSearchParams(window.location.search);
         const gp = urlParams.get('goal');
+        
         if (gp) {
           setGoalParam(gp);
           const detected = detectGoalKey(gp);
@@ -233,6 +234,9 @@ export default function Discovery() {
             setGoalLabel(mapping.label);
             setTESTS(mapping.tests.map(id => ALL_TESTS[id]));
           }
+        } else {
+          // No goal param — use general tests (default flow)
+          setTESTS(GENERAL_TESTS);
         }
       } catch {
         window.location.href = createPageUrl('Landing');
