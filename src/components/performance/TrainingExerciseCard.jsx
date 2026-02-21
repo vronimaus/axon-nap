@@ -67,6 +67,14 @@ export default function TrainingExerciseCard({ exercise, idx, onDetailClick }) {
     }
   };
 
+  const handleOuch = () => {
+    toast.error('Ouch registriert! Reduziere das Gewicht oder mache eine Pause. Beim nächsten Mal startet AXON mit einer leichteren Variante.', { duration: 5000 });
+  };
+
+  const handleBoost = () => {
+    toast.success('💪 Boost gespeichert! Du bist bereit für mehr. AXON wird beim nächsten Mal die Intensität erhöhen.', { duration: 4000 });
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 14 }}
