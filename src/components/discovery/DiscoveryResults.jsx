@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
-import { CheckCircle2, ArrowRight } from 'lucide-react';
+import { CheckCircle2, ArrowRight, Loader2 } from 'lucide-react';
 
 const LEVEL_CONFIG = {
   beginner: { label: 'Beginner', color: 'text-slate-400', bg: 'bg-slate-500/20', border: 'border-slate-500/40' },
