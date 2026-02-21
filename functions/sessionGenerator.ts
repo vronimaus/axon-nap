@@ -106,7 +106,7 @@ Deno.serve(async (req) => {
       reason: 'Du hast noch keinen aktiven Plan. Wähle deinen Einstieg.',
       recommendation: 'Starte mit einer Diagnose (Reha) oder definiere dein Performance-Ziel.',
       cta: { label: 'Diagnose starten', page: 'DiagnosisChat' },
-      secondary_cta: { label: 'Performance-Ziel setzen', page: 'PerformanceTestChoice' },
+      secondary_cta: { label: 'Performance-Ziel setzen', page: 'Dashboard' },
       has_rehab: false,
       has_training: false,
     });
