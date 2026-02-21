@@ -218,6 +218,19 @@ export default function Discovery() {
         const u = await base44.auth.me();
         if (!u) { window.location.href = createPageUrl('Landing'); return; }
         setUser(u);
+
+        // Check if coming from a specific goal
+        const urlParams = new URLSearchParams(window.location.search);
+        const goalParam = urlParams.get('goal');
+        if (goalParam) {
+          const detected = detectGoalKey(goalParam);
+          if (detected && GOAL_BENCHMARK_MAP[detected]) {
+            const mapping = GOAL_BENCHMARK_MAP[detected];
+            setGoalKey(detected);
+            setGoalLabel(mapping.label);
+            setTESTS(mapping.tests.map(id => ALL_TESTS[id]));
+          }
+        }
       } catch {
         window.location.href = createPageUrl('Landing');
       } finally {
