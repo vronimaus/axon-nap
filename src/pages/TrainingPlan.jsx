@@ -206,7 +206,7 @@ export default function TrainingPlan() {
       </AnimatePresence>
 
       {/* Main Content */}
-      <div className="max-w-6xl mx-auto px-4 py-6 space-y-6">
+      <div className="max-w-4xl mx-auto px-4 py-6 space-y-6">
             {/* Readiness Recommendation */}
             {readinessStatus && (
               <motion.div
