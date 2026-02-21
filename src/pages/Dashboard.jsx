@@ -349,33 +349,6 @@ export default function Dashboard() {
                     <h1 className="text-2xl sm:text-3xl font-bold text-amber-400 tracking-tight">PERFORMANCE</h1>
                   </div>
                   
-                  {/* Baseline Banner */}
-                  {!user?.baseline_completed && (
-                    <motion.div
-                      initial={{ opacity: 0, y: -10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      className="glass rounded-xl border border-amber-500/50 p-4 bg-gradient-to-r from-amber-500/15 to-transparent flex items-center justify-between gap-4"
-                    >
-                      <div>
-                        <p className="text-sm font-bold text-amber-400">⚡ Baseline noch nicht gemessen</p>
-                        <p className="text-xs text-slate-400 mt-0.5">AXON Discovery (~3 Min) kalibriert deinen Plan präzise auf dich.</p>
-                      </div>
-                      <Button
-                        onClick={() => {
-                              const goal = selectedBodyRegion?.trim();
-                              const url = goal
-                                ? createPageUrl('Discovery') + `?goal=${encodeURIComponent(goal)}`
-                                : createPageUrl('Discovery');
-                              window.location.href = url;
-                            }}
-                            size="sm"
-                            className="flex-shrink-0 bg-amber-500 hover:bg-amber-600 text-black font-bold text-xs"
-                          >
-                            Jetzt starten
-                          </Button>
-                    </motion.div>
-                  )}
-
                   {/* Instructions Card */}
                   <div className="glass rounded-xl sm:rounded-2xl border border-amber-500/30 p-4 sm:p-6 bg-gradient-to-r from-amber-500/10 to-transparent">
                     <h2 className="text-base sm:text-lg font-semibold text-amber-400 mb-3">Was möchtest du schaffen?</h2>
@@ -401,6 +374,31 @@ export default function Dashboard() {
                       className="w-full px-4 py-3 rounded-lg bg-slate-800/50 border border-slate-700 text-white placeholder-slate-500 focus:outline-none focus:border-amber-400 text-sm sm:text-base"
                     />
                   </div>
+
+                  {/* Baseline Banner — shown AFTER goal is entered */}
+                  {!user?.baseline_completed && selectedBodyRegion?.trim() && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="glass rounded-xl border border-amber-500/50 p-4 bg-gradient-to-r from-amber-500/15 to-transparent flex items-center justify-between gap-4"
+                    >
+                      <div>
+                        <p className="text-sm font-bold text-amber-400">⚡ Baseline zuerst messen</p>
+                        <p className="text-xs text-slate-400 mt-0.5">AXON Discovery kalibriert deinen Plan exakt auf dein Ziel.</p>
+                      </div>
+                      <Button
+                        onClick={() => {
+                          const goal = selectedBodyRegion.trim();
+                          const url = createPageUrl('Discovery') + `?goal=${encodeURIComponent(goal)}`;
+                          window.location.href = url;
+                        }}
+                        size="sm"
+                        className="flex-shrink-0 bg-amber-500 hover:bg-amber-600 text-black font-bold text-xs"
+                      >
+                        Jetzt messen
+                      </Button>
+                    </motion.div>
+                  )}
                   
                   {/* Start Button */}
                   {selectedBodyRegion && selectedBodyRegion.trim() && (
