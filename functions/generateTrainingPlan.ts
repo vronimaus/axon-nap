@@ -30,6 +30,19 @@ Deno.serve(async (req) => {
     const sport = primary_sport || profile?.primary_sport || '';
     const fitnessGoals = profile?.fitness_goals?.join(', ') || 'improve_performance';
 
+    // Fetch user's PerformanceBaseline data
+    let baselineData = '';
+    try {
+      const baselines = await base44.entities.PerformanceBaseline.filter({ user_email: user.email }, '-test_date', 10);
+      if (baselines.length > 0) {
+        baselineData = baselines.map(b =>
+          `${b.test_name}: ${b.result_value} ${b.result_unit} → Level: ${b.baseline_level}`
+        ).join('\n');
+      }
+    } catch (_e) {
+      baselineData = '';
+    }
+
     // Fetch exercises, routines, FAQs
     const [allExercises, allRoutines, allFaqs] = await Promise.all([
       base44.asServiceRole.entities.Exercise.list('-updated_date', 200),
