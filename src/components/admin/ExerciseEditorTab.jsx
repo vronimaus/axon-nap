@@ -233,21 +233,21 @@ function ExerciseRow({ ex }) {
           {/* Editable Fields */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             {EDITABLE_FIELDS.map(field => (
-              <div key={field.key} className={field.type === 'textarea' ? 'md:col-span-2' : ''}>
-                <label className="block text-xs text-slate-400 mb-1 font-medium">
-                  {field.label}
-                  {edits[field.key] !== undefined && (
-                    <span className="ml-2 text-amber-400">●</span>
-                  )}
-                </label>
-                {field.type === 'textarea' ? (
-                  <textarea
-                    value={val(field.key)}
-                    onChange={(e) => setEdits(prev => ({ ...prev, [field.key]: e.target.value }))}
-                    rows={3}
-                    className="w-full px-3 py-2 rounded-lg bg-slate-900 border border-slate-600 text-slate-100 text-sm placeholder-slate-500 focus:border-cyan-500 focus:outline-none resize-y"
-                    placeholder={`${field.label} eingeben...`}
-                  />
+            <div key={field.key} className={['progression_basic', 'progression_advanced'].includes(field.key) || field.type === 'textarea' ? 'md:col-span-2' : ''}>
+            <label className="block text-xs text-slate-400 mb-1 font-medium">
+              {field.label}
+              {edits[field.key] !== undefined && (
+                <span className="ml-2 text-amber-400">●</span>
+              )}
+            </label>
+            {field.type === 'textarea' ? (
+              <textarea
+                value={val(field.key)}
+                onChange={(e) => setEdits(prev => ({ ...prev, [field.key]: e.target.value }))}
+                rows={['progression_basic', 'progression_advanced'].includes(field.key) ? 4 : 3}
+                className="w-full px-3 py-2 rounded-lg bg-slate-900 border border-slate-600 text-slate-100 text-sm placeholder-slate-500 focus:border-cyan-500 focus:outline-none resize-y font-mono text-xs"
+                placeholder={`${field.label} eingeben...`}
+              />
                 ) : field.type === 'select' ? (
                   <select
                     value={val(field.key)}
