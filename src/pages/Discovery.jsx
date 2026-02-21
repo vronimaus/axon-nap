@@ -257,11 +257,6 @@ export default function Discovery() {
   }, [currentTestIdx, TESTS]);
 
   const handleNext = () => {
-    const currentTest = TESTS[currentTestIdx];
-    if (answers[currentTest.id] === undefined) {
-      const defaultVal = currentTest.unit === 'level' ? currentTest.min : 0;
-      setAnswers(prev => ({ ...prev, [currentTest.id]: defaultVal }));
-    }
     if (currentTestIdx < TESTS.length - 1) {
       setCurrentTestIdx(prev => prev + 1);
     } else {
