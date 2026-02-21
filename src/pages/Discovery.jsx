@@ -3,84 +3,196 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { base44 } from '@/api/base44Client';
 import { createPageUrl } from '@/utils';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, ArrowRight, Loader2, Brain, Zap } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Loader2, Brain, Zap, Target } from 'lucide-react';
 import { toast } from 'sonner';
 import DiscoveryTest from '../components/discovery/DiscoveryTest.jsx';
 import DiscoveryResults from '../components/discovery/DiscoveryResults.jsx';
 
-const TESTS = [
-  {
-    id: 'pull_capacity',
-    name: 'Zug-Kapazität',
-    category: 'max_strength',
-    question: 'Wie viele saubere Klimmzüge (oder negative Klimmzüge) schaffst du?',
-    unit: 'reps',
-    metric_label: 'Wiederholungen',
-    hint: 'Falls 0: Kannst du dich 5 Sekunden oben halten (negativer Klimmzug)?',
-    icon: '🏋️',
-    min: 0,
-    max: 30,
-    thresholds: { beginner: 2, intermediate: 6, advanced: 12, elite: 20 },
-    related_goals: ['pullup', 'muscle_up', 'front_lever'],
-  },
-  {
-    id: 'push_capacity',
-    name: 'Druck-Kapazität',
-    category: 'max_strength',
-    question: 'Wie viele saubere Liegestütze schaffst du am Stück?',
-    unit: 'reps',
-    metric_label: 'Wiederholungen',
-    hint: 'Brust muss den Boden berühren, Körper bleibt gerade.',
-    icon: '💪',
-    min: 0,
-    max: 60,
-    thresholds: { beginner: 5, intermediate: 15, advanced: 30, elite: 50 },
-    related_goals: ['handstand', 'planche', 'muscle_up'],
-  },
-  {
-    id: 'core_stability',
-    name: 'Core-Stabilität',
+// All available benchmark tests
+const ALL_TESTS = {
+  active_hang: {
+    id: 'active_hang',
+    name: 'Active Hang',
     category: 'endurance',
-    question: 'Wie lange hältst du eine saubere Plank (Unterarm)?',
+    question: 'Wie lange hältst du dich aktiv an der Stange (Schultern nach unten gezogen)?',
     unit: 'seconds',
     metric_label: 'Sekunden',
-    hint: 'Hüfte nicht hängen lassen, Blick zum Boden.',
-    icon: '🧱',
-    min: 0,
-    max: 300,
-    thresholds: { beginner: 20, intermediate: 60, advanced: 120, elite: 180 },
-    related_goals: ['front_lever', 'handstand', 'pistol_squat'],
+    hint: 'Schultern aktiv nach unten ziehen – nicht passiv hängen lassen.',
+    icon: '🏋️',
+    min: 0, max: 120,
+    thresholds: { beginner: 10, intermediate: 30, advanced: 60, elite: 90 },
+    related_goals: ['muscle_up', 'front_lever', 'one_arm_pullup'],
   },
-  {
-    id: 'hip_mobility',
-    name: 'Hüft-Mobilität',
+  explosive_pullups: {
+    id: 'explosive_pullups',
+    name: 'Explosive Pull-ups',
+    category: 'max_strength',
+    question: 'Wie viele explosive Klimmzüge schaffst du (Brustbein zur Stange)?',
+    unit: 'reps',
+    metric_label: 'Wiederholungen',
+    hint: 'Zähle nur Wiederholungen, bei denen das Brustbein die Stange berührt.',
+    icon: '⚡',
+    min: 0, max: 20,
+    thresholds: { beginner: 1, intermediate: 4, advanced: 8, elite: 12 },
+    related_goals: ['muscle_up'],
+  },
+  wall_handstand_hold: {
+    id: 'wall_handstand_hold',
+    name: 'Wall Handstand Hold',
+    category: 'endurance',
+    question: 'Wie lange hältst du den Handstand an der Wand?',
+    unit: 'seconds',
+    metric_label: 'Sekunden',
+    hint: 'Bauch zur Wand, Körper gerade – kein Hohlkreuz.',
+    icon: '🤸',
+    min: 0, max: 120,
+    thresholds: { beginner: 10, intermediate: 30, advanced: 60, elite: 90 },
+    related_goals: ['handstand_pushup'],
+  },
+  pike_pushups: {
+    id: 'pike_pushups',
+    name: 'Pike Push-ups',
+    category: 'max_strength',
+    question: 'Wie viele saubere Pike Push-ups schaffst du?',
+    unit: 'reps',
+    metric_label: 'Wiederholungen',
+    hint: 'Hüfte hoch, Kopf geht zwischen die Arme bis fast zum Boden.',
+    icon: '💪',
+    min: 0, max: 30,
+    thresholds: { beginner: 3, intermediate: 8, advanced: 15, elite: 25 },
+    related_goals: ['handstand_pushup'],
+  },
+  deep_squat_hold: {
+    id: 'deep_squat_hold',
+    name: 'Deep Squat Hold',
     category: 'mobility',
     question: 'Wie tief kommst du in eine tiefe Kniebeuge (Fersen bleiben am Boden)?',
     unit: 'level',
     metric_label: 'Level',
     hint: 'Level 1: Fersen heben sich. Level 2: 90°. Level 3: Volltiefe. Level 4: Volltiefe + Arme overhead.',
     icon: '🦵',
-    min: 1,
-    max: 4,
-    step: 1,
+    min: 1, max: 4, step: 1,
     thresholds: { beginner: 1, intermediate: 2, advanced: 3, elite: 4 },
-    labels: { 1: 'Fersen heben', 2: '90° Kniebeuge', 3: 'Volle Tiefe', 4: 'Overhead Squat' },
-    related_goals: ['pistol_squat', 'middle_split', 'squat'],
+    labels: { 1: 'Fersen heben', 2: '90° Kniebeuge', 3: 'Volle Tiefe', 4: 'Overhead' },
+    related_goals: ['pistol_squat'],
   },
-  {
-    id: 'grip_endurance',
-    name: 'Grip-Ausdauer',
+  cossack_squats: {
+    id: 'cossack_squats',
+    name: 'Cossack Squats',
+    category: 'max_strength',
+    question: 'Wie viele Cossack Squats schaffst du pro Seite (kontrolliert)?',
+    unit: 'reps',
+    metric_label: 'Wiederholungen/Seite',
+    hint: 'Bein bleibt gestreckt, Ferse bleibt am Boden, tief in die Hocke.',
+    icon: '🦵',
+    min: 0, max: 25,
+    thresholds: { beginner: 3, intermediate: 8, advanced: 15, elite: 20 },
+    related_goals: ['pistol_squat'],
+  },
+  hollow_body_hold: {
+    id: 'hollow_body_hold',
+    name: 'Hollow Body Hold',
     category: 'endurance',
-    question: 'Wie lange hältst du dich an einer Klimmzugstange (Dead Hang)?',
+    question: 'Wie lange hältst du eine saubere Hollow Body Position?',
     unit: 'seconds',
     metric_label: 'Sekunden',
-    hint: 'Schultern aktiv nach unten ziehen, nicht einfach hängen lassen.',
-    icon: '🤜',
-    min: 0,
-    max: 120,
+    hint: 'Unterer Rücken am Boden, Beine gestreckt, Schultern leicht gehoben.',
+    icon: '🧱',
+    min: 0, max: 120,
     thresholds: { beginner: 10, intermediate: 30, advanced: 60, elite: 90 },
-    related_goals: ['pullup', 'front_lever', 'muscle_up'],
+    related_goals: ['dragon_flag', 'front_lever', 'l_sit'],
   },
+  leg_raises: {
+    id: 'leg_raises',
+    name: 'Straight Leg Raises',
+    category: 'max_strength',
+    question: 'Wie viele gestreckte Beinhebungen schaffst du (hängend oder liegend)?',
+    unit: 'reps',
+    metric_label: 'Wiederholungen',
+    hint: 'Beine bleiben vollständig gestreckt, kontrollierte Bewegung.',
+    icon: '🏋️',
+    min: 0, max: 25,
+    thresholds: { beginner: 3, intermediate: 8, advanced: 15, elite: 20 },
+    related_goals: ['dragon_flag', 'l_sit'],
+  },
+  side_plank: {
+    id: 'side_plank',
+    name: 'Side Plank',
+    category: 'endurance',
+    question: 'Wie lange hältst du eine Side Plank pro Seite?',
+    unit: 'seconds',
+    metric_label: 'Sekunden',
+    hint: 'Hüfte hoch, Körper gerade – keine Absenkung.',
+    icon: '↔️',
+    min: 0, max: 120,
+    thresholds: { beginner: 10, intermediate: 30, advanced: 60, elite: 90 },
+    related_goals: ['human_flag'],
+  },
+  push_capacity: {
+    id: 'push_capacity',
+    name: 'Liegestütze',
+    category: 'max_strength',
+    question: 'Wie viele saubere Liegestütze schaffst du am Stück?',
+    unit: 'reps',
+    metric_label: 'Wiederholungen',
+    hint: 'Brust muss den Boden berühren, Körper bleibt gerade.',
+    icon: '💪',
+    min: 0, max: 60,
+    thresholds: { beginner: 5, intermediate: 15, advanced: 30, elite: 50 },
+    related_goals: ['one_arm_pushup', 'planche'],
+  },
+  planche_lean: {
+    id: 'planche_lean',
+    name: 'Planche Lean',
+    category: 'endurance',
+    question: 'Wie lange hältst du den Planche Lean (Schultern über die Hände vorgelehnt)?',
+    unit: 'seconds',
+    metric_label: 'Sekunden',
+    hint: 'Körper gerade, Arme gestreckt, Schwerpunkt weit vor den Händen.',
+    icon: '⚖️',
+    min: 0, max: 60,
+    thresholds: { beginner: 5, intermediate: 15, advanced: 30, elite: 45 },
+    related_goals: ['planche'],
+  },
+};
+
+// GOAL-DRIVEN MAPPING: Welche 2 Tests braucht welches Ziel?
+const GOAL_BENCHMARK_MAP = {
+  muscle_up:        { tests: ['active_hang', 'explosive_pullups'],    node: 'N10', sling: 'posterior', label: 'Muscle-Up' },
+  handstand_pushup: { tests: ['wall_handstand_hold', 'pike_pushups'], node: 'N10', sling: 'anterior',  label: 'Handstand Push-up' },
+  pistol_squat:     { tests: ['deep_squat_hold', 'cossack_squats'],   node: 'N12', sling: 'lateral',   label: 'Pistol Squat' },
+  dragon_flag:      { tests: ['hollow_body_hold', 'leg_raises'],      node: 'N11', sling: 'anterior',  label: 'Dragon Flag' },
+  front_lever:      { tests: ['active_hang', 'hollow_body_hold'],     node: 'N10', sling: 'posterior', label: 'Front Lever' },
+  human_flag:       { tests: ['side_plank', 'active_hang'],           node: 'N10', sling: 'lateral',   label: 'Human Flag' },
+  l_sit:            { tests: ['hollow_body_hold', 'leg_raises'],      node: 'N11', sling: 'anterior',  label: 'L-Sit / V-Sit' },
+  planche:          { tests: ['planche_lean', 'push_capacity'],       node: 'N10', sling: 'anterior',  label: 'Planche' },
+  one_arm_pushup:   { tests: ['push_capacity', 'side_plank'],         node: 'N10', sling: 'anterior',  label: 'One-Arm Push-up' },
+  one_arm_pullup:   { tests: ['active_hang', 'explosive_pullups'],    node: 'N10', sling: 'posterior', label: 'One-Arm Pull-up' },
+};
+
+// Detect which goal keyword maps to a benchmark mapping
+const detectGoalKey = (goalText) => {
+  const lower = goalText.toLowerCase();
+  if (lower.includes('muscle') || lower.includes('muscleup')) return 'muscle_up';
+  if (lower.includes('handstand push') || lower.includes('hspu')) return 'handstand_pushup';
+  if (lower.includes('pistol') || lower.includes('einbein')) return 'pistol_squat';
+  if (lower.includes('dragon')) return 'dragon_flag';
+  if (lower.includes('front lever')) return 'front_lever';
+  if (lower.includes('human flag')) return 'human_flag';
+  if (lower.includes('l-sit') || lower.includes('l sit') || lower.includes('v-sit')) return 'l_sit';
+  if (lower.includes('planche')) return 'planche';
+  if (lower.includes('one arm push') || lower.includes('einarmige')) return 'one_arm_pushup';
+  if (lower.includes('one arm pull') || lower.includes('one-arm pull')) return 'one_arm_pullup';
+  return null;
+};
+
+// Fallback general tests
+const GENERAL_TESTS = [
+  ALL_TESTS.active_hang,
+  ALL_TESTS.push_capacity,
+  ALL_TESTS.hollow_body_hold,
+  ALL_TESTS.deep_squat_hold,
+  ALL_TESTS.side_plank,
 ];
 
 const getLevel = (value, thresholds) => {

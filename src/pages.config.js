@@ -55,6 +55,7 @@ import DebugComplaintHistory from './pages/DebugComplaintHistory';
 import DevNotes from './pages/DevNotes';
 import DiagnosisChat from './pages/DiagnosisChat';
 import DiagnosisWizard from './pages/DiagnosisWizard';
+import Discovery from './pages/Discovery';
 import ExerciseImageGenerator from './pages/ExerciseImageGenerator';
 import ExerciseImageUpload from './pages/ExerciseImageUpload';
 import FAQ from './pages/FAQ';
@@ -78,7 +79,6 @@ import Success from './pages/Success';
 import Terms from './pages/Terms';
 import TrainingPlan from './pages/TrainingPlan';
 import TrialInfo from './pages/TrialInfo';
-import Discovery from './pages/Discovery';
 import __Layout from './Layout.jsx';
 
 
@@ -91,6 +91,7 @@ export const PAGES = {
     "DevNotes": DevNotes,
     "DiagnosisChat": DiagnosisChat,
     "DiagnosisWizard": DiagnosisWizard,
+    "Discovery": Discovery,
     "ExerciseImageGenerator": ExerciseImageGenerator,
     "ExerciseImageUpload": ExerciseImageUpload,
     "FAQ": FAQ,
@@ -114,7 +115,6 @@ export const PAGES = {
     "Terms": Terms,
     "TrainingPlan": TrainingPlan,
     "TrialInfo": TrialInfo,
-    "Discovery": Discovery,
 }
 
 export const pagesConfig = {
