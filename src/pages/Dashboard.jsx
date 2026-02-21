@@ -123,9 +123,6 @@ export default function Dashboard() {
               onClick={() => setMode('performance')}
               className="glass rounded-xl sm:rounded-2xl border border-amber-500/30 p-6 sm:p-8 hover:border-amber-500/60 active:border-amber-500/80 transition-all group touch-target relative"
             >
-              {performanceBaselines.length === 0 && (
-                <div className="absolute top-2 right-2 w-2 h-2 bg-amber-400 rounded-full animate-pulse" />
-              )}
             
               <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-xl sm:rounded-2xl bg-gradient-to-br from-amber-500 to-yellow-600 flex items-center justify-center mb-3 sm:mb-4 mx-auto group-hover:shadow-lg group-hover:shadow-amber-500/50 transition-all">
                 <Zap className="w-7 h-7 sm:w-8 sm:h-8 text-white" />
