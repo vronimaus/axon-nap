@@ -18,7 +18,7 @@ import { Helmet } from 'react-helmet-async';
 export default function TrainingPlan() {
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [expandedPhase, setExpandedPhase] = useState(null);
+  const [activePhaseIdx, setActivePhaseIdx] = useState(0);
   const [completedPhases, setCompletedPhases] = useState({});
   const [selectedExercise, setSelectedExercise] = useState(null);
   const [showComplementaryDrills, setShowComplementaryDrills] = useState(true);
