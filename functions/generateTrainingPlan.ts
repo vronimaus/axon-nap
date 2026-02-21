@@ -54,29 +54,15 @@ Deno.serve(async (req) => {
     const availableRoutineIds = allRoutines.slice(0, 10).map(r => r.id).filter(Boolean);
     const availableFaqIds = allFaqs.slice(0, 10).map(f => f.faq_id).filter(Boolean);
 
-    // Build rich exercise catalog for the LLM with semantic context for goal matching
+    // Build compact exercise catalog (max 120 exercises to keep prompt small)
     const exerciseCatalog = allExercises
       .filter(e => e.exercise_id)
+      .slice(0, 120)
       .map(e => {
-        const tags = [e.category, e.difficulty, e.stecco_chain].filter(Boolean).join(' | ');
-        const goals = (e.related_performance_goals || []).join(', ');
-        const mechanics = (e.mechanical_impact_type || []).join(', ');
-        const neuroImpact = (e.neuro_impact_type || []).join(', ');
-        const fms = e.fms_pattern || '';
-        const purpose = e.purpose_explanation
-          ? e.purpose_explanation.slice(0, 100).replace(/\n/g, ' ')
-          : '';
-
-        const parts = [
-          `- ${e.exercise_id}: "${e.name}" [${tags}]`,
-          goals ? `Ziele: ${goals}` : '',
-          mechanics ? `Mechanik: ${mechanics}` : '',
-          neuroImpact ? `Neuro: ${neuroImpact}` : '',
-          fms ? `FMS: ${fms}` : '',
-          purpose ? `Zweck: ${purpose}` : '',
-        ].filter(Boolean);
-
-        return parts.join(' | ');
+        const tags = [e.category, e.difficulty].filter(Boolean).join('|');
+        const goals = (e.related_performance_goals || []).slice(0, 3).join(',');
+        const mechanics = (e.mechanical_impact_type || []).join(',');
+        return `${e.exercise_id}:"${e.name}"[${tags}]${goals ? ' G:' + goals : ''}${mechanics ? ' M:' + mechanics : ''}`;
       })
       .join('\n');
 
