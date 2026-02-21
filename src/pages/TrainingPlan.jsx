@@ -308,50 +308,7 @@ export default function TrainingPlan() {
                   </motion.div>
                 )}
 
-                {/* Accepted Complementary Drills */}
-                {activePlan.complementary_drills_accepted && activePlan.suggested_complementary_drills?.length > 0 && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="glass rounded-xl border border-cyan-500/30 bg-gradient-to-r from-cyan-500/10 to-transparent p-6"
-                  >
-                    <div className="flex items-center gap-3 mb-4">
-                      <div className="w-10 h-10 rounded-xl bg-cyan-500/20 flex items-center justify-center">
-                        <Sparkles className="w-5 h-5 text-cyan-400" />
-                      </div>
-                      <div>
-                        <h3 className="text-lg font-bold text-cyan-400">Ergänzende Übungen für Longevity</h3>
-                        <p className="text-xs text-slate-400">Zusätzlich zu deinen Hauptphasen</p>
-                      </div>
-                    </div>
-                    <div className="space-y-3">
-                      {activePlan.suggested_complementary_drills.map((drill, idx) => (
-                        <button
-                          key={idx}
-                          onClick={() => setSelectedExercise(drill)}
-                          className="w-full bg-slate-800/30 rounded-lg p-4 border border-slate-700/50 hover:border-cyan-500/50 hover:bg-slate-800/50 transition-all text-left"
-                        >
-                          <div className="flex items-start gap-3">
-                            <div className="w-8 h-8 rounded-lg bg-cyan-500/20 flex items-center justify-center flex-shrink-0 text-xs text-cyan-400 font-semibold">
-                              {categoryLabels[drill.category]?.charAt(0) || (idx + 1)}
-                            </div>
-                            <div className="flex-1">
-                              <h4 className="font-semibold text-slate-200">{drill.name}</h4>
-                              <p className="text-sm text-slate-400 mt-1">{drill.rationale}</p>
-                              {drill.frequency && (
-                                <div className="flex items-center gap-4 mt-2 text-xs">
-                                  <span className="text-cyan-400">{drill.frequency}</span>
-                                  <span className="text-slate-500">{drill.duration}</span>
-                                </div>
-                              )}
-                            </div>
-                            <Info className="w-4 h-4 text-slate-500 flex-shrink-0 mt-1" />
-                          </div>
-                        </button>
-                      ))}
-                    </div>
-                  </motion.div>
-                )}
+
 
                 {/* Sequential Phase Navigation */}
                 {activePlan.phases && activePlan.phases.length > 1 && (
