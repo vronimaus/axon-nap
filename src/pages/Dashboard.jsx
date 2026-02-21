@@ -361,12 +361,18 @@ export default function Dashboard() {
                         <p className="text-xs text-slate-400 mt-0.5">AXON Discovery (~3 Min) kalibriert deinen Plan präzise auf dich.</p>
                       </div>
                       <Button
-                        onClick={() => window.location.href = createPageUrl('Discovery')}
-                        size="sm"
-                        className="flex-shrink-0 bg-amber-500 hover:bg-amber-600 text-black font-bold text-xs"
-                      >
-                        Jetzt starten
-                      </Button>
+                        onClick={() => {
+                              const goal = selectedBodyRegion?.trim();
+                              const url = goal
+                                ? createPageUrl('Discovery') + `?goal=${encodeURIComponent(goal)}`
+                                : createPageUrl('Discovery');
+                              window.location.href = url;
+                            }}
+                            size="sm"
+                            className="flex-shrink-0 bg-amber-500 hover:bg-amber-600 text-black font-bold text-xs"
+                          >
+                            Jetzt starten
+                          </Button>
                     </motion.div>
                   )}
 
