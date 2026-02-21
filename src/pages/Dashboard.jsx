@@ -43,6 +43,12 @@ export default function Dashboard() {
         }
 
         setUser(currentUser);
+
+        // Redirect to Discovery if no baseline yet
+        if (!currentUser?.baseline_completed) {
+          window.location.href = createPageUrl('Discovery');
+          return;
+        }
       } catch (e) {
         window.location.href = createPageUrl('Landing');
       } finally {
