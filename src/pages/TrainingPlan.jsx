@@ -173,21 +173,27 @@ export default function TrainingPlan() {
       </Helmet>
 
       {/* Header */}
-      <div className="sticky top-0 z-40 glass border-b border-cyan-500/20">
-        <div className="max-w-6xl mx-auto px-4 py-4">
-          <div className="flex items-center gap-3">
+      <div className="sticky top-0 z-40 bg-slate-900 border-b border-cyan-500/20">
+        <div className="max-w-4xl mx-auto px-4 py-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-yellow-400">
+                Dein Trainingsplan
+              </h1>
+              {activePlan?.goal_description && (
+                <p className="text-sm text-slate-400 mt-1">
+                  Ziel: <strong>{activePlan.goal_description}</strong>
+                </p>
+              )}
+            </div>
             <Button
               variant="ghost"
               size="icon"
               onClick={() => window.location.href = createPageUrl('Dashboard')}
-              className="text-slate-400 hover:text-cyan-400"
+              className="text-slate-400 hover:text-slate-200"
             >
               <ArrowLeft className="w-5 h-5" />
             </Button>
-            <div>
-              <h1 className="text-lg sm:text-xl font-bold text-cyan-400">Dein Trainingsplan</h1>
-              <p className="text-xs sm:text-sm text-slate-400">Personalisiert nach deinen Baselines</p>
-            </div>
           </div>
         </div>
       </div>
