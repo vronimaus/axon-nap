@@ -54,17 +54,20 @@ Deno.serve(async (req) => {
     const availableRoutineIds = allRoutines.slice(0, 10).map(r => r.id).filter(Boolean);
     const availableFaqIds = allFaqs.slice(0, 10).map(f => f.faq_id).filter(Boolean);
 
-    // Build compact exercise catalog (max 120 exercises to keep prompt small)
-    const exerciseCatalog = allExercises
-      .filter(e => e.exercise_id)
-      .slice(0, 120)
+    // Build compact exercise catalog — only EXACT IDs from DB
+    const validExercises = allExercises.filter(e => e.exercise_id);
+    const exerciseCatalog = validExercises
+      .slice(0, 150)
       .map(e => {
         const tags = [e.category, e.difficulty].filter(Boolean).join('|');
         const goals = (e.related_performance_goals || []).slice(0, 3).join(',');
         const mechanics = (e.mechanical_impact_type || []).join(',');
-        return `${e.exercise_id}:"${e.name}"[${tags}]${goals ? ' G:' + goals : ''}${mechanics ? ' M:' + mechanics : ''}`;
+        return `${e.exercise_id}: "${e.name}" [${tags}]${goals ? ' Ziele:' + goals : ''}${mechanics ? ' Mech:' + mechanics : ''}`;
       })
       .join('\n');
+
+    // Explicit ID list to reinforce constraint
+    const exactIdList = validExercises.slice(0, 150).map(e => e.exercise_id).join(', ');
 
     console.log(`[generateTrainingPlan] Goal: ${goal_description}, Exercises: ${availableExerciseIds.length}`);
 
