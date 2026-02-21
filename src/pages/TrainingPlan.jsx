@@ -207,60 +207,8 @@ export default function TrainingPlan() {
 
       {/* Main Content */}
       <div className="max-w-4xl mx-auto px-4 py-6 space-y-6">
-            {/* Readiness Recommendation */}
-            {readinessStatus && (
-              <motion.div
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                className={`glass rounded-xl p-6 border ${
-                  readinessStatus === 'green'
-                    ? 'border-green-500/30 bg-gradient-to-r from-green-500/10 to-transparent'
-                    : readinessStatus === 'yellow' 
-                    ? 'border-amber-500/30 bg-gradient-to-r from-amber-500/10 to-transparent'
-                    : 'border-red-500/30 bg-gradient-to-r from-red-500/10 to-transparent'
-                }`}
-              >
-                <div className="flex items-start gap-3">
-                  {readinessStatus === 'green' ? (
-                    <CheckCircle2 className="w-6 h-6 flex-shrink-0 text-green-400" />
-                  ) : (
-                    <AlertTriangle className={`w-6 h-6 flex-shrink-0 ${
-                      readinessStatus === 'yellow' ? 'text-amber-400' : 'text-red-400'
-                    }`} />
-                  )}
-                  <div>
-                    <h3 className={`font-bold mb-2 ${
-                      readinessStatus === 'green' ? 'text-green-400' :
-                      readinessStatus === 'yellow' ? 'text-amber-400' : 'text-red-400'
-                    }`}>
-                      {readinessStatus === 'green' 
-                        ? 'Angriffsmodus aktiviert! 💪' 
-                        : readinessStatus === 'yellow' 
-                        ? 'Dein System ist heute im Pflegemodus' 
-                        : 'Heute: Recovery First'}
-                    </h3>
-                    <p className="text-slate-300 text-sm leading-relaxed">
-                      {readinessStatus === 'green'
-                        ? 'Dein System ist bereit für maximale Performance. Heute kannst du einen Zahn zulegen – perfekter Tag für intensive Einheiten und neue Belastungsreize.'
-                        : readinessStatus === 'yellow'
-                        ? 'Basierend auf deinem Daily Check empfehlen wir dir heute eine sanfte Mobilitäts-Routine statt intensivem Training. Dein Körper braucht Pflege, keine Belastung.'
-                        : 'Dein System ist heute im roten Bereich. Wir empfehlen dir dringend, heute auf intensives Training zu verzichten und dich auf Entspannung und Schmerz-Release zu konzentrieren.'}
-                    </p>
-                    {readinessStatus !== 'green' && (
-                      <Button
-                        onClick={() => window.location.href = createPageUrl('FlowRoutines')}
-                        size="sm"
-                        className={`mt-3 ${readinessStatus === 'yellow'
-                          ? 'bg-amber-500/20 text-amber-400 hover:bg-amber-500/30 border border-amber-500/50'
-                          : 'bg-red-500/20 text-red-400 hover:bg-red-500/30 border border-red-500/50'}`}
-                      >
-                        Zu den Mobility Flows
-                      </Button>
-                    )}
-                  </div>
-                </div>
-              </motion.div>
-            )}
+            {/* Readiness Recommendation - compact collapsible */}
+                {readinessStatus && <ReadinessBanner readinessStatus={readinessStatus} />}
 
             {activePlan ? (
               <motion.div
