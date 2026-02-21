@@ -208,6 +208,9 @@ export default function Discovery() {
   const [currentTestIdx, setCurrentTestIdx] = useState(0);
   const [answers, setAnswers] = useState({});
   const [phase, setPhase] = useState('intro');
+  const [goalKey, setGoalKey] = useState(null);
+  const [goalLabel, setGoalLabel] = useState(null);
+  const [TESTS, setTESTS] = useState(GENERAL_TESTS);
 
   useEffect(() => {
     const init = async () => {
