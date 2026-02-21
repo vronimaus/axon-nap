@@ -210,7 +210,9 @@ export default function Discovery() {
   const [phase, setPhase] = useState('intro');
   const [goalKey, setGoalKey] = useState(null);
   const [goalLabel, setGoalLabel] = useState(null);
+  const [goalParam, setGoalParam] = useState(null);
   const [TESTS, setTESTS] = useState(GENERAL_TESTS);
+  const [isGeneratingPlan, setIsGeneratingPlan] = useState(false);
 
   useEffect(() => {
     const init = async () => {
