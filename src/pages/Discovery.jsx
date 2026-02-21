@@ -308,6 +308,37 @@ export default function Discovery() {
     }
   };
 
+  const handleContinue = async () => {
+    // If we came from a goal, generate the training plan automatically
+    if (goalParam) {
+      setIsGeneratingPlan(true);
+      try {
+        const existingPlans = await base44.entities.TrainingPlan.filter({
+          user_email: user.email,
+          status: 'active'
+        });
+        for (const plan of existingPlans) {
+          await base44.entities.TrainingPlan.update(plan.id, { status: 'paused' });
+        }
+        const response = await base44.functions.invoke('generateTrainingPlan', {
+          goal_description: goalParam,
+        });
+        if (response.data?.plan_id) {
+          base44.analytics.track({ eventName: 'training_plan_created', properties: { goal: goalParam } });
+          window.location.href = createPageUrl('TrainingPlan');
+        } else {
+          throw new Error('Plan konnte nicht erstellt werden');
+        }
+      } catch (err) {
+        console.error(err);
+        toast.error('Fehler beim Erstellen des Plans. Bitte versuche es erneut.');
+        setIsGeneratingPlan(false);
+      }
+    } else {
+      window.location.href = createPageUrl('Dashboard');
+    }
+  };
+
   if (isLoading) return <div className="min-h-screen bg-slate-950" />;
 
   return (
