@@ -76,33 +76,44 @@ Deno.serve(async (req) => {
     }
 
     const planData = await base44.integrations.Core.InvokeLLM({
-      prompt: `Erstelle einen detaillierten 3-Phasen Trainingsplan auf Deutsch für folgendes Ziel:
+      prompt: `Du bist ein hochspezialisierter Trainingsplaner mit Expertise in funktioneller Bewegung, neuronaler Aktivierung, Faszientraining (Stecco) und Kraftentwicklung.
 
-    Ziel: ${goal_description}
-    Baseline: ${baseline || 'Nicht angegeben'}
-    Activity Level: ${activityLvl}
-    Erfahrung: ${expLvl}
-    Sport: ${sport}
-    Fitness Goals: ${fitnessGoals}
+Erstelle einen wissenschaftlich fundierten 3-Phasen Trainingsplan auf Deutsch für:
 
-    ⚠️ KRITISCH: Du MUSST ausschließlich exercise_ids aus der folgenden Liste verwenden.
-    Erfinde KEINE eigenen exercise_ids. Wenn du eine ID verwendest, die nicht in der Liste steht, wird sie gelöscht.
-    Wähle die am besten passenden Übungen für das Ziel aus dieser Liste aus.
+Ziel: "${goal_description}"
+Baseline / Aktueller Stand: ${baseline || 'Nicht angegeben'}
+Activity Level: ${activityLvl}
+Trainingserfahrung: ${expLvl}
+Primärsport: ${sport || 'keiner angegeben'}
+Fitness-Ziele: ${fitnessGoals}
 
-    Jede Phase MUSS mindestens 4 Übungen enthalten mit konkreten deutschen Anweisungen.
-    Verwende VIELFÄLTIGE Übungen: Mobility, Neuro-Drills, Breath, Strength, Core – je nach Verfügbarkeit.
+════════════════════════════════════════════
+WICHTIGER AUSWAHLPROZESS (bitte befolgen):
+════════════════════════════════════════════
+1. Analysiere das Ziel: Welche Gelenke, Muskeln, Faszien-Ketten, Bewegungsmuster sind relevant?
+2. Identifiziere: Was braucht das Ziel an Mobility, Neuronaler Kontrolle und Kraft?
+3. Wähle Übungen mit passendem [Mechanik]-Tag (z.B. "mobility" für Gelenkfreiheit, "stability" für Kontrolle, "strength" für Kraft)
+4. Wähle Übungen mit passendem [Neuro]-Tag wenn vorhanden (calming, activating, balance, vestibular_stim)
+5. Nutze FMS-Pattern und Zweck-Beschreibung für semantisches Matching
 
-    Phase 1 (Foundation, 2 Wochen): Grundlagen, Mobilisation, neuronale Aktivierung, Körperwahrnehmung
-    Phase 2 (Development, 3 Wochen): Kraftaufbau, Progressionen, Bewegungsmuster, Hilfsmuskeln
-    Phase 3 (Mastery, 3 Wochen): Performance, Zielübung, funktionelle Integration, Intensitätssteigerung
+PHASEN-LOGIK:
+- Phase 1 (Foundation, 2 Wochen): Gelenk-Mobility + neuronale Aktivierung + Körperwahrnehmung. intensity_factor: 1.0–1.2
+- Phase 2 (Development, 3 Wochen): Kraftaufbau + Bewegungsmuster + Hilfsmuskeln. intensity_factor: 1.5–2.0
+- Phase 3 (Mastery, 3 Wochen): Zielübung + funktionelle Integration + Intensitätssteigerung. intensity_factor: 2.0–2.5
 
-    Für jeden Exercise: Weise intensity_factor zu (1.0=Rehab/Mobility, 1.5=Integration, 2.5=Performance/Kraft).
-    Bestimme primary_sling des Plans (anterior, posterior, lateral oder deep_frontal).
-    Bestimme target_nodes (z.B. N10_Shoulder_Complex, N11_LSO_Pelvis, N12_Hip_Ankle).
-    Erstelle eine progression_matrix mit 4-5 aufbauenden Übungen vom einfachsten bis zum Ziel.
+Jede Phase MUSS mindestens 5 Übungen enthalten mit konkreten deutschen Ausführungsanweisungen.
+Wähle VIELFÄLTIG: Mobility, Neuro-Drills, Breath, Strength, Core – je nach Phasenziel.
 
-    ✅ ERLAUBTE Übungen mit Metadaten (NUR diese exercise_ids verwenden!):
-    ${exerciseCatalog}
+Für jeden Exercise: Weise intensity_factor zu (1.0=Rehab/Mobility, 1.5=Integration, 2.5=Performance/Kraft).
+Bestimme primary_sling des Plans (anterior, posterior, lateral oder deep_frontal).
+Bestimme target_nodes (z.B. N10_Shoulder_Complex, N11_LSO_Pelvis, N12_Hip_Ankle).
+Erstelle eine progression_matrix mit 4-5 aufbauenden Übungen vom einfachsten bis zum Ziel.
+
+⚠️ KRITISCH: Du DARFST NUR exercise_ids aus der folgenden Liste verwenden.
+Erfinde KEINE eigenen exercise_ids. Verwende die Metadaten (Ziele, Mechanik, Neuro, FMS, Zweck) um semantisch die besten Matches zu finden.
+
+✅ VERFÜGBARE Übungen (ID: Name [Kategorie | Schwierigkeit | Kette] | Ziele | Mechanik | Neuro | FMS | Zweck):
+${exerciseCatalog}
 
     Verfügbare Routine-IDs:
     ${availableRoutineIds.map((id, i) => `${i + 1}. ${id}`).join('\n')}
