@@ -360,6 +360,55 @@ export default function TrainingPlan() {
 
 
 
+function ReadinessBanner({ readinessStatus }) {
+  const [open, setOpen] = useState(false);
+
+  if (readinessStatus === 'green') {
+    return (
+      <motion.div initial={{ opacity: 0, y: -6 }} animate={{ opacity: 1, y: 0 }}
+        className="flex items-center gap-2 px-4 py-2 rounded-xl border border-green-500/30 bg-green-500/10 text-green-400 text-sm font-medium">
+        <CheckCircle2 className="w-4 h-4 flex-shrink-0" />
+        Angriffsmodus aktiviert — maximale Performance heute 💪
+      </motion.div>
+    );
+  }
+
+  const isYellow = readinessStatus === 'yellow';
+  const color = isYellow ? { text: 'text-amber-400', border: 'border-amber-500/30', bg: 'bg-amber-500/10' } : { text: 'text-red-400', border: 'border-red-500/30', bg: 'bg-red-500/10' };
+  const label = isYellow ? 'Pflegemodus heute' : 'Recovery First heute';
+  const detail = isYellow
+    ? 'Sanfte Mobilitäts-Routine statt intensivem Training. Dein Körper braucht Pflege, keine Belastung.'
+    : 'Roten Bereich erkannt. Verzichte auf intensives Training – Fokus auf Entspannung und Schmerz-Release.';
+
+  return (
+    <motion.div initial={{ opacity: 0, y: -6 }} animate={{ opacity: 1, y: 0 }}
+      className={`rounded-xl border ${color.border} ${color.bg}`}>
+      <button onClick={() => setOpen(!open)}
+        className="w-full flex items-center justify-between gap-3 px-4 py-3 text-left">
+        <div className="flex items-center gap-2">
+          <AlertTriangle className={`w-4 h-4 flex-shrink-0 ${color.text}`} />
+          <span className={`text-sm font-semibold ${color.text}`}>{label}</span>
+        </div>
+        <span className={`text-xs ${color.text} transition-transform ${open ? 'rotate-180' : ''} inline-block`}>▼</span>
+      </button>
+      <AnimatePresence>
+        {open && (
+          <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }}
+            className="overflow-hidden">
+            <div className="px-4 pb-4 space-y-3">
+              <p className="text-slate-300 text-sm leading-relaxed">{detail}</p>
+              <Button onClick={() => window.location.href = createPageUrl('FlowRoutines')} size="sm"
+                className={`${isYellow ? 'bg-amber-500/20 text-amber-400 hover:bg-amber-500/30 border border-amber-500/50' : 'bg-red-500/20 text-red-400 hover:bg-red-500/30 border border-red-500/50'}`}>
+                Zu den Mobility Flows
+              </Button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.div>
+  );
+}
+
 function PhaseCard({ phase, index, totalPhases, isCompleted, onComplete, onNext, onPrev, onExerciseClick }) {
   const getPhaseColor = (idx) => {
     if (idx === 0) return { bg: 'from-amber-500/20', border: 'border-amber-500/30', text: 'text-amber-400', icon: Target };
