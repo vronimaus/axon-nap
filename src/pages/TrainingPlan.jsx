@@ -268,73 +268,7 @@ export default function TrainingPlan() {
                 animate={{ opacity: 1, y: 0 }}
                 className="space-y-6"
               >
-                {/* Complementary Drills Suggestion */}
-                {activePlan.suggested_complementary_drills?.length > 0 && 
-                 !activePlan.complementary_drills_accepted && 
-                 showComplementaryDrills && (
-                  <motion.div
-                    initial={{ opacity: 0, y: -10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="glass rounded-xl p-6 border border-cyan-500/30 bg-gradient-to-r from-cyan-500/10 to-transparent"
-                  >
-                    <div className="flex items-start gap-3 mb-4">
-                      <div className="w-10 h-10 rounded-xl bg-cyan-500/20 flex items-center justify-center flex-shrink-0">
-                        <Sparkles className="w-5 h-5 text-cyan-400" />
-                      </div>
-                      <div className="flex-1">
-                        <h3 className="text-lg font-bold text-cyan-400 mb-2">
-                          Möchtest du ergänzende Übungen für maximale Longevity?
-                        </h3>
-                        <p className="text-sm text-slate-300 leading-relaxed mb-3">
-                          Basierend auf deinem Ziel und deinem Neuro-Profil haben wir {activePlan.suggested_complementary_drills.length} intelligente 
-                          Ergänzungen identifiziert, die deine funktionelle Gesundheit langfristig unterstützen.
-                        </p>
-                        <div className="space-y-2 mb-4">
-                          {activePlan.suggested_complementary_drills.map((drill, idx) => (
-                            <div key={idx} className="bg-slate-800/50 rounded-lg p-3">
-                              <div className="flex items-start gap-2">
-                                <div className="w-6 h-6 rounded-lg bg-cyan-500/20 flex items-center justify-center flex-shrink-0 mt-0.5 text-xs text-cyan-400 font-semibold">
-                                  {categoryLabels[drill.category]?.charAt(0) || idx + 1}
-                                </div>
-                                <div className="flex-1">
-                                  <button onClick={() => setSelectedExercise(drill)} className="text-left w-full">
-                                    <p className="font-medium text-slate-200 hover:text-cyan-400 transition-colors">{drill.name}</p>
-                                    <p className="text-xs text-slate-400 mt-1">{drill.rationale}</p>
-                                    {drill.frequency && (
-                                      <p className="text-xs text-cyan-400 mt-1">
-                                        Empfohlen: {drill.frequency} • {drill.duration}
-                                      </p>
-                                    )}
-                                  </button>
-                                </div>
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                        <div className="flex flex-col sm:flex-row gap-3">
-                          <Button
-                            onClick={() => handleAcceptComplementaryDrills(activePlan.id)}
-                            disabled={isAcceptingDrills}
-                            className="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700"
-                          >
-                            {isAcceptingDrills ? (
-                              <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Füge hinzu...</>
-                            ) : (
-                              <><CheckCircle2 className="w-4 h-4 mr-2" /> Ja, zu meinem Plan hinzufügen</>
-                            )}
-                          </Button>
-                          <Button
-                            variant="outline"
-                            onClick={() => handleDeclineComplementaryDrills(activePlan.id)}
-                            className="border-slate-600 text-slate-400 hover:text-slate-200"
-                          >
-                            Nein, nur auf mein Hauptziel fokussieren
-                          </Button>
-                        </div>
-                      </div>
-                    </div>
-                  </motion.div>
-                )}
+
 
                 {/* Progress Indicator */}
                 <div>
