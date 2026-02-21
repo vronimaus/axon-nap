@@ -374,7 +374,7 @@ function ReadinessBanner({ readinessStatus }) {
   }
 
   const isYellow = readinessStatus === 'yellow';
-  const color = isYellow ? { text: 'text-amber-400', border: 'border-amber-500/30', bg: 'bg-amber-500/10' } : { text: 'text-red-400', border: 'border-red-500/30', bg: 'bg-red-500/10' };
+  const color = isYellow ? { text: 'text-sky-400', border: 'border-sky-500/30', bg: 'bg-sky-500/10' } : { text: 'text-red-400', border: 'border-red-500/30', bg: 'bg-red-500/10' };
   const label = isYellow ? 'Pflegemodus heute' : 'Recovery First heute';
   const detail = isYellow
     ? 'Sanfte Mobilitäts-Routine statt intensivem Training. Dein Körper braucht Pflege, keine Belastung.'
