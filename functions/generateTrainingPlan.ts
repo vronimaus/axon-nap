@@ -175,38 +175,44 @@ Deno.serve(async (req) => {
       allFaqs.find(af => af.faq_id === f.faq_id)
     );
 
-    // Enrich exercises with DB data
-    const enrichedPhases = await Promise.all(
-      planData.phases.map(async (phase) => {
-        const enrichedExercises = await Promise.all(
-          (phase.exercises || []).map(async (exercise) => {
-            try {
-              const matches = await base44.asServiceRole.entities.Exercise.filter({ exercise_id: exercise.exercise_id });
-              if (matches.length > 0) {
-                const ex = matches[0];
-                return {
-                  ...exercise,
-                  description: ex.description || exercise.instruction,
-                  axon_moment: ex.axon_moment,
-                  breathing_instruction: ex.breathing_instruction,
-                  purpose_explanation: ex.purpose_explanation,
-                  cues: ex.cues,
-                  category: ex.category,
-                  difficulty: ex.difficulty,
-                  image_url: ex.image_url,
-                  gif_url: ex.gif_url,
-                  benefits: ex.benefits
-                };
-              }
-              return exercise;
-            } catch (_e) {
-              return exercise;
-            }
-          })
-        );
-        return { ...phase, exercises: enrichedExercises };
-      })
-    );
+    // Validate exercise IDs and log warnings for invalid ones
+    const validExerciseIdSet = new Set(availableExerciseIds);
+
+    // Enrich exercises with DB data using in-memory lookup (no extra API calls)
+    const enrichedPhases = planData.phases.map((phase) => {
+      const enrichedExercises = (phase.exercises || [])
+        .filter(exercise => {
+          const isValid = validExerciseIdSet.has(exercise.exercise_id);
+          if (!isValid) {
+            console.warn(`[generateTrainingPlan] Invalid exercise_id from LLM: "${exercise.exercise_id}" – skipping`);
+          }
+          return isValid;
+        })
+        .map((exercise) => {
+          const dbEx = exerciseLookup[exercise.exercise_id];
+          if (dbEx) {
+            return {
+              ...exercise,
+              name: dbEx.name || exercise.name,
+              description: dbEx.description || exercise.instruction,
+              axon_moment: dbEx.axon_moment,
+              breathing_instruction: dbEx.breathing_instruction,
+              purpose_explanation: dbEx.purpose_explanation,
+              cues: dbEx.cues,
+              category: dbEx.category,
+              difficulty: dbEx.difficulty,
+              image_url: dbEx.image_url,
+              gif_url: dbEx.gif_url,
+              benefits: dbEx.benefits,
+              progression_basic: dbEx.progression_basic,
+              progression_advanced: dbEx.progression_advanced,
+              stecco_chain: dbEx.stecco_chain,
+            };
+          }
+          return exercise;
+        });
+      return { ...phase, exercises: enrichedExercises };
+    });
 
     const plan = await base44.asServiceRole.entities.TrainingPlan.create({
       user_email: user.email,
