@@ -54,10 +54,16 @@ Sport: ${sport}
 Fitness Goals: ${fitnessGoals}
 
 Jede Phase MUSS mindestens 4 Übungen enthalten mit konkreten deutschen Anweisungen.
+Verwende VIELFÄLTIGE Übungen: nicht nur Variationen derselben Übung, sondern Mobility, Neuro-Drills, Hilfsmuskeln, Antagonisten.
 
-Phase 1 (Foundation, 2 Wochen): Grundlagen, Mobilisation, neuronale Aktivierung
-Phase 2 (Development, 3 Wochen): Kraftaufbau, Progressionen, Bewegungsmuster
-Phase 3 (Mastery, 3 Wochen): Performance, Zielübung, funktionelle Integration
+Phase 1 (Foundation, 2 Wochen): Grundlagen, Mobilisation, neuronale Aktivierung, Körperwahrnehmung
+Phase 2 (Development, 3 Wochen): Kraftaufbau, Progressionen, Bewegungsmuster, Hilfsmuskeln
+Phase 3 (Mastery, 3 Wochen): Performance, Zielübung, funktionelle Integration, Intensitätssteigerung
+
+Für jeden Exercise: Weise intensity_factor zu (1.0=Rehab/Mobility, 1.5=Integration, 2.5=Performance/Kraft).
+Bestimme primary_sling des Plans (anterior, posterior, lateral oder deep_frontal).
+Bestimme target_nodes (z.B. N10_Shoulder_Complex, N11_LSO_Pelvis, N12_Hip_Ankle).
+Erstelle eine progression_matrix mit 4-5 aufbauenden Übungen vom einfachsten bis zum Ziel.
 
 Verfügbare Übungs-IDs (verwende NUR diese):
 ${availableExerciseIds.map((id, i) => `${i + 1}. ${id}`).join('\n')}
@@ -70,6 +76,22 @@ ${availableFaqIds.map((id, i) => `${i + 1}. ${id}`).join('\n')}`,
       response_json_schema: {
         type: 'object',
         properties: {
+          primary_sling: { type: 'string', description: 'anterior | posterior | lateral | deep_frontal' },
+          target_nodes: { type: 'array', items: { type: 'string' } },
+          progression_matrix: {
+            type: 'array',
+            items: {
+              type: 'object',
+              properties: {
+                level: { type: 'integer' },
+                exercise_id: { type: 'string' },
+                threshold: { type: 'string' },
+                rehab_proxy: { type: 'string' },
+                intensity_factor: { type: 'number' }
+              },
+              required: ['level', 'exercise_id', 'threshold']
+            }
+          },
           phases: {
             type: 'array',
             items: {
@@ -88,7 +110,11 @@ ${availableFaqIds.map((id, i) => `${i + 1}. ${id}`).join('\n')}`,
                       name: { type: 'string' },
                       sets_reps_tempo: { type: 'string' },
                       instruction: { type: 'string' },
-                      notes: { type: 'string' }
+                      notes: { type: 'string' },
+                      intensity_factor: { type: 'number' },
+                      sling_id: { type: 'string' },
+                      target_nodes: { type: 'array', items: { type: 'string' } },
+                      rehab_proxy: { type: 'string' }
                     },
                     required: ['exercise_id', 'name', 'sets_reps_tempo', 'instruction']
                   }
