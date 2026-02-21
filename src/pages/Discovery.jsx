@@ -4,6 +4,7 @@ import { base44 } from '@/api/base44Client';
 import { createPageUrl } from '@/utils';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, ArrowRight, Loader2, Brain, Zap, Target } from 'lucide-react';
+import { base44 } from '@/api/base44Client';
 import { toast } from 'sonner';
 import DiscoveryTest from '../components/discovery/DiscoveryTest.jsx';
 import DiscoveryResults from '../components/discovery/DiscoveryResults.jsx';
