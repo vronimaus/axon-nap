@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { base44 } from '@/api/base44Client';
 import { createPageUrl } from '@/utils';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, ArrowRight, CheckCircle2, Loader2, Brain, Zap } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Loader2, Brain, Zap } from 'lucide-react';
 import { toast } from 'sonner';
 import DiscoveryTest from '../components/discovery/DiscoveryTest.jsx';
 import DiscoveryResults from '../components/discovery/DiscoveryResults.jsx';
@@ -83,13 +83,19 @@ const TESTS = [
   },
 ];
 
+const getLevel = (value, thresholds) => {
+  if (value >= thresholds.elite) return 'elite';
+  if (value >= thresholds.advanced) return 'advanced';
+  if (value >= thresholds.intermediate) return 'intermediate';
+  return 'beginner';
+};
+
 export default function Discovery() {
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [currentTestIdx, setCurrentTestIdx] = useState(0);
   const [answers, setAnswers] = useState({});
   const [phase, setPhase] = useState('intro'); // 'intro' | 'testing' | 'saving' | 'results'
-  const [savedBaselines, setSavedBaselines] = useState([]);
 
   useEffect(() => {
     const init = async () => {
@@ -113,8 +119,9 @@ export default function Discovery() {
   const handleNext = () => {
     const currentTest = TESTS[currentTestIdx];
     if (answers[currentTest.id] === undefined) {
-      toast.error('Bitte gib einen Wert ein, bevor du weitergehst.');
-      return;
+      // Set default value and proceed
+      const defaultVal = currentTest.unit === 'level' ? currentTest.min : Math.round((currentTest.min + currentTest.max) / 4);
+      setAnswers(prev => ({ ...prev, [currentTest.id]: defaultVal }));
     }
     if (currentTestIdx < TESTS.length - 1) {
       setCurrentTestIdx(prev => prev + 1);
@@ -127,9 +134,17 @@ export default function Discovery() {
     setPhase('saving');
     try {
       const today = new Date().toISOString().split('T')[0];
-      const baselines = await Promise.all(
+      const finalAnswers = { ...answers };
+      // Fill any missing answers with defaults
+      TESTS.forEach(test => {
+        if (finalAnswers[test.id] === undefined) {
+          finalAnswers[test.id] = test.unit === 'level' ? test.min : Math.round((test.min + test.max) / 4);
+        }
+      });
+
+      await Promise.all(
         TESTS.map(test => {
-          const value = answers[test.id];
+          const value = finalAnswers[test.id];
           const level = getLevel(value, test.thresholds);
           return base44.entities.PerformanceBaseline.create({
             user_email: user.email,
@@ -143,9 +158,9 @@ export default function Discovery() {
           });
         })
       );
-      // Mark profile as having baselines
+
       await base44.auth.updateMe({ baseline_completed: true, baseline_date: today });
-      setSavedBaselines(baselines);
+      setAnswers(finalAnswers);
       setPhase('results');
       base44.analytics.track({ eventName: 'discovery_completed', properties: { user_email: user.email } });
     } catch (err) {
@@ -155,19 +170,10 @@ export default function Discovery() {
     }
   };
 
-  const getLevel = (value, thresholds) => {
-    if (value >= thresholds.elite) return 'elite';
-    if (value >= thresholds.advanced) return 'advanced';
-    if (value >= thresholds.intermediate) return 'intermediate';
-    return 'beginner';
-  };
-
   if (isLoading) return <div className="min-h-screen bg-slate-950" />;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 flex flex-col items-center justify-center p-4 pb-20 md:pb-8">
-
-      {/* INTRO */}
       <AnimatePresence mode="wait">
         {phase === 'intro' && (
           <motion.div
@@ -187,7 +193,7 @@ export default function Discovery() {
               </p>
             </div>
             <div className="glass rounded-xl border border-amber-500/30 p-5 text-left space-y-3">
-              {TESTS.map((t, i) => (
+              {TESTS.map((t) => (
                 <div key={t.id} className="flex items-center gap-3 text-sm text-slate-300">
                   <span className="text-xl w-8 text-center">{t.icon}</span>
                   <span><strong className="text-white">{t.name}</strong> — {t.question.slice(0, 50)}…</span>
@@ -218,7 +224,6 @@ export default function Discovery() {
             exit={{ opacity: 0, y: -20 }}
             className="max-w-lg w-full space-y-6"
           >
-            {/* Progress */}
             <div className="flex items-center gap-3">
               <button
                 onClick={() => currentTestIdx > 0 ? setCurrentTestIdx(p => p - 1) : setPhase('intro')}
@@ -237,7 +242,6 @@ export default function Discovery() {
               </span>
             </div>
 
-            {/* Test Card */}
             <AnimatePresence mode="wait">
               <DiscoveryTest
                 key={currentTestIdx}
@@ -249,7 +253,7 @@ export default function Discovery() {
 
             <Button
               onClick={handleNext}
-              className="w-full h-13 bg-gradient-to-r from-amber-500 to-yellow-600 hover:from-amber-600 hover:to-yellow-700 text-white font-bold"
+              className="w-full h-12 bg-gradient-to-r from-amber-500 to-yellow-600 hover:from-amber-600 hover:to-yellow-700 text-white font-bold"
             >
               {currentTestIdx < TESTS.length - 1 ? (
                 <span className="flex items-center gap-2">Weiter <ArrowRight className="w-4 h-4" /></span>
@@ -275,6 +279,7 @@ export default function Discovery() {
 
         {phase === 'results' && (
           <DiscoveryResults
+            key="results"
             tests={TESTS}
             answers={answers}
             onContinue={() => window.location.href = createPageUrl('Dashboard')}
