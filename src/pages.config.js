@@ -69,9 +69,6 @@ import KnowledgeUpload from './pages/KnowledgeUpload';
 import Landing from './pages/Landing';
 import MFRIntegration from './pages/MFRIntegration';
 import Performance from './pages/Performance';
-import PerformanceChat from './pages/PerformanceChat';
-import PerformanceTest from './pages/PerformanceTest';
-import PerformanceTestChoice from './pages/PerformanceTestChoice';
 import Privacy from './pages/Privacy';
 import Profile from './pages/Profile';
 import ProfileComparison from './pages/ProfileComparison';
@@ -107,9 +104,6 @@ export const PAGES = {
     "Landing": Landing,
     "MFRIntegration": MFRIntegration,
     "Performance": Performance,
-    "PerformanceChat": PerformanceChat,
-    "PerformanceTest": PerformanceTest,
-    "PerformanceTestChoice": PerformanceTestChoice,
     "Privacy": Privacy,
     "Profile": Profile,
     "ProfileComparison": ProfileComparison,
