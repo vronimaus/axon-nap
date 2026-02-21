@@ -244,6 +244,18 @@ export default function Discovery() {
     setAnswers(prev => ({ ...prev, [testId]: value }));
   };
 
+  // Seed default value when a new test is shown, so "not touched" = middle value, not 0
+  useEffect(() => {
+    const currentTest = TESTS[currentTestIdx];
+    if (!currentTest) return;
+    if (answers[currentTest.id] === undefined) {
+      const defaultVal = currentTest.unit === 'level'
+        ? currentTest.min
+        : Math.round((currentTest.min + currentTest.max) / 2);
+      setAnswers(prev => ({ ...prev, [currentTest.id]: defaultVal }));
+    }
+  }, [currentTestIdx, TESTS]);
+
   const handleNext = () => {
     const currentTest = TESTS[currentTestIdx];
     if (answers[currentTest.id] === undefined) {
