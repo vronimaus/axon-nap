@@ -130,13 +130,7 @@ export default function Dashboard() {
             {/* 1. PERFORMANCE (Goals) - NOW FIRST */}
             <motion.button
               whileTap={{ scale: 0.98 }}
-              onClick={() => {
-                if (performanceBaselines.length === 0) {
-                  window.location.href = createPageUrl('PerformanceTestChoice');
-                } else {
-                  setMode('performance');
-                }
-              }}
+              onClick={() => setMode('performance')}
               className="glass rounded-xl sm:rounded-2xl border border-amber-500/30 p-6 sm:p-8 hover:border-amber-500/60 active:border-amber-500/80 transition-all group touch-target relative"
             >
               {performanceBaselines.length === 0 && (
