@@ -17,7 +17,7 @@ const getLevel = (value, thresholds) => {
   return 'beginner';
 };
 
-export default function DiscoveryResults({ tests, answers, onContinue }) {
+export default function DiscoveryResults({ tests, answers, onContinue, isGeneratingPlan, goalLabel }) {
   const results = tests.map(test => {
     const val = answers[test.id];
     const level = getLevel(val, test.thresholds);
