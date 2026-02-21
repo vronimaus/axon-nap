@@ -5,8 +5,8 @@ import { createPageUrl } from '@/utils';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, ArrowRight, CheckCircle2, Loader2, Brain, Zap } from 'lucide-react';
 import { toast } from 'sonner';
-import DiscoveryTest from '../components/discovery/DiscoveryTest';
-import DiscoveryResults from '../components/discovery/DiscoveryResults';
+import DiscoveryTest from '../components/discovery/DiscoveryTest.jsx';
+import DiscoveryResults from '../components/discovery/DiscoveryResults.jsx';
 
 const TESTS = [
   {
