@@ -419,22 +419,54 @@ export default function TrainingPlan() {
                   </motion.div>
                 )}
 
-                {/* Phases */}
-                {activePlan.phases?.map((phase, idx) => (
+                {/* Sequential Phase Navigation */}
+                {activePlan.phases && activePlan.phases.length > 1 && (
+                  <div className="flex gap-2 overflow-x-auto pb-1">
+                    {activePlan.phases.map((phase, idx) => {
+                      const isLocked = idx > 0 && !completedPhases[idx - 1];
+                      const isDone = completedPhases[idx];
+                      return (
+                        <button
+                          key={idx}
+                          onClick={() => !isLocked && setActivePhaseIdx(idx)}
+                          disabled={isLocked}
+                          className={`flex-shrink-0 px-4 py-2 rounded-xl text-xs font-bold border transition-all ${
+                            activePhaseIdx === idx
+                              ? 'bg-amber-500/20 border-amber-500/50 text-amber-400'
+                              : isDone
+                              ? 'bg-green-500/10 border-green-500/40 text-green-400'
+                              : isLocked
+                              ? 'border-slate-700 text-slate-600 cursor-not-allowed'
+                              : 'border-slate-600 text-slate-400 hover:border-slate-500'
+                          }`}
+                        >
+                          {isDone ? '✓ ' : isLocked ? '🔒 ' : ''}{phase.title || `Phase ${idx + 1}`}
+                        </button>
+                      );
+                    })}
+                  </div>
+                )}
+
+                {/* Active Phase Card */}
+                {activePlan.phases && activePlan.phases[activePhaseIdx] && (
                   <PhaseCard
-                    key={idx}
-                    phase={phase}
-                    index={idx}
-                    isExpanded={expandedPhase === idx}
-                    onToggle={() => setExpandedPhase(expandedPhase === idx ? null : idx)}
-                    isCompleted={completedPhases[idx]}
+                    phase={activePlan.phases[activePhaseIdx]}
+                    index={activePhaseIdx}
+                    totalPhases={activePlan.phases.length}
+                    isCompleted={completedPhases[activePhaseIdx]}
                     onComplete={() => {
-                      setCompletedPhases({ ...completedPhases, [idx]: !completedPhases[idx] });
-                      toast.success(completedPhases[idx] ? 'Als nicht erledigt markiert' : 'Phase abgeschlossen!');
+                      const newCompleted = { ...completedPhases, [activePhaseIdx]: true };
+                      setCompletedPhases(newCompleted);
+                      toast.success('Phase abgeschlossen! 🎉');
+                      if (activePhaseIdx < activePlan.phases.length - 1) {
+                        setTimeout(() => setActivePhaseIdx(activePhaseIdx + 1), 600);
+                      }
                     }}
+                    onNext={() => setActivePhaseIdx(activePhaseIdx + 1)}
+                    onPrev={() => setActivePhaseIdx(activePhaseIdx - 1)}
                     onExerciseClick={(exercise) => setSelectedExercise(exercise)}
                   />
-                ))}
+                )}
 
                 {/* Chat with Coach Section */}
                 <motion.div
