@@ -95,6 +95,8 @@ Erstelle einen wissenschaftlich fundierten 3-Phasen Trainingsplan auf Deutsch f√
 
 Ziel: "${goal_description}"
 Baseline / Aktueller Stand: ${baseline || 'Nicht angegeben'}
+Discovery Assessment Ergebnisse:
+${baselineData || 'Kein Assessment vorhanden'}
 Activity Level: ${activityLvl}
 Trainingserfahrung: ${expLvl}
 Prim√§rsport: ${sport || 'keiner angegeben'}
