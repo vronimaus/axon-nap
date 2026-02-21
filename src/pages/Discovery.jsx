@@ -223,9 +223,10 @@ export default function Discovery() {
 
         // Check if coming from a specific goal
         const urlParams = new URLSearchParams(window.location.search);
-        const goalParam = urlParams.get('goal');
-        if (goalParam) {
-          const detected = detectGoalKey(goalParam);
+        const gp = urlParams.get('goal');
+        if (gp) {
+          setGoalParam(gp);
+          const detected = detectGoalKey(gp);
           if (detected && GOAL_BENCHMARK_MAP[detected]) {
             const mapping = GOAL_BENCHMARK_MAP[detected];
             setGoalKey(detected);
