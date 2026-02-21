@@ -39,7 +39,9 @@ export default function DiscoveryResults({ tests, answers, onContinue, isGenerat
           <CheckCircle2 className="w-8 h-8 text-white" />
         </div>
         <h1 className="text-2xl sm:text-3xl font-bold text-white mb-2">Baseline kalibriert</h1>
-        <p className="text-slate-400 text-sm">AXON kennt jetzt dein Fundament. Jeder Trainingsplan wird darauf aufgebaut.</p>
+        <p className="text-slate-400 text-sm">
+          {goalLabel ? `AXON erstellt jetzt deinen Trainingsplan für ${goalLabel}.` : 'AXON kennt jetzt dein Fundament. Jeder Trainingsplan wird darauf aufgebaut.'}
+        </p>
       </div>
 
       {/* Results List */}
