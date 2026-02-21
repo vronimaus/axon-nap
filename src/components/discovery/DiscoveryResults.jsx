@@ -91,9 +91,19 @@ export default function DiscoveryResults({ tests, answers, onContinue, isGenerat
 
       <Button
         onClick={onContinue}
+        disabled={isGeneratingPlan}
         className="w-full h-14 bg-gradient-to-r from-amber-500 to-yellow-600 hover:from-amber-600 hover:to-yellow-700 text-white font-bold text-base"
       >
-        Zum Dashboard <ArrowRight className="w-5 h-5 ml-2" />
+        {isGeneratingPlan ? (
+          <span className="flex items-center gap-2">
+            <Loader2 className="w-5 h-5 animate-spin" />
+            Trainingsplan wird erstellt…
+          </span>
+        ) : goalLabel ? (
+          <span className="flex items-center gap-2">Trainingsplan erstellen <ArrowRight className="w-5 h-5" /></span>
+        ) : (
+          <span className="flex items-center gap-2">Zum Dashboard <ArrowRight className="w-5 h-5" /></span>
+        )}
       </Button>
     </motion.div>
   );
