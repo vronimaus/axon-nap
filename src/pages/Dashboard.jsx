@@ -387,11 +387,10 @@ export default function Dashboard() {
                           const goal = selectedBodyRegion.trim();
 
                           // If no baseline yet → go to Discovery first
-                          if (!user?.baseline_completed) {
-                            const url = createPageUrl('Discovery') + `?goal=${encodeURIComponent(goal)}`;
-                            window.location.href = url;
-                            return;
-                          }
+                          // IMMER zum Discovery gehen, unabhängig ob Baseline existiert
+                          const url = createPageUrl('Discovery') + `?goal=${encodeURIComponent(goal)}`;
+                          window.location.href = url;
+                          return;
 
                           // Baseline exists → generate plan directly
                           setIsGeneratingPlan(true);
