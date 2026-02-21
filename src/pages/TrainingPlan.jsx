@@ -336,21 +336,43 @@ export default function TrainingPlan() {
                   </motion.div>
                 )}
 
-                {/* Plan Header */}
-                <div className="glass rounded-2xl border border-amber-500/30 p-6 bg-gradient-to-r from-amber-500/10 to-transparent">
-                  <div className="flex items-start justify-between mb-4">
-                    <div>
-                      <h2 className="text-2xl font-bold text-amber-400 mb-1">{activePlan.goal_description}</h2>
-                      <p className="text-slate-400 text-sm">
-                        {activePlan.estimated_duration_weeks} Wochen Plan · Phase {activePlan.current_phase || 1}/{activePlan.phases?.length || 3}
-                      </p>
-                    </div>
-                    <div className="text-right">
-                      <div className="text-xs text-slate-500 mb-1">Gestartet</div>
-                      <div className="text-sm text-slate-300">{new Date(activePlan.plan_generated_date).toLocaleDateString('de-DE')}</div>
-                    </div>
+                {/* Progress Indicator */}
+                <div>
+                  <div className="flex justify-between items-center mb-3">
+                    <span className="text-sm font-semibold text-slate-300">
+                      Phase {activePlan.current_phase || 1} von {activePlan.phases?.length || 3}
+                    </span>
+                    <span className="text-xs text-slate-500">
+                      {activePlan.estimated_duration_weeks} Wochen · Gestartet {activePlan.plan_generated_date ? new Date(activePlan.plan_generated_date).toLocaleDateString('de-DE') : '–'}
+                    </span>
+                  </div>
+                  <div className="h-2 bg-slate-800 rounded-full overflow-hidden">
+                    <motion.div
+                      initial={{ width: 0 }}
+                      animate={{ width: `${((activePlan.current_phase || 1) / (activePlan.phases?.length || 3)) * 100}%` }}
+                      className="h-full bg-gradient-to-r from-amber-500 to-yellow-500"
+                    />
                   </div>
                 </div>
+
+                {/* Current Phase Highlight */}
+                {activePlan.phases && activePlan.phases[(activePlan.current_phase || 1) - 1] && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="glass rounded-2xl border border-amber-500/30 p-6 bg-gradient-to-r from-amber-500/10 to-transparent"
+                  >
+                    <h2 className="text-2xl font-bold text-amber-400 mb-2">
+                      {activePlan.phases[(activePlan.current_phase || 1) - 1].title}
+                    </h2>
+                    <p className="text-slate-300 mb-4">
+                      {activePlan.phases[(activePlan.current_phase || 1) - 1].description}
+                    </p>
+                    <div className="text-sm text-slate-400">
+                      Empfohlene Dauer: <strong>{activePlan.phases[(activePlan.current_phase || 1) - 1].duration_weeks} Wochen</strong>
+                    </div>
+                  </motion.div>
+                )}
 
                 {/* Accepted Complementary Drills */}
                 {activePlan.complementary_drills_accepted && activePlan.suggested_complementary_drills?.length > 0 && (
