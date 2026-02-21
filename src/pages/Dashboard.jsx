@@ -63,16 +63,6 @@ export default function Dashboard() {
     enabled: !!user
   });
 
-  const { data: performanceBaselines = [] } = useQuery({
-    queryKey: ['performanceBaselines', user?.email],
-    queryFn: async () => {
-      if (!user?.email) return [];
-      const baselines = await base44.entities.PerformanceBaseline.filter({ user_email: user.email });
-      return baselines;
-    },
-    enabled: !!user?.email
-  });
-
    const { data: dashboardData = {} } = useQuery({
      queryKey: ['dashboardData', user?.email],
      queryFn: async () => {
