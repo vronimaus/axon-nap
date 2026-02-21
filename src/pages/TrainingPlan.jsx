@@ -289,24 +289,7 @@ export default function TrainingPlan() {
                   </div>
                 </div>
 
-                {/* Current Phase Highlight */}
-                {activePlan.phases && activePlan.phases[(activePlan.current_phase || 1) - 1] && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="glass rounded-2xl border border-amber-500/30 p-6 bg-gradient-to-r from-amber-500/10 to-transparent"
-                  >
-                    <h2 className="text-2xl font-bold text-amber-400 mb-2">
-                      {activePlan.phases[(activePlan.current_phase || 1) - 1].title}
-                    </h2>
-                    <p className="text-slate-300 mb-4">
-                      {activePlan.phases[(activePlan.current_phase || 1) - 1].description}
-                    </p>
-                    <div className="text-sm text-slate-400">
-                      Empfohlene Dauer: <strong>{activePlan.phases[(activePlan.current_phase || 1) - 1].duration_weeks} Wochen</strong>
-                    </div>
-                  </motion.div>
-                )}
+
 
 
 
