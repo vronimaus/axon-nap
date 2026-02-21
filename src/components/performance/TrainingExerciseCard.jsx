@@ -244,23 +244,39 @@ export default function TrainingExerciseCard({ exercise, idx, onDetailClick }) {
         </AnimatePresence>
       </div>
 
-      {/* Footer: Satz Button */}
+      {/* Footer: Satz Button + Feedback */}
       <div className="relative px-4 pb-4">
         <div className="h-px mb-3" style={{ background: 'linear-gradient(90deg, transparent, rgba(245,158,11,0.2), transparent)' }} />
         {!satzDone ? (
           <button onClick={handleSatzFertig}
-            className="w-full h-14 rounded-xl font-extrabold text-base flex items-center justify-center gap-2 transition-all active:scale-95 tracking-wide"
+            className="w-full h-14 rounded-xl font-extrabold text-base flex items-center justify-center gap-2 transition-all active:scale-95 tracking-wide mb-3"
             style={{ background: 'linear-gradient(135deg, #d97706, #f59e0b)', color: '#fff', boxShadow: '0 0 24px rgba(245,158,11,0.3)' }}>
             <CheckCircle2 className="w-5 h-5" />
             SATZ {satzCounter} FERTIG {satzCounter < totalSaetze ? '(Weiter)' : '✓'}
           </button>
         ) : (
-          <div className="w-full h-14 rounded-xl font-extrabold text-base flex items-center justify-center gap-2"
+          <div className="w-full h-14 rounded-xl font-extrabold text-base flex items-center justify-center gap-2 mb-3"
             style={{ background: 'rgba(245,158,11,0.15)', border: '1px solid rgba(245,158,11,0.4)', color: '#fbbf24' }}>
             <CheckCircle2 className="w-5 h-5" />
             Alle {totalSaetze} Sätze erledigt! 🎉
           </div>
         )}
+
+        {/* Feedback Buttons */}
+        <div className="flex gap-2">
+          <button onClick={handleOuch}
+            className="flex-1 h-10 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-all active:scale-95 border"
+            style={{ background: 'rgba(239,68,68,0.1)', borderColor: 'rgba(239,68,68,0.35)', color: '#f87171' }}>
+            <AlertTriangle className="w-3.5 h-3.5" />
+            Ouch! (Hilfe)
+          </button>
+          <button onClick={handleBoost}
+            className="flex-1 h-10 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-all active:scale-95 border"
+            style={{ background: 'rgba(34,197,94,0.1)', borderColor: 'rgba(34,197,94,0.35)', color: '#4ade80' }}>
+            <ChevronUp className="w-3.5 h-3.5" />
+            Zu einfach? (Boost)
+          </button>
+        </div>
       </div>
 
       {/* Bottom neon edge */}
