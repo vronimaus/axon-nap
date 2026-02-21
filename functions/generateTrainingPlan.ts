@@ -113,17 +113,19 @@ Bestimme primary_sling des Plans (anterior, posterior, lateral oder deep_frontal
 Bestimme target_nodes (z.B. N10_Shoulder_Complex, N11_LSO_Pelvis, N12_Hip_Ankle).
 Erstelle eine progression_matrix mit 4-5 aufbauenden Übungen vom einfachsten bis zum Ziel.
 
-⚠️ KRITISCH: Du DARFST NUR exercise_ids aus der folgenden Liste verwenden.
-Erfinde KEINE eigenen exercise_ids. Verwende die Metadaten (Ziele, Mechanik, Neuro, FMS, Zweck) um semantisch die besten Matches zu finden.
+⚠️ ABSOLUT KRITISCH: Du MUSST exercise_ids EXAKT wie unten angegeben verwenden. Keine Abwandlungen, keine eigenen IDs erfinden. Jede ID die nicht in der Liste steht wird automatisch gelöscht und der Plan ist leer!
 
-✅ VERFÜGBARE Übungen (ID: Name [Kategorie | Schwierigkeit | Kette] | Ziele | Mechanik | Neuro | FMS | Zweck):
+ERLAUBTE EXERCISE IDs (NUR diese verwenden, exakt so):
+${exactIdList}
+
+DETAILS DER ÜBUNGEN:
 ${exerciseCatalog}
 
-    Verfügbare Routine-IDs:
-    ${availableRoutineIds.map((id, i) => `${i + 1}. ${id}`).join('\n')}
+Verfügbare Routine-IDs:
+${availableRoutineIds.map((id, i) => `${i + 1}. ${id}`).join('\n')}
 
-    Verfügbare FAQ-IDs:
-    ${availableFaqIds.map((id, i) => `${i + 1}. ${id}`).join('\n')}`,
+Verfügbare FAQ-IDs:
+${availableFaqIds.map((id, i) => `${i + 1}. ${id}`).join('\n')}`,
       response_json_schema: {
         type: 'object',
         properties: {
