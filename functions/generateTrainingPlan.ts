@@ -43,36 +43,46 @@ Deno.serve(async (req) => {
 
     console.log(`[generateTrainingPlan] Goal: ${goal_description}, Exercises: ${availableExerciseIds.length}`);
 
+    // Build exercise lookup for enrichment
+    const exerciseLookup = {};
+    for (const ex of allExercises) {
+      if (ex.exercise_id) exerciseLookup[ex.exercise_id] = ex;
+    }
+
     const planData = await base44.integrations.Core.InvokeLLM({
       prompt: `Erstelle einen detaillierten 3-Phasen Trainingsplan auf Deutsch für folgendes Ziel:
 
-Ziel: ${goal_description}
-Baseline: ${baseline || 'Nicht angegeben'}
-Activity Level: ${activityLvl}
-Erfahrung: ${expLvl}
-Sport: ${sport}
-Fitness Goals: ${fitnessGoals}
+    Ziel: ${goal_description}
+    Baseline: ${baseline || 'Nicht angegeben'}
+    Activity Level: ${activityLvl}
+    Erfahrung: ${expLvl}
+    Sport: ${sport}
+    Fitness Goals: ${fitnessGoals}
 
-Jede Phase MUSS mindestens 4 Übungen enthalten mit konkreten deutschen Anweisungen.
-Verwende VIELFÄLTIGE Übungen: nicht nur Variationen derselben Übung, sondern Mobility, Neuro-Drills, Hilfsmuskeln, Antagonisten.
+    ⚠️ KRITISCH: Du MUSST ausschließlich exercise_ids aus der folgenden Liste verwenden.
+    Erfinde KEINE eigenen exercise_ids. Wenn du eine ID verwendest, die nicht in der Liste steht, wird sie gelöscht.
+    Wähle die am besten passenden Übungen für das Ziel aus dieser Liste aus.
 
-Phase 1 (Foundation, 2 Wochen): Grundlagen, Mobilisation, neuronale Aktivierung, Körperwahrnehmung
-Phase 2 (Development, 3 Wochen): Kraftaufbau, Progressionen, Bewegungsmuster, Hilfsmuskeln
-Phase 3 (Mastery, 3 Wochen): Performance, Zielübung, funktionelle Integration, Intensitätssteigerung
+    Jede Phase MUSS mindestens 4 Übungen enthalten mit konkreten deutschen Anweisungen.
+    Verwende VIELFÄLTIGE Übungen: Mobility, Neuro-Drills, Breath, Strength, Core – je nach Verfügbarkeit.
 
-Für jeden Exercise: Weise intensity_factor zu (1.0=Rehab/Mobility, 1.5=Integration, 2.5=Performance/Kraft).
-Bestimme primary_sling des Plans (anterior, posterior, lateral oder deep_frontal).
-Bestimme target_nodes (z.B. N10_Shoulder_Complex, N11_LSO_Pelvis, N12_Hip_Ankle).
-Erstelle eine progression_matrix mit 4-5 aufbauenden Übungen vom einfachsten bis zum Ziel.
+    Phase 1 (Foundation, 2 Wochen): Grundlagen, Mobilisation, neuronale Aktivierung, Körperwahrnehmung
+    Phase 2 (Development, 3 Wochen): Kraftaufbau, Progressionen, Bewegungsmuster, Hilfsmuskeln
+    Phase 3 (Mastery, 3 Wochen): Performance, Zielübung, funktionelle Integration, Intensitätssteigerung
 
-Verfügbare Übungs-IDs (verwende NUR diese):
-${availableExerciseIds.map((id, i) => `${i + 1}. ${id}`).join('\n')}
+    Für jeden Exercise: Weise intensity_factor zu (1.0=Rehab/Mobility, 1.5=Integration, 2.5=Performance/Kraft).
+    Bestimme primary_sling des Plans (anterior, posterior, lateral oder deep_frontal).
+    Bestimme target_nodes (z.B. N10_Shoulder_Complex, N11_LSO_Pelvis, N12_Hip_Ankle).
+    Erstelle eine progression_matrix mit 4-5 aufbauenden Übungen vom einfachsten bis zum Ziel.
 
-Verfügbare Routine-IDs:
-${availableRoutineIds.map((id, i) => `${i + 1}. ${id}`).join('\n')}
+    ✅ ERLAUBTE exercise_ids (NUR diese verwenden!):
+    ${availableExerciseIds.map((id, i) => `${i + 1}. ${id}`).join('\n')}
 
-Verfügbare FAQ-IDs:
-${availableFaqIds.map((id, i) => `${i + 1}. ${id}`).join('\n')}`,
+    Verfügbare Routine-IDs:
+    ${availableRoutineIds.map((id, i) => `${i + 1}. ${id}`).join('\n')}
+
+    Verfügbare FAQ-IDs:
+    ${availableFaqIds.map((id, i) => `${i + 1}. ${id}`).join('\n')}`,
       response_json_schema: {
         type: 'object',
         properties: {
