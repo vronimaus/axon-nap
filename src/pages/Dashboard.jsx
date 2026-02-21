@@ -375,33 +375,8 @@ export default function Dashboard() {
                     />
                   </div>
 
-                  {/* Baseline Banner — shown AFTER goal is entered */}
-                  {!user?.baseline_completed && selectedBodyRegion?.trim() && (
-                    <motion.div
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      className="glass rounded-xl border border-amber-500/50 p-4 bg-gradient-to-r from-amber-500/15 to-transparent flex items-center justify-between gap-4"
-                    >
-                      <div>
-                        <p className="text-sm font-bold text-amber-400">⚡ Baseline zuerst messen</p>
-                        <p className="text-xs text-slate-400 mt-0.5">AXON Discovery kalibriert deinen Plan exakt auf dein Ziel.</p>
-                      </div>
-                      <Button
-                        onClick={() => {
-                          const goal = selectedBodyRegion.trim();
-                          const url = createPageUrl('Discovery') + `?goal=${encodeURIComponent(goal)}`;
-                          window.location.href = url;
-                        }}
-                        size="sm"
-                        className="flex-shrink-0 bg-amber-500 hover:bg-amber-600 text-black font-bold text-xs"
-                      >
-                        Jetzt messen
-                      </Button>
-                    </motion.div>
-                  )}
-                  
-                  {/* Start Button */}
-                  {selectedBodyRegion && selectedBodyRegion.trim() && (
+                  {/* Start Button — always shown when goal is entered */}
+                  {selectedBodyRegion?.trim() && (
                     <motion.div
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
@@ -410,9 +385,17 @@ export default function Dashboard() {
                         disabled={isGeneratingPlan}
                         onClick={async () => {
                           const goal = selectedBodyRegion.trim();
+
+                          // If no baseline yet → go to Discovery first
+                          if (!user?.baseline_completed) {
+                            const url = createPageUrl('Discovery') + `?goal=${encodeURIComponent(goal)}`;
+                            window.location.href = url;
+                            return;
+                          }
+
+                          // Baseline exists → generate plan directly
                           setIsGeneratingPlan(true);
                           try {
-                            // Archive any existing active plan first
                             const existingPlans = await base44.entities.TrainingPlan.filter({
                               user_email: user.email,
                               status: 'active'
@@ -444,8 +427,10 @@ export default function Dashboard() {
                             <Loader2 className="w-5 h-5 animate-spin" />
                             Plan wird erstellt…
                           </span>
-                        ) : (
+                        ) : user?.baseline_completed ? (
                           'Trainingsplan erstellen →'
+                        ) : (
+                          'Weiter zur Baseline-Messung →'
                         )}
                       </Button>
                     </motion.div>
