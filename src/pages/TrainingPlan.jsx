@@ -398,7 +398,7 @@ function ReadinessBanner({ readinessStatus }) {
             <div className="px-4 pb-4 space-y-3">
               <p className="text-slate-300 text-sm leading-relaxed">{detail}</p>
               <Button onClick={() => window.location.href = createPageUrl('FlowRoutines')} size="sm"
-                className={`${isYellow ? 'bg-amber-500/20 text-amber-400 hover:bg-amber-500/30 border border-amber-500/50' : 'bg-red-500/20 text-red-400 hover:bg-red-500/30 border border-red-500/50'}`}>
+                className={`${isYellow ? 'bg-sky-500/20 text-sky-400 hover:bg-sky-500/30 border border-sky-500/50' : 'bg-red-500/20 text-red-400 hover:bg-red-500/30 border border-red-500/50'}`}>
                 Zu den Mobility Flows
               </Button>
             </div>
