@@ -271,7 +271,9 @@ export default function Discovery() {
       const finalAnswers = { ...answers };
       TESTS.forEach(test => {
         if (finalAnswers[test.id] === undefined) {
-          finalAnswers[test.id] = test.unit === 'level' ? test.min : 0;
+          finalAnswers[test.id] = test.unit === 'level'
+            ? test.min
+            : Math.round((test.min + test.max) / 2);
         }
       });
 
