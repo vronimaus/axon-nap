@@ -22,10 +22,10 @@ function SimpleChatBubble({ message }) {
         </div>
       )}
       <div className={`max-w-[90%] ${isUser && 'flex flex-col items-end'}`}>
-        <div className={`rounded-lg px-3 py-2 text-sm ${
+        <div className={`rounded-lg px-3 py-2 text-sm shadow-[0_0_15px_rgba(6,182,212,0.15)] border border-cyan-500/10 ${
           isUser 
             ? 'bg-slate-800 text-slate-200' 
-            : 'bg-transparent text-slate-300 pl-0'
+            : 'bg-slate-900/40 text-slate-300'
         }`}>
           {isUser ? (
             <p className="leading-relaxed">{message.content?.trim()}</p>

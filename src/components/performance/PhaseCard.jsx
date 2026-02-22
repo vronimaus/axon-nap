@@ -179,23 +179,23 @@ export default function PhaseCard({ phase, index, totalPhases, isCompleted, onCo
       </div>
 
       {/* Footer Navigation */}
-      <div className="flex gap-3 pt-4">
-        {index > 0 && (
-          <Button variant="outline" onClick={onPrev} className="border-slate-700 text-slate-400 hover:text-white">
+      <div className="flex flex-col-reverse sm:flex-row gap-3 pt-6 items-center sm:justify-between">
+        {index > 0 ? (
+          <Button variant="outline" onClick={onPrev} className="w-full sm:w-auto border-slate-700 text-slate-400 hover:text-white">
             ← Zurück
           </Button>
-        )}
-        <div className="flex-1" />
+        ) : <div className="hidden sm:block" />}
+
         {!isCompleted ? (
           <Button
             onClick={onComplete}
-            className="bg-cyan-500 hover:bg-cyan-600 text-slate-900 font-bold shadow-[0_0_20px_rgba(6,182,212,0.3)] hover:shadow-[0_0_30px_rgba(6,182,212,0.5)] transition-all"
+            className="w-full sm:w-auto bg-cyan-500 hover:bg-cyan-600 text-slate-900 font-bold shadow-[0_0_20px_rgba(6,182,212,0.3)] hover:shadow-[0_0_30px_rgba(6,182,212,0.5)] transition-all px-8 py-6 text-lg"
           >
-            <CheckCircle2 className="w-4 h-4 mr-2" />
+            <CheckCircle2 className="w-5 h-5 mr-2" />
             Phase abschließen
           </Button>
         ) : index < totalPhases - 1 ? (
-          <Button onClick={onNext} className="bg-cyan-500 hover:bg-cyan-600 text-slate-900 font-bold">
+          <Button onClick={onNext} className="w-full sm:w-auto bg-cyan-500 hover:bg-cyan-600 text-slate-900 font-bold px-8 py-6">
             Nächste Phase →
           </Button>
         ) : null}
