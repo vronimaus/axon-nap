@@ -192,8 +192,12 @@ export default function Layout({ children, currentPageName }) {
                   className="w-8 h-8 sm:w-10 sm:h-10 object-contain"
                 />
                 <div className="hidden xs:block">
-                  <span className="font-bold text-cyan-400 text-base sm:text-lg tracking-tight">AXON</span>
-                  <span className="text-xs text-slate-400 hidden sm:block -mt-1">Neuro-Athletic Protocol</span>
+                   <img 
+                     src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/8a319630f_image.png"
+                     alt="AXON"
+                     className="h-6 sm:h-7 object-contain mt-1"
+                   />
+                  <span className="text-xs text-slate-400 hidden sm:block -mt-1 pl-0.5">Neuro-Athletic Protocol</span>
                 </div>
               </Link>
               
@@ -337,7 +341,7 @@ export default function Layout({ children, currentPageName }) {
           )}
 
       {/* Footer */}
-      <footer className="border-t border-cyan-500/20 glass mt-auto mb-16 md:mb-0">
+      <footer className="hidden md:block border-t border-cyan-500/20 glass mt-auto mb-16 md:mb-0">
         <div className="max-w-6xl mx-auto px-4 py-6">
           <div className="flex flex-col sm:flex-row items-center justify-center sm:justify-between gap-3 sm:gap-4 text-xs sm:text-sm text-slate-400">
             <p className="text-center sm:text-left">© 2026 AXON Protocol</p>
