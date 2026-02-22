@@ -9,27 +9,27 @@ import { Button } from '@/components/ui/button';
 const CONFIG = {
   training: {
     icon: Zap,
-    borderColor: 'border-amber-500/40',
-    bgColor: 'from-amber-500/10 to-transparent',
-    accentColor: 'text-amber-400',
-    barColor: 'bg-amber-500',
-    dot: 'bg-amber-400',
-  },
-  rehab_override: {
-    icon: Activity,
     borderColor: 'border-blue-500/40',
     bgColor: 'from-blue-500/10 to-transparent',
     accentColor: 'text-blue-400',
     barColor: 'bg-blue-500',
     dot: 'bg-blue-400',
   },
+  rehab_override: {
+    icon: Activity,
+    borderColor: 'border-emerald-500/40',
+    bgColor: 'from-emerald-500/10 to-transparent',
+    accentColor: 'text-emerald-400',
+    barColor: 'bg-emerald-500',
+    dot: 'bg-emerald-400',
+  },
   rehab_first: {
     icon: AlertTriangle,
-    borderColor: 'border-amber-500/40',
-    bgColor: 'from-amber-500/10 to-transparent',
-    accentColor: 'text-amber-400',
-    barColor: 'bg-amber-500',
-    dot: 'bg-amber-400 animate-pulse',
+    borderColor: 'border-emerald-500/40',
+    bgColor: 'from-emerald-500/10 to-transparent',
+    accentColor: 'text-emerald-400',
+    barColor: 'bg-emerald-500',
+    dot: 'bg-emerald-400 animate-pulse',
   },
   rest: {
     icon: Moon,
@@ -41,11 +41,11 @@ const CONFIG = {
   },
   no_plan: {
     icon: Zap,
-    borderColor: 'border-cyan-500/40',
-    bgColor: 'from-cyan-500/10 to-transparent',
-    accentColor: 'text-cyan-400',
-    barColor: 'bg-cyan-500',
-    dot: 'bg-cyan-400',
+    borderColor: 'border-purple-500/40',
+    bgColor: 'from-purple-500/10 to-transparent',
+    accentColor: 'text-purple-400',
+    barColor: 'bg-purple-500',
+    dot: 'bg-purple-400',
   },
 };
 
@@ -62,7 +62,7 @@ export default function SessionDecision({ user }) {
 
   if (isLoading) {
     return (
-      <div className="glass rounded-xl border border-slate-700 p-4 flex items-center gap-3">
+      <div className="glass rounded-xl border border-slate-700 p-3 flex items-center justify-center gap-3">
         <Loader2 className="w-4 h-4 text-cyan-400 animate-spin flex-shrink-0" />
         <span className="text-sm text-slate-400">AXON analysiert deinen Status...</span>
       </div>
@@ -79,48 +79,31 @@ export default function SessionDecision({ user }) {
       initial={{ opacity: 0, y: -8 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
-      className={`glass rounded-xl border ${cfg.borderColor} p-4 sm:p-5 bg-gradient-to-r ${cfg.bgColor}`}
+      className={`glass rounded-xl border ${cfg.borderColor} p-3 sm:p-4 bg-gradient-to-r ${cfg.bgColor} flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-lg`}
     >
-      {/* Header */}
-      <div className="flex items-start gap-3 mb-3">
-        <div className={`w-2 h-2 rounded-full ${cfg.dot} mt-2 flex-shrink-0`} />
-        <div className="flex-1 min-w-0">
-          <p className="text-xs text-slate-500 uppercase tracking-widest mb-0.5">Heutige Session</p>
-          <h3 className={`text-base sm:text-lg font-bold ${cfg.accentColor}`}>{data.title}</h3>
+      <div className="flex items-start sm:items-center gap-3 sm:gap-4">
+        <div className={`w-10 h-10 rounded-full bg-slate-900 border ${cfg.borderColor} flex items-center justify-center flex-shrink-0 shadow-inner`}>
+          <Icon className={`w-5 h-5 ${cfg.accentColor}`} />
         </div>
-        <Icon className={`w-5 h-5 ${cfg.accentColor} flex-shrink-0 mt-0.5`} />
+        <div>
+          <div className="flex items-center gap-2 mb-0.5">
+            <div className={`w-1.5 h-1.5 rounded-full ${cfg.dot}`} />
+            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Heutige Empfehlung</span>
+          </div>
+          <h3 className={`text-sm sm:text-base font-bold ${cfg.accentColor}`}>{data.title}</h3>
+          <p className="text-xs text-slate-300 mt-1 line-clamp-1 sm:line-clamp-2">{data.recommendation}</p>
+        </div>
       </div>
-
-      {/* Reason */}
-      <p className="text-xs sm:text-sm text-slate-300 leading-relaxed mb-1">{data.reason}</p>
-      <p className="text-xs text-slate-500 leading-relaxed mb-4">{data.recommendation}</p>
-
-      {/* CTAs */}
-      <div className="flex flex-wrap gap-2">
+      
+      <div className="flex-shrink-0 w-full sm:w-auto mt-2 sm:mt-0">
         <Button
           onClick={() => window.location.href = createPageUrl(data.cta.page)}
           size="sm"
-          className={`gap-2 text-xs sm:text-sm bg-gradient-to-r ${
-            data.decision === 'training' ? 'from-amber-500/30 to-yellow-500/30 border border-amber-500/40 text-amber-300 hover:from-amber-500/40' :
-            data.decision === 'rest' ? 'from-slate-500/30 to-slate-600/30 border border-slate-500/40 text-slate-300 hover:from-slate-500/40' :
-            data.decision === 'no_plan' ? 'from-cyan-500/30 to-blue-500/30 border border-cyan-500/40 text-cyan-300 hover:from-cyan-500/40' :
-            'from-blue-500/30 to-cyan-500/30 border border-blue-500/40 text-blue-300 hover:from-blue-500/40'
-          }`}
+          className={`w-full sm:w-auto gap-2 text-xs font-bold uppercase tracking-wider bg-slate-900 hover:bg-slate-800 border ${cfg.borderColor} ${cfg.accentColor}`}
         >
           {data.cta.label}
           <ArrowRight className="w-3.5 h-3.5" />
         </Button>
-
-        {data.secondary_cta && (
-          <Button
-            onClick={() => window.location.href = createPageUrl(data.secondary_cta.page)}
-            size="sm"
-            variant="ghost"
-            className="text-xs sm:text-sm text-slate-400 hover:text-slate-200"
-          >
-            {data.secondary_cta.label}
-          </Button>
-        )}
       </div>
     </motion.div>
   );

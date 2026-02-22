@@ -5,15 +5,21 @@ import { WifiOff, Wifi, Loader2 } from 'lucide-react';
 export default function OfflineDetector() {
   const [isOffline, setIsOffline] = useState(!navigator.onLine);
   const [isSyncing, setIsSyncing] = useState(false);
+  const [showOnline, setShowOnline] = useState(false);
 
   // Handle offline/online state
   useEffect(() => {
     const handleOnline = async () => {
       setIsOffline(false);
+      setShowOnline(true);
+      setTimeout(() => setShowOnline(false), 3000);
       // Trigger sync when coming back online
       await syncOfflineData();
     };
-    const handleOffline = () => setIsOffline(true);
+    const handleOffline = () => {
+      setIsOffline(true);
+      setShowOnline(false);
+    };
 
     window.addEventListener('online', handleOnline);
     window.addEventListener('offline', handleOffline);
@@ -87,12 +93,11 @@ export default function OfflineDetector() {
         </motion.div>
       )}
       
-      {!isOffline && !isSyncing && (
+      {!isOffline && !isSyncing && showOnline && (
         <motion.div
           initial={{ opacity: 0, y: -50 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -50 }}
-          transition={{ delay: 2 }}
           className="fixed top-20 left-1/2 -translate-x-1/2 z-[100] rounded-xl border border-green-500/70 px-6 py-3 shadow-2xl bg-green-950/80 backdrop-blur-md"
         >
           <div className="flex items-center gap-3">
