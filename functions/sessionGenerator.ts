@@ -10,105 +10,95 @@ Deno.serve(async (req) => {
     }
 
     const today = new Date().toISOString().split('T')[0];
-
-    // Fetch data in parallel
-    const [readinessChecks, rehabPlans, trainingPlans] = await Promise.all([
+    
+    // Fetch data in parallel (Global Sync Engine)
+    const [readinessChecks, rehabPlans, trainingPlans, dashboardRes] = await Promise.all([
       base44.entities.ReadinessCheck.filter({ user_email: user.email }),
       base44.entities.RehabPlan.filter({ user_email: user.email, status: 'active' }),
       base44.entities.TrainingPlan.filter({ user_email: user.email, status: 'active' }),
+      base44.functions.invoke('dashboardDataAggregator', { daysBack: 7 })
     ]);
 
-    // Get today's readiness check (most recent)
+    const activeRehab = rehabPlans[0] || null;
+    const activeTraining = trainingPlans[0] || null;
+    const dashboardData = dashboardRes?.data || {};
+
+    // === 1. Calculate MCS (Master Consistency Score) Components ===
+    
+    // A. Readiness Score (30%)
     const todayReadiness = readinessChecks
       .filter(r => r.check_date === today)
       .sort((a, b) => new Date(b.created_date) - new Date(a.created_date))[0] || null;
 
-    const activeRehab = rehabPlans[0] || null;
-    const activeTraining = trainingPlans[0] || null;
-
-    // === TRIAGE LOGIC ===
-
-    // 1. REST CHECK — lowest energy or hardware score
+    let readinessScore = 0.5; // Default yellow
     if (todayReadiness) {
-      const { energy_battery, feeling_hardware } = todayReadiness;
-      if (energy_battery < 3 || feeling_hardware < 3) {
-        return Response.json({
-          decision: 'rest',
-          color: 'slate',
-          title: 'System-Reset & Erholung',
-          reason: `Dein ${energy_battery < 3 ? 'Energie-Level' : 'Hardware-Status'} (${energy_battery < 3 ? energy_battery : feeling_hardware}/10) signalisiert, dass dein Körper heute Regeneration braucht.`,
-          recommendation: 'Fokus auf Atemarbeit, leichte Mobilisation und Schlaf-Qualität.',
-          cta: { label: 'Flow Routinen', page: 'FlowRoutines' },
-          has_rehab: !!activeRehab,
-          has_training: !!activeTraining,
-        });
-      }
+        if (todayReadiness.readiness_status === 'green') readinessScore = 1.0;
+        else if (todayReadiness.readiness_status === 'red') readinessScore = 0.0;
     }
 
-    // 2. REHAB OVERRIDE — active pain signal
-    if (activeRehab) {
-      const painNrs = activeRehab.pain_nrs || 0;
-      const interventionMode = activeRehab.intervention_mode || 'none';
-      const painNode = activeRehab.pain_feedback_node;
+    // B. Sling Integrity Score (40%)
+    let slingScore = 1.0;
+    const slingAlerts = dashboardData.sling_alerts || [];
+    if (slingAlerts.some(a => a.severity === 'critical')) slingScore = 0.0;
+    else if (slingAlerts.some(a => a.severity === 'moderate')) slingScore = 0.5;
 
-      if (painNrs > 3 || interventionMode === 'red_stop') {
-        const nodeText = painNode ? ` bei Node ${painNode}` : '';
-        return Response.json({
-          decision: 'rehab_override',
-          color: 'blue',
-          title: 'Stabilität & Struktur-Schutz',
-          reason: `Dein Schmerz-Signal${nodeText} (NRS ${painNrs}/10) zeigt: Dein Körper braucht heute strukturelle Unterstützung statt Leistung.`,
-          recommendation: 'Dein Rehab-Plan steht bereit. Jede Übung heute ist eine Investition in deine Maximalkraft von morgen.',
-          cta: { label: 'Zum Reha-Plan', page: 'RehabPlan' },
-          has_rehab: true,
-          has_training: !!activeTraining,
-        });
-      }
+    // C. History / Consistency (30%)
+    let historyScore = 0.8; // Assume good history for now
 
-      // Yellow zone — rehab recommended but training possible
-      if (painNrs > 0 && painNrs <= 3) {
-        const nodeText = painNode ? ` (Node ${painNode})` : '';
-        return Response.json({
-          decision: 'rehab_first',
-          color: 'amber',
-          title: 'Rehab zuerst, dann Training',
-          reason: `Leichtes Schmerzsignal${nodeText} aktiv (NRS ${painNrs}/10). Starte mit deinem Rehab-Plan, bevor du trainierst.`,
-          recommendation: 'Nach dem Rehab-Check: grünes Licht für modifiziertes Training.',
-          cta: { label: 'Zum Reha-Plan', page: 'RehabPlan' },
-          secondary_cta: { label: 'Trotzdem trainieren', page: 'TrainingPlan' },
-          has_rehab: true,
-          has_training: !!activeTraining,
-        });
-      }
+    // MCS Formula: 40% Sling, 30% Readiness, 30% History
+    const mcs = Math.round(((slingScore * 0.4) + (readinessScore * 0.3) + (historyScore * 0.3)) * 100);
+
+    // === 2. Weather Report Generation (Der "Wetterbericht") ===
+    let weatherReport = {};
+    if (mcs >= 80) {
+        weatherReport = {
+            decision: "training",
+            status: "Peak Performance",
+            mcs,
+            color: "cyan",
+            title: "Peak Performance",
+            reason: "System ist hochgefahren. Optimale Bedingungen für Progression und neue Reize.",
+            psychological_framing: "Du bist in Topform. Nutze die Energie für deine anspruchsvollsten Ziele.",
+            recommendation: "Du bist in Topform. Nutze die Energie für deine anspruchsvollsten Ziele.",
+            cta: { label: "Performance Training", page: "TrainingPlan" }
+        };
+    } else if (mcs >= 40) {
+        weatherReport = {
+            decision: "rehab_first",
+            status: "Sanfter Flow",
+            mcs,
+            color: "emerald",
+            title: "Sanfter Flow",
+            reason: "Leichte Asymmetrien oder Ermüdung erkannt. Fokus auf Qualität statt Quantität.",
+            psychological_framing: "Perfekter Tag, um deine Basis zu stärken. Wir arbeiten heute an deinen Schwachstellen.",
+            recommendation: "Perfekter Tag, um deine Basis zu stärken. Wir arbeiten heute an deinen Schwachstellen.",
+            cta: { label: "Rehab & Flow", page: "RehabPlan" }
+        };
+    } else {
+        weatherReport = {
+            decision: "rest",
+            status: "Recovery",
+            mcs,
+            color: "slate",
+            title: "System-Reset & Erholung",
+            reason: "System beansprucht. Fokus auf Regeneration und Parasympathikus-Aktivierung.",
+            psychological_framing: "Sarah sagt: 'Dein System konsolidiert gerade die letzten Reize. Gib deinen Neuronen Zeit, die neuen Pfade zu festigen.'",
+            recommendation: "Sarah sagt: 'Dein System konsolidiert gerade die letzten Reize. Gib deinen Neuronen Zeit, die neuen Pfade zu festigen.'",
+            cta: { label: "Recovery Flow", page: "FlowRoutines" }
+        };
     }
 
-    // 3. TRAINING — all clear
-    if (activeTraining) {
-      return Response.json({
-        decision: 'training',
-        color: 'amber',
-        title: 'Maximalkraft & Performance',
-        reason: todayReadiness
-          ? `Readiness Check: ${todayReadiness.feeling_hardware}/10 Hardware · ${todayReadiness.focus_software}/10 Software · ${todayReadiness.energy_battery}/10 Energie. System bereit.`
-          : 'Kein Schmerzsignal aktiv. System bereit für Progression.',
-        recommendation: 'Dein Trainingsplan steht bereit. Zeit für Fortschritt.',
-        cta: { label: 'Zum Trainingsplan', page: 'TrainingPlan' },
-        has_rehab: !!activeRehab,
-        has_training: true,
-      });
+    // === 3. Benchmark Transfer (Der "Kleber") ===
+    let benchmarkTransferMessage = null;
+    if (activeRehab && activeTraining && slingScore > 0.5) {
+       benchmarkTransferMessage = "Deine Rehab-Arbeit zahlt sich aus: Deine Asymmetrien werden geringer!";
     }
 
-    // 4. NO ACTIVE PLAN — onboarding
     return Response.json({
-      decision: 'no_plan',
-      color: 'cyan',
-      title: 'Bereit loszulegen?',
-      reason: 'Du hast noch keinen aktiven Plan. Wähle deinen Einstieg.',
-      recommendation: 'Starte mit einer Diagnose (Reha) oder definiere dein Performance-Ziel.',
-      cta: { label: 'Diagnose starten', page: 'DiagnosisChat' },
-      secondary_cta: { label: 'Performance-Ziel setzen', page: 'Dashboard' },
-      has_rehab: false,
-      has_training: false,
+      ...weatherReport,
+      benchmarkTransferMessage,
+      has_rehab: !!activeRehab,
+      has_training: !!activeTraining,
     });
 
   } catch (error) {

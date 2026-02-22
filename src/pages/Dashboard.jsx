@@ -62,7 +62,18 @@ export default function Dashboard() {
     enabled: !!user
   });
 
-   const { data: dashboardData = {} } = useQuery({
+   const { data: sessionDecision } = useQuery({
+    queryKey: ['sessionDecision', user?.email],
+    queryFn: async () => {
+      if (!user?.email) return null;
+      const res = await base44.functions.invoke('sessionGenerator', {});
+      return res.data;
+    },
+    enabled: !!user?.email,
+    staleTime: 5 * 60 * 1000,
+  });
+
+  const { data: dashboardData = {} } = useQuery({
      queryKey: ['dashboardData', user?.email],
      queryFn: async () => {
        if (!user?.email) return {};
@@ -83,10 +94,42 @@ export default function Dashboard() {
     return <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950" />;
   }
 
+  // Ambient Glow Colors
+  const getGlowColor = () => {
+    if (!sessionDecision) return 'rgba(15, 23, 42, 0)'; // transparent
+    if (sessionDecision.decision === 'training') return 'rgba(6, 182, 212, 0.15)'; // cyan
+    if (sessionDecision.decision === 'rest') return 'rgba(148, 163, 184, 0.15)'; // slate
+    return 'rgba(16, 185, 129, 0.15)'; // emerald
+  };
+
+  const glowColor = getGlowColor();
+
   // Mode Selection Screen (3 Fronten)
   if (!mode) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 flex items-center justify-center p-4 pb-20 md:pb-4">
+      <motion.div 
+        animate={{ boxShadow: `inset 0 0 120px ${glowColor}` }}
+        transition={{ repeat: Infinity, duration: 4, repeatType: "reverse", ease: "easeInOut" }}
+        className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 flex items-center justify-center p-4 pb-20 md:pb-4 relative overflow-hidden"
+      >
+        {/* Kinetic Wave Background */}
+        {sessionDecision && (
+          <motion.div 
+            className="absolute inset-0 opacity-20 pointer-events-none"
+            style={{
+              background: `radial-gradient(circle at 50% 0%, ${glowColor} 0%, transparent 70%)`
+            }}
+            animate={{ 
+              scale: [1, 1.1, 1],
+              opacity: [0.1, 0.3, 0.1]
+            }}
+            transition={{ 
+              repeat: Infinity, 
+              duration: sessionDecision.decision === 'training' ? 3 : 6, 
+              ease: "easeInOut" 
+            }}
+          />
+        )}
         <Helmet>
           <title>Command - AXON Dashboard</title>
           <meta name="description" content="Dein persönliches AXON Command Center. Wähle zwischen Performance-Training, Rehabilitation oder Flow-Routinen." />
@@ -111,8 +154,8 @@ export default function Dashboard() {
           </div>
 
           {/* Session Decision — AXON Triage */}
-          <div className="mb-6">
-            <SessionDecision user={user} />
+          <div className="mb-6 relative z-10">
+            <SessionDecision user={user} data={sessionDecision} />
           </div>
 
           <div className="grid sm:grid-cols-3 gap-4 sm:gap-6">
@@ -204,12 +247,34 @@ export default function Dashboard() {
             </motion.div>
           )}
         </motion.div>
-      </div>
-    );
-  }
+        </motion.div>
+        );
+        }
 
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 flex flex-col">
+        return (
+        <motion.div 
+        animate={{ boxShadow: `inset 0 0 120px ${glowColor}` }}
+        transition={{ repeat: Infinity, duration: 4, repeatType: "reverse", ease: "easeInOut" }}
+        className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 flex flex-col relative overflow-hidden"
+        >
+        {/* Kinetic Wave Background */}
+        {sessionDecision && (
+        <motion.div 
+          className="absolute inset-0 opacity-20 pointer-events-none"
+          style={{
+            background: `radial-gradient(circle at 50% 0%, ${glowColor} 0%, transparent 70%)`
+          }}
+          animate={{ 
+            scale: [1, 1.1, 1],
+            opacity: [0.1, 0.3, 0.1]
+          }}
+          transition={{ 
+            repeat: Infinity, 
+            duration: sessionDecision.decision === 'training' ? 3 : 6, 
+            ease: "easeInOut" 
+          }}
+        />
+        )}
       <Helmet>
         <title>{mode === 'rehab' ? 'REHAB' : 'PERFORMANCE'} - AXON Command</title>
         <meta name="description" content={mode === 'rehab' ? 'Analysiere und löse deine Beschwerden mit AXON Rehabilitation' : 'Erreiche deine Performance-Ziele mit AXON Training'} />
@@ -450,6 +515,6 @@ export default function Dashboard() {
           </motion.div>
         )}
       </AnimatePresence>
-    </div>
-  );
-}
+      </motion.div>
+      );
+      }

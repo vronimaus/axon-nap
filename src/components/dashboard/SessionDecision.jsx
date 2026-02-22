@@ -1,7 +1,5 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import { createPageUrl } from '@/utils';
 import { Zap, Activity, Moon, ArrowRight, AlertTriangle, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -49,27 +47,15 @@ const CONFIG = {
   },
 };
 
-export default function SessionDecision({ user }) {
-  const { data, isLoading, isError } = useQuery({
-    queryKey: ['sessionDecision', user?.email],
-    queryFn: async () => {
-      const res = await base44.functions.invoke('sessionGenerator', {});
-      return res.data;
-    },
-    enabled: !!user?.email,
-    staleTime: 5 * 60 * 1000, // 5 minutes
-  });
-
-  if (isLoading) {
+export default function SessionDecision({ user, data }) {
+  if (!data) {
     return (
-      <div className="glass rounded-xl border border-slate-700 p-3 flex items-center justify-center gap-3">
+      <div className="glass rounded-xl border border-slate-700 p-3 flex items-center justify-center gap-3 relative z-10">
         <Loader2 className="w-4 h-4 text-cyan-400 animate-spin flex-shrink-0" />
         <span className="text-sm text-slate-400">AXON analysiert deinen Status...</span>
       </div>
     );
   }
-
-  if (isError || !data) return null;
 
   const cfg = CONFIG[data.decision] || CONFIG.no_plan;
   const Icon = cfg.icon;
@@ -90,8 +76,15 @@ export default function SessionDecision({ user }) {
             <div className={`w-1.5 h-1.5 rounded-full ${cfg.dot}`} />
             <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Heutige Empfehlung</span>
           </div>
-          <h3 className={`text-sm sm:text-base font-bold ${cfg.accentColor}`}>{data.title}</h3>
-          <p className="text-xs text-slate-300 mt-1 line-clamp-1 sm:line-clamp-2">{data.recommendation}</p>
+          <h3 className={`text-sm sm:text-base font-bold ${cfg.accentColor}`}>
+            {data.title} <span className="text-xs font-normal text-slate-400 ml-2">MCS: {data.mcs}%</span>
+          </h3>
+          <p className="text-xs text-slate-300 mt-1">{data.psychological_framing}</p>
+          {data.benchmarkTransferMessage && (
+            <p className="text-xs font-medium text-emerald-400 mt-2 bg-emerald-500/10 inline-block px-2 py-1 rounded">
+              {data.benchmarkTransferMessage}
+            </p>
+          )}
         </div>
       </div>
       
