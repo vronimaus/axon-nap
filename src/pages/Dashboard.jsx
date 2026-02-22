@@ -9,12 +9,14 @@ import { toast } from 'sonner';
 import SlingSpiderChart from '../components/dashboard/SlingSpiderChart';
 import OnboardingModal from '../components/dashboard/OnboardingModal';
 import SessionDecision from '../components/dashboard/SessionDecision';
+import ProgressSyncView from '../components/dashboard/ProgressSyncView';
 import { Helmet } from 'react-helmet-async';
 
 export default function Dashboard() {
   const [mode, setMode] = useState(null); // 'rehab', 'performance', or null for selection
   const [selectedBodyRegion, setSelectedBodyRegion] = useState(null);
   const [showOnboarding, setShowOnboarding] = useState(false);
+  const [showProgress, setShowProgress] = useState(false);
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isGeneratingPlan, setIsGeneratingPlan] = useState(false);
@@ -155,7 +157,20 @@ export default function Dashboard() {
 
           {/* Session Decision — AXON Triage */}
           <div className="mb-6 relative z-10">
-            <SessionDecision user={user} data={sessionDecision} />
+            <AnimatePresence mode="wait">
+              {showProgress ? (
+                <ProgressSyncView 
+                  key="progress"
+                  dashboardData={dashboardData} 
+                  sessionDecision={sessionDecision} 
+                  onClose={() => setShowProgress(false)} 
+                />
+              ) : (
+                <motion.div key="decision" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} transition={{ duration: 0.2 }}>
+                  <SessionDecision user={user} data={sessionDecision} onClick={() => setShowProgress(true)} />
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
 
           <div className="grid sm:grid-cols-3 gap-4 sm:gap-6">

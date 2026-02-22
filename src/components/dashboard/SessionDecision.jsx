@@ -47,7 +47,7 @@ const CONFIG = {
   },
 };
 
-export default function SessionDecision({ user, data }) {
+export default function SessionDecision({ user, data, onClick }) {
   if (!data) {
     return (
       <div className="glass rounded-xl border border-slate-700 p-3 flex items-center justify-center gap-3 relative z-10">
@@ -65,7 +65,8 @@ export default function SessionDecision({ user, data }) {
       initial={{ opacity: 0, y: -8 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
-      className={`glass rounded-xl border ${cfg.borderColor} p-3 sm:p-4 bg-gradient-to-r ${cfg.bgColor} flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-lg`}
+      onClick={onClick}
+      className={`glass rounded-xl border ${cfg.borderColor} p-3 sm:p-4 bg-gradient-to-r ${cfg.bgColor} flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-lg ${onClick ? 'cursor-pointer hover:scale-[1.02]' : ''}`}
     >
       <div className="flex items-start sm:items-center gap-3 sm:gap-4">
         <div className={`w-10 h-10 rounded-full bg-slate-900 border ${cfg.borderColor} flex items-center justify-center flex-shrink-0 shadow-inner`}>
@@ -90,7 +91,7 @@ export default function SessionDecision({ user, data }) {
       
       <div className="flex-shrink-0 w-full sm:w-auto mt-2 sm:mt-0">
         <Button
-          onClick={() => window.location.href = createPageUrl(data.cta.page)}
+          onClick={(e) => { e.stopPropagation(); window.location.href = createPageUrl(data.cta.page); }}
           size="sm"
           className={`w-full sm:w-auto gap-2 text-xs font-bold uppercase tracking-wider bg-slate-900 hover:bg-slate-800 border ${cfg.borderColor} ${cfg.accentColor}`}
         >
