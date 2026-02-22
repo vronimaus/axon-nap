@@ -393,7 +393,7 @@ export default function TrainingPlan() {
                 </p>
                 <Button
                   onClick={() => window.location.href = createPageUrl('Dashboard')}
-                  className="w-full bg-amber-500/20 text-amber-400 hover:bg-amber-500/30"
+                  className="w-full bg-blue-500/20 text-blue-400 hover:bg-blue-500/30"
                 >
                   Zum Dashboard
                 </Button>

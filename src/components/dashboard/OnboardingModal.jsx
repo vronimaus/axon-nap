@@ -16,26 +16,26 @@ export default function OnboardingModal({ onClose }) {
     {
       icon: Activity,
       title: '1. Wähle dein Schicksal',
-      description: '🔴 REHAB: Etwas zwickt? Wir finden den "Neural Slack", um den Schmerz zu löschen.\n\n🔵 PERFORMANCE: Du bist fit? Wir suchen die Bremsen, um deine 12 Meilensteine freizuschalten.',
-      color: 'from-red-500 to-purple-500'
+      description: '🟢 REHAB: Etwas zwickt? Wir finden den "Neural Slack", um den Schmerz zu löschen.\n\n🔵 PERFORMANCE: Du bist fit? Wir suchen die Bremsen, um deine 12 Meilensteine freizuschalten.',
+      color: 'from-emerald-500 to-cyan-500'
     },
     {
       icon: MapPin,
       title: '2. Detective Mode',
       description: 'Öffne die Body-Map. Markiere mit einem Fingerstreich genau den Bereich, der dich heute limitiert.\n\nTipp: Sei präzise! Ein Strich entlang des Nackens sagt AXON mehr als ein dicker Punkt.',
-      color: 'from-purple-500 to-pink-500'
+      color: 'from-purple-500 to-blue-500'
     },
     {
       icon: Shield,
       title: '3. Gatekeeper-Check',
       description: 'Bevor wir Gewichte bewegen, prüfen wir die Erlaubnis deines Gehirns. Bestehe den Level 1 (Mobilität) oder Level 2 (Stabilität) Test.',
-      color: 'from-orange-500 to-red-500'
+      color: 'from-blue-500 to-cyan-500'
     },
     {
       icon: Zap,
       title: '4. Flash-Drill & Training',
       description: 'AXON schlägt dir einen 30-sekündigen Neuro-Hack vor (Augen, Zunge oder Atmung). Mach den Drill, spüre den Unterschied und starte dann erst in dein Training.',
-      color: 'from-green-500 to-cyan-500'
+      color: 'from-emerald-500 to-blue-500'
     }
   ];
 
@@ -116,7 +116,7 @@ export default function OnboardingModal({ onClose }) {
                   {step < steps.length - 1 ? (
                     <Button
                       onClick={() => setStep(step + 1)}
-                      className="flex-1 bg-gradient-to-r from-cyan-500 to-purple-600 gap-2"
+                      className="flex-1 bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 gap-2 shadow-[0_0_15px_rgba(59,130,246,0.3)]"
                     >
                       Weiter
                       <ArrowRight className="w-4 h-4" />
@@ -124,7 +124,7 @@ export default function OnboardingModal({ onClose }) {
                   ) : (
                     <Button
                       onClick={onClose}
-                      className="flex-1 bg-gradient-to-r from-cyan-500 to-purple-600 gap-2"
+                      className="flex-1 bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 gap-2 shadow-[0_0_15px_rgba(59,130,246,0.3)]"
                     >
                       Los geht's!
                       <Zap className="w-4 h-4" />

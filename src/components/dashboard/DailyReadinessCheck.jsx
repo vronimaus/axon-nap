@@ -116,9 +116,9 @@ export default function DailyReadinessCheck({ user, onClose }) {
             {/* Feeling (Hardware) */}
             <div className="mb-6">
               <div className="flex items-center gap-2 mb-3">
-                <Wrench className="w-5 h-5 text-orange-400" />
+                <Wrench className="w-5 h-5 text-blue-400" />
                 <label className="text-sm font-medium text-white">Gefühl (Hardware)</label>
-                <span className="ml-auto text-lg font-bold text-orange-400">{feeling}/10</span>
+                <span className="ml-auto text-lg font-bold text-blue-400">{feeling}/10</span>
               </div>
               <input
                 type="range"
@@ -164,9 +164,9 @@ export default function DailyReadinessCheck({ user, onClose }) {
             {/* Energy (Battery) */}
             <div className="mb-6">
               <div className="flex items-center gap-2 mb-3">
-                <Zap className="w-5 h-5 text-amber-400" />
+                <Zap className="w-5 h-5 text-purple-400" />
                 <label className="text-sm font-medium text-white">Batterie (Energie)</label>
-                <span className="ml-auto text-lg font-bold text-amber-400">{energy}/10</span>
+                <span className="ml-auto text-lg font-bold text-purple-400">{energy}/10</span>
               </div>
               <input
                 type="range"
@@ -189,7 +189,7 @@ export default function DailyReadinessCheck({ user, onClose }) {
             <Button
               onClick={handleSubmit}
               disabled={isSubmitting}
-              className="w-full h-12 bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-600 hover:to-purple-700 text-white font-semibold"
+              className="w-full h-12 bg-gradient-to-r from-blue-500 to-cyan-600 hover:from-blue-600 hover:to-cyan-700 text-white font-semibold shadow-[0_0_20px_rgba(59,130,246,0.2)]"
             >
               {isSubmitting ? 'Analysiere System...' : 'Bio-Sync starten'}
             </Button>

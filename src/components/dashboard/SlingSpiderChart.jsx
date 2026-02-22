@@ -41,7 +41,7 @@ export default function SlingSpiderChart({
     x: centerX + (radius * Math.sin(Math.PI / 3)),
     y: centerY + (radius * Math.cos(Math.PI / 3)),
     label: 'Posterior',
-    color: '#ef4444',
+    color: '#10b981',
     value: posterior
   };
   const latVertex = {
@@ -108,8 +108,8 @@ export default function SlingSpiderChart({
                 <stop offset="100%" stopColor="#3b82f6" stopOpacity="0.05" />
               </linearGradient>
               <linearGradient id="postGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="#ef4444" stopOpacity="0.2" />
-                <stop offset="100%" stopColor="#ef4444" stopOpacity="0.05" />
+                <stop offset="0%" stopColor="#10b981" stopOpacity="0.2" />
+                <stop offset="100%" stopColor="#10b981" stopOpacity="0.05" />
               </linearGradient>
               <linearGradient id="latGradient" x1="0%" y1="0%" x2="100%" y2="100%">
                 <stop offset="0%" stopColor="#8b5cf6" stopOpacity="0.2" />
@@ -219,7 +219,7 @@ export default function SlingSpiderChart({
         <div className="grid grid-cols-3 gap-3">
           {[
             { label: 'Anterior', value: anterior, color: 'blue', unit: '/10' },
-            { label: 'Posterior', value: posterior, color: 'red', unit: '/10' },
+            { label: 'Posterior', value: posterior, color: 'emerald', unit: '/10' },
             { label: 'Lateral', value: lateral, color: 'purple', unit: '/10' }
           ].map((sling) => (
             <motion.div
@@ -237,7 +237,7 @@ export default function SlingSpiderChart({
             >
               <p className={`text-xs font-medium ${
                 sling.color === 'blue' ? 'text-blue-400' :
-                sling.color === 'red' ? 'text-red-400' : 'text-purple-400'
+                sling.color === 'emerald' ? 'text-emerald-400' : 'text-purple-400'
               }`}>
                 {sling.label}
               </p>
@@ -252,7 +252,7 @@ export default function SlingSpiderChart({
                   transition={{ duration: 0.8, delay: 0.2 }}
                   className={`h-full ${
                     sling.color === 'blue' ? 'bg-blue-500' :
-                    sling.color === 'red' ? 'bg-red-500' : 'bg-purple-500'
+                    sling.color === 'emerald' ? 'bg-emerald-500' : 'bg-purple-500'
                   }`}
                 />
               </div>
