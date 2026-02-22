@@ -4,9 +4,31 @@ import { X, Brain, Activity, TrendingUp } from 'lucide-react';
 import { LineChart, Line, ResponsiveContainer, Tooltip, XAxis } from 'recharts';
 
 export default function ProgressSyncView({ dashboardData, sessionDecision, onClose }) {
-  const mcs = sessionDecision?.mcs || 0;
-  const history = dashboardData?.historical_data || [];
-  const nodes = dashboardData?.heatmap_nodes || [];
+  let mcs = sessionDecision?.mcs || 0;
+  let history = dashboardData?.historical_data || [];
+  let nodes = dashboardData?.heatmap_nodes || [];
+
+  const isDemo = history.length === 0 && nodes.length === 0;
+
+  if (isDemo) {
+    mcs = 78;
+    history = Array.from({ length: 30 }, (_, i) => ({
+      overall_readiness: Math.min(100, Math.max(0, 50 + Math.sin(i * 0.5) * 15 + Math.random() * 10 + (i * 0.8)))
+    }));
+    nodes = [
+      { node_id: 'N1', sling: 'lateral', status: 'green' },
+      { node_id: 'N2', sling: 'anterior', status: 'yellow' },
+      { node_id: 'N3', sling: 'posterior', status: 'green' },
+      { node_id: 'N5', sling: 'lateral', status: 'green' },
+      { node_id: 'N6', sling: 'lateral', status: 'green' },
+      { node_id: 'N7', sling: 'anterior', status: 'orange' },
+      { node_id: 'N8', sling: 'lateral', status: 'yellow' },
+      { node_id: 'N9', sling: 'posterior', status: 'green' },
+      { node_id: 'N10', sling: 'lateral', status: 'green' },
+      { node_id: 'N11', sling: 'anterior', status: 'red' },
+      { node_id: 'N12', sling: 'posterior', status: 'green' }
+    ];
+  }
 
   const getStatusColor = (status) => {
     if (status === 'green') return 'text-emerald-400 bg-emerald-400/10 border-emerald-400/20';
@@ -29,7 +51,12 @@ export default function ProgressSyncView({ dashboardData, sessionDecision, onClo
         </button>
       </div>
 
-      <div className="text-center mb-6 sm:mb-8">
+      <div className="text-center mb-6 sm:mb-8 relative flex flex-col items-center">
+        {isDemo && (
+          <span className="bg-purple-500/20 text-purple-400 text-[10px] px-2 py-0.5 rounded-full border border-purple-500/30 mb-2 font-semibold">
+            DEMO DATEN
+          </span>
+        )}
         <h2 className="text-xl sm:text-2xl font-bold text-white tracking-wide uppercase">Fortschritt & Sync</h2>
         <p className="text-xs sm:text-sm text-slate-400 mt-1">Deep Data Analysis</p>
       </div>
