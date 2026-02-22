@@ -349,25 +349,42 @@ export default function Discovery() {
   };
 
   const handleContinue = async () => {
-    // If we came from a goal, generate the training plan automatically
     if (goalParam) {
+      // Shadow plan already generated (or still generating)?
+      if (shadowPlanId) {
+        // Instant redirect — plan is ready!
+        window.location.href = createPageUrl('TrainingPlan');
+        return;
+      }
+
+      if (shadowError) {
+        // Shadow failed → fallback: generate now
+        toast.error('Plan wird neu erstellt…');
+      }
+
+      // Still generating → show spinner and wait for it
       setIsGeneratingPlan(true);
       try {
-        const existingPlans = await base44.entities.TrainingPlan.filter({
-          user_email: user.email,
-          status: 'active'
-        });
-        for (const plan of existingPlans) {
-          await base44.entities.TrainingPlan.update(plan.id, { status: 'paused' });
+        // Poll for shadowPlanId for up to 30 seconds
+        let waited = 0;
+        while (!shadowPlanId && waited < 30000) {
+          await new Promise(r => setTimeout(r, 1000));
+          waited += 1000;
+          if (shadowPlanId) break;
         }
-        const response = await base44.functions.invoke('generateTrainingPlan', {
-          goal_description: goalParam,
-        });
-        if (response.data?.plan_id) {
-          base44.analytics.track({ eventName: 'training_plan_created', properties: { goal: goalParam } });
+
+        if (shadowPlanId) {
           window.location.href = createPageUrl('TrainingPlan');
         } else {
-          throw new Error('Plan konnte nicht erstellt werden');
+          // Final fallback: generate synchronously
+          const response = await base44.functions.invoke('generateTrainingPlan', {
+            goal_description: goalParam,
+          });
+          if (response.data?.plan_id) {
+            window.location.href = createPageUrl('TrainingPlan');
+          } else {
+            throw new Error('Plan konnte nicht erstellt werden');
+          }
         }
       } catch (err) {
         console.error(err);
