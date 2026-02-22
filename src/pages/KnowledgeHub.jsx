@@ -19,10 +19,10 @@ export default function KnowledgeHub() {
   });
 
   const categories = {
-    all: { label: 'Alle Artikel', icon: BookOpen, color: 'cyan' },
+    all: { label: 'Alle Artikel', icon: BookOpen, color: 'blue' },
     experts: { label: 'Experten', icon: Users, color: 'purple' },
-    solutions: { label: 'Lösungen', icon: Lightbulb, color: 'amber' },
-    methods: { label: 'Methoden', icon: BookOpen, color: 'green' }
+    solutions: { label: 'Lösungen', icon: Lightbulb, color: 'emerald' },
+    methods: { label: 'Methoden', icon: BookOpen, color: 'blue' }
   };
 
   const filteredArticles = selectedCategory === 'all' 
@@ -37,11 +37,11 @@ export default function KnowledgeHub() {
       </Helmet>
 
       {/* Header */}
-      <div className="sticky top-0 z-40 bg-slate-900/80 backdrop-blur border-b border-cyan-500/20">
+      <div className="sticky top-0 z-40 bg-slate-900/80 backdrop-blur border-b border-slate-800 shadow-sm">
         <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-white">Knowledge Hub</h1>
-            <p className="text-sm text-slate-400 mt-1">Expertenwissen für dein System</p>
+            <h1 className="text-2xl md:text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500 tracking-tight">Knowledge Hub</h1>
+            <p className="text-sm text-slate-400 mt-1 font-medium">Expertenwissen für dein System</p>
           </div>
           <Button
             variant="ghost"
@@ -61,14 +61,20 @@ export default function KnowledgeHub() {
             const Icon = cat.icon;
             const isActive = selectedCategory === key;
             
+            const activeStyles = {
+              blue: 'bg-blue-500/20 text-blue-400 border-blue-500/40 shadow-[0_0_15px_rgba(59,130,246,0.2)]',
+              purple: 'bg-purple-500/20 text-purple-400 border-purple-500/40 shadow-[0_0_15px_rgba(168,85,247,0.2)]',
+              emerald: 'bg-emerald-500/20 text-emerald-400 border-emerald-500/40 shadow-[0_0_15px_rgba(16,185,129,0.2)]'
+            }[cat.color] || 'bg-blue-500/20 text-blue-400 border-blue-500/40';
+
             return (
               <button
                 key={key}
                 onClick={() => setSelectedCategory(key)}
-                className={`flex items-center gap-2 px-4 py-2 rounded-xl font-medium transition-all ${
+                className={`flex items-center gap-2 px-4 py-2 rounded-xl font-bold text-xs uppercase tracking-wider transition-all border ${
                   isActive
-                    ? `bg-${cat.color}-500/20 text-${cat.color}-400 border border-${cat.color}-500/30`
-                    : 'bg-slate-800/50 text-slate-400 border border-slate-700 hover:border-slate-600'
+                    ? activeStyles
+                    : 'bg-slate-900/50 text-slate-400 border-slate-800 hover:border-slate-600 hover:bg-slate-800/80'
                 }`}
               >
                 <Icon className="w-4 h-4" />
@@ -99,47 +105,57 @@ export default function KnowledgeHub() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: idx * 0.05 }}
-                  className="glass rounded-2xl border border-slate-700 hover:border-slate-600 overflow-hidden group cursor-pointer transition-all"
+                  className="glass rounded-2xl border border-slate-800 hover:border-slate-700 overflow-hidden group cursor-pointer transition-all shadow-lg hover:shadow-2xl hover:-translate-y-1 relative"
                   onClick={() => window.location.href = createPageUrl(`KnowledgeHubArticle?slug=${article.slug}&category=${article.category}`)}
                 >
-                  {/* Category Badge */}
-                  <div className={`px-3 py-1 bg-${catColor}-500/20 border-b border-${catColor}-500/30`}>
-                    <span className={`text-xs font-semibold text-${catColor}-400 capitalize`}>
-                      {article.category}
-                    </span>
-                  </div>
+                  {/* Styling overrides based on category */}
+                  {(() => {
+                    const styles = {
+                      blue: { bg: 'bg-blue-500/10', border: 'border-blue-500/20', text: 'text-blue-400', gradient: 'from-blue-500', groupHoverText: 'group-hover:text-blue-400' },
+                      purple: { bg: 'bg-purple-500/10', border: 'border-purple-500/20', text: 'text-purple-400', gradient: 'from-purple-500', groupHoverText: 'group-hover:text-purple-400' },
+                      emerald: { bg: 'bg-emerald-500/10', border: 'border-emerald-500/20', text: 'text-emerald-400', gradient: 'from-emerald-500', groupHoverText: 'group-hover:text-emerald-400' }
+                    }[catColor] || { bg: 'bg-blue-500/10', border: 'border-blue-500/20', text: 'text-blue-400', gradient: 'from-blue-500', groupHoverText: 'group-hover:text-blue-400' };
 
-                  <div className="p-6">
-                    {/* Expert Info */}
-                    {article.expert_name && (
-                      <div className="flex items-center gap-2 mb-3">
-                        {article.expert_image_url && (
-                          <img 
-                            src={article.expert_image_url} 
-                            alt={article.expert_name}
-                            className="w-8 h-8 rounded-full object-cover"
-                          />
-                        )}
-                        <span className="text-xs text-purple-400 font-semibold">{article.expert_name}</span>
-                      </div>
-                    )}
+                    return (
+                      <>
+                        <div className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${styles.gradient} to-transparent opacity-50`} />
 
-                    {/* Headline */}
-                    <h3 className="text-lg font-bold text-white mb-3 line-clamp-2 group-hover:text-cyan-400 transition-colors">
-                      {article.headline}
-                    </h3>
+                        <div className={`px-4 py-2 ${styles.bg} border-b ${styles.border} flex items-center`}>
+                          <span className={`text-[10px] font-bold tracking-widest ${styles.text} uppercase`}>
+                            {article.category}
+                          </span>
+                        </div>
 
-                    {/* Summary */}
-                    <p className="text-sm text-slate-400 line-clamp-3 mb-4">
-                      {article.summary}
-                    </p>
+                        <div className="p-6">
+                          {article.expert_name && (
+                            <div className="flex items-center gap-2 mb-3">
+                              {article.expert_image_url && (
+                                <img 
+                                  src={article.expert_image_url} 
+                                  alt={article.expert_name}
+                                  className="w-6 h-6 rounded-full object-cover border border-purple-500/30"
+                                />
+                              )}
+                              <span className="text-[10px] font-bold text-purple-400 tracking-wider uppercase">{article.expert_name}</span>
+                            </div>
+                          )}
 
-                    {/* Read More */}
-                    <div className="flex items-center gap-2 text-cyan-400 text-sm font-medium group-hover:gap-3 transition-all">
-                      Mehr erfahren
-                      <ArrowRight className="w-4 h-4" />
-                    </div>
-                  </div>
+                          <h3 className={`text-lg font-bold text-white mb-3 line-clamp-2 transition-colors ${styles.groupHoverText}`}>
+                            {article.headline}
+                          </h3>
+
+                          <p className="text-sm text-slate-400 line-clamp-3 mb-5 leading-relaxed">
+                            {article.summary}
+                          </p>
+
+                          <div className={`flex items-center gap-2 ${styles.text} text-xs font-bold uppercase tracking-wider group-hover:gap-3 transition-all`}>
+                            Mehr erfahren
+                            <ArrowRight className="w-4 h-4" />
+                          </div>
+                        </div>
+                      </>
+                    );
+                  })()}
                 </motion.div>
               );
             })}

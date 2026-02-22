@@ -108,10 +108,10 @@ export default function FAQ() {
           animate={{ opacity: 1, y: 0 }}
           className="text-center mb-12"
         >
-          <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-cyan-500 to-purple-600 flex items-center justify-center mb-6 mx-auto">
+          <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center mb-6 mx-auto shadow-[0_0_30px_rgba(59,130,246,0.3)]">
             <HelpCircle className="w-8 h-8 text-white" />
           </div>
-          <h1 className="text-4xl md:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-500 mb-4">
+          <h1 className="text-4xl md:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500 mb-4 tracking-tight">
             Häufig gestellte Fragen
           </h1>
           <p className="text-lg text-slate-400 max-w-2xl mx-auto">
@@ -127,20 +127,28 @@ export default function FAQ() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.05 }}
-              className="glass rounded-xl border border-cyan-500/20 overflow-hidden"
+              className={`glass rounded-2xl border transition-all duration-300 overflow-hidden group ${
+                openIndex === index ? 'border-blue-500/50 shadow-[0_0_20px_rgba(59,130,246,0.15)] bg-slate-900/80' : 'border-slate-800 hover:border-slate-700 bg-slate-950/50'
+              }`}
             >
               <button
                 onClick={() => setOpenIndex(openIndex === index ? null : index)}
-                className="w-full flex items-center justify-between p-6 text-left hover:bg-cyan-500/5 transition-colors"
+                className="w-full flex items-center justify-between p-6 text-left"
               >
-                <h3 className="text-lg font-semibold text-white pr-4">
+                <h3 className={`text-lg font-bold pr-4 transition-colors ${
+                  openIndex === index ? 'text-blue-400' : 'text-slate-200 group-hover:text-blue-300'
+                }`}>
                   {faq.question}
                 </h3>
-                <ChevronDown
-                  className={`w-6 h-6 text-cyan-400 flex-shrink-0 transition-transform ${
-                    openIndex === index ? 'rotate-180' : ''
-                  }`}
-                />
+                <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 transition-colors ${
+                  openIndex === index ? 'bg-blue-500/20 text-blue-400' : 'bg-slate-800 text-slate-400 group-hover:bg-slate-700 group-hover:text-blue-300'
+                }`}>
+                  <ChevronDown
+                    className={`w-5 h-5 transition-transform duration-300 ${
+                      openIndex === index ? 'rotate-180' : ''
+                    }`}
+                  />
+                </div>
               </button>
               
               <AnimatePresence>
@@ -152,7 +160,7 @@ export default function FAQ() {
                     transition={{ duration: 0.3 }}
                     className="overflow-hidden"
                   >
-                    <div className="px-6 pb-6 text-slate-300 leading-relaxed border-t border-cyan-500/20 pt-4">
+                    <div className="px-6 pb-6 text-slate-300 leading-relaxed border-t border-slate-800/50 pt-4 text-sm sm:text-base">
                       {faq.answer}
                     </div>
                   </motion.div>
@@ -167,17 +175,18 @@ export default function FAQ() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5 }}
-          className="mt-12 glass rounded-xl border border-purple-500/30 p-8 text-center"
+          className="mt-12 glass rounded-3xl border border-purple-500/30 p-8 sm:p-12 text-center bg-gradient-to-br from-slate-900/50 to-purple-950/20 relative overflow-hidden"
         >
-          <h3 className="text-2xl font-bold text-purple-400 mb-3">
+          <div className="absolute top-0 right-0 w-64 h-64 bg-purple-500/10 rounded-full blur-3xl pointer-events-none" />
+          <h3 className="text-2xl sm:text-3xl font-bold text-purple-400 mb-3 tracking-tight">
             Noch Fragen?
           </h3>
-          <p className="text-slate-300 mb-6">
+          <p className="text-slate-300 mb-8 max-w-lg mx-auto">
             Starte deine 7-Tage-Testphase und erlebe AXON selbst – alle Features, kein Risiko.
           </p>
           <a
             href="/"
-            className="inline-flex items-center gap-2 px-8 py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-600 hover:to-purple-700 text-white font-semibold transition-all"
+            className="inline-flex items-center gap-2 px-8 py-4 rounded-xl bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-bold uppercase tracking-wider text-sm transition-all shadow-[0_0_20px_rgba(168,85,247,0.3)] hover:shadow-[0_0_30px_rgba(168,85,247,0.5)] active:scale-95 relative z-10"
           >
             Jetzt kostenlos testen
           </a>
