@@ -95,7 +95,7 @@ function InstructionWithGlossary({ instruction }) {
   const lines = instruction.split('\n');
 
   return (
-    <div className="text-slate-200 text-base leading-relaxed mb-6 space-y-2">
+    <div className="text-sm text-slate-300 leading-relaxed space-y-2">
       {lines.map((line, idx) => (
         <p key={idx}>
           {line.trim() ? renderWithGlossary(line) : <br />}
@@ -510,7 +510,7 @@ export default function Flow() {
             <div className="glass rounded-2xl border border-cyan-500/20 p-8 mb-6 bg-slate-900/50 backdrop-blur-xl neuro-glow">
               {/* Exercise Image - show at top */}
               {currentExercise?.image_url && (
-                <div className="rounded-xl overflow-hidden mb-6 border border-cyan-500/30">
+                <div className="rounded-xl overflow-hidden mb-6 border border-slate-800">
                   <img
                     src={currentExercise.image_url}
                     alt={currentExercise.name || detailedContent.title}
@@ -521,12 +521,12 @@ export default function Flow() {
               
               {/* Step Type Badge */}
               <div className="flex items-center justify-between mb-6">
-                <div className={`px-4 py-2 rounded-full text-sm font-bold border ${
-                  currentSequence.type === 'mfr' ? 'bg-red-500/20 text-red-400 border-red-500/40' :
-                  currentSequence.type === 'neuro' ? 'bg-purple-500/20 text-purple-400 border-purple-500/40' :
-                  currentSequence.type === 'strength' ? 'bg-cyan-500/20 text-cyan-400 border-cyan-500/40' :
-                  currentSequence.type === 'mobility' ? 'bg-amber-500/20 text-amber-400 border-amber-500/40' :
-                  'bg-green-500/20 text-green-400 border-green-500/40'
+                <div className={`px-3 py-1 rounded text-[10px] uppercase tracking-widest font-bold border ${
+                  currentSequence.type === 'mfr' ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' :
+                  currentSequence.type === 'neuro' ? 'bg-purple-500/10 text-purple-400 border-purple-500/20' :
+                  currentSequence.type === 'strength' ? 'bg-cyan-500/10 text-cyan-400 border-cyan-500/20' :
+                  currentSequence.type === 'mobility' ? 'bg-blue-500/10 text-blue-400 border-blue-500/20' :
+                  'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
                 }`}>
                   {currentSequence.type === 'mfr' ? 'Hardware (MFR)' :
                    currentSequence.type === 'neuro' ? 'Software (Neuro)' :
@@ -542,34 +542,50 @@ export default function Flow() {
                 </div>
               </div>
 
-              {/* Instruction */}
-              <h2 className="text-xl font-bold text-cyan-300 mb-4">
+              <h2 className="text-2xl font-black text-white uppercase tracking-tight leading-none mb-6 shadow-cyan-glow">
                 {detailedContent.title}
               </h2>
-              <InstructionWithGlossary instruction={detailedContent.instruction} />
 
-              {/* AXON-Moment or Expert Tip */}
+              {/* Hero: AXON Moment */}
               {(detailedContent.axonMoment || detailedContent.expertTip) && (
-                <div className="bg-purple-500/10 border border-purple-500/30 rounded-xl p-4 mb-4">
-                  <p className="text-sm text-purple-300 leading-relaxed">
-                    <span className="font-bold text-purple-400">✨ {detailedContent.axonMoment ? 'AXON-Moment' : 'Experten-Tipp'}:</span> {detailedContent.axonMoment || detailedContent.expertTip}
-                  </p>
+                <div className="relative overflow-hidden rounded-xl border border-cyan-500/50 bg-cyan-950/10 p-4 mb-6 shadow-[0_0_20px_rgba(6,182,212,0.15)]">
+                  <div className="flex items-start gap-3 relative z-10">
+                    <div className="w-8 h-8 rounded-lg bg-cyan-500/20 flex items-center justify-center flex-shrink-0">
+                      <Brain className="w-5 h-5 text-cyan-400" />
+                    </div>
+                    <div>
+                      <h5 className="text-xs font-bold text-cyan-400 uppercase tracking-widest mb-1">
+                        {detailedContent.axonMoment ? 'AXON Moment' : 'Experten-Tipp'}
+                      </h5>
+                      <p className="text-sm font-medium text-cyan-100 italic leading-relaxed">
+                        "{detailedContent.axonMoment || detailedContent.expertTip}"
+                      </p>
+                    </div>
+                  </div>
                 </div>
               )}
 
-              {/* Purpose Explanation */}
-              {detailedContent.purposeExplanation && (
-                <div className="bg-cyan-500/10 border border-cyan-500/30 rounded-xl p-4 mb-4">
-                  <p className="text-xs font-bold text-cyan-400 mb-1">🧠 Warum diese Übung?</p>
-                  <p className="text-sm text-cyan-200 leading-relaxed">{detailedContent.purposeExplanation}</p>
-                </div>
-              )}
+              {/* Setup / Instructions */}
+              <div className="bg-slate-900/50 rounded-xl p-4 border border-slate-800 mb-6">
+                 <h5 className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-4">Ausführung</h5>
+                 <InstructionWithGlossary instruction={detailedContent.instruction} />
+              </div>
 
-              {/* Benefits */}
-              {detailedContent.benefits && (
-                <div className="bg-green-500/10 border border-green-500/30 rounded-xl p-4 mb-6">
-                  <p className="text-xs font-bold text-green-400 mb-1">💪 Was du danach spürst</p>
-                  <p className="text-sm text-green-200 leading-relaxed">{detailedContent.benefits}</p>
+              {/* Additional Context Grid */}
+              {(detailedContent.purposeExplanation || detailedContent.benefits) && (
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+                  {detailedContent.purposeExplanation && (
+                    <div className="bg-slate-800/50 border border-slate-700/50 rounded-xl p-4">
+                      <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">Warum diese Übung?</p>
+                      <p className="text-xs text-slate-300 leading-relaxed">{detailedContent.purposeExplanation}</p>
+                    </div>
+                  )}
+                  {detailedContent.benefits && (
+                    <div className="bg-slate-800/50 border border-slate-700/50 rounded-xl p-4">
+                      <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">Was du danach spürst</p>
+                      <p className="text-xs text-slate-300 leading-relaxed">{detailedContent.benefits}</p>
+                    </div>
+                  )}
                 </div>
               )}
 
@@ -590,19 +606,19 @@ export default function Flow() {
                   {/* Basic Progression */}
                   {currentExercise.progression_basic && (
                     <motion.div
-                      className="glass-cyan rounded-xl border border-cyan-500/30 overflow-hidden"
+                      className="bg-slate-900/40 rounded-xl border border-slate-800 overflow-hidden"
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                     >
                       <button
                         onClick={() => setExpandedProgression(expandedProgression === 'basic' ? null : 'basic')}
-                        className="w-full flex items-center justify-between p-4 hover:bg-cyan-500/10 transition-colors"
+                        className="w-full flex items-center justify-between p-4 hover:bg-slate-800/50 transition-colors"
                       >
-                        <span className="text-sm font-bold text-cyan-300">
-                          📉 {currentExercise.progression_basic.label}
+                        <span className="text-xs uppercase tracking-widest font-bold text-slate-400">
+                          📉 Basic: {currentExercise.progression_basic.label}
                         </span>
                         <ChevronDown
-                          className={`w-5 h-5 text-cyan-400 transition-transform ${
+                          className={`w-4 h-4 text-slate-500 transition-transform ${
                             expandedProgression === 'basic' ? 'rotate-180' : ''
                           }`}
                         />
@@ -614,11 +630,11 @@ export default function Flow() {
                             animate={{ opacity: 1, height: 'auto' }}
                             exit={{ opacity: 0, height: 0 }}
                             transition={{ duration: 0.2 }}
-                            className="px-4 pb-4 border-t border-cyan-500/20"
+                            className="px-4 pb-4 border-t border-slate-800/50 pt-3 mt-1"
                           >
-                            <p className="text-xs text-cyan-200 mb-2">{currentExercise.progression_basic.description}</p>
-                            <p className="text-xs text-cyan-300">
-                              <span className="font-bold">Fokus:</span> {currentExercise.progression_basic.focus}
+                            <p className="text-sm text-slate-300 leading-relaxed mb-2">{currentExercise.progression_basic.description}</p>
+                            <p className="text-xs text-slate-400">
+                              <span className="font-bold uppercase tracking-wider text-slate-500">Fokus:</span> {currentExercise.progression_basic.focus}
                             </p>
                           </motion.div>
                         )}
@@ -629,19 +645,19 @@ export default function Flow() {
                   {/* Advanced Progression */}
                   {currentExercise.progression_advanced && (
                     <motion.div
-                      className="glass-purple rounded-xl border border-purple-500/30 overflow-hidden"
+                      className="bg-slate-900/40 rounded-xl border border-slate-800 overflow-hidden"
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                     >
                       <button
                         onClick={() => setExpandedProgression(expandedProgression === 'advanced' ? null : 'advanced')}
-                        className="w-full flex items-center justify-between p-4 hover:bg-purple-500/10 transition-colors"
+                        className="w-full flex items-center justify-between p-4 hover:bg-slate-800/50 transition-colors"
                       >
-                        <span className="text-sm font-bold text-purple-300">
-                          📈 {currentExercise.progression_advanced.label}
+                        <span className="text-xs uppercase tracking-widest font-bold text-cyan-400">
+                          📈 Advanced: {currentExercise.progression_advanced.label}
                         </span>
                         <ChevronDown
-                          className={`w-5 h-5 text-purple-400 transition-transform ${
+                          className={`w-4 h-4 text-cyan-500 transition-transform ${
                             expandedProgression === 'advanced' ? 'rotate-180' : ''
                           }`}
                         />
@@ -653,11 +669,11 @@ export default function Flow() {
                             animate={{ opacity: 1, height: 'auto' }}
                             exit={{ opacity: 0, height: 0 }}
                             transition={{ duration: 0.2 }}
-                            className="px-4 pb-4 border-t border-purple-500/20"
+                            className="px-4 pb-4 border-t border-slate-800/50 pt-3 mt-1"
                           >
-                            <p className="text-xs text-purple-200 mb-2">{currentExercise.progression_advanced.description}</p>
-                            <p className="text-xs text-purple-300">
-                              <span className="font-bold">Fokus:</span> {currentExercise.progression_advanced.focus}
+                            <p className="text-sm text-slate-300 leading-relaxed mb-2">{currentExercise.progression_advanced.description}</p>
+                            <p className="text-xs text-cyan-500/80">
+                              <span className="font-bold uppercase tracking-wider text-cyan-500">Fokus:</span> {currentExercise.progression_advanced.focus}
                             </p>
                           </motion.div>
                         )}
