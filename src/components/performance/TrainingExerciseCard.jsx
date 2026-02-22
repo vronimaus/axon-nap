@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronDown, ChevronUp, Clock, RotateCcw, Flame, Check, PlayCircle, Info } from 'lucide-react';
+import { ChevronDown, ChevronUp, Clock, RotateCcw, Flame, Check, PlayCircle, Info, Brain } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { toast } from 'sonner';
 
