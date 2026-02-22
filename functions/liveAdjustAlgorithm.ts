@@ -39,71 +39,27 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'No active rehab plan found' }, { status: 404 });
     }
 
-    // Filter criteria based on pain_nrs
-    // NRS 6-7 = Yellow (modify/regress)
-    // NRS 8+ = Red (stop/replace with ISO)
     const isYellowMode = pain_nrs >= 5 && pain_nrs <= 7;
     const isRedMode = pain_nrs >= 8;
+    const readiness_status = isRedMode ? 'red' : 'yellow';
 
-    // Find suitable alternatives
-    const candidates = allExercisesData.filter(exercise => {
-      // Same progression level or easier
-      if (exercise.progression_level > currentExercise.progression_level) {
-        return false;
-      }
-
-      // Must NOT have the pain node in contraindications
-      const contraindications = exercise.smart_tags?.contraindications || [];
-      const hasContraindication = contraindications.some(c => c.condition && c.condition.includes(pain_node_id));
-      if (hasContraindication) {
-        return false;
-      }
-
-      // Yellow mode: look for reduced load
-      if (isYellowMode) {
-        const compressionDemand = exercise.smart_tags?.biomechanical_stress?.compression_demand || 10;
-        if (compressionDemand > 4) return false;
-      }
-
-      // Red mode: only ISO or bodyweight with minimal compression
-      if (isRedMode) {
-        const loadCategory = exercise.smart_tags?.execution_parameters?.load_category;
-        const compressionDemand = exercise.smart_tags?.biomechanical_stress?.compression_demand || 10;
-        if (loadCategory === 'heavy' || loadCategory === 'explosive') return false;
-        if (compressionDemand > 3) return false;
-      }
-
-      // Prefer same category or related category
-      if (exercise.category === currentExercise.category) {
-        return true;
-      }
-
-      // Allow core/stability for any exercise in yellow/red mode
-      if ((isYellowMode || isRedMode) && (exercise.category === 'core' || exercise.category === 'mobility')) {
-        return true;
-      }
-
-      return false;
+    // Delegate to Smart Filter Engine (deterministic, no AI, single exercise cache)
+    const filterResult = await base44.asServiceRole.functions.invoke('smartFilterAlternatives', {
+      current_exercise_id,
+      pain_nodes: [pain_node_id],
+      readiness_status,
+      mode: 'regress'
     });
 
-    if (candidates.length === 0) {
+    const bestCandidate = filterResult?.best_match || null;
+
+    if (!bestCandidate) {
       return Response.json({
         success: false,
         error: 'No suitable alternative found',
         action: 'red_stop',
         message: 'Leider können wir keine sichere Alternative finden. Lass uns diese Session beenden.'
       }, { status: 200 });
-    }
-
-    // Select best candidate (prefer ISO/static over dynamic in red mode)
-    let bestCandidate = candidates[0];
-    if (isRedMode) {
-      const isoCandidates = candidates.filter(e => 
-        e.smart_tags?.mechanical_impact_type?.includes('stability') && !e.smart_tags?.mechanical_impact_type?.includes('explosive')
-      );
-      if (isoCandidates.length > 0) {
-        bestCandidate = isoCandidates[0];
-      }
     }
 
     return Response.json({
@@ -118,9 +74,7 @@ Deno.serve(async (req) => {
         cues: bestCandidate.cues || [],
         breathing_instruction: bestCandidate.breathing_instruction
       },
-      reasoning: isYellowMode 
-        ? `Deine Schmerzintensität (${pain_nrs}/10) erfordert eine modifizierte Übung. ${bestCandidate.name} reduziert die Belastung auf ${pain_node_id}, während wir die Kette aktiv halten.`
-        : `Eine Schmerzintensität von ${pain_nrs}/10 ist kritisch. Wir stoppen die aktuelle Übung und nutzen ${bestCandidate.name} – eine isometrische, sichere Alternative.`,
+      reasoning: filterResult.reasoning,
       action_taken: isYellowMode ? 'modify_parameter' : 'pivot_to_drill',
       intervention_mode: isYellowMode ? 'yellow_pivot' : 'red_stop',
       confidence: 0.9
