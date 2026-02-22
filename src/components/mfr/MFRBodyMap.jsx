@@ -1,42 +1,40 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import { RotateCcw, ZoomIn } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
-// SVG Paths for Body Zones
-const BODY_PATHS = {
-  front: [
-    { id: 'N1', name: 'Kopf/Hals', path: 'M135,40 C135,20 165,20 165,40 C165,55 135,55 135,40 Z', cx: 150, cy: 40 },
-    { id: 'N2', name: 'Brust/Schulter', path: 'M110,65 Q150,85 190,65 L200,85 Q150,110 100,85 Z', cx: 150, cy: 80 },
-    { id: 'N4', name: 'Flanken/Rippen', path: 'M120,95 L110,140 Q130,135 150,140 Q170,135 190,140 L180,95 Q150,110 120,95 Z', cx: 150, cy: 120 },
-    { id: 'N5', name: 'Leiste/Bauch', path: 'M130,145 Q150,165 170,145 L165,175 Q150,185 135,175 Z', cx: 150, cy: 160 },
-    { id: 'N8', name: 'Oberschenkel (Vorn)', path: 'M130,180 L125,260 Q145,265 175,260 L170,180 Q150,190 130,180 Z', cx: 150, cy: 220 },
-    { id: 'N9', name: 'Hüfte Außen', path: 'M110,150 Q100,180 115,210 L125,200 Q115,180 125,150 Z', cx: 110, cy: 180 }, // Left side for demo
-    { id: 'N11', name: 'Schienbein', path: 'M130,270 L135,340 Q150,345 165,340 L170,270 Q150,275 130,270 Z', cx: 150, cy: 305 },
-  ],
-  back: [
-    { id: 'N1', name: 'Hinterhaupt', path: 'M135,35 C135,20 165,20 165,35 C165,45 135,45 135,35 Z', cx: 150, cy: 30 },
-    { id: 'N3', name: 'Oberer Rücken', path: 'M115,60 L185,60 L175,100 Q150,110 125,100 Z', cx: 150, cy: 80 },
-    { id: 'N7', name: 'Lendenbereich', path: 'M130,105 L170,105 L175,135 Q150,140 125,135 Z', cx: 150, cy: 120 },
-    { id: 'N6', name: 'Gesäß', path: 'M125,140 Q150,135 175,140 L170,175 Q150,185 130,175 Z', cx: 150, cy: 155 },
-    { id: 'N10', name: 'Oberschenkel (Hinten)', path: 'M130,180 L135,250 Q150,255 165,250 L170,180 Q150,190 130,180 Z', cx: 150, cy: 215 },
-    { id: 'N12', name: 'Ferse/Fußsohle', path: 'M140,350 L140,370 Q150,375 160,370 L160,350 Q150,345 140,350 Z', cx: 150, cy: 360 },
-  ]
+// Original Images
+const BODY_IMAGES = {
+  front: 'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/801f10b7d_generated_image.png',
+  back: 'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/1431ba1dd_generated_image.png'
 };
 
-// Silhouette Paths (Simplified for aesthetic background)
-const SILHOUETTE = {
-  front: "M150,10 Q180,10 180,40 L195,55 L210,60 L210,130 L190,160 L195,260 L185,280 L185,350 L195,370 L165,370 L160,280 L165,260 L160,180 L150,170 L140,180 L135,260 L140,280 L135,370 L105,370 L115,350 L115,280 L105,260 L110,160 L90,130 L90,60 L105,55 L120,40 Q120,10 150,10 Z",
-  back: "M150,10 Q180,10 180,40 L200,55 L215,60 L210,130 L190,160 L195,260 L185,280 L185,350 L195,370 L165,370 L160,280 L165,260 L160,180 L150,170 L140,180 L135,260 L140,280 L135,370 L105,370 L115,350 L115,280 L105,260 L110,160 L90,130 L85,60 L100,55 L120,40 Q120,10 150,10 Z"
+// Ghost Layer Paths (Zones)
+// Coordinates aligned to 300x600 viewbox matching the image aspect ratio
+const BODY_PATHS = {
+  front: [
+    { id: 'N1', name: 'Kopf/Hals', path: 'M130,20 C130,5 170,5 170,20 C170,45 130,45 130,20 Z', cx: 150, cy: 30 },
+    { id: 'N2', name: 'Brust/Schulter', path: 'M100,55 Q150,85 200,55 L210,85 Q150,120 90,85 Z', cx: 150, cy: 80 },
+    { id: 'N4', name: 'Flanken/Rippen', path: 'M110,95 L100,150 Q120,145 150,150 Q180,145 200,150 L190,95 Q150,110 110,95 Z', cx: 150, cy: 125 },
+    { id: 'N5', name: 'Leiste/Bauch', path: 'M120,155 Q150,175 180,155 L175,190 Q150,200 125,190 Z', cx: 150, cy: 175 },
+    { id: 'N8', name: 'Oberschenkel (Vorn)', path: 'M120,200 L115,300 Q150,310 185,300 L180,200 Q150,210 120,200 Z', cx: 150, cy: 250 },
+    { id: 'N9', name: 'Hüfte Außen', path: 'M95,160 Q85,190 100,220 L110,210 Q100,190 110,160 Z', cx: 100, cy: 190 }, 
+    { id: 'N11', name: 'Schienbein', path: 'M125,320 L130,420 Q150,430 170,420 L175,320 Q150,325 125,320 Z', cx: 150, cy: 370 },
+  ],
+  back: [
+    { id: 'N1', name: 'Hinterhaupt', path: 'M130,20 C130,5 170,5 170,20 C170,40 130,40 130,20 Z', cx: 150, cy: 25 },
+    { id: 'N3', name: 'Oberer Rücken', path: 'M105,50 L195,50 L185,100 Q150,110 115,100 Z', cx: 150, cy: 75 },
+    { id: 'N7', name: 'Lendenbereich', path: 'M120,105 L180,105 L185,145 Q150,155 115,145 Z', cx: 150, cy: 125 },
+    { id: 'N6', name: 'Gesäß', path: 'M115,150 Q150,145 185,150 L180,195 Q150,205 120,195 Z', cx: 150, cy: 175 },
+    { id: 'N10', name: 'Oberschenkel (Hinten)', path: 'M120,200 L125,290 Q150,300 175,290 L180,200 Q150,210 120,200 Z', cx: 150, cy: 245 },
+    { id: 'N12', name: 'Ferse/Fußsohle', path: 'M130,440 L130,470 Q150,480 170,470 L170,440 Q150,430 130,440 Z', cx: 150, cy: 455 },
+  ]
 };
 
 export default function MFRBodyMap({ position: initialPosition = 'front', selectedNode = null, onNodeSelect = () => {}, completedNodes = [] }) {
   const [position, setPosition] = useState(initialPosition);
   const [hoveredNode, setHoveredNode] = useState(null);
 
-  // Sync internal state if prop changes, but allow manual toggle
   useEffect(() => {
     setPosition(initialPosition);
   }, [initialPosition]);
@@ -62,58 +60,50 @@ export default function MFRBodyMap({ position: initialPosition = 'front', select
         </Button>
       </div>
 
-      {/* SVG Container */}
-      <div className="relative w-full max-w-[300px] aspect-[1/2] select-none">
+      {/* Container with Image + Ghost Layer Overlay */}
+      <div className="relative w-full max-w-[300px] aspect-[1/2] select-none rounded-2xl overflow-hidden border border-slate-800 bg-slate-900">
+        
+        {/* 1. Base Image */}
+        <img 
+          src={BODY_IMAGES[position]} 
+          alt={`Body ${position}`}
+          className="absolute inset-0 w-full h-full object-cover z-0 opacity-90"
+        />
+
+        {/* 2. Interactive SVG Overlay (Ghost Layer) */}
         <svg 
           viewBox="0 0 300 600" 
-          className="w-full h-full drop-shadow-2xl"
-          style={{ filter: 'drop-shadow(0 0 20px rgba(6,182,212,0.15))' }}
+          className="absolute inset-0 w-full h-full z-10"
         >
-          {/* Defs for gradients/filters */}
           <defs>
-            <linearGradient id="bodyGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" stopColor="#1e293b" />
-              <stop offset="50%" stopColor="#334155" />
-              <stop offset="100%" stopColor="#1e293b" />
-            </linearGradient>
-            <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
-              <feGaussianBlur stdDeviation="4" result="blur" />
+             <filter id="glow-selected" x="-20%" y="-20%" width="140%" height="140%">
+              <feGaussianBlur stdDeviation="3" result="blur" />
               <feComposite in="SourceGraphic" in2="blur" operator="over" />
             </filter>
           </defs>
 
-          {/* 1. Base Silhouette (The "Ghost Layer") */}
-          <path 
-            d={SILHOUETTE[position]} 
-            fill="url(#bodyGradient)" 
-            stroke="#475569" 
-            strokeWidth="2"
-            opacity="0.6"
-          />
-
-          {/* 2. Interactive Zones */}
           {activePaths.map((zone) => {
             const isSelected = selectedNode?.node_id === zone.id;
             const isHovered = hoveredNode === zone.id;
             const isCompleted = completedNodes.includes(zone.id);
 
-            // Dynamic Styling
+            // Styling Logic
             let fill = "transparent";
             let stroke = "transparent";
-            let opacity = 0;
+            let strokeWidth = 0;
 
             if (isSelected) {
-              fill = "rgba(6, 182, 212, 0.4)"; // Cyan highlight
+              fill = "rgba(6, 182, 212, 0.4)"; // Cyan active
               stroke = "#22d3ee";
-              opacity = 1;
+              strokeWidth = 2;
             } else if (isHovered) {
-              fill = "rgba(6, 182, 212, 0.2)";
-              stroke = "#06b6d4";
-              opacity = 1;
+              fill = "rgba(6, 182, 212, 0.2)"; // Cyan hover
+              stroke = "rgba(6, 182, 212, 0.5)";
+              strokeWidth = 1;
             } else if (isCompleted) {
-              fill = "rgba(34, 197, 94, 0.2)"; // Green
+              fill = "rgba(34, 197, 94, 0.3)"; // Green done
               stroke = "#22c55e";
-              opacity = 0.8;
+              strokeWidth = 1;
             }
 
             return (
@@ -122,18 +112,19 @@ export default function MFRBodyMap({ position: initialPosition = 'front', select
                 onClick={() => onNodeSelect({ node_id: zone.id, name_de: zone.name })}
                 onMouseEnter={() => setHoveredNode(zone.id)}
                 onMouseLeave={() => setHoveredNode(null)}
-                className="cursor-pointer transition-all duration-300"
+                className="cursor-pointer"
               >
-                {/* Hit Area (Invisible but clickable) */}
+                {/* Visual Path */}
                 <path 
                   d={zone.path} 
                   fill={fill} 
                   stroke={stroke}
-                  strokeWidth={isSelected ? 3 : 1}
-                  className="transition-all duration-300 ease-out"
+                  strokeWidth={strokeWidth}
+                  className="transition-all duration-200"
+                  style={{ filter: isSelected ? 'url(#glow-selected)' : 'none' }}
                 />
 
-                {/* Node Label/Indicator (Only when active) */}
+                {/* Marker Dots */}
                 <AnimatePresence>
                   {(isSelected || isHovered || isCompleted) && (
                     <motion.g
@@ -141,8 +132,13 @@ export default function MFRBodyMap({ position: initialPosition = 'front', select
                       animate={{ opacity: 1, scale: 1 }}
                       exit={{ opacity: 0, scale: 0 }}
                     >
-                      <circle cx={zone.cx} cy={zone.cy} r="4" fill={isCompleted ? "#22c55e" : "#22d3ee"} />
-                      <circle cx={zone.cx} cy={zone.cy} r="8" stroke={isCompleted ? "#22c55e" : "#22d3ee"} strokeWidth="1" opacity="0.5" />
+                      <circle 
+                        cx={zone.cx} 
+                        cy={zone.cy} 
+                        r={isSelected ? 6 : 4} 
+                        fill={isCompleted ? "#22c55e" : "#22d3ee"} 
+                        className="shadow-lg"
+                      />
                     </motion.g>
                   )}
                 </AnimatePresence>
@@ -151,17 +147,17 @@ export default function MFRBodyMap({ position: initialPosition = 'front', select
           })}
         </svg>
 
-        {/* Floating Label for Hovered Item */}
+        {/* Hover Label */}
         <AnimatePresence>
           {hoveredNode && (
             <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 5 }}
-              className="absolute pointer-events-none px-3 py-1.5 bg-slate-900/90 border border-cyan-500/30 rounded-lg backdrop-blur-md shadow-xl z-50"
+              className="absolute z-50 pointer-events-none px-3 py-1.5 bg-slate-900/95 border border-cyan-500/30 rounded-lg shadow-xl"
               style={{ 
                 left: '50%', 
-                top: '10%', // Simple positioning
+                top: '10%',
                 transform: 'translateX(-50%)' 
               }}
             >
