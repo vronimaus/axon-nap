@@ -120,13 +120,13 @@ export default function Dashboard() {
             <motion.button
               whileTap={{ scale: 0.98 }}
               onClick={() => setMode('performance')}
-              className="glass rounded-xl sm:rounded-2xl border border-amber-500/30 p-6 sm:p-8 hover:border-amber-500/60 active:border-amber-500/80 transition-all group touch-target relative"
+              className="glass rounded-xl sm:rounded-2xl border border-blue-500/30 p-6 sm:p-8 hover:border-blue-500/60 active:border-blue-500/80 transition-all group touch-target relative"
             >
             
-              <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-xl sm:rounded-2xl bg-gradient-to-br from-amber-500 to-yellow-600 flex items-center justify-center mb-3 sm:mb-4 mx-auto group-hover:shadow-lg group-hover:shadow-amber-500/50 transition-all">
+              <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-xl sm:rounded-2xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center mb-3 sm:mb-4 mx-auto group-hover:shadow-lg group-hover:shadow-blue-500/50 transition-all">
                 <Zap className="w-7 h-7 sm:w-8 sm:h-8 text-white" />
               </div>
-              <h2 className="text-xl sm:text-2xl font-bold text-amber-400 mb-2 sm:mb-3">GOALS</h2>
+              <h2 className="text-xl sm:text-2xl font-bold text-blue-400 mb-2 sm:mb-3">GOALS</h2>
               <p className="text-sm sm:text-base text-slate-300 mb-3 sm:mb-4 leading-relaxed">
                 Schalte neue Fähigkeiten frei: Von ersten Klimmzügen bis zum Human Flag. Dein personalisierter Trainingsplan basiert auf deinen Baselines.
               </p>
@@ -139,12 +139,12 @@ export default function Dashboard() {
             <motion.button
               whileTap={{ scale: 0.98 }}
               onClick={() => setMode('rehab')}
-              className="glass rounded-xl sm:rounded-2xl border border-red-500/30 p-6 sm:p-8 hover:border-red-500/60 active:border-red-500/80 transition-all group touch-target"
+              className="glass rounded-xl sm:rounded-2xl border border-emerald-500/30 p-6 sm:p-8 hover:border-emerald-500/60 active:border-emerald-500/80 transition-all group touch-target"
             >
-              <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-xl sm:rounded-2xl bg-gradient-to-br from-red-500 to-pink-600 flex items-center justify-center mb-3 sm:mb-4 mx-auto group-hover:shadow-lg group-hover:shadow-red-500/50 transition-all animate-pulse">
+              <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-xl sm:rounded-2xl bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center mb-3 sm:mb-4 mx-auto group-hover:shadow-lg group-hover:shadow-emerald-500/50 transition-all animate-pulse">
                 <Target className="w-7 h-7 sm:w-8 sm:h-8 text-white" />
               </div>
-              <h2 className="text-xl sm:text-2xl font-bold text-red-400 mb-2 sm:mb-3">REHAB</h2>
+              <h2 className="text-xl sm:text-2xl font-bold text-emerald-400 mb-2 sm:mb-3">REHAB</h2>
               <p className="text-sm sm:text-base text-slate-300 mb-3 sm:mb-4 leading-relaxed">
                 Akuter Schmerz? AXON analysiert die Root Cause über Hardware-Tests und Neuro-Drills, dann gibt dir einen phasierten Reha-Plan.
               </p>
@@ -157,12 +157,12 @@ export default function Dashboard() {
             <motion.button
               whileTap={{ scale: 0.98 }}
               onClick={() => window.location.href = createPageUrl('FlowRoutines')}
-              className="glass rounded-xl sm:rounded-2xl border border-cyan-500/30 p-6 sm:p-8 hover:border-cyan-500/60 active:border-cyan-500/80 transition-all group touch-target"
+              className="glass rounded-xl sm:rounded-2xl border border-purple-500/30 p-6 sm:p-8 hover:border-purple-500/60 active:border-purple-500/80 transition-all group touch-target"
             >
-              <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-xl sm:rounded-2xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center mb-3 sm:mb-4 mx-auto group-hover:shadow-lg group-hover:shadow-cyan-500/50 transition-all">
+              <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-xl sm:rounded-2xl bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center mb-3 sm:mb-4 mx-auto group-hover:shadow-lg group-hover:shadow-purple-500/50 transition-all">
                 <Activity className="w-7 h-7 sm:w-8 sm:h-8 text-white" />
               </div>
-              <h2 className="text-xl sm:text-2xl font-bold text-cyan-400 mb-2 sm:mb-3">FLOW</h2>
+              <h2 className="text-xl sm:text-2xl font-bold text-purple-400 mb-2 sm:mb-3">FLOW</h2>
               <p className="text-sm sm:text-base text-slate-300 mb-3 sm:mb-4 leading-relaxed">
                 Tägliche Pflegeroutinen für dein System: Faszien-Release, Neuro-Drills, Mobility-Flows und Atemarbeit in 5-30 Min Sessions.
               </p>
@@ -247,7 +247,7 @@ export default function Dashboard() {
                     size="sm"
                     className={`text-xs sm:text-sm ${
                       mode === 'rehab'
-                        ? 'bg-red-500/30 text-red-400 hover:bg-red-500/40'
+                        ? 'bg-emerald-500/30 text-emerald-400 hover:bg-emerald-500/40'
                         : 'text-slate-400 hover:text-slate-200'
                     }`}
                   >
@@ -262,7 +262,7 @@ export default function Dashboard() {
                     size="sm"
                     className={`text-xs sm:text-sm ${
                       mode === 'performance'
-                        ? 'bg-amber-500/30 text-amber-400 hover:bg-amber-500/40'
+                        ? 'bg-blue-500/30 text-blue-400 hover:bg-blue-500/40'
                         : 'text-slate-400 hover:text-slate-200'
                     }`}
                   >
@@ -307,24 +307,24 @@ export default function Dashboard() {
               {mode === 'rehab' && (
                 <div className="space-y-4">
                   {/* Mode Title */}
-                  <div className="bg-gradient-to-r from-red-500/20 to-transparent border-l-4 border-red-500 px-6 py-3 rounded-r-xl">
-                    <h1 className="text-2xl sm:text-3xl font-bold text-red-400 tracking-tight">REHAB</h1>
+                  <div className="bg-gradient-to-r from-emerald-500/20 to-transparent border-l-4 border-emerald-500 px-6 py-3 rounded-r-xl">
+                    <h1 className="text-2xl sm:text-3xl font-bold text-emerald-400 tracking-tight">REHAB</h1>
                   </div>
                   
                   {/* Instructions Card */}
-                  <div className="glass rounded-xl sm:rounded-2xl border border-red-500/30 p-4 sm:p-6 bg-gradient-to-r from-red-500/10 to-transparent">
-                    <h2 className="text-base sm:text-lg font-semibold text-red-400 mb-3">Schmerz präzise lokalisieren</h2>
+                  <div className="glass rounded-xl sm:rounded-2xl border border-emerald-500/30 p-4 sm:p-6 bg-gradient-to-r from-emerald-500/10 to-transparent">
+                    <h2 className="text-base sm:text-lg font-semibold text-emerald-400 mb-3">Schmerz präzise lokalisieren</h2>
                     <div className="space-y-2 text-xs sm:text-sm text-slate-300">
                       <p className="flex items-start gap-2">
-                        <span className="text-red-400 font-bold flex-shrink-0">1.</span>
+                        <span className="text-emerald-400 font-bold flex-shrink-0">1.</span>
                         <span><strong>Punkt setzen:</strong> Tippe auf eine exakte Stelle – oder <strong>zeichne eine Linie</strong> entlang des Schmerzes für komplexe Muster</span>
                       </p>
                       <p className="flex items-start gap-2">
-                        <span className="text-red-400 font-bold flex-shrink-0">2.</span>
+                        <span className="text-emerald-400 font-bold flex-shrink-0">2.</span>
                         <span>Wähle deine spezifischen Symptome aus der Liste aus</span>
                       </p>
                       <p className="flex items-start gap-2">
-                        <span className="text-red-400 font-bold flex-shrink-0">3.</span>
+                        <span className="text-emerald-400 font-bold flex-shrink-0">3.</span>
                         <span>Starte die Analyse – AXON erkennt die Root Cause deines Problems</span>
                       </p>
                     </div>
@@ -345,24 +345,24 @@ export default function Dashboard() {
                   )}
 
                   {/* Mode Title */}
-                  <div className="bg-gradient-to-r from-amber-500/20 to-transparent border-l-4 border-amber-500 px-6 py-3 rounded-r-xl">
-                    <h1 className="text-2xl sm:text-3xl font-bold text-amber-400 tracking-tight">PERFORMANCE</h1>
+                  <div className="bg-gradient-to-r from-blue-500/20 to-transparent border-l-4 border-blue-500 px-6 py-3 rounded-r-xl">
+                    <h1 className="text-2xl sm:text-3xl font-bold text-blue-400 tracking-tight">PERFORMANCE</h1>
                   </div>
                   
                   {/* Instructions Card */}
-                  <div className="glass rounded-xl sm:rounded-2xl border border-amber-500/30 p-4 sm:p-6 bg-gradient-to-r from-amber-500/10 to-transparent">
-                    <h2 className="text-base sm:text-lg font-semibold text-amber-400 mb-3">Was möchtest du schaffen?</h2>
+                  <div className="glass rounded-xl sm:rounded-2xl border border-blue-500/30 p-4 sm:p-6 bg-gradient-to-r from-blue-500/10 to-transparent">
+                    <h2 className="text-base sm:text-lg font-semibold text-blue-400 mb-3">Was möchtest du schaffen?</h2>
                     <div className="space-y-2 text-xs sm:text-sm text-slate-300 mb-4">
                       <p className="flex items-start gap-2">
-                        <span className="text-amber-400 font-bold flex-shrink-0">•</span>
+                        <span className="text-blue-400 font-bold flex-shrink-0">•</span>
                         <span><strong>Konkrete Übung:</strong> "10 Klimmzüge", "Pistol Squat", "Handstand 30 Sekunden"</span>
                       </p>
                       <p className="flex items-start gap-2">
-                        <span className="text-amber-400 font-bold flex-shrink-0">•</span>
+                        <span className="text-blue-400 font-bold flex-shrink-0">•</span>
                         <span><strong>Skill freischalten:</strong> "Front Lever", "Muscle-Up", "Human Flag"</span>
                       </p>
                       <p className="flex items-start gap-2">
-                        <span className="text-amber-400 font-bold flex-shrink-0">•</span>
+                        <span className="text-blue-400 font-bold flex-shrink-0">•</span>
                         <span><strong>Mobility-Ziel:</strong> "Middle Split", "Pancake Stretch", "Bridge"</span>
                       </p>
                     </div>
@@ -371,7 +371,7 @@ export default function Dashboard() {
                       value={selectedBodyRegion || ''}
                       onChange={(e) => setSelectedBodyRegion(e.target.value)}
                       placeholder="Gib dein Ziel ein..."
-                      className="w-full px-4 py-3 rounded-lg bg-slate-800/50 border border-slate-700 text-white placeholder-slate-500 focus:outline-none focus:border-amber-400 text-sm sm:text-base"
+                      className="w-full px-4 py-3 rounded-lg bg-slate-800/50 border border-slate-700 text-white placeholder-slate-500 focus:outline-none focus:border-blue-400 text-sm sm:text-base"
                     />
                   </div>
 
@@ -387,7 +387,7 @@ export default function Dashboard() {
                           const goal = selectedBodyRegion.trim();
                           window.location.href = createPageUrl('Discovery') + `?goal=${encodeURIComponent(goal)}`;
                         }}
-                        className="w-full h-12 sm:h-14 bg-gradient-to-r from-amber-500 to-yellow-600 hover:from-amber-600 hover:to-yellow-700 text-white font-bold text-sm sm:text-base"
+                        className="w-full h-12 sm:h-14 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-bold text-sm sm:text-base"
                       >
                         {isGeneratingPlan ? (
                           <span className="flex items-center gap-2 justify-center">
@@ -414,7 +414,7 @@ export default function Dashboard() {
                 >
                   <Button
                     onClick={() => window.location.href = createPageUrl('DiagnosisChat')}
-                    className="w-full h-12 sm:h-14 bg-gradient-to-r from-red-500 to-pink-600 hover:from-red-600 hover:to-pink-700 text-white font-bold text-sm sm:text-base"
+                    className="w-full h-12 sm:h-14 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white font-bold text-sm sm:text-base"
                   >
                     Zur Diagnose →
                   </Button>
@@ -436,13 +436,13 @@ export default function Dashboard() {
             <div
               className={`px-3 sm:px-4 py-2 rounded-full backdrop-blur-xl border font-mono text-xs font-bold ${
                 mode === 'rehab'
-                  ? 'bg-red-500/20 border-red-500/50 text-red-400'
-                  : 'bg-cyan-500/20 border-cyan-500/50 text-cyan-400'
+                  ? 'bg-emerald-500/20 border-emerald-500/50 text-emerald-400'
+                  : 'bg-blue-500/20 border-blue-500/50 text-blue-400'
               }`}
             >
               <div className="flex items-center gap-2">
                 <div className={`w-2 h-2 rounded-full animate-pulse ${
-                  mode === 'rehab' ? 'bg-red-400' : 'bg-cyan-400'
+                  mode === 'rehab' ? 'bg-emerald-400' : 'bg-blue-400'
                 }`} />
                 <span className="whitespace-nowrap">{mode === 'rehab' ? 'STEP 1: REHAB' : 'STEP 2: PERFORMANCE'}</span>
               </div>
