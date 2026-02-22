@@ -185,12 +185,7 @@ export default function Layout({ children, currentPageName }) {
             <div className="flex items-center justify-between h-16">
               {/* Logo */}
               <Link to={createPageUrl('Dashboard')} className="flex items-center gap-2 sm:gap-3">
-                <img 
-                  src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/afa60dd62_AXONLogo.png"
-                  alt="AXON Logo"
-                  loading="eager"
-                  className="w-8 h-8 sm:w-10 sm:h-10 object-contain"
-                />
+
                 <div className="block">
                    <img 
                      src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/8a319630f_image.png"
