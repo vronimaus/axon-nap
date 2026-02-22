@@ -328,35 +328,7 @@ export default function RehabPlan() {
           </div>
         </div>
 
-        {/* Sequential Phase Navigation */}
-        {rehabPlan.phases && rehabPlan.phases.length > 1 && (
-          <div className="flex gap-2 overflow-x-auto pb-1">
-            {rehabPlan.phases.map((phase, idx) => {
-              const isLocked = idx > 0 && !completedPhases[idx - 1] && (idx + 1) > (rehabPlan.current_phase || 1);
-              const isDone = (idx + 1) < (rehabPlan.current_phase || 1) || completedPhases[idx];
-              const isActive = activePhaseIdx === idx;
-              
-              return (
-                <button
-                  key={idx}
-                  onClick={() => !isLocked && setActivePhaseIdx(idx)}
-                  disabled={isLocked}
-                  className={`flex-shrink-0 px-4 py-2 rounded-lg text-xs font-bold transition-all border ${
-                    isActive
-                      ? 'bg-emerald-500/10 border-emerald-500/50 text-emerald-400 shadow-[0_0_10px_rgba(16,185,129,0.15)]'
-                      : isDone
-                      ? 'bg-slate-900 border-emerald-900/50 text-emerald-600'
-                      : isLocked
-                      ? 'bg-slate-900/50 border-slate-800 text-slate-700 cursor-not-allowed'
-                      : 'bg-slate-900 border-slate-700 text-slate-400 hover:border-slate-500'
-                  }`}
-                >
-                  {isDone ? '✓ ' : isLocked ? '🔒 ' : ''}{phase.title || `Phase ${idx + 1}`}
-                </button>
-              );
-            })}
-          </div>
-        )}
+
 
         {/* Active Phase Card */}
         {rehabPlan.phases && rehabPlan.phases[activePhaseIdx] && (
