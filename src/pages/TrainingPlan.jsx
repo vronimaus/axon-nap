@@ -178,13 +178,13 @@ export default function TrainingPlan() {
         <div className="max-w-4xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-yellow-400">
-                Dein Trainingsplan
-              </h1>
+              <h2 className="text-xs font-bold text-cyan-500 uppercase tracking-widest mb-1">
+                Trainingsplan
+              </h2>
               {activePlan?.goal_description && (
-                <p className="text-sm text-slate-400 mt-1">
-                  Ziel: <strong>{activePlan.goal_description}</strong>
-                </p>
+                <h1 className="text-xl md:text-2xl font-bold text-cyan-50">
+                  {activePlan.goal_description}
+                </h1>
               )}
             </div>
             <Button
