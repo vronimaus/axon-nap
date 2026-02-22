@@ -22,27 +22,22 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
-    // Fetch current exercise for context
-    const allExercises = await base44.asServiceRole.entities.Exercise.list();
-    const currentExercise = allExercises.find(e => e.exercise_id === current_exercise_id);
+    // PERFORMANCE FIX: Load exercises + rehab plan in parallel, single call
+    const [allExercisesData, rehabPlans] = await Promise.all([
+      base44.asServiceRole.entities.Exercise.list('-updated_date', 500),
+      base44.asServiceRole.entities.RehabPlan.filter({ user_email, status: 'active' })
+    ]);
+
+    const currentExercise = allExercisesData.find(e => e.exercise_id === current_exercise_id);
 
     if (!currentExercise) {
       return Response.json({ error: 'Exercise not found' }, { status: 404 });
     }
 
-    // Get the user's rehab plan for phase context
-    const rehabPlans = await base44.asServiceRole.entities.RehabPlan.filter({ 
-      user_email,
-      status: 'active'
-    });
-
     const rehabPlan = rehabPlans[0];
     if (!rehabPlan) {
       return Response.json({ error: 'No active rehab plan found' }, { status: 404 });
     }
-
-    // Fetch all exercises to find suitable alternatives
-    const allExercisesData = await base44.asServiceRole.entities.Exercise.list();
 
     // Filter criteria based on pain_nrs
     // NRS 6-7 = Yellow (modify/regress)

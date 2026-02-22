@@ -20,27 +20,29 @@ Deno.serve(async (req) => {
       );
     }
 
+    // PERFORMANCE FIX: Load ALL exercises in ONE call, build lookup map
+    const allExercises = await base44.asServiceRole.entities.Exercise.list('-updated_date', 500);
+    const exerciseLookup = {};
+    for (const ex of allExercises) {
+      if (ex.exercise_id) exerciseLookup[ex.exercise_id] = ex;
+    }
+
     // Initialize sling scores
     let anteriorScore = 0;
     let posteriorScore = 0;
     let lateralScore = 0;
     const contributingExercises = [];
 
-    // Process each exercise
+    // Process each exercise (no more N+1 DB calls)
     for (const exercise of exercises) {
       const { exercise_id, pain_nrs = 0 } = exercise;
 
-      // Fetch full exercise data including smart tags
-      const fullExercise = await base44.entities.Exercise.filter(
-        { exercise_id }
-      );
+      const ex = exerciseLookup[exercise_id];
 
-      if (!fullExercise || fullExercise.length === 0) {
-        console.warn(`Exercise ${exercise_id} not found`);
+      if (!ex) {
+        console.warn(`Exercise ${exercise_id} not found in cache`);
         continue;
       }
-
-      const ex = fullExercise[0];
       const smartTags = ex.smart_tags || {};
       const kinetics = smartTags.kinetic_chain_slings || {};
 
