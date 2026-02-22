@@ -49,6 +49,7 @@
  */
 import AdminDiagnostics from './pages/AdminDiagnostics';
 import AdminHub from './pages/AdminHub';
+import AdminTestCenter from './pages/AdminTestCenter';
 import AxonBotTest from './pages/AxonBotTest';
 import Dashboard from './pages/Dashboard';
 import DebugComplaintHistory from './pages/DebugComplaintHistory';
@@ -79,13 +80,13 @@ import Success from './pages/Success';
 import Terms from './pages/Terms';
 import TrainingPlan from './pages/TrainingPlan';
 import TrialInfo from './pages/TrialInfo';
-import AdminTestCenter from './pages/AdminTestCenter';
 import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
     "AdminDiagnostics": AdminDiagnostics,
     "AdminHub": AdminHub,
+    "AdminTestCenter": AdminTestCenter,
     "AxonBotTest": AxonBotTest,
     "Dashboard": Dashboard,
     "DebugComplaintHistory": DebugComplaintHistory,
@@ -116,7 +117,6 @@ export const PAGES = {
     "Terms": Terms,
     "TrainingPlan": TrainingPlan,
     "TrialInfo": TrialInfo,
-    "AdminTestCenter": AdminTestCenter,
 }
 
 export const pagesConfig = {

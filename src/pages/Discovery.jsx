@@ -213,6 +213,8 @@ export default function Discovery() {
   const [goalParam, setGoalParam] = useState(null);
   const [TESTS, setTESTS] = useState(GENERAL_TESTS);
   const [isGeneratingPlan, setIsGeneratingPlan] = useState(false);
+  const [shadowPlanId, setShadowPlanId] = useState(null); // Shadow generation result
+  const [shadowError, setShadowError] = useState(null);
 
   useEffect(() => {
     const init = async () => {
