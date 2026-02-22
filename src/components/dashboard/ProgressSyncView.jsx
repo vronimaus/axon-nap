@@ -127,8 +127,8 @@ export default function ProgressSyncView({ dashboardData, sessionDecision, onClo
               {/* Actionable Insight Box */}
               {nodes.some(n => n.status === 'red' || n.status === 'orange') ? (
                 <div className="mt-4 p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-xs text-red-200">
-                  <span className="font-bold text-red-400 block mb-1">Aktion erforderlich:</span>
-                  Akute Einschränkungen im Gewebe erkannt. Geh ins Command Center und wähle <strong className="text-white">REHAB</strong>, um die Blockaden gezielt zu lösen.
+                  <span className="font-bold text-red-400 block mb-1">System-Hinweis:</span>
+                  Erhöhte Gewebespannung erkannt. AXON berücksichtigt diese Zonen automatisch in deinem nächsten Trainingsplan. Eine <strong className="text-white">FLOW-Routine</strong> hilft zusätzlich, das System zu lockern.
                 </div>
               ) : nodes.some(n => n.status === 'yellow') ? (
                 <div className="mt-4 p-3 rounded-lg bg-yellow-500/10 border border-yellow-500/20 text-xs text-yellow-200">
