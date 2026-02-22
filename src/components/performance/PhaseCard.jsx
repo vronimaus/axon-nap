@@ -5,8 +5,8 @@ import { Button } from '@/components/ui/button';
 import TrainingExerciseCard from './TrainingExerciseCard';
 
 export default function PhaseCard({ phase, index, totalPhases, isCompleted, onComplete, onNext, onPrev }) {
-  // Accordion State: Default to the first exercise of the first section
-  const [openCardKey, setOpenCardKey] = React.useState(`${phase.exercises?.[0]?.section || 'neuro_primer'}-0`);
+  // Accordion State: All closed by default
+  const [openCardKey, setOpenCardKey] = React.useState(null);
 
   // Track completed exercises locally for immediate UI feedback
   const [completedExercises, setCompletedExercises] = React.useState({});
@@ -189,7 +189,7 @@ export default function PhaseCard({ phase, index, totalPhases, isCompleted, onCo
         {!isCompleted ? (
           <Button
             onClick={onComplete}
-            className="bg-amber-500 hover:bg-amber-600 text-slate-900 font-bold"
+            className="bg-cyan-500 hover:bg-cyan-600 text-slate-900 font-bold shadow-[0_0_20px_rgba(6,182,212,0.3)] hover:shadow-[0_0_30px_rgba(6,182,212,0.5)] transition-all"
           >
             <CheckCircle2 className="w-4 h-4 mr-2" />
             Phase abschließen
