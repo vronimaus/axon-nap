@@ -237,7 +237,7 @@ export default function TrainingPlan() {
                   {/* Bubble Tail */}
                   <div className="absolute top-4 -left-2 w-4 h-4 bg-slate-800/80 border-l border-b border-cyan-500/30 transform rotate-45 z-0" />
                   
-                  <div className="relative z-10 p-5 rounded-2xl rounded-tl-sm bg-[#0B1221] border border-cyan-500/20 shadow-xl">
+                  <div className="relative z-10 p-5 rounded-2xl rounded-tl-sm bg-[#0B1221] border border-cyan-500/50 shadow-[0_0_30px_rgba(6,182,212,0.6)]">
                     {/* Header line inside bubble */}
                     <div className="flex items-center justify-between mb-2 pb-2 border-b border-slate-800/50">
                       <span className={`text-[10px] font-bold uppercase tracking-widest ${

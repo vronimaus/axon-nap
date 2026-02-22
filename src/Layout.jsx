@@ -191,7 +191,7 @@ export default function Layout({ children, currentPageName }) {
                   loading="eager"
                   className="w-8 h-8 sm:w-10 sm:h-10 object-contain"
                 />
-                <div className="hidden xs:block">
+                <div className="block">
                    <img 
                      src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/8a319630f_image.png"
                      alt="AXON"
