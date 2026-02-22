@@ -104,24 +104,44 @@ export default function ProgressSyncView({ dashboardData, sessionDecision, onClo
         </div>
 
         {/* Heatmap (Stecco-Status) */}
-        <div className="glass rounded-xl border border-slate-700 p-4 sm:p-6">
+        <div className="glass rounded-xl border border-slate-700 p-4 sm:p-6 flex flex-col">
           <div className="flex items-center gap-2 mb-4">
             <Activity className="w-4 h-4 sm:w-5 sm:h-5 text-purple-400" />
             <h3 className="text-xs sm:text-sm text-slate-300 font-medium">Körper-Heatmap (Stecco-Status)</h3>
           </div>
           {nodes.length > 0 ? (
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-              {nodes.map(node => (
-                <div key={node.node_id} className={`flex flex-col items-center justify-center p-2 rounded-lg border ${getStatusColor(node.status)} text-center`}>
-                  <span className="text-[10px] sm:text-xs font-bold leading-tight mb-0.5">{NODE_NAMES[node.node_id] || node.node_id}</span>
-                  <div className="flex items-center gap-1 opacity-80">
-                    <span className="text-[8px] font-mono">{node.node_id}</span>
-                    <span className="text-[8px]">•</span>
-                    <span className="text-[8px] uppercase tracking-wider">{node.sling.substring(0,3)}</span>
+            <>
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 flex-grow">
+                {nodes.map(node => (
+                  <div key={node.node_id} className={`flex flex-col items-center justify-center p-2 rounded-lg border ${getStatusColor(node.status)} text-center`}>
+                    <span className="text-[10px] sm:text-xs font-bold leading-tight mb-0.5">{NODE_NAMES[node.node_id] || node.node_id}</span>
+                    <div className="flex items-center gap-1 opacity-80">
+                      <span className="text-[8px] font-mono">{node.node_id}</span>
+                      <span className="text-[8px]">•</span>
+                      <span className="text-[8px] uppercase tracking-wider">{node.sling.substring(0,3)}</span>
+                    </div>
                   </div>
+                ))}
+              </div>
+              
+              {/* Actionable Insight Box */}
+              {nodes.some(n => n.status === 'red' || n.status === 'orange') ? (
+                <div className="mt-4 p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-xs text-red-200">
+                  <span className="font-bold text-red-400 block mb-1">Aktion erforderlich:</span>
+                  Akute Einschränkungen im Gewebe erkannt. Geh ins Command Center und wähle <strong className="text-white">REHAB</strong>, um die Blockaden gezielt zu lösen.
                 </div>
-              ))}
-            </div>
+              ) : nodes.some(n => n.status === 'yellow') ? (
+                <div className="mt-4 p-3 rounded-lg bg-yellow-500/10 border border-yellow-500/20 text-xs text-yellow-200">
+                  <span className="font-bold text-yellow-400 block mb-1">Empfehlung:</span>
+                  Leichte Verspannungen vorhanden. Eine <strong className="text-white">FLOW-Routine</strong> hilft dir heute, dein System wieder optimal geschmeidig zu machen.
+                </div>
+              ) : (
+                <div className="mt-4 p-3 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-xs text-emerald-200">
+                  <span className="font-bold text-emerald-400 block mb-1">System Check:</span>
+                  Dein Körper ist im optimalen Zustand! Du bist perfekt vorbereitet für <strong className="text-white">PERFORMANCE-Training</strong>.
+                </div>
+              )}
+            </>
           ) : (
              <div className="flex h-24 sm:h-32 items-center justify-center text-xs sm:text-sm text-slate-500">Keine Heatmap Daten.</div>
           )}
