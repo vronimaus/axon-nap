@@ -43,14 +43,18 @@ Deno.serve(async (req) => {
       baselineData = '';
     }
 
-    // Fetch exercises, routines, FAQs
-    const [allExercises, allRoutines, allFaqs] = await Promise.all([
-      base44.asServiceRole.entities.Exercise.list('-updated_date', 200),
+    // Fetch exercises, routines, FAQs, and MFR Nodes
+    const [allExercises, allRoutines, allFaqs, allNodes] = await Promise.all([
+      base44.asServiceRole.entities.Exercise.list('-updated_date', 300),
       base44.asServiceRole.entities.Routine.list('-updated_date', 100),
-      base44.asServiceRole.entities.FAQ.list('-updated_date', 100)
+      base44.asServiceRole.entities.FAQ.list('-updated_date', 100),
+      base44.asServiceRole.entities.MFRNode.list('order', 20)
     ]);
 
     const availableExerciseIds = allExercises.map(e => e.exercise_id).filter(Boolean);
+
+    // Format Nodes for Context
+    const nodeContext = allNodes.map(n => `${n.node_id}: ${n.name_de} (${n.body_area})`).join('\n');
     const availableRoutineIds = allRoutines.slice(0, 10).map(r => r.id).filter(Boolean);
     const availableFaqIds = allFaqs.slice(0, 10).map(f => f.faq_id).filter(Boolean);
 
@@ -78,54 +82,60 @@ Deno.serve(async (req) => {
     }
 
     const planData = await base44.integrations.Core.InvokeLLM({
-      prompt: `Du bist ein hochspezialisierter Trainingsplaner mit Expertise in funktioneller Bewegung, neuronaler Aktivierung, Faszientraining (Stecco) und Kraftentwicklung.
+      prompt: `Du bist AXON V2, ein Elite-Neuro-Athletik-System. Erstelle einen "Fluid Logic" Trainingsplan basierend auf Stecco-Faszien-Mechanik.
 
-Erstelle einen wissenschaftlich fundierten 3-Phasen Trainingsplan auf Deutsch für:
+    PROFIL:
+    Ziel: "${goal_description}"
+    Baseline: ${baseline || 'Nicht angegeben'}
+    Assessment: ${baselineData || 'Kein Assessment'}
+    Level: ${activityLvl}, XP: ${expLvl}
+    Sport: ${sport || 'Keiner'}
 
-Ziel: "${goal_description}"
-Baseline / Aktueller Stand: ${baseline || 'Nicht angegeben'}
-Discovery Assessment Ergebnisse:
-${baselineData || 'Kein Assessment vorhanden'}
-Activity Level: ${activityLvl}
-Trainingserfahrung: ${expLvl}
-Primärsport: ${sport || 'keiner angegeben'}
-Fitness-Ziele: ${fitnessGoals}
+    ════════════════════════════════════════════
+    AXON FLUID LOGIC (V2) STRUKTUR
+    ════════════════════════════════════════════
+    Erstelle 3 progressive Phasen (Foundation, Development, Mastery).
+    JEDE Phase repräsentiert eine komplette SESSION-Struktur und MUSS 7-10 Übungen enthalten, strikt unterteilt in diese 4 Blöcke:
 
-════════════════════════════════════════════
-WICHTIGER AUSWAHLPROZESS (bitte befolgen):
-════════════════════════════════════════════
-1. Analysiere das Ziel: Welche Gelenke, Muskeln, Faszien-Ketten, Bewegungsmuster sind relevant?
-2. Identifiziere: Was braucht das Ziel an Mobility, Neuronaler Kontrolle und Kraft?
-3. Wähle Übungen mit passendem [Mechanik]-Tag (z.B. "mobility" für Gelenkfreiheit, "stability" für Kontrolle, "strength" für Kraft)
-4. Wähle Übungen mit passendem [Neuro]-Tag wenn vorhanden (calming, activating, balance, vestibular_stim)
-5. Nutze FMS-Pattern und Zweck-Beschreibung für semantisches Matching
+    1. NEURO-PRIMER (1-2 Übungen)
+    - Ziel: Input für das Gehirn (Vision, Vestibular, Atmung).
+    - Typ: 'neuro', 'breath', 'mobility' (Hals/Nacken).
 
-PHASEN-LOGIK:
-- Phase 1 (Foundation, 2 Wochen): Gelenk-Mobility + neuronale Aktivierung + Körperwahrnehmung. intensity_factor: 1.0–1.2
-- Phase 2 (Development, 3 Wochen): Kraftaufbau + Bewegungsmuster + Hilfsmuskeln. intensity_factor: 1.5–2.0
-- Phase 3 (Mastery, 3 Wochen): Zielübung + funktionelle Integration + Intensitätssteigerung. intensity_factor: 2.0–2.5
+    2. SLING-ACTIVATION (2-3 Übungen)
+    - Ziel: Fasziale Ketten "aufwecken" & Gelenk-Vorbereitung.
+    - Typ: 'mobility', 'mfr', 'core', 'plank'.
+    - Fokus auf Stecco-Nodes N1-N12.
 
-Jede Phase MUSS mindestens 5 Übungen enthalten mit konkreten deutschen Ausführungsanweisungen.
-Wähle VIELFÄLTIG: Mobility, Neuro-Drills, Breath, Strength, Core – je nach Phasenziel.
+    3. PERFORMANCE-BLOCK (3-4 Übungen)
+    - Ziel: Der Hauptreiz (Kraft, Skill, Power).
+    - Typ: 'strength', 'explosive', 'squat', 'hinge', 'push', 'pull'.
+    - Progression über die 3 Phasen (Iso -> Exzentrik -> Dynamik).
 
-Für jeden Exercise: Weise intensity_factor zu (1.0=Rehab/Mobility, 1.5=Integration, 2.5=Performance/Kraft).
-Bestimme primary_sling des Plans (anterior, posterior, lateral oder deep_frontal).
-Bestimme target_nodes (z.B. N10_Shoulder_Complex, N11_LSO_Pelvis, N12_Hip_Ankle).
-Erstelle eine progression_matrix mit 4-5 aufbauenden Übungen vom einfachsten bis zum Ziel.
+    4. RESILIENCE / COOL-DOWN (1-2 Übungen)
+    - Ziel: De-Tonisierung & Integration.
+    - Typ: 'breath', 'mfr', 'flow'.
 
-⚠️ ABSOLUT KRITISCH: Du MUSST exercise_ids EXAKT wie unten angegeben verwenden. Keine Abwandlungen, keine eigenen IDs erfinden. Jede ID die nicht in der Liste steht wird automatisch gelöscht und der Plan ist leer!
+    ════════════════════════════════════════════
+    STECCO NODE MAPPING (Verwende diese IDs für 'target_nodes')
+    ════════════════════════════════════════════
+    ${nodeContext}
 
-ERLAUBTE EXERCISE IDs (NUR diese verwenden, exakt so):
-${exactIdList}
+    ════════════════════════════════════════════
+    REGELN
+    ════════════════════════════════════════════
+    - Wähle Übungen, die mechanisch und neurologisch Sinn ergeben.
+    - 'intensity_factor': 1.0 (Neuro/Rehab) bis 3.0 (Max Power).
+    - 'sling_id': anterior, posterior, lateral, deep_frontal.
+    - Nutze NUR die unten gelisteten 'exercise_id's.
 
-DETAILS DER ÜBUNGEN:
-${exerciseCatalog}
+    VERFÜGBARE ÜBUNGEN (ID: Name [Tags]):
+    ${exerciseCatalog}
 
-Verfügbare Routine-IDs:
-${availableRoutineIds.map((id, i) => `${i + 1}. ${id}`).join('\n')}
+    Verfügbare Routinen:
+    ${availableRoutineIds.map((id, i) => `${i + 1}. ${id}`).join('\n')}
 
-Verfügbare FAQ-IDs:
-${availableFaqIds.map((id, i) => `${i + 1}. ${id}`).join('\n')}`,
+    Verfügbare FAQ-IDs:
+    ${availableFaqIds.map((id, i) => `${i + 1}. ${id}`).join('\n')}`,
       response_json_schema: {
         type: 'object',
         properties: {
