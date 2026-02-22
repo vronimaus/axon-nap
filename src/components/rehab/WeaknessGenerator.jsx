@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import { Plus, Loader2, Check } from 'lucide-react';
+import { Plus, Loader2, Check, Sparkles, X, Brain } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { toast } from 'sonner';
 
@@ -55,10 +55,15 @@ export default function WeaknessGenerator({ rehabPlan, currentExercises, onExerc
       {!isOpen ? (
         <Button
           onClick={() => setIsOpen(true)}
-          className="w-full bg-purple-500/20 text-purple-400 hover:bg-purple-500/30 border border-purple-500/30"
+          className="w-full bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20 border border-emerald-500/30 h-auto py-4 flex flex-col items-center gap-1 group transition-all"
         >
-          <Plus className="w-4 h-4 mr-2" />
-          Neue Übung für spezifische Schwachstelle generieren
+          <div className="flex items-center gap-2 font-bold uppercase tracking-wider text-xs">
+            <Sparkles className="w-4 h-4 group-hover:scale-110 transition-transform" />
+            AI Plan-Optimierung
+          </div>
+          <span className="text-[10px] text-slate-400 font-normal opacity-70 group-hover:opacity-100 transition-opacity">
+            Klicke hier, um eine spezifische Schwachstelle zu beheben
+          </span>
         </Button>
       ) : (
         <AnimatePresence>
@@ -66,94 +71,113 @@ export default function WeaknessGenerator({ rehabPlan, currentExercises, onExerc
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="glass rounded-xl border border-purple-500/30 p-4 bg-gradient-to-r from-purple-500/10 to-transparent"
+            className="rounded-2xl border border-emerald-500/30 p-5 bg-slate-900/80 shadow-[0_0_20px_rgba(16,185,129,0.1)] overflow-hidden relative"
           >
-            <h4 className="font-semibold text-white mb-2 flex items-center gap-2">
-              <Sparkles className="w-5 h-5 text-purple-400" />
-              KI-gestützte Übungsgenerierung
-            </h4>
-            <p className="text-slate-300 text-sm mb-3">
-              Beschreibe eine spezifische Schwachstelle oder ein Problem, das du noch hast:
-            </p>
+            {/* Background Effects */}
+            <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/5 rounded-full blur-3xl pointer-events-none" />
             
-            <Textarea
-              value={weakness}
-              onChange={(e) => setWeakness(e.target.value)}
-              placeholder="z.B. 'Mein linkes Knie schmerzt beim Treppensteigen' oder 'Ich habe Schwierigkeiten mit der Hüftrotation'"
-              className="mb-3 bg-slate-800 border-slate-600 text-white"
-              rows={3}
-            />
-
+            <div className="flex justify-between items-start mb-4 relative z-10">
+                <div>
+                    <h4 className="font-bold text-white flex items-center gap-2 uppercase tracking-wide text-sm">
+                    <Brain className="w-4 h-4 text-emerald-400" />
+                    AI Plan-Optimierung
+                    </h4>
+                    <p className="text-slate-400 text-xs mt-1">
+                    Beschreibe dein Problem, und die KI generiert die perfekte Übung dafür.
+                    </p>
+                </div>
+                <button 
+                    onClick={() => setIsOpen(false)}
+                    className="p-1 rounded hover:bg-slate-800 text-slate-500 hover:text-white transition-colors"
+                >
+                    <X className="w-4 h-4" />
+                </button>
+            </div>
+            
             {!generatedExercise ? (
-              <div className="flex gap-2">
-                <Button
-                  onClick={generateExercise}
-                  disabled={isGenerating || !weakness.trim()}
-                  className="flex-1 bg-purple-500/30 text-purple-400 hover:bg-purple-500/40"
-                >
-                  {isGenerating ? (
-                    <>
-                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                      Generiere...
-                    </>
-                  ) : (
-                    <>
-                      <Plus className="w-4 h-4 mr-2" />
-                      Übung generieren
-                    </>
-                  )}
-                </Button>
-                <Button
-                  onClick={() => setIsOpen(false)}
-                  variant="outline"
-                  className="border-slate-600 text-slate-300"
-                >
-                  Abbrechen
-                </Button>
-              </div>
+                <div className="space-y-4 relative z-10">
+                    <Textarea
+                    value={weakness}
+                    onChange={(e) => setWeakness(e.target.value)}
+                    placeholder="z.B. 'Mein linkes Knie schmerzt beim Treppensteigen' oder 'Ich habe Schwierigkeiten mit der Hüftrotation'"
+                    className="bg-slate-950/50 border-slate-700 text-white focus:border-emerald-500/50 min-h-[100px] text-sm resize-none"
+                    />
+                    
+                    <div className="flex gap-2">
+                        <Button
+                        onClick={generateExercise}
+                        disabled={isGenerating || !weakness.trim()}
+                        className="flex-1 bg-emerald-500 text-slate-900 font-bold hover:bg-emerald-400 transition-all shadow-[0_0_15px_rgba(16,185,129,0.2)]"
+                        >
+                        {isGenerating ? (
+                            <>
+                            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                            Analysiere & Generiere...
+                            </>
+                        ) : (
+                            <>
+                            <Sparkles className="w-4 h-4 mr-2" />
+                            Lösung generieren
+                            </>
+                        )}
+                        </Button>
+                    </div>
+                </div>
             ) : (
               <motion.div
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="mt-4 p-4 rounded-lg bg-slate-800/50 border border-slate-700"
+                className="mt-2 rounded-xl bg-slate-950 border border-emerald-500/20 overflow-hidden relative z-10"
               >
-                <h5 className="font-bold text-white mb-2">{generatedExercise.name}</h5>
-                
-                <div className="mb-3 p-2 rounded bg-purple-500/10">
-                  <p className="text-xs font-semibold text-purple-400 mb-1">🎯 Warum diese Übung?</p>
-                  <p className="text-slate-300 text-sm">{generatedExercise.goal_explanation}</p>
+                {/* Generated Result Header */}
+                <div className="p-4 border-b border-slate-800 bg-emerald-950/10 flex justify-between items-start">
+                    <div>
+                        <div className="text-[10px] font-bold text-emerald-500 uppercase tracking-widest mb-1">KI-Vorschlag</div>
+                        <h5 className="font-bold text-white text-lg">{generatedExercise.name}</h5>
+                    </div>
+                    <div className="px-2 py-1 bg-slate-900 rounded border border-slate-700 text-[10px] text-slate-300 font-mono">
+                        {generatedExercise.sets_reps_tempo || "3x10"}
+                    </div>
                 </div>
 
-                <div className="mb-3 p-2 rounded bg-green-500/10">
-                  <p className="text-xs font-semibold text-green-400 mb-1">✨ Das bringt's dir:</p>
-                  <p className="text-slate-300 text-sm">{generatedExercise.benefits}</p>
-                </div>
+                <div className="p-4 space-y-4">
+                    {/* Insights */}
+                    <div className="grid grid-cols-1 gap-2 text-xs">
+                        <div className="p-2.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20">
+                            <span className="font-bold text-emerald-400 block mb-1">🎯 Ziel</span>
+                            <span className="text-slate-300">{generatedExercise.goal_explanation || "Spezifische Problemlösung"}</span>
+                        </div>
+                        <div className="p-2.5 rounded-lg bg-slate-800/50 border border-slate-700/50">
+                            <span className="font-bold text-slate-400 block mb-1">✨ Benefit</span>
+                            <span className="text-slate-300">{generatedExercise.benefits || "Verbesserte Funktion"}</span>
+                        </div>
+                    </div>
 
-                <p className="text-slate-400 text-sm mb-1">
-                  <strong>Ausführung:</strong> {generatedExercise.sets_reps_tempo}
-                </p>
-                <p className="text-slate-300 text-sm whitespace-pre-wrap mb-3">
-                  {generatedExercise.instruction}
-                </p>
+                    {/* Instruction Preview */}
+                    <div className="text-xs text-slate-400 bg-slate-900/50 p-3 rounded-lg border border-slate-800 leading-relaxed">
+                        {generatedExercise.instruction?.slice(0, 150)}...
+                    </div>
 
-                <div className="flex gap-2">
-                  <Button
-                    onClick={addToPlan}
-                    className="flex-1 bg-green-500/30 text-green-400 hover:bg-green-500/40"
-                  >
-                    <Check className="w-4 h-4 mr-2" />
-                    Zum Plan hinzufügen
-                  </Button>
-                  <Button
-                    onClick={() => {
-                      setGeneratedExercise(null);
-                      setWeakness('');
-                    }}
-                    variant="outline"
-                    className="border-slate-600 text-slate-300"
-                  >
-                    Neu generieren
-                  </Button>
+                    {/* Actions */}
+                    <div className="flex gap-2 pt-2">
+                        <Button
+                            onClick={addToPlan}
+                            className="flex-1 bg-emerald-500 text-slate-900 font-bold hover:bg-emerald-400 transition-colors"
+                        >
+                            <Check className="w-4 h-4 mr-2" />
+                            Zum Plan hinzufügen
+                        </Button>
+                        <Button
+                            onClick={() => {
+                            setGeneratedExercise(null);
+                            // Keep weakness text to allow refinement
+                            }}
+                            variant="outline"
+                            className="border-slate-700 text-slate-400 hover:text-white hover:bg-slate-800"
+                        >
+                            Neu generieren
+                        </Button>
+                    </div>
                 </div>
               </motion.div>
             )}
@@ -161,15 +185,5 @@ export default function WeaknessGenerator({ rehabPlan, currentExercises, onExerc
         </AnimatePresence>
       )}
     </div>
-  );
-}
-
-function Sparkles({ className }) {
-  return (
-    <svg className={className} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M12 3L13.5 7.5L18 9L13.5 10.5L12 15L10.5 10.5L6 9L10.5 7.5L12 3Z" fill="currentColor"/>
-      <path d="M19 12L19.5 13.5L21 14L19.5 14.5L19 16L18.5 14.5L17 14L18.5 13.5L19 12Z" fill="currentColor"/>
-      <path d="M5 16L5.5 17.5L7 18L5.5 18.5L5 20L4.5 18.5L3 18L4.5 17.5L5 16Z" fill="currentColor"/>
-    </svg>
   );
 }
