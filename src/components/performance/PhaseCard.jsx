@@ -5,7 +5,9 @@ import { Button } from '@/components/ui/button';
 import TrainingExerciseCard from './TrainingExerciseCard';
 
 export default function PhaseCard({ phase, index, totalPhases, isCompleted, onComplete, onNext, onPrev, onExerciseClick }) {
-  
+  // Accordion State: Default to the first exercise of the first section
+  const [openCardKey, setOpenCardKey] = React.useState(`${phase.exercises?.[0]?.section || 'neuro_primer'}-0`);
+
   // Group exercises by section
   const sections = useMemo(() => {
     if (!phase.exercises) return [];
@@ -63,7 +65,11 @@ export default function PhaseCard({ phase, index, totalPhases, isCompleted, onCo
                 {isCompleted && <span className="text-[10px] text-green-400 font-bold tracking-wider">✓ COMPLETED</span>}
               </div>
               <h3 className="text-2xl font-bold text-white tracking-tight">{phase.title}</h3>
-              <p className="text-sm text-slate-400 mt-1 font-medium">{phase.duration_weeks || 2} Wochen Fokus</p>
+              <p className="text-sm text-slate-400 mt-1 font-medium flex items-center gap-2">
+                <span className="bg-slate-800/80 px-2 py-0.5 rounded text-cyan-400 text-xs border border-cyan-500/20">
+                  ~ 45 Min. / Session
+                </span>
+              </p>
             </div>
             
             {/* Minimal Circular Progress or Icon */}
@@ -77,25 +83,29 @@ export default function PhaseCard({ phase, index, totalPhases, isCompleted, onCo
       <div className="space-y-8">
         {sections.map((section, secIdx) => (
           <div key={section.key} className="space-y-4">
-            {/* Modern Section Header */}
-            <div className="flex items-center gap-3 pl-1">
-               <div className="h-px flex-1 bg-gradient-to-r from-cyan-500/50 to-transparent" />
+            {/* Modern Section Header (Left Aligned) */}
+            <div className="flex items-center gap-3 pl-1 mt-4">
                <h4 className="text-xs font-bold uppercase tracking-[0.15em] text-cyan-400 flex items-center gap-2">
                   <section.icon className="w-3.5 h-3.5" />
                   {section.label}
                </h4>
-               <div className="h-px w-8 bg-cyan-500/20" />
+               <div className="h-px flex-1 bg-gradient-to-r from-cyan-500/20 to-transparent" />
             </div>
             
             <div className="grid gap-4">
-              {section.exercises.map((exercise, exIdx) => (
-                <TrainingExerciseCard
-                  key={`${section.key}-${exIdx}`}
-                  exercise={exercise}
-                  idx={exIdx} 
-                  onDetailClick={onExerciseClick}
-                />
-              ))}
+              {section.exercises.map((exercise, exIdx) => {
+                const uniqueKey = `${section.key}-${exIdx}`;
+                return (
+                  <TrainingExerciseCard
+                    key={uniqueKey}
+                    exercise={exercise}
+                    idx={exIdx} 
+                    onDetailClick={onExerciseClick}
+                    isOpen={openCardKey === uniqueKey}
+                    onToggle={() => setOpenCardKey(openCardKey === uniqueKey ? null : uniqueKey)}
+                  />
+                );
+              })}
             </div>
           </div>
         ))}

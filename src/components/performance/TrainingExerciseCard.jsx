@@ -63,7 +63,7 @@ export default function TrainingExerciseCard({ exercise, idx, onDetailClick }) {
 
       {/* Main Clickable Area (Header) */}
       <div 
-        onClick={() => setIsExpanded(!isExpanded)}
+        onClick={toggle}
         className="p-4 pl-6 flex items-center gap-4 cursor-pointer"
       >
         {/* Play Icon / Image - More minimal */}
