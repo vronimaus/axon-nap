@@ -4,9 +4,13 @@ import { ChevronDown, ChevronUp, Clock, RotateCcw, Flame, Check, PlayCircle, Inf
 import { base44 } from '@/api/base44Client';
 import { toast } from 'sonner';
 
-export default function TrainingExerciseCard({ exercise, idx, onDetailClick }) {
+export default function TrainingExerciseCard({ exercise, idx, onDetailClick, isOpen, onToggle }) {
+  // Fallback to local state if no props provided (backward compatibility)
+  const [localExpanded, setLocalExpanded] = useState(false);
+  const isExpanded = isOpen !== undefined ? isOpen : localExpanded;
+  const toggle = onToggle || (() => setLocalExpanded(!localExpanded));
+
   const [fullExercise, setFullExercise] = useState(exercise);
-  const [isExpanded, setIsExpanded] = useState(false);
   const [setsDone, setSetsDone] = useState(0);
 
   useEffect(() => {
