@@ -286,24 +286,58 @@ export default function Discovery() {
         }
       });
 
-      await Promise.all(
-        TESTS.map(test => {
-          const value = finalAnswers[test.id];
-          const level = getLevel(value, test.thresholds);
-          return base44.entities.PerformanceBaseline.create({
-            user_email: user.email,
-            test_name: test.name,
-            test_category: test.category,
-            result_value: value,
-            result_unit: test.unit,
-            baseline_level: level,
-            fitness_goal_aligned: test.related_goals[0],
-            test_date: today,
-          });
-        })
-      );
+      // Save baselines + update user + start shadow plan generation — all in parallel
+      const savePromises = TESTS.map(test => {
+        const value = finalAnswers[test.id];
+        const level = getLevel(value, test.thresholds);
+        return base44.entities.PerformanceBaseline.create({
+          user_email: user.email,
+          test_name: test.name,
+          test_category: test.category,
+          result_value: value,
+          result_unit: test.unit,
+          baseline_level: level,
+          fitness_goal_aligned: test.related_goals[0],
+          test_date: today,
+        });
+      });
 
-      await base44.auth.updateMe({ baseline_completed: true, baseline_date: today });
+      // SHADOW GENERATION: fire plan generation immediately, don't await it here
+      // The plan generates while user reads their results (~15-30 sec)
+      const shadowPromise = goalParam
+        ? (async () => {
+            try {
+              // First archive old active plans
+              const existingPlans = await base44.entities.TrainingPlan.filter({
+                user_email: user.email,
+                status: 'active'
+              });
+              await Promise.all(
+                existingPlans.map(p => base44.entities.TrainingPlan.update(p.id, { status: 'paused' }))
+              );
+              const response = await base44.functions.invoke('generateTrainingPlan', {
+                goal_description: goalParam,
+              });
+              if (response.data?.plan_id) {
+                setShadowPlanId(response.data.plan_id);
+                base44.analytics.track({ eventName: 'training_plan_created', properties: { goal: goalParam, method: 'shadow' } });
+              }
+            } catch (err) {
+              console.error('Shadow plan generation failed:', err);
+              setShadowError(err.message);
+            }
+          })()
+        : Promise.resolve();
+
+      // Await baselines + user update. Shadow generation runs in background.
+      await Promise.all([
+        ...savePromises,
+        base44.auth.updateMe({ baseline_completed: true, baseline_date: today })
+      ]);
+
+      // Don't await shadowPromise — let it finish while user reads results
+      shadowPromise; // eslint-disable-line
+
       setAnswers(finalAnswers);
       setPhase('results');
       base44.analytics.track({ eventName: 'discovery_completed', properties: { user_email: user.email } });
