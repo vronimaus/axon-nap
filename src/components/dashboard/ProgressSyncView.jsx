@@ -30,6 +30,21 @@ export default function ProgressSyncView({ dashboardData, sessionDecision, onClo
     ];
   }
 
+  const NODE_NAMES = {
+    N1: "Kopf & Nacken",
+    N2: "Brust & Schulter",
+    N3: "Oberer Rücken",
+    N4: "Arme & Ellbogen",
+    N5: "Rippen & Flanke",
+    N6: "Bauchraum",
+    N7: "Lendenwirbel",
+    N8: "Hüfte & Becken",
+    N9: "Gesäß",
+    N10: "Oberschenkel",
+    N11: "Knie & Schienbein",
+    N12: "Wade & Fuß"
+  };
+
   const getStatusColor = (status) => {
     if (status === 'green') return 'text-emerald-400 bg-emerald-400/10 border-emerald-400/20';
     if (status === 'yellow') return 'text-yellow-400 bg-yellow-400/10 border-yellow-400/20';
@@ -95,11 +110,15 @@ export default function ProgressSyncView({ dashboardData, sessionDecision, onClo
             <h3 className="text-xs sm:text-sm text-slate-300 font-medium">Körper-Heatmap (Stecco-Status)</h3>
           </div>
           {nodes.length > 0 ? (
-            <div className="grid grid-cols-3 gap-2">
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
               {nodes.map(node => (
-                <div key={node.node_id} className={`flex flex-col items-center justify-center p-2 rounded-lg border ${getStatusColor(node.status)}`}>
-                  <span className="text-xs font-bold">{node.node_id}</span>
-                  <span className="text-[8px] sm:text-[9px] uppercase tracking-wider opacity-80">{node.sling.substring(0,3)}</span>
+                <div key={node.node_id} className={`flex flex-col items-center justify-center p-2 rounded-lg border ${getStatusColor(node.status)} text-center`}>
+                  <span className="text-[10px] sm:text-xs font-bold leading-tight mb-0.5">{NODE_NAMES[node.node_id] || node.node_id}</span>
+                  <div className="flex items-center gap-1 opacity-80">
+                    <span className="text-[8px] font-mono">{node.node_id}</span>
+                    <span className="text-[8px]">•</span>
+                    <span className="text-[8px] uppercase tracking-wider">{node.sling.substring(0,3)}</span>
+                  </div>
                 </div>
               ))}
             </div>
