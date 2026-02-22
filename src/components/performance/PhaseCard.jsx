@@ -102,6 +102,14 @@ export default function PhaseCard({ phase, index, totalPhases, isCompleted, onCo
                     idx={exIdx} 
                     isOpen={openCardKey === uniqueKey}
                     onToggle={() => setOpenCardKey(openCardKey === uniqueKey ? null : uniqueKey)}
+                    onComplete={() => {
+                       // Find next exercise key
+                       const allExercises = sections.flatMap(s => s.exercises.map((e, i) => `${s.key}-${i}`));
+                       const currentIdx = allExercises.indexOf(uniqueKey);
+                       if (currentIdx !== -1 && currentIdx < allExercises.length - 1) {
+                          setTimeout(() => setOpenCardKey(allExercises[currentIdx + 1]), 500);
+                       }
+                    }}
                   />
                 );
               })}

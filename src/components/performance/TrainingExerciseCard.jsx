@@ -1,18 +1,83 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronDown, ChevronUp, Clock, RotateCcw, Flame, Check, PlayCircle, Info, Brain } from 'lucide-react';
+import { ChevronDown, ChevronUp, Brain, Check, Edit2, Play, Settings2 } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { toast } from 'sonner';
+import { Slider } from '@/components/ui/slider';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
-export default function TrainingExerciseCard({ exercise, idx, onDetailClick, isOpen, onToggle }) {
-  // Fallback to local state if no props provided (backward compatibility)
+const EditableNumber = ({ value, label, onChange, unit }) => {
+  const [isEditing, setIsEditing] = useState(false);
+  const inputRef = useRef(null);
+
+  useEffect(() => {
+    if (isEditing && inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [isEditing]);
+
+  const handleBlur = () => {
+    setIsEditing(false);
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter') setIsEditing(false);
+  };
+
+  return (
+    <div className="flex flex-col items-center">
+      <div className="relative group cursor-pointer" onClick={() => setIsEditing(true)}>
+        {isEditing ? (
+          <input
+            ref={inputRef}
+            type="number"
+            value={value}
+            onChange={(e) => onChange(e.target.value)}
+            onBlur={handleBlur}
+            onKeyDown={handleKeyDown}
+            className="w-16 bg-slate-800 text-center text-3xl font-bold text-white rounded border border-cyan-500 focus:outline-none focus:ring-2 focus:ring-cyan-500"
+          />
+        ) : (
+          <div className="flex items-start">
+            <span className="text-4xl font-bold text-white tracking-tight">{value}</span>
+            <Edit2 className="w-3 h-3 text-slate-600 ml-1 opacity-0 group-hover:opacity-100 transition-opacity" />
+          </div>
+        )}
+      </div>
+      <span className="text-[10px] font-bold uppercase tracking-widest text-slate-500 mt-1">
+        {label} {unit && <span className="text-slate-600">({unit})</span>}
+      </span>
+    </div>
+  );
+};
+
+export default function TrainingExerciseCard({ exercise, idx, onDetailClick, isOpen, onToggle, onComplete }) {
+  // Props fallback
   const [localExpanded, setLocalExpanded] = useState(false);
   const isExpanded = isOpen !== undefined ? isOpen : localExpanded;
   const toggle = onToggle || (() => setLocalExpanded(!localExpanded));
 
+  // Exercise Data State
   const [fullExercise, setFullExercise] = useState(exercise);
-  const [setsDone, setSetsDone] = useState(0);
+  const [level, setLevel] = useState('standard'); // basic, standard, advanced
+  
+  // Protocol State
+  const [sets, setSets] = useState(3);
+  const [reps, setReps] = useState(12);
+  const [weight, setWeight] = useState(0); // Optional
+  
+  // UI State
+  const [showDetails, setShowDetails] = useState(false); // Collapsible details
+  const [isFinishing, setIsFinishing] = useState(false); // RPE check mode
+  const [rpe, setRpe] = useState(7);
+  const [isCompleted, setIsCompleted] = useState(exercise.completed || false);
 
+  // Parse initial data
   useEffect(() => {
     if (exercise.exercise_id) {
       base44.entities.Exercise.filter({ exercise_id: exercise.exercise_id })
@@ -25,142 +90,263 @@ export default function TrainingExerciseCard({ exercise, idx, onDetailClick, isO
               sets_reps_tempo: exercise.sets_reps_tempo || dbEx.sets_reps_tempo,
               instruction: exercise.instruction || dbEx.description || dbEx.instruction,
             }));
+            
+            // Try to parse sets/reps
+            const specs = exercise.sets_reps_tempo || dbEx.sets_reps_tempo || "3x12";
+            const setMatch = specs.match(/(\d+)\s*[xX]/);
+            const repMatch = specs.match(/[xX]\s*(\d+)/);
+            if (setMatch) setSets(parseInt(setMatch[1]));
+            if (repMatch) setReps(parseInt(repMatch[1]));
           }
         })
         .catch(() => {});
     }
   }, [exercise.exercise_id]);
 
-  // Parse Sets/Reps
-  // Format usually: "3x12 reps" or "3x 45s"
-  const specs = fullExercise.sets_reps_tempo || "3x10";
-  const totalSetsMatch = specs.match(/^(\d+)/);
-  const totalSets = totalSetsMatch ? parseInt(totalSetsMatch[1]) : 3;
+  // Determine content based on level
+  const currentContent = React.useMemo(() => {
+    if (level === 'basic' && fullExercise.progression_basic) {
+      return {
+        description: fullExercise.progression_basic.description,
+        focus: fullExercise.progression_basic.focus
+      };
+    }
+    if (level === 'advanced' && fullExercise.progression_advanced) {
+      return {
+        description: fullExercise.progression_advanced.description,
+        focus: fullExercise.progression_advanced.focus
+      };
+    }
+    return {
+      description: fullExercise.instruction || fullExercise.description,
+      focus: fullExercise.axon_moment
+    };
+  }, [level, fullExercise]);
 
-  const handleSetClick = (e) => {
+  const handleFinishClick = (e) => {
     e.stopPropagation();
-    if (setsDone < totalSets) {
-      setSetsDone(prev => prev + 1);
-      toast.success(`Satz ${setsDone + 1} erledigt!`);
-    } else {
-      setSetsDone(0); // Reset for demo purposes or keep it done? User usually wants to reset if clicked again or just keep it.
-      // Let's keep it maxed out or reset? Let's reset if they want to re-do.
+    setIsFinishing(true);
+  };
+
+  const confirmFinish = () => {
+    setIsCompleted(true);
+    setIsFinishing(false);
+    toast.success('Übung abgeschlossen! 🔥');
+    if (onComplete) {
+      onComplete({
+        ...exercise,
+        completed: true,
+        actual_sets: sets,
+        actual_reps: reps,
+        actual_weight: weight,
+        rpe: rpe
+      });
     }
   };
 
-  const isCompleted = setsDone >= totalSets;
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      className={`relative overflow-hidden rounded-xl transition-all duration-300 group ${
-        isExpanded 
-          ? 'bg-slate-800 border border-cyan-500/40 shadow-[0_0_20px_rgba(6,182,212,0.1)]' 
-          : 'bg-[#0B1120] border border-slate-800 hover:border-slate-600'
-      }`}
-    >
-      {/* Left Active Indicator Line */}
-      <div className={`absolute left-0 top-0 bottom-0 w-1 transition-colors ${
-        isCompleted ? 'bg-green-500' : isExpanded ? 'bg-cyan-500' : 'bg-transparent group-hover:bg-slate-700'
-      }`} />
-
-      {/* Main Clickable Area (Header) */}
+  // Compact Header for Closed State
+  if (!isExpanded) {
+    return (
       <div 
         onClick={toggle}
-        className="p-4 pl-6 flex items-center gap-4 cursor-pointer"
+        className={`p-4 rounded-xl border cursor-pointer flex items-center justify-between transition-all ${
+           isCompleted 
+             ? 'bg-slate-900/50 border-green-500/20 opacity-70' 
+             : 'bg-slate-900 border-slate-800 hover:border-cyan-500/30'
+        }`}
       >
-        {/* Play Icon / Image - More minimal */}
-        <div className={`w-10 h-10 rounded-lg flex-shrink-0 flex items-center justify-center overflow-hidden transition-colors ${
-          isCompleted 
-            ? 'bg-green-500/10 text-green-400 border border-green-500/20' 
-            : 'bg-slate-800/50 text-slate-500 border border-slate-700/50 group-hover:text-cyan-400 group-hover:border-cyan-500/30'
-        }`}>
-          {fullExercise.image_url ? (
-            <img src={fullExercise.image_url} alt={fullExercise.name} className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity" />
-          ) : (
-            <PlayCircle className="w-5 h-5" />
-          )}
-        </div>
-
-        {/* Info */}
-        <div className="flex-1 min-w-0">
-          <h4 className={`font-bold text-sm tracking-tight truncate transition-colors ${
-            isCompleted ? 'text-green-400' : isExpanded ? 'text-white' : 'text-slate-300 group-hover:text-white'
+        <div className="flex items-center gap-4">
+          <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
+            isCompleted ? 'bg-green-500/10 text-green-500' : 'bg-slate-800 text-slate-500'
           }`}>
-            {fullExercise.name}
-          </h4>
-          <div className="flex items-center gap-3 mt-1 text-[11px] font-medium text-slate-500 group-hover:text-slate-400">
-            <span className="flex items-center gap-1 bg-slate-800/50 px-1.5 py-0.5 rounded border border-slate-700/50">
-              {specs}
-            </span>
-            {fullExercise.category && (
-              <span className="uppercase tracking-wider">{fullExercise.category}</span>
-            )}
+             {isCompleted ? <Check className="w-5 h-5" /> : <Play className="w-4 h-4 ml-0.5" />}
+          </div>
+          <div>
+            <h4 className={`font-bold text-sm ${isCompleted ? 'text-green-500' : 'text-slate-300'}`}>
+              {fullExercise.name}
+            </h4>
+            <div className="text-[10px] text-slate-500 uppercase tracking-wider font-medium">
+               {sets} Sets × {reps} Reps
+            </div>
           </div>
         </div>
+        <ChevronDown className="w-5 h-5 text-slate-600" />
+      </div>
+    );
+  }
 
-        {/* Quick Action / Status - Sleeker Button */}
-        <div className="flex-shrink-0">
-            <button
-              onClick={handleSetClick}
-              className={`h-8 min-w-[3rem] px-3 rounded-md flex items-center justify-center gap-2 text-xs font-bold transition-all ${
-                isCompleted 
-                  ? 'bg-green-500 text-slate-900 shadow-[0_0_15px_rgba(34,197,94,0.4)]' 
-                  : 'bg-slate-800 text-slate-400 hover:bg-slate-700 hover:text-white border border-slate-700'
-              }`}
-            >
-              {isCompleted ? (
-                <Check className="w-4 h-4" />
-              ) : (
-                <span className="tracking-widest">{setsDone}/{totalSets}</span>
-              )}
-            </button>
-        </div>
+  // Full "One-Page" View for Open State
+  return (
+    <motion.div
+      layout
+      initial={{ opacity: 0, scale: 0.98 }}
+      animate={{ opacity: 1, scale: 1 }}
+      className="bg-slate-950 rounded-2xl border border-cyan-500/30 overflow-hidden shadow-2xl relative"
+    >
+      {/* 1. Header (Sticky-ish feeling) */}
+      <div className="p-5 border-b border-slate-800 bg-slate-900/50 flex items-start justify-between">
+         <div>
+            <h3 className="text-xl md:text-2xl font-black text-white uppercase tracking-tight leading-none mb-1 shadow-cyan-glow">
+              {fullExercise.name}
+            </h3>
+            <div className="flex items-center gap-2">
+               <span className="text-[10px] bg-slate-800 text-slate-400 px-1.5 py-0.5 rounded border border-slate-700">
+                 {fullExercise.category || 'Exercise'}
+               </span>
+               {/* Level Badge / Switch */}
+               <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <button className="flex items-center gap-1 text-[10px] bg-cyan-950 text-cyan-400 px-2 py-0.5 rounded border border-cyan-900 hover:border-cyan-500 transition-colors uppercase font-bold tracking-wider">
+                      {level} <ChevronDown className="w-3 h-3" />
+                    </button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent className="bg-slate-900 border-slate-800">
+                    <DropdownMenuItem onClick={() => setLevel('basic')} className="text-slate-300 focus:bg-slate-800 cursor-pointer">
+                      Basic
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => setLevel('standard')} className="text-slate-300 focus:bg-slate-800 cursor-pointer">
+                      Standard
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => setLevel('advanced')} className="text-cyan-300 focus:bg-slate-800 cursor-pointer">
+                      Advanced
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+               </DropdownMenu>
+            </div>
+         </div>
+         {/* Close / Collapse */}
+         <button onClick={toggle} className="text-slate-500 hover:text-white p-1">
+            <ChevronUp className="w-6 h-6" />
+         </button>
       </div>
 
-      {/* Expanded Details */}
-      <AnimatePresence>
-        {isExpanded && (
-          <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: 'auto', opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-          >
-            <div className="px-4 pb-4 pt-0 space-y-4">
-              <div className="h-px w-full bg-slate-700/50 mb-3" />
-              
-              {/* Instructions */}
-              <div className="space-y-2">
-                <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Anleitung</p>
-                <div className="text-sm text-slate-300 leading-relaxed whitespace-pre-line">
-                  {fullExercise.instruction || fullExercise.description}
-                </div>
-              </div>
+      {/* 2. Content Area */}
+      <div className="p-5 space-y-6">
+         
+         {/* Collapsible Detail Toggle */}
+         <div>
+            <button 
+              onClick={() => setShowDetails(!showDetails)}
+              className="flex items-center gap-2 text-xs font-bold text-slate-400 hover:text-cyan-400 transition-colors mb-2 group"
+            >
+               <span>Setup & Ausführung (Details)</span>
+               <ChevronDown className={`w-3 h-3 transition-transform duration-300 ${showDetails ? 'rotate-180' : ''}`} />
+            </button>
 
-              {/* AXON Moment */}
-              {fullExercise.axon_moment && (
-                <div className="bg-amber-500/10 border border-amber-500/20 rounded-lg p-3">
-                  <div className="flex items-center gap-2 mb-1">
-                    <Brain className="w-4 h-4 text-amber-400" />
-                    <span className="text-xs font-bold text-amber-400 uppercase">AXON Moment</span>
-                  </div>
-                  <p className="text-xs text-slate-300 italic">
-                    "{fullExercise.axon_moment}"
-                  </p>
-                </div>
+            <AnimatePresence>
+               {showDetails && (
+                 <motion.div
+                   initial={{ height: 0, opacity: 0 }}
+                   animate={{ height: 'auto', opacity: 1 }}
+                   exit={{ height: 0, opacity: 0 }}
+                   className="overflow-hidden"
+                 >
+                    <div className="pt-2 pb-4 space-y-4">
+                       {/* Hero: AXON Moment */}
+                       {(currentContent.focus || fullExercise.axon_moment) && (
+                         <div className="relative overflow-hidden rounded-xl border border-cyan-500/50 bg-cyan-950/10 p-4 shadow-[0_0_20px_rgba(6,182,212,0.15)]">
+                            <div className="flex items-start gap-3 relative z-10">
+                               <div className="w-8 h-8 rounded-lg bg-cyan-500/20 flex items-center justify-center flex-shrink-0">
+                                  <Brain className="w-5 h-5 text-cyan-400" />
+                               </div>
+                               <div>
+                                  <h5 className="text-xs font-bold text-cyan-400 uppercase tracking-widest mb-1">AXON Moment</h5>
+                                  <p className="text-sm font-medium text-cyan-100 italic leading-relaxed">
+                                    "{currentContent.focus || fullExercise.axon_moment}"
+                                  </p>
+                               </div>
+                            </div>
+                         </div>
+                       )}
+
+                       {/* Setup / Instructions */}
+                       <div className="bg-slate-900/50 rounded-xl p-4 border border-slate-800">
+                          <h5 className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-2">Ausführung</h5>
+                          <div className="text-sm text-slate-300 leading-relaxed whitespace-pre-line pl-1">
+                             {currentContent.description}
+                          </div>
+                          {fullExercise.cues && fullExercise.cues.length > 0 && (
+                            <div className="mt-4 pt-4 border-t border-slate-800">
+                               <h5 className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-2">Pro-Cues</h5>
+                               <ul className="list-disc list-outside ml-4 space-y-1">
+                                  {fullExercise.cues.map((cue, i) => (
+                                    <li key={i} className="text-xs text-slate-400">{cue}</li>
+                                  ))}
+                               </ul>
+                            </div>
+                          )}
+                       </div>
+                    </div>
+                 </motion.div>
+               )}
+            </AnimatePresence>
+         </div>
+
+         {/* 3. Smart Protocol (Always Visible when open) */}
+         <div className="relative">
+            {/* Vibe Check Overlay (After finishing) */}
+            <AnimatePresence>
+              {isFinishing && (
+                <motion.div 
+                  initial={{ y: '100%', opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  exit={{ y: '100%', opacity: 0 }}
+                  className="absolute inset-0 z-20 bg-slate-950 flex flex-col items-center justify-center p-4 rounded-xl border border-cyan-500/30"
+                >
+                   <h4 className="text-lg font-bold text-white mb-6">Wie hat es sich angefühlt?</h4>
+                   <div className="w-full max-w-[80%] space-y-6">
+                      <Slider
+                        value={[rpe]}
+                        onValueChange={(vals) => setRpe(vals[0])}
+                        max={10}
+                        step={1}
+                        className="py-4"
+                      />
+                      <div className="flex justify-between text-xs font-bold text-slate-500 uppercase tracking-widest">
+                         <span>Easy</span>
+                         <span className="text-cyan-400">RPE {rpe}</span>
+                         <span>Hard</span>
+                      </div>
+                   </div>
+                   <button 
+                     onClick={confirmFinish}
+                     className="mt-8 w-full bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold py-3 rounded-xl shadow-lg hover:shadow-cyan-500/25 transition-all active:scale-95"
+                   >
+                     Bestätigen & Weiter
+                   </button>
+                </motion.div>
               )}
+            </AnimatePresence>
 
-              {/* Action Buttons */}
-              <div className="flex gap-2 pt-2">
-                 <button className="flex-1 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs text-slate-300 font-medium transition-colors">
-                   Alternative wählen
-                 </button>
-              </div>
+            {/* Protocol Display */}
+            <div className={`transition-all duration-300 ${isFinishing ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
+               <div className="flex items-center justify-center gap-4 md:gap-8 mb-8">
+                  <div className="text-slate-600 text-xl font-light">×</div>
+                  <EditableNumber value={sets} label="Sätze" onChange={setSets} />
+                  <div className="text-slate-600 text-xl font-light">×</div>
+                  <EditableNumber value={reps} label="Reps" onChange={setReps} />
+                  <div className="text-slate-600 text-xl font-light">@</div>
+                  <EditableNumber value={weight} label="Load" unit="kg" onChange={setWeight} />
+               </div>
+
+               <p className="text-center text-[10px] text-slate-500 font-mono mb-6">
+                 PAUSE: 60 SEK (Auto-Start nach Abschluss)
+               </p>
+
+               <button
+                  onClick={handleFinishClick}
+                  disabled={isCompleted}
+                  className={`w-full py-4 rounded-xl font-black text-sm uppercase tracking-[0.15em] transition-all transform active:scale-[0.98] shadow-lg ${
+                    isCompleted
+                      ? 'bg-slate-800 text-slate-500 cursor-not-allowed border border-slate-700'
+                      : 'bg-cyan-500 hover:bg-cyan-400 text-slate-900 shadow-cyan-500/20 hover:shadow-cyan-500/40'
+                  }`}
+               >
+                  {isCompleted ? 'Bereits abgeschlossen' : '[ ÜBUNG BEENDET ]'}
+               </button>
             </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+         </div>
+      </div>
     </motion.div>
   );
 }
