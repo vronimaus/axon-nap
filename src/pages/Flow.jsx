@@ -508,16 +508,7 @@ export default function Flow() {
             transition={{ duration: 0.3 }}
           >
             <div className="glass rounded-2xl border border-cyan-500/20 p-8 mb-6 bg-slate-900/50 backdrop-blur-xl neuro-glow">
-              {/* Exercise Image - show at top */}
-              {currentExercise?.image_url && (
-                <div className="rounded-xl overflow-hidden mb-6 border border-slate-800">
-                  <img
-                    src={currentExercise.image_url}
-                    alt={currentExercise.name || detailedContent.title}
-                    className="w-full h-auto object-cover"
-                  />
-                </div>
-              )}
+              {/* Exercise Image removed temporarily */}
               
               {/* Step Type Badge */}
               <div className="flex items-center justify-between mb-6">
