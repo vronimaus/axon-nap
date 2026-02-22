@@ -11,9 +11,10 @@ import { useQueryClient } from '@tanstack/react-query';
 import GoalCard from '../components/performance/GoalCard';
 import ExerciseDetailModal from '../components/performance/ExerciseDetailModal';
 import TrainingPlanChat from '../components/performance/TrainingPlanChat';
-import TrainingExerciseCard from '../components/performance/TrainingExerciseCard';
 import DailyReadinessCheck from '../components/dashboard/DailyReadinessCheck';
 import { Helmet } from 'react-helmet-async';
+import PhaseCard from '../components/performance/PhaseCard';
+import { User } from 'lucide-react';
 
 export default function TrainingPlan() {
   const [user, setUser] = useState(null);
@@ -207,8 +208,45 @@ export default function TrainingPlan() {
 
       {/* Main Content */}
       <div className="max-w-4xl mx-auto px-4 py-6 space-y-6">
-            {/* Readiness Recommendation - compact collapsible */}
-                {readinessStatus && <ReadinessBanner readinessStatus={readinessStatus} />}
+            {/* Coach Message & Readiness */}
+            {activePlan && readinessStatus && (
+              <motion.div 
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="relative overflow-hidden rounded-2xl border border-cyan-500/20 bg-gradient-to-br from-slate-900 via-slate-900 to-slate-800 p-6 shadow-lg"
+              >
+                {/* Background Glow */}
+                <div className="absolute -top-20 -right-20 w-64 h-64 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none" />
+                
+                <div className="relative z-10 flex items-start gap-4">
+                  <div className="w-12 h-12 rounded-full border border-cyan-500/30 bg-slate-950 p-1 flex-shrink-0">
+                    <div className="w-full h-full rounded-full bg-cyan-900/20 flex items-center justify-center overflow-hidden">
+                       {/* Placeholder for Coach Avatar or Icon */}
+                       {user?.photo_url ? (
+                         <img src={user.photo_url} alt="Coach" className="w-full h-full object-cover" />
+                       ) : (
+                         <User className="w-6 h-6 text-cyan-400" />
+                       )}
+                    </div>
+                  </div>
+                  
+                  <div className="flex-1">
+                     {/* Dynamic Message based on Readiness */}
+                     <div className="glass-cyan inline-flex px-3 py-1 rounded-full text-xs font-medium text-cyan-300 mb-2 border border-cyan-500/20">
+                        {readinessStatus === 'green' ? 'System bereit' : readinessStatus === 'yellow' ? 'System braucht Pflege' : 'Akku leer'}
+                     </div>
+                     <p className="text-slate-200 font-medium leading-relaxed">
+                       {readinessStatus === 'green' 
+                         ? `Dein System ist bereit. Fokus heute: ${activePlan.goal_description || 'Maximale Performance'}.`
+                         : readinessStatus === 'yellow'
+                         ? "Dein System signalisiert Bedarf an Pflege. Fokus heute: Mobilität & Stabilität."
+                         : "Rote Ampel. Fokus heute: Aktive Regeneration & Reset."
+                       }
+                     </p>
+                  </div>
+                </div>
+              </motion.div>
+            )}
 
             {activePlan ? (
               <motion.div
@@ -409,92 +447,4 @@ function ReadinessBanner({ readinessStatus }) {
   );
 }
 
-function PhaseCard({ phase, index, totalPhases, isCompleted, onComplete, onNext, onPrev, onExerciseClick }) {
-  const getPhaseColor = (idx) => {
-    if (idx === 0) return { bg: 'from-amber-500/20', border: 'border-amber-500/30', text: 'text-amber-400', icon: Target };
-    if (idx === 1) return { bg: 'from-cyan-500/20', border: 'border-cyan-500/30', text: 'text-cyan-400', icon: TrendingUp };
-    return { bg: 'from-orange-500/20', border: 'border-orange-500/30', text: 'text-orange-400', icon: Zap };
-  };
-
-  const colors = getPhaseColor(index);
-  const PhaseIcon = colors.icon;
-
-  return (
-    <motion.div
-      key={index}
-      initial={{ opacity: 0, x: 20 }}
-      animate={{ opacity: 1, x: 0 }}
-      exit={{ opacity: 0, x: -20 }}
-      className={`glass rounded-xl border bg-gradient-to-r ${colors.bg} to-transparent ${colors.border}`}
-    >
-      {/* Phase Header */}
-      <div className="p-5 border-b border-slate-700/50">
-        <div className="flex items-center gap-4">
-          <div className={`w-12 h-12 rounded-xl ${colors.bg} border ${colors.border} flex items-center justify-center flex-shrink-0`}>
-            <PhaseIcon className={`w-6 h-6 ${colors.text}`} />
-          </div>
-          <div className="flex-1">
-            <div className="flex items-center gap-2 mb-1">
-              <span className={`text-xs font-bold tracking-widest uppercase ${colors.text}`}>Phase {index + 1} / {totalPhases}</span>
-              {isCompleted && <span className="text-xs bg-green-500/20 text-green-400 border border-green-500/40 px-2 py-0.5 rounded-full font-semibold">✓ Abgeschlossen</span>}
-            </div>
-            <h3 className="text-xl font-bold text-white">
-              {phase.title || `Phase ${phase.phase_number || index + 1}`}
-            </h3>
-            <p className="text-sm text-slate-400 mt-0.5">{phase.duration_weeks || 2} Wochen · {phase.exercises?.length || 0} Übungen</p>
-          </div>
-        </div>
-        {phase.description && (
-          <p className="text-sm text-slate-300 leading-relaxed mt-4">{phase.description}</p>
-        )}
-      </div>
-
-      {/* Exercises */}
-      {phase.exercises && phase.exercises.length > 0 && (
-        <div className="p-5 space-y-4">
-          <h4 className="font-semibold text-slate-200 flex items-center gap-2 text-sm">
-            <Zap className="w-4 h-4 text-cyan-400" />
-            Übungen dieser Phase
-          </h4>
-          <div className="space-y-4">
-            {phase.exercises.map((exercise, exIdx) => (
-              <TrainingExerciseCard
-                key={exIdx}
-                exercise={exercise}
-                idx={exIdx}
-                onDetailClick={onExerciseClick}
-              />
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* Footer Navigation */}
-      <div className="p-4 border-t border-slate-700/50 flex gap-3">
-        {index > 0 && (
-          <Button variant="outline" onClick={onPrev} className="border-slate-600 text-slate-400">
-            ← Vorherige
-          </Button>
-        )}
-        <div className="flex-1" />
-        {!isCompleted ? (
-          <Button
-            onClick={onComplete}
-            className="bg-gradient-to-r from-amber-500 to-yellow-500 text-black font-bold"
-          >
-            <CheckCircle2 className="w-4 h-4 mr-2" />
-            Phase abschließen
-          </Button>
-        ) : index < totalPhases - 1 ? (
-          <Button onClick={onNext} className="bg-gradient-to-r from-cyan-500 to-blue-600">
-            Nächste Phase →
-          </Button>
-        ) : (
-          <div className="text-green-400 font-bold flex items-center gap-2">
-            <CheckCircle2 className="w-5 h-5" /> Plan abgeschlossen! 🎉
-          </div>
-        )}
-      </div>
-    </motion.div>
-  );
-}
+// PhaseCard was here (moved to component)
