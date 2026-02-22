@@ -383,41 +383,9 @@ export default function Dashboard() {
                     >
                       <Button
                         disabled={isGeneratingPlan}
-                        onClick={async () => {
+                        onClick={() => {
                           const goal = selectedBodyRegion.trim();
-
-                          // If no baseline yet → go to Discovery first
-                          // IMMER zum Discovery gehen, unabhängig ob Baseline existiert
-                          const url = createPageUrl('Discovery') + `?goal=${encodeURIComponent(goal)}`;
-                          window.location.href = url;
-                          return;
-
-                          // Baseline exists → generate plan directly
-                          setIsGeneratingPlan(true);
-                          try {
-                            const existingPlans = await base44.entities.TrainingPlan.filter({
-                              user_email: user.email,
-                              status: 'active'
-                            });
-                            for (const plan of existingPlans) {
-                              await base44.entities.TrainingPlan.update(plan.id, { status: 'paused' });
-                            }
-
-                            const response = await base44.functions.invoke('generateTrainingPlan', {
-                              goal_description: goal,
-                            });
-
-                            if (response.data?.plan_id) {
-                              base44.analytics.track({ eventName: 'training_plan_created', properties: { goal } });
-                              window.location.href = createPageUrl('TrainingPlan');
-                            } else {
-                              throw new Error('Plan konnte nicht erstellt werden');
-                            }
-                          } catch (err) {
-                            console.error(err);
-                            toast.error('Fehler beim Erstellen deines Plans. Bitte versuche es erneut.');
-                            setIsGeneratingPlan(false);
-                          }
+                          window.location.href = createPageUrl('Discovery') + `?goal=${encodeURIComponent(goal)}`;
                         }}
                         className="w-full h-12 sm:h-14 bg-gradient-to-r from-amber-500 to-yellow-600 hover:from-amber-600 hover:to-yellow-700 text-white font-bold text-sm sm:text-base"
                       >
