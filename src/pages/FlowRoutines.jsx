@@ -17,11 +17,11 @@ const TRIAGE_ROUTINE_MAP = {
 };
 
 const TRIAGE_LABELS = {
-  training: { label: 'Für dein Training heute', icon: Zap, color: 'text-amber-400', border: 'border-amber-500/30', bg: 'from-amber-500/10' },
-  rehab_override: { label: 'Für dein Reha-Protokoll heute', icon: Activity, color: 'text-blue-400', border: 'border-blue-500/30', bg: 'from-blue-500/10' },
-  rehab_first: { label: 'Stabilisierung vor dem Training', icon: Activity, color: 'text-amber-400', border: 'border-amber-500/30', bg: 'from-amber-500/10' },
+  training: { label: 'Für dein Training heute', icon: Zap, color: 'text-blue-400', border: 'border-blue-500/30', bg: 'from-blue-500/10' },
+  rehab_override: { label: 'Für dein Reha-Protokoll heute', icon: Activity, color: 'text-emerald-400', border: 'border-emerald-500/30', bg: 'from-emerald-500/10' },
+  rehab_first: { label: 'Stabilisierung vor dem Training', icon: Activity, color: 'text-emerald-400', border: 'border-emerald-500/30', bg: 'from-emerald-500/10' },
   rest: { label: 'Aktive Regeneration heute', icon: Moon, color: 'text-slate-300', border: 'border-slate-500/30', bg: 'from-slate-500/10' },
-  no_plan: { label: 'Empfohlen für den Einstieg', icon: Star, color: 'text-cyan-400', border: 'border-cyan-500/30', bg: 'from-cyan-500/10' },
+  no_plan: { label: 'Empfohlen für den Einstieg', icon: Star, color: 'text-purple-400', border: 'border-purple-500/30', bg: 'from-purple-500/10' },
 };
 
 const CATEGORY_LABELS = {
