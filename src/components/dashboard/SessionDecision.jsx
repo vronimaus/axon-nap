@@ -66,9 +66,9 @@ export default function SessionDecision({ user, data, onClick }) {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
       onClick={onClick}
-      className={`glass rounded-xl border ${cfg.borderColor} p-3 sm:p-4 bg-gradient-to-r ${cfg.bgColor} flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-lg ${onClick ? 'cursor-pointer hover:scale-[1.02]' : ''}`}
+      className={`group glass rounded-xl border ${cfg.borderColor} p-3 sm:p-4 bg-gradient-to-r ${cfg.bgColor} flex flex-row items-center justify-between gap-4 shadow-lg ${onClick ? 'cursor-pointer hover:scale-[1.02]' : ''}`}
     >
-      <div className="flex items-start sm:items-center gap-3 sm:gap-4">
+      <div className="flex items-center gap-3 sm:gap-4">
         <div className={`w-10 h-10 rounded-full bg-slate-900 border ${cfg.borderColor} flex items-center justify-center flex-shrink-0 shadow-inner`}>
           <Icon className={`w-5 h-5 ${cfg.accentColor}`} />
         </div>
@@ -77,8 +77,11 @@ export default function SessionDecision({ user, data, onClick }) {
             <div className={`w-1.5 h-1.5 rounded-full ${cfg.dot}`} />
             <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Heutige Empfehlung</span>
           </div>
-          <h3 className={`text-sm sm:text-base font-bold ${cfg.accentColor}`}>
-            {data.title} <span className="text-xs font-normal text-slate-400 ml-2">MCS: {data.mcs}%</span>
+          <h3 className={`text-sm sm:text-base font-bold ${cfg.accentColor} flex items-center flex-wrap gap-2`}>
+            {data.title} 
+            {data.mcs !== undefined && data.mcs !== null && (
+              <span className="text-xs font-normal text-slate-400">MCS: {data.mcs}%</span>
+            )}
           </h3>
           <p className="text-xs text-slate-300 mt-1">{data.psychological_framing}</p>
           {data.benchmarkTransferMessage && (
@@ -88,17 +91,15 @@ export default function SessionDecision({ user, data, onClick }) {
           )}
         </div>
       </div>
-      
-      <div className="flex-shrink-0 w-full sm:w-auto mt-2 sm:mt-0">
-        <Button
-          onClick={(e) => { e.stopPropagation(); window.location.href = createPageUrl(data.cta.page); }}
-          size="sm"
-          className={`w-full sm:w-auto gap-2 text-xs font-bold uppercase tracking-wider bg-slate-900 hover:bg-slate-800 border ${cfg.borderColor} ${cfg.accentColor}`}
-        >
-          {data.cta.label}
-          <ArrowRight className="w-3.5 h-3.5" />
-        </Button>
-      </div>
+
+      {onClick && (
+        <div className="flex-shrink-0 hidden sm:flex items-center justify-center p-2 opacity-50 group-hover:opacity-100 transition-opacity">
+          <span className={`text-[10px] uppercase tracking-widest font-semibold ${cfg.accentColor} flex items-center gap-1`}>
+            Deep Data
+            <ArrowRight className="w-3 h-3" />
+          </span>
+        </div>
+      )}
     </motion.div>
   );
 }
