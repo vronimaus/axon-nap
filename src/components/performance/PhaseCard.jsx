@@ -8,10 +8,25 @@ export default function PhaseCard({ phase, index, totalPhases, isCompleted, onCo
   // Accordion State: Default to the first exercise of the first section
   const [openCardKey, setOpenCardKey] = React.useState(`${phase.exercises?.[0]?.section || 'neuro_primer'}-0`);
 
+  // Track completed exercises locally for immediate UI feedback
+  const [completedExercises, setCompletedExercises] = React.useState({});
+
+  // Initialize completed state from props
+  React.useEffect(() => {
+     if (phase.exercises) {
+       const initialCompleted = {};
+       phase.exercises.forEach((ex, idx) => {
+         if (ex.completed) initialCompleted[`${ex.section}-${idx}`] = true; // This key logic might need to align with uniqueKey logic below
+       });
+       // Note: The uniqueKey generation logic in the render loop is slightly complex (combining section and index).
+       // Simpler approach: Map exercises to a flat index or keep the section structure.
+     }
+  }, [phase.exercises]);
+
   // Group exercises by section
   const sections = useMemo(() => {
     if (!phase.exercises) return [];
-    
+
     const groups = {
       neuro_primer: { label: 'Neuro-Primer', icon: Brain, exercises: [], color: 'text-cyan-400' },
       sling_activation: { label: 'Sling Activation', icon: Activity, exercises: [], color: 'text-cyan-400' },
@@ -20,11 +35,11 @@ export default function PhaseCard({ phase, index, totalPhases, isCompleted, onCo
       other: { label: 'Andere Übungen', icon: Target, exercises: [], color: 'text-slate-400' }
     };
 
-    phase.exercises.forEach(ex => {
+    phase.exercises.forEach((ex, globalIndex) => {
       if (groups[ex.section]) {
-        groups[ex.section].exercises.push(ex);
+        groups[ex.section].exercises.push({ ...ex, globalIndex });
       } else {
-        groups['other'].exercises.push(ex);
+        groups['other'].exercises.push({ ...ex, globalIndex });
       }
     });
 
@@ -82,8 +97,8 @@ export default function PhaseCard({ phase, index, totalPhases, isCompleted, onCo
       {/* Sections & Exercises */}
       <div className="space-y-8">
         {sections.map((section, secIdx) => (
-          <div key={section.key} className="space-y-4">
-            {/* Modern Section Header (Left Aligned) */}
+          <div key={section.key} className="space-y-6">
+            {/* Modern Section Header */}
             <div className="flex items-center gap-3 pl-1 mt-4">
                <h4 className="text-xs font-bold uppercase tracking-[0.15em] text-cyan-400 flex items-center gap-2">
                   <section.icon className="w-3.5 h-3.5" />
@@ -91,26 +106,71 @@ export default function PhaseCard({ phase, index, totalPhases, isCompleted, onCo
                </h4>
                <div className="h-px flex-1 bg-gradient-to-r from-cyan-500/20 to-transparent" />
             </div>
-            
-            <div className="grid gap-4">
+
+            {/* Horizontal Button Selector */}
+            <div className="flex flex-wrap gap-2 px-1">
               {section.exercises.map((exercise, exIdx) => {
                 const uniqueKey = `${section.key}-${exIdx}`;
+                const isCompleted = completedExercises[uniqueKey] || exercise.completed;
+                const isActive = openCardKey === uniqueKey;
+
                 return (
-                  <TrainingExerciseCard
+                  <button
                     key={uniqueKey}
-                    exercise={exercise}
-                    idx={exIdx} 
-                    isOpen={openCardKey === uniqueKey}
-                    onToggle={() => setOpenCardKey(openCardKey === uniqueKey ? null : uniqueKey)}
-                    onComplete={() => {
-                       // Find next exercise key
-                       const allExercises = sections.flatMap(s => s.exercises.map((e, i) => `${s.key}-${i}`));
-                       const currentIdx = allExercises.indexOf(uniqueKey);
-                       if (currentIdx !== -1 && currentIdx < allExercises.length - 1) {
-                          setTimeout(() => setOpenCardKey(allExercises[currentIdx + 1]), 500);
-                       }
-                    }}
-                  />
+                    onClick={() => setOpenCardKey(isActive ? null : uniqueKey)}
+                    className={`
+                      w-12 h-12 rounded-xl flex items-center justify-center text-sm font-bold transition-all duration-300
+                      ${isActive 
+                        ? 'bg-cyan-500 text-slate-900 shadow-[0_0_15px_rgba(6,182,212,0.4)] scale-110 z-10' 
+                        : isCompleted 
+                          ? 'bg-green-500/20 text-green-400 border border-green-500/30' 
+                          : 'bg-slate-800 text-slate-500 border border-slate-700 hover:border-cyan-500/50 hover:text-cyan-400'}
+                    `}
+                  >
+                    {isCompleted ? <CheckCircle2 className="w-5 h-5" /> : exIdx + 1}
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Active Exercise Detail View */}
+            <div className="relative">
+              {section.exercises.map((exercise, exIdx) => {
+                const uniqueKey = `${section.key}-${exIdx}`;
+                if (openCardKey !== uniqueKey) return null;
+
+                return (
+                  <motion.div
+                    key={uniqueKey}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    <TrainingExerciseCard
+                      exercise={exercise}
+                      idx={exIdx} 
+                      isOpen={true}
+                      onToggle={() => setOpenCardKey(null)}
+                      onComplete={() => {
+                         // Mark locally as completed
+                         setCompletedExercises(prev => ({ ...prev, [uniqueKey]: true }));
+
+                         // Auto-advance logic
+                         const allSectionKeys = section.exercises.map((_, i) => `${section.key}-${i}`);
+                         const currentLocalIdx = allSectionKeys.indexOf(uniqueKey);
+
+                         // If there is a next exercise in this section, go to it
+                         if (currentLocalIdx < allSectionKeys.length - 1) {
+                            setTimeout(() => setOpenCardKey(allSectionKeys[currentLocalIdx + 1]), 800);
+                         } else {
+                            // If section finished, maybe try next section? 
+                            // For now just close or stay. Let's close nicely.
+                            setTimeout(() => setOpenCardKey(null), 800);
+                         }
+                      }}
+                    />
+                  </motion.div>
                 );
               })}
             </div>

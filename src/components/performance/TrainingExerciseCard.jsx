@@ -144,36 +144,8 @@ export default function TrainingExerciseCard({ exercise, idx, onDetailClick, isO
     }
   };
 
-  // Compact Header for Closed State
-  if (!isExpanded) {
-    return (
-      <div 
-        onClick={toggle}
-        className={`p-4 rounded-xl border cursor-pointer flex items-center justify-between transition-all ${
-           isCompleted 
-             ? 'bg-slate-900/50 border-green-500/20 opacity-70' 
-             : 'bg-slate-900 border-slate-800 hover:border-cyan-500/30'
-        }`}
-      >
-        <div className="flex items-center gap-4">
-          <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
-            isCompleted ? 'bg-green-500/10 text-green-500' : 'bg-slate-800 text-slate-500'
-          }`}>
-             {isCompleted ? <Check className="w-5 h-5" /> : <Play className="w-4 h-4 ml-0.5" />}
-          </div>
-          <div>
-            <h4 className={`font-bold text-sm ${isCompleted ? 'text-green-500' : 'text-slate-300'}`}>
-              {fullExercise.name}
-            </h4>
-            <div className="text-[10px] text-slate-500 uppercase tracking-wider font-medium">
-               {sets} Sets × {reps} Reps
-            </div>
-          </div>
-        </div>
-        <ChevronDown className="w-5 h-5 text-slate-600" />
-      </div>
-    );
-  }
+  // Hidden state handled by parent or return null if forced
+  if (!isExpanded) return null;
 
   // Full "One-Page" View for Open State
   return (
@@ -214,10 +186,14 @@ export default function TrainingExerciseCard({ exercise, idx, onDetailClick, isO
                </DropdownMenu>
             </div>
          </div>
-         {/* Close / Collapse */}
-         <button onClick={toggle} className="text-slate-500 hover:text-white p-1">
-            <ChevronUp className="w-6 h-6" />
-         </button>
+         {/* Status Indicator */}
+         <div className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider border ${
+           isCompleted 
+             ? 'bg-green-500/10 text-green-400 border-green-500/20' 
+             : 'bg-slate-800 text-slate-500 border-slate-700'
+         }`}>
+           {isCompleted ? 'Completed' : 'Active'}
+         </div>
       </div>
 
       {/* 2. Content Area */}
