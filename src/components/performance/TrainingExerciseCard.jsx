@@ -153,12 +153,6 @@ export default function TrainingExerciseCard({ exercise, idx, onDetailClick, isO
 
               {/* Action Buttons */}
               <div className="flex gap-2 pt-2">
-                 <button 
-                  onClick={(e) => { e.stopPropagation(); onDetailClick(fullExercise); }}
-                  className="flex-1 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs text-slate-300 font-medium transition-colors"
-                 >
-                   Details & Video
-                 </button>
                  <button className="flex-1 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs text-slate-300 font-medium transition-colors">
                    Alternative wählen
                  </button>

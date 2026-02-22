@@ -9,7 +9,6 @@ import { ArrowLeft, Zap, Target, CheckCircle2, Clock, Info, TrendingUp, Sparkles
 import { toast } from 'sonner';
 import { useQueryClient } from '@tanstack/react-query';
 import GoalCard from '../components/performance/GoalCard';
-import ExerciseDetailModal from '../components/performance/ExerciseDetailModal';
 import TrainingPlanChat from '../components/performance/TrainingPlanChat';
 import DailyReadinessCheck from '../components/dashboard/DailyReadinessCheck';
 import { Helmet } from 'react-helmet-async';
@@ -21,7 +20,6 @@ export default function TrainingPlan() {
   const [isLoading, setIsLoading] = useState(true);
   const [activePhaseIdx, setActivePhaseIdx] = useState(0);
   const [completedPhases, setCompletedPhases] = useState({});
-  const [selectedExercise, setSelectedExercise] = useState(null);
   const [showComplementaryDrills, setShowComplementaryDrills] = useState(true);
   const [isAcceptingDrills, setIsAcceptingDrills] = useState(false);
   const [showChat, setShowChat] = useState(false);
@@ -346,7 +344,6 @@ export default function TrainingPlan() {
                     }}
                     onNext={() => setActivePhaseIdx(activePhaseIdx + 1)}
                     onPrev={() => setActivePhaseIdx(activePhaseIdx - 1)}
-                    onExerciseClick={(exercise) => setSelectedExercise(exercise)}
                   />
                 )}
 
@@ -405,18 +402,9 @@ export default function TrainingPlan() {
             )}
       </div>
 
-      {/* Exercise Detail Modal */}
-      <AnimatePresence>
-        {selectedExercise && (
-          <ExerciseDetailModal
-            exercise={selectedExercise}
-            onClose={() => setSelectedExercise(null)}
-          />
-        )}
-      </AnimatePresence>
-    </div>
-  );
-}
+      </div>
+      );
+      }
 
 
 

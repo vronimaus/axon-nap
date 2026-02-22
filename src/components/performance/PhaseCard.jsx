@@ -4,7 +4,7 @@ import { Target, TrendingUp, Zap, CheckCircle2, Brain, Activity, Dumbbell, Spark
 import { Button } from '@/components/ui/button';
 import TrainingExerciseCard from './TrainingExerciseCard';
 
-export default function PhaseCard({ phase, index, totalPhases, isCompleted, onComplete, onNext, onPrev, onExerciseClick }) {
+export default function PhaseCard({ phase, index, totalPhases, isCompleted, onComplete, onNext, onPrev }) {
   // Accordion State: Default to the first exercise of the first section
   const [openCardKey, setOpenCardKey] = React.useState(`${phase.exercises?.[0]?.section || 'neuro_primer'}-0`);
 
@@ -100,7 +100,6 @@ export default function PhaseCard({ phase, index, totalPhases, isCompleted, onCo
                     key={uniqueKey}
                     exercise={exercise}
                     idx={exIdx} 
-                    onDetailClick={onExerciseClick}
                     isOpen={openCardKey === uniqueKey}
                     onToggle={() => setOpenCardKey(openCardKey === uniqueKey ? null : uniqueKey)}
                   />
