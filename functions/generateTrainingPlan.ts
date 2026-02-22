@@ -174,15 +174,16 @@ Deno.serve(async (req) => {
                       sets_reps_tempo: { type: 'string' },
                       instruction: { type: 'string' },
                       notes: { type: 'string' },
+                      section: { type: 'string', enum: ['neuro_primer', 'sling_activation', 'performance', 'resilience'] },
                       intensity_factor: { type: 'number' },
                       sling_id: { type: 'string' },
                       target_nodes: { type: 'array', items: { type: 'string' } },
                       rehab_proxy: { type: 'string' }
                     },
-                    required: ['exercise_id', 'name', 'sets_reps_tempo', 'instruction']
+                    required: ['exercise_id', 'name', 'sets_reps_tempo', 'instruction', 'section']
                   }
                 }
-              },
+                },
               required: ['phase_number', 'title', 'description', 'duration_weeks', 'exercises']
             }
           },
