@@ -5,8 +5,8 @@ import { ArrowRight, Loader2, CheckCircle2, Zap, AlertTriangle } from 'lucide-re
 
 const LEVEL_CONFIG = {
   beginner:     { label: 'Beginner',     color: 'text-slate-400',  bg: 'bg-slate-500/20',  border: 'border-slate-500/40' },
-  intermediate: { label: 'Intermediate', color: 'text-cyan-400',   bg: 'bg-cyan-500/20',   border: 'border-cyan-500/40' },
-  advanced:     { label: 'Advanced',     color: 'text-amber-400',  bg: 'bg-amber-500/20',  border: 'border-amber-500/40' },
+  intermediate: { label: 'Intermediate', color: 'text-blue-400',   bg: 'bg-blue-500/20',   border: 'border-blue-500/40' },
+  advanced:     { label: 'Advanced',     color: 'text-emerald-400',  bg: 'bg-emerald-500/20',  border: 'border-emerald-500/40' },
   elite:        { label: 'Elite',        color: 'text-purple-400', bg: 'bg-purple-500/20', border: 'border-purple-500/40' },
 };
 
@@ -131,7 +131,9 @@ export default function DiscoveryResults({ tests, answers, onContinue, isGenerat
                 transition={{ delay: i * 0.1 }}
                 className={`flex items-center gap-3 rounded-xl border ${cfg.border} ${cfg.bg} px-4 py-3`}
               >
-                <span className="text-xl w-7 text-center">{r.icon}</span>
+                <div className="w-8 h-8 flex items-center justify-center rounded-lg bg-slate-900/50">
+                    <r.icon className={`w-4 h-4 ${cfg.color}`} />
+                </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-semibold text-white">{r.name}</p>
                   <p className="text-xs text-slate-400">{displayVal}</p>
@@ -151,7 +153,7 @@ export default function DiscoveryResults({ tests, answers, onContinue, isGenerat
         <Button
           onClick={onContinue}
           disabled={isGeneratingPlan}
-          className="w-full h-14 bg-gradient-to-r from-amber-500 to-yellow-600 hover:from-amber-600 hover:to-yellow-700 text-white font-bold text-base"
+          className="w-full h-14 bg-gradient-to-r from-blue-500 to-cyan-600 hover:from-blue-600 hover:to-cyan-700 text-white font-bold text-base shadow-lg shadow-blue-500/20"
         >
           {isGeneratingPlan ? (
             <span className="flex items-center gap-2">

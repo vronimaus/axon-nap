@@ -9,8 +9,8 @@ export default function DiscoveryTest({ test, value, onChange }) {
   const getThresholdLabel = (val) => {
     const t = test.thresholds;
     if (val >= t.elite) return { label: 'Elite', color: 'text-purple-400' };
-    if (val >= t.advanced) return { label: 'Advanced', color: 'text-amber-400' };
-    if (val >= t.intermediate) return { label: 'Intermediate', color: 'text-cyan-400' };
+    if (val >= t.advanced) return { label: 'Advanced', color: 'text-emerald-400' };
+    if (val >= t.intermediate) return { label: 'Intermediate', color: 'text-blue-400' };
     return { label: 'Beginner', color: 'text-slate-400' };
   };
 
@@ -23,13 +23,15 @@ export default function DiscoveryTest({ test, value, onChange }) {
       animate={{ opacity: 1, x: 0 }}
       exit={{ opacity: 0, x: -30 }}
       transition={{ duration: 0.25 }}
-      className="glass rounded-2xl border border-amber-500/30 p-6 sm:p-8 space-y-6"
+      className="glass rounded-2xl border border-slate-700 p-6 sm:p-8 space-y-6"
     >
       {/* Header */}
       <div className="flex items-center gap-4">
-        <span className="text-4xl">{test.icon}</span>
+        <div className="w-14 h-14 flex items-center justify-center bg-slate-800 rounded-xl border border-slate-700">
+           <test.icon className="w-8 h-8 text-blue-400" />
+        </div>
         <div>
-          <p className="text-xs font-bold tracking-widest text-amber-400 uppercase mb-1">{test.name}</p>
+          <p className="text-xs font-bold tracking-widest text-blue-400 uppercase mb-1">{test.name}</p>
           <h2 className="text-lg sm:text-xl font-bold text-white leading-snug">{test.question}</h2>
         </div>
       </div>
@@ -71,9 +73,9 @@ export default function DiscoveryTest({ test, value, onChange }) {
         {['Beginner', 'Inter.', 'Advanced', 'Elite'].map((lvl, i) => {
           const thresholds = [0, test.thresholds.intermediate, test.thresholds.advanced, test.thresholds.elite];
           const isActive = currentValue >= thresholds[i] && (i === 3 || currentValue < thresholds[i + 1]);
-          const colors = ['text-slate-500 border-slate-700', 'text-cyan-500 border-cyan-700', 'text-amber-500 border-amber-700', 'text-purple-500 border-purple-700'];
+          const colors = ['text-slate-500 border-slate-700', 'text-blue-500 border-blue-700', 'text-emerald-500 border-emerald-700', 'text-purple-500 border-purple-700'];
           return (
-            <div key={lvl} className={`rounded-lg border py-1 px-1 transition-all ${colors[i]} ${isActive ? 'bg-slate-700/60' : 'opacity-40'}`}>
+            <div key={lvl} className={`rounded-lg border py-1 px-1 transition-all ${colors[i]} ${isActive ? 'bg-slate-800' : 'opacity-40'}`}>
               {lvl}
             </div>
           );

@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { base44 } from '@/api/base44Client';
 import { createPageUrl } from '@/utils';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, ArrowRight, Loader2, Brain, Zap, Target } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Loader2, Brain, Zap, Target, Timer, Dumbbell, ArrowDown, MoveHorizontal, ArrowUp, Activity } from 'lucide-react';
 import { toast } from 'sonner';
 import DiscoveryTest from '../components/discovery/DiscoveryTest.jsx';
 import DiscoveryResults from '../components/discovery/DiscoveryResults.jsx';
@@ -18,7 +18,7 @@ const ALL_TESTS = {
     unit: 'seconds',
     metric_label: 'Sekunden',
     hint: 'Schultern aktiv nach unten ziehen – nicht passiv hängen lassen.',
-    icon: '🏋️',
+    icon: Timer,
     min: 0, max: 120,
     thresholds: { beginner: 10, intermediate: 30, advanced: 60, elite: 90 },
     related_goals: ['muscle_up', 'front_lever', 'one_arm_pullup'],
@@ -31,7 +31,7 @@ const ALL_TESTS = {
     unit: 'reps',
     metric_label: 'Wiederholungen',
     hint: 'Zähle nur Wiederholungen, bei denen das Brustbein die Stange berührt.',
-    icon: '⚡',
+    icon: Zap,
     min: 0, max: 20,
     thresholds: { beginner: 1, intermediate: 4, advanced: 8, elite: 12 },
     related_goals: ['muscle_up'],
@@ -44,7 +44,7 @@ const ALL_TESTS = {
     unit: 'seconds',
     metric_label: 'Sekunden',
     hint: 'Bauch zur Wand, Körper gerade – kein Hohlkreuz.',
-    icon: '🤸',
+    icon: Timer,
     min: 0, max: 120,
     thresholds: { beginner: 10, intermediate: 30, advanced: 60, elite: 90 },
     related_goals: ['handstand_pushup'],
@@ -57,7 +57,7 @@ const ALL_TESTS = {
     unit: 'reps',
     metric_label: 'Wiederholungen',
     hint: 'Hüfte hoch, Kopf geht zwischen die Arme bis fast zum Boden.',
-    icon: '💪',
+    icon: Dumbbell,
     min: 0, max: 30,
     thresholds: { beginner: 3, intermediate: 8, advanced: 15, elite: 25 },
     related_goals: ['handstand_pushup'],
@@ -70,7 +70,7 @@ const ALL_TESTS = {
     unit: 'level',
     metric_label: 'Level',
     hint: 'Level 1: Fersen heben sich. Level 2: 90°. Level 3: Volltiefe. Level 4: Volltiefe + Arme overhead.',
-    icon: '🦵',
+    icon: ArrowDown,
     min: 1, max: 4, step: 1,
     thresholds: { beginner: 1, intermediate: 2, advanced: 3, elite: 4 },
     labels: { 1: 'Fersen heben', 2: '90° Kniebeuge', 3: 'Volle Tiefe', 4: 'Overhead' },
@@ -84,7 +84,7 @@ const ALL_TESTS = {
     unit: 'reps',
     metric_label: 'Wiederholungen/Seite',
     hint: 'Bein bleibt gestreckt, Ferse bleibt am Boden, tief in die Hocke.',
-    icon: '🦵',
+    icon: MoveHorizontal,
     min: 0, max: 25,
     thresholds: { beginner: 3, intermediate: 8, advanced: 15, elite: 20 },
     related_goals: ['pistol_squat'],
@@ -97,7 +97,7 @@ const ALL_TESTS = {
     unit: 'seconds',
     metric_label: 'Sekunden',
     hint: 'Unterer Rücken am Boden, Beine gestreckt, Schultern leicht gehoben.',
-    icon: '🧱',
+    icon: Timer,
     min: 0, max: 120,
     thresholds: { beginner: 10, intermediate: 30, advanced: 60, elite: 90 },
     related_goals: ['dragon_flag', 'front_lever', 'l_sit'],
@@ -110,7 +110,7 @@ const ALL_TESTS = {
     unit: 'reps',
     metric_label: 'Wiederholungen',
     hint: 'Beine bleiben vollständig gestreckt, kontrollierte Bewegung.',
-    icon: '🏋️',
+    icon: ArrowUp,
     min: 0, max: 25,
     thresholds: { beginner: 3, intermediate: 8, advanced: 15, elite: 20 },
     related_goals: ['dragon_flag', 'l_sit'],
@@ -123,7 +123,7 @@ const ALL_TESTS = {
     unit: 'seconds',
     metric_label: 'Sekunden',
     hint: 'Hüfte hoch, Körper gerade – keine Absenkung.',
-    icon: '↔️',
+    icon: Timer,
     min: 0, max: 120,
     thresholds: { beginner: 10, intermediate: 30, advanced: 60, elite: 90 },
     related_goals: ['human_flag'],
@@ -136,7 +136,7 @@ const ALL_TESTS = {
     unit: 'reps',
     metric_label: 'Wiederholungen',
     hint: 'Brust muss den Boden berühren, Körper bleibt gerade.',
-    icon: '💪',
+    icon: Dumbbell,
     min: 0, max: 60,
     thresholds: { beginner: 5, intermediate: 15, advanced: 30, elite: 50 },
     related_goals: ['one_arm_pushup', 'planche'],
@@ -149,7 +149,7 @@ const ALL_TESTS = {
     unit: 'seconds',
     metric_label: 'Sekunden',
     hint: 'Körper gerade, Arme gestreckt, Schwerpunkt weit vor den Händen.',
-    icon: '⚖️',
+    icon: Activity,
     min: 0, max: 60,
     thresholds: { beginner: 5, intermediate: 15, advanced: 30, elite: 45 },
     related_goals: ['planche'],
@@ -409,41 +409,43 @@ export default function Discovery() {
             exit={{ opacity: 0, y: -20 }}
             className="max-w-lg w-full text-center space-y-6"
           >
-            <div className={`w-20 h-20 rounded-2xl flex items-center justify-center mx-auto shadow-lg ${goalKey ? 'bg-gradient-to-br from-amber-500 to-yellow-600 shadow-amber-500/30' : 'bg-gradient-to-br from-cyan-500 to-blue-600 shadow-cyan-500/30'}`}>
+            <div className={`w-20 h-20 rounded-2xl flex items-center justify-center mx-auto shadow-lg ${goalKey ? 'bg-gradient-to-br from-blue-500 to-blue-600 shadow-blue-500/30' : 'bg-gradient-to-br from-cyan-500 to-blue-600 shadow-cyan-500/30'}`}>
               {goalKey ? <Target className="w-10 h-10 text-white" /> : <Brain className="w-10 h-10 text-white" />}
             </div>
             <div>
               <h1 className="text-3xl sm:text-4xl font-bold text-white mb-3">AXON Discovery</h1>
               {goalKey ? (
                 <div className="space-y-2">
-                  <p className="text-amber-400 font-semibold text-lg">Ziel erkannt: {goalLabel}</p>
+                  <p className="text-blue-400 font-semibold text-lg">Ziel erkannt: {goalLabel}</p>
                   <p className="text-slate-400 text-base leading-relaxed">
-                    Für <strong className="text-white">{goalLabel}</strong> brauchen wir nur <strong className="text-amber-400">2 gezielte Tests</strong>. AXON kalibriert deinen Plan exakt auf die relevanten Schwachstellen.
+                    Für <strong className="text-white">{goalLabel}</strong> brauchen wir nur <strong className="text-blue-400">2 gezielte Tests</strong>. AXON kalibriert deinen Plan exakt auf die relevanten Schwachstellen.
                   </p>
                 </div>
               ) : (
                 <p className="text-slate-400 text-base leading-relaxed">
-                  {TESTS.length} kurze Tests. AXON scannt deine <strong className="text-amber-400">Baseline-Kapazitäten</strong> – und passt jeden Trainingsplan von Anfang an präzise auf dich an.
+                  {TESTS.length} kurze Tests. AXON scannt deine <strong className="text-blue-400">Baseline-Kapazitäten</strong> – und passt jeden Trainingsplan von Anfang an präzise auf dich an.
                 </p>
               )}
             </div>
 
             {goalKey && (
-              <div className="glass rounded-xl border border-amber-500/40 p-4 text-left bg-amber-500/5">
-                <p className="text-xs text-amber-400 font-semibold uppercase tracking-wider mb-2">Zielgerichtete Analyse</p>
+              <div className="glass rounded-xl border border-blue-500/40 p-4 text-left bg-blue-500/5">
+                <p className="text-xs text-blue-400 font-semibold uppercase tracking-wider mb-2">Zielgerichtete Analyse</p>
                 <p className="text-sm text-slate-300">
                   Wir testen nur, was für <strong className="text-white">{goalLabel}</strong> wirklich relevant ist – kein unnötiger Aufwand.
                 </p>
               </div>
             )}
 
-            <div className="glass rounded-xl border border-amber-500/30 p-5 text-left space-y-3">
+            <div className="glass rounded-xl border border-slate-700 p-5 text-left space-y-3">
               {TESTS.map((t, i) => (
                 <div key={t.id} className="flex items-center gap-3 text-sm text-slate-300">
-                  <span className="text-xl w-8 text-center">{t.icon}</span>
+                  <div className="w-8 h-8 flex items-center justify-center bg-slate-800 rounded-lg text-blue-400">
+                     <t.icon className="w-5 h-5" />
+                  </div>
                   <div>
                     <strong className="text-white">{t.name}</strong>
-                    {goalKey && <span className="ml-2 text-xs text-amber-400 font-mono">Test {i+1}</span>}
+                    {goalKey && <span className="ml-2 text-xs text-blue-400 font-mono">Test {i+1}</span>}
                     <span className="text-slate-500"> — {t.question.slice(0, 50)}…</span>
                   </div>
                 </div>
@@ -452,7 +454,7 @@ export default function Discovery() {
             <p className="text-xs text-slate-500">Dauer: ~{TESTS.length <= 2 ? '2' : '3-5'} Minuten • Kein Equipment nötig</p>
             <Button
               onClick={() => setPhase('testing')}
-              className="w-full h-14 bg-gradient-to-r from-amber-500 to-yellow-600 hover:from-amber-600 hover:to-yellow-700 text-white font-bold text-lg"
+              className="w-full h-14 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-bold text-lg shadow-lg shadow-blue-500/25"
             >
               {goalKey ? `Baseline für ${goalLabel} messen →` : 'Assessment starten →'}
             </Button>
@@ -483,7 +485,7 @@ export default function Discovery() {
               <div className="flex-1 h-2 bg-slate-800 rounded-full overflow-hidden">
                 <motion.div
                   animate={{ width: `${((currentTestIdx + 1) / TESTS.length) * 100}%` }}
-                  className="h-full bg-gradient-to-r from-amber-500 to-yellow-500"
+                  className="h-full bg-gradient-to-r from-blue-500 to-cyan-500"
                 />
               </div>
               <span className="text-xs text-slate-400 font-mono whitespace-nowrap">
@@ -502,7 +504,7 @@ export default function Discovery() {
 
             <Button
               onClick={handleNext}
-              className="w-full h-12 bg-gradient-to-r from-amber-500 to-yellow-600 hover:from-amber-600 hover:to-yellow-700 text-white font-bold"
+              className="w-full h-12 bg-gradient-to-r from-blue-500 to-cyan-600 hover:from-blue-600 hover:to-cyan-700 text-white font-bold shadow-lg shadow-blue-500/20"
             >
               {currentTestIdx < TESTS.length - 1 ? (
                 <span className="flex items-center gap-2">Weiter <ArrowRight className="w-4 h-4" /></span>
