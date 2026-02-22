@@ -50,58 +50,66 @@ export default function TrainingExerciseCard({ exercise, idx, onDetailClick }) {
     <motion.div
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      className={`relative overflow-hidden rounded-xl transition-all duration-300 ${
+      className={`relative overflow-hidden rounded-xl transition-all duration-300 group ${
         isExpanded 
-          ? 'bg-slate-800/80 border border-cyan-500/30 ring-1 ring-cyan-500/20' 
-          : 'bg-slate-900/40 border border-slate-700/50 hover:border-slate-600 hover:bg-slate-800/40'
+          ? 'bg-slate-800 border border-cyan-500/40 shadow-[0_0_20px_rgba(6,182,212,0.1)]' 
+          : 'bg-[#0B1120] border border-slate-800 hover:border-slate-600'
       }`}
     >
+      {/* Left Active Indicator Line */}
+      <div className={`absolute left-0 top-0 bottom-0 w-1 transition-colors ${
+        isCompleted ? 'bg-green-500' : isExpanded ? 'bg-cyan-500' : 'bg-transparent group-hover:bg-slate-700'
+      }`} />
+
       {/* Main Clickable Area (Header) */}
       <div 
         onClick={() => setIsExpanded(!isExpanded)}
-        className="p-4 flex items-center gap-4 cursor-pointer"
+        className="p-4 pl-6 flex items-center gap-4 cursor-pointer"
       >
-        {/* Exercise Icon / Image Placeholder */}
-        <div className={`w-12 h-12 rounded-lg flex-shrink-0 flex items-center justify-center bg-slate-800 border border-slate-700 overflow-hidden ${isCompleted ? 'border-green-500/50 text-green-400' : 'text-slate-400'}`}>
+        {/* Play Icon / Image - More minimal */}
+        <div className={`w-10 h-10 rounded-lg flex-shrink-0 flex items-center justify-center overflow-hidden transition-colors ${
+          isCompleted 
+            ? 'bg-green-500/10 text-green-400 border border-green-500/20' 
+            : 'bg-slate-800/50 text-slate-500 border border-slate-700/50 group-hover:text-cyan-400 group-hover:border-cyan-500/30'
+        }`}>
           {fullExercise.image_url ? (
-            <img src={fullExercise.image_url} alt={fullExercise.name} className="w-full h-full object-cover" />
+            <img src={fullExercise.image_url} alt={fullExercise.name} className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity" />
           ) : (
-            <PlayCircle className="w-6 h-6 opacity-70" />
+            <PlayCircle className="w-5 h-5" />
           )}
         </div>
 
         {/* Info */}
         <div className="flex-1 min-w-0">
-          <h4 className={`font-bold text-sm truncate ${isCompleted ? 'text-green-400' : 'text-slate-200'}`}>
+          <h4 className={`font-bold text-sm tracking-tight truncate transition-colors ${
+            isCompleted ? 'text-green-400' : isExpanded ? 'text-white' : 'text-slate-300 group-hover:text-white'
+          }`}>
             {fullExercise.name}
           </h4>
-          <div className="flex items-center gap-2 mt-1 text-xs text-slate-400">
-            <span className="flex items-center gap-1">
-              <RotateCcw className="w-3 h-3" /> {specs}
+          <div className="flex items-center gap-3 mt-1 text-[11px] font-medium text-slate-500 group-hover:text-slate-400">
+            <span className="flex items-center gap-1 bg-slate-800/50 px-1.5 py-0.5 rounded border border-slate-700/50">
+              {specs}
             </span>
             {fullExercise.category && (
-              <>
-                <span>•</span>
-                <span className="capitalize">{fullExercise.category}</span>
-              </>
+              <span className="uppercase tracking-wider">{fullExercise.category}</span>
             )}
           </div>
         </div>
 
-        {/* Quick Action / Status */}
+        {/* Quick Action / Status - Sleeker Button */}
         <div className="flex-shrink-0">
             <button
               onClick={handleSetClick}
-              className={`h-9 px-3 rounded-lg flex items-center justify-center gap-2 text-xs font-bold transition-all border ${
+              className={`h-8 min-w-[3rem] px-3 rounded-md flex items-center justify-center gap-2 text-xs font-bold transition-all ${
                 isCompleted 
-                  ? 'bg-green-500/20 border-green-500/50 text-green-400' 
-                  : 'bg-slate-800 border-slate-600 text-slate-300 hover:bg-slate-700'
+                  ? 'bg-green-500 text-slate-900 shadow-[0_0_15px_rgba(34,197,94,0.4)]' 
+                  : 'bg-slate-800 text-slate-400 hover:bg-slate-700 hover:text-white border border-slate-700'
               }`}
             >
               {isCompleted ? (
                 <Check className="w-4 h-4" />
               ) : (
-                <span>{setsDone}/{totalSets}</span>
+                <span className="tracking-widest">{setsDone}/{totalSets}</span>
               )}
             </button>
         </div>

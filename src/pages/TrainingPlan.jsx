@@ -239,19 +239,18 @@ export default function TrainingPlan() {
                   {/* Bubble Tail */}
                   <div className="absolute top-4 -left-2 w-4 h-4 bg-slate-800/80 border-l border-b border-cyan-500/30 transform rotate-45 z-0" />
                   
-                  <div className="relative z-10 p-5 rounded-2xl rounded-tl-sm bg-gradient-to-br from-slate-800/90 to-slate-900/90 border border-cyan-500/30 shadow-[0_0_30px_rgba(6,182,212,0.15)] backdrop-blur-md">
+                  <div className="relative z-10 p-5 rounded-2xl rounded-tl-sm bg-[#0B1221] border border-cyan-500/20 shadow-xl">
                     {/* Header line inside bubble */}
-                    <div className="flex items-center justify-between mb-2">
-                      <span className={`text-xs font-bold uppercase tracking-wider ${
+                    <div className="flex items-center justify-between mb-2 pb-2 border-b border-slate-800/50">
+                      <span className={`text-[10px] font-bold uppercase tracking-widest ${
                         readinessStatus === 'green' ? 'text-green-400' : 
                         readinessStatus === 'yellow' ? 'text-amber-400' : 'text-red-400'
                       }`}>
-                        {readinessStatus === 'green' ? 'System bereit' : readinessStatus === 'yellow' ? 'System braucht Pflege' : 'Akku leer'}
+                        {readinessStatus === 'green' ? '● System Ready' : readinessStatus === 'yellow' ? '● Maintenance Mode' : '● Low Battery'}
                       </span>
-                      <span className="text-[10px] text-slate-500">Heute</span>
                     </div>
                     
-                    <p className="text-slate-100 text-sm md:text-base font-medium leading-relaxed">
+                    <p className="text-slate-200 text-sm font-medium leading-relaxed">
                        {readinessStatus === 'green' 
                          ? `Dein System ist bereit. Fokus heute: ${activePlan.goal_description || 'Maximale Performance'}.`
                          : readinessStatus === 'yellow'
@@ -272,21 +271,26 @@ export default function TrainingPlan() {
               >
 
 
-                {/* Progress Indicator */}
-                <div>
-                  <div className="flex justify-between items-center mb-3">
-                    <span className="text-sm font-semibold text-slate-300">
-                      Phase {activePlan.current_phase || 1} von {activePlan.phases?.length || 3}
-                    </span>
-                    <span className="text-xs text-slate-500">
-                      {activePlan.estimated_duration_weeks} Wochen · Gestartet {activePlan.plan_generated_date ? new Date(activePlan.plan_generated_date).toLocaleDateString('de-DE') : '–'}
+                {/* Tech Progress Bar */}
+                <div className="space-y-2">
+                  <div className="flex justify-between items-end">
+                    <div className="flex flex-col">
+                       <span className="text-[10px] uppercase tracking-widest text-slate-500 font-bold">Progress</span>
+                       <span className="text-sm font-bold text-white tracking-wide">
+                          PHASE {activePlan.current_phase || 1} <span className="text-slate-600 mx-1">/</span> {activePlan.phases?.length || 3}
+                       </span>
+                    </div>
+                    <span className="text-[10px] text-cyan-400 font-mono">
+                      {(activePlan.current_phase / (activePlan.phases?.length || 3) * 100).toFixed(0)}% SYNC
                     </span>
                   </div>
-                  <div className="h-2 bg-slate-800 rounded-full overflow-hidden">
+                  
+                  <div className="h-1.5 w-full bg-slate-800 rounded-full overflow-hidden relative">
+                    <div className="absolute inset-0 bg-slate-800 z-0" />
                     <motion.div
                       initial={{ width: 0 }}
                       animate={{ width: `${((activePlan.current_phase || 1) / (activePlan.phases?.length || 3)) * 100}%` }}
-                      className="h-full bg-gradient-to-r from-amber-500 to-yellow-500"
+                      className="h-full bg-gradient-to-r from-cyan-600 via-cyan-400 to-cyan-300 relative z-10 shadow-[0_0_10px_rgba(34,211,238,0.5)]"
                     />
                   </div>
                 </div>
@@ -301,19 +305,21 @@ export default function TrainingPlan() {
                     {activePlan.phases.map((phase, idx) => {
                       const isLocked = idx > 0 && !completedPhases[idx - 1];
                       const isDone = completedPhases[idx];
+                      const isActive = activePhaseIdx === idx;
+                      
                       return (
                         <button
                           key={idx}
                           onClick={() => !isLocked && setActivePhaseIdx(idx)}
                           disabled={isLocked}
-                          className={`flex-shrink-0 px-4 py-2 rounded-xl text-xs font-bold border transition-all ${
-                            activePhaseIdx === idx
-                              ? 'bg-amber-500/20 border-amber-500/50 text-amber-400'
+                          className={`flex-shrink-0 px-4 py-2 rounded-lg text-xs font-bold transition-all border ${
+                            isActive
+                              ? 'bg-cyan-500/10 border-cyan-500/50 text-cyan-400 shadow-[0_0_10px_rgba(6,182,212,0.15)]'
                               : isDone
-                              ? 'bg-green-500/10 border-green-500/40 text-green-400'
+                              ? 'bg-slate-900 border-green-900/50 text-green-500'
                               : isLocked
-                              ? 'border-slate-700 text-slate-600 cursor-not-allowed'
-                              : 'border-slate-600 text-slate-400 hover:border-slate-500'
+                              ? 'bg-slate-900/50 border-slate-800 text-slate-700 cursor-not-allowed'
+                              : 'bg-slate-900 border-slate-700 text-slate-400 hover:border-slate-500'
                           }`}
                         >
                           {isDone ? '✓ ' : isLocked ? '🔒 ' : ''}{phase.title || `Phase ${idx + 1}`}

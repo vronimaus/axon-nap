@@ -11,10 +11,10 @@ export default function PhaseCard({ phase, index, totalPhases, isCompleted, onCo
     if (!phase.exercises) return [];
     
     const groups = {
-      neuro_primer: { label: '1. Neuro-Primer', icon: Brain, exercises: [], color: 'text-cyan-400' },
-      sling_activation: { label: '2. Sling Activation', icon: Activity, exercises: [], color: 'text-purple-400' },
-      performance: { label: '3. Performance-Block', icon: Dumbbell, exercises: [], color: 'text-amber-400' },
-      resilience: { label: '4. Resilience', icon: Sparkles, exercises: [], color: 'text-green-400' },
+      neuro_primer: { label: 'Neuro-Primer', icon: Brain, exercises: [], color: 'text-cyan-400' },
+      sling_activation: { label: 'Sling Activation', icon: Activity, exercises: [], color: 'text-cyan-400' },
+      performance: { label: 'Performance', icon: Dumbbell, exercises: [], color: 'text-cyan-400' },
+      resilience: { label: 'Resilience', icon: Sparkles, exercises: [], color: 'text-cyan-400' },
       other: { label: 'Andere Übungen', icon: Target, exercises: [], color: 'text-slate-400' }
     };
 
@@ -31,13 +31,13 @@ export default function PhaseCard({ phase, index, totalPhases, isCompleted, onCo
       .map(([key, group]) => ({ key, ...group }));
   }, [phase.exercises]);
 
-  const getPhaseColor = (idx) => {
-    if (idx === 0) return { bg: 'from-amber-500/10', border: 'border-amber-500/20', text: 'text-amber-400', icon: Target };
-    if (idx === 1) return { bg: 'from-cyan-500/10', border: 'border-cyan-500/20', text: 'text-cyan-400', icon: TrendingUp };
-    return { bg: 'from-purple-500/10', border: 'border-purple-500/20', text: 'text-purple-400', icon: Zap };
+  // Unified "Tech" Look - Monochrome/Cyan
+  const colors = { 
+    bg: 'from-slate-800/50', 
+    border: 'border-slate-700/50', 
+    text: 'text-cyan-400', 
+    icon: Target 
   };
-
-  const colors = getPhaseColor(index);
   const PhaseIcon = colors.icon;
 
   return (
@@ -46,40 +46,53 @@ export default function PhaseCard({ phase, index, totalPhases, isCompleted, onCo
       initial={{ opacity: 0, x: 20 }}
       animate={{ opacity: 1, x: 0 }}
       exit={{ opacity: 0, x: -20 }}
-      className="space-y-6"
+      className="space-y-8"
     >
-      {/* Phase Info Card (Minimal) */}
-      <div className={`glass rounded-xl border ${colors.border} p-5 relative overflow-hidden`}>
-         <div className={`absolute inset-0 bg-gradient-to-r ${colors.bg} to-transparent opacity-50`} />
-         <div className="relative z-10 flex items-center gap-4">
-            <div className={`w-10 h-10 rounded-lg flex items-center justify-center bg-slate-900 border ${colors.border}`}>
-              <PhaseIcon className={`w-5 h-5 ${colors.text}`} />
-            </div>
+      {/* Phase Info Card (Modern/Dark) */}
+      <div className="relative rounded-2xl border border-slate-800 bg-slate-900/80 p-6 overflow-hidden shadow-2xl">
+         {/* Tech Background Elements */}
+         <div className="absolute top-0 right-0 w-32 h-32 bg-cyan-500/5 rounded-full blur-3xl pointer-events-none" />
+         <div className="absolute bottom-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-cyan-500/20 to-transparent" />
+         
+         <div className="relative z-10 flex items-center justify-between">
             <div>
-              <div className="flex items-center gap-2">
-                <span className={`text-xs font-bold uppercase tracking-wider ${colors.text}`}>Phase {index + 1}</span>
-                {isCompleted && <span className="text-[10px] bg-green-500/20 text-green-400 px-2 py-0.5 rounded-full border border-green-500/30">Abgeschlossen</span>}
+              <div className="flex items-center gap-2 mb-1">
+                <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-cyan-500">
+                   Mission {index + 1}
+                </span>
+                {isCompleted && <span className="text-[10px] text-green-400 font-bold tracking-wider">✓ COMPLETED</span>}
               </div>
-              <h3 className="text-lg font-bold text-white leading-tight">{phase.title}</h3>
+              <h3 className="text-2xl font-bold text-white tracking-tight">{phase.title}</h3>
+              <p className="text-sm text-slate-400 mt-1 font-medium">{phase.duration_weeks || 2} Wochen Fokus</p>
+            </div>
+            
+            {/* Minimal Circular Progress or Icon */}
+            <div className="w-12 h-12 rounded-full border border-slate-700 bg-slate-800/50 flex items-center justify-center shadow-inner">
+               <span className="text-sm font-bold text-slate-300">{index + 1}/{totalPhases}</span>
             </div>
          </div>
       </div>
 
       {/* Sections & Exercises */}
-      <div className="space-y-6">
+      <div className="space-y-8">
         {sections.map((section, secIdx) => (
-          <div key={section.key} className="space-y-3">
-            <div className="flex items-center gap-2 px-1">
-              <section.icon className={`w-4 h-4 ${section.color}`} />
-              <h4 className={`text-sm font-bold ${section.color}`}>{section.label}</h4>
+          <div key={section.key} className="space-y-4">
+            {/* Modern Section Header */}
+            <div className="flex items-center gap-3 pl-1">
+               <div className="h-px flex-1 bg-gradient-to-r from-cyan-500/50 to-transparent" />
+               <h4 className="text-xs font-bold uppercase tracking-[0.15em] text-cyan-400 flex items-center gap-2">
+                  <section.icon className="w-3.5 h-3.5" />
+                  {section.label}
+               </h4>
+               <div className="h-px w-8 bg-cyan-500/20" />
             </div>
             
-            <div className="space-y-3">
+            <div className="grid gap-4">
               {section.exercises.map((exercise, exIdx) => (
                 <TrainingExerciseCard
                   key={`${section.key}-${exIdx}`}
                   exercise={exercise}
-                  idx={exIdx} // visual index within section
+                  idx={exIdx} 
                   onDetailClick={onExerciseClick}
                 />
               ))}
