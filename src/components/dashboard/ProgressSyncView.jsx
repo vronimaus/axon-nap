@@ -129,9 +129,14 @@ export default function ProgressSyncView({ dashboardData, sessionDecision, onClo
 
         {/* Sync-History */}
         <div className="glass rounded-xl border border-slate-700 p-4 sm:p-6 md:col-span-2">
-          <div className="flex items-center gap-2 mb-4 sm:mb-6">
-            <TrendingUp className="w-4 h-4 sm:w-5 sm:h-5 text-emerald-400" />
-            <h3 className="text-xs sm:text-sm text-slate-300 font-medium">Sync-History (letzte 30 Tage)</h3>
+          <div className="flex flex-col mb-4 sm:mb-6">
+            <div className="flex items-center gap-2">
+              <TrendingUp className="w-4 h-4 sm:w-5 sm:h-5 text-emerald-400" />
+              <h3 className="text-xs sm:text-sm text-slate-300 font-medium">Sync-History (letzte 30 Tage)</h3>
+            </div>
+            <p className="text-[10px] sm:text-xs text-slate-500 mt-1 pl-6 sm:pl-7">
+              Zeigt das Zusammenspiel von Körper, Fokus und Energie. Hohe Werte = Peak Performance, niedrige = Recovery-Bedarf.
+            </p>
           </div>
           <div className="h-40 sm:h-48 w-full">
             {history.length > 0 ? (
