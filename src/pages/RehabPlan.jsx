@@ -8,16 +8,17 @@ import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 import DailyReadinessCheck from '../components/dashboard/DailyReadinessCheck';
 import { Helmet } from 'react-helmet-async';
-import ExerciseCard from '../components/rehab/ExerciseCard';
+import RehabPhaseCard from '../components/rehab/RehabPhaseCard';
+
 const WeaknessGenerator = React.lazy(() => import('../components/rehab/WeaknessGenerator'));
 
 export default function RehabPlan() {
   const [user, setUser] = useState(null);
-  const [expandedExercise, setExpandedExercise] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [showReadinessCheck, setShowReadinessCheck] = useState(false);
   const [readinessStatus, setReadinessStatus] = useState(null);
-  const [currentExerciseIndex, setCurrentExerciseIndex] = useState(null);
+  const [activePhaseIdx, setActivePhaseIdx] = useState(0);
+  const [completedPhases, setCompletedPhases] = useState({});
   const queryClient = useQueryClient();
 
   useEffect(() => {
@@ -83,6 +84,13 @@ export default function RehabPlan() {
     enabled: !!user?.email
   });
 
+  // Sync activePhaseIdx with current plan phase on load
+  useEffect(() => {
+    if (rehabPlan?.current_phase) {
+      setActivePhaseIdx(Math.min((rehabPlan.current_phase || 1) - 1, (rehabPlan.phases?.length || 1) - 1));
+    }
+  }, [rehabPlan]);
+
   const submitFeedbackMutation = useMutation({
     mutationFn: async ({ exerciseId, metricValue, notes }) => {
       if (!rehabPlan) return;
@@ -104,7 +112,6 @@ export default function RehabPlan() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['rehabPlan'] });
-      toast.success('Fortschritt gespeichert!');
     },
     onError: (error) => {
       console.error('Feedback error:', error);
@@ -126,9 +133,7 @@ export default function RehabPlan() {
         phase_start_date: isLastPhase ? rehabPlan.phase_start_date : new Date().toISOString().split('T')[0]
       };
 
-      console.log('Updating phase:', { currentPhaseNum, nextPhase, isLastPhase, updateData });
-      const result = await base44.entities.RehabPlan.update(rehabPlan.id, updateData);
-      console.log('Phase update result:', result);
+      await base44.entities.RehabPlan.update(rehabPlan.id, updateData);
 
       // Track completion
       base44.analytics.track({
@@ -144,14 +149,10 @@ export default function RehabPlan() {
     onSuccess: async (result) => {
       if (!result || !user?.email) return;
       
-      console.log('Success! Refetching with correct queryKey...');
-      // Warte auf den Refetch mit der exakten queryKey
       await queryClient.refetchQueries({ 
         queryKey: ['rehabPlan', user.email],
         type: 'active'
       });
-      
-      console.log('Refetch complete, plan updated');
       
       if (result.isLastPhase) {
         toast.success('🎉 Glückwunsch! Du hast alle Phasen abgeschlossen!');
@@ -164,21 +165,6 @@ export default function RehabPlan() {
       toast.error('Fehler beim Speichern. Bitte versuche es erneut.');
     }
   });
-
-  const getAveragePainLevel = () => {
-    if (!rehabPlan?.feedback_history?.length) return null;
-    
-    const recent = rehabPlan.feedback_history.slice(-10);
-    const sum = recent.reduce((acc, f) => acc + (f.metric_value || 0), 0);
-    return (sum / recent.length).toFixed(1);
-  };
-
-  const getDaysInCurrentPhase = () => {
-    if (!rehabPlan?.phase_start_date) return 0;
-    const start = new Date(rehabPlan.phase_start_date);
-    const now = new Date();
-    return Math.floor((now - start) / (1000 * 60 * 60 * 24));
-  };
 
   const handleReadinessCheckClose = async () => {
     setShowReadinessCheck(false);
@@ -204,39 +190,13 @@ export default function RehabPlan() {
       <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 p-4 flex items-center justify-center">
         <div className="max-w-md w-full glass rounded-2xl border border-slate-700 p-8 text-center">
           <AlertCircle className="w-12 h-12 text-slate-400 mx-auto mb-4" />
-          <h2 className="text-xl font-bold text-white mb-2">Noch kein Trainingsplan</h2>
+          <h2 className="text-xl font-bold text-white mb-2">Noch kein Reha-Plan</h2>
           <p className="text-slate-300 mb-6">
             Starte eine Diagnose im Command-Bereich, um einen personalisierten Plan zu erhalten.
           </p>
           <Button
             onClick={() => window.location.href = createPageUrl('Dashboard')}
-            className="w-full bg-cyan-500/20 text-cyan-400 hover:bg-cyan-500/30"
-          >
-            Zum Command
-          </Button>
-        </div>
-      </div>
-    );
-  }
-
-  // Show completion banner only if status is explicitly 'completed'
-  const showCompletionBanner = rehabPlan.status === 'completed';
-
-  const currentPhaseIndex = (rehabPlan.current_phase || 1) - 1;
-  const currentPhase = rehabPlan.phases[currentPhaseIndex] || rehabPlan.phases[0];
-
-  if (!currentPhase) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 p-4 flex items-center justify-center">
-        <div className="max-w-md w-full glass rounded-2xl border border-slate-700 p-8 text-center">
-          <AlertCircle className="w-12 h-12 text-slate-400 mx-auto mb-4" />
-          <h2 className="text-xl font-bold text-white mb-2">Plan-Fehler</h2>
-          <p className="text-slate-300 mb-6">
-            Der Trainingsplan hat keine Phasen. Bitte erstelle einen neuen Plan.
-          </p>
-          <Button
-            onClick={() => window.location.href = createPageUrl('Dashboard')}
-            className="w-full bg-cyan-500/20 text-cyan-400 hover:bg-cyan-500/30"
+            className="w-full bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500/30"
           >
             Zum Command
           </Button>
@@ -251,11 +211,6 @@ export default function RehabPlan() {
         <title>Rehabilitation - AXON Rehab</title>
         <meta name="description" content={rehabPlan?.problem_summary ? `Dein Wiederherstellungsplan für: ${rehabPlan.problem_summary}` : 'Dein personalisierter AXON Rehabilitationsplan.'} />
         <meta name="robots" content="noindex, nofollow" />
-        
-        {/* Open Graph */}
-        <meta property="og:title" content="AXON Rehabilitationsplan" />
-        <meta property="og:description" content={rehabPlan?.problem_summary ? `Wiederherstellung: ${rehabPlan.problem_summary}` : 'Dein personalisierter Rehab-Plan'} />
-        <meta property="og:type" content="article" />
       </Helmet>
 
       {/* Readiness Check Modal */}
@@ -266,17 +221,17 @@ export default function RehabPlan() {
       </AnimatePresence>
 
       {/* Header */}
-      <div className="sticky top-0 z-40 bg-slate-900 border-b border-cyan-500/20">
+      <div className="sticky top-0 z-40 bg-slate-900 border-b border-emerald-500/20">
         <div className="max-w-4xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-red-400">
-                Dein Wiederherstellungsplan
-              </h1>
+              <h2 className="text-xs font-bold text-emerald-500 uppercase tracking-widest mb-1">
+                Rehabilitation
+              </h2>
               {rehabPlan.problem_summary && (
-                <p className="text-sm text-slate-400 mt-1">
-                  Problem: <strong>{rehabPlan.problem_summary}</strong>
-                </p>
+                <h1 className="text-xl md:text-2xl font-bold text-emerald-50">
+                  {rehabPlan.problem_summary}
+                </h1>
               )}
             </div>
             <Button
@@ -292,334 +247,160 @@ export default function RehabPlan() {
       </div>
 
       {/* Main Content */}
-      <div className="max-w-4xl mx-auto px-4 py-6">
-        {/* Readiness Recommendation */}
+      <div className="max-w-4xl mx-auto px-4 py-6 space-y-6">
+        
+        {/* Coach Message & Readiness Bubble - Green Theme */}
         {readinessStatus && (
-          <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className={`mb-6 glass rounded-xl p-6 border ${
-              readinessStatus === 'green' 
-                ? 'border-green-500/30 bg-gradient-to-r from-green-500/10 to-transparent'
-                : readinessStatus === 'yellow'
-                ? 'border-yellow-500/30 bg-gradient-to-r from-yellow-500/10 to-transparent'
-                : 'border-red-500/30 bg-gradient-to-r from-red-500/10 to-transparent'
-            }`}
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="flex items-start gap-4 mb-8 pl-1"
           >
-            <div className="flex items-start gap-3">
-              {readinessStatus === 'green' ? (
-                <Check className="w-6 h-6 flex-shrink-0 text-green-400" />
-              ) : readinessStatus === 'yellow' ? (
-                <AlertTriangle className="w-6 h-6 flex-shrink-0 text-yellow-400" />
-              ) : (
-                <AlertCircle className="w-6 h-6 flex-shrink-0 text-red-400" />
-              )}
-              <div>
-                {readinessStatus === 'green' && (
-                  <>
-                    <h3 className="font-bold text-green-400 mb-2">Top-Form erkannt! 💪</h3>
-                    <p className="text-slate-300 text-sm leading-relaxed mb-3">
-                      Dein System ist heute bereit für volle Performance. Du kannst alle Übungen wie geplant durchführen.
-                    </p>
-                  </>
-                )}
-                {readinessStatus === 'yellow' && (
-                  <>
-                    <h3 className="font-bold text-yellow-400 mb-2">Moderate Belastung empfohlen ⚡</h3>
-                    <p className="text-slate-300 text-sm leading-relaxed">
-                      Dein System braucht heute etwas Schonung. Fokussiere dich auf leichte Mobilität und MFR-Übungen. Reduziere Intensität und Wiederholungen bei Kraftübungen um 30-50%.
-                    </p>
-                  </>
-                )}
-                {readinessStatus === 'red' && (
-                  <>
-                    <h3 className="font-bold text-red-400 mb-2">Erholung priorisieren 🛑</h3>
-                    <p className="text-slate-300 text-sm leading-relaxed">
-                      Dein System ist im Regenerationsmodus. Fokussiere dich heute ausschließlich auf sanfte MFR-Arbeit und Atemübungen. Krafttraining sollte pausiert werden.
-                    </p>
-                  </>
-                )}
+            {/* Avatar */}
+            <div className="relative flex-shrink-0">
+              <div className="w-14 h-14 rounded-full p-[2px] bg-gradient-to-b from-emerald-400 to-teal-500 shadow-[0_0_15px_rgba(16,185,129,0.4)]">
+                <div className="w-full h-full rounded-full overflow-hidden bg-slate-900">
+                  <img 
+                    src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/36d608561_Gemini_Generated_Image_y1tl62y1tl62y1tl.png" 
+                    alt="Coach" 
+                    className="w-full h-full object-cover" 
+                  />
+                </div>
               </div>
+              {/* Status Indicator Dot */}
+              <div className={`absolute bottom-0 right-0 w-4 h-4 rounded-full border-2 border-slate-900 ${
+                readinessStatus === 'green' ? 'bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.6)]' : 
+                readinessStatus === 'yellow' ? 'bg-amber-500 shadow-[0_0_10px_rgba(245,158,11,0.6)]' : 
+                'bg-red-500 shadow-[0_0_10px_rgba(239,68,68,0.6)]'
+              }`} />
             </div>
-          </motion.div>
-        )}
-
-        {/* Completion Banner */}
-        {showCompletionBanner && (
-          <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="mb-6 glass rounded-2xl border border-green-500/30 p-6 bg-gradient-to-br from-green-500/10 to-transparent"
-          >
-            <div className="flex items-center gap-4">
-              <div className="text-4xl">🎉</div>
-              <div className="flex-1">
-                <h3 className="text-xl font-bold text-green-400 mb-1">Plan erfolgreich abgeschlossen!</h3>
-                <p className="text-slate-300 text-sm">
-                  Du hast alle {rehabPlan.phases.length} Phasen durchlaufen. Du kannst den Plan weiterhin als Referenz nutzen.
+            
+            {/* Speech Bubble */}
+            <div className="flex-1 relative">
+              {/* Bubble Tail */}
+              <div className="absolute top-4 -left-2 w-4 h-4 bg-slate-800/80 border-l border-b border-emerald-500/30 transform rotate-45 z-0" />
+              
+              <div className="relative z-10 p-5 rounded-2xl rounded-tl-sm bg-[#0B1221] border border-emerald-500/50 shadow-[0_0_30px_rgba(16,185,129,0.4)]">
+                {/* Header line inside bubble */}
+                <div className="flex items-center justify-between mb-2 pb-2 border-b border-slate-800/50">
+                  <span className={`text-[10px] font-bold uppercase tracking-widest ${
+                    readinessStatus === 'green' ? 'text-emerald-400' : 
+                    readinessStatus === 'yellow' ? 'text-amber-400' : 'text-red-400'
+                  }`}>
+                    {readinessStatus === 'green' ? '● System Ready' : readinessStatus === 'yellow' ? '● Maintenance Mode' : '● Low Battery'}
+                  </span>
+                </div>
+                
+                <p className="text-slate-200 text-sm font-medium leading-relaxed">
+                   {readinessStatus === 'green' 
+                     ? "Dein System ist bereit. Wir können heute vollen Fokus auf die Wiederherstellung legen."
+                     : readinessStatus === 'yellow'
+                     ? "Wir gehen es heute ruhig an. Fokus: Schmerzlinderung und sanfte Mobilität."
+                     : "Rote Ampel. Nur die nötigsten MFR-Übungen. Hör auf deinen Körper."
+                   }
                 </p>
               </div>
             </div>
-            <div className="mt-4 flex gap-3">
-              <Button
-                onClick={() => window.location.href = createPageUrl('DiagnosisChat')}
-                className="bg-green-500/20 text-green-400 hover:bg-green-500/30"
-              >
-                Neuen Plan erstellen
-              </Button>
-            </div>
           </motion.div>
         )}
 
-        {/* Progress Indicator */}
-        <div className="mb-8">
-          <div className="flex justify-between items-center mb-3">
-            <span className="text-sm font-semibold text-slate-300">
-              Phase {rehabPlan.current_phase || 1} von {rehabPlan.phases.length}
+        {/* Tech Progress Bar - Green Theme */}
+        <div className="space-y-2">
+          <div className="flex justify-between items-end">
+            <div className="flex flex-col">
+               <span className="text-[10px] uppercase tracking-widest text-slate-500 font-bold">Progress</span>
+               <span className="text-sm font-bold text-white tracking-wide">
+                  PHASE {rehabPlan.current_phase || 1} <span className="text-slate-600 mx-1">/</span> {rehabPlan.phases?.length || 3}
+               </span>
+            </div>
+            <span className="text-[10px] text-emerald-400 font-mono">
+              {((rehabPlan.current_phase || 1) / (rehabPlan.phases?.length || 3) * 100).toFixed(0)}% RECOVERED
             </span>
           </div>
-          <div className="h-2 bg-slate-800 rounded-full overflow-hidden">
+          
+          <div className="h-1.5 w-full bg-slate-800 rounded-full overflow-hidden relative">
+            <div className="absolute inset-0 bg-slate-800 z-0" />
             <motion.div
               initial={{ width: 0 }}
-              animate={{ width: `${(rehabPlan.current_phase / rehabPlan.phases.length) * 100}%` }}
-              className="h-full bg-gradient-to-r from-orange-500 to-red-500"
+              animate={{ width: `${((rehabPlan.current_phase || 1) / (rehabPlan.phases?.length || 3)) * 100}%` }}
+              className="h-full bg-gradient-to-r from-emerald-600 via-emerald-400 to-teal-300 relative z-10 shadow-[0_0_10px_rgba(16,185,129,0.5)]"
             />
           </div>
         </div>
 
-        {/* Current Phase */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="glass rounded-2xl border border-orange-500/30 p-6 mb-8 bg-gradient-to-r from-orange-500/10 to-transparent"
-        >
-          <h2 className="text-2xl font-bold text-orange-400 mb-2">{currentPhase.title}</h2>
-          <p className="text-slate-300 mb-4">{currentPhase.description}</p>
-          <div className="text-sm text-slate-400">
-            Empfohlene Dauer: <strong>{currentPhase.duration_days} Tage</strong>
+        {/* Sequential Phase Navigation */}
+        {rehabPlan.phases && rehabPlan.phases.length > 1 && (
+          <div className="flex gap-2 overflow-x-auto pb-1">
+            {rehabPlan.phases.map((phase, idx) => {
+              const isLocked = idx > 0 && !completedPhases[idx - 1] && (idx + 1) > (rehabPlan.current_phase || 1);
+              const isDone = (idx + 1) < (rehabPlan.current_phase || 1) || completedPhases[idx];
+              const isActive = activePhaseIdx === idx;
+              
+              return (
+                <button
+                  key={idx}
+                  onClick={() => !isLocked && setActivePhaseIdx(idx)}
+                  disabled={isLocked}
+                  className={`flex-shrink-0 px-4 py-2 rounded-lg text-xs font-bold transition-all border ${
+                    isActive
+                      ? 'bg-emerald-500/10 border-emerald-500/50 text-emerald-400 shadow-[0_0_10px_rgba(16,185,129,0.15)]'
+                      : isDone
+                      ? 'bg-slate-900 border-emerald-900/50 text-emerald-600'
+                      : isLocked
+                      ? 'bg-slate-900/50 border-slate-800 text-slate-700 cursor-not-allowed'
+                      : 'bg-slate-900 border-slate-700 text-slate-400 hover:border-slate-500'
+                  }`}
+                >
+                  {isDone ? '✓ ' : isLocked ? '🔒 ' : ''}{phase.title || `Phase ${idx + 1}`}
+                </button>
+              );
+            })}
           </div>
-        </motion.div>
+        )}
 
-        {/* AI-Powered Weakness Generator */}
-        <React.Suspense fallback={<div className="glass rounded-xl p-6 border border-slate-700 text-center text-slate-400">Lädt...</div>}>
-          <WeaknessGenerator
-          rehabPlan={rehabPlan}
-          currentExercises={currentPhase.exercises}
-          onExerciseGenerated={async (newExercise) => {
-            const updatedPhases = [...rehabPlan.phases];
-            updatedPhases[currentPhaseIndex].exercises.push({
-              exercise_id: `custom_${Date.now()}`,
-              ...newExercise
-            });
-            await base44.entities.RehabPlan.update(rehabPlan.id, {
-              phases: updatedPhases
-            });
-            queryClient.invalidateQueries({ queryKey: ['rehabPlan'] });
+        {/* Active Phase Card */}
+        {rehabPlan.phases && rehabPlan.phases[activePhaseIdx] && (
+          <RehabPhaseCard
+            phase={rehabPlan.phases[activePhaseIdx]}
+            index={activePhaseIdx}
+            totalPhases={rehabPlan.phases.length}
+            isCompleted={completedPhases[activePhaseIdx] || (activePhaseIdx + 1) < (rehabPlan.current_phase || 1)}
+            rehabPlanId={rehabPlan.id}
+            queryClient={queryClient}
+            onFeedbackSubmit={({ exerciseId, metricValue, notes }) =>
+              submitFeedbackMutation.mutate({ exerciseId, metricValue, notes })
+            }
+            onComplete={() => {
+              completeCurrentPhaseMutation.mutate();
             }}
-            />
+            onNext={() => setActivePhaseIdx(activePhaseIdx + 1)}
+            onPrev={() => setActivePhaseIdx(activePhaseIdx - 1)}
+          />
+        )}
+
+        {/* AI-Powered Weakness Generator (Keep this as extra tool at bottom) */}
+        <div className="mt-8 pt-8 border-t border-slate-800">
+            <h3 className="text-sm font-bold text-slate-500 uppercase tracking-widest mb-4">AI Plan-Optimierung</h3>
+            <React.Suspense fallback={<div className="glass rounded-xl p-6 border border-slate-700 text-center text-slate-400">Lädt...</div>}>
+              <WeaknessGenerator
+              rehabPlan={rehabPlan}
+              currentExercises={rehabPlan.phases[activePhaseIdx]?.exercises}
+              onExerciseGenerated={async (newExercise) => {
+                const updatedPhases = [...rehabPlan.phases];
+                updatedPhases[activePhaseIdx].exercises.push({
+                  exercise_id: `custom_${Date.now()}`,
+                  ...newExercise
+                });
+                await base44.entities.RehabPlan.update(rehabPlan.id, {
+                  phases: updatedPhases
+                });
+                queryClient.invalidateQueries({ queryKey: ['rehabPlan'] });
+                }}
+                />
             </React.Suspense>
-
-        {/* Exercises */}
-        <div className="space-y-4">
-          <h3 className="text-lg font-semibold text-white mb-4">Deine Übungen für diese Phase</h3>
-          
-          {currentPhase.exercises.map((exercise, idx) => {
-            const isStrengthExercise = exercise.category && ['strength', 'functional'].includes(exercise.category.toLowerCase());
-            const shouldSkip = readinessStatus === 'red' && isStrengthExercise;
-            if (shouldSkip) return null;
-
-            return (
-              <ExerciseCard
-                key={exercise.exercise_id || `exercise-${idx}`}
-                exercise={exercise}
-                idx={idx}
-                readinessStatus={readinessStatus}
-                rehabPlan={rehabPlan}
-                queryClient={queryClient}
-                onFeedbackSubmit={({ exerciseId, metricValue, notes }) =>
-                  submitFeedbackMutation.mutate({ exerciseId, metricValue, notes })
-                }
-              />
-            );
-          })}
         </div>
 
-        {/* Red Status: Show filtered exercises info */}
-        {readinessStatus === 'red' && currentPhase.exercises.some(ex => ex.category && ['strength', 'functional'].includes(ex.category.toLowerCase())) && (
-          <div className="mt-4 p-4 rounded-lg bg-red-500/10 border border-red-500/30">
-            <p className="text-slate-300 text-sm">
-              ℹ️ Kraft- und funktionelle Übungen werden heute ausgeblendet. Fokussiere dich auf die sanften Mobilisations- und MFR-Übungen oben.
-            </p>
-          </div>
-        )}
-
-        {/* Recommended MFR Routines */}
-        {rehabPlan.recommended_mfr_routines?.length > 0 && (
-          <div className="mb-8 glass rounded-xl border border-purple-500/30 p-6 bg-gradient-to-r from-purple-500/10 to-transparent">
-            <h3 className="font-semibold text-white mb-2">🎯 Empfohlene MFR-Routinen</h3>
-            <p className="text-slate-300 text-sm mb-4">
-              Diese Routinen unterstützen deine Rehabilitation optimal:
-            </p>
-            <div className="grid gap-3">
-              {rehabPlan.recommended_mfr_routines.map((routine, idx) => (
-                <div key={routine.routine_id || idx} className="flex items-center justify-between p-3 rounded-lg bg-slate-800/50 border border-slate-700">
-                  <div>
-                    <p className="font-semibold text-white text-sm">{routine.routine_name}</p>
-                    <p className="text-xs text-slate-400">{routine.reason}</p>
-                  </div>
-                  <Button
-                    onClick={() => window.location.href = createPageUrl(`Flow?routine_id=${routine.routine_id}`)}
-                    size="sm"
-                    className="bg-purple-500/20 text-purple-400 hover:bg-purple-500/30"
-                  >
-                    Starten
-                  </Button>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Phase Progress & Completion */}
-        <div className="mt-8 space-y-4">
-        {/* Stats */}
-        <div className="grid grid-cols-2 gap-4">
-          <div className="glass rounded-xl border border-slate-700 p-4">
-            <div className="text-sm text-slate-400 mb-1">Tage in dieser Phase</div>
-            <div className="text-2xl font-bold text-white">{getDaysInCurrentPhase()} / {currentPhase.duration_days}</div>
-          </div>
-          {getAveragePainLevel() !== null && (
-            <div className="glass rounded-xl border border-slate-700 p-4">
-              <div className="text-sm text-slate-400 mb-1">Ø Schmerzlevel</div>
-              <div className={`text-2xl font-bold ${
-                parseFloat(getAveragePainLevel()) <= 3 ? 'text-green-400' :
-                parseFloat(getAveragePainLevel()) <= 6 ? 'text-yellow-400' :
-                'text-red-400'
-              }`}>
-                {getAveragePainLevel()} / 10
-              </div>
-            </div>
-          )}
-        </div>
-
-          {/* Complete Phase Button */}
-          {(rehabPlan.current_phase || 1) < rehabPlan.phases.length ? (
-           <div className="glass rounded-xl border border-cyan-500/30 p-6 bg-gradient-to-r from-cyan-500/10 to-transparent">
-             <h3 className="font-semibold text-white mb-2">Bereit für die nächste Phase?</h3>
-             <p className="text-slate-300 text-sm mb-4">
-               Wenn dein Schmerzlevel deutlich gesunken ist und du die Übungen gut beherrschst, kannst du zur nächsten Phase übergehen.
-               {getAveragePainLevel() !== null && parseFloat(getAveragePainLevel()) > 5 && (
-                 <span className="block mt-2 text-yellow-400">
-                   ⚠️ Dein durchschnittliches Schmerzlevel ist noch hoch. Es wird empfohlen, noch ein paar Tage in dieser Phase zu bleiben.
-                 </span>
-               )}
-             </p>
-             <Button
-               onClick={() => {
-                 console.log('Phase completion triggered for phase:', rehabPlan.current_phase);
-                 completeCurrentPhaseMutation.mutate();
-               }}
-               disabled={completeCurrentPhaseMutation.isPending}
-               className="w-full bg-cyan-500/20 text-cyan-400 hover:bg-cyan-500/30"
-             >
-               {completeCurrentPhaseMutation.isPending ? 'Wird gespeichert...' : `Zur Phase ${(rehabPlan.current_phase || 1) + 1} wechseln`}
-             </Button>
-           </div>
-          ) : (
-            <div className="glass rounded-xl border border-green-500/30 p-6 bg-gradient-to-r from-green-500/10 to-transparent">
-              <h3 className="font-semibold text-white mb-2">🎉 Finale Phase!</h3>
-              <p className="text-slate-300 text-sm mb-4">
-                Das ist die letzte Phase deines Reha-Plans. Wenn du diese erfolgreich abgeschlossen hast, kannst du den Plan als beendet markieren.
-              </p>
-              <Button
-                onClick={() => completeCurrentPhaseMutation.mutate()}
-                disabled={completeCurrentPhaseMutation.isPending}
-                className="w-full bg-green-500/20 text-green-400 hover:bg-green-500/30"
-              >
-                {completeCurrentPhaseMutation.isPending ? 'Wird gespeichert...' : 'Plan als abgeschlossen markieren'}
-              </Button>
-            </div>
-          )}
-
-
-        </div>
       </div>
     </div>
-  );
-}
-
-function ExerciseFeedbackForm({ exercise, onSubmit }) {
-  const [metricValue, setMetricValue] = useState('');
-  const [notes, setNotes] = useState('');
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!metricValue.trim()) {
-      return;
-    }
-    setIsSubmitting(true);
-    try {
-      await onSubmit(parseFloat(metricValue), notes);
-      // Kurz auf dem Wert bleiben damit User sieht dass es gespeichert wurde, dann clearen
-      setTimeout(() => {
-        setMetricValue('');
-        setNotes('');
-      }, 500);
-    } catch (error) {
-      console.error('Submit error:', error);
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  const getMetricLabel = () => {
-    // Für Rehab-Pläne tracken wir primär Schmerzlevel
-    if (exercise.category === 'mfr' || exercise.category === 'neuro') {
-      return 'Schmerzlevel nach Übung (0-10)';
-    }
-    return 'Wie fühlte es sich an? (0-10)';
-  };
-
-  return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <div>
-        <label className="block text-sm font-semibold text-slate-300 mb-2">
-          {getMetricLabel()}
-        </label>
-        <input
-          type="number"
-          value={metricValue}
-          onChange={(e) => setMetricValue(e.target.value)}
-          placeholder="0 = kein Schmerz, 10 = maximaler Schmerz"
-          min="0"
-          max="10"
-          className="w-full px-3 py-2 bg-slate-800 border border-slate-600 rounded-lg text-white text-sm focus:outline-none focus:border-orange-400"
-          step="0.5"
-        />
-      </div>
-
-      <div>
-        <label className="block text-sm font-semibold text-slate-300 mb-2">
-          Notizen (optional)
-        </label>
-        <textarea
-          value={notes}
-          onChange={(e) => setNotes(e.target.value)}
-          placeholder="Wie hat sich das angefühlt? Besser, gleich, schlechter?"
-          className="w-full px-3 py-2 bg-slate-800 border border-slate-600 rounded-lg text-white text-sm focus:outline-none focus:border-orange-400 resize-none"
-          rows="2"
-        />
-      </div>
-
-      <Button
-        type="submit"
-        disabled={!metricValue.trim() || isSubmitting}
-        className="w-full bg-orange-500/30 text-orange-400 hover:bg-orange-500/40 disabled:opacity-50"
-      >
-        <Check className="w-4 h-4 mr-2" />
-        Fortschritt speichern
-      </Button>
-    </form>
   );
 }
