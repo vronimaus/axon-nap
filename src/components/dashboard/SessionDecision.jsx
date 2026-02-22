@@ -75,7 +75,7 @@ export default function SessionDecision({ user, data, onClick }) {
         <div>
           <div className="flex items-center gap-2 mb-0.5">
             <div className={`w-1.5 h-1.5 rounded-full ${cfg.dot}`} />
-            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Heutige Empfehlung</span>
+            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">System-Status & Empfehlung</span>
           </div>
           <h3 className={`text-sm sm:text-base font-bold ${cfg.accentColor} flex items-center flex-wrap gap-2`}>
             {data.title} 
@@ -84,6 +84,11 @@ export default function SessionDecision({ user, data, onClick }) {
             )}
           </h3>
           <p className="text-xs text-slate-300 mt-1">{data.psychological_framing}</p>
+          {onClick && (
+            <p className="text-[10px] sm:text-xs text-cyan-400/80 mt-1.5 font-medium flex items-center gap-1">
+              <Activity className="w-3 h-3" /> Tippe für Sync-History & Bio-Daten
+            </p>
+          )}
           {data.benchmarkTransferMessage && (
             <p className="text-xs font-medium text-emerald-400 mt-2 bg-emerald-500/10 inline-block px-2 py-1 rounded">
               {data.benchmarkTransferMessage}
