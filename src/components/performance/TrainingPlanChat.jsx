@@ -12,26 +12,26 @@ function SimpleChatBubble({ message }) {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 10 }}
+      initial={{ opacity: 0, y: 5 }}
       animate={{ opacity: 1, y: 0 }}
       className={`flex gap-3 ${isUser ? 'justify-end' : 'justify-start'}`}
     >
       {!isUser && (
-        <div className="h-8 w-8 rounded-xl bg-gradient-to-br from-purple-500 to-pink-600 flex items-center justify-center flex-shrink-0">
-          <Target className="w-4 h-4 text-white" />
+        <div className="h-6 w-6 rounded-lg bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center flex-shrink-0 mt-1">
+          <Target className="w-3 h-3 text-cyan-400" />
         </div>
       )}
-      <div className={`max-w-[85%] ${isUser && 'flex flex-col items-end'}`}>
-        <div className={`rounded-xl px-4 py-3 ${
+      <div className={`max-w-[90%] ${isUser && 'flex flex-col items-end'}`}>
+        <div className={`rounded-lg px-3 py-2 text-sm ${
           isUser 
-            ? 'bg-slate-800 text-white' 
-            : 'glass border border-purple-500/30 text-slate-200'
+            ? 'bg-slate-800 text-slate-200' 
+            : 'bg-transparent text-slate-300 pl-0'
         }`}>
           {isUser ? (
-            <p className="text-sm leading-relaxed">{message.content?.trim()}</p>
+            <p className="leading-relaxed">{message.content?.trim()}</p>
           ) : (
             <ReactMarkdown
-              className="text-sm prose prose-sm prose-slate max-w-none [&>*:first-child]:mt-0 [&>*:last-child]:mb-0"
+              className="prose prose-sm prose-invert max-w-none [&>p]:leading-relaxed [&>p]:mb-2 last:[&>p]:mb-0"
             >
               {message.content?.trim()}
             </ReactMarkdown>
@@ -131,37 +131,41 @@ export default function TrainingPlanChat({ activePlan }) {
 
   return (
     <motion.div
-      initial={{ height: 0, opacity: 0 }}
-      animate={{ height: 'auto', opacity: 1 }}
-      exit={{ height: 0, opacity: 0 }}
-      transition={{ duration: 0.3 }}
-      className="glass rounded-xl border border-purple-500/30 bg-gradient-to-r from-purple-500/10 to-transparent p-4"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      className="mt-8 border-t border-slate-800 pt-6"
     >
-      <div className="flex items-center justify-between mb-4">
-        <h3 className="text-lg font-bold text-purple-400">Dein Coach</h3>
+      <div className="flex items-center gap-2 mb-4 px-1">
+         <div className="w-2 h-2 rounded-full bg-cyan-500 animate-pulse" />
+         <h3 className="text-xs font-bold text-slate-500 uppercase tracking-widest">AI Performance Coach</h3>
       </div>
-      <div className="h-80 overflow-y-auto custom-scrollbar p-2 space-y-4">
-        {messages.map((msg, idx) => (
-          <SimpleChatBubble key={idx} message={msg} />
-        ))}
+
+      <div className="max-h-64 overflow-y-auto custom-scrollbar space-y-2 mb-4 px-1">
+        {messages.length === 0 ? (
+           <p className="text-xs text-slate-600 italic">Keine Nachrichten vorhanden.</p>
+        ) : (
+           messages.map((msg, idx) => (
+             <SimpleChatBubble key={idx} message={msg} />
+           ))
+        )}
         <div ref={messagesEndRef} />
       </div>
-      <div className="mt-4 flex gap-2">
-        <Textarea
+
+      <div className="flex gap-2 relative group">
+        <input
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          onKeyPress={handleKeyPress}
-          placeholder="Frage deinen Coach..."
-          className="resize-none bg-slate-800/50 border-slate-700 text-white min-h-[44px] max-h-32"
-          rows={1}
+          onKeyDown={handleKeyPress}
+          placeholder="Frage zum Plan..."
+          className="w-full bg-slate-900/50 border border-slate-800 focus:border-cyan-500/50 rounded-lg px-4 py-3 text-sm text-slate-200 placeholder:text-slate-600 focus:outline-none transition-all"
         />
-        <Button
+        <button
           onClick={handleSend}
           disabled={!input.trim() || isSending}
-          className="bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 px-4 h-auto"
+          className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 rounded-md text-slate-400 hover:text-cyan-400 hover:bg-slate-800 transition-colors disabled:opacity-50"
         >
-          {isSending ? <Loader2 className="w-5 h-5 animate-spin" /> : <Send className="w-5 h-5" />}
-        </Button>
+          {isSending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
+        </button>
       </div>
     </motion.div>
   );
