@@ -142,7 +142,7 @@ export default function MFRWorkflow({ sessionId, onComplete = () => {} }) {
               </div>
 
               <div className="flex gap-4 justify-center mb-8">
-                {['back', 'front', 'side'].map(pos => (
+                {['back', 'front'].map(pos => (
                   <Button
                     key={pos}
                     onClick={() => setPosition(pos)}
@@ -153,7 +153,7 @@ export default function MFRWorkflow({ sessionId, onComplete = () => {} }) {
                         : 'border-cyan-500/30'
                     }`}
                   >
-                    {pos === 'back' ? '🔄 Hinten' : pos === 'front' ? '🔃 Vorne' : '↔️ Seite'}
+                    {pos === 'back' ? '🔄 Hinten' : '🔃 Vorne'}
                   </Button>
                 ))}
               </div>
@@ -161,6 +161,8 @@ export default function MFRWorkflow({ sessionId, onComplete = () => {} }) {
               <div className="flex justify-center mb-8">
                 <MFRBodyMap 
                   position={position}
+                  selectedNode={selectedNode}
+                  onNodeSelect={handleNodeSelect}
                   completedNodes={completedNodes}
                 />
               </div>
