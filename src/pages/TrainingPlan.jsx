@@ -208,41 +208,57 @@ export default function TrainingPlan() {
 
       {/* Main Content */}
       <div className="max-w-4xl mx-auto px-4 py-6 space-y-6">
-            {/* Coach Message & Readiness */}
+            {/* Coach Message & Readiness Bubble */}
             {activePlan && readinessStatus && (
               <motion.div 
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="relative overflow-hidden rounded-2xl border border-cyan-500/20 bg-gradient-to-br from-slate-900 via-slate-900 to-slate-800 p-6 shadow-lg"
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="flex items-start gap-4 mb-8 pl-1"
               >
-                {/* Background Glow */}
-                <div className="absolute -top-20 -right-20 w-64 h-64 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none" />
-                
-                <div className="relative z-10 flex items-start gap-4">
-                  <div className="w-12 h-12 rounded-full border border-cyan-500/30 bg-slate-950 p-1 flex-shrink-0">
-                    <div className="w-full h-full rounded-full bg-cyan-900/20 flex items-center justify-center overflow-hidden">
-                       {/* Placeholder for Coach Avatar or Icon */}
-                       {user?.photo_url ? (
-                         <img src={user.photo_url} alt="Coach" className="w-full h-full object-cover" />
-                       ) : (
-                         <User className="w-6 h-6 text-cyan-400" />
-                       )}
+                {/* Avatar */}
+                <div className="relative flex-shrink-0">
+                  <div className="w-14 h-14 rounded-full p-[2px] bg-gradient-to-b from-cyan-400 to-purple-500 shadow-[0_0_15px_rgba(6,182,212,0.4)]">
+                    <div className="w-full h-full rounded-full overflow-hidden bg-slate-900">
+                      <img 
+                        src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/36d608561_Gemini_Generated_Image_y1tl62y1tl62y1tl.png" 
+                        alt="Coach" 
+                        className="w-full h-full object-cover" 
+                      />
                     </div>
                   </div>
+                  {/* Status Indicator Dot */}
+                  <div className={`absolute bottom-0 right-0 w-4 h-4 rounded-full border-2 border-slate-900 ${
+                    readinessStatus === 'green' ? 'bg-green-500 shadow-[0_0_10px_rgba(34,197,94,0.6)]' : 
+                    readinessStatus === 'yellow' ? 'bg-amber-500 shadow-[0_0_10px_rgba(245,158,11,0.6)]' : 
+                    'bg-red-500 shadow-[0_0_10px_rgba(239,68,68,0.6)]'
+                  }`} />
+                </div>
+                
+                {/* Speech Bubble */}
+                <div className="flex-1 relative">
+                  {/* Bubble Tail */}
+                  <div className="absolute top-4 -left-2 w-4 h-4 bg-slate-800/80 border-l border-b border-cyan-500/30 transform rotate-45 z-0" />
                   
-                  <div className="flex-1">
-                     {/* Dynamic Message based on Readiness */}
-                     <div className="glass-cyan inline-flex px-3 py-1 rounded-full text-xs font-medium text-cyan-300 mb-2 border border-cyan-500/20">
+                  <div className="relative z-10 p-5 rounded-2xl rounded-tl-sm bg-gradient-to-br from-slate-800/90 to-slate-900/90 border border-cyan-500/30 shadow-[0_0_30px_rgba(6,182,212,0.15)] backdrop-blur-md">
+                    {/* Header line inside bubble */}
+                    <div className="flex items-center justify-between mb-2">
+                      <span className={`text-xs font-bold uppercase tracking-wider ${
+                        readinessStatus === 'green' ? 'text-green-400' : 
+                        readinessStatus === 'yellow' ? 'text-amber-400' : 'text-red-400'
+                      }`}>
                         {readinessStatus === 'green' ? 'System bereit' : readinessStatus === 'yellow' ? 'System braucht Pflege' : 'Akku leer'}
-                     </div>
-                     <p className="text-slate-200 font-medium leading-relaxed">
+                      </span>
+                      <span className="text-[10px] text-slate-500">Heute</span>
+                    </div>
+                    
+                    <p className="text-slate-100 text-sm md:text-base font-medium leading-relaxed">
                        {readinessStatus === 'green' 
                          ? `Dein System ist bereit. Fokus heute: ${activePlan.goal_description || 'Maximale Performance'}.`
                          : readinessStatus === 'yellow'
                          ? "Dein System signalisiert Bedarf an Pflege. Fokus heute: Mobilität & Stabilität."
                          : "Rote Ampel. Fokus heute: Aktive Regeneration & Reset."
                        }
-                     </p>
+                    </p>
                   </div>
                 </div>
               </motion.div>
