@@ -170,36 +170,55 @@ export default function FlowRoutines() {
           </section>
         )}
 
-        {/* All Other Routines */}
+        {/* Explore Routines */}
         <section>
-          <button
-            onClick={() => setShowAll(p => !p)}
-            className="flex items-center gap-2 text-sm text-slate-400 hover:text-slate-200 transition-colors mb-3"
-          >
-            <ChevronRight className={`w-4 h-4 transition-transform ${showAll ? 'rotate-90' : ''}`} />
-            {showAll ? 'Weniger anzeigen' : `Alle Routinen (${otherRoutines.length} weitere)`}
-          </button>
-
-          <AnimatePresence>
-            {showAll && (
-              <motion.div
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: 'auto' }}
-                exit={{ opacity: 0, height: 0 }}
-                className="space-y-3 overflow-hidden"
+          <h2 className="text-sm font-semibold text-slate-400 uppercase tracking-widest mb-4">
+            Entdecken
+          </h2>
+          
+          {/* Category Filter */}
+          <div className="flex overflow-x-auto gap-2 pb-2 mb-4 custom-scrollbar -mx-4 px-4 sm:mx-0 sm:px-0">
+            {[
+              { id: 'all', label: 'Alle' },
+              { id: 'funktionale-bewegung', label: 'Functional' },
+              { id: 'mobility', label: 'Mobility' },
+              { id: 'neuro', label: 'Neuro' },
+              { id: 'faszien', label: 'Faszien' },
+              { id: 'breathwork', label: 'Atmung' }
+            ].map((cat) => (
+              <button
+                key={cat.id}
+                onClick={() => setSelectedCategory(cat.id)}
+                className={`whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-medium transition-colors ${
+                  selectedCategory === cat.id
+                    ? 'bg-cyan-500 text-slate-950'
+                    : 'bg-slate-800/50 text-slate-400 hover:bg-slate-800 hover:text-slate-200'
+                }`}
               >
-                {otherRoutines.map((routine, idx) => (
-                  <RoutineCard
-                    key={routine.id}
-                    routine={routine}
-                    idx={idx}
-                    completed={completedIds.has(routine.id)}
-                    onClick={() => navigateToRoutine(routine)}
-                  />
-                ))}
-              </motion.div>
+                {cat.label}
+              </button>
+            ))}
+          </div>
+
+          <div className="space-y-3">
+            {otherRoutines
+              .filter(r => selectedCategory === 'all' || r.category === selectedCategory)
+              .map((routine, idx) => (
+              <RoutineCard
+                key={routine.id}
+                routine={routine}
+                idx={idx}
+                completed={completedIds.has(routine.id)}
+                onClick={() => navigateToRoutine(routine)}
+              />
+            ))}
+            
+            {otherRoutines.filter(r => selectedCategory === 'all' || r.category === selectedCategory).length === 0 && (
+              <div className="text-center py-8 text-slate-500 text-sm glass rounded-xl border border-slate-700/50">
+                Keine weiteren Routinen in dieser Kategorie gefunden.
+              </div>
             )}
-          </AnimatePresence>
+          </div>
         </section>
 
       </div>
