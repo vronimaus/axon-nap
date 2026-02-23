@@ -10,24 +10,24 @@ Deno.serve(async (req) => {
         for (const routine of routines) {
             if (routine.sequence && Array.isArray(routine.sequence)) {
                 let actualTotalSeconds = 0;
-                
                 for (const seq of routine.sequence) {
                     actualTotalSeconds += (seq.duration_seconds || 0);
                 }
-                
                 const actualTotalMinutes = Math.ceil(actualTotalSeconds / 60);
                 
+                let desc = routine.description || "";
+                
+                // Replace e.g. "15 Minuten." with "8 Minuten."
+                desc = desc.replace(/^\d+\s*Minuten\./i, `${actualTotalMinutes} Minuten.`);
+                
                 await base44.asServiceRole.entities.Routine.update(routine.id, {
-                    total_duration_seconds: actualTotalSeconds,
-                    total_duration: actualTotalMinutes
+                    description: desc
                 });
                 
                 updates.push({
                     routine_name: routine.routine_name,
-                    old_minutes: routine.total_duration,
-                    new_minutes: actualTotalMinutes,
-                    old_seconds: routine.total_duration_seconds,
-                    new_seconds: actualTotalSeconds
+                    old_desc: routine.description,
+                    new_desc: desc
                 });
             }
         }
