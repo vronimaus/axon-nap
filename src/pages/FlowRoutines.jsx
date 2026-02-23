@@ -201,7 +201,7 @@ export default function FlowRoutines() {
           </div>
 
           <div className="space-y-3">
-            {otherRoutines
+            {routines
               .filter(r => selectedCategory === 'all' || r.category === selectedCategory)
               .map((routine, idx) => (
               <RoutineCard
@@ -213,9 +213,9 @@ export default function FlowRoutines() {
               />
             ))}
             
-            {otherRoutines.filter(r => selectedCategory === 'all' || r.category === selectedCategory).length === 0 && (
+            {routines.filter(r => selectedCategory === 'all' || r.category === selectedCategory).length === 0 && (
               <div className="text-center py-8 text-slate-500 text-sm glass rounded-xl border border-slate-700/50">
-                Keine weiteren Routinen in dieser Kategorie gefunden.
+                Keine Routinen in dieser Kategorie gefunden.
               </div>
             )}
           </div>
