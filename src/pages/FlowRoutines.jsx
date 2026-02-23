@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { createPageUrl } from '@/utils';
-import { ArrowLeft, Clock, Play, Zap, Activity, Moon, Star, ChevronRight } from 'lucide-react';
+import { ArrowLeft, Clock, Play, Zap, Activity, Moon, Star, ChevronRight, Wind, Layers, Link } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Helmet } from 'react-helmet-async';
 
@@ -30,6 +30,14 @@ const CATEGORY_LABELS = {
   breathwork: 'Atemarbeit',
   faszien: 'Faszien',
   'funktionale-bewegung': 'Bewegung',
+};
+
+const CATEGORY_ICONS = {
+  neuro: Zap,
+  mobility: Activity,
+  breathwork: Wind,
+  faszien: Layers,
+  'funktionale-bewegung': Link,
 };
 
 const INTENSITY_LABELS = {
@@ -229,6 +237,7 @@ export default function FlowRoutines() {
 function RoutineCard({ routine, idx, completed, highlighted, onClick }) {
   const intensity = INTENSITY_LABELS[routine.intensity_level] || { label: 'Sanft', color: 'text-green-400' };
   const categoryLabel = CATEGORY_LABELS[routine.category] || routine.category;
+  const CategoryIcon = CATEGORY_ICONS[routine.category] || Activity;
 
   return (
     <motion.button
@@ -244,10 +253,10 @@ function RoutineCard({ routine, idx, completed, highlighted, onClick }) {
     >
       <div className="p-4 flex items-start gap-4">
         {/* Icon */}
-        <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 text-xl ${
-          highlighted ? 'bg-slate-800' : 'bg-slate-800/50'
+        <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${
+          highlighted ? 'bg-slate-800 text-amber-400' : 'bg-slate-800/50 text-slate-400'
         }`}>
-          {routine.icon || '⚡'}
+          <CategoryIcon className="w-5 h-5" />
         </div>
 
         {/* Content */}
