@@ -50,9 +50,7 @@
 import AdminDiagnostics from './pages/AdminDiagnostics';
 import AdminHub from './pages/AdminHub';
 import AdminTestCenter from './pages/AdminTestCenter';
-import AxonBotTest from './pages/AxonBotTest';
 import Dashboard from './pages/Dashboard';
-import DebugComplaintHistory from './pages/DebugComplaintHistory';
 import DevNotes from './pages/DevNotes';
 import DiagnosisChat from './pages/DiagnosisChat';
 import DiagnosisWizard from './pages/DiagnosisWizard';
@@ -62,7 +60,6 @@ import ExerciseImageUpload from './pages/ExerciseImageUpload';
 import FAQ from './pages/FAQ';
 import Flow from './pages/Flow';
 import FlowRoutines from './pages/FlowRoutines';
-import FlowSelection from './pages/FlowSelection';
 import Glossary from './pages/Glossary';
 import Imprint from './pages/Imprint';
 import KnowledgeHub from './pages/KnowledgeHub';
@@ -73,8 +70,6 @@ import MFRIntegration from './pages/MFRIntegration';
 import Performance from './pages/Performance';
 import Privacy from './pages/Privacy';
 import Profile from './pages/Profile';
-import ProfileComparison from './pages/ProfileComparison';
-import QuickDemo from './pages/QuickDemo';
 import RehabPlan from './pages/RehabPlan';
 import Success from './pages/Success';
 import Terms from './pages/Terms';
@@ -87,9 +82,7 @@ export const PAGES = {
     "AdminDiagnostics": AdminDiagnostics,
     "AdminHub": AdminHub,
     "AdminTestCenter": AdminTestCenter,
-    "AxonBotTest": AxonBotTest,
     "Dashboard": Dashboard,
-    "DebugComplaintHistory": DebugComplaintHistory,
     "DevNotes": DevNotes,
     "DiagnosisChat": DiagnosisChat,
     "DiagnosisWizard": DiagnosisWizard,
@@ -99,7 +92,6 @@ export const PAGES = {
     "FAQ": FAQ,
     "Flow": Flow,
     "FlowRoutines": FlowRoutines,
-    "FlowSelection": FlowSelection,
     "Glossary": Glossary,
     "Imprint": Imprint,
     "KnowledgeHub": KnowledgeHub,
@@ -110,8 +102,6 @@ export const PAGES = {
     "Performance": Performance,
     "Privacy": Privacy,
     "Profile": Profile,
-    "ProfileComparison": ProfileComparison,
-    "QuickDemo": QuickDemo,
     "RehabPlan": RehabPlan,
     "Success": Success,
     "Terms": Terms,
