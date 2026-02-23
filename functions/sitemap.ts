@@ -4,10 +4,12 @@ Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
     
-    // Basis-URL der App (hier generisch als Platzhalter, idealerweise aus Env oder Request-Origin abgeleitet)
-    // Bei Base44 Apps nutzen wir die Origin der Anfrage
+    // Basis-URL der App
+    // Wir priorisieren den Host-Header, da dieser oft die echte Domain (z.B. custom domain) enthält
     const url = new URL(req.url);
-    const baseUrl = `${url.protocol}//${url.host}`;
+    const host = req.headers.get("x-forwarded-host") || req.headers.get("host") || url.host;
+    const protocol = req.headers.get("x-forwarded-proto") || url.protocol.replace(':', '');
+    const baseUrl = `${protocol}://${host}`;
 
     // Dynamische Inhalte abrufen (z.B. öffentliche Knowledge Articles und Routinen)
     // Wir nutzen asServiceRole, da wir ggf. auch auf öffentliche Inhalte zugreifen, ohne dass ein User eingeloggt ist.
