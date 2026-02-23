@@ -41,7 +41,7 @@ const INTENSITY_LABELS = {
 export default function FlowRoutines() {
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [showAll, setShowAll] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState('all');
 
   useEffect(() => {
     const checkAuth = async () => {
