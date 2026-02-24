@@ -94,6 +94,7 @@ export default function Landing() {
             <a href="#science" className="hover:text-white transition-colors">Wissenschaft</a>
             <a href="#how" className="hover:text-white transition-colors">Methode</a>
             <a href="#pricing" className="hover:text-white transition-colors">Besitz statt Miete</a>
+            <Link to={createPageUrl('KnowledgeHub')} className="hover:text-white transition-colors">Knowledge Hub</Link>
             {user ? (
                 <Link to={createPageUrl('Dashboard')} className="hover:text-amber-500 transition-colors">
                   Dashboard
@@ -227,28 +228,35 @@ export default function Landing() {
                 className="md:col-span-12 bg-slate-900/40 border border-white/5 p-10 rounded-[2rem] hover:border-blue-500/30 transition-all duration-500"
             >
                 <h3 className="text-center text-2xl md:text-3xl font-bold mb-12 uppercase tracking-tight text-slate-200">Wissenschaftliches Fundament</h3>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-                    <div className="space-y-3 group">
-                        <span className="text-[10px] font-black uppercase text-blue-500 tracking-widest block mb-1">Faszien-Pioniere</span>
-                        <h5 className="font-bold text-base text-slate-300 group-hover:text-white transition-colors">Schleip / Stecco</h5>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-left">
+                    <div className="space-y-3 bg-slate-950/50 p-6 rounded-2xl border border-white/5">
+                        <h5 className="font-bold text-lg text-white flex items-center gap-2 justify-center md:justify-start">
+                            <span className="w-2 h-2 rounded-full bg-blue-500"></span>
+                            Neural Control
+                        </h5>
+                        <p className="text-sm text-slate-400 leading-relaxed">
+                            Bewegung entsteht nicht im Muskel, sondern im Hirnstamm. Wenn deine Augen oder dein Gleichgewicht unklare Signale senden, zieht das Gehirn die „neuronale Handbremse“. Wir lösen sie.
+                        </p>
                     </div>
-                    <div className="space-y-3 group">
-                        <span className="text-[10px] font-black uppercase text-blue-500 tracking-widest block mb-1">Funktionale Ketten</span>
-                        <h5 className="font-bold text-base text-slate-300 group-hover:text-white transition-colors">Myers / Gray</h5>
+                    <div className="space-y-3 bg-slate-950/50 p-6 rounded-2xl border border-white/5">
+                        <h5 className="font-bold text-lg text-white flex items-center gap-2 justify-center md:justify-start">
+                            <span className="w-2 h-2 rounded-full bg-blue-500"></span>
+                            Fascial Chains
+                        </h5>
+                        <p className="text-sm text-slate-400 leading-relaxed">
+                            Wir trainieren keine isolierten Muskeln, sondern myofasziale Ketten. Wir nutzen die Architektur deines Bindegewebes, um Spannungen dort zu lösen, wo sie tatsächlich entstehen.
+                        </p>
                     </div>
-                    <div className="space-y-3 group">
-                        <span className="text-[10px] font-black uppercase text-blue-500 tracking-widest block mb-1">Athletik-Standards</span>
-                        <h5 className="font-bold text-base text-slate-300 group-hover:text-white transition-colors">Vern Gambetta</h5>
-                    </div>
-                    <div className="space-y-3 group">
-                        <span className="text-[10px] font-black uppercase text-blue-500 tracking-widest block mb-1">Mobility-Klinik</span>
-                        <h5 className="font-bold text-base text-slate-300 group-hover:text-white transition-colors">Kelly Starrett</h5>
+                    <div className="space-y-3 bg-slate-950/50 p-6 rounded-2xl border border-white/5">
+                        <h5 className="font-bold text-lg text-white flex items-center gap-2 justify-center md:justify-start">
+                            <span className="w-2 h-2 rounded-full bg-blue-500"></span>
+                            Loaded Mobility
+                        </h5>
+                        <p className="text-sm text-slate-400 leading-relaxed">
+                            Dehnen allein reicht nicht. Dein Gehirn lässt Spannung erst dauerhaft los, wenn es lernt, in der neuen Beweglichkeit Kraft zu erzeugen. Wir sichern deinen Fortschritt durch Belastung.
+                        </p>
                     </div>
                 </div>
-                <p className="text-center text-xs text-slate-600 mt-12 max-w-2xl mx-auto italic leading-relaxed">
-                    AXON ist eine unabhängige Synthese-Plattform. Die Algorithmen basieren auf den weltweit anerkannten biomechanischen 
-                    und faszialen Lehren dieser Experten, ohne dass eine direkte geschäftliche Kooperation besteht.
-                </p>
             </motion.div>
 
             {/* Bento Card 4: Dopamine Chart */}
