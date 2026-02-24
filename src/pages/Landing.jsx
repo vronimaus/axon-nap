@@ -125,151 +125,70 @@ export default function Landing() {
       {/* Hero Section */}
       <HeroSection onCtaClick={() => handleSelectOption('direct')} />
 
-      {/* Main Content - Bento Grid */}
-      <main className="max-w-7xl mx-auto px-6 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
+      {/* App Inside Section */}
+      <AppInsideSection />
+
+      {/* Science / Evidence Section (Preserving Neural Control texts) */}
+      <section id="science" className="py-24">
+        <div className="container mx-auto px-6 text-center">
+            <h3 className="text-2xl md:text-4xl font-black mb-6 uppercase tracking-tighter text-white">Evidenz statt Hype.</h3>
+            <p className="text-slate-400 max-w-2xl mx-auto mb-16 leading-relaxed text-lg">
+                AXON basiert auf den Erkenntnissen der modernen Faszienforschung, Neuro-Athletik und Biomechanik. 
+                Wir übersetzen komplexe Wissenschaft in einfache 30-Sekunden-Protokolle.
+            </p>
             
-            {/* Bento Card 1: Hardware vs Software */}
-            <motion.div 
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                id="how" 
-                className="md:col-span-8 bg-slate-900/40 border border-white/5 p-8 md:p-12 rounded-[2rem] hover:border-blue-500/30 transition-all duration-500 hover:-translate-y-1"
-            >
-                <h3 className="text-3xl font-bold mb-6">Hardware vs. <span className="text-blue-500">Software</span></h3>
-                <p className="text-slate-400 mb-8 leading-relaxed text-lg">
-                    Fitnessstudios pumpen nur die „Hardware“ (Muskeln). Wenn dein Gehirn aber die „neuronale Handbremse“ angezogen hat, 
-                    weil dein Gleichgewichtssinn oder deine Augen unklare Signale senden, wirst du niemals dein volles Potenzial erreichen. 
-                    AXON löst diese Bremsen in Echtzeit.
-                </p>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div className="p-6 bg-white/5 rounded-2xl border border-white/5 flex flex-col justify-center">
-                        <span className="block text-amber-500 font-black text-4xl mb-2">30 SEK</span>
-                        <span className="text-xs uppercase font-bold text-slate-500 tracking-wider">Dauer eines Neuro-Hacks</span>
-                    </div>
-                    <div className="p-6 bg-white/5 rounded-2xl border border-white/5 flex flex-col justify-center">
-                        <span className="block text-emerald-500 font-black text-4xl mb-2">+15%</span>
-                        <span className="text-xs uppercase font-bold text-slate-500 tracking-wider">Sofort mehr Beweglichkeit</span>
-                    </div>
-                </div>
-            </motion.div>
-
-            {/* Bento Card 2: Der Audit Beweis */}
-            <motion.div 
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.1 }}
-                className="md:col-span-4 bg-gradient-to-br from-blue-900/20 to-slate-900/40 border border-white/5 p-8 rounded-[2rem] flex flex-col justify-between hover:border-blue-500/30 transition-all duration-500 hover:-translate-y-1"
-            >
-                <div className="text-5xl mb-6 bg-blue-500/20 w-20 h-20 rounded-2xl flex items-center justify-center">🧪</div>
-                <div>
-                    <h4 className="font-bold text-xl mb-3 uppercase text-blue-100">Der Audit-Beweis</h4>
-                    <p className="text-slate-400 text-sm leading-relaxed">Wir raten nicht. Wir testen. <br/><span className="text-blue-400 font-semibold">Vorbeuge-Test → 30 Sek Drill → Re-Test.</span><br/>Wenn es funktioniert, siehst du es sofort.</p>
-                </div>
-            </motion.div>
-
-            {/* Bento Card 3: Wissenschaft */}
-            <motion.div 
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                id="science" 
-                className="md:col-span-12 bg-slate-900/40 border border-white/5 p-10 rounded-[2rem] hover:border-blue-500/30 transition-all duration-500"
-            >
-                <h3 className="text-center text-2xl md:text-3xl font-bold mb-12 uppercase tracking-tight text-slate-200">Wissenschaftliches Fundament</h3>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-left">
-                    <div className="space-y-3 bg-slate-950/50 p-6 rounded-2xl border border-white/5">
-                        <h5 className="font-bold text-lg text-white flex items-center gap-2 justify-center md:justify-start">
-                            <span className="w-2 h-2 rounded-full bg-blue-500"></span>
-                            Neural Control
-                        </h5>
-                        <p className="text-sm text-slate-400 leading-relaxed">
-                            Bewegung entsteht nicht im Muskel, sondern im Hirnstamm. Wenn deine Augen oder dein Gleichgewicht unklare Signale senden, zieht das Gehirn die „neuronale Handbremse“. Wir lösen sie.
-                        </p>
-                    </div>
-                    <div className="space-y-3 bg-slate-950/50 p-6 rounded-2xl border border-white/5">
-                        <h5 className="font-bold text-lg text-white flex items-center gap-2 justify-center md:justify-start">
-                            <span className="w-2 h-2 rounded-full bg-blue-500"></span>
-                            Fascial Chains
-                        </h5>
-                        <p className="text-sm text-slate-400 leading-relaxed">
-                            Wir trainieren keine isolierten Muskeln, sondern myofasziale Ketten. Wir nutzen die Architektur deines Bindegewebes, um Spannungen dort zu lösen, wo sie tatsächlich entstehen.
-                        </p>
-                    </div>
-                    <div className="space-y-3 bg-slate-950/50 p-6 rounded-2xl border border-white/5">
-                        <h5 className="font-bold text-lg text-white flex items-center gap-2 justify-center md:justify-start">
-                            <span className="w-2 h-2 rounded-full bg-blue-500"></span>
-                            Loaded Mobility
-                        </h5>
-                        <p className="text-sm text-slate-400 leading-relaxed">
-                            Dehnen allein reicht nicht. Dein Gehirn lässt Spannung erst dauerhaft los, wenn es lernt, in der neuen Beweglichkeit Kraft zu erzeugen. Wir sichern deinen Fortschritt durch Belastung.
-                        </p>
-                    </div>
-                </div>
-            </motion.div>
-
-            {/* Bento Card 4: Dopamine Chart */}
-            <motion.div 
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                className="md:col-span-6 bg-slate-900/40 border border-white/5 p-8 md:p-10 rounded-[2rem] hover:border-emerald-500/30 transition-all duration-500 hover:-translate-y-1"
-            >
-                <h3 className="text-2xl font-bold mb-6">Kein „Grind“. <span className="text-emerald-400">Flow.</span></h3>
-                <div className="h-[250px] w-full bg-slate-950/30 rounded-xl border border-white/5 p-4">
-                    <DopamineChart />
-                </div>
-                <p className="text-xs text-slate-500 mt-6 italic text-center">Warum 90% bei AXON bleiben: Sofortige Belohnung statt wochenlanges Warten.</p>
-            </motion.div>
-
-            {/* Bento Card 5: Pricing */}
-            <motion.div 
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                id="pricing" 
-                className="md:col-span-6 bg-amber-900/10 border-2 border-amber-500/50 p-8 md:p-10 rounded-[2rem] relative overflow-hidden group hover:border-amber-500 transition-all duration-500 hover:bg-amber-900/20"
-            >
-                <div className="absolute top-6 right-6 md:right-8 bg-amber-500 text-black text-[10px] font-black px-3 py-1 rounded-full uppercase shadow-lg shadow-amber-500/20 animate-pulse">
-                    Lifetime Deal
-                </div>
-                
-                <h3 className="text-3xl font-black mb-2 text-white">Besitz statt Miete.</h3>
-                <p className="text-amber-500/80 text-sm font-bold uppercase tracking-wide mb-6">Das Anti-Abo Modell</p>
-
-                <div className="flex items-baseline space-x-3 mb-8">
-                    <span className="text-5xl md:text-6xl font-black text-white">59,90 €</span>
-                    <span className="text-slate-500 line-through text-xl decoration-2">179€</span>
-                </div>
-
-                <ul className="space-y-4 mb-10">
-                    {[
-                        "Voller Zugriff auf alle 226 AXON-Codes",
-                        "Neuro-, Breathing- & Mobility-Flows",
-                        "KI-basierte Trainingsanpassung (Daily Fluidity)",
-                        "Lebenslange Lizenz ohne monatliche Kosten"
-                    ].map((item, i) => (
-                        <li key={i} className="flex items-center space-x-3 text-sm text-slate-300">
-                            <div className="w-5 h-5 rounded-full bg-amber-500 flex items-center justify-center text-black">
-                                <CheckCircle2 className="w-3.5 h-3.5" strokeWidth={4} />
-                            </div>
-                            <span>{item}</span>
-                        </li>
-                    ))}
-                </ul>
-
-                <Button 
-                    onClick={() => handleSelectOption('direct')}
-                    className="w-full py-6 text-lg font-black uppercase tracking-widest rounded-2xl bg-amber-500 hover:bg-amber-400 text-black shadow-xl shadow-amber-500/10 hover:shadow-amber-500/30 transition-all duration-300"
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-left max-w-6xl mx-auto">
+                <motion.div 
+                    whileHover={{ y: -5 }}
+                    className="space-y-4 bg-slate-900/50 p-8 rounded-[2rem] border border-white/5 hover:border-blue-500/30 transition-all duration-300"
                 >
-                    Jetzt lebenslang sichern
-                </Button>
-            </motion.div>
+                    <div className="w-12 h-12 rounded-xl bg-blue-500/10 flex items-center justify-center text-blue-400 mb-2">
+                        <Brain className="w-6 h-6" />
+                    </div>
+                    <h5 className="font-bold text-xl text-white">Neural Control</h5>
+                    <p className="text-sm text-slate-400 leading-relaxed">
+                        Bewegung entsteht nicht im Muskel, sondern im Hirnstamm. Wenn deine Augen oder dein Gleichgewicht unklare Signale senden, zieht das Gehirn die „neuronale Handbremse“. Wir lösen sie.
+                    </p>
+                </motion.div>
 
+                <motion.div 
+                    whileHover={{ y: -5 }}
+                    className="space-y-4 bg-slate-900/50 p-8 rounded-[2rem] border border-white/5 hover:border-blue-500/30 transition-all duration-300"
+                >
+                    <div className="w-12 h-12 rounded-xl bg-blue-500/10 flex items-center justify-center text-blue-400 mb-2">
+                        <Activity className="w-6 h-6" />
+                    </div>
+                    <h5 className="font-bold text-xl text-white">Fascial Chains</h5>
+                    <p className="text-sm text-slate-400 leading-relaxed">
+                        Wir trainieren keine isolierten Muskeln, sondern myofasziale Ketten. Wir nutzen die Architektur deines Bindegewebes, um Spannungen dort zu lösen, wo sie tatsächlich entstehen.
+                    </p>
+                </motion.div>
+
+                <motion.div 
+                    whileHover={{ y: -5 }}
+                    className="space-y-4 bg-slate-900/50 p-8 rounded-[2rem] border border-white/5 hover:border-blue-500/30 transition-all duration-300"
+                >
+                    <div className="w-12 h-12 rounded-xl bg-blue-500/10 flex items-center justify-center text-blue-400 mb-2">
+                        <Shield className="w-6 h-6" />
+                    </div>
+                    <h5 className="font-bold text-xl text-white">Loaded Mobility</h5>
+                    <p className="text-sm text-slate-400 leading-relaxed">
+                        Dehnen allein reicht nicht. Dein Gehirn lässt Spannung erst dauerhaft los, wenn es lernt, in der neuen Beweglichkeit Kraft zu erzeugen. Wir sichern deinen Fortschritt durch Belastung.
+                    </p>
+                </motion.div>
+            </div>
+
+            <div className="mt-16">
+                 <Link to={createPageUrl('KnowledgeHub')} className="inline-flex items-center gap-2 text-cyan-400 text-sm font-bold uppercase tracking-widest hover:text-cyan-300 transition-colors group">
+                    KnowledgeHub durchsuchen 
+                    <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                 </Link>
+            </div>
         </div>
-      </main>
+      </section>
+
+      {/* Pricing Section */}
+      <PricingSection onCtaClick={() => handleSelectOption('direct')} />
 
       {/* Footer */}
       <footer className="py-20 border-t border-white/5 bg-slate-950">
