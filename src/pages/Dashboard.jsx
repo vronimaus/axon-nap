@@ -12,46 +12,24 @@ import SessionDecision from '../components/dashboard/SessionDecision';
 import ProgressSyncView from '../components/dashboard/ProgressSyncView';
 import { Helmet } from 'react-helmet-async';
 
+import { useTrialStatus } from '../components/useTrialStatus';
+
 export default function Dashboard() {
   const [mode, setMode] = useState(null); // 'rehab', 'performance', or null for selection
   const [selectedBodyRegion, setSelectedBodyRegion] = useState(null);
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [showProgress, setShowProgress] = useState(false);
-  const [user, setUser] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
   const [isGeneratingPlan, setIsGeneratingPlan] = useState(false);
+  
+  const { user, isLoading, hasAccess } = useTrialStatus();
 
   useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        const currentUser = await base44.auth.me();
-        
-        if (!currentUser) {
-          // Keine Auth -> zur Landing
-          window.location.href = createPageUrl('Landing');
-          return;
-        }
-
-        // Check Zugriff (Zahlung oder aktiver Trial)
-        const hasTrialStart = currentUser?.trial_start_date;
-        const daysElapsed = hasTrialStart ? Math.floor((new Date() - new Date(currentUser.trial_start_date)) / (1000 * 60 * 60 * 24)) : null;
-        const isTrialActive = daysElapsed !== null && daysElapsed < 7;
-
-        if (!currentUser?.has_paid && !isTrialActive) {
-          // Kein Zugriff -> zur Landing
-          window.location.href = createPageUrl('Landing');
-          return;
-        }
-
-        setUser(currentUser);
-      } catch (e) {
-        window.location.href = createPageUrl('Landing');
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    checkAuth();
-  }, []);
+    if (isLoading) return;
+    
+    if (!user || !hasAccess) {
+      window.location.href = createPageUrl('Landing');
+    }
+  }, [user, isLoading, hasAccess]);
 
   const handleCloseOnboarding = () => {
     localStorage.setItem('axon_onboarding_seen', 'true');
