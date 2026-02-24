@@ -12,11 +12,16 @@ Deno.serve(async (req) => {
     const today = new Date().toISOString().split('T')[0];
     
     // Fetch data in parallel (Global Sync Engine)
-    const [readinessChecks, rehabPlans, trainingPlans, dashboardRes] = await Promise.all([
+    let dashboardRes = null;
+    try {
+        dashboardRes = await base44.functions.invoke('dashboardDataAggregator', { daysBack: 7 });
+    } catch(e) {
+        console.error("Dashboard agg error: ", e);
+    }
+    const [readinessChecks, rehabPlans, trainingPlans] = await Promise.all([
       base44.entities.ReadinessCheck.filter({ user_email: user.email }),
       base44.entities.RehabPlan.filter({ user_email: user.email, status: 'active' }),
-      base44.entities.TrainingPlan.filter({ user_email: user.email, status: 'active' }),
-      base44.functions.invoke('dashboardDataAggregator', { daysBack: 7 })
+      base44.entities.TrainingPlan.filter({ user_email: user.email, status: 'active' })
     ]);
 
     const activeRehab = rehabPlans[0] || null;
