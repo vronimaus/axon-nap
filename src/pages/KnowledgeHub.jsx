@@ -119,23 +119,7 @@ export default function KnowledgeHub() {
                      </span>
                   </div>
 
-                  <div className="p-6 flex-1 flex flex-col">
-                    {/* Author/Team */}
-                    <div className="flex items-center gap-3 mb-6">
-                      {article.expert_image_url ? (
-                        <img 
-                          src={article.expert_image_url} 
-                          alt={article.expert_name}
-                          className="w-6 h-6 rounded-full object-cover"
-                        />
-                      ) : (
-                        <div className="w-6 h-6 rounded-full bg-slate-700/50"></div>
-                      )}
-                      <span className="text-[10px] font-black text-purple-400 tracking-widest uppercase">
-                        {article.expert_name || 'AXON METHODIK-TEAM'}
-                      </span>
-                    </div>
-
+                  <div className="p-6 flex-1 flex flex-col pt-8">
                     {/* Title */}
                     <h3 className="text-xl md:text-[22px] font-bold text-white mb-4 leading-snug group-hover:text-blue-100 transition-colors line-clamp-3">
                       {article.headline}
