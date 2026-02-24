@@ -185,14 +185,13 @@ export default function Layout({ children, currentPageName }) {
             <div className="flex items-center justify-between h-16">
               {/* Logo */}
               <Link to={createPageUrl('Dashboard')} className="flex items-center gap-2 sm:gap-3">
-
-                <div className="block">
+                <div className="flex flex-col">
                    <img 
                      src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/f960cb731_AxonnapLogo500x180Neu.png"
                      alt="AXON"
                      className="h-8 sm:h-10 object-contain mt-1"
                    />
-                  <span className="text-xs text-slate-400 hidden sm:block -mt-1 pl-0.5">Neuro-Athletic Protocol</span>
+                  <span className="text-[10px] text-white font-medium pl-0.5 tracking-widest mt-1">Neuro-Athletic-Protocol</span>
                 </div>
               </Link>
               
@@ -347,7 +346,7 @@ export default function Layout({ children, currentPageName }) {
             </div>
             
             <p className="text-slate-400 text-xs mb-4 uppercase tracking-[0.3em] font-bold">
-                AXON Intelligent Training System | Early Stage 2026
+                AXON<span style={{color: '#398bf7', textTransform: 'lowercase'}}>-nap</span> Intelligent Training System | Early Stage 2026
             </p>
             <p className="text-slate-500 text-[10px] max-w-xl mx-auto leading-relaxed">
                 Datensicherheit nach DSGVO. On-Device KI-Verarbeitung. 
