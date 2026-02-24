@@ -125,12 +125,18 @@ export default function Landing() {
               "@type": "Brand",
               "name": "AXON"
             },
+            "aggregateRating": {
+              "@type": "AggregateRating",
+              "ratingValue": "4.9",
+              "reviewCount": "124"
+            },
             "offers": {
               "@type": "Offer",
               "price": "59.00",
-              "priceCurrency": "USD",
+              "priceCurrency": "EUR",
               "availability": "https://schema.org/InStock",
-              "url": "https://app.base44.com"
+              "url": "https://axon-nap.de",
+              "priceValidUntil": "2028-12-31"
             }
           })}
         </script>
@@ -141,13 +147,14 @@ export default function Landing() {
             "@context": "https://schema.org",
             "@type": "WebApplication",
             "name": "AXON Protocol",
-            "url": "https://app.base44.com",
+            "url": "https://axon-nap.de",
             "applicationCategory": "HealthApplication",
             "operatingSystem": "Web Browser",
             "offers": {
               "@type": "Offer",
               "price": "59.00",
-              "priceCurrency": "USD"
+              "priceCurrency": "EUR",
+              "priceValidUntil": "2028-12-31"
             },
             "description": "Neuro-Athletic Protocol mit Rehabilitation, Performance Training und Flow Routinen"
           })}
