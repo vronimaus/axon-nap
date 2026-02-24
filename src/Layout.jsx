@@ -185,13 +185,13 @@ export default function Layout({ children, currentPageName }) {
             <div className="flex items-center justify-between h-16">
               {/* Logo */}
               <Link to={createPageUrl('Dashboard')} className="flex items-center gap-2 sm:gap-3">
-                <div className="flex flex-col">
+                <div className="flex flex-col items-center">
                    <img 
                      src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/f960cb731_AxonnapLogo500x180Neu.png"
                      alt="AXON"
                      className="h-8 sm:h-10 object-contain mt-1"
                    />
-                  <span className="text-[10px] text-white font-medium pl-0.5 tracking-widest mt-1">Neuro-Athletic-Protocol</span>
+                  <span className="text-[10px] text-white font-medium tracking-widest mt-1">Neuro-Athletic-Protocol</span>
                 </div>
               </Link>
               
