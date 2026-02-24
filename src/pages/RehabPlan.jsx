@@ -64,6 +64,9 @@ export default function RehabPlan() {
       const findValidPlan = async (filter) => {
         const plans = await base44.entities.RehabPlan.filter(filter, '-plan_generated_date', 5);
         for (const plan of plans) {
+          // Skip completed plans so we find the active one
+          if (plan.status === 'completed') continue;
+          
           if (plan.phases && Array.isArray(plan.phases) && plan.phases.length > 0) {
             return plan;
           }
@@ -75,11 +78,11 @@ export default function RehabPlan() {
         return null;
       };
 
-      const byEmail = await findValidPlan({ user_email: user.email, status: 'active' });
+      const byEmail = await findValidPlan({ user_email: user.email });
       if (byEmail) return byEmail;
 
       // Fallback: check by created_by
-      return await findValidPlan({ created_by: user.email, status: 'active' });
+      return await findValidPlan({ created_by: user.email });
     },
     enabled: !!user?.email
   });
