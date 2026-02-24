@@ -188,9 +188,9 @@ export default function Layout({ children, currentPageName }) {
 
                 <div className="block">
                    <img 
-                     src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/60d205ae0_AxonLogo180x35.png"
+                     src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/f960cb731_AxonnapLogo500x180Neu.png"
                      alt="AXON"
-                     className="h-6 sm:h-7 object-contain mt-1"
+                     className="h-8 sm:h-10 object-contain mt-1"
                    />
                   <span className="text-xs text-slate-400 hidden sm:block -mt-1 pl-0.5">Neuro-Athletic Protocol</span>
                 </div>

@@ -86,9 +86,9 @@ export default function Landing() {
         <div className="max-w-7xl mx-auto px-6 flex justify-between items-center">
           <div className="flex items-center gap-3">
              <img 
-              src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/60d205ae0_AxonLogo180x35.png"
+              src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/f960cb731_AxonnapLogo500x180Neu.png"
               alt="AXON"
-              className="h-6 sm:h-7 object-contain"
+              className="h-8 sm:h-10 object-contain"
             />
             <span className="text-xs font-bold text-blue-500 hidden sm:inline-block border border-blue-500/20 bg-blue-500/10 px-2 py-0.5 rounded">2026</span>
           </div>
