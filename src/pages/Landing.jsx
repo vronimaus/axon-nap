@@ -24,6 +24,13 @@ export default function Landing() {
         const previewMode = urlParams.get('preview') === 'true';
 
         try {
+          const isAuth = await base44.auth.isAuthenticated();
+          if (!isAuth) {
+            setUser(null);
+            setIsLoading(false);
+            return;
+          }
+
           const currentUser = await base44.auth.me();
           setUser(currentUser);
 

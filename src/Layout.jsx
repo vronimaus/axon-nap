@@ -20,6 +20,13 @@ export default function Layout({ children, currentPageName }) {
   useEffect(() => {
     const checkAuth = async () => {
       try {
+        const isAuth = await base44.auth.isAuthenticated();
+        if (!isAuth) {
+          setUser(null);
+          setIsChecking(false);
+          return;
+        }
+
         const currentUser = await base44.auth.me();
         setUser(currentUser);
 
@@ -137,6 +144,9 @@ export default function Layout({ children, currentPageName }) {
     if (!pagesWithoutNav.includes(currentPageName)) {
       const interval = setInterval(async () => {
         try {
+          const isAuth = await base44.auth.isAuthenticated();
+          if (!isAuth) return;
+
           const currentUser = await base44.auth.me();
           // Only update if user data actually changed to prevent unnecessary re-renders
           setUser(prev => {

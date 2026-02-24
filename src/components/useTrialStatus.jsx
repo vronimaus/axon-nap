@@ -16,6 +16,12 @@ export function useTrialStatus() {
   useEffect(() => {
     const checkTrialStatus = async () => {
       try {
+        const isAuth = await base44.auth.isAuthenticated();
+        if (!isAuth) {
+          setIsLoading(false);
+          return;
+        }
+
         const currentUser = await base44.auth.me();
         setUser(currentUser);
 
@@ -64,7 +70,10 @@ export function useTrialStatus() {
           });
         }
       } catch (e) {
-        console.error('Error checking trial status:', e);
+        // Ignoriere erwartete Auth-Fehler bei nicht eingeloggten Usern
+        if (!e.message?.includes('Authentication required') && e.status !== 401) {
+          console.error('Error checking trial status:', e);
+        }
       } finally {
         setIsLoading(false);
       }
