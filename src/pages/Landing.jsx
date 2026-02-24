@@ -588,6 +588,8 @@ export default function Landing() {
                   alt="REHAB - Body Map"
                   loading="lazy"
                   decoding="async"
+                  width="500"
+                  height="1000"
                   className="w-full h-auto transition-opacity duration-500 group-hover:opacity-0"
                 />
                 <img 
@@ -618,6 +620,8 @@ export default function Landing() {
                   alt="GOALS - Ziel eingeben"
                   loading="lazy"
                   decoding="async"
+                  width="500"
+                  height="1000"
                   className="w-full h-auto transition-opacity duration-500 group-hover:opacity-0"
                 />
                 <img 
@@ -648,6 +652,8 @@ export default function Landing() {
                   alt="FLOW - Kategorien"
                   loading="lazy"
                   decoding="async"
+                  width="500"
+                  height="1000"
                   className="w-full h-auto transition-opacity duration-500 group-hover:opacity-0"
                 />
                 <img 
