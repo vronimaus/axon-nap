@@ -5,7 +5,7 @@ import { base44 } from '@/api/base44Client';
 import { createPageUrl } from '@/utils';
 import { ArrowLeft, Clock, Play, Zap, Activity, Moon, Star, ChevronRight, Wind, Layers, Link } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import SEO from '../components/seo/SEO';
+import { Helmet } from 'react-helmet-async';
 
 // Triage → welche Routinen passen
 const TRIAGE_ROUTINE_MAP = {
@@ -112,10 +112,10 @@ export default function FlowRoutines() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 pb-24 md:pb-8">
-      <SEO 
-        title="Flow Routines"
-        description="Entdecke die AXON Flow Routines – Tägliche Systempflege für Neuro-Athletik, Mobility und funktionale Bewegung."
-      />
+      <Helmet>
+        <title>Flow Routines – AXON</title>
+        <meta name="robots" content="noindex, nofollow" />
+      </Helmet>
 
       {/* Header */}
       <div className="sticky top-0 z-40 bg-slate-900/95 backdrop-blur border-b border-cyan-500/20">

@@ -10,7 +10,7 @@ import { createPageUrl } from '@/utils';
 import GlossaryTooltip from '../components/glossary/GlossaryTooltip';
 import DailyReadinessCheck from '../components/dashboard/DailyReadinessCheck';
 import RehabCoachingPanel from '../components/flow/RehabCoachingPanel';
-import SEO from '../components/seo/SEO';
+import { Helmet } from 'react-helmet-async';
 
 // Helper: Replace glossary terms in text with tooltips
 function InstructionWithGlossary({ instruction }) {
@@ -386,11 +386,22 @@ export default function Flow() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 p-4 pb-20 md:pb-4">
-      <SEO 
-        title={`${routine.routine_name} Flow`}
-        description={routine.description || `Erlebe ${routine.routine_name} - Ein ${routine.total_duration}-Minuten ${routine.category} Flow für optimale Performance.`}
-        ogImage="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/afa60dd62_AXONLogo.png"
-      />
+      <Helmet>
+        <title>{routine.routine_name} - AXON Flow</title>
+        <meta name="description" content={routine.description || `Erlebe ${routine.routine_name} - Ein ${routine.total_duration}-Minuten ${routine.category} Flow für optimale Performance.`} />
+        <meta name="robots" content="noindex, nofollow" />
+
+        {/* Open Graph */}
+        <meta property="og:title" content={`${routine.routine_name} - AXON Flow`} />
+        <meta property="og:description" content={routine.description || `${routine.total_duration} Minuten ${routine.category} Training`} />
+        <meta property="og:type" content="article" />
+        <meta property="og:image" content="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/afa60dd62_AXONLogo.png" />
+
+        {/* Twitter */}
+        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:title" content={`${routine.routine_name} - AXON Flow`} />
+        <meta name="twitter:description" content={routine.description || `${routine.total_duration} Minuten ${routine.category} Training`} />
+      </Helmet>
 
       {/* Readiness Check Modal */}
       <AnimatePresence>
