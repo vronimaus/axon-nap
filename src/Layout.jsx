@@ -10,25 +10,29 @@ import { Toaster } from 'sonner';
 import ErrorBoundary from './components/ErrorBoundary';
 import OfflineDetector from './components/OfflineDetector';
 import { HelmetProvider } from 'react-helmet-async';
+import { useQueryClient } from '@tanstack/react-query';
 
 export default function Layout({ children, currentPageName }) {
-  const { isLoading: trialLoading, hasAccess } = useTrialStatus();
-  const [user, setUser] = useState(null);
-        const [isChecking, setIsChecking] = useState(true);
-        const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { user, isLoading: trialLoading, hasAccess } = useTrialStatus();
+  const queryClient = useQueryClient();
+  const [isChecking, setIsChecking] = useState(true);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  // Pages ohne Navigation Header
+  const pagesWithoutNav = ['Landing', 'Success', 'Checkout', 'Login'];
 
   useEffect(() => {
-    const checkAuth = async () => {
+    if (trialLoading) return;
+
+    const handleAuthSideEffects = async () => {
+      setIsChecking(true);
       try {
-        const isAuth = await base44.auth.isAuthenticated();
-        if (!isAuth) {
-          setUser(null);
+        if (!user) {
           setIsChecking(false);
           return;
         }
 
-        const currentUser = await base44.auth.me();
-        setUser(currentUser);
+        const currentUser = user;
 
         // Transfer onboarding data to user profile
         const onboardingStatus = localStorage.getItem('axon_onboarding_status');
@@ -119,51 +123,33 @@ export default function Layout({ children, currentPageName }) {
           }
         }
 
-        // Prüfe ob User Zugriff hat (bezahlt oder aktive Trial)
-        const hasTrialStart = currentUser?.trial_start_date;
-        const daysElapsed = hasTrialStart ? Math.floor((new Date() - new Date(currentUser.trial_start_date)) / (1000 * 60 * 60 * 24)) : null;
-        const isTrialActive = daysElapsed !== null && daysElapsed < 7;
-
         // Ohne Zahlung und ohne aktive Trial -> zurück zum Landing
-        if (!currentUser?.has_paid && !isTrialActive && currentPageName !== 'Landing') {
+        if (!hasAccess && currentPageName !== 'Landing') {
           window.location.href = createPageUrl('Landing');
           return;
         }
       } catch (e) {
-        // Not authenticated - that's fine for demo mode
-        setUser(null);
+        console.error(e);
       } finally {
         setIsChecking(false);
       }
     };
-    checkAuth();
+    handleAuthSideEffects();
+  }, [user, trialLoading, hasAccess, currentPageName]);
 
+  useEffect(() => {
     // Poll user status every 60 seconds to detect payment changes
     // Only poll on pages where user should be authenticated
     // Reduced frequency to prevent interference with user interactions
     if (!pagesWithoutNav.includes(currentPageName)) {
-      const interval = setInterval(async () => {
-        try {
-          const isAuth = await base44.auth.isAuthenticated();
-          if (!isAuth) return;
-
-          const currentUser = await base44.auth.me();
-          // Only update if user data actually changed to prevent unnecessary re-renders
-          setUser(prev => {
-            if (JSON.stringify(prev) !== JSON.stringify(currentUser)) {
-              return currentUser;
-            }
-            return prev;
-          });
-        } catch (e) {
-          // Silent fail on polling - don't redirect on error
-          console.warn('User status poll failed:', e.message);
+      const interval = setInterval(() => {
+        if (!trialLoading) {
+           queryClient.invalidateQueries({ queryKey: ['user'] });
         }
       }, 120000);
-
       return () => clearInterval(interval);
     }
-    }, [currentPageName]);
+  }, [currentPageName, trialLoading, queryClient]);
 
     // Pages ohne Navigation Header
     const pagesWithoutNav = ['Landing', 'Success', 'Checkout', 'Login'];
