@@ -163,10 +163,6 @@ export default function Layout({ children, currentPageName }) {
     }
   }, [currentPageName, trialLoading, queryClient]);
 
-    // Pages ohne Navigation Header
-    const pagesWithoutNav = ['Landing', 'Success', 'Checkout', 'Login'];
-    const showNav = !pagesWithoutNav.includes(currentPageName);
-
     const navItems = [
               { name: 'Command', icon: LayoutDashboard, page: 'Dashboard' },
               { name: 'Training', icon: Target, page: 'TrainingPlan' },
