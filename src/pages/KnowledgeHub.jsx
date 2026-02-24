@@ -34,6 +34,12 @@ export default function KnowledgeHub() {
       <Helmet>
         <title>Knowledge Hub - AXON Protocol</title>
         <meta name="description" content="Expertenwissen zu Faszien, Neuro-Athletik und funktionalem Training. Wissenschaftlich fundierte Lösungen für Schmerzen und Performance." />
+        <meta property="og:title" content="Knowledge Hub - AXON Protocol" />
+        <meta property="og:description" content="Expertenwissen zu Faszien, Neuro-Athletik und funktionalem Training. Wissenschaftlich fundierte Lösungen für Schmerzen und Performance." />
+        <meta property="og:type" content="website" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Knowledge Hub - AXON Protocol" />
+        <meta name="twitter:description" content="Expertenwissen zu Faszien, Neuro-Athletik und funktionalem Training." />
       </Helmet>
 
       {/* Header */}

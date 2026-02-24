@@ -95,6 +95,11 @@ export default function FAQ() {
         <meta property="og:description" content="Alle Antworten zu AXON Training, MFR-Nodes, Readiness Check und mehr" />
         <meta property="og:type" content="website" />
         
+        {/* Twitter */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="FAQ - Häufig gestellte Fragen | AXON Protocol" />
+        <meta name="twitter:description" content="Alle Antworten zu AXON: Funktionsweise, Training, MFR-Nodes und mehr." />
+        
         {/* Structured Data */}
         <script type="application/ld+json">
           {JSON.stringify(faqSchema)}

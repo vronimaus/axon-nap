@@ -101,6 +101,13 @@ export default function KnowledgeHubArticle() {
         <meta property="og:title" content={article.meta_title || article.headline} />
         <meta property="og:description" content={article.meta_description || article.summary} />
         <meta property="og:type" content="article" />
+        {article.expert_image_url && <meta property="og:image" content={article.expert_image_url} />}
+        
+        {/* Twitter */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={article.meta_title || article.headline} />
+        <meta name="twitter:description" content={article.meta_description || article.summary} />
+        {article.expert_image_url && <meta name="twitter:image" content={article.expert_image_url} />}
         
         {/* Structured Data */}
         <script type="application/ld+json">

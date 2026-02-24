@@ -58,23 +58,23 @@ import Discovery from './pages/Discovery';
 import ExerciseImageGenerator from './pages/ExerciseImageGenerator';
 import ExerciseImageUpload from './pages/ExerciseImageUpload';
 import FAQ from './pages/FAQ';
+import Flow from './pages/Flow';
+import FlowRoutines from './pages/FlowRoutines';
 import Glossary from './pages/Glossary';
 import Imprint from './pages/Imprint';
 import KnowledgeHub from './pages/KnowledgeHub';
 import KnowledgeHubArticle from './pages/KnowledgeHubArticle';
 import KnowledgeUpload from './pages/KnowledgeUpload';
+import Landing from './pages/Landing';
 import MFRIntegration from './pages/MFRIntegration';
 import Performance from './pages/Performance';
 import Privacy from './pages/Privacy';
 import Profile from './pages/Profile';
+import RehabPlan from './pages/RehabPlan';
 import Success from './pages/Success';
 import Terms from './pages/Terms';
 import TrainingPlan from './pages/TrainingPlan';
 import TrialInfo from './pages/TrialInfo';
-import RehabPlan from './pages/RehabPlan';
-import Landing from './pages/Landing';
-import Flow from './pages/Flow';
-import FlowRoutines from './pages/FlowRoutines';
 import __Layout from './Layout.jsx';
 
 
@@ -90,23 +90,23 @@ export const PAGES = {
     "ExerciseImageGenerator": ExerciseImageGenerator,
     "ExerciseImageUpload": ExerciseImageUpload,
     "FAQ": FAQ,
+    "Flow": Flow,
+    "FlowRoutines": FlowRoutines,
     "Glossary": Glossary,
     "Imprint": Imprint,
     "KnowledgeHub": KnowledgeHub,
     "KnowledgeHubArticle": KnowledgeHubArticle,
     "KnowledgeUpload": KnowledgeUpload,
+    "Landing": Landing,
     "MFRIntegration": MFRIntegration,
     "Performance": Performance,
     "Privacy": Privacy,
     "Profile": Profile,
+    "RehabPlan": RehabPlan,
     "Success": Success,
     "Terms": Terms,
     "TrainingPlan": TrainingPlan,
     "TrialInfo": TrialInfo,
-    "RehabPlan": RehabPlan,
-    "Landing": Landing,
-    "Flow": Flow,
-    "FlowRoutines": FlowRoutines,
 }
 
 export const pagesConfig = {
