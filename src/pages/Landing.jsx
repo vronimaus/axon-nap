@@ -7,8 +7,10 @@ import { motion } from 'framer-motion';
 import { base44 } from '@/api/base44Client';
 import { Helmet } from 'react-helmet-async';
 import HeroSection from '@/components/landing/HeroSection';
-import AppInsideSection from '@/components/landing/AppInsideSection';
-import PricingSection from '@/components/landing/PricingSection';
+import { Suspense, lazy } from 'react';
+
+const AppInsideSection = lazy(() => import('@/components/landing/AppInsideSection'));
+const PricingSection = lazy(() => import('@/components/landing/PricingSection'));
 
 export default function Landing() {
   const [user, setUser] = useState(null);
@@ -156,7 +158,9 @@ export default function Landing() {
       <HeroSection onCtaClick={() => handleSelectOption('direct')} />
 
       {/* App Inside Section */}
-      <AppInsideSection />
+      <Suspense fallback={<div className="h-96 flex items-center justify-center text-cyan-500/50">Lade Engine...</div>}>
+        <AppInsideSection />
+      </Suspense>
 
       {/* Science / Evidence Section (Preserving Neural Control texts) */}
       <section id="science" className="py-24">
@@ -218,7 +222,9 @@ export default function Landing() {
       </section>
 
       {/* Pricing Section */}
-      <PricingSection onCtaClick={() => handleSelectOption('direct')} />
+      <Suspense fallback={<div className="h-96 flex items-center justify-center text-cyan-500/50">Lade Optionen...</div>}>
+        <PricingSection onCtaClick={() => handleSelectOption('direct')} />
+      </Suspense>
 
 
     </div>
