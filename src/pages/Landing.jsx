@@ -6,7 +6,9 @@ import { Zap, Shield, Brain, CheckCircle2, ArrowRight, Activity, Target } from '
 import { motion } from 'framer-motion';
 import { base44 } from '@/api/base44Client';
 import { Helmet } from 'react-helmet-async';
-import DopamineChart from '@/components/landing/DopamineChart';
+import HeroSection from '@/components/landing/HeroSection';
+import AppInsideSection from '@/components/landing/AppInsideSection';
+import PricingSection from '@/components/landing/PricingSection';
 
 export default function Landing() {
   const [user, setUser] = useState(null);
@@ -91,12 +93,11 @@ export default function Landing() {
           </div>
           
           <div className="hidden md:flex items-center space-x-8 text-xs font-bold uppercase tracking-widest text-slate-400">
-            <a href="#science" className="hover:text-white transition-colors">Wissenschaft</a>
-            <a href="#how" className="hover:text-white transition-colors">Methode</a>
-            <a href="#pricing" className="hover:text-white transition-colors">Besitz statt Miete</a>
-            <Link to={createPageUrl('KnowledgeHub')} className="hover:text-white transition-colors">Knowledge Hub</Link>
+            <a href="#vision" className="hover:text-cyan-400 transition-colors">Das Prinzip</a>
+            <a href="#inside" className="hover:text-cyan-400 transition-colors">App Einblick</a>
+            <Link to={createPageUrl('KnowledgeHub')} className="hover:text-cyan-400 transition-colors">Knowledge Hub</Link>
             {user ? (
-                <Link to={createPageUrl('Dashboard')} className="hover:text-amber-500 transition-colors">
+                <Link to={createPageUrl('Dashboard')} className="hover:text-cyan-400 transition-colors">
                   Dashboard
                 </Link>
             ) : null}
@@ -105,14 +106,14 @@ export default function Landing() {
           <div className="flex items-center gap-4">
             {user ? (
                <Link to={createPageUrl('Dashboard')}>
-                 <Button className="bg-gradient-to-br from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-black font-bold rounded-full px-6">
+                 <Button className="bg-cyan-500 hover:bg-cyan-400 text-black font-bold rounded-full px-6 text-xs uppercase tracking-wide">
                     Zum Dashboard
                  </Button>
                </Link>
             ) : (
                 <Button 
                     onClick={() => handleSelectOption('direct')}
-                    className="bg-gradient-to-br from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-black font-bold rounded-full px-6 shadow-[0_0_20px_rgba(245,158,11,0.3)] hover:shadow-[0_0_30px_rgba(245,158,11,0.5)] transition-all duration-300"
+                    className="bg-cyan-500 hover:bg-cyan-400 text-black font-bold rounded-full px-6 text-xs uppercase tracking-wide shadow-[0_0_20px_rgba(6,182,212,0.3)] hover:shadow-[0_0_30px_rgba(6,182,212,0.5)] transition-all duration-300"
                 >
                     Sichern
                 </Button>
@@ -121,58 +122,8 @@ export default function Landing() {
         </div>
       </nav>
 
-      {/* Header / Hero */}
-      <header className="pt-32 pb-20 px-6 relative overflow-hidden">
-        {/* Background Elements */}
-        <div className="absolute top-20 left-1/2 -translate-x-1/2 w-[800px] h-[800px] bg-blue-600/10 rounded-full blur-[120px] pointer-events-none" />
-        <div className="absolute bottom-0 right-0 w-[600px] h-[600px] bg-amber-600/10 rounded-full blur-[100px] pointer-events-none" />
-
-        <div className="max-w-5xl mx-auto text-center relative z-10">
-          <motion.div 
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="inline-block px-4 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-[10px] font-black uppercase tracking-[0.2em] mb-8"
-          >
-            Limited Early Stage Access
-          </motion.div>
-          
-          <motion.h1 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="text-5xl md:text-7xl lg:text-8xl font-black mb-8 leading-tight tracking-tight"
-          >
-            Hör auf zu trainieren.<br />
-            Fang an zu <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-blue-500">optimieren.</span>
-          </motion.h1>
-          
-          <motion.p 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="text-slate-400 text-lg md:text-2xl max-w-3xl mx-auto mb-12 leading-relaxed"
-          >
-            Dein Körper hat die beste Hardware der Welt – aber deine Software ist veraltet. 
-            Sichere dir lebenslangen Zugriff auf das neuronale Betriebssystem.<br />
-            <span className="text-white font-bold mt-2 block">Kein Abo. Einmal zahlen. Für immer besitzen.</span>
-          </motion.p>
-          
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
-            className="flex flex-col md:flex-row justify-center items-center gap-6"
-          >
-            <Button 
-                onClick={() => handleSelectOption('direct')}
-                className="h-auto py-5 px-10 text-lg md:text-xl font-black rounded-[2rem] bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-black shadow-lg shadow-amber-500/20 w-full md:w-auto"
-            >
-                JETZT SICHERN FÜR 59,90 €
-            </Button>
-            <span className="text-slate-500 text-sm italic">„Der 2-Minuten-Beweis wird dich überzeugen.“</span>
-          </motion.div>
-        </div>
-      </header>
+      {/* Hero Section */}
+      <HeroSection onCtaClick={() => handleSelectOption('direct')} />
 
       {/* Main Content - Bento Grid */}
       <main className="max-w-7xl mx-auto px-6 py-12">
