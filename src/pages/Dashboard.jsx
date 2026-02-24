@@ -68,8 +68,13 @@ export default function Dashboard() {
     queryKey: ['sessionDecision', user?.email],
     queryFn: async () => {
       if (!user?.email) return null;
-      const res = await base44.functions.invoke('sessionGenerator', {});
-      return res.data;
+      try {
+        const res = await base44.functions.invoke('sessionGenerator', {});
+        return res.data;
+      } catch (err) {
+        console.error('Session Generator error:', err);
+        return null;
+      }
     },
     enabled: !!user?.email,
     staleTime: 5 * 60 * 1000,
