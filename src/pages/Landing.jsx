@@ -582,7 +582,7 @@ export default function Landing() {
               viewport={{ once: true }}
               className="glass rounded-2xl border border-red-500/30 overflow-hidden"
             >
-              <div className="relative">
+              <div className="relative flex justify-center py-6 bg-slate-900/10">
                 <img 
                   src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/ebaa30623_AXON-napRP.png"
                   alt="REHAB - Plan & Fortschritt"
@@ -590,7 +590,7 @@ export default function Landing() {
                   decoding="async"
                   width="500"
                   height="1000"
-                  className="w-full h-auto"
+                  className="w-auto h-auto max-w-[240px] rounded-xl shadow-2xl"
                 />
               </div>
               <div className="p-4 bg-gradient-to-t from-slate-900 to-transparent">
@@ -607,7 +607,7 @@ export default function Landing() {
               transition={{ delay: 0.1 }}
               className="glass rounded-2xl border border-amber-500/30 overflow-hidden"
             >
-              <div className="relative">
+              <div className="relative flex justify-center py-6 bg-slate-900/10">
                 <img 
                   src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/ee21777c4_AXON-napTP.png"
                   alt="GOALS - Trainingsplan"
@@ -615,7 +615,7 @@ export default function Landing() {
                   decoding="async"
                   width="500"
                   height="1000"
-                  className="w-full h-auto"
+                  className="w-auto h-auto max-w-[240px] rounded-xl shadow-2xl"
                 />
               </div>
               <div className="p-4 bg-gradient-to-t from-slate-900 to-transparent">
@@ -632,7 +632,7 @@ export default function Landing() {
               transition={{ delay: 0.2 }}
               className="glass rounded-2xl border border-cyan-500/30 overflow-hidden"
             >
-              <div className="relative">
+              <div className="relative flex justify-center py-6 bg-slate-900/10">
                 <img 
                   src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/0363c1745_Axon-napFlowLanding.png"
                   alt="FLOW - Neural Primer Routine"
@@ -640,7 +640,7 @@ export default function Landing() {
                   decoding="async"
                   width="500"
                   height="1000"
-                  className="w-full h-auto"
+                  className="w-auto h-auto max-w-[240px] rounded-xl shadow-2xl"
                 />
               </div>
               <div className="p-4 bg-gradient-to-t from-slate-900 to-transparent">
