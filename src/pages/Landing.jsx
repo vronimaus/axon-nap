@@ -581,24 +581,17 @@ export default function Landing() {
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="glass rounded-2xl border border-red-500/30 overflow-hidden group cursor-pointer"
+              className="glass rounded-2xl border border-red-500/30 overflow-hidden"
             >
               <div className="relative">
                 <img 
-                  src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/340d9305f_image.png"
-                  alt="REHAB - Body Map"
+                  src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/ebaa30623_AXON-napRP.png"
+                  alt="REHAB - Plan & Fortschritt"
                   loading="lazy"
                   decoding="async"
                   width="500"
                   height="1000"
-                  className="w-full h-auto transition-opacity duration-500 group-hover:opacity-0"
-                />
-                <img 
-                  src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/01a4d2bc5_image.png"
-                  alt="REHAB - Diagnose & Protokoll"
-                  loading="lazy"
-                  decoding="async"
-                  className="w-full h-auto absolute top-0 left-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+                  className="w-full h-auto"
                 />
               </div>
               <div className="p-4 bg-gradient-to-t from-slate-900 to-transparent">
@@ -613,24 +606,17 @@ export default function Landing() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.1 }}
-              className="glass rounded-2xl border border-amber-500/30 overflow-hidden group cursor-pointer"
+              className="glass rounded-2xl border border-amber-500/30 overflow-hidden"
             >
               <div className="relative">
                 <img 
-                  src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/bb6563719_image.png"
-                  alt="GOALS - Ziel eingeben"
+                  src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/ee21777c4_AXON-napTP.png"
+                  alt="GOALS - Trainingsplan"
                   loading="lazy"
                   decoding="async"
                   width="500"
                   height="1000"
-                  className="w-full h-auto transition-opacity duration-500 group-hover:opacity-0"
-                />
-                <img 
-                  src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/0c5ccc3ac_image.png"
-                  alt="GOALS - Analyse & Plan"
-                  loading="lazy"
-                  decoding="async"
-                  className="w-full h-auto absolute top-0 left-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+                  className="w-full h-auto"
                 />
               </div>
               <div className="p-4 bg-gradient-to-t from-slate-900 to-transparent">
@@ -645,24 +631,17 @@ export default function Landing() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.2 }}
-              className="glass rounded-2xl border border-cyan-500/30 overflow-hidden group cursor-pointer"
+              className="glass rounded-2xl border border-cyan-500/30 overflow-hidden"
             >
               <div className="relative">
                 <img 
-                  src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/ae4e694e6_image.png"
-                  alt="FLOW - Kategorien"
+                  src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/0363c1745_Axon-napFlowLanding.png"
+                  alt="FLOW - Neural Primer Routine"
                   loading="lazy"
                   decoding="async"
                   width="500"
                   height="1000"
-                  className="w-full h-auto transition-opacity duration-500 group-hover:opacity-0"
-                />
-                <img 
-                  src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/d0f3bbdb8_image.png"
-                  alt="FLOW - Trainingsplan Details"
-                  loading="lazy"
-                  decoding="async"
-                  className="w-full h-auto absolute top-0 left-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+                  className="w-full h-auto"
                 />
               </div>
               <div className="p-4 bg-gradient-to-t from-slate-900 to-transparent">
