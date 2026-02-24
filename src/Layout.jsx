@@ -163,16 +163,7 @@ export default function Layout({ children, currentPageName }) {
     }
   }, [currentPageName, trialLoading, queryClient]);
 
-    const navItems = [
-              { name: 'Command', icon: LayoutDashboard, page: 'Dashboard' },
-              { name: 'Training', icon: Target, page: 'TrainingPlan' },
-              { name: 'Rehab', icon: Activity, page: 'RehabPlan' }
-            ];
 
-    const publicNavItems = [
-      { name: 'Knowledge Hub', page: 'KnowledgeHub' },
-      { name: 'FAQ', page: 'FAQ' }
-    ];
 
   const handleProfileClick = () => {
     window.location.href = createPageUrl('Profile');
