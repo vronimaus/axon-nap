@@ -8,6 +8,121 @@ const ALERT_THRESHOLDS = {
   PAIN_FREE_NRS: 2.0
 };
 
+function generateNodeHeatmap(todayStats) {
+  const anterior = todayStats.anterior_score;
+  const posterior = todayStats.posterior_score;
+  const lateral = todayStats.lateral_score;
+
+  const scoreToStatus = (score) => {
+    if (score >= 8) return 'green';
+    if (score >= 6) return 'yellow';
+    if (score >= 4) return 'orange';
+    return 'red';
+  };
+
+  return [
+    { node_id: 'N1', sling: 'lateral', status: scoreToStatus(lateral), score: lateral },
+    { node_id: 'N2', sling: 'anterior', status: scoreToStatus(anterior), score: anterior },
+    { node_id: 'N3', sling: 'posterior', status: scoreToStatus(posterior), score: posterior },
+    { node_id: 'N5', sling: 'lateral', status: scoreToStatus(lateral), score: lateral },
+    { node_id: 'N6', sling: 'lateral', status: scoreToStatus(lateral), score: lateral },
+    { node_id: 'N7', sling: 'anterior', status: scoreToStatus(anterior), score: anterior },
+    { node_id: 'N8', sling: 'lateral', status: scoreToStatus(lateral), score: lateral },
+    { node_id: 'N9', sling: 'posterior', status: scoreToStatus(posterior), score: posterior },
+    { node_id: 'N10', sling: 'lateral', status: scoreToStatus(lateral), score: lateral },
+    { node_id: 'N11', sling: 'anterior', status: scoreToStatus(anterior), score: anterior },
+    { node_id: 'N12', sling: 'posterior', status: scoreToStatus(posterior), score: posterior }
+  ];
+}
+
+function identifyImbalances(todayStats, avg7d) {
+  const alerts = [];
+  const anterior = todayStats.anterior_score;
+  const posterior = todayStats.posterior_score;
+  const lateral = todayStats.lateral_score;
+
+  const scores = [anterior, posterior, lateral];
+  const maxScore = Math.max(...scores);
+  const minScore = Math.min(...scores);
+  const imbalance = maxScore - minScore;
+
+  const slingNames = ['anterior', 'posterior', 'lateral'];
+
+  if (imbalance > ALERT_THRESHOLDS.CRITICAL_IMBALANCE_DELTA) {
+    const lowSling = slingNames[scores.indexOf(minScore)];
+    alerts.push({
+      type: 'critical_imbalance',
+      sling: lowSling,
+      severity: 'critical',
+      delta: parseFloat(imbalance.toFixed(2)),
+      score: parseFloat(minScore.toFixed(2)),
+      message: `Kritisches Ungleichgewicht: ${lowSling} ist bei ${minScore.toFixed(1)}/10. Das Kompensationsmuster könnte zu Überlastung führen.`,
+      recommendation: 'force_focused_session',
+      coaching_instruction: `Konzentriere dich heute auf Deine ${lowSling} Sling. Das ist die Basis für stabiles Training.`
+    });
+  } else if (imbalance >= ALERT_THRESHOLDS.MODERATE_IMBALANCE_DELTA) {
+    const lowSling = slingNames[scores.indexOf(minScore)];
+    alerts.push({
+      type: 'moderate_imbalance',
+      sling: lowSling,
+      severity: 'warning',
+      delta: parseFloat(imbalance.toFixed(2)),
+      score: parseFloat(minScore.toFixed(2)),
+      message: `Ungleichgewicht erkannt: ${lowSling} hinkt hinterher (${minScore.toFixed(1)}/10). Nicht kritisch, aber wir sollten balancieren.`,
+      recommendation: 'suggest_focused_session',
+      coaching_instruction: `Optional: Erwäge Übungen für deine ${lowSling} Sling in den nächsten Sessions.`
+    });
+  }
+
+  if (anterior < ALERT_THRESHOLDS.LOW_PERFORMER_SCORE) {
+    alerts.push({
+      type: 'low_performer',
+      sling: 'anterior',
+      severity: 'info',
+      score: parseFloat(anterior.toFixed(2)),
+      message: `Anterior Sling trainiert (${anterior.toFixed(1)}/10). Dead Bugs, Pallof Presses bauen hier auf.`,
+      recommendation: 'provide_exercises',
+      focus_nodes: ['N2', 'N7', 'N11']
+    });
+  }
+  if (posterior < ALERT_THRESHOLDS.LOW_PERFORMER_SCORE) {
+    alerts.push({
+      type: 'low_performer',
+      sling: 'posterior',
+      severity: 'info',
+      score: parseFloat(posterior.toFixed(2)),
+      message: `Posterior Sling trainiert (${posterior.toFixed(1)}/10). Bird Dogs, RDLs bauen hier auf.`,
+      recommendation: 'provide_exercises',
+      focus_nodes: ['N3', 'N9', 'N12']
+    });
+  }
+  if (lateral < ALERT_THRESHOLDS.LOW_PERFORMER_SCORE) {
+    alerts.push({
+      type: 'low_performer',
+      sling: 'lateral',
+      severity: 'info',
+      score: parseFloat(lateral.toFixed(2)),
+      message: `Lateral Sling trainiert (${lateral.toFixed(1)}/10). Side Planks, Single-Leg RDLs bauen hier auf.`,
+      recommendation: 'provide_exercises',
+      focus_nodes: ['N1', 'N5', 'N6', 'N8', 'N10']
+    });
+  }
+
+  return alerts;
+}
+
+function calculateHealthScore(todayStats) {
+  const anterior = todayStats.anterior_score;
+  const posterior = todayStats.posterior_score;
+  const lateral = todayStats.lateral_score;
+  const avg = (anterior + posterior + lateral) / 3;
+  const imbalance = Math.max(anterior, posterior, lateral) - Math.min(anterior, posterior, lateral);
+  const baseScore = avg * 10;
+  const imbalancePenalty = Math.min(20, imbalance * 5);
+  const healthScore = Math.max(0, baseScore - imbalancePenalty);
+  return Math.round(healthScore);
+}
+
 Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
