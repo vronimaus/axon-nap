@@ -90,7 +90,7 @@ export default function Landing() {
         <meta property="og:url" content="https://app.base44.com" />
         <meta property="og:title" content="AXON - Neuro-Athletic Protocol | Fitness neu gedacht" />
         <meta property="og:description" content="Revolutionäres Training für deinen Körper und Geist. 7 Tage kostenlos testen." />
-        <meta property="og:image" content="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/afa60dd62_AXONLogo.png" />
+        <meta property="og:image" content="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/60d205ae0_AxonLogo180x35.png" />
         <meta property="og:locale" content="de_DE" />
         <meta property="og:site_name" content="AXON Protocol" />
 
@@ -99,7 +99,7 @@ export default function Landing() {
         <meta name="twitter:url" content="https://app.base44.com" />
         <meta name="twitter:title" content="AXON - Neuro-Athletic Protocol" />
         <meta name="twitter:description" content="Revolutionäres Training für deinen Körper und Geist. 7 Tage kostenlos testen." />
-        <meta name="twitter:image" content="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/afa60dd62_AXONLogo.png" />
+        <meta name="twitter:image" content="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/60d205ae0_AxonLogo180x35.png" />
 
         {/* Structured Data - Organization */}
         <script type="application/ld+json">
@@ -108,7 +108,7 @@ export default function Landing() {
             "@type": "Organization",
             "name": "AXON Protocol",
             "url": "https://app.base44.com",
-            "logo": "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/afa60dd62_AXONLogo.png",
+            "logo": "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/60d205ae0_AxonLogo180x35.png",
             "description": "Neuro-Athletic Protocol für nachhaltige Gesundheit und Performance",
             "address": {
               "@type": "PostalAddress",
@@ -166,11 +166,10 @@ export default function Landing() {
         <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <img 
-              src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/afa60dd62_AXONLogo.png"
+              src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/60d205ae0_AxonLogo180x35.png"
               alt="AXON"
-              className="w-8 h-8"
+              className="h-6 sm:h-7 object-contain"
             />
-            <span className="font-bold text-cyan-400">AXON</span>
           </div>
           <div className="flex items-center gap-3">
             <Link to={createPageUrl('KnowledgeHub')}>

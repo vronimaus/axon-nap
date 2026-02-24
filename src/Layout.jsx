@@ -188,7 +188,7 @@ export default function Layout({ children, currentPageName }) {
 
                 <div className="block">
                    <img 
-                     src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/8a319630f_image.png"
+                     src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/60d205ae0_AxonLogo180x35.png"
                      alt="AXON"
                      className="h-6 sm:h-7 object-contain mt-1"
                    />
