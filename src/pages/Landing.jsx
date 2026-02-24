@@ -73,13 +73,11 @@ export default function Landing() {
     base44.auth.redirectToLogin(window.location.href);
   };
 
-  if (isLoading) {
-    return <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950" />;
-  }
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
       <Helmet>
+        <link rel="preconnect" href="https://qtrypzzcjebvfcihiynt.supabase.co" />
+        
         {/* Primary Meta Tags */}
         <title>AXON - Neuro-Athletic Protocol | Fitness neu gedacht</title>
         <meta name="description" content="AXON kombiniert neurozentriertes Training, Faszienmobilität und funktionale Bewegung für nachhaltige Gesundheit. Starte jetzt deine 7-Tage-Testversion." />
@@ -212,6 +210,7 @@ export default function Landing() {
           <img 
             src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/ad6e52b61_generated_image.png"
             alt="AXON Body Map Background"
+            fetchPriority="high"
             loading="eager"
             decoding="async"
             srcSet="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/ad6e52b61_generated_image.png 1920w, https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/ad6e52b61_generated_image.png 1280w"
@@ -237,6 +236,8 @@ export default function Landing() {
               alt="AXON Logo"
               loading="eager"
               decoding="async"
+              width="96"
+              height="96"
               className="w-24 h-24 mx-auto object-contain drop-shadow-[0_0_40px_rgba(6,182,212,0.4)]"
             />
           </motion.div>
