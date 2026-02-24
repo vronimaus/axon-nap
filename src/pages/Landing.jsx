@@ -12,64 +12,58 @@ import { Suspense, lazy } from 'react';
 const AppInsideSection = lazy(() => import('@/components/landing/AppInsideSection'));
 const PricingSection = lazy(() => import('@/components/landing/PricingSection'));
 
+import { useUser } from '@/components/useUser';
+
 export default function Landing() {
-  const [user, setUser] = useState(null);
+  const { data: user, isLoading: isUserLoading } = useUser();
   const [isLoading, setIsLoading] = useState(true);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   // --- EXISTING LOGIC: Auth Check ---
   useEffect(() => {
-    const checkAuth = async () => {
+    if (isUserLoading) return;
+    
+    const checkAuthSideEffects = () => {
       try {
         const stayOnLanding = localStorage.getItem('stay_on_landing') === 'true';
         const urlParams = new URLSearchParams(window.location.search);
         const previewMode = urlParams.get('preview') === 'true';
 
-        try {
-          const isAuth = await base44.auth.isAuthenticated();
-          if (!isAuth) {
-            setUser(null);
-            setIsLoading(false);
-            return;
-          }
+        if (!user) {
+          setIsLoading(false);
+          return;
+        }
 
-          const currentUser = await base44.auth.me();
-          setUser(currentUser);
+        // Skip redirect if explicitly staying on landing or in preview mode
+        if (stayOnLanding || previewMode) {
+          setIsLoading(false);
+          return;
+        }
 
-          // Skip redirect if explicitly staying on landing or in preview mode
-          if (stayOnLanding || previewMode) {
-            setIsLoading(false);
-            return;
-          }
+        // Redirect to Dashboard if paid or active trial
+        if (user.has_paid) {
+          window.location.href = createPageUrl('Dashboard');
+          return;
+        }
 
-          // Redirect to Dashboard if paid or active trial
-          if (currentUser?.has_paid) {
+        if (user.trial_start_date) {
+          const startDate = new Date(user.trial_start_date);
+          const now = new Date();
+          const daysElapsed = Math.floor((now - startDate) / (1000 * 60 * 60 * 24));
+          if (daysElapsed < 7) {
             window.location.href = createPageUrl('Dashboard');
             return;
           }
-
-          if (currentUser && currentUser.trial_start_date) {
-            const startDate = new Date(currentUser.trial_start_date);
-            const now = new Date();
-            const daysElapsed = Math.floor((now - startDate) / (1000 * 60 * 60 * 24));
-            if (daysElapsed < 7) {
-              window.location.href = createPageUrl('Dashboard');
-              return;
-            }
-          }
-        } catch (e) {
-          // User not logged in
-          setUser(null);
         }
       } catch (e) {
-        setUser(null);
+        // Safe to ignore
       } finally {
         setIsLoading(false);
       }
     };
     
-    checkAuth();
-  }, []);
+    checkAuthSideEffects();
+  }, [user, isUserLoading]);
 
   // --- EXISTING LOGIC: Selection Handler ---
   const handleSelectOption = (mode) => {
