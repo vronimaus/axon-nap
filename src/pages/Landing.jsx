@@ -126,6 +126,7 @@ export default function Landing() {
             <a href="#vision" className="hover:text-cyan-400 transition-colors">Das Prinzip</a>
             <a href="#inside" className="hover:text-cyan-400 transition-colors">App Einblick</a>
             <Link to={createPageUrl('KnowledgeHub')} className="hover:text-cyan-400 transition-colors">Knowledge Hub</Link>
+            <Link to={createPageUrl('FAQ')} className="hover:text-cyan-400 transition-colors">FAQ</Link>
             {user ? (
                 <Link to={createPageUrl('Dashboard')} className="hover:text-cyan-400 transition-colors">
                   Dashboard
@@ -165,6 +166,7 @@ export default function Landing() {
           <a href="#vision" onClick={() => setMobileMenuOpen(false)} className="text-sm font-bold uppercase tracking-widest text-slate-300">Das Prinzip</a>
           <a href="#inside" onClick={() => setMobileMenuOpen(false)} className="text-sm font-bold uppercase tracking-widest text-slate-300">App Einblick</a>
           <Link to={createPageUrl('KnowledgeHub')} onClick={() => setMobileMenuOpen(false)} className="text-sm font-bold uppercase tracking-widest text-cyan-400">Knowledge Hub</Link>
+          <Link to={createPageUrl('FAQ')} onClick={() => setMobileMenuOpen(false)} className="text-sm font-bold uppercase tracking-widest text-cyan-400">FAQ</Link>
           <div className="h-px bg-white/10 w-full my-1"></div>
           <Link to={createPageUrl('Imprint')} onClick={() => setMobileMenuOpen(false)} className="text-xs font-bold uppercase tracking-widest text-slate-500">Impressum</Link>
           <Link to={createPageUrl('Privacy')} onClick={() => setMobileMenuOpen(false)} className="text-xs font-bold uppercase tracking-widest text-slate-500">Datenschutz</Link>
