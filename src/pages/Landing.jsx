@@ -77,11 +77,35 @@ export default function Landing() {
   };
 
   // --- NEW DESIGN IMPLEMENTATION ---
+  const productSchema = {
+    "@context": "https://schema.org/",
+    "@type": "Product",
+    "name": "AXON Protocol - Lebenslanger Zugriff",
+    "description": "Neuro-Athletic Training App mit personalisierten Trainingsplänen, Rehabilitation und Flow-Routinen",
+    "image": [
+      "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/f960cb731_AxonnapLogo500x180Neu.png"
+    ],
+    "brand": {
+      "@type": "Brand",
+      "name": "AXON"
+    },
+    "offers": {
+      "@type": "Offer",
+      "url": "https://axon-nap.de",
+      "priceCurrency": "EUR",
+      "price": "59.90",
+      "availability": "https://schema.org/InStock"
+    }
+  };
+
   return (
     <div className="min-h-screen bg-slate-950 text-slate-50 selection:bg-amber-500/30 font-sans">
       <Helmet>
         <title>AXON - Dein neuronales Software-Update</title>
         <meta name="description" content="Hör auf zu trainieren. Fang an zu optimieren. AXON ist das neuronale Betriebssystem für deinen Körper. Einmal zahlen, für immer besitzen." />
+        <script type="application/ld+json">
+          {JSON.stringify(productSchema)}
+        </script>
       </Helmet>
 
       {/* Navigation */}
