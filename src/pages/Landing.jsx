@@ -135,7 +135,8 @@ export default function Landing() {
             "offers": {
               "@type": "Offer",
               "price": "59.00",
-              "priceCurrency": "USD",
+              "priceCurrency": "EUR",
+              "priceValidUntil": "2026-12-31",
               "availability": "https://schema.org/InStock",
               "url": "https://app.base44.com"
             }
