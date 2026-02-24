@@ -584,7 +584,7 @@ export default function Landing() {
             >
               <div className="relative flex justify-center py-6 bg-slate-900/10">
                 <img 
-                  src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/ebaa30623_AXON-napRP.png"
+                  src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/269b4ca0a_AXON-napRehab.jpg"
                   alt="REHAB - Plan & Fortschritt"
                   loading="lazy"
                   decoding="async"
@@ -609,7 +609,7 @@ export default function Landing() {
             >
               <div className="relative flex justify-center py-6 bg-slate-900/10">
                 <img 
-                  src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/ee21777c4_AXON-napTP.png"
+                  src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/8b48507d1_AXON-napTrainingsplan.jpg"
                   alt="GOALS - Trainingsplan"
                   loading="lazy"
                   decoding="async"
@@ -634,7 +634,7 @@ export default function Landing() {
             >
               <div className="relative flex justify-center py-6 bg-slate-900/10">
                 <img 
-                  src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/0363c1745_Axon-napFlowLanding.png"
+                  src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/2a81bb193_AXON-napFlowRoutinen.jpg"
                   alt="FLOW - Neural Primer Routine"
                   loading="lazy"
                   decoding="async"
