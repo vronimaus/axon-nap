@@ -20,6 +20,18 @@ export default function Layout({ children, currentPageName }) {
 
   // Pages ohne Navigation Header
   const pagesWithoutNav = ['Landing', 'Success', 'Checkout', 'Login'];
+  const showNav = !pagesWithoutNav.includes(currentPageName);
+  
+  const navItems = [
+    { name: 'Command', icon: LayoutDashboard, page: 'Dashboard' },
+    { name: 'Training', icon: Target, page: 'TrainingPlan' },
+    { name: 'Rehab', icon: Activity, page: 'RehabPlan' }
+  ];
+
+  const publicNavItems = [
+    { name: 'Knowledge Hub', page: 'KnowledgeHub' },
+    { name: 'FAQ', page: 'FAQ' }
+  ];
 
   useEffect(() => {
     if (trialLoading) return;
