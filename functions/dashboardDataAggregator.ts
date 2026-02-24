@@ -16,7 +16,13 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { daysBack = 30 } = await req.json();
+    let body = {};
+    try {
+      body = await req.json();
+    } catch (e) {
+      console.log('No JSON body provided');
+    }
+    const { daysBack = 30 } = body;
 
     // Fetch all SlingProgress records for the user in the past N days
     const allSlingProgress = await base44.entities.SlingProgress.filter(
