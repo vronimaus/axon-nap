@@ -103,65 +103,54 @@ export default function KnowledgeHub() {
         ) : (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredArticles.map((article, idx) => {
-              const catColor = categories[article.category]?.color || 'cyan';
-              
               return (
                 <motion.div
                   key={article.id}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: idx * 0.05 }}
-                  className="glass rounded-2xl border border-slate-800 hover:border-slate-700 overflow-hidden group cursor-pointer transition-all shadow-lg hover:shadow-2xl hover:-translate-y-1 relative"
+                  className="bg-[#0f1623] rounded-2xl border border-white/5 hover:border-blue-500/30 overflow-hidden group cursor-pointer transition-all duration-300 shadow-lg hover:shadow-2xl hover:-translate-y-1 relative flex flex-col h-full"
                   onClick={() => window.location.href = createPageUrl(`KnowledgeHubArticle?slug=${article.slug}&category=${article.category}`)}
                 >
-                  {/* Styling overrides based on category */}
-                  {(() => {
-                    const styles = {
-                      blue: { bg: 'bg-blue-500/10', border: 'border-blue-500/20', text: 'text-blue-400', gradient: 'from-blue-500', groupHoverText: 'group-hover:text-blue-400' },
-                      purple: { bg: 'bg-purple-500/10', border: 'border-purple-500/20', text: 'text-purple-400', gradient: 'from-purple-500', groupHoverText: 'group-hover:text-purple-400' },
-                      emerald: { bg: 'bg-emerald-500/10', border: 'border-emerald-500/20', text: 'text-emerald-400', gradient: 'from-emerald-500', groupHoverText: 'group-hover:text-emerald-400' }
-                    }[catColor] || { bg: 'bg-blue-500/10', border: 'border-blue-500/20', text: 'text-blue-400', gradient: 'from-blue-500', groupHoverText: 'group-hover:text-blue-400' };
+                  {/* Top Bar */}
+                  <div className="px-6 py-4 bg-[#161f33] border-b border-white/5">
+                     <span className="text-[11px] font-black tracking-widest text-[#398bf7] uppercase">
+                        {article.category}
+                     </span>
+                  </div>
 
-                    return (
-                      <>
-                        <div className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${styles.gradient} to-transparent opacity-50`} />
+                  <div className="p-6 flex-1 flex flex-col">
+                    {/* Author/Team */}
+                    <div className="flex items-center gap-3 mb-6">
+                      {article.expert_image_url ? (
+                        <img 
+                          src={article.expert_image_url} 
+                          alt={article.expert_name}
+                          className="w-6 h-6 rounded-full object-cover"
+                        />
+                      ) : (
+                        <div className="w-6 h-6 rounded-full bg-slate-700/50"></div>
+                      )}
+                      <span className="text-[10px] font-black text-purple-400 tracking-widest uppercase">
+                        {article.expert_name || 'AXON METHODIK-TEAM'}
+                      </span>
+                    </div>
 
-                        <div className={`px-4 py-2 ${styles.bg} border-b ${styles.border} flex items-center`}>
-                          <span className={`text-[10px] font-bold tracking-widest ${styles.text} uppercase`}>
-                            {article.category}
-                          </span>
-                        </div>
+                    {/* Title */}
+                    <h3 className="text-xl md:text-[22px] font-bold text-white mb-4 leading-snug group-hover:text-blue-100 transition-colors line-clamp-3">
+                      {article.headline}
+                    </h3>
 
-                        <div className="p-6">
-                          {article.expert_name && (
-                            <div className="flex items-center gap-2 mb-3">
-                              {article.expert_image_url && (
-                                <img 
-                                  src={article.expert_image_url} 
-                                  alt={article.expert_name}
-                                  className="w-6 h-6 rounded-full object-cover border border-purple-500/30"
-                                />
-                              )}
-                              <span className="text-[10px] font-bold text-purple-400 tracking-wider uppercase">{article.expert_name}</span>
-                            </div>
-                          )}
+                    {/* Summary */}
+                    <p className="text-slate-400 text-sm leading-relaxed mb-8 flex-1 line-clamp-4">
+                      {article.summary}
+                    </p>
 
-                          <h3 className={`text-lg font-bold text-white mb-3 line-clamp-2 transition-colors ${styles.groupHoverText}`}>
-                            {article.headline}
-                          </h3>
-
-                          <p className="text-sm text-slate-400 line-clamp-3 mb-5 leading-relaxed">
-                            {article.summary}
-                          </p>
-
-                          <div className={`flex items-center gap-2 ${styles.text} text-xs font-bold uppercase tracking-wider group-hover:gap-3 transition-all`}>
-                            Mehr erfahren
-                            <ArrowRight className="w-4 h-4" />
-                          </div>
-                        </div>
-                      </>
-                    );
-                  })()}
+                    {/* Link */}
+                    <div className="flex items-center gap-2 text-[#398bf7] text-[11px] font-black uppercase tracking-widest group-hover:text-blue-400 transition-colors mt-auto">
+                      MEHR ERFAHREN <ArrowRight className="w-4 h-4" />
+                    </div>
+                  </div>
                 </motion.div>
               );
             })}
