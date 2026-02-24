@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { Button } from '@/components/ui/button';
-import { Zap, Shield, Brain, CheckCircle2, ArrowRight, Activity, Target } from 'lucide-react';
+import { Zap, Shield, Brain, CheckCircle2, ArrowRight, Activity, Target, Menu, X } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { base44 } from '@/api/base44Client';
 import { Helmet } from 'react-helmet-async';
@@ -13,6 +13,7 @@ import PricingSection from '@/components/landing/PricingSection';
 export default function Landing() {
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   // --- EXISTING LOGIC: Auth Check ---
   useEffect(() => {
@@ -103,24 +104,44 @@ export default function Landing() {
             ) : null}
           </div>
 
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3 sm:gap-4">
             {user ? (
                <Link to={createPageUrl('Dashboard')}>
-                 <Button className="bg-cyan-500 hover:bg-cyan-400 text-black font-bold rounded-full px-6 text-xs uppercase tracking-wide">
-                    Zum Dashboard
+                 <Button className="bg-cyan-500 hover:bg-cyan-400 text-black font-bold rounded-full px-4 sm:px-6 text-[10px] sm:text-xs uppercase tracking-wide">
+                    Dashboard
                  </Button>
                </Link>
             ) : (
                 <Button 
                     onClick={() => handleSelectOption('direct')}
-                    className="bg-cyan-500 hover:bg-cyan-400 text-black font-bold rounded-full px-6 text-xs uppercase tracking-wide shadow-[0_0_20px_rgba(6,182,212,0.3)] hover:shadow-[0_0_30px_rgba(6,182,212,0.5)] transition-all duration-300"
+                    className="bg-cyan-500 hover:bg-cyan-400 text-black font-bold rounded-full px-4 sm:px-6 text-[10px] sm:text-xs uppercase tracking-wide shadow-[0_0_20px_rgba(6,182,212,0.3)] hover:shadow-[0_0_30px_rgba(6,182,212,0.5)] transition-all duration-300"
                 >
                     Sichern
                 </Button>
             )}
+            
+            {/* Mobile Menu Button */}
+            <div className="md:hidden flex items-center">
+              <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="text-slate-400 hover:text-white p-1">
+                {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              </button>
+            </div>
           </div>
         </div>
       </nav>
+
+      {/* Mobile Menu Dropdown */}
+      {mobileMenuOpen && (
+        <div className="md:hidden fixed top-[60px] left-0 right-0 bg-slate-950/95 backdrop-blur-md border-b border-white/5 z-40 p-6 flex flex-col gap-5">
+          <a href="#vision" onClick={() => setMobileMenuOpen(false)} className="text-sm font-bold uppercase tracking-widest text-slate-300">Das Prinzip</a>
+          <a href="#inside" onClick={() => setMobileMenuOpen(false)} className="text-sm font-bold uppercase tracking-widest text-slate-300">App Einblick</a>
+          <Link to={createPageUrl('KnowledgeHub')} onClick={() => setMobileMenuOpen(false)} className="text-sm font-bold uppercase tracking-widest text-cyan-400">Knowledge Hub</Link>
+          <div className="h-px bg-white/10 w-full my-1"></div>
+          <Link to={createPageUrl('Imprint')} onClick={() => setMobileMenuOpen(false)} className="text-xs font-bold uppercase tracking-widest text-slate-500">Impressum</Link>
+          <Link to={createPageUrl('Privacy')} onClick={() => setMobileMenuOpen(false)} className="text-xs font-bold uppercase tracking-widest text-slate-500">Datenschutz</Link>
+          <Link to={createPageUrl('Terms')} onClick={() => setMobileMenuOpen(false)} className="text-xs font-bold uppercase tracking-widest text-slate-500">AGB</Link>
+        </div>
+      )}
 
       {/* Hero Section */}
       <HeroSection onCtaClick={() => handleSelectOption('direct')} />
@@ -190,26 +211,7 @@ export default function Landing() {
       {/* Pricing Section */}
       <PricingSection onCtaClick={() => handleSelectOption('direct')} />
 
-      {/* Footer */}
-      <footer className="py-20 border-t border-white/5 bg-slate-950">
-        <div className="max-w-7xl mx-auto px-6 text-center">
-            <div className="flex flex-col md:flex-row justify-center items-center gap-6 mb-8 text-xs font-bold uppercase tracking-widest text-slate-500">
-                <Link to={createPageUrl('Imprint')} className="hover:text-amber-500 transition-colors">Impressum</Link>
-                <span className="hidden md:inline">•</span>
-                <Link to={createPageUrl('Privacy')} className="hover:text-amber-500 transition-colors">Datenschutz</Link>
-                <span className="hidden md:inline">•</span>
-                <Link to={createPageUrl('Terms')} className="hover:text-amber-500 transition-colors">AGB</Link>
-            </div>
-            
-            <p className="text-slate-500 text-xs mb-4 uppercase tracking-[0.3em] font-bold">
-                AXON Intelligent Training System | Early Stage 2026
-            </p>
-            <p className="text-slate-600 text-[10px] max-w-xl mx-auto leading-relaxed">
-                Datensicherheit nach DSGVO. On-Device KI-Verarbeitung. 
-                Keine versteckten Gebühren. Besitze deine Gesundheit.
-            </p>
-        </div>
-      </footer>
+
     </div>
   );
 }

@@ -337,21 +337,22 @@ export default function Layout({ children, currentPageName }) {
 
       {/* Footer */}
       <footer className="hidden md:block border-t border-cyan-500/20 glass mt-auto mb-16 md:mb-0">
-        <div className="max-w-6xl mx-auto px-4 py-6">
-          <div className="flex flex-col sm:flex-row items-center justify-center sm:justify-between gap-3 sm:gap-4 text-xs sm:text-sm text-slate-400">
-            <p className="text-center sm:text-left">© 2026 AXON Protocol</p>
-            <div className="flex flex-wrap justify-center gap-3 sm:gap-4">
-              <Link to={createPageUrl('Imprint')} className="hover:text-cyan-400 transition-colors whitespace-nowrap">
-                Impressum
-              </Link>
-              <Link to={createPageUrl('Privacy')} className="hover:text-cyan-400 transition-colors whitespace-nowrap">
-                Datenschutz
-              </Link>
-              <Link to={createPageUrl('Terms')} className="hover:text-cyan-400 transition-colors whitespace-nowrap">
-                AGB
-              </Link>
+        <div className="max-w-6xl mx-auto px-4 py-8 text-center">
+            <div className="flex justify-center items-center gap-6 mb-8 text-xs font-bold uppercase tracking-widest text-slate-400">
+                <Link to={createPageUrl('Imprint')} className="hover:text-cyan-400 transition-colors">Impressum</Link>
+                <span>•</span>
+                <Link to={createPageUrl('Privacy')} className="hover:text-cyan-400 transition-colors">Datenschutz</Link>
+                <span>•</span>
+                <Link to={createPageUrl('Terms')} className="hover:text-cyan-400 transition-colors">AGB</Link>
             </div>
-          </div>
+            
+            <p className="text-slate-400 text-xs mb-4 uppercase tracking-[0.3em] font-bold">
+                AXON Intelligent Training System | Early Stage 2026
+            </p>
+            <p className="text-slate-500 text-[10px] max-w-xl mx-auto leading-relaxed">
+                Datensicherheit nach DSGVO. On-Device KI-Verarbeitung. 
+                Keine versteckten Gebühren. Besitze deine Gesundheit.
+            </p>
         </div>
       </footer>
 
