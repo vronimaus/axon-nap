@@ -77,6 +77,7 @@ export default function Landing() {
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
       <Helmet>
         <link rel="preconnect" href="https://qtrypzzcjebvfcihiynt.supabase.co" />
+        <link rel="preload" as="image" href="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/ad6e52b61_generated_image.png" />
         
         {/* Primary Meta Tags */}
         <title>AXON - Neuro-Athletic Protocol | Fitness neu gedacht</title>
