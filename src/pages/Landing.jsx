@@ -161,7 +161,7 @@ export default function Landing() {
       {/* Science / Evidence Section (Preserving Neural Control texts) */}
       <section id="science" className="py-24">
         <div className="container mx-auto px-6 text-center">
-            <h3 className="text-2xl md:text-4xl font-black mb-6 uppercase tracking-tighter text-white">Evidenz statt Hype.</h3>
+            <h2 className="text-2xl md:text-4xl font-black mb-6 uppercase tracking-tighter text-white">Evidenz statt Hype.</h2>
             <p className="text-slate-400 max-w-2xl mx-auto mb-16 leading-relaxed text-lg">
                 AXON basiert auf den Erkenntnissen der modernen Faszienforschung, Neuro-Athletik und Biomechanik. 
                 Wir übersetzen komplexe Wissenschaft in einfache 30-Sekunden-Protokolle.
@@ -175,7 +175,7 @@ export default function Landing() {
                     <div className="w-12 h-12 rounded-xl bg-blue-500/10 flex items-center justify-center text-blue-400 mb-2">
                         <Brain className="w-6 h-6" />
                     </div>
-                    <h5 className="font-bold text-xl text-white">Neural Control</h5>
+                    <h3 className="font-bold text-xl text-white">Neural Control</h3>
                     <p className="text-sm text-slate-400 leading-relaxed">
                         Bewegung entsteht nicht im Muskel, sondern im Hirnstamm. Wenn deine Augen oder dein Gleichgewicht unklare Signale senden, zieht das Gehirn die „neuronale Handbremse“. Wir lösen sie.
                     </p>
@@ -188,7 +188,7 @@ export default function Landing() {
                     <div className="w-12 h-12 rounded-xl bg-blue-500/10 flex items-center justify-center text-blue-400 mb-2">
                         <Activity className="w-6 h-6" />
                     </div>
-                    <h5 className="font-bold text-xl text-white">Fascial Chains</h5>
+                    <h3 className="font-bold text-xl text-white">Fascial Chains</h3>
                     <p className="text-sm text-slate-400 leading-relaxed">
                         Wir trainieren keine isolierten Muskeln, sondern myofasziale Ketten. Wir nutzen die Architektur deines Bindegewebes, um Spannungen dort zu lösen, wo sie tatsächlich entstehen.
                     </p>
@@ -201,7 +201,7 @@ export default function Landing() {
                     <div className="w-12 h-12 rounded-xl bg-blue-500/10 flex items-center justify-center text-blue-400 mb-2">
                         <Shield className="w-6 h-6" />
                     </div>
-                    <h5 className="font-bold text-xl text-white">Loaded Mobility</h5>
+                    <h3 className="font-bold text-xl text-white">Loaded Mobility</h3>
                     <p className="text-sm text-slate-400 leading-relaxed">
                         Dehnen allein reicht nicht. Dein Gehirn lässt Spannung erst dauerhaft los, wenn es lernt, in der neuen Beweglichkeit Kraft zu erzeugen. Wir sichern deinen Fortschritt durch Belastung.
                     </p>

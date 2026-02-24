@@ -80,7 +80,7 @@ export default function HeroSection({ onCtaClick }) {
 
             {/* Mockup Body */}
             <div className="flex-1 bg-slate-900 p-6 pt-2 overflow-hidden flex flex-col">
-                <h4 className="text-lg font-black text-white mb-1">Explosive Engine</h4>
+                <div className="text-lg font-black text-white mb-1">Explosive Engine</div>
                 <p className="text-[10px] text-slate-500 mb-4 font-medium uppercase tracking-wide">Reaktivität & Sehnensteifigkeit</p>
                 
                 <div className="w-full bg-slate-800 h-1.5 rounded-full mb-6 overflow-hidden">

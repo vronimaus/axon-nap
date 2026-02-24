@@ -29,7 +29,7 @@ export default function AppInsideSection() {
                     <div className="w-12 h-12 bg-cyan-500/20 rounded-2xl flex items-center justify-center text-cyan-400 font-bold group-hover:bg-cyan-500 group-hover:text-black transition-colors">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2v4"/><path d="m16.2 7.8 2.9-2.9"/><path d="M18 12h4"/><path d="m16.2 16.2 2.9 2.9"/><path d="M12 18v4"/><path d="m4.9 19.1 2.9-2.9"/><path d="M2 12h4"/><path d="m4.9 4.9 2.9 2.9"/></svg>
                     </div>
-                    <h4 className="font-bold text-lg uppercase tracking-tight text-white">Sync & Progress</h4>
+                    <h3 className="font-bold text-lg uppercase tracking-tight text-white">Sync & Progress</h3>
                 </div>
                 <div className="mb-8 p-4 bg-slate-950/50 rounded-3xl border border-white/5">
                     <SyncChart />
@@ -48,7 +48,7 @@ export default function AppInsideSection() {
                     <div className="w-12 h-12 bg-emerald-500/20 rounded-2xl flex items-center justify-center text-emerald-400 group-hover:bg-emerald-500 group-hover:text-black transition-colors">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.1.2-2.2.5-3.3.3-1.09.9-2.2 1.7-3.21z"/></svg>
                     </div>
-                    <h4 className="font-bold text-lg uppercase tracking-tight text-emerald-400">Rehabilitation</h4>
+                    <h3 className="font-bold text-lg uppercase tracking-tight text-emerald-400">Rehabilitation</h3>
                 </div>
                 <div className="space-y-3 mb-8">
                     <div className="bg-slate-800 p-4 rounded-2xl flex justify-between items-center border-l-4 border-emerald-500 shadow-lg shadow-emerald-900/10">
@@ -74,7 +74,7 @@ export default function AppInsideSection() {
                     <div className="w-12 h-12 bg-amber-500/20 rounded-2xl flex items-center justify-center text-amber-400 group-hover:bg-amber-500 group-hover:text-black transition-colors">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
                     </div>
-                    <h4 className="font-bold text-lg uppercase tracking-tight text-amber-400">Performance</h4>
+                    <h3 className="font-bold text-lg uppercase tracking-tight text-amber-400">Performance</h3>
                 </div>
                 <div className="bg-slate-800 p-6 rounded-2xl mb-8 relative overflow-hidden border border-white/5">
                     <div className="absolute top-0 right-0 w-20 h-20 bg-amber-500/10 rounded-bl-full pointer-events-none"></div>
