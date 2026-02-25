@@ -56,7 +56,7 @@ const EditableNumber = ({ value, label, onChange, unit }) => {
   );
 };
 
-export default function TrainingExerciseCard({ exercise, idx, onDetailClick, isOpen, onToggle, onComplete }) {
+export default function TrainingExerciseCard({ exercise, idx, onDetailClick, isOpen, onToggle, onComplete, defaultLevel }) {
   // Props fallback
   const [localExpanded, setLocalExpanded] = useState(false);
   const isExpanded = isOpen !== undefined ? isOpen : localExpanded;
@@ -64,7 +64,7 @@ export default function TrainingExerciseCard({ exercise, idx, onDetailClick, isO
 
   // Exercise Data State
   const [fullExercise, setFullExercise] = useState(exercise);
-  const [level, setLevel] = useState('standard'); // basic, standard, advanced
+  const [level, setLevel] = useState(defaultLevel || 'standard'); // basic, standard, advanced
   
   // Protocol State
   const [sets, setSets] = useState(3);
