@@ -16,13 +16,8 @@ Deno.serve(async (req) => {
     }
 
     // Checkout Session erstellen (Hosted Checkout)
-    const session = await stripeClient.checkout.sessions.create({
-      mode: 'payment',
+    let sessionConfig = {
       customer_email: email || undefined,
-      line_items: [{
-        price: 'price_1T05KL7Pl2EHjBzr4GJT5KiK', // Fixed price for AXON Protocol
-        quantity: 1
-      }],
       success_url: `${baseUrl}/Success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${baseUrl}/Landing`,
       metadata: {
@@ -30,7 +25,28 @@ Deno.serve(async (req) => {
         trial_mode: mode === 'trial' ? 'true' : 'false',
         customer_email: email || 'unknown'
       }
-    });
+    };
+
+    if (mode === 'trial') {
+      // 7-Tage Testversion (Abo mit Trial)
+      sessionConfig.mode = 'subscription';
+      sessionConfig.line_items = [{
+        price: 'price_1T4ekJ7Pl2EHjBzrKwG2mEmV', // Recurring Price (Yearly)
+        quantity: 1
+      }];
+      sessionConfig.subscription_data = {
+        trial_period_days: 7
+      };
+    } else {
+      // Direktkauf (Einmalzahlung)
+      sessionConfig.mode = 'payment';
+      sessionConfig.line_items = [{
+        price: 'price_1T05KL7Pl2EHjBzr4GJT5KiK', // One-time Price
+        quantity: 1
+      }];
+    }
+
+    const session = await stripeClient.checkout.sessions.create(sessionConfig);
 
     console.log('[createCheckoutSession] Session created:', session.id);
 
