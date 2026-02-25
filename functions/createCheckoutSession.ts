@@ -38,6 +38,11 @@ Deno.serve(async (req) => {
       sessionConfig.subscription_data = {
         trial_period_days: 7
       };
+      sessionConfig.custom_text = {
+        submit: {
+          message: "Wichtiger Hinweis: Stripe zeigt hier systembedingt 'pro Jahr' an. Es wird jedoch garantiert nur EINMALIG abgebucht (Lebenslanger Zugriff). Wir beenden das Abo nach der Zahlung automatisch."
+        }
+      };
     } else {
       // Direktkauf (Einmalzahlung)
       sessionConfig.mode = 'payment';
