@@ -56,7 +56,13 @@ function ExerciseRow({ ex }) {
   const prefix = getPrefix(ex.exercise_id);
   const prefixDef = prefix ? PREFIXES[prefix] : null;
 
-  const val = (key) => edits[key] !== undefined ? edits[key] : (ex[key] || '');
+  const val = (key) => {
+    let value = edits[key] !== undefined ? edits[key] : (ex[key] || '');
+    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+      return JSON.stringify(value, null, 2);
+    }
+    return value;
+  };
 
   const handleSave = async () => {
     if (!isDirty) return;
@@ -243,10 +249,20 @@ function ExerciseRow({ ex }) {
             {field.type === 'textarea' ? (
               <textarea
                 value={val(field.key)}
-                onChange={(e) => setEdits(prev => ({ ...prev, [field.key]: e.target.value }))}
+                onChange={(e) => {
+                  let parsedValue = e.target.value;
+                  if (['progression_basic', 'progression_advanced'].includes(field.key)) {
+                     try {
+                        parsedValue = JSON.parse(e.target.value);
+                     } catch (err) {
+                        // Keep as string if it's invalid JSON, user might be typing
+                     }
+                  }
+                  setEdits(prev => ({ ...prev, [field.key]: parsedValue }));
+                }}
                 rows={['progression_basic', 'progression_advanced'].includes(field.key) ? 4 : 3}
                 className="w-full px-3 py-2 rounded-lg bg-slate-900 border border-slate-600 text-slate-100 text-sm placeholder-slate-500 focus:border-cyan-500 focus:outline-none resize-y font-mono text-xs"
-                placeholder={`${field.label} eingeben...`}
+                placeholder={['progression_basic', 'progression_advanced'].includes(field.key) ? `{\n  "label": "...",\n  "description": "...",\n  "focus": "..."\n}` : `${field.label} eingeben...`}
               />
                 ) : field.type === 'select' ? (
                   <select
