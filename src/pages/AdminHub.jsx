@@ -7,6 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { AlertCircle, Zap, BookOpen, Palette, ArrowLeft, Image, Trash2, Filter, ChevronUp, ChevronDown, GitMerge, Edit } from 'lucide-react';
 import ExerciseMappingTab from '../components/admin/ExerciseMappingTab';
 import ExerciseEditorTab from '../components/admin/ExerciseEditorTab';
+import EnrichmentLogTab from '../components/admin/EnrichmentLogTab';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
 // Prefix-Definitionen
@@ -491,6 +492,10 @@ export default function AdminHub() {
                 <Zap className="w-4 h-4" />
                 <span>Roadmap</span>
               </TabsTrigger>
+              <TabsTrigger value="logs" className="flex items-center gap-2">
+                <BookOpen className="w-4 h-4" />
+                <span>Logs</span>
+              </TabsTrigger>
             </TabsList>
 
           {/* Flow Tab */}
@@ -606,6 +611,11 @@ export default function AdminHub() {
           {/* Roadmap Tab */}
           <TabsContent value="roadmap" className="mt-0">
             <RoadmapTab />
+          </TabsContent>
+
+          {/* Logs Tab */}
+          <TabsContent value="logs" className="mt-0">
+            <EnrichmentLogTab />
           </TabsContent>
         </Tabs>
       </div>
