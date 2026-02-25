@@ -13,22 +13,25 @@ Deno.serve(async (req) => {
             return Response.json({ error: 'Unauthorized: Admin access required' }, { status: 403 });
         }
 
-        // 1. Hole Kandidaten (Älteste zuerst -> Queue Prinzip)
-        const exercises = await base44.asServiceRole.entities.Exercise.list('updated_date', 50);
+        // 1. Hole Kandidaten
+        const exercises = await base44.asServiceRole.entities.Exercise.list('updated_date', 500);
 
-        // Filtere Exercises, die heute schon erfolgreich waren (doppelte Arbeit vermeiden)
+        const needsFill = (ex) => {
+            return !ex.axon_moment || !ex.progression_basic || !ex.benefits || !ex.cues || ex.cues.length === 0;
+        };
+
+        // Filtere Exercises, die heute schon dran waren (Erfolg oder Fehler) um Endlosschleifen am gleichen Tag zu vermeiden
         const today = new Date().toISOString().split('T')[0];
-        const recentLogs = await base44.asServiceRole.entities.ExerciseEnrichmentLog.list('-enrichment_date', 200);
+        const recentLogs = await base44.asServiceRole.entities.ExerciseEnrichmentLog.list('-enrichment_date', 500);
 
         const recentLogIds = new Set(recentLogs
-            .filter(log => log.enrichment_date && log.enrichment_date.startsWith(today) && log.status === 'success')
+            .filter(log => log.enrichment_date && log.enrichment_date.startsWith(today))
             .map(log => log.exercise_id)
         );
 
-        // Nimm Kandidaten, die heute noch nicht dran waren
-        // Da wir nach 'updated_date' sortieren, sind das meist eh die, die lange nicht angefasst wurden.
+        // Nimm Kandidaten, die noch Lücken haben und heute noch nicht verarbeitet wurden
         const candidates = exercises
-            .filter(ex => !recentLogIds.has(ex.id))
+            .filter(ex => needsFill(ex) && !recentLogIds.has(ex.id))
             .slice(0, BATCH_SIZE);
 
         if (candidates.length === 0) {

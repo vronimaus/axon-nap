@@ -113,6 +113,16 @@ export default function EnrichmentLogTab() {
     }, {});
   }, [exercises]);
 
+  // Berechne Fortschritt
+  const needsFill = (ex) => {
+    return !ex.axon_moment || !ex.progression_basic || !ex.benefits || !ex.cues || ex.cues.length === 0;
+  };
+  
+  const totalExercises = exercises.length;
+  const enrichedExercises = exercises.filter(ex => !needsFill(ex)).length;
+  const progressPercent = totalExercises > 0 ? Math.round((enrichedExercises / totalExercises) * 100) : 0;
+  const isDone = totalExercises > 0 && enrichedExercises === totalExercises;
+
   const [triggering, setTriggering] = React.useState(false);
   const queryClient = useQueryClient();
 
@@ -146,19 +156,43 @@ export default function EnrichmentLogTab() {
       className="space-y-6"
     >
       <div className="glass rounded-2xl border border-cyan-500/30 p-8">
-        <h2 className="text-2xl font-bold text-cyan-400 mb-2">📋 Letzte KI-Ergänzungen (Log)</h2>
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-          <p className="text-slate-300 text-sm">
-            Zeigt die letzten 50 automatischen KI-Updates. Die Automatisierung läuft alle 5 Minuten im Hintergrund.
-          </p>
-          <Button 
-            onClick={handleManualTrigger} 
-            disabled={triggering}
-            className="bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700 text-white shrink-0"
-          >
-            {triggering ? <RefreshCw className="w-4 h-4 mr-2 animate-spin" /> : <Zap className="w-4 h-4 mr-2" />}
-            {triggering ? 'Verarbeite Batch...' : 'Batch jetzt starten (10 Stk.)'}
-          </Button>
+          <div>
+            <h2 className="text-2xl font-bold text-cyan-400 mb-2">📋 Letzte KI-Ergänzungen (Log)</h2>
+            <p className="text-slate-300 text-sm">
+              Zeigt die automatischen KI-Updates. Die Automatisierung läuft alle 5 Minuten im Hintergrund.
+            </p>
+          </div>
+          <div className="flex flex-col items-end gap-2">
+            <Button 
+              onClick={handleManualTrigger} 
+              disabled={triggering || isDone}
+              className="bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700 text-white shrink-0"
+            >
+              {triggering ? <RefreshCw className="w-4 h-4 mr-2 animate-spin" /> : <Zap className="w-4 h-4 mr-2" />}
+              {isDone ? 'Alles erledigt!' : triggering ? 'Verarbeite Batch...' : 'Batch jetzt starten (10 Stk.)'}
+            </Button>
+          </div>
+        </div>
+
+        {/* Fortschrittsanzeige */}
+        <div className="mb-8 bg-slate-800/50 p-4 rounded-xl border border-slate-700">
+          <div className="flex justify-between items-center mb-2">
+            <span className="text-sm font-medium text-slate-300">Gesamtfortschritt der Anreicherung</span>
+            <span className="text-sm font-bold text-cyan-400">{enrichedExercises} / {totalExercises} Übungen ({progressPercent}%)</span>
+          </div>
+          <div className="w-full bg-slate-900 rounded-full h-3 border border-slate-700 overflow-hidden">
+            <div 
+              className="bg-gradient-to-r from-cyan-500 to-blue-500 h-3 rounded-full transition-all duration-500" 
+              style={{ width: `${progressPercent}%` }}
+            ></div>
+          </div>
+          {isDone && (
+            <p className="text-xs text-green-400 mt-2 flex items-center gap-1">
+              <CheckCircle2 className="w-3 h-3" />
+              Alle Übungen wurden erfolgreich überprüft und angereichert!
+            </p>
+          )}
         </div>
 
         {logs.length === 0 ? (
