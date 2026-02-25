@@ -4,7 +4,7 @@ import { Target, TrendingUp, Zap, CheckCircle2, Brain, Activity, Dumbbell, Spark
 import { Button } from '@/components/ui/button';
 import TrainingExerciseCard from './TrainingExerciseCard';
 
-export default function PhaseCard({ phase, index, totalPhases, isCompleted, onComplete, onNext, onPrev }) {
+export default function PhaseCard({ phase, index, totalPhases, isCompleted, onComplete, onNext, onPrev, readinessStatus }) {
   // Accordion State: All closed by default
   const [openCardKey, setOpenCardKey] = React.useState(null);
 

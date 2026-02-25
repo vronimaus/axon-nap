@@ -334,6 +334,7 @@ export default function TrainingPlan() {
                     index={activePhaseIdx}
                     totalPhases={activePlan.phases.length}
                     isCompleted={completedPhases[activePhaseIdx]}
+                    readinessStatus={readinessStatus}
                     onComplete={() => {
                       const newCompleted = { ...completedPhases, [activePhaseIdx]: true };
                       setCompletedPhases(newCompleted);
