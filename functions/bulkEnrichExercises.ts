@@ -1,9 +1,9 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
-import { GoogleGenerativeAI, SchemaType } from "npm:@google/generative-ai@0.1.3";
+import { GoogleGenerativeAI, SchemaType } from "npm:@google/generative-ai@^0.12.0";
 
 // Konfiguration
-const BATCH_SIZE = 3; // Klein halten um Timeouts zu vermeiden
-const MODEL_NAME = "gemini-1.5-flash"; // Schnell und gut genug für Textanreicherung
+const BATCH_SIZE = 3; 
+const MODEL_NAME = "gemini-1.5-flash"; 
 
 Deno.serve(async (req) => {
     try {
@@ -59,21 +59,17 @@ Deno.serve(async (req) => {
         });
 
         // 1. Hole Kandidaten für Anreicherung
-        // Strategie: Wir holen Exercises und prüfen gegen Logs, welche am längsten nicht angereichert wurden
-        // Da wir (noch) kein 'last_enriched' Feld haben, holen wir einfach eine Batch und filtern manuell oder nehmen zufällige
-        // Für diesen MVP: Hole die ersten X Exercises. In Produktion würde man hier smarter filtern.
-        // Besser: Wir sortieren nach updated_date aufsteigend (älteste zuerst)
+        // Sortieren nach updated_date aufsteigend (älteste zuerst)
         const exercises = await base44.asServiceRole.entities.Exercise.list('updated_date', 50);
 
-        // Filtere Exercises, die bereits heute angereichert wurden (via Logs check)
-        // Das ist etwas ineffizient ohne direkten Filter, aber für kleine Mengen ok.
+        // Filtere Exercises, die bereits heute angereichert wurden
         const today = new Date().toISOString().split('T')[0];
-        const recentLogs = await base44.asServiceRole.entities.ExerciseEnrichmentLog.filter({
-             // Wir können hier schwer nach Datum filtern ohne Range Queries, daher holen wir die letzten Logs
-        }, '-enrichment_date', 100);
+        
+        // Da wir keine komplexen Filter haben, holen wir die Logs und filtern im Memory
+        const recentLogs = await base44.asServiceRole.entities.ExerciseEnrichmentLog.list('-enrichment_date', 100);
 
         const recentLogIds = new Set(recentLogs
-            .filter(log => log.enrichment_date.startsWith(today) && log.status === 'success')
+            .filter(log => log.enrichment_date && log.enrichment_date.startsWith(today) && log.status === 'success')
             .map(log => log.exercise_id)
         );
 
@@ -128,7 +124,7 @@ Deno.serve(async (req) => {
                 const enrichedData = JSON.parse(jsonText);
 
                 // 3. Update Exercise
-                // Wir mergen die neuen Daten. Achtung: Wir überschreiben vorhandene Felder, da wir "optimieren" wollen.
+                // Wir mergen die neuen Daten.
                 await base44.asServiceRole.entities.Exercise.update(exercise.id, enrichedData);
 
                 // 4. Log Success
@@ -138,7 +134,7 @@ Deno.serve(async (req) => {
                     enrichment_date: new Date().toISOString(),
                     enriched_fields: Object.keys(enrichedData),
                     ai_model: MODEL_NAME,
-                    ai_response_json: JSON.stringify(enrichedData).substring(0, 1000) // Begrenzen
+                    ai_response_json: JSON.stringify(enrichedData).substring(0, 1000) 
                 });
 
                 results.push({ id: exercise.id, name: exercise.name, status: 'success' });
