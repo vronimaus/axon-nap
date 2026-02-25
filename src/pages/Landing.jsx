@@ -175,7 +175,7 @@ export default function Landing() {
       )}
 
       {/* Hero Section */}
-      <HeroSection onCtaClick={() => handleSelectOption('direct')} />
+      <HeroSection onCtaClick={() => handleSelectOption('trial')} />
 
       {/* App Inside Section */}
       <Suspense fallback={<div className="h-96 flex items-center justify-center text-cyan-500/50">Lade Engine...</div>}>
@@ -243,7 +243,7 @@ export default function Landing() {
 
       {/* Pricing Section */}
       <Suspense fallback={<div className="h-96 flex items-center justify-center text-cyan-500/50">Lade Optionen...</div>}>
-        <PricingSection onCtaClick={() => handleSelectOption('direct')} />
+        <PricingSection onCtaClick={handleSelectOption} />
       </Suspense>
 
 
