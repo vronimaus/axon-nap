@@ -115,7 +115,7 @@ Deno.serve(async (req) => {
                     enrichment_date: new Date().toISOString(),
                     enriched_fields: Object.keys(enrichedData),
                     ai_model: "base44.Core.InvokeLLM (Parallel)",
-                    ai_response_json: JSON.stringify(enrichedData).substring(0, 1000) 
+                    ai_response_json: JSON.stringify(enrichedData)
                 });
 
                 return { id: exercise.id, name: exercise.name, status: 'success' };
