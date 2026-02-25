@@ -63,8 +63,8 @@ Deno.serve(async (req) => {
                 3. breathing_instruction: Eine präzise Anweisung, wann ein- und ausgeatmet wird.
                 4. axon_moment: Was soll der Nutzer FÜHLEN oder VERSTEHEN? (z.B. "Spüre, wie sich dein Brustkorb weitet").
                 5. benefits: Was bringt mir das? (z.B. "Macht deinen Nacken locker für den Schreibtisch-Alltag").
-                6. progression_basic: Eine leichtere Variante (Label, Beschreibung, Fokus).
-                7. progression_advanced: Eine schwerere Variante (Label, Beschreibung, Fokus).
+                6. progression_basic: Eine leichtere Variante (MUSS ausgeführt werden als Objekt mit label, description, focus).
+                7. progression_advanced: Eine schwerere Variante (MUSS ausgeführt werden als Objekt mit label, description, focus).
                 8. goal_explanation: Warum machen wir das im Training?
                 9. modification_suggestions_yellow: Was tun, wenn ich mich heute nur "mittelmäßig" (Gelb) fühle?
                 10. modification_suggestions_red: Was tun bei Schmerz/Müdigkeit (Rot)?
@@ -104,7 +104,8 @@ Deno.serve(async (req) => {
                             modification_suggestions_yellow: { type: "string" },
                             modification_suggestions_red: { type: "string" },
                             upgrade_neuro_reason: { type: "string" }
-                        }
+                        },
+                        required: ["description", "cues", "breathing_instruction", "axon_moment", "benefits", "progression_basic", "progression_advanced", "goal_explanation", "modification_suggestions_yellow", "modification_suggestions_red", "upgrade_neuro_reason"]
                     }
                 });
 
