@@ -3,7 +3,7 @@ import { GoogleGenerativeAI } from "npm:@google/generative-ai"; // Use latest ve
 
 // Konfiguration
 const BATCH_SIZE = 3; 
-const MODEL_NAME = "gemini-1.5-flash"; 
+const MODEL_NAME = "gemini-1.5-flash-001"; 
 
 // Schema Types (manually defined to avoid import issues)
 const SchemaType = {
