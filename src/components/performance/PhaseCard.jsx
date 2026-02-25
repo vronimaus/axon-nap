@@ -48,6 +48,14 @@ export default function PhaseCard({ phase, index, totalPhases, isCompleted, onCo
       .map(([key, group]) => ({ key, ...group }));
   }, [phase.exercises]);
 
+  // Readiness-based default level
+  const defaultLevel = useMemo(() => {
+    if (readinessStatus === 'red') return 'basic';
+    if (readinessStatus === 'yellow') return 'basic';
+    if (readinessStatus === 'green') return 'advanced';
+    return 'standard';
+  }, [readinessStatus]);
+
   // Unified "Tech" Look - Monochrome/Cyan
   const colors = { 
     bg: 'from-slate-800/50', 
