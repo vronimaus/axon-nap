@@ -73,6 +73,46 @@ export default function PhaseCard({ phase, index, totalPhases, isCompleted, onCo
       exit={{ opacity: 0, x: -20 }}
       className="space-y-8"
     >
+      {/* Readiness Banner */}
+      {readinessStatus && readinessStatus !== 'green' && (
+        <motion.div
+          initial={{ opacity: 0, y: -8 }}
+          animate={{ opacity: 1, y: 0 }}
+          className={`rounded-xl border px-4 py-3 flex items-start gap-3 ${
+            readinessStatus === 'yellow'
+              ? 'bg-amber-500/10 border-amber-500/30'
+              : 'bg-red-500/10 border-red-500/30'
+          }`}
+        >
+          <AlertTriangle className={`w-4 h-4 mt-0.5 flex-shrink-0 ${readinessStatus === 'yellow' ? 'text-amber-400' : 'text-red-400'}`} />
+          <div>
+            <p className={`text-xs font-bold uppercase tracking-widest mb-0.5 ${readinessStatus === 'yellow' ? 'text-amber-400' : 'text-red-400'}`}>
+              {readinessStatus === 'yellow' ? 'Maintenance Mode – Basic Variante aktiv' : 'Low Battery – Basic Variante aktiv'}
+            </p>
+            <p className="text-xs text-slate-400">
+              {readinessStatus === 'yellow'
+                ? 'Dein System signalisiert erhöhten Pflegebedarf. Alle Übungen wurden auf die Basic-Variante umgestellt. Du kannst manuell wechseln.'
+                : 'Rote Ampel. Heute liegt der Fokus auf Regeneration. Alle Übungen auf Basic gesetzt – hör auf deinen Körper.'}
+            </p>
+          </div>
+        </motion.div>
+      )}
+
+      {/* Green Banner */}
+      {readinessStatus === 'green' && (
+        <motion.div
+          initial={{ opacity: 0, y: -8 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="rounded-xl border px-4 py-3 flex items-start gap-3 bg-emerald-500/10 border-emerald-500/30"
+        >
+          <Zap className="w-4 h-4 mt-0.5 flex-shrink-0 text-emerald-400" />
+          <div>
+            <p className="text-xs font-bold uppercase tracking-widest mb-0.5 text-emerald-400">System Ready – Advanced Modus vorgeschlagen</p>
+            <p className="text-xs text-slate-400">Dein System ist heute in Topform. Advanced-Variante voreingestellt – du kannst jederzeit anpassen.</p>
+          </div>
+        </motion.div>
+      )}
+
       {/* Phase Info Card (Modern/Dark) */}
       <div className="relative rounded-2xl border border-slate-800 bg-slate-900/80 p-6 overflow-hidden shadow-2xl">
          {/* Tech Background Elements */}
