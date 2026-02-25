@@ -17,15 +17,20 @@ Deno.serve(async (req) => {
         const exercises = await base44.asServiceRole.entities.Exercise.list('updated_date', 500);
 
         const needsFill = (ex) => {
-            return !ex.axon_moment || !ex.progression_basic || !ex.benefits || !ex.cues || ex.cues.length === 0;
+            const hasNewFormat = ex.description && (ex.description.includes('SETUP') || ex.description.includes('Setup'));
+            return !hasNewFormat || !ex.axon_moment || !ex.progression_basic || !ex.benefits || !ex.cues || ex.cues.length === 0;
         };
 
-        // Filtere Exercises, die heute schon dran waren (Erfolg oder Fehler) um Endlosschleifen am gleichen Tag zu vermeiden
+        // Filtere Exercises, die heute schon im NEUEN Format verarbeitet wurden oder Fehler hatten
         const today = new Date().toISOString().split('T')[0];
         const recentLogs = await base44.asServiceRole.entities.ExerciseEnrichmentLog.list('-enrichment_date', 500);
 
         const recentLogIds = new Set(recentLogs
-            .filter(log => log.enrichment_date && log.enrichment_date.startsWith(today))
+            .filter(log => {
+                if (!log.enrichment_date || !log.enrichment_date.startsWith(today)) return false;
+                const isNewFormatLog = log.ai_response_json && (log.ai_response_json.includes('SETUP') || log.ai_response_json.includes('Setup'));
+                return isNewFormatLog || log.status === 'error';
+            })
             .map(log => log.exercise_id)
         );
 

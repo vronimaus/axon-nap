@@ -115,7 +115,8 @@ export default function EnrichmentLogTab() {
 
   // Berechne Fortschritt
   const needsFill = (ex) => {
-    return !ex.axon_moment || !ex.progression_basic || !ex.benefits || !ex.cues || ex.cues.length === 0;
+    const hasNewFormat = ex.description && (ex.description.includes('SETUP') || ex.description.includes('Setup'));
+    return !hasNewFormat || !ex.axon_moment || !ex.progression_basic || !ex.benefits || !ex.cues || ex.cues.length === 0;
   };
   
   const totalExercises = exercises.length;
