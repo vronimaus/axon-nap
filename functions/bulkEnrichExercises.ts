@@ -1,19 +1,7 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
-import { GoogleGenerativeAI } from "npm:@google/generative-ai"; // Use latest version
 
 // Konfiguration
-const BATCH_SIZE = 3; 
-const MODEL_NAME = "gemini-1.5-flash-001"; 
-
-// Schema Types (manually defined to avoid import issues)
-const SchemaType = {
-  STRING: "STRING",
-  NUMBER: "NUMBER",
-  INTEGER: "INTEGER",
-  BOOLEAN: "BOOLEAN",
-  ARRAY: "ARRAY",
-  OBJECT: "OBJECT"
-};
+const BATCH_SIZE = 3; // Klein halten um Timeouts zu vermeiden
 
 Deno.serve(async (req) => {
     try {
@@ -24,49 +12,6 @@ Deno.serve(async (req) => {
         if (!user || user.role !== 'admin') {
             return Response.json({ error: 'Unauthorized: Admin access required' }, { status: 403 });
         }
-
-        const apiKey = Deno.env.get("GEMINI_API_KEY");
-        if (!apiKey) {
-            return Response.json({ error: 'GEMINI_API_KEY not set' }, { status: 500 });
-        }
-
-        const genAI = new GoogleGenerativeAI(apiKey);
-        const model = genAI.getGenerativeModel({
-            model: MODEL_NAME,
-            generationConfig: {
-                responseMimeType: "application/json",
-                responseSchema: {
-                    type: SchemaType.OBJECT,
-                    properties: {
-                        description: { type: SchemaType.STRING },
-                        cues: { type: SchemaType.ARRAY, items: { type: SchemaType.STRING } },
-                        breathing_instruction: { type: SchemaType.STRING },
-                        axon_moment: { type: SchemaType.STRING },
-                        benefits: { type: SchemaType.STRING },
-                        progression_basic: {
-                            type: SchemaType.OBJECT,
-                            properties: {
-                                label: { type: SchemaType.STRING },
-                                description: { type: SchemaType.STRING },
-                                focus: { type: SchemaType.STRING }
-                            }
-                        },
-                        progression_advanced: {
-                            type: SchemaType.OBJECT,
-                            properties: {
-                                label: { type: SchemaType.STRING },
-                                description: { type: SchemaType.STRING },
-                                focus: { type: SchemaType.STRING }
-                            }
-                        },
-                        goal_explanation: { type: SchemaType.STRING },
-                        modification_suggestions_yellow: { type: SchemaType.STRING },
-                        modification_suggestions_red: { type: SchemaType.STRING },
-                        upgrade_neuro_reason: { type: SchemaType.STRING }
-                    }
-                }
-            }
-        });
 
         // 1. Hole Kandidaten für Anreicherung
         // Sortieren nach updated_date aufsteigend (älteste zuerst)
@@ -128,10 +73,40 @@ Deno.serve(async (req) => {
                 Generiere JSON basierend auf diesen Anweisungen.
                 `;
 
-                const result = await model.generateContent(prompt);
-                const response = result.response;
-                const jsonText = response.text();
-                const enrichedData = JSON.parse(jsonText);
+                // Nutze Base44 Core Integration InvokeLLM
+                const enrichedData = await base44.asServiceRole.integrations.Core.InvokeLLM({
+                    prompt: prompt,
+                    response_json_schema: {
+                        type: "object",
+                        properties: {
+                            description: { type: "string" },
+                            cues: { type: "array", items: { type: "string" } },
+                            breathing_instruction: { type: "string" },
+                            axon_moment: { type: "string" },
+                            benefits: { type: "string" },
+                            progression_basic: {
+                                type: "object",
+                                properties: {
+                                    label: { type: "string" },
+                                    description: { type: "string" },
+                                    focus: { type: "string" }
+                                }
+                            },
+                            progression_advanced: {
+                                type: "object",
+                                properties: {
+                                    label: { type: "string" },
+                                    description: { type: "string" },
+                                    focus: { type: "string" }
+                                }
+                            },
+                            goal_explanation: { type: "string" },
+                            modification_suggestions_yellow: { type: "string" },
+                            modification_suggestions_red: { type: "string" },
+                            upgrade_neuro_reason: { type: "string" }
+                        }
+                    }
+                });
 
                 // 3. Update Exercise
                 // Wir mergen die neuen Daten.
@@ -143,7 +118,7 @@ Deno.serve(async (req) => {
                     status: 'success',
                     enrichment_date: new Date().toISOString(),
                     enriched_fields: Object.keys(enrichedData),
-                    ai_model: MODEL_NAME,
+                    ai_model: "base44.Core.InvokeLLM",
                     ai_response_json: JSON.stringify(enrichedData).substring(0, 1000) 
                 });
 
