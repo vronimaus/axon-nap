@@ -35,7 +35,7 @@ export default function AppInsideSection() {
                     <SyncChart />
                 </div>
                 <p className="text-sm text-slate-400 leading-relaxed">
-                    Analysiere deinen <strong>Neuro-Resilience Score</strong> und den Stecco-Status deiner Faszienketten. AXON zeigt dir genau, wo dein Körper "blockiert", bevor du es spürst.
+                    Analysiere deinen <strong>Neuro-Resilience Score</strong> und den myofaszialen Status deiner Faszienketten. AXON zeigt dir genau, wo dein Körper "blockiert", bevor du es spürst.
                 </p>
             </motion.div>
 
