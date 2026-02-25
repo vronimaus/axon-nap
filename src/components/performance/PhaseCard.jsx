@@ -199,6 +199,7 @@ export default function PhaseCard({ phase, index, totalPhases, isCompleted, onCo
                       exercise={exercise}
                       idx={exIdx} 
                       isOpen={true}
+                      defaultLevel={defaultLevel}
                       onToggle={() => setOpenCardKey(null)}
                       onComplete={() => {
                          // Mark locally as completed
