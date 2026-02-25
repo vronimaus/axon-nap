@@ -88,7 +88,7 @@ export default function TrainingExerciseCard({ exercise, idx, onDetailClick, isO
               ...prev,
               ...dbEx,
               sets_reps_tempo: exercise.sets_reps_tempo || dbEx.sets_reps_tempo,
-              instruction: exercise.instruction || dbEx.description || dbEx.instruction,
+              instruction: dbEx.description || dbEx.instruction || exercise.instruction,
             }));
             
             // Try to parse sets/reps
