@@ -47,13 +47,24 @@ export default function PricingSection({ onCtaClick }) {
                 </ul>
             </div>
 
-            <Button 
-                onClick={onCtaClick}
-                className="w-full max-w-md bg-white hover:bg-cyan-50 text-black py-8 rounded-2xl font-black text-xl hover:scale-105 transition-all shadow-xl shadow-cyan-900/20 uppercase tracking-wide"
-            >
-                JETZT ZUGRIFF SICHERN
-            </Button>
-            <p className="text-cyan-200/60 text-xs mt-6 font-medium">30 Tage Geld-zurück-Garantie. Kein Risiko.</p>
+            <div className="flex flex-col sm:flex-row justify-center gap-4 max-w-2xl mx-auto">
+                <Button 
+                    onClick={() => onCtaClick('trial')}
+                    className="w-full bg-white hover:bg-cyan-50 text-black py-8 rounded-2xl font-black text-lg hover:scale-105 transition-all shadow-xl shadow-cyan-900/20 uppercase tracking-wide"
+                >
+                    7 TAGE KOSTENLOS TESTEN
+                </Button>
+                <Button 
+                    onClick={() => onCtaClick('direct')}
+                    variant="outline"
+                    className="w-full border-2 border-white/20 bg-transparent hover:bg-white/10 text-white py-8 rounded-2xl font-bold text-lg transition-all uppercase tracking-wide"
+                >
+                    DIREKT KAUFEN
+                </Button>
+            </div>
+            <p className="text-cyan-200/60 text-xs mt-6 font-medium">
+                Kostenlose Testphase: Nach 7 Tagen 59,90 € (Einmalzahlung via Stripe). Vorher jederzeit kündbar.
+            </p>
         </motion.div>
       </div>
     </section>
