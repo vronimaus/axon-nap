@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
@@ -106,23 +107,11 @@ export default function Layout({ children, currentPageName }) {
         if (selectedMode && currentPageName === 'Landing') {
           localStorage.removeItem('axon_selected_mode');
 
-          if (selectedMode === 'trial') {
-            // Trial starten: trial_start_date setzen falls noch nicht gesetzt
-            if (!currentUser.trial_start_date) {
-              await base44.auth.updateMe({ trial_start_date: new Date().toISOString() });
-              base44.analytics.track({
-                eventName: 'trial_activated',
-                properties: { user_email: currentUser.email }
-              });
-            }
-            // Zum Dashboard weiterleiten
-            window.location.href = createPageUrl('Dashboard');
-            return;
-          } else if (selectedMode === 'direct') {
-            // Zum Stripe Checkout weiterleiten
+          if (selectedMode === 'trial' || selectedMode === 'direct') {
+            // Zum Stripe Checkout weiterleiten (für Trial und Direct)
             try {
               const { data } = await base44.functions.invoke('createCheckoutSession', {
-                mode: 'direct',
+                mode: selectedMode,
                 email: currentUser.email
               });
               if (data.url) {
