@@ -1,7 +1,7 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
 
 // Konfiguration
-const BATCH_SIZE = 3; // Klein halten um Timeouts zu vermeiden
+const BATCH_SIZE = 3; // Klein halten um Timeouts zu vermeiden, zwingt Redeploy
 
 Deno.serve(async (req) => {
     try {
