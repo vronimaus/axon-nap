@@ -112,10 +112,6 @@ export default function EnrichmentLogTab() {
       return acc;
     }, {});
   }, [exercises]);
-    queryKey: ['enrichment-logs'],
-    queryFn: () => base44.entities.ExerciseEnrichmentLog.list('-enrichment_date', 50),
-    refetchInterval: 10000 // Poll every 10 seconds
-  });
 
   const [triggering, setTriggering] = React.useState(false);
   const queryClient = useQueryClient();
