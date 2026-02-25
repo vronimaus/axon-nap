@@ -1,7 +1,7 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
 
-// Konfiguration
-const BATCH_SIZE = 3; // Klein halten um Timeouts zu vermeiden, zwingt Redeploy
+// Config
+const BATCH_SIZE = 10; // Increased to 10 thanks to parallel processing
 
 Deno.serve(async (req) => {
     try {
@@ -13,21 +13,20 @@ Deno.serve(async (req) => {
             return Response.json({ error: 'Unauthorized: Admin access required' }, { status: 403 });
         }
 
-        // 1. Hole Kandidaten für Anreicherung
-        // Sortieren nach updated_date aufsteigend (älteste zuerst)
+        // 1. Hole Kandidaten (Älteste zuerst -> Queue Prinzip)
         const exercises = await base44.asServiceRole.entities.Exercise.list('updated_date', 50);
 
-        // Filtere Exercises, die bereits heute angereichert wurden
+        // Filtere Exercises, die heute schon erfolgreich waren (doppelte Arbeit vermeiden)
         const today = new Date().toISOString().split('T')[0];
-        
-        // Da wir keine komplexen Filter haben, holen wir die Logs und filtern im Memory
-        const recentLogs = await base44.asServiceRole.entities.ExerciseEnrichmentLog.list('-enrichment_date', 100);
+        const recentLogs = await base44.asServiceRole.entities.ExerciseEnrichmentLog.list('-enrichment_date', 200);
 
         const recentLogIds = new Set(recentLogs
             .filter(log => log.enrichment_date && log.enrichment_date.startsWith(today) && log.status === 'success')
             .map(log => log.exercise_id)
         );
 
+        // Nimm Kandidaten, die heute noch nicht dran waren
+        // Da wir nach 'updated_date' sortieren, sind das meist eh die, die lange nicht angefasst wurden.
         const candidates = exercises
             .filter(ex => !recentLogIds.has(ex.id))
             .slice(0, BATCH_SIZE);
@@ -36,12 +35,9 @@ Deno.serve(async (req) => {
              return Response.json({ message: 'No exercises found needing enrichment today (based on batch limits).' });
         }
 
-        const results = [];
-
-        // 2. Verarbeite Batch
-        for (const exercise of candidates) {
+        // 2. Parallel Processing Function
+        const processExercise = async (exercise) => {
             try {
-                // Prompt Konstruktion
                 const prompt = `
                 Du bist ein Experte für Neuro-Athletik und funktionelles Training im AXON-System.
                 Deine Aufgabe ist es, die Daten für die Übung "${exercise.name}" (ID: ${exercise.exercise_id}) zu optimieren und anzureichern.
@@ -63,17 +59,17 @@ Deno.serve(async (req) => {
                 3. breathing_instruction: Eine präzise Anweisung, wann ein- und ausgeatmet wird.
                 4. axon_moment: Was soll der Nutzer FÜHLEN oder VERSTEHEN? (z.B. "Spüre, wie sich dein Brustkorb weitet").
                 5. benefits: Was bringt mir das? (z.B. "Macht deinen Nacken locker für den Schreibtisch-Alltag").
-                6. progression_basic: Eine leichtere Variante (MUSS ausgeführt werden als Objekt mit label, description, focus).
-                7. progression_advanced: Eine schwerere Variante (MUSS ausgeführt werden als Objekt mit label, description, focus).
+                6. progression_basic: Eine leichtere Variante als JSON-Objekt {label, description, focus}.
+                7. progression_advanced: Eine schwerere Variante als JSON-Objekt {label, description, focus}.
                 8. goal_explanation: Warum machen wir das im Training?
-                9. modification_suggestions_yellow: Was tun, wenn ich mich heute nur "mittelmäßig" (Gelb) fühle?
-                10. modification_suggestions_red: Was tun bei Schmerz/Müdigkeit (Rot)?
+                9. modification_suggestions_yellow: Was tun bei "Gelb"?
+                10. modification_suggestions_red: Was tun bei "Rot"?
                 11. upgrade_neuro_reason: Warum ist die nächste Stufe neurologisch anspruchsvoller?
 
                 Generiere JSON basierend auf diesen Anweisungen.
                 `;
 
-                // Nutze Base44 Core Integration InvokeLLM
+                // LLM Call
                 const enrichedData = await base44.asServiceRole.integrations.Core.InvokeLLM({
                     prompt: prompt,
                     response_json_schema: {
@@ -109,21 +105,20 @@ Deno.serve(async (req) => {
                     }
                 });
 
-                // 3. Update Exercise
-                // Wir mergen die neuen Daten.
+                // Update Exercise
                 await base44.asServiceRole.entities.Exercise.update(exercise.id, enrichedData);
 
-                // 4. Log Success
+                // Log Success
                 await base44.asServiceRole.entities.ExerciseEnrichmentLog.create({
                     exercise_id: exercise.id,
                     status: 'success',
                     enrichment_date: new Date().toISOString(),
                     enriched_fields: Object.keys(enrichedData),
-                    ai_model: "base44.Core.InvokeLLM",
+                    ai_model: "base44.Core.InvokeLLM (Parallel)",
                     ai_response_json: JSON.stringify(enrichedData).substring(0, 1000) 
                 });
 
-                results.push({ id: exercise.id, name: exercise.name, status: 'success' });
+                return { id: exercise.id, name: exercise.name, status: 'success' };
 
             } catch (innerError) {
                 console.error(`Error enriching exercise ${exercise.id}:`, innerError);
@@ -136,9 +131,12 @@ Deno.serve(async (req) => {
                     error_details: innerError.message
                 });
 
-                results.push({ id: exercise.id, name: exercise.name, status: 'error', error: innerError.message });
+                return { id: exercise.id, name: exercise.name, status: 'error', error: innerError.message };
             }
-        }
+        };
+
+        // 3. Execute Parallel
+        const results = await Promise.all(candidates.map(ex => processExercise(ex)));
 
         return Response.json({ 
             message: `Batch processing complete. Processed ${results.length} exercises.`,
