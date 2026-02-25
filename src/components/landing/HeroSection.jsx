@@ -21,7 +21,7 @@ export default function HeroSection({ onCtaClick }) {
             Er braucht ein <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">Update.</span>
           </h1>
           <p className="text-slate-400 text-lg md:text-xl mb-10 leading-relaxed max-w-xl">
-            Verabschiede dich von starren Trainingsplänen. AXON<span style={{color: '#398bf7'}}>-nap</span> ist der erste intelligente Begleiter, der dein Nervensystem und deine Biomechanik in Echtzeit synchronisiert.
+            Verabschiede dich von starren Trainingsplänen. AXON<span style={{color: '#398bf7'}}>-nap</span> ist eine Web-APP, die funktionales Training, Faszien-Entspannung (MFR) mit Neuro-Athletik-Training verknüpft.
           </p>
           <div className="flex flex-col sm:flex-row gap-4">
             <Button 
