@@ -143,10 +143,10 @@ export default function Landing() {
                </Link>
             ) : (
                 <Button 
-                    onClick={() => handleSelectOption('direct')}
+                    onClick={() => handleSelectOption('trial')}
                     className="bg-cyan-500 hover:bg-cyan-400 text-black font-bold rounded-full px-4 sm:px-6 text-[10px] sm:text-xs uppercase tracking-wide shadow-[0_0_20px_rgba(6,182,212,0.3)] hover:shadow-[0_0_30px_rgba(6,182,212,0.5)] transition-all duration-300"
                 >
-                    Sichern
+                    7 TAGE TESTEN
                 </Button>
             )}
             
