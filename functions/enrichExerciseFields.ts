@@ -27,6 +27,9 @@ Deno.serve(async (req) => {
         // Recognize placeholder/auto-generated content
         if (trimmed === 'auto-created from routine' || trimmed.startsWith('auto-created')) return true;
       }
+      if (typeof v === 'object' && !Array.isArray(v)) {
+        if (Object.keys(v).length === 0 || !v.label || !v.description) return true;
+      }
       return false;
     };
 
@@ -40,6 +43,8 @@ Deno.serve(async (req) => {
     if (needsFill(ex.cues)) missingFields.push('cues');
     if (needsFill(ex.modification_suggestions_yellow)) missingFields.push('modification_suggestions_yellow');
     if (needsFill(ex.modification_suggestions_red)) missingFields.push('modification_suggestions_red');
+    if (needsFill(ex.progression_basic)) missingFields.push('progression_basic');
+    if (needsFill(ex.progression_advanced)) missingFields.push('progression_advanced');
 
     if (missingFields.length === 0) {
       return Response.json({ success: true, message: 'Alle Felder bereits befüllt', updated: {} });
@@ -69,15 +74,17 @@ Deno.serve(async (req) => {
     const context = existingLines.join('\n');
 
     const fieldDescriptions = {
-      description: '"description": Schritt-für-Schritt Ausführungsanleitung der Übung. Klar, präzise, in 3-5 Schritten. Auf Deutsch.',
-      benefits: '"benefits": Konkrete, spürbare Vorteile für den User in 2-3 Sätzen. Alltagsrelevant & motivierend formuliert.',
-      goal_explanation: '"goal_explanation": Warum ist diese Übung im Rehab-/Trainingskontext wichtig? 2-3 Sätze, wissenschaftlich aber verständlich.',
+      description: '"description": Direkte Ansprache (Du-Form), z.B. "Stell dich aufrecht hin." Klar, präzise, in 3-5 Schritten. Auf Deutsch.',
+      benefits: '"benefits": Konkrete, spürbare Vorteile für den User in 2-3 Sätzen. Alltagsrelevant & motivierend formuliert (Du-Form).',
+      goal_explanation: '"goal_explanation": Warum ist diese Übung wichtig? 2-3 Sätze, wissenschaftlich aber verständlich (Du-Form).',
       axon_moment: '"axon_moment": EIN prägnanter Satz was der User jetzt in seinem Körper/Gehirn spüren soll. Beginnt mit "Du spürst..." oder "Dein Gehirn...". Max. 1-2 Sätze.',
       purpose_explanation: '"purpose_explanation": Erklärt den biomechanischen/neurologischen Zweck der Übung. Für gebildete Laien, 2-3 Sätze.',
-      breathing_instruction: '"breathing_instruction": Konkrete Atemanweisung: wann einatmen, wann ausatmen, Rhythmus. Kurz und präzise.',
-      cues: '"cues": Array von 3-5 kurzen Coaching-Cues. Jeder Cue max. 5-7 Wörter.',
+      breathing_instruction: '"breathing_instruction": Konkrete Atemanweisung: wann einatmen, wann ausatmen, Rhythmus. Kurz und präzise (Du-Form).',
+      cues: '"cues": Array von 3-5 kurzen Coaching-Cues. Jeder Cue max. 5-7 Wörter (Du-Form).',
       modification_suggestions_yellow: '"modification_suggestions_yellow": Was tun bei "gelb" (leichter Schmerz/Unwohlsein)? Konkrete Anpassungen. 1-3 Sätze.',
       modification_suggestions_red: '"modification_suggestions_red": Was tun bei "rot" (starker Schmerz, erschöpft)? z.B. Übung streichen oder durch MFR ersetzen. 1-3 Sätze.',
+      progression_basic: '"progression_basic": Eine leichtere Variante als Objekt mit label, description, focus. (MUSS ausgeführt werden)',
+      progression_advanced: '"progression_advanced": Eine schwerere Variante als Objekt mit label, description, focus. (MUSS ausgeführt werden)'
     };
 
     const requestedFields = missingFields.map(f => fieldDescriptions[f]).join('\n');
@@ -99,6 +106,16 @@ WICHTIG: "cues" ist ein Array von Strings, alle anderen Felder sind Strings. Spr
     for (const f of missingFields) {
       if (f === 'cues') {
         schemaProps[f] = { type: 'array', items: { type: 'string' } };
+      } else if (f === 'progression_basic' || f === 'progression_advanced') {
+        schemaProps[f] = {
+          type: 'object',
+          properties: {
+            label: { type: 'string' },
+            description: { type: 'string' },
+            focus: { type: 'string' }
+          },
+          required: ['label', 'description', 'focus']
+        };
       } else {
         schemaProps[f] = { type: 'string' };
       }
