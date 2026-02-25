@@ -1,31 +1,9 @@
-import { useEffect, useState } from 'react';
-import { base44 } from '@/api/base44Client';
 import { useUser } from './useUser';
-import { useQueryClient } from '@tanstack/react-query';
 
 const TRIAL_DURATION_DAYS = 7;
 
 export function useTrialStatus() {
   const { data: user, isLoading: isUserLoading } = useUser();
-  const queryClient = useQueryClient();
-  
-  const [isUpdating, setIsUpdating] = useState(false);
-
-  // Use effect only for side effects (updating the trial start date)
-  useEffect(() => {
-    if (user && !user.has_paid && !user.trial_start_date && !isUpdating) {
-      setIsUpdating(true);
-      base44.auth.updateMe({ trial_start_date: new Date().toISOString() })
-        .then(() => {
-           queryClient.invalidateQueries({ queryKey: ['user'] });
-           setIsUpdating(false);
-        })
-        .catch(e => {
-           console.error('Error starting trial:', e);
-           setIsUpdating(false);
-        });
-    }
-  }, [user, isUpdating, queryClient]);
 
   // Derive state synchronously during render to avoid race conditions and infinite loops
   let trialStatus = {
