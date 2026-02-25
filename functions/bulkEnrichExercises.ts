@@ -57,7 +57,9 @@ Deno.serve(async (req) => {
                 3. ZIEL: Der Nutzer soll die Übung OHNE VIDEO, nur durch Text verstehen und ausführen können.
 
                 AUFGABEN PRO FELD (Priorisiert):
-                1. description: Die WICHTIGSTE Anleitung. Kombiniere die Bewegungsausführung, wichtige Technik-Tipps (Cues) und die Atmung in einen flüssigen, schrittweisen Text. Der Nutzer liest nur das und muss es können.
+                1. description: Die WICHTIGSTE Anleitung. Sie MUSS ZWINGEND in zwei Teile gegliedert sein:
+                   - SETUP: Wie startet der Nutzer? (z.B. "Stehe aufrecht", "Lege dich auf den Rücken", "Vierfüßlerstand", "Welcher Winkel?"). Beschreibe die exakte Ausgangsposition detailliert.
+                   - AUSFÜHRUNG: Schritt-für-Schritt Anleitung der Bewegung. Kombiniere die Bewegungsausführung, wichtige Technik-Tipps und die Atmung in einen flüssigen Text. Der Nutzer liest nur das und muss exakt wissen, was er tun soll.
                 2. cues: 3-5 kurze, knackige Stichpunkte als mentale Anker (z.B. "Bauchnabel reinziehen").
                 3. breathing_instruction: Eine präzise Anweisung, wann ein- und ausgeatmet wird.
                 4. axon_moment: Was soll der Nutzer FÜHLEN oder VERSTEHEN? (z.B. "Spüre, wie sich dein Brustkorb weitet").
