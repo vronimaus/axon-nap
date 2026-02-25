@@ -1,9 +1,19 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
-import { GoogleGenerativeAI, SchemaType } from "npm:@google/generative-ai@^0.12.0";
+import { GoogleGenerativeAI } from "npm:@google/generative-ai"; // Use latest version
 
 // Konfiguration
 const BATCH_SIZE = 3; 
 const MODEL_NAME = "gemini-1.5-flash"; 
+
+// Schema Types (manually defined to avoid import issues)
+const SchemaType = {
+  STRING: "STRING",
+  NUMBER: "NUMBER",
+  INTEGER: "INTEGER",
+  BOOLEAN: "BOOLEAN",
+  ARRAY: "ARRAY",
+  OBJECT: "OBJECT"
+};
 
 Deno.serve(async (req) => {
     try {
