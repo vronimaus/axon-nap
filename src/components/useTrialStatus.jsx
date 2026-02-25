@@ -30,19 +30,19 @@ export function useTrialStatus() {
         hasAccess: isTrialActive
       };
     } else {
-      // New user, trial is being started
+      // New user, waiting for Stripe checkout to complete
       trialStatus = {
-        isActive: true,
-        daysRemaining: TRIAL_DURATION_DAYS,
+        isActive: false,
+        daysRemaining: 0,
         isExpired: false,
-        hasAccess: true // Grant access optimistically while updating
+        hasAccess: false
       };
     }
   }
 
   return {
     user,
-    isLoading: isUserLoading || isUpdating,
+    isLoading: isUserLoading,
     ...trialStatus
   };
 }
