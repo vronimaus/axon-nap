@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { motion } from 'framer-motion';
-import { Target, TrendingUp, Zap, CheckCircle2, Brain, Activity, Dumbbell, Sparkles } from 'lucide-react';
+import { Target, TrendingUp, Zap, CheckCircle2, Brain, Activity, Dumbbell, Sparkles, AlertTriangle, TrendingDown, Zap as ZapIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import TrainingExerciseCard from './TrainingExerciseCard';
 
