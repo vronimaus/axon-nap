@@ -28,7 +28,7 @@ export default function HeroSection({ onCtaClick }) {
                 onClick={onCtaClick}
                 className="bg-white hover:bg-cyan-50 text-black px-8 py-6 rounded-2xl font-black text-base uppercase tracking-wide transition-all shadow-[0_0_20px_rgba(255,255,255,0.1)] hover:shadow-[0_0_30px_rgba(6,182,212,0.4)]"
             >
-                Lifetime Zugriff 59,90€
+                7 TAGE KOSTENLOS TESTEN
             </Button>
             <div className="flex items-center space-x-3 px-4 py-2 bg-slate-900/50 rounded-2xl border border-white/5">
               <div className="flex -space-x-3">
