@@ -17,6 +17,7 @@ Deno.serve(async (req) => {
 
     // Checkout Session erstellen (Hosted Checkout)
     let sessionConfig = {
+      payment_method_types: ['card', 'paypal'],
       customer_email: email || undefined,
       success_url: `${baseUrl}/Success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${baseUrl}/Landing`,
