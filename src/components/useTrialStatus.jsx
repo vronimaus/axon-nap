@@ -14,7 +14,9 @@ export function useTrialStatus() {
   };
 
   if (user) {
-    if (user.has_paid) {
+    if (user.role === 'admin') {
+      trialStatus = { isActive: false, daysRemaining: 0, isExpired: false, hasAccess: true };
+    } else if (user.has_paid) {
       trialStatus = { isActive: false, daysRemaining: 0, isExpired: false, hasAccess: true };
     } else if (user.trial_start_date) {
       const startDate = new Date(user.trial_start_date);
