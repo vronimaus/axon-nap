@@ -10,6 +10,7 @@ import SlingSpiderChart from '../components/dashboard/SlingSpiderChart';
 import OnboardingModal from '../components/dashboard/OnboardingModal';
 import SessionDecision from '../components/dashboard/SessionDecision';
 import ProgressSyncView from '../components/dashboard/ProgressSyncView';
+import DailyReadinessCheck from '../components/dashboard/DailyReadinessCheck';
 import { Helmet } from 'react-helmet-async';
 
 import { useTrialStatus } from '../components/useTrialStatus';
@@ -20,14 +21,23 @@ export default function Dashboard() {
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [showProgress, setShowProgress] = useState(false);
   const [isGeneratingPlan, setIsGeneratingPlan] = useState(false);
+  const [showReadinessCheck, setShowReadinessCheck] = useState(false);
   
   const { user, isLoading, hasAccess } = useTrialStatus();
 
   useEffect(() => {
-    if (isLoading) return;
+    if (isLoading || !user) return;
     
-    if (!user || !hasAccess) {
+    if (!hasAccess) {
       window.location.href = createPageUrl('Landing');
+      return;
+    }
+
+    // Check if readiness done today
+    const today = new Date().toISOString().split('T')[0];
+    const checkDone = sessionStorage.getItem('readiness_check_done');
+    if (checkDone !== today && user.last_readiness_check !== today) {
+      setShowReadinessCheck(true);
     }
   }, [user, isLoading, hasAccess]);
 

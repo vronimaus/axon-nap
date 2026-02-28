@@ -350,6 +350,60 @@ export default function RehabPlan() {
           />
         )}
 
+        {/* Recommended FLOW Routines */}
+        {rehabPlan.recommended_mfr_routines && rehabPlan.recommended_mfr_routines.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="glass rounded-xl border border-purple-500/30 bg-gradient-to-r from-purple-500/10 to-transparent p-5"
+          >
+            <div className="flex items-center gap-2 mb-3">
+              <Activity className="w-5 h-5 text-purple-400" />
+              <h3 className="text-sm font-bold text-purple-400 uppercase tracking-widest">Empfohlene FLOW-Routinen</h3>
+            </div>
+            <p className="text-xs text-slate-400 mb-3">Diese Routinen unterstützen deine Rehabilitation:</p>
+            <div className="space-y-2">
+              {rehabPlan.recommended_mfr_routines.map((r, i) => (
+                <div key={i} className="flex items-start gap-3 p-3 rounded-lg bg-slate-800/50 border border-slate-700">
+                  <div className="flex-1">
+                    <p className="text-sm font-semibold text-white">{r.routine_name}</p>
+                    {r.reason && <p className="text-xs text-slate-400 mt-0.5">{r.reason}</p>}
+                  </div>
+                </div>
+              ))}
+            </div>
+            <Button
+              onClick={() => window.location.href = createPageUrl('FlowRoutines')}
+              className="w-full mt-3 bg-purple-500/20 text-purple-400 hover:bg-purple-500/30 border border-purple-500/30"
+              variant="ghost"
+            >
+              <Activity className="w-4 h-4 mr-2" />
+              Zu den FLOW-Routinen
+            </Button>
+          </motion.div>
+        )}
+
+        {/* Cross-Link: Rehab completed → suggest Goals */}
+        {rehabPlan.status === 'completed' && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="glass rounded-xl border border-blue-500/30 bg-gradient-to-r from-blue-500/10 to-transparent p-5 text-center"
+          >
+            <Zap className="w-10 h-10 text-blue-400 mx-auto mb-3" />
+            <h3 className="text-lg font-bold text-blue-400 mb-2">Bereit für die nächste Stufe?</h3>
+            <p className="text-sm text-slate-300 mb-4">
+              Dein Körper hat sich erholt – jetzt ist es Zeit, Performance-Ziele anzugehen!
+            </p>
+            <Button
+              onClick={() => window.location.href = createPageUrl('Dashboard')}
+              className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white"
+            >
+              GOALS freischalten →
+            </Button>
+          </motion.div>
+        )}
+
         {/* AI-Powered Weakness Generator (Keep this as extra tool at bottom) */}
         <div className="mt-8 pt-8 border-t border-slate-800">
             <h3 className="text-sm font-bold text-slate-500 uppercase tracking-widest mb-4">AI Plan-Optimierung</h3>
