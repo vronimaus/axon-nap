@@ -295,6 +295,13 @@ export default function Dashboard() {
         <meta name="robots" content="noindex, nofollow" />
       </Helmet>
 
+      {/* Readiness Check Modal */}
+      <AnimatePresence>
+        {showReadinessCheck && user && (
+          <DailyReadinessCheck user={user} onClose={handleReadinessClose} />
+        )}
+      </AnimatePresence>
+
       {/* Onboarding Modal */}
       <AnimatePresence>
         {showOnboarding && <OnboardingModal onClose={handleCloseOnboarding} />}
