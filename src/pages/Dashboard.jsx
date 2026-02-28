@@ -45,6 +45,12 @@ export default function Dashboard() {
     localStorage.setItem('axon_onboarding_seen', 'true');
     setShowOnboarding(false);
   };
+
+  const handleReadinessClose = () => {
+    const today = new Date().toISOString().split('T')[0];
+    sessionStorage.setItem('readiness_check_done', today);
+    setShowReadinessCheck(false);
+  };
   
   const { data: sessions = [] } = useQuery({
     queryKey: ['diagnosisSessions'],
