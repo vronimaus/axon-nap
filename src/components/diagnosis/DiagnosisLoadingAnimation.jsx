@@ -30,7 +30,7 @@ export default function DiagnosisLoadingAnimation({ message = "Analysiere dein P
      shouldResetOrigin: false
    };
   return (
-    <div className="flex flex-col items-center justify-center py-12 px-4">
+    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 flex flex-col items-center justify-center py-12 px-4">
       {/* Animated Icons */}
       <div className="relative w-32 h-32 mb-8">
         {/* Central Brain Icon */}
@@ -112,8 +112,8 @@ export default function DiagnosisLoadingAnimation({ message = "Analysiere dein P
          </div>
 
         {/* Did You Know? Facts */}
-        <div className="mt-8 px-6 py-4 rounded-xl bg-slate-800/30 border border-cyan-500/20 max-w-md mx-auto">
-          <p className="text-xs font-semibold text-cyan-400 mb-2">💡 Wusstest du?</p>
+        <div className="mt-8 px-6 py-4 rounded-xl glass border border-cyan-500/40 max-w-md mx-auto shadow-[0_0_20px_rgba(6,182,212,0.15)]">
+          <p className="text-xs font-semibold text-cyan-400 mb-2 uppercase tracking-wider">💡 Wusstest du?</p>
           <AnimatePresence mode="wait">
             <motion.p
               key={currentFact}
