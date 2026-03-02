@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { motion } from 'framer-motion';
-import { Loader2, Save, HelpCircle, LogOut, Trash2, ChevronDown } from 'lucide-react';
+import { Loader2, Save, HelpCircle, LogOut, Trash2, ChevronDown, Lock, Dumbbell, Target, Settings, Eye, Building2, BarChart3 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 import { createPageUrl } from '@/utils';
@@ -153,7 +153,7 @@ export default function Profile() {
         </motion.div>
 
         {/* Account Status */}
-        <Section title="Account-Status" icon="🔐">
+         <Section title="Account-Status" icon={Lock}>
           <div className="grid md:grid-cols-2 gap-4 mb-4">
             <FormField
               label="Vollständiger Name"
@@ -234,7 +234,7 @@ export default function Profile() {
         {/* Form Sections */}
         <div className="space-y-6">
           {/* Trainings-Hintergrund */}
-          <Section title="Trainings-Hintergrund" icon="🏋️">
+          <Section title="Trainings-Hintergrund" icon={Dumbbell}>
             <div className="grid md:grid-cols-2 gap-4">
               <FormField
                 label="Aktivitätslevel"
@@ -285,7 +285,7 @@ export default function Profile() {
           </Section>
 
           {/* Ziele & Beschwerden */}
-          <Section title="Ziele & Beschwerden" icon="🎯">
+          <Section title="Ziele & Beschwerden" icon={Target}>
             <div>
               <label className="block text-sm font-medium text-slate-300 mb-3">
                 Deine Trainingsziele
@@ -329,7 +329,7 @@ export default function Profile() {
           </Section>
 
           {/* Hardware Basis */}
-          <Section title="Meine Hardware" icon="⚙️">
+          <Section title="Meine Hardware" icon={Settings}>
             <div className="grid md:grid-cols-2 gap-4">
               <FormField
                 label="Geburtsdatum"
@@ -367,7 +367,7 @@ export default function Profile() {
           </Section>
 
           {/* Software Eingänge */}
-          <Section title="Meine Sensorik" icon="👁️">
+          <Section title="Meine Sensorik" icon={Eye}>
             <div className="grid md:grid-cols-2 gap-4">
               <FormField
                 label="Hand-Dominanz"
@@ -424,7 +424,7 @@ export default function Profile() {
           </Section>
 
           {/* Kontext & Lifestyle */}
-          <Section title="Mein Alltag" icon="🏢">
+          <Section title="Mein Alltag" icon={Building2}>
             <FormField
               label="Primäre Körperhaltung"
               type="select"
@@ -463,7 +463,7 @@ export default function Profile() {
           </Section>
 
           {/* Hardware Metriken */}
-          <Section title="Meine Leistungsmetriken" icon="📊">
+          <Section title="Meine Leistungsmetriken" icon={BarChart3}>
             <div className="glass rounded-lg p-4 mb-6 border border-cyan-500/40 shadow-[0_0_20px_rgba(6,182,212,0.1)]">
                   <div className="flex gap-2 mb-3">
                     <HelpCircle className="w-5 h-5 text-cyan-400 flex-shrink-0 mt-0.5" />
@@ -565,7 +565,7 @@ export default function Profile() {
   );
 }
 
-function Section({ title, icon, children }) {
+function Section({ title, icon: Icon, children }) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 10 }}
@@ -573,7 +573,7 @@ function Section({ title, icon, children }) {
       className="glass rounded-xl p-6 border border-cyan-500/30 shadow-[0_0_20px_rgba(6,182,212,0.05)]"
     >
       <h2 className="text-xl font-semibold text-cyan-400 mb-4 flex items-center gap-2">
-        <span>{icon}</span>
+        {Icon && <Icon className="w-5 h-5" />}
         {title}
       </h2>
       <div className="space-y-4">
