@@ -232,17 +232,33 @@ export default function Layout({ children, currentPageName }) {
         <nav className="sticky top-0 z-50 bg-slate-900 border-b border-cyan-500/20">
           <div className="max-w-6xl mx-auto px-4">
             <div className="flex items-center justify-between h-16">
-              {/* Logo */}
-              <Link to={createPageUrl('Dashboard')} className="flex items-center gap-2 sm:gap-3">
-                <div className="flex flex-col items-center">
-                   <img 
-                     src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/f960cb731_AxonnapLogo500x180Neu.png"
-                     alt="AXON"
-                     className="h-8 sm:h-10 object-contain mt-1"
-                   />
-                  <span className="text-[10px] text-white font-medium tracking-widest mt-1">Neuro-Athletic-Protocol</span>
+              {/* Back button (non-root pages) or Logo (root pages) */}
+              {showBackButton ? (
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={() => window.history.back()}
+                    className="flex items-center gap-1.5 text-slate-400 hover:text-cyan-400 transition-colors p-1 -ml-1"
+                    aria-label="Zurück"
+                  >
+                    <ArrowLeft className="w-5 h-5" />
+                    <span className="text-sm font-medium hidden xs:inline">Zurück</span>
+                  </button>
+                  <span className="text-sm font-semibold text-white truncate max-w-[160px] sm:max-w-xs">
+                    {currentPageName}
+                  </span>
                 </div>
-              </Link>
+              ) : (
+                <Link to={createPageUrl('Dashboard')} className="flex items-center gap-2 sm:gap-3">
+                  <div className="flex flex-col items-center">
+                    <img 
+                      src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/f960cb731_AxonnapLogo500x180Neu.png"
+                      alt="AXON"
+                      className="h-8 sm:h-10 object-contain mt-1"
+                    />
+                    <span className="text-[10px] text-white font-medium tracking-widest mt-1">Neuro-Athletic-Protocol</span>
+                  </div>
+                </Link>
+              )}
               
               {/* Nav Links - Desktop only */}
                       <div className="hidden md:flex items-center gap-1">
