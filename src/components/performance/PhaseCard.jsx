@@ -165,12 +165,12 @@ export default function PhaseCard({ phase, index, totalPhases, isCompleted, onCo
                       w-12 h-12 rounded-xl flex items-center justify-center text-sm font-bold transition-all duration-300
                       ${isActive 
                         ? 'bg-cyan-500 text-slate-900 shadow-[0_0_15px_rgba(6,182,212,0.4)] scale-110 z-10' 
-                        : isCompleted 
+                        : isExCompleted 
                           ? 'bg-green-500/20 text-green-400 border border-green-500/30' 
                           : 'bg-slate-800 text-slate-500 border border-slate-700 hover:border-cyan-500/50 hover:text-cyan-400'}
                     `}
                   >
-                    {isCompleted ? <CheckCircle2 className="w-5 h-5" /> : exIdx + 1}
+                    {isExCompleted ? <CheckCircle2 className="w-5 h-5" /> : exIdx + 1}
                   </button>
                 );
               })}
