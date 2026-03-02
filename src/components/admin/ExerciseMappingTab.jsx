@@ -347,9 +347,9 @@ export default function ExerciseMappingTab() {
 
                     {/* Gruppe */}
                     <td className="py-2 px-3">
-                      <Select value={group || ''} onValueChange={val => setField(ex.id, 'group', val)}>
-                        <SelectTrigger className="h-7 text-xs bg-slate-800 border-slate-700 text-white w-36 px-2">
-                          <SelectValue placeholder="— Gruppe" />
+                      <Select value={group || undefined} onValueChange={val => setField(ex.id, 'group', val)}>
+                       <SelectTrigger className="h-7 text-xs bg-slate-800 border-slate-700 text-white w-36 px-2">
+                         <SelectValue placeholder="— Gruppe" />
                         </SelectTrigger>
                         <SelectContent className="bg-slate-800 border-slate-700 text-white">
                           {GROUPS.map(g => (
