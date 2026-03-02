@@ -175,13 +175,13 @@ export default function Profile() {
             </div>
           </div>
           <div className="grid md:grid-cols-2 gap-6">
-            <div className="glass-cyan rounded-lg p-4">
+            <div className="glass rounded-lg p-4 border border-cyan-500/30 shadow-[0_0_20px_rgba(6,182,212,0.1)]">
               <p className="text-sm text-slate-400 mb-1">Nutzer-Rolle</p>
               <p className="text-lg font-semibold text-cyan-400">
                 {user?.role === 'admin' ? 'Admin' : 'Benutzer'}
               </p>
             </div>
-            <div className={`rounded-lg p-4 ${user?.has_paid ? 'glass-cyan' : 'bg-amber-900/20 border border-amber-500/30'}`}>
+            <div className={`rounded-lg p-4 border ${user?.has_paid ? 'glass border-cyan-500/30 shadow-[0_0_20px_rgba(6,182,212,0.1)]' : 'bg-amber-950/20 border-amber-500/30'}`}>
               <p className="text-sm text-slate-400 mb-1">Zahlungsstatus</p>
               <p className={`text-lg font-semibold ${user?.has_paid ? 'text-green-400' : 'text-amber-400'}`}>
                 {user?.has_paid ? '✓ Bezahlt (59€)' : '⏳ 7-Tage Trial'}
@@ -464,14 +464,14 @@ export default function Profile() {
 
           {/* Hardware Metriken */}
           <Section title="Meine Leistungsmetriken" icon="📊">
-            <div className="bg-cyan-500/10 border border-cyan-500/30 rounded-lg p-4 mb-6">
-              <div className="flex gap-2 mb-3">
-                <HelpCircle className="w-5 h-5 text-cyan-400 flex-shrink-0 mt-0.5" />
-                <p className="text-sm text-cyan-300">
-                  Diese Metriken werden im Dashboard angezeigt und helfen, deine Trainingsfortschritte zu verfolgen.
-                </p>
-              </div>
-            </div>
+            <div className="glass rounded-lg p-4 mb-6 border border-cyan-500/40 shadow-[0_0_20px_rgba(6,182,212,0.1)]">
+                  <div className="flex gap-2 mb-3">
+                    <HelpCircle className="w-5 h-5 text-cyan-400 flex-shrink-0 mt-0.5" />
+                    <p className="text-sm text-cyan-300">
+                      Diese Metriken werden im Dashboard angezeigt und helfen, deine Trainingsfortschritte zu verfolgen.
+                    </p>
+                  </div>
+                </div>
             <div className="grid md:grid-cols-2 gap-4">
               <FormField
                 label="HRV Score (Herzfrequenzvariabilität)"
@@ -519,7 +519,7 @@ export default function Profile() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="mt-8 glass rounded-xl p-6 border border-red-500/20 mb-24 md:mb-8"
+          className="mt-8 glass rounded-xl p-6 border border-red-500/30 shadow-[0_0_20px_rgba(239,68,68,0.05)] mb-24 md:mb-8"
         >
           <h2 className="text-lg font-semibold text-red-400 mb-2 flex items-center gap-2">
             <Trash2 className="w-5 h-5" />
@@ -570,7 +570,7 @@ function Section({ title, icon, children }) {
     <motion.div
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      className="glass rounded-xl p-6"
+      className="glass rounded-xl p-6 border border-cyan-500/30 shadow-[0_0_20px_rgba(6,182,212,0.05)]"
     >
       <h2 className="text-xl font-semibold text-cyan-400 mb-4 flex items-center gap-2">
         <span>{icon}</span>
@@ -595,14 +595,14 @@ function FormField({ label, type, value, onChange, placeholder, options, min, ma
         </p>
       )}
       {type === 'text' && (
-        <input
-          type="text"
-          value={value}
-          onChange={onChange}
-          placeholder={placeholder}
-          className="w-full px-4 py-2 rounded-lg bg-slate-800/50 border border-slate-700 text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400"
-        />
-      )}
+         <input
+           type="text"
+           value={value}
+           onChange={onChange}
+           placeholder={placeholder}
+           className="w-full px-4 py-2 rounded-lg bg-slate-800/50 border border-slate-600 text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400/30"
+         />
+       )}
       {type === 'number' && (
         <input
           type="number"
@@ -611,7 +611,7 @@ function FormField({ label, type, value, onChange, placeholder, options, min, ma
           placeholder={placeholder}
           min={min}
           max={max}
-          className="w-full px-4 py-2 rounded-lg bg-slate-800/50 border border-slate-700 text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400"
+          className="w-full px-4 py-2 rounded-lg bg-slate-800/50 border border-slate-600 text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400/30"
         />
       )}
       {type === 'date' && (
@@ -619,7 +619,7 @@ function FormField({ label, type, value, onChange, placeholder, options, min, ma
           type="date"
           value={value}
           onChange={onChange}
-          className="w-full px-4 py-2 rounded-lg bg-slate-800/50 border border-slate-700 text-white focus:outline-none focus:border-cyan-400"
+          className="w-full px-4 py-2 rounded-lg bg-slate-800/50 border border-slate-600 text-white focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400/30"
         />
       )}
       {type === 'textarea' && (
@@ -628,12 +628,12 @@ function FormField({ label, type, value, onChange, placeholder, options, min, ma
           onChange={onChange}
           placeholder={placeholder}
           rows="3"
-          className="w-full px-4 py-2 rounded-lg bg-slate-800/50 border border-slate-700 text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400 resize-none"
+          className="w-full px-4 py-2 rounded-lg bg-slate-800/50 border border-slate-600 text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400/30 resize-none"
         />
       )}
       {type === 'select' && (
         <Select value={value} onValueChange={(val) => onChange({ target: { value: val } })}>
-          <SelectTrigger className="w-full bg-slate-800/50 border-slate-700 text-white focus:ring-cyan-400 focus:border-cyan-400">
+          <SelectTrigger className="w-full bg-slate-800/50 border-slate-600 text-white focus:ring-1 focus:ring-cyan-400/30 focus:border-cyan-400">
             <SelectValue />
           </SelectTrigger>
           <SelectContent className="bg-slate-800 border-slate-700 text-white">
