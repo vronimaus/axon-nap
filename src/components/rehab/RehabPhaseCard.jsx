@@ -8,18 +8,15 @@ export default function RehabPhaseCard({ phase, index, totalPhases, isCompleted,
   // Accordion State: All closed by default
   const [openCardKey, setOpenCardKey] = React.useState(null);
 
-  // Track completed exercises locally for immediate UI feedback
-  const [completedExercises, setCompletedExercises] = React.useState({});
-
-  // Initialize completed state from props
-  React.useEffect(() => {
-     if (phase.exercises) {
-       const initialCompleted = {};
-       phase.exercises.forEach((ex, idx) => {
-         if (ex.completed) initialCompleted[`rehab-${idx}`] = true;
-       });
-     }
-  }, [phase.exercises]);
+  // Track completed exercises locally for optimistic UI updates
+  const [completedExercises, setCompletedExercises] = React.useState(() => {
+    if (!phase.exercises) return {};
+    const initial = {};
+    phase.exercises.forEach((ex, idx) => {
+      if (ex.completed) initial[`${phase.key || 'rehab'}-${idx}`] = true;
+    });
+    return initial;
+  });
 
   // Group exercises by category (or just flatten if no useful categories)
   const sections = useMemo(() => {

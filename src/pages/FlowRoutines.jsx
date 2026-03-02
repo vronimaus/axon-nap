@@ -3,9 +3,10 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { createPageUrl } from '@/utils';
-import { ArrowLeft, Clock, Play, Zap, Activity, Moon, Star, ChevronRight, Wind, Layers, Link } from 'lucide-react';
+import { ArrowLeft, Clock, Play, Zap, Activity, Moon, Star, ChevronRight, Wind, Layers, Link, Filter } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Helmet } from 'react-helmet-async';
+import BottomSheet from '../components/ui/BottomSheet';
 
 // Triage → welche Routinen passen
 const TRIAGE_ROUTINE_MAP = {

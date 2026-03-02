@@ -8,20 +8,15 @@ export default function PhaseCard({ phase, index, totalPhases, isCompleted, onCo
   // Accordion State: All closed by default
   const [openCardKey, setOpenCardKey] = React.useState(null);
 
-  // Track completed exercises locally for immediate UI feedback
-  const [completedExercises, setCompletedExercises] = React.useState({});
-
-  // Initialize completed state from props
-  React.useEffect(() => {
-     if (phase.exercises) {
-       const initialCompleted = {};
-       phase.exercises.forEach((ex, idx) => {
-         if (ex.completed) initialCompleted[`${ex.section}-${idx}`] = true; // This key logic might need to align with uniqueKey logic below
-       });
-       // Note: The uniqueKey generation logic in the render loop is slightly complex (combining section and index).
-       // Simpler approach: Map exercises to a flat index or keep the section structure.
-     }
-  }, [phase.exercises]);
+  // Track completed exercises locally for optimistic UI updates
+  const [completedExercises, setCompletedExercises] = React.useState(() => {
+    if (!phase.exercises) return {};
+    const initial = {};
+    phase.exercises.forEach((ex, idx) => {
+      if (ex.completed) initial[`${ex.section || 'other'}-${idx}`] = true;
+    });
+    return initial;
+  });
 
   // Group exercises by section
   const sections = useMemo(() => {
