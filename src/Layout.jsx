@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
@@ -41,6 +40,11 @@ export default function Layout({ children, currentPageName }) {
       setIsChecking(true);
       try {
         if (!user) {
+          // Nicht eingeloggt: nur auf Landing & Public Pages erlaubt
+          const publicPages = ['Landing', 'Success', 'Checkout', 'Login', 'Imprint', 'Privacy', 'Terms', 'KnowledgeHub', 'KnowledgeHubArticle', 'FAQ', 'Glossary'];
+          if (!publicPages.includes(currentPageName)) {
+            window.location.href = createPageUrl('Landing');
+          }
           setIsChecking(false);
           return;
         }
