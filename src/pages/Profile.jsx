@@ -519,7 +519,7 @@ export default function Profile() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="mt-8 glass rounded-xl p-6 border border-red-500/20"
+          className="mt-8 glass rounded-xl p-6 border border-red-500/20 mb-24 md:mb-8"
         >
           <h2 className="text-lg font-semibold text-red-400 mb-2 flex items-center gap-2">
             <Trash2 className="w-5 h-5" />
