@@ -170,7 +170,7 @@ export default function DailyReadinessCheck({ user, onClose }) {
                     />
                   </div>
 
-                  <div className="flex justify-between text-[10px] text-slate-600 font-mono">
+                  <div className="flex justify-between text-[10px] text-slate-400 font-mono">
                     <span>◀ {low}</span>
                     <span>{high} ▶</span>
                   </div>
