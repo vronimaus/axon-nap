@@ -4,6 +4,13 @@ import { base44 } from '@/api/base44Client';
 import { Check, Hash, Trash2, Pencil, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 
 // ── Konstanten ────────────────────────────────────────────────────────────────
 
