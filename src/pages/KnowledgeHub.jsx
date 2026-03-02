@@ -22,7 +22,8 @@ export default function KnowledgeHub() {
     all: { label: 'Alle Artikel', icon: BookOpen, color: 'blue' },
     experts: { label: 'Experten', icon: Users, color: 'purple' },
     solutions: { label: 'Lösungen', icon: Lightbulb, color: 'emerald' },
-    methods: { label: 'Methoden', icon: BookOpen, color: 'blue' }
+    methods: { label: 'Methoden', icon: BookOpen, color: 'blue' },
+    sports: { label: 'Sports Science', icon: Lightbulb, color: 'emerald' }
   };
 
   const filteredArticles = selectedCategory === 'all' 
