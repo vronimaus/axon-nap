@@ -507,6 +507,52 @@ export default function Profile() {
             Profil speichern
           </Button>
         </motion.div>
+
+        {/* Delete Account Section */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mt-8 glass rounded-xl p-6 border border-red-500/20"
+        >
+          <h2 className="text-lg font-semibold text-red-400 mb-2 flex items-center gap-2">
+            <Trash2 className="w-5 h-5" />
+            Account löschen
+          </h2>
+          <p className="text-sm text-slate-400 mb-4">
+            Alle deine Daten, Trainingspläne und Fortschritte werden unwiderruflich gelöscht.
+          </p>
+          {!showDeleteConfirm ? (
+            <Button
+              onClick={() => setShowDeleteConfirm(true)}
+              variant="outline"
+              className="border-red-500/50 text-red-400 hover:bg-red-500/10 hover:text-red-300"
+            >
+              <Trash2 className="w-4 h-4 mr-2" />
+              Account löschen
+            </Button>
+          ) : (
+            <div className="space-y-3">
+              <p className="text-sm font-semibold text-red-400">Bist du sicher? Diese Aktion kann nicht rückgängig gemacht werden.</p>
+              <div className="flex gap-3">
+                <Button
+                  onClick={handleDeleteAccount}
+                  disabled={isDeletingAccount}
+                  className="bg-red-600 hover:bg-red-700 text-white"
+                >
+                  {isDeletingAccount ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Trash2 className="w-4 h-4 mr-2" />}
+                  Ja, Account löschen
+                </Button>
+                <Button
+                  onClick={() => setShowDeleteConfirm(false)}
+                  variant="outline"
+                  className="border-slate-600 text-slate-400"
+                >
+                  Abbrechen
+                </Button>
+              </div>
+            </div>
+          )}
+        </motion.div>
       </div>
     </div>
   );
