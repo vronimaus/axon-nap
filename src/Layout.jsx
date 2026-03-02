@@ -63,6 +63,19 @@ export default function Layout({ children, currentPageName }) {
     { name: 'Rehab', icon: Activity, page: 'RehabPlan' }
   ];
 
+  // Stack preservation: track last visited page per tab
+  const tabStackKey = (page) => `axon_tab_stack_${page}`;
+  const handleTabClick = (page) => {
+    const isActive = currentPageName === page || 
+      (page === 'Dashboard' && !isRootTab(currentPageName) && !['TrainingPlan','RehabPlan','FlowRoutines'].some(t => currentPageName === t));
+    if (currentPageName === page) {
+      // Already on root: do nothing (already there)
+      return;
+    }
+    // Navigate to the page
+    window.location.href = createPageUrl(page);
+  };
+
   const publicNavItems = [
     { name: 'Knowledge Hub', page: 'KnowledgeHub' },
     { name: 'FAQ', page: 'FAQ' }
