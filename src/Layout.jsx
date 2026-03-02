@@ -288,20 +288,23 @@ export default function Layout({ children, currentPageName }) {
               
               {/* Nav Links - Desktop only */}
                       <div className="hidden md:flex items-center gap-1">
-                        {navItems.map((item) => (
-                          <Link
-                            key={item.page}
-                            to={createPageUrl(item.page)}
-                            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all ${
-                              currentPageName === item.page
-                                ? `${getColorClasses(item.color)} bg-opacity-20`
-                                : 'text-slate-400 hover:text-slate-300 hover:bg-slate-800/50'
-                            }`}
-                          >
-                            <item.icon className="w-4 h-4" />
-                            <span>{item.name}</span>
-                          </Link>
-                        ))}
+                        {navItems.map((item) => {
+                          const colorMap = { cyan: 'text-cyan-400', purple: 'text-purple-400', emerald: 'text-emerald-400', amber: 'text-amber-400' };
+                          return (
+                            <Link
+                              key={item.page}
+                              to={createPageUrl(item.page)}
+                              className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all ${
+                                currentPageName === item.page
+                                  ? `${getColorClasses(item.color)} bg-opacity-20`
+                                  : 'text-slate-400 hover:text-slate-300 hover:bg-slate-800/50'
+                              }`}
+                            >
+                              <item.icon className={`w-4 h-4 ${colorMap[item.color]}`} />
+                              <span>{item.name}</span>
+                            </Link>
+                          );
+                        })}
 
                         {/* Public Nav Items */}
                         {publicNavItems.map((item) => (
@@ -394,20 +397,23 @@ export default function Layout({ children, currentPageName }) {
             <>
               <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-slate-900/95 backdrop-blur border-t border-cyan-500/20 safe-area-pb">
                 <div className="flex justify-around items-center px-2 py-3">
-                  {navItems.map((item) => (
-                    <button
-                      key={item.page}
-                      onClick={() => handleTabClick(item.page)}
-                      title={item.name}
-                      className={`flex items-center justify-center p-3 rounded-xl transition-all touch-target ${
-                        activeTab === item.page
-                          ? `${getColorClasses(item.color)}`
-                          : 'text-slate-500 active:bg-slate-800/50'
-                      }`}
-                    >
-                      <item.icon className="w-6 h-6" />
-                    </button>
-                  ))}
+                  {navItems.map((item) => {
+                    const colorMap = { cyan: 'text-cyan-400', purple: 'text-purple-400', emerald: 'text-emerald-400', amber: 'text-amber-400' };
+                    return (
+                      <button
+                        key={item.page}
+                        onClick={() => handleTabClick(item.page)}
+                        title={item.name}
+                        className={`flex items-center justify-center p-3 rounded-xl transition-all touch-target ${
+                          activeTab === item.page
+                            ? `${getColorClasses(item.color)}`
+                            : 'text-slate-500 active:bg-slate-800/50'
+                        }`}
+                      >
+                        <item.icon className={`w-6 h-6 ${colorMap[item.color]}`} />
+                      </button>
+                    );
+                  })}
 
                   {/* More Menu */}
                   <div className="relative">
