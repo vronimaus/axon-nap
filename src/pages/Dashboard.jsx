@@ -143,6 +143,15 @@ export default function Dashboard() {
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
       >
+        {/* Daily Readiness Check & Onboarding Modals — also shown on selection screen */}
+        <AnimatePresence>
+          {showReadinessCheck && user && (
+            <DailyReadinessCheck user={user} onClose={handleReadinessClose} />
+          )}
+        </AnimatePresence>
+        <AnimatePresence>
+          {showOnboarding && <OnboardingModal onClose={handleCloseOnboarding} />}
+        </AnimatePresence>
         {/* Pull-to-Refresh Indicator */}
         {pullY > 0 && (
           <div className="fixed top-16 left-0 right-0 flex justify-center z-50 pointer-events-none">
