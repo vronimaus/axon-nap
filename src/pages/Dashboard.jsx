@@ -153,6 +153,7 @@ export default function Dashboard() {
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
+        style={{ touchAction: pullY > 0 ? 'none' : 'auto' }}
       >
         {/* Daily Readiness Check & Onboarding Modals — also shown on selection screen */}
         <AnimatePresence>
