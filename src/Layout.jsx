@@ -60,7 +60,7 @@ export default function Layout({ children, currentPageName }) {
     if (tab && !isRootTab(currentPageName)) {
       sessionStorage.setItem(`axon_tab_stack_${tab}`, currentPageName);
     }
-  }, [currentPageName]);
+  }, [currentPageName]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const pagesWithoutNav = PAGES_WITHOUT_NAV;
   const showNav = !pagesWithoutNav.includes(currentPageName);
