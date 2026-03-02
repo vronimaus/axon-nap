@@ -186,29 +186,68 @@ export default function FlowRoutines() {
             Entdecken
           </h2>
           
-          {/* Category Filter */}
-          <div className="flex overflow-x-auto gap-2 pb-2 mb-4 custom-scrollbar -mx-4 px-4 sm:mx-0 sm:px-0">
-            {[
-              { id: 'all', label: 'Alle' },
-              { id: 'funktionale-bewegung', label: 'Functional' },
-              { id: 'mobility', label: 'Mobility' },
-              { id: 'neuro', label: 'Neuro' },
-              { id: 'faszien', label: 'Faszien' },
-              { id: 'breathwork', label: 'Atmung' }
-            ].map((cat) => (
-              <button
-                key={cat.id}
-                onClick={() => setSelectedCategory(cat.id)}
-                className={`whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-medium transition-colors ${
-                  selectedCategory === cat.id
-                    ? 'bg-cyan-500 text-slate-950'
-                    : 'bg-slate-800/50 text-slate-400 hover:bg-slate-800 hover:text-slate-200'
-                }`}
-              >
-                {cat.label}
-              </button>
-            ))}
+          {/* Category Filter - mobile bottom sheet on small screens, pills on desktop */}
+          <div className="flex items-center gap-2 mb-4">
+            {/* Mobile filter button */}
+            <button
+              className="sm:hidden flex items-center gap-2 px-4 py-2 rounded-full bg-slate-800/70 text-xs font-medium text-slate-300 border border-slate-700"
+              onClick={() => setFilterSheetOpen(true)}
+            >
+              <Filter className="w-3.5 h-3.5" />
+              {selectedCategory === 'all' ? 'Alle Kategorien' : CATEGORY_LABELS[selectedCategory] || selectedCategory}
+            </button>
+
+            {/* Desktop pills */}
+            <div className="hidden sm:flex overflow-x-auto gap-2 pb-1 custom-scrollbar">
+              {[
+                { id: 'all', label: 'Alle' },
+                { id: 'funktionale-bewegung', label: 'Functional' },
+                { id: 'mobility', label: 'Mobility' },
+                { id: 'neuro', label: 'Neuro' },
+                { id: 'faszien', label: 'Faszien' },
+                { id: 'breathwork', label: 'Atmung' }
+              ].map((cat) => (
+                <button
+                  key={cat.id}
+                  onClick={() => setSelectedCategory(cat.id)}
+                  className={`whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-medium transition-colors ${
+                    selectedCategory === cat.id
+                      ? 'bg-cyan-500 text-slate-950'
+                      : 'bg-slate-800/50 text-slate-400 hover:bg-slate-800 hover:text-slate-200'
+                  }`}
+                >
+                  {cat.label}
+                </button>
+              ))}
+            </div>
           </div>
+
+          {/* Mobile Bottom Sheet for category filter */}
+          <BottomSheet isOpen={filterSheetOpen} onClose={() => setFilterSheetOpen(false)} title="Kategorie wählen">
+            <div className="space-y-1 pb-4">
+              {[
+                { id: 'all', label: 'Alle Kategorien' },
+                { id: 'funktionale-bewegung', label: 'Functional' },
+                { id: 'mobility', label: 'Mobilität' },
+                { id: 'neuro', label: 'Neuro' },
+                { id: 'faszien', label: 'Faszien (MFR)' },
+                { id: 'breathwork', label: 'Atemarbeit' }
+              ].map((cat) => (
+                <button
+                  key={cat.id}
+                  onClick={() => { setSelectedCategory(cat.id); setFilterSheetOpen(false); }}
+                  className={`w-full text-left px-4 py-3.5 rounded-xl text-sm font-medium transition-colors flex items-center justify-between ${
+                    selectedCategory === cat.id
+                      ? 'bg-cyan-500/20 text-cyan-400 border border-cyan-500/30'
+                      : 'text-slate-300 hover:bg-slate-800'
+                  }`}
+                >
+                  {cat.label}
+                  {selectedCategory === cat.id && <span className="text-cyan-400">✓</span>}
+                </button>
+              ))}
+            </div>
+          </BottomSheet>
 
           <div className="space-y-3">
             {routines
