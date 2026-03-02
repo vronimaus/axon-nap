@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { createPageUrl } from '@/utils';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, CheckCircle2, AlertTriangle, XCircle, ExternalLink } from 'lucide-react';
+import { ArrowLeft, CheckCircle2, ExternalLink } from 'lucide-react';
 import { motion } from 'framer-motion';
 import ReactMarkdown from 'react-markdown';
 import FAQWidget from '../components/knowledge/FAQWidget';
@@ -232,52 +232,7 @@ export default function KnowledgeHubArticle() {
           })()}
         </motion.div>
 
-        {/* Triage Ampel */}
-        {(article.triage_red || article.triage_yellow || article.triage_green) && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4 }}
-            className="glass rounded-2xl border border-slate-700 p-6 mb-8"
-          >
-            <h3 className="text-2xl font-bold text-white mb-6">Die AXON-Ampel (Triage)</h3>
-            <p className="text-sm text-slate-400 mb-6 leading-relaxed">
-              Die AXON-Ampel hilft dir einzuschätzen, ob deine Beschwerden medizinische Abklärung benötigen oder ob AXON die richtige Lösung für dich ist. Diese Orientierung ersetzt keine ärztliche Diagnose.
-            </p>
-            
-            <div className="space-y-4">
-              {article.triage_red && (
-                <div className="flex items-start gap-3 p-4 rounded-xl bg-red-500/10 border border-red-500/30">
-                  <XCircle className="w-6 h-6 text-red-400 flex-shrink-0 mt-0.5" />
-                  <div>
-                    <h4 className="font-bold text-red-400 mb-1">Rot</h4>
-                    <p className="text-slate-300 text-sm">{article.triage_red}</p>
-                  </div>
-                </div>
-              )}
 
-              {article.triage_yellow && (
-                <div className="flex items-start gap-3 p-4 rounded-xl bg-amber-500/10 border border-amber-500/30">
-                  <AlertTriangle className="w-6 h-6 text-amber-400 flex-shrink-0 mt-0.5" />
-                  <div>
-                    <h4 className="font-bold text-amber-400 mb-1">Gelb</h4>
-                    <p className="text-slate-300 text-sm">{article.triage_yellow}</p>
-                  </div>
-                </div>
-              )}
-
-              {article.triage_green && (
-                <div className="flex items-start gap-3 p-4 rounded-xl bg-green-500/10 border border-green-500/30">
-                  <CheckCircle2 className="w-6 h-6 text-green-400 flex-shrink-0 mt-0.5" />
-                  <div>
-                    <h4 className="font-bold text-green-400 mb-1">Grün</h4>
-                    <p className="text-slate-300 text-sm">{article.triage_green}</p>
-                  </div>
-                </div>
-              )}
-            </div>
-          </motion.div>
-        )}
 
         {/* Related FAQs */}
         {article.related_faqs && article.related_faqs.length > 0 && (
