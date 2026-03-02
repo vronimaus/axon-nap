@@ -70,8 +70,6 @@ export default function Dashboard() {
     if (!isPulling.current) return;
     const delta = e.touches[0].clientY - touchStartY.current;
     if (delta > 0 && window.scrollY === 0) {
-      // Prevent native scroll-bounce while pulling
-      e.preventDefault();
       setPullY(Math.min(delta * 0.4, 70));
     } else if (delta <= 0) {
       isPulling.current = false;
