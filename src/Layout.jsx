@@ -337,7 +337,7 @@ export default function Layout({ children, currentPageName }) {
         </nav>
       )}
       
-      {/* Content */}
+      {/* Content with slide-in page transitions */}
       <main>
         {(isChecking && !pagesWithoutNav.includes(currentPageName)) ? (
           <div className="min-h-screen flex items-center justify-center bg-slate-950">
@@ -346,7 +346,19 @@ export default function Layout({ children, currentPageName }) {
               <p className="text-xs text-slate-500 tracking-widest uppercase font-mono">System lädt...</p>
             </div>
           </div>
-        ) : children}
+        ) : (
+          <AnimatePresence mode="wait" initial={false}>
+            <motion.div
+              key={currentPageName}
+              initial={showBackButton ? { opacity: 0, x: 24 } : { opacity: 0 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={showBackButton ? { opacity: 0, x: -12 } : { opacity: 0 }}
+              transition={{ duration: 0.22, ease: [0.25, 0.46, 0.45, 0.94] }}
+            >
+              {children}
+            </motion.div>
+          </AnimatePresence>
+        )}
       </main>
 
 
