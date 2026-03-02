@@ -388,7 +388,7 @@ export default function Layout({ children, currentPageName }) {
                       onClick={() => handleTabClick(item.page)}
                       title={item.name}
                       className={`flex items-center justify-center p-3 rounded-xl transition-all touch-target ${
-                        currentPageName === item.page
+                        activeTab === item.page
                           ? 'bg-cyan-500/20 text-cyan-400'
                           : 'text-slate-400 active:bg-slate-800/50'
                       }`}
