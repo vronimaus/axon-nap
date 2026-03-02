@@ -263,7 +263,14 @@ export default function Layout({ children, currentPageName }) {
       
       {/* Content */}
       <main>
-        {children}
+        {(isChecking && !pagesWithoutNav.includes(currentPageName)) ? (
+          <div className="min-h-screen flex items-center justify-center bg-slate-950">
+            <div className="flex flex-col items-center gap-3">
+              <div className="w-2 h-2 rounded-full bg-cyan-400 animate-ping" />
+              <p className="text-xs text-slate-500 tracking-widest uppercase font-mono">System lädt...</p>
+            </div>
+          </div>
+        ) : children}
       </main>
 
 
