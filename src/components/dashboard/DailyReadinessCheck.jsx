@@ -78,6 +78,26 @@ export default function DailyReadinessCheck({ user, onClose }) {
     setTimeout(() => onClose(), 100);
   };
 
+  const getBarColor = (value) => {
+    if (value <= 4) return '#ef4444';
+    if (value <= 7) return '#06b6d4';
+    return '#06b6d4';
+  };
+
+  const getValueLabel = (value) => {
+    if (value <= 3) return 'KRITISCH';
+    if (value <= 5) return 'NIEDRIG';
+    if (value <= 7) return 'NOMINAL';
+    if (value <= 9) return 'GUT';
+    return 'PEAK';
+  };
+
+  const metrics = [
+    { icon: Wrench, label: 'HARDWARE', sublabel: 'Körpergefühl', value: feeling, setter: setFeeling, low: 'Steif / eingerostet', high: 'Geschmeidig / frei' },
+    { icon: Brain, label: 'SOFTWARE', sublabel: 'Fokus & Kognition', value: focus, setter: setFocus, low: 'Müde / Tunnelblick', high: 'Hellwach / klar' },
+    { icon: Zap, label: 'BATTERIE', sublabel: 'Energielevel', value: energy, setter: setEnergy, low: 'Leer / erschöpft', high: 'Volle Kraft' },
+  ];
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -90,109 +110,89 @@ export default function DailyReadinessCheck({ user, onClose }) {
         {!showResults ? (
           <motion.div
             key="check"
-            initial={{ scale: 0.9, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            exit={{ scale: 0.9, opacity: 0 }}
+            initial={{ scale: 0.95, opacity: 0, y: 10 }}
+            animate={{ scale: 1, opacity: 1, y: 0 }}
+            exit={{ scale: 0.95, opacity: 0, y: 10 }}
             onClick={(e) => e.stopPropagation()}
-            className="glass rounded-2xl border border-cyan-500/30 p-6 max-w-md w-full"
+            className="w-full max-w-md bg-slate-950 border border-slate-700/80 rounded-2xl overflow-hidden shadow-[0_0_40px_rgba(0,0,0,0.6)]"
           >
-            <div className="flex items-center justify-between mb-6">
-              <div>
-                <h2 className="text-2xl font-bold text-cyan-400">AXON Bio-Sync</h2>
-                <p className="text-xs text-slate-500 mt-1">System-Kalibrierung</p>
+            {/* Header Bar */}
+            <div className="bg-slate-900 border-b border-slate-800 px-5 py-4 flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse shadow-[0_0_8px_rgba(6,182,212,0.8)]" />
+                <div>
+                  <h2 className="text-sm font-bold text-white tracking-widest uppercase">AXON Bio-Sync</h2>
+                  <p className="text-[10px] text-slate-500 tracking-widest uppercase mt-0.5">System-Kalibrierung v2.1</p>
+                </div>
               </div>
-              <button
-                onClick={onClose}
-                className="text-slate-400 hover:text-white transition-colors"
-              >
-                <X className="w-6 h-6" />
+              <button onClick={onClose} className="text-slate-600 hover:text-slate-300 transition-colors p-1">
+                <X className="w-4 h-4" />
               </button>
             </div>
 
-            <p className="text-sm text-slate-300 mb-6">
-              3 schnelle Checks – 10 Sekunden für optimales Training
-            </p>
+            <div className="p-5 space-y-5">
+              <p className="text-xs text-slate-500 font-mono tracking-wide border-l-2 border-cyan-500/40 pl-3">
+                3 Inputs erforderlich — Kalibrierung läuft
+              </p>
 
-            {/* Feeling (Hardware) */}
-            <div className="mb-6">
-              <div className="flex items-center gap-2 mb-3">
-                <Wrench className="w-5 h-5 text-blue-400" />
-                <label className="text-sm font-medium text-white">Gefühl (Hardware)</label>
-                <span className="ml-auto text-lg font-bold text-blue-400">{feeling}/10</span>
-              </div>
-              <input
-                type="range"
-                min="1"
-                max="10"
-                value={feeling}
-                onChange={(e) => setFeeling(parseInt(e.target.value))}
-                className="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer"
-                style={{
-                  accentColor: feeling <= 4 ? '#ef4444' : feeling <= 7 ? '#f59e0b' : '#22c55e'
-                }}
-              />
-              <div className="flex justify-between text-xs text-slate-500 mt-1">
-                <span>🔴 Steif (eingerostet)</span>
-                <span>🟢 Geschmeidig (wie geölt)</span>
-              </div>
+              {/* Metric Sliders */}
+              {metrics.map(({ icon: Icon, label, sublabel, value, setter, low, high }) => (
+                <div key={label} className="bg-slate-900/60 rounded-xl border border-slate-800 p-4">
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center gap-2">
+                      <div className="w-7 h-7 rounded-lg bg-slate-800 border border-slate-700 flex items-center justify-center">
+                        <Icon className="w-3.5 h-3.5 text-cyan-400" />
+                      </div>
+                      <div>
+                        <p className="text-[10px] font-bold tracking-widest text-slate-400 uppercase">{label}</p>
+                        <p className="text-[10px] text-slate-600">{sublabel}</p>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <span className="text-xl font-bold font-mono text-white">{value}</span>
+                      <span className="text-xs text-slate-600 font-mono">/10</span>
+                      <p className={`text-[9px] font-bold tracking-widest mt-0.5 ${value <= 4 ? 'text-red-400' : value <= 7 ? 'text-cyan-400' : 'text-cyan-300'}`}>
+                        {getValueLabel(value)}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Custom progress-style track */}
+                  <div className="relative mb-2">
+                    <input
+                      type="range"
+                      min="1"
+                      max="10"
+                      value={value}
+                      onChange={(e) => setter(parseInt(e.target.value))}
+                      className="w-full h-1.5 rounded-lg appearance-none cursor-pointer bg-slate-800"
+                      style={{ accentColor: getBarColor(value) }}
+                    />
+                  </div>
+
+                  <div className="flex justify-between text-[10px] text-slate-600 font-mono">
+                    <span>◀ {low}</span>
+                    <span>{high} ▶</span>
+                  </div>
+                </div>
+              ))}
+
+              {/* Submit */}
+              <Button
+                onClick={handleSubmit}
+                disabled={isSubmitting}
+                className="w-full h-11 bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-400 border border-cyan-500/40 hover:border-cyan-500/70 font-bold tracking-widest text-xs uppercase transition-all shadow-none"
+              >
+                {isSubmitting ? (
+                  <span className="flex items-center gap-2">
+                    <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-ping" />
+                    Analysiere System...
+                  </span>
+                ) : (
+                  '▶  Bio-Sync Starten'
+                )}
+              </Button>
             </div>
-
-            {/* Focus (Software) */}
-            <div className="mb-6">
-              <div className="flex items-center gap-2 mb-3">
-                <Brain className="w-5 h-5 text-cyan-400" />
-                <label className="text-sm font-medium text-white">Fokus (Software)</label>
-                <span className="ml-auto text-lg font-bold text-cyan-400">{focus}/10</span>
-              </div>
-              <input
-                type="range"
-                min="1"
-                max="10"
-                value={focus}
-                onChange={(e) => setFocus(parseInt(e.target.value))}
-                className="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer"
-                style={{
-                  accentColor: focus <= 4 ? '#ef4444' : focus <= 7 ? '#f59e0b' : '#22c55e'
-                }}
-              />
-              <div className="flex justify-between text-xs text-slate-500 mt-1">
-                <span>🔴 Müde (Tunnelblick)</span>
-                <span>🟢 Hellwach (klar)</span>
-              </div>
-            </div>
-
-            {/* Energy (Battery) */}
-            <div className="mb-6">
-              <div className="flex items-center gap-2 mb-3">
-                <Zap className="w-5 h-5 text-purple-400" />
-                <label className="text-sm font-medium text-white">Batterie (Energie)</label>
-                <span className="ml-auto text-lg font-bold text-purple-400">{energy}/10</span>
-              </div>
-              <input
-                type="range"
-                min="1"
-                max="10"
-                value={energy}
-                onChange={(e) => setEnergy(parseInt(e.target.value))}
-                className="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer"
-                style={{
-                  accentColor: energy <= 4 ? '#ef4444' : energy <= 7 ? '#f59e0b' : '#22c55e'
-                }}
-              />
-              <div className="flex justify-between text-xs text-slate-500 mt-1">
-                <span>🔴 Akku leer</span>
-                <span>🟢 Volle Kraft</span>
-              </div>
-            </div>
-
-            {/* Submit Button */}
-            <Button
-              onClick={handleSubmit}
-              disabled={isSubmitting}
-              className="w-full h-12 bg-gradient-to-r from-blue-500 to-cyan-600 hover:from-blue-600 hover:to-cyan-700 text-white font-semibold shadow-[0_0_20px_rgba(59,130,246,0.2)]"
-            >
-              {isSubmitting ? 'Analysiere System...' : 'Bio-Sync starten'}
-            </Button>
           </motion.div>
         ) : (
           <BioSyncResultCard
