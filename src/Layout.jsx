@@ -357,9 +357,9 @@ export default function Layout({ children, currentPageName }) {
               <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-slate-900/95 backdrop-blur border-t border-cyan-500/20 safe-area-pb">
                 <div className="flex justify-around items-center px-2 py-3">
                   {navItems.map((item) => (
-                    <Link
+                    <button
                       key={item.page}
-                      to={createPageUrl(item.page)}
+                      onClick={() => handleTabClick(item.page)}
                       title={item.name}
                       className={`flex items-center justify-center p-3 rounded-xl transition-all touch-target ${
                         currentPageName === item.page
@@ -368,7 +368,7 @@ export default function Layout({ children, currentPageName }) {
                       }`}
                     >
                       <item.icon className="w-6 h-6" />
-                    </Link>
+                    </button>
                   ))}
 
                   {/* More Menu */}
