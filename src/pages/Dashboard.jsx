@@ -26,6 +26,7 @@ export default function Dashboard() {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const touchStartY = useRef(0);
   const isPulling = useRef(false);
+  const pullContainerRef = useRef(null);
   const queryClient = useQueryClient();
   
   const { user, isLoading, hasAccess } = useTrialStatus();
