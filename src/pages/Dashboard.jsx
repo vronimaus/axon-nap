@@ -55,6 +55,29 @@ export default function Dashboard() {
     sessionStorage.setItem('readiness_check_done', today);
     setShowReadinessCheck(false);
   };
+
+  const handleTouchStart = (e) => {
+    touchStartY.current = e.touches[0].clientY;
+  };
+
+  const handleTouchMove = (e) => {
+    if (window.scrollY > 0) return;
+    const delta = e.touches[0].clientY - touchStartY.current;
+    if (delta > 0) setPullY(Math.min(delta * 0.4, 70));
+  };
+
+  const handleTouchEnd = async () => {
+    if (pullY > 50 && !isRefreshing) {
+      setIsRefreshing(true);
+      await queryClient.invalidateQueries();
+      setTimeout(() => {
+        setIsRefreshing(false);
+        setPullY(0);
+      }, 800);
+    } else {
+      setPullY(0);
+    }
+  };
   
   const { data: sessions = [] } = useQuery({
     queryKey: ['diagnosisSessions'],
