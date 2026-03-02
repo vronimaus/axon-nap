@@ -154,7 +154,7 @@ export default function PhaseCard({ phase, index, totalPhases, isCompleted, onCo
             <div className="flex flex-wrap gap-2 px-1">
               {section.exercises.map((exercise, exIdx) => {
                 const uniqueKey = `${section.key}-${exIdx}`;
-                const isCompleted = completedExercises[uniqueKey] || exercise.completed;
+                const isExCompleted = completedExercises[uniqueKey] || exercise.completed;
                 const isActive = openCardKey === uniqueKey;
 
                 return (
