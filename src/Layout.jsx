@@ -68,11 +68,21 @@ export default function Layout({ children, currentPageName }) {
   const showBackButton = showNav && !isRootTab(currentPageName);
   
   const navItems = [
-    { name: 'Command', icon: LayoutDashboard, page: 'Dashboard' },
-    { name: 'Training', icon: Target, page: 'TrainingPlan' },
-    { name: 'Rehab', icon: Activity, page: 'RehabPlan' },
-    { name: 'Flow', icon: Zap, page: 'Flow' }
+    { name: 'Command', icon: LayoutDashboard, page: 'Dashboard', color: 'cyan' },
+    { name: 'Training', icon: Target, page: 'TrainingPlan', color: 'purple' },
+    { name: 'Rehab', icon: Activity, page: 'RehabPlan', color: 'emerald' },
+    { name: 'Flow', icon: Zap, page: 'Flow', color: 'amber' }
   ];
+
+  const getColorClasses = (color) => {
+    const colors = {
+      cyan: 'text-cyan-400 bg-cyan-500/10 hover:bg-cyan-500/20',
+      purple: 'text-purple-400 bg-purple-500/10 hover:bg-purple-500/20',
+      emerald: 'text-emerald-400 bg-emerald-500/10 hover:bg-emerald-500/20',
+      amber: 'text-amber-400 bg-amber-500/10 hover:bg-amber-500/20'
+    };
+    return colors[color] || colors.cyan;
+  };
 
   const activeTab = getActiveTab(currentPageName);
 
@@ -284,8 +294,8 @@ export default function Layout({ children, currentPageName }) {
                             to={createPageUrl(item.page)}
                             className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all ${
                               currentPageName === item.page
-                                ? 'bg-cyan-500/20 text-cyan-400'
-                                : 'text-slate-400 hover:text-cyan-400 hover:bg-slate-800/50'
+                                ? `${getColorClasses(item.color)} bg-opacity-20`
+                                : 'text-slate-400 hover:text-slate-300 hover:bg-slate-800/50'
                             }`}
                           >
                             <item.icon className="w-4 h-4" />
@@ -391,8 +401,8 @@ export default function Layout({ children, currentPageName }) {
                       title={item.name}
                       className={`flex items-center justify-center p-3 rounded-xl transition-all touch-target ${
                         activeTab === item.page
-                          ? 'bg-cyan-500/20 text-cyan-400'
-                          : 'text-slate-400 active:bg-slate-800/50'
+                          ? `${getColorClasses(item.color)}`
+                          : 'text-slate-500 active:bg-slate-800/50'
                       }`}
                     >
                       <item.icon className="w-6 h-6" />
