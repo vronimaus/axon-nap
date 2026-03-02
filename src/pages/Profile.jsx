@@ -343,7 +343,7 @@ export default function Profile() {
                 value={formData.biological_sex}
                 onChange={(e) => handleChange('biological_sex', e.target.value)}
                 options={[
-                  { value: '', label: 'Bitte wählen' },
+                  { value: 'none', label: 'Bitte wählen' },
                   { value: 'male', label: 'Männlich' },
                   { value: 'female', label: 'Weiblich' },
                   { value: 'diverse', label: 'Divers' }
