@@ -65,14 +65,14 @@ export function parseMarkdownTable(content) {
 
 export default function MarkdownTable({ headers, rows }) {
   return (
-    <div className="my-6 overflow-x-auto rounded-lg border border-slate-700">
-      <table className="w-full border-collapse bg-slate-900/50">
+    <div className="my-8 w-full overflow-x-auto">
+      <table className="w-full border-collapse">
         <thead>
-          <tr className="bg-slate-800/80 border-b border-slate-700">
+          <tr className="bg-slate-900 border-b-2 border-slate-600">
             {headers.map((header, idx) => (
               <th
                 key={idx}
-                className="px-4 py-3 text-left text-sm font-semibold text-cyan-400 border-r border-slate-700 last:border-r-0"
+                className="px-6 py-4 text-left text-sm font-bold text-slate-200 border-r border-slate-700 last:border-r-0"
               >
                 {header}
               </th>
@@ -83,12 +83,12 @@ export default function MarkdownTable({ headers, rows }) {
           {rows.map((row, rowIdx) => (
             <tr
               key={rowIdx}
-              className="border-b border-slate-700 hover:bg-slate-800/40 transition-colors last:border-b-0"
+              className="border-b border-slate-700 hover:bg-slate-800/60 transition-colors"
             >
               {row.map((cell, cellIdx) => (
                 <td
                   key={cellIdx}
-                  className="px-4 py-3 text-sm text-slate-300 border-r border-slate-700 last:border-r-0"
+                  className="px-6 py-4 text-sm text-slate-300 border-r border-slate-700 last:border-r-0"
                 >
                   {cell}
                 </td>
