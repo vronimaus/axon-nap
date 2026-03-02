@@ -53,9 +53,9 @@ export default function Layout({ children, currentPageName }) {
     }
   }, [currentPageName]);
 
-  // Pages ohne Navigation Header
-  const pagesWithoutNav = ['Landing', 'Success', 'Checkout', 'Login'];
+  const pagesWithoutNav = PAGES_WITHOUT_NAV;
   const showNav = !pagesWithoutNav.includes(currentPageName);
+  const showBackButton = showNav && !isRootTab(currentPageName);
   
   const navItems = [
     { name: 'Command', icon: LayoutDashboard, page: 'Dashboard' },
