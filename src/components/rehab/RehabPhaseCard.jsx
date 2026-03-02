@@ -121,12 +121,12 @@ export default function RehabPhaseCard({ phase, index, totalPhases, isCompleted,
                       w-12 h-12 rounded-xl flex items-center justify-center text-sm font-bold transition-all duration-300
                       ${isActive 
                         ? 'bg-emerald-500 text-slate-900 shadow-[0_0_15px_rgba(16,185,129,0.4)] scale-110 z-10' 
-                        : isCompleted 
+                        : isExCompleted 
                           ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' 
                           : 'bg-slate-800 text-slate-500 border border-slate-700 hover:border-emerald-500/50 hover:text-emerald-400'}
                     `}
                   >
-                    {isCompleted ? <CheckCircle2 className="w-5 h-5" /> : exIdx + 1}
+                    {isExCompleted ? <CheckCircle2 className="w-5 h-5" /> : exIdx + 1}
                   </button>
                 );
               })}
