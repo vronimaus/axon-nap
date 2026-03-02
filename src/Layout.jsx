@@ -51,6 +51,18 @@ export default function Layout({ children, currentPageName }) {
 
         const currentUser = user;
 
+        // Redirect first-time users to onboarding (HowToUse)
+        const onboardingSeen = localStorage.getItem('axon_howto_seen');
+        if (!onboardingSeen && currentPageName !== 'HowToUse' && currentPageName !== 'Landing') {
+          const profiles = await base44.entities.UserNeuroProfile.filter({ user_email: user.email });
+          if (profiles.length === 0) {
+            window.location.href = createPageUrl('HowToUse');
+            return;
+          } else {
+            localStorage.setItem('axon_howto_seen', 'true');
+          }
+        }
+
         // Transfer onboarding data to user profile
         const onboardingStatus = localStorage.getItem('axon_onboarding_status');
         if (onboardingStatus === 'completed') {

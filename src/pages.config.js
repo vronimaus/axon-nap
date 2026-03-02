@@ -61,6 +61,7 @@ import FAQ from './pages/FAQ';
 import Flow from './pages/Flow';
 import FlowRoutines from './pages/FlowRoutines';
 import Glossary from './pages/Glossary';
+import HowToUse from './pages/HowToUse';
 import Imprint from './pages/Imprint';
 import KnowledgeHub from './pages/KnowledgeHub';
 import KnowledgeHubArticle from './pages/KnowledgeHubArticle';
@@ -75,7 +76,6 @@ import Success from './pages/Success';
 import Terms from './pages/Terms';
 import TrainingPlan from './pages/TrainingPlan';
 import TrialInfo from './pages/TrialInfo';
-import HowToUse from './pages/HowToUse';
 import __Layout from './Layout.jsx';
 
 
@@ -94,6 +94,7 @@ export const PAGES = {
     "Flow": Flow,
     "FlowRoutines": FlowRoutines,
     "Glossary": Glossary,
+    "HowToUse": HowToUse,
     "Imprint": Imprint,
     "KnowledgeHub": KnowledgeHub,
     "KnowledgeHubArticle": KnowledgeHubArticle,
@@ -108,7 +109,6 @@ export const PAGES = {
     "Terms": Terms,
     "TrainingPlan": TrainingPlan,
     "TrialInfo": TrialInfo,
-    "HowToUse": HowToUse,
 }
 
 export const pagesConfig = {

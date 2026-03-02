@@ -31,6 +31,13 @@ const steps = [
             </div>
           ))}
         </div>
+        {/* Medical Disclaimer */}
+        <div className="w-full bg-amber-500/10 border border-amber-500/30 rounded-xl px-3 py-2 flex items-start gap-2">
+          <span className="text-amber-400 text-sm flex-shrink-0 mt-0.5">⚠️</span>
+          <p className="text-[9px] text-amber-200/70 leading-relaxed">
+            <strong className="text-amber-400">Medizinischer Hinweis:</strong> AXON ersetzt keine ärztliche Diagnose oder Behandlung. Bei akuten oder starken Beschwerden wende dich an einen Arzt. Nutze die App eigenverantwortlich.
+          </p>
+        </div>
       </div>
     )
   },
