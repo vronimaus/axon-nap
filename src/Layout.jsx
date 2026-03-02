@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { LayoutDashboard, LogOut, User, Target, Activity, Settings, Menu, X, ArrowLeft } from 'lucide-react';
+import { LayoutDashboard, LogOut, User, Target, Activity, Settings, Menu, X, ArrowLeft, Zap } from 'lucide-react';
 import CookieBanner from './components/CookieBanner';
 import { useTrialStatus } from './components/useTrialStatus';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -12,14 +12,15 @@ import OfflineDetector from './components/OfflineDetector';
 import { HelmetProvider } from 'react-helmet-async';
 import { useQueryClient } from '@tanstack/react-query';
 
-const ROOT_TABS = ['Dashboard', 'TrainingPlan', 'RehabPlan', 'FlowRoutines'];
+const ROOT_TABS = ['Dashboard', 'TrainingPlan', 'RehabPlan', 'Flow'];
 const PAGES_WITHOUT_NAV = ['Landing', 'Success', 'Checkout', 'Login'];
 
 // Map each tab to its "owned" pages so the tab stays highlighted
 const TAB_OWNERSHIP = {
-  Dashboard: ['Dashboard', 'DiagnosisChat', 'DiagnosisWizard', 'Discovery', 'Flow', 'FlowRoutines', 'Profile', 'HowToUse', 'AdminHub', 'AdminDiagnostics', 'DevNotes'],
+  Dashboard: ['Dashboard', 'DiagnosisChat', 'DiagnosisWizard', 'Discovery', 'Profile', 'HowToUse', 'AdminHub', 'AdminDiagnostics', 'DevNotes'],
   TrainingPlan: ['TrainingPlan', 'Performance'],
   RehabPlan: ['RehabPlan'],
+  Flow: ['Flow', 'FlowRoutines'],
 };
 
 function getActiveTab(pageName) {
@@ -69,7 +70,8 @@ export default function Layout({ children, currentPageName }) {
   const navItems = [
     { name: 'Command', icon: LayoutDashboard, page: 'Dashboard' },
     { name: 'Training', icon: Target, page: 'TrainingPlan' },
-    { name: 'Rehab', icon: Activity, page: 'RehabPlan' }
+    { name: 'Rehab', icon: Activity, page: 'RehabPlan' },
+    { name: 'Flow', icon: Zap, page: 'Flow' }
   ];
 
   const activeTab = getActiveTab(currentPageName);
