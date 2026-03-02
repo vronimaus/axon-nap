@@ -75,6 +75,7 @@ import Success from './pages/Success';
 import Terms from './pages/Terms';
 import TrainingPlan from './pages/TrainingPlan';
 import TrialInfo from './pages/TrialInfo';
+import HowToUse from './pages/HowToUse';
 import __Layout from './Layout.jsx';
 
 
@@ -107,6 +108,7 @@ export const PAGES = {
     "Terms": Terms,
     "TrainingPlan": TrainingPlan,
     "TrialInfo": TrialInfo,
+    "HowToUse": HowToUse,
 }
 
 export const pagesConfig = {
