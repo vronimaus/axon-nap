@@ -63,6 +63,8 @@ export function parseMarkdownTable(content) {
   return result;
 }
 
+import ReactMarkdown from 'react-markdown';
+
 export default function MarkdownTable({ headers, rows }) {
   return (
     <div className="my-8 w-full overflow-x-auto">
@@ -90,7 +92,15 @@ export default function MarkdownTable({ headers, rows }) {
                   key={cellIdx}
                   className="px-6 py-4 text-sm text-slate-300 border-r border-slate-700 last:border-r-0"
                 >
-                  {cell}
+                  <ReactMarkdown
+                    components={{
+                      p: ({ children }) => <>{children}</>,
+                      strong: ({ children }) => <strong className="font-bold text-slate-100">{children}</strong>,
+                      em: ({ children }) => <em className="italic">{children}</em>,
+                    }}
+                  >
+                    {cell}
+                  </ReactMarkdown>
                 </td>
               ))}
             </tr>
