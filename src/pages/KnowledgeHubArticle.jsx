@@ -194,21 +194,42 @@ export default function KnowledgeHubArticle() {
           transition={{ delay: 0.3 }}
           className="prose prose-lg max-w-none mb-12"
         >
-          <ReactMarkdown
-            components={{
-              p: ({ children }) => <p className="text-slate-300 leading-relaxed mb-4">{children}</p>,
-              h2: ({ children }) => <h2 className="text-2xl font-bold text-white mt-8 mb-4">{children}</h2>,
-              h3: ({ children }) => <h3 className="text-xl font-bold text-cyan-400 mt-6 mb-3">{children}</h3>,
-              ul: ({ children }) => <ul className="text-slate-300 space-y-2 mb-4 ml-6 list-disc">{children}</ul>,
-              ol: ({ children }) => <ol className="text-slate-300 space-y-2 mb-4 ml-6 list-decimal">{children}</ol>,
-              li: ({ children }) => <li className="text-slate-300">{children}</li>,
-              strong: ({ children }) => <strong className="text-white font-semibold">{children}</strong>,
-              em: ({ children }) => <em className="text-cyan-400 italic">{children}</em>,
-              a: ({ children, href }) => <a href={href} target="_blank" rel="noopener noreferrer" className="text-amber-400 hover:text-amber-300 underline font-medium">{children}</a>
-            }}
-          >
-            {article.deep_dive_content}
-          </ReactMarkdown>
+          {(() => {
+            const parsedContent = parseMarkdownTable(article.deep_dive_content);
+            return (
+              <>
+                {parsedContent.map((block, idx) => {
+                  if (block.type === 'table') {
+                    return (
+                      <MarkdownTable
+                        key={idx}
+                        headers={block.headers}
+                        rows={block.rows}
+                      />
+                    );
+                  }
+                  return (
+                    <ReactMarkdown
+                      key={idx}
+                      components={{
+                        p: ({ children }) => <p className="text-slate-300 leading-relaxed mb-4">{children}</p>,
+                        h2: ({ children }) => <h2 className="text-2xl font-bold text-white mt-8 mb-4">{children}</h2>,
+                        h3: ({ children }) => <h3 className="text-xl font-bold text-cyan-400 mt-6 mb-3">{children}</h3>,
+                        ul: ({ children }) => <ul className="text-slate-300 space-y-2 mb-4 ml-6 list-disc">{children}</ul>,
+                        ol: ({ children }) => <ol className="text-slate-300 space-y-2 mb-4 ml-6 list-decimal">{children}</ol>,
+                        li: ({ children }) => <li className="text-slate-300">{children}</li>,
+                        strong: ({ children }) => <strong className="text-white font-semibold">{children}</strong>,
+                        em: ({ children }) => <em className="text-cyan-400 italic">{children}</em>,
+                        a: ({ children, href }) => <a href={href} target="_blank" rel="noopener noreferrer" className="text-amber-400 hover:text-amber-300 underline font-medium">{children}</a>
+                      }}
+                    >
+                      {block.content}
+                    </ReactMarkdown>
+                  );
+                })}
+              </>
+            );
+          })()}
         </motion.div>
 
         {/* Triage Ampel */}
