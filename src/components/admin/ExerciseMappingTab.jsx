@@ -331,9 +331,9 @@ export default function ExerciseMappingTab() {
 
                     {/* Prefix */}
                     <td className="py-2 px-3">
-                      <Select value={prefix || ''} onValueChange={val => setField(ex.id, 'prefix', val)}>
-                        <SelectTrigger className="h-7 text-xs bg-slate-800 border-slate-700 text-white w-28 px-2">
-                          <SelectValue placeholder="— Prefix" />
+                      <Select value={prefix || undefined} onValueChange={val => setField(ex.id, 'prefix', val)}>
+                       <SelectTrigger className="h-7 text-xs bg-slate-800 border-slate-700 text-white w-28 px-2">
+                         <SelectValue placeholder="— Prefix" />
                         </SelectTrigger>
                         <SelectContent className="bg-slate-800 border-slate-700 text-white">
                           {PREFIXES.map(p => (
