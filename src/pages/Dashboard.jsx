@@ -22,6 +22,10 @@ export default function Dashboard() {
   const [showProgress, setShowProgress] = useState(false);
   const [isGeneratingPlan, setIsGeneratingPlan] = useState(false);
   const [showReadinessCheck, setShowReadinessCheck] = useState(false);
+  const [pullY, setPullY] = useState(0);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const touchStartY = useRef(0);
+  const queryClient = useQueryClient();
   
   const { user, isLoading, hasAccess } = useTrialStatus();
 
