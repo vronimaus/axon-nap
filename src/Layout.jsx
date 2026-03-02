@@ -72,17 +72,22 @@ export default function Layout({ children, currentPageName }) {
     { name: 'Rehab', icon: Activity, page: 'RehabPlan' }
   ];
 
-  // Stack preservation: track last visited page per tab
-  const tabStackKey = (page) => `axon_tab_stack_${page}`;
+  const activeTab = getActiveTab(currentPageName);
+
   const handleTabClick = (page) => {
-    const isActive = currentPageName === page || 
-      (page === 'Dashboard' && !isRootTab(currentPageName) && !['TrainingPlan','RehabPlan','FlowRoutines'].some(t => currentPageName === t));
-    if (currentPageName === page) {
-      // Already on root: do nothing (already there)
+    const isCurrentTab = activeTab === page;
+    if (isCurrentTab) {
+      // Active tab tapped → reset to root, clear stack
+      sessionStorage.removeItem(`axon_tab_stack_${page}`);
+      if (currentPageName !== page) {
+        window.location.href = createPageUrl(page);
+      }
+      // Already at root: do nothing (no reload)
       return;
     }
-    // Navigate to the page
-    window.location.href = createPageUrl(page);
+    // Different tab tapped → restore last state if available
+    const lastPage = sessionStorage.getItem(`axon_tab_stack_${page}`);
+    window.location.href = createPageUrl(lastPage || page);
   };
 
   const publicNavItems = [
