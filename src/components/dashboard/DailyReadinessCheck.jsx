@@ -131,7 +131,7 @@ export default function DailyReadinessCheck({ user, onClose }) {
             </div>
 
             <div className="p-5 space-y-5">
-              <p className="text-xs text-slate-500 font-mono tracking-wide border-l-2 border-cyan-500/40 pl-3">
+              <p className="text-xs text-slate-300 font-mono tracking-wide border-l-2 border-cyan-500/60 pl-3">
                 3 Inputs erforderlich — Kalibrierung läuft
               </p>
 
