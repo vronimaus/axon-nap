@@ -129,7 +129,8 @@ export default function Layout({ children, currentPageName }) {
         }
 
         // Ohne Zahlung und ohne aktive Trial -> zurück zum Landing
-        if (!hasAccess && currentPageName !== 'Landing') {
+        const publicPages = ['Landing', 'Success', 'Checkout', 'Login', 'Imprint', 'Privacy', 'Terms', 'KnowledgeHub', 'KnowledgeHubArticle', 'FAQ', 'Glossary'];
+        if (!hasAccess && !publicPages.includes(currentPageName)) {
           window.location.href = createPageUrl('Landing');
           return;
         }
