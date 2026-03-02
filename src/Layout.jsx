@@ -12,13 +12,23 @@ import OfflineDetector from './components/OfflineDetector';
 import { HelmetProvider } from 'react-helmet-async';
 import { useQueryClient } from '@tanstack/react-query';
 
-// Tab stack: remember last non-root state per tab (stored in sessionStorage)
 const ROOT_TABS = ['Dashboard', 'TrainingPlan', 'RehabPlan', 'FlowRoutines'];
-
-// Pages that never show navigation
 const PAGES_WITHOUT_NAV = ['Landing', 'Success', 'Checkout', 'Login'];
 
-// Pages where the layout Back button should appear (not root tabs)
+// Map each tab to its "owned" pages so the tab stays highlighted
+const TAB_OWNERSHIP = {
+  Dashboard: ['Dashboard', 'DiagnosisChat', 'DiagnosisWizard', 'Discovery', 'Flow', 'FlowRoutines', 'Profile', 'HowToUse', 'AdminHub', 'AdminDiagnostics', 'DevNotes'],
+  TrainingPlan: ['TrainingPlan', 'Performance'],
+  RehabPlan: ['RehabPlan'],
+};
+
+function getActiveTab(pageName) {
+  for (const [tab, pages] of Object.entries(TAB_OWNERSHIP)) {
+    if (pages.includes(pageName)) return tab;
+  }
+  return null;
+}
+
 function isRootTab(pageName) {
   return ROOT_TABS.includes(pageName);
 }
