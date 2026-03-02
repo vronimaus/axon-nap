@@ -52,14 +52,13 @@ export default function Layout({ children, currentPageName }) {
   }, []);
 
   // ── Tab stack preservation ───────────────────────────────────────────────────
-  // Save the current page per tab whenever we navigate to a non-root page that
-  // belongs logically to a tab (any authenticated app page).
+  // Persist the deepest page per tab so tapping a tab restores the last state.
+  // Tapping the *active* tab resets it to root.
   useEffect(() => {
     if (PAGES_WITHOUT_NAV.includes(currentPageName)) return;
-    if (!isRootTab(currentPageName)) {
-      // Store under the parent tab key — we don't know the parent, so just store
-      // the last visited non-root page globally so back navigation works.
-      sessionStorage.setItem('axon_last_page', currentPageName);
+    const tab = getActiveTab(currentPageName);
+    if (tab && !isRootTab(currentPageName)) {
+      sessionStorage.setItem(`axon_tab_stack_${tab}`, currentPageName);
     }
   }, [currentPageName]);
 
