@@ -144,8 +144,8 @@ export default function DailyReadinessCheck({ user, onClose }) {
                         <Icon className="w-3.5 h-3.5 text-cyan-400" />
                       </div>
                       <div>
-                        <p className="text-[10px] font-bold tracking-widest text-slate-400 uppercase">{label}</p>
-                        <p className="text-[10px] text-slate-600">{sublabel}</p>
+                        <p className="text-[10px] font-bold tracking-widest text-slate-200 uppercase">{label}</p>
+                        <p className="text-[10px] text-slate-400">{sublabel}</p>
                       </div>
                     </div>
                     <div className="text-right">
