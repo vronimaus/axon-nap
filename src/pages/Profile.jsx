@@ -104,6 +104,15 @@ export default function Profile() {
     }
   };
 
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [isDeletingAccount, setIsDeletingAccount] = useState(false);
+
+  const handleDeleteAccount = async () => {
+    setIsDeletingAccount(true);
+    await base44.auth.deleteMe();
+    window.location.href = createPageUrl('Landing');
+  };
+
   const handleChange = (field, value) => {
     setFormData(prev => ({
       ...prev,
