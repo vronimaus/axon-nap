@@ -8,6 +8,7 @@ import { motion } from 'framer-motion';
 import ReactMarkdown from 'react-markdown';
 import FAQWidget from '../components/knowledge/FAQWidget';
 import { Helmet } from 'react-helmet-async';
+import MarkdownTable, { parseMarkdownTable } from '../components/knowledge/MarkdownTable';
 
 export default function KnowledgeHubArticle() {
   const [slug, setSlug] = useState(null);
