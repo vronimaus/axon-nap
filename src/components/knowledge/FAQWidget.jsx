@@ -15,8 +15,8 @@ export default function FAQWidget({ faqIds = [], category = null, tags = [], lim
 
       if (faqIds.length > 0) {
         // Lade spezifische FAQs nach IDs
-        const allFaqs = await base44.entities.FAQ.filter({ published: true });
-        filteredFaqs = allFaqs.filter(faq => faqIds.includes(faq.faq_id));
+        const allFaqs = await base44.entities.FAQ.list();
+        filteredFaqs = allFaqs.filter(faq => faqIds.includes(faq.faq_id) && faq.published !== false);
       } else {
         // Lade FAQs nach Kategorie und/oder Tags
         const query = { published: true };
