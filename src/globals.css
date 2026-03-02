@@ -4,6 +4,23 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Mobile native feel: disable overscroll bounce */
+html, body {
+  overscroll-behavior: none;
+}
+
+/* Disable callout/magnifier on long press */
+a, button, [role="button"], input, select, textarea {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+input, textarea {
+  -webkit-user-select: text;
+  user-select: text;
+}
+
 @layer base {
   :root {
     --background: 222 47% 11%;
