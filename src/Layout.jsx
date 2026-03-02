@@ -12,11 +12,46 @@ import OfflineDetector from './components/OfflineDetector';
 import { HelmetProvider } from 'react-helmet-async';
 import { useQueryClient } from '@tanstack/react-query';
 
+// Tab stack: remember last non-root state per tab (stored in sessionStorage)
+const ROOT_TABS = ['Dashboard', 'TrainingPlan', 'RehabPlan', 'FlowRoutines'];
+
+// Pages that never show navigation
+const PAGES_WITHOUT_NAV = ['Landing', 'Success', 'Checkout', 'Login'];
+
+// Pages where the layout Back button should appear (not root tabs)
+function isRootTab(pageName) {
+  return ROOT_TABS.includes(pageName);
+}
+
 export default function Layout({ children, currentPageName }) {
   const { user, isLoading: trialLoading, hasAccess } = useTrialStatus();
   const queryClient = useQueryClient();
+  const location = useLocation();
   const [isChecking, setIsChecking] = useState(true);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  // ── Dark mode detection ──────────────────────────────────────────────────────
+  useEffect(() => {
+    const mq = window.matchMedia('(prefers-color-scheme: dark)');
+    const apply = (e) => {
+      document.documentElement.classList.toggle('dark', e.matches);
+    };
+    apply(mq);
+    mq.addEventListener('change', apply);
+    return () => mq.removeEventListener('change', apply);
+  }, []);
+
+  // ── Tab stack preservation ───────────────────────────────────────────────────
+  // Save the current page per tab whenever we navigate to a non-root page that
+  // belongs logically to a tab (any authenticated app page).
+  useEffect(() => {
+    if (PAGES_WITHOUT_NAV.includes(currentPageName)) return;
+    if (!isRootTab(currentPageName)) {
+      // Store under the parent tab key — we don't know the parent, so just store
+      // the last visited non-root page globally so back navigation works.
+      sessionStorage.setItem('axon_last_page', currentPageName);
+    }
+  }, [currentPageName]);
 
   // Pages ohne Navigation Header
   const pagesWithoutNav = ['Landing', 'Success', 'Checkout', 'Login'];
