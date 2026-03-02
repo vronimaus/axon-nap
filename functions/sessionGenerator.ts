@@ -47,8 +47,23 @@ Deno.serve(async (req) => {
     if (slingAlerts.some(a => a.severity === 'critical')) slingScore = 0.0;
     else if (slingAlerts.some(a => a.severity === 'moderate')) slingScore = 0.5;
 
-    // C. History / Consistency (30%)
-    let historyScore = 0.8; // Assume good history for now
+    // C. History / Consistency (30%) - based on last 7 days of readiness checks
+    const sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+    const recentChecks = readinessChecks.filter(r => new Date(r.check_date) >= sevenDaysAgo);
+
+    let historyScore = 0.5; // Default if no data
+    if (recentChecks.length > 0) {
+      const avgScore = recentChecks.reduce((sum, r) => {
+        if (r.readiness_status === 'green') return sum + 1.0;
+        if (r.readiness_status === 'yellow') return sum + 0.5;
+        return sum + 0.0; // red
+      }, 0) / recentChecks.length;
+
+      // Also factor in consistency (more check-ins = more reliable data)
+      const consistencyBonus = Math.min(recentChecks.length / 7, 1.0) * 0.1;
+      historyScore = Math.min(avgScore + consistencyBonus, 1.0);
+    }
 
     // MCS Formula: 40% Sling, 30% Readiness, 30% History
     const mcs = Math.round(((slingScore * 0.4) + (readinessScore * 0.3) + (historyScore * 0.3)) * 100);
