@@ -58,23 +58,33 @@ export default function Dashboard() {
   };
 
   const handleTouchStart = (e) => {
-    touchStartY.current = e.touches[0].clientY;
+    // Only start pull if at top of page
+    if (window.scrollY === 0) {
+      touchStartY.current = e.touches[0].clientY;
+      isPulling.current = true;
+    }
   };
 
   const handleTouchMove = (e) => {
-    if (window.scrollY > 0) return;
+    if (!isPulling.current) return;
     const delta = e.touches[0].clientY - touchStartY.current;
-    if (delta > 0) setPullY(Math.min(delta * 0.4, 70));
+    if (delta > 0 && window.scrollY === 0) {
+      // Prevent native scroll-bounce while pulling
+      e.preventDefault();
+      setPullY(Math.min(delta * 0.4, 70));
+    } else if (delta <= 0) {
+      isPulling.current = false;
+      setPullY(0);
+    }
   };
 
   const handleTouchEnd = async () => {
+    isPulling.current = false;
     if (pullY > 50 && !isRefreshing) {
       setIsRefreshing(true);
+      setPullY(0);
       await queryClient.invalidateQueries();
-      setTimeout(() => {
-        setIsRefreshing(false);
-        setPullY(0);
-      }, 800);
+      setTimeout(() => setIsRefreshing(false), 800);
     } else {
       setPullY(0);
     }
