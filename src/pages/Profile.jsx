@@ -632,17 +632,18 @@ function FormField({ label, type, value, onChange, placeholder, options, min, ma
         />
       )}
       {type === 'select' && (
-        <select
-          value={value}
-          onChange={onChange}
-          className="w-full px-4 py-2 rounded-lg bg-slate-800/50 border border-slate-700 text-white focus:outline-none focus:border-cyan-400"
-        >
-          {options?.map(opt => (
-            <option key={opt.value} value={opt.value}>
-              {opt.label}
-            </option>
-          ))}
-        </select>
+        <Select value={value} onValueChange={(val) => onChange({ target: { value: val } })}>
+          <SelectTrigger className="w-full bg-slate-800/50 border-slate-700 text-white focus:ring-cyan-400 focus:border-cyan-400">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent className="bg-slate-800 border-slate-700 text-white">
+            {options?.map(opt => (
+              <SelectItem key={opt.value} value={opt.value} className="text-white focus:bg-slate-700 focus:text-cyan-400">
+                {opt.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       )}
       {type === 'range' && (
         <div className="flex items-center gap-4">

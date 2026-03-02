@@ -331,30 +331,34 @@ export default function ExerciseMappingTab() {
 
                     {/* Prefix */}
                     <td className="py-2 px-3">
-                      <select
-                        value={prefix}
-                        onChange={e => setField(ex.id, 'prefix', e.target.value)}
-                        className="text-xs px-2 py-1 rounded bg-slate-800 border border-slate-700 text-white focus:outline-none focus:border-cyan-500 w-24"
-                      >
-                        <option value="">— Prefix</option>
-                        {PREFIXES.map(p => (
-                          <option key={p} value={p}>{p} – {PREFIX_LABELS[p]}</option>
-                        ))}
-                      </select>
+                      <Select value={prefix || ''} onValueChange={val => setField(ex.id, 'prefix', val)}>
+                        <SelectTrigger className="h-7 text-xs bg-slate-800 border-slate-700 text-white w-28 px-2">
+                          <SelectValue placeholder="— Prefix" />
+                        </SelectTrigger>
+                        <SelectContent className="bg-slate-800 border-slate-700 text-white">
+                          {PREFIXES.map(p => (
+                            <SelectItem key={p} value={p} className="text-xs text-white focus:bg-slate-700 focus:text-cyan-400">
+                              {p} – {PREFIX_LABELS[p]}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
                     </td>
 
                     {/* Gruppe */}
                     <td className="py-2 px-3">
-                      <select
-                        value={group}
-                        onChange={e => setField(ex.id, 'group', e.target.value)}
-                        className="text-xs px-2 py-1 rounded bg-slate-800 border border-slate-700 text-white focus:outline-none focus:border-cyan-500 w-36"
-                      >
-                        <option value="">— Gruppe</option>
-                        {GROUPS.map(g => (
-                          <option key={g.code} value={g.code}>{g.code} – {g.label}</option>
-                        ))}
-                      </select>
+                      <Select value={group || ''} onValueChange={val => setField(ex.id, 'group', val)}>
+                        <SelectTrigger className="h-7 text-xs bg-slate-800 border-slate-700 text-white w-36 px-2">
+                          <SelectValue placeholder="— Gruppe" />
+                        </SelectTrigger>
+                        <SelectContent className="bg-slate-800 border-slate-700 text-white">
+                          {GROUPS.map(g => (
+                            <SelectItem key={g.code} value={g.code} className="text-xs text-white focus:bg-slate-700 focus:text-cyan-400">
+                              {g.code} – {g.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
                     </td>
 
                     {/* Actions */}
