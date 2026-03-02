@@ -203,10 +203,13 @@ export default function TrainingExerciseCard({ exercise, idx, onDetailClick, isO
          <div>
             <button 
               onClick={() => setShowDetails(!showDetails)}
-              className="flex items-center gap-2 text-xs font-bold text-slate-400 hover:text-cyan-400 transition-colors mb-2 group"
+              className="w-full flex items-center justify-between px-4 py-3 rounded-lg border-2 bg-cyan-950/20 border-cyan-500/40 hover:border-cyan-500/70 hover:bg-cyan-950/40 transition-all duration-200 group mb-2"
             >
-               <span>Setup & Ausführung (Details)</span>
-               <ChevronDown className={`w-3 h-3 transition-transform duration-300 ${showDetails ? 'rotate-180' : ''}`} />
+               <span className="flex items-center gap-2 text-sm font-bold text-cyan-400">
+                 <Settings2 className="w-4 h-4" />
+                 Setup & Ausführung (Klick für Anleitung)
+               </span>
+               <ChevronDown className={`w-4 h-4 text-cyan-400 transition-transform duration-300 ${showDetails ? 'rotate-180' : ''}`} />
             </button>
 
             <AnimatePresence>
