@@ -139,7 +139,19 @@ export default function Dashboard() {
         animate={{ boxShadow: `inset 0 0 120px ${glowColor}` }}
         transition={{ repeat: Infinity, duration: 4, repeatType: "reverse", ease: "easeInOut" }}
         className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 flex items-center justify-center p-4 pb-20 md:pb-4 relative overflow-hidden"
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
       >
+        {/* Pull-to-Refresh Indicator */}
+        {pullY > 0 && (
+          <div className="fixed top-16 left-0 right-0 flex justify-center z-50 pointer-events-none">
+            <div className={`flex items-center gap-2 px-4 py-2 rounded-full text-xs font-medium transition-all ${isRefreshing ? 'bg-cyan-500/30 text-cyan-300' : 'bg-slate-800/80 text-slate-400'}`} style={{ transform: `translateY(${pullY - 20}px)` }}>
+              <motion.div animate={{ rotate: isRefreshing ? 360 : pullY * 5 }} transition={isRefreshing ? { repeat: Infinity, duration: 0.6, ease: 'linear' } : {}}>↻</motion.div>
+              {isRefreshing ? 'Aktualisiert…' : pullY > 50 ? 'Loslassen zum Aktualisieren' : 'Ziehen zum Aktualisieren'}
+            </div>
+          </div>
+        )}
         {/* Kinetic Wave Background */}
         {sessionDecision && (
           <motion.div 
