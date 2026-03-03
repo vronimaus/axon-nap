@@ -87,8 +87,6 @@ export default function Profile() {
       const cleanData = {
         ...data,
         fitness_goals: Array.isArray(data.fitness_goals) ? data.fitness_goals : [],
-        hrv_score: data.hrv_score ? parseInt(data.hrv_score) : null,
-        strength_score: data.strength_score ? parseFloat(data.strength_score) : null,
         profile_complete: true
       };
       return base44.entities.UserNeuroProfile.update(profile.id, cleanData);
