@@ -76,6 +76,10 @@ import Success from './pages/Success';
 import Terms from './pages/Terms';
 import TrainingPlan from './pages/TrainingPlan';
 import TrialInfo from './pages/TrialInfo';
+import Wissen from './pages/Wissen';
+import WissenArtikel from './pages/WissenArtikel';
+import Faq from './pages/Faq';
+import Glossar from './pages/Glossar';
 import __Layout from './Layout.jsx';
 
 
@@ -109,6 +113,10 @@ export const PAGES = {
     "Terms": Terms,
     "TrainingPlan": TrainingPlan,
     "TrialInfo": TrialInfo,
+    "Wissen": Wissen,
+    "WissenArtikel": WissenArtikel,
+    "Faq": Faq,
+    "Glossar": Glossar,
 }
 
 export const pagesConfig = {
