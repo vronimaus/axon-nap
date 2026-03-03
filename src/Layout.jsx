@@ -103,8 +103,8 @@ export default function Layout({ children, currentPageName }) {
   };
 
   const publicNavItems = [
-    { name: 'Knowledge Hub', page: 'KnowledgeHub' },
-    { name: 'FAQ', page: 'FAQ' }
+    { name: 'Wissen', page: 'Wissen' },
+    { name: 'FAQ', page: 'Faq' }
   ];
 
   useEffect(() => {
@@ -115,7 +115,7 @@ export default function Layout({ children, currentPageName }) {
       try {
         if (!user) {
           // Nicht eingeloggt: nur auf Landing & Public Pages erlaubt
-          const publicPages = ['Landing', 'Success', 'Checkout', 'Login', 'Imprint', 'Privacy', 'Terms', 'KnowledgeHub', 'KnowledgeHubArticle', 'FAQ', 'Glossary'];
+          const publicPages = ['Landing', 'Success', 'Checkout', 'Login', 'Imprint', 'Privacy', 'Terms', 'KnowledgeHub', 'KnowledgeHubArticle', 'FAQ', 'Glossary', 'Wissen', 'WissenArtikel', 'Faq', 'Glossar'];
           if (!publicPages.includes(currentPageName)) {
             window.location.href = createPageUrl('Landing');
           }
