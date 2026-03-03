@@ -215,7 +215,7 @@ export default function Layout({ children, currentPageName }) {
         }
 
         // Ohne Zahlung und ohne aktive Trial -> zurück zum Landing
-        const publicPages = ['Landing', 'Success', 'Checkout', 'Login', 'Imprint', 'Privacy', 'Terms', 'KnowledgeHub', 'KnowledgeHubArticle', 'FAQ', 'Glossary'];
+        const publicPages = ['Landing', 'Success', 'Checkout', 'Login', 'Imprint', 'Privacy', 'Terms', 'KnowledgeHub', 'KnowledgeHubArticle', 'FAQ', 'Glossary', 'Wissen', 'WissenArtikel', 'Faq', 'Glossar'];
         if (!hasAccess && !publicPages.includes(currentPageName)) {
           window.location.href = createPageUrl('Landing');
           return;
