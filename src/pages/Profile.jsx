@@ -76,8 +76,7 @@ export default function Profile() {
         primary_posture: profile.primary_posture || 'mostly_sitting',
         baseline_stress_level: profile.baseline_stress_level || 5,
         sleep_quality_avg: profile.sleep_quality_avg || 'medium',
-        hrv_score: profile.hrv_score || '',
-        strength_score: profile.strength_score || ''
+        
       });
     }
   }, [profile]);
