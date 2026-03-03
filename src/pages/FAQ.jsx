@@ -191,6 +191,55 @@ export default function FAQ() {
           ))}
         </div>
 
+        {/* Dynamische FAQs aus der Datenbank */}
+        {dbFaqs.length > 0 && (
+          <div className="space-y-4 mt-4">
+            <h2 className="text-2xl font-bold text-cyan-400 mb-4 mt-8">Neuroathletik & Training</h2>
+            {dbFaqs.map((faq, index) => (
+              <motion.div
+                key={faq.id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.04 }}
+                className={`glass rounded-2xl border transition-all duration-300 overflow-hidden group ${
+                  openIndex === `db-${index}` ? 'border-blue-500/50 shadow-[0_0_20px_rgba(59,130,246,0.15)] bg-slate-900/80' : 'border-slate-800 hover:border-slate-700 bg-slate-950/50'
+                }`}
+              >
+                <button
+                  onClick={() => setOpenIndex(openIndex === `db-${index}` ? null : `db-${index}`)}
+                  className="w-full flex items-center justify-between p-6 text-left"
+                >
+                  <h3 className={`text-lg font-bold pr-4 transition-colors ${
+                    openIndex === `db-${index}` ? 'text-blue-400' : 'text-slate-200 group-hover:text-blue-300'
+                  }`}>
+                    {faq.question}
+                  </h3>
+                  <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 transition-colors ${
+                    openIndex === `db-${index}` ? 'bg-blue-500/20 text-blue-400' : 'bg-slate-800 text-slate-400 group-hover:bg-slate-700 group-hover:text-blue-300'
+                  }`}>
+                    <ChevronDown className={`w-5 h-5 transition-transform duration-300 ${openIndex === `db-${index}` ? 'rotate-180' : ''}`} />
+                  </div>
+                </button>
+                <AnimatePresence>
+                  {openIndex === `db-${index}` && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: 'auto', opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.3 }}
+                      className="overflow-hidden"
+                    >
+                      <div className="px-6 pb-6 text-slate-300 leading-relaxed border-t border-slate-800/50 pt-4 text-sm sm:text-base">
+                        {faq.answer}
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </motion.div>
+            ))}
+          </div>
+        )}
+
         {/* Contact CTA */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
