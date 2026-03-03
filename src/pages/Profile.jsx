@@ -459,37 +459,6 @@ export default function Profile() {
             </div>
           </Section>
 
-          {/* Hardware Metriken */}
-          <Section title="Meine Leistungsmetriken" icon={BarChart3}>
-            <div className="glass rounded-lg p-4 mb-6 border border-cyan-500/40 shadow-[0_0_20px_rgba(6,182,212,0.1)]">
-                  <div className="flex gap-2 mb-3">
-                    <HelpCircle className="w-5 h-5 text-cyan-400 flex-shrink-0 mt-0.5" />
-                    <p className="text-sm text-cyan-300">
-                      Diese Metriken werden im Dashboard angezeigt und helfen, deine Trainingsfortschritte zu verfolgen.
-                    </p>
-                  </div>
-                </div>
-            <div className="grid md:grid-cols-2 gap-4">
-              <FormField
-                label="HRV Score (Herzfrequenzvariabilität)"
-                type="number"
-                value={formData.hrv_score}
-                onChange={(e) => handleChange('hrv_score', e.target.value ? parseInt(e.target.value) : '')}
-                placeholder="z.B. 45"
-                help="Misst die Variabilität deines Herzrhythmus in Millisekunden. Höhere Werte = bessere Recovery & Stressresistenz. Nutze ein HRV-Messgerät oder App."
-              />
-              <FormField
-                label="Strength Score (Kraftniveau)"
-                type="number"
-                value={formData.strength_score}
-                onChange={(e) => handleChange('strength_score', e.target.value ? parseFloat(e.target.value) : null)}
-                placeholder="0-100"
-                min="0"
-                max="100"
-                help="Deine subjektive Einschätzung deiner Kraft (0-100%). 0% = sehr schwach, 100% = maximum Kraft."
-              />
-            </div>
-          </Section>
           </div>
 
         {/* Save Button */}
