@@ -58,8 +58,10 @@ import Discovery from './pages/Discovery';
 import ExerciseImageGenerator from './pages/ExerciseImageGenerator';
 import ExerciseImageUpload from './pages/ExerciseImageUpload';
 import FAQ from './pages/FAQ';
+import Faq from './pages/Faq';
 import Flow from './pages/Flow';
 import FlowRoutines from './pages/FlowRoutines';
+import Glossar from './pages/Glossar';
 import Glossary from './pages/Glossary';
 import HowToUse from './pages/HowToUse';
 import Imprint from './pages/Imprint';
@@ -78,8 +80,6 @@ import TrainingPlan from './pages/TrainingPlan';
 import TrialInfo from './pages/TrialInfo';
 import Wissen from './pages/Wissen';
 import WissenArtikel from './pages/WissenArtikel';
-import Faq from './pages/Faq';
-import Glossar from './pages/Glossar';
 import __Layout from './Layout.jsx';
 
 
@@ -95,8 +95,10 @@ export const PAGES = {
     "ExerciseImageGenerator": ExerciseImageGenerator,
     "ExerciseImageUpload": ExerciseImageUpload,
     "FAQ": FAQ,
+    "Faq": Faq,
     "Flow": Flow,
     "FlowRoutines": FlowRoutines,
+    "Glossar": Glossar,
     "Glossary": Glossary,
     "HowToUse": HowToUse,
     "Imprint": Imprint,
@@ -115,8 +117,6 @@ export const PAGES = {
     "TrialInfo": TrialInfo,
     "Wissen": Wissen,
     "WissenArtikel": WissenArtikel,
-    "Faq": Faq,
-    "Glossar": Glossar,
 }
 
 export const pagesConfig = {
