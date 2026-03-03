@@ -56,8 +56,27 @@ export default function FAQWidget({ faqIds = [], category = null, tags = [], lim
     return null;
   }
 
+  // FAQ JSON-LD Schema für KI-Crawler
+  const faqSchema = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": faqs.map(faq => ({
+      "@type": "Question",
+      "name": faq.question,
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": faq.answer
+      }
+    }))
+  };
+
   return (
     <div className="glass rounded-2xl border border-slate-700 p-6">
+      <Helmet>
+        <script type="application/ld+json">
+          {JSON.stringify(faqSchema)}
+        </script>
+      </Helmet>
       <div className="flex items-center gap-3 mb-6">
         <div className="w-10 h-10 rounded-lg bg-cyan-500/20 flex items-center justify-center">
           <HelpCircle className="w-5 h-5 text-cyan-400" />
