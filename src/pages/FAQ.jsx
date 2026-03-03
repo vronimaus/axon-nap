@@ -116,7 +116,7 @@ export default function FAQ() {
         <meta name="twitter:title" content="FAQ - Häufig gestellte Fragen | AXON Protocol" />
         <meta name="twitter:description" content="Alle Antworten zu AXON: Funktionsweise, Training, MFR-Nodes und mehr." />
         
-        {/* Structured Data */}
+        {/* Structured Data - alle FAQs inkl. DB-FAQs */}
         <script type="application/ld+json">
           {JSON.stringify(faqSchema)}
         </script>
