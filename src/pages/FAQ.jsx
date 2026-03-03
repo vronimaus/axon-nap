@@ -80,11 +80,16 @@ export default function FAQ() {
     }
   ];
 
-  // Schema.org FAQ Structured Data
+  // Kombiniere statische + DB-FAQs für JSON-LD Schema
+  const allForSchema = [
+    ...faqs,
+    ...dbFaqs.map(f => ({ question: f.question, answer: f.answer }))
+  ];
+
   const faqSchema = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
-    "mainEntity": faqs.map(faq => ({
+    "mainEntity": allForSchema.map(faq => ({
       "@type": "Question",
       "name": faq.question,
       "acceptedAnswer": {
