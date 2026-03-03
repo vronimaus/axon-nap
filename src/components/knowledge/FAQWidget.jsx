@@ -4,6 +4,7 @@ import { base44 } from '@/api/base44Client';
 import { ChevronDown, HelpCircle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import ReactMarkdown from 'react-markdown';
+import { Helmet } from 'react-helmet-async';
 
 export default function FAQWidget({ faqIds = [], category = null, tags = [], limit = null }) {
   const [openIndex, setOpenIndex] = useState(null);
