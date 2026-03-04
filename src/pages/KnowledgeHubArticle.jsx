@@ -4,6 +4,7 @@ import { base44 } from '@/api/base44Client';
 import { createPageUrl } from '@/utils';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, CheckCircle2, ExternalLink } from 'lucide-react';
+import ShareButtons from '../components/knowledge/ShareButtons';
 import { motion } from 'framer-motion';
 import ReactMarkdown from 'react-markdown';
 import FAQWidget from '../components/knowledge/FAQWidget';
