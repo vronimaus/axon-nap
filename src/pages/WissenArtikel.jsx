@@ -242,6 +242,16 @@ export default function WissenArtikel() {
           </motion.div>
         )}
 
+        {/* Share Buttons */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.55 }}
+          className="glass rounded-2xl border border-slate-700/50 p-5 mb-8"
+        >
+          <ShareButtons title={article.headline} summary={article.summary} />
+        </motion.div>
+
         {/* Rechtlicher Disclaimer */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
