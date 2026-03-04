@@ -240,6 +240,18 @@ export default function WissenArtikel() {
           <ShareButtons title={article.headline} summary={article.summary} />
         </motion.div>
 
+        {/* Related FAQs */}
+        {article.related_faqs && article.related_faqs.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.6 }}
+            className="mb-8"
+          >
+            <FAQWidget faqIds={article.related_faqs} />
+          </motion.div>
+        )}
+
         {/* Rechtlicher Disclaimer */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
