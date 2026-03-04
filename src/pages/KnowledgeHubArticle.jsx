@@ -235,18 +235,6 @@ export default function KnowledgeHubArticle() {
 
 
 
-        {/* Related FAQs */}
-        {article.related_faqs && article.related_faqs.length > 0 && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5 }}
-            className="mb-8"
-          >
-            <FAQWidget faqIds={article.related_faqs} />
-          </motion.div>
-        )}
-
         {/* Share Buttons */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
