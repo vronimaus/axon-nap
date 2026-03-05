@@ -42,7 +42,7 @@ export default function FocusScreenContainer({
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="text-3xl sm:text-4xl font-bold text-red-400 text-center mb-8"
+            className="text-2xl sm:text-3xl font-bold text-white text-center mb-4 tracking-tight"
           >
             {title}
           </motion.h1>
