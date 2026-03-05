@@ -13,12 +13,12 @@ export default function FAQ() {
 
   const faqs = [
     {
-      question: "Was ist AXON und wie funktioniert es?",
-      answer: "AXON ist ein Neuro-Athletic Protocol, das Faszien-Release (MFR), Neuro-Athletik und funktionelles Training kombiniert. Die App analysiert dein System über Hardware-Tests und Neuro-Drills, identifiziert Schwachstellen und erstellt personalisierte Trainingspläne. Du erhältst präzise Anleitungen für jeden Schritt – von der Diagnose bis zur Rehabilitation oder Performance-Steigerung."
+      question: "Was ist AXON-nap und was bedeutet der Name?",
+      answer: "AXON-nap steht für Neuro Athletic Protocol – ein ganzheitliches Trainingssystem, das Faszien-Release (MFR), Neuro-Athletik und funktionelles Training kombiniert. Der Name verweist auf das Nervensystem (AXON = Nervenfaser) und das zugrundeliegende Protokoll (nap = Neuro Athletic Protocol). AXON-nap analysiert dein System über Hardware-Tests und Neuro-Drills, identifiziert Schwachstellen und erstellt personalisierte Trainingspläne. Du erhältst präzise Anleitungen für jeden Schritt – von der Diagnose bis zur Rehabilitation oder Performance-Steigerung."
     },
     {
-      question: "Für wen ist AXON geeignet?",
-      answer: "AXON eignet sich für jeden, der seinen Körper besser verstehen und optimieren möchte. Ob du akute Schmerzen lösen, sportliche Ziele erreichen oder dein System täglich pflegen willst – AXON passt sich deinem Level an. Von Anfängern bis zu fortgeschrittenen Athleten."
+      question: "Für wen ist AXON-nap geeignet?",
+      answer: "AXON-nap eignet sich für jeden, der seinen Körper besser verstehen und optimieren möchte. Ob du akute Schmerzen lösen, sportliche Ziele erreichen oder dein System täglich pflegen willst – AXON-nap passt sich deinem Level an. Von Anfängern bis zu fortgeschrittenen Athleten."
     },
     {
       question: "Was bedeuten REHAB, GOALS und FLOW?",
@@ -26,27 +26,27 @@ export default function FAQ() {
     },
     {
       question: "Wie funktioniert der Daily Readiness Check?",
-      answer: "Der Daily Readiness Check basiert auf wissenschaftlichen Erkenntnissen aus der HRV-Forschung (Heart Rate Variability) und Neuro-Athletik. Jeden Tag bewertest du drei Bereiche: **Gefühl (Hardware)** = Wie beweglich fühlt sich dein Gewebe an? Studien zeigen, dass subjektive Steifheit stark mit faszialer Dehydrierung korreliert. **Fokus (Software)** = Wie klar ist deine kognitive Leistung? Die Pupillenweite und Reaktionszeit korrelieren direkt mit ZNS-Müdigkeit. **Energie (Batterie)** = Wie voll sind deine Reserven? Dies reflektiert HRV und autonome Balance. AXON kombiniert diese 3 Dimensionen zu einem Readiness-Score (Grün/Gelb/Rot) und passt deine Trainingsempfehlungen automatisch an. Das Prinzip: Wenn dein Nervensystem gestresst ist (Rot), erhöht intensives Training das Verletzungsrisiko – stattdessen fokussiert AXON auf Regeneration und sanfte Reize."
+      answer: "Der Daily Readiness Check basiert auf wissenschaftlichen Erkenntnissen aus der HRV-Forschung (Heart Rate Variability) und Neuro-Athletik. Jeden Tag bewertest du drei Bereiche: Gefühl (Hardware) = Wie beweglich fühlt sich dein Gewebe an? Studien zeigen, dass subjektive Steifheit stark mit faszialer Dehydrierung korreliert. Fokus (Software) = Wie klar ist deine kognitive Leistung? Die Pupillenweite und Reaktionszeit korrelieren direkt mit ZNS-Müdigkeit. Energie (Batterie) = Wie voll sind deine Reserven? Dies reflektiert HRV und autonome Balance. AXON-nap kombiniert diese 3 Dimensionen zu einem Readiness-Score (Grün/Gelb/Rot) und passt deine Trainingsempfehlungen automatisch an. Das Prinzip: Wenn dein Nervensystem gestresst ist (Rot), erhöht intensives Training das Verletzungsrisiko – stattdessen fokussiert AXON-nap auf Regeneration und sanfte Reize."
     },
     {
       question: "Was sind MFR-Nodes und wie setze ich sie ein?",
       answer: "MFR (Myofascial Release) Nodes sind 12 präzise Punkte am Körper basierend auf dem Stecco-Modell. Jeder Node entspricht einem fascial coordination center. Du komprimierst den Punkt 60-90 Sekunden mit einem Lacrosse-Ball oder ähnlichem Tool, um verklebtes Gewebe zu lösen und die Bewegungsfreiheit wiederherzustellen."
     },
     {
-      question: "Brauche ich Equipment für AXON?",
+      question: "Brauche ich Equipment für AXON-nap?",
       answer: "Für die meisten Flow-Routinen brauchst du nur deinen Körper. Für MFR-Release empfehlen wir einen Lacrosse-Ball oder Faszienball. Für Performance-Training können je nach Ziel eine Klimmzugstange, Widerstandsbänder oder ähnliches Equipment hilfreich sein – aber nicht zwingend notwendig."
     },
     {
-      question: "Wie oft sollte ich AXON nutzen?",
+      question: "Wie oft sollte ich AXON-nap nutzen?",
       answer: "Das hängt von deinem Modus ab: FLOW-Routinen sind als tägliche Maintenance gedacht (5-15 Min). REHAB-Pläne folgen einem strukturierten Phasenmodell. GOALS-Training ist 3-5x pro Woche optimal. Der Daily Readiness Check hilft dir, die richtige Frequenz für deinen Körper zu finden."
     },
     {
       question: "Was ist der Unterschied zwischen Hardware und Software?",
-      answer: "Hardware = mechanische Einschränkungen (steife Faszien, eingeschränkte Gelenke, Muskelspannung). Software = neurologische Limitierungen (fehlerhafte Bewegungsmuster, visuelle/vestibulare Defizite, eingeschränkte Koordination). AXON testet beide Ebenen und adressiert die Root Cause deines Problems."
+      answer: "Hardware = mechanische Einschränkungen (steife Faszien, eingeschränkte Gelenke, Muskelspannung). Software = neurologische Limitierungen (fehlerhafte Bewegungsmuster, visuelle/vestibulare Defizite, eingeschränkte Koordination). AXON-nap testet beide Ebenen und adressiert die Root Cause deines Problems."
     },
     {
-      question: "Kann AXON einen Physiotherapeuten ersetzen?",
-      answer: "AXON ist ein Werkzeug zur Selbsthilfe und Prävention, kein Ersatz für medizinische Behandlung. Bei akuten Verletzungen, chronischen Erkrankungen oder starken Schmerzen solltest du immer einen Arzt oder Physiotherapeuten konsultieren. AXON hilft dir, dein System zwischen Therapiesitzungen zu pflegen und langfristig gesund zu halten."
+      question: "Kann AXON-nap einen Physiotherapeuten ersetzen?",
+      answer: "AXON-nap ist ein Werkzeug zur Selbsthilfe und Prävention, kein Ersatz für medizinische Behandlung. Bei akuten Verletzungen, chronischen Erkrankungen oder starken Schmerzen solltest du immer einen Arzt oder Physiotherapeuten konsultieren. AXON-nap hilft dir, dein System zwischen Therapiesitzungen zu pflegen und langfristig gesund zu halten."
     },
     {
       question: "Wie funktioniert die 7-Tage-Testphase?",
@@ -54,23 +54,23 @@ export default function FAQ() {
     },
     {
       question: "Was passiert nach dem Kauf?",
-      answer: "Nach der einmaligen Zahlung von 59€ hast du lebenslangen Zugriff auf AXON – alle aktuellen und zukünftigen Features inklusive. Kein monatliches Abo. Du zahlst einmal und nutzt AXON unbegrenzt. 30 Tage Geld-zurück-Garantie, falls du nicht zufrieden bist."
+      answer: "Nach der einmaligen Zahlung von 59€ hast du lebenslangen Zugriff auf AXON-nap – alle aktuellen und zukünftigen Features inklusive. Kein monatliches Abo. Du zahlst einmal und nutzt AXON-nap unbegrenzt. 30 Tage Geld-zurück-Garantie, falls du nicht zufrieden bist."
     },
     {
       question: "Sind meine Daten sicher?",
       answer: "Ja. Alle deine Gesundheitsdaten werden verschlüsselt gespeichert und nur zur Personalisierung deiner Trainingspläne verwendet. Wir verkaufen keine Daten an Dritte. Du kannst dein Konto und alle Daten jederzeit löschen."
     },
     {
-      question: "Funktioniert AXON auf meinem Smartphone?",
-      answer: "Ja, AXON ist eine Progressive Web App (PWA) und funktioniert auf jedem modernen Smartphone, Tablet oder Desktop-Browser. Du brauchst keine native App herunterzuladen. **Tipp: Installiere AXON auf deinem Homescreen für App-ähnliche Erfahrung.** So geht's: iPhone: Safari öffnen → Teilen-Icon → 'Zum Home-Bildschirm'. Android: Chrome öffnen → Menü (3 Punkte) → 'Zum Startbildschirm hinzufügen'. Danach startet AXON wie eine native App – kein Browser-Interface, Vollbild-Modus und schnellerer Zugriff."
+      question: "Funktioniert AXON-nap auf meinem Smartphone?",
+      answer: "Ja, AXON-nap ist eine Progressive Web App (PWA) und funktioniert auf jedem modernen Smartphone, Tablet oder Desktop-Browser. Du brauchst keine native App herunterzuladen. Tipp: Installiere AXON-nap auf deinem Homescreen für eine App-ähnliche Erfahrung. So geht's: iPhone: Safari öffnen → Teilen-Icon → 'Zum Home-Bildschirm'. Android: Chrome öffnen → Menü (3 Punkte) → 'Zum Startbildschirm hinzufügen'. Danach startet AXON-nap wie eine native App – kein Browser-Interface, Vollbild-Modus und schnellerer Zugriff."
     },
     {
       question: "Was ist, wenn ich eine Übung nicht verstehe?",
       answer: "Jede Übung hat detaillierte Schritt-für-Schritt-Anleitungen, Bilder und Tooltips mit Fachbegriffen (z.B. Dorsiflexion, Torque). Du kannst jederzeit Progressions-Varianten (leichter/schwerer) einsehen. Bei Fragen steht dir der AI-Coach zur Seite."
     },
     {
-      question: "Kann ich AXON parallel zu meinem aktuellen Training nutzen?",
-      answer: "Absolut! AXON ergänzt dein bestehendes Training perfekt. FLOW-Routinen sind ideal als Warm-up oder Cool-down. REHAB hilft bei akuten Problemen. GOALS kann als eigenständiges Programm oder als Ergänzung zu deinem Sport genutzt werden. Der Readiness Check stellt sicher, dass du nicht übertrainierst."
+      question: "Kann ich AXON-nap parallel zu meinem aktuellen Training nutzen?",
+      answer: "Absolut! AXON-nap ergänzt dein bestehendes Training perfekt. FLOW-Routinen sind ideal als Warm-up oder Cool-down. REHAB hilft bei akuten Problemen. GOALS kann als eigenständiges Programm oder als Ergänzung zu deinem Sport genutzt werden. Der Readiness Check stellt sicher, dass du nicht übertrainierst."
     }
   ];
 
