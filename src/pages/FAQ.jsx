@@ -66,7 +66,7 @@ export default function FAQ() {
     },
     {
       question: "Was ist, wenn ich eine Übung nicht verstehe?",
-      answer: "Jede Übung hat detaillierte Schritt-für-Schritt-Anleitungen, Bilder und Tooltips mit Fachbegriffen (z.B. Dorsiflexion, Torque). Du kannst jederzeit Progressions-Varianten (leichter/schwerer) einsehen. Bei Fragen steht dir der AI-Coach zur Seite."
+      answer: "Jede Übung hat detaillierte Schritt-für-Schritt-Textanleitungen und präzise Bewegungs-Cues. AXON-nap verzichtet bewusst auf Videos und Bilder – denn wer eine Bewegung intern steuern muss, statt ein Video nachzuahmen, verbessert die 'Body Map' im Gehirn deutlich schneller. Du kannst jederzeit Progressions-Varianten (leichter/schwerer) einsehen. Fachbegriffe (z.B. Dorsiflexion, Torque) werden direkt in der Anleitung erklärt."
     },
     {
       question: "Kann ich AXON-nap parallel zu meinem aktuellen Training nutzen?",
