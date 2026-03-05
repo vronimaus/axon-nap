@@ -152,8 +152,8 @@ export default function FAQ() {
               <div className="space-y-2">
                 {[
                   { label: 'Gefühl (Hardware)', value: 7, color: 'bg-cyan-500' },
-                  { label: 'Fokus (Software)', value: 3, color: 'bg-red-500', highlight: true },
-                  { label: 'Energie (Batterie)', value: 6, color: 'bg-amber-500' },
+                  { label: 'Fokus (Software)', value: 3, color: 'bg-cyan-500', highlight: true },
+                  { label: 'Energie (Batterie)', value: 6, color: 'bg-cyan-500' },
                 ].map(item => (
                   <div key={item.label}>
                     <div className="flex justify-between text-xs mb-1">
