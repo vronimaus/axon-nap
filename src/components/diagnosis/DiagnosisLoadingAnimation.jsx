@@ -113,7 +113,7 @@ export default function DiagnosisLoadingAnimation({ message = "Analysiere dein P
 
         {/* Did You Know? Facts */}
         <div className="mt-8 px-6 py-4 rounded-xl glass border border-cyan-500/40 max-w-md mx-auto shadow-[0_0_20px_rgba(6,182,212,0.15)]">
-          <p className="text-xs font-semibold text-cyan-400 mb-2 uppercase tracking-wider">💡 Wusstest du?</p>
+          <p className="text-[10px] font-bold text-cyan-400 mb-2 uppercase tracking-widest font-mono">Wusstest du?</p>
           <AnimatePresence mode="wait">
             <motion.p
               key={currentFact}
