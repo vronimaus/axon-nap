@@ -146,27 +146,43 @@ export default function FAQ() {
           <div className="grid grid-cols-1 md:grid-cols-[1fr_auto_1fr_auto_1fr] gap-4 items-center">
 
             {/* Schritt 1: Symptom */}
-            <div className="rounded-2xl bg-slate-800/80 border border-amber-500/20 p-5 flex flex-col gap-3">
-              <span className="text-[10px] font-bold uppercase tracking-widest text-amber-400">① Symptom erkannt</span>
-              <p className="text-white font-bold text-base">Daily Readiness Check</p>
-              <div className="space-y-2">
+            <div className="rounded-xl bg-slate-950 border border-slate-700/80 overflow-hidden flex flex-col">
+              {/* Header Bar wie echter Check */}
+              <div className="bg-slate-900 border-b border-slate-800 px-4 py-3 flex items-center gap-2">
+                <div className="w-1.5 h-1.5 rounded-full bg-cyan-400 shadow-[0_0_6px_rgba(6,182,212,0.8)]" />
+                <div>
+                  <p className="text-[10px] font-bold tracking-widest uppercase text-white">AXON Bio-Sync</p>
+                  <p className="text-[9px] text-slate-500 tracking-widest uppercase">System-Kalibrierung</p>
+                </div>
+              </div>
+              <div className="p-4 flex flex-col gap-3">
                 {[
-                  { label: 'Gefühl (Hardware)', value: 7, color: 'bg-cyan-500' },
-                  { label: 'Fokus (Software)', value: 3, color: 'bg-cyan-500', highlight: true },
-                  { label: 'Energie (Batterie)', value: 6, color: 'bg-cyan-500' },
+                  { icon: '🔧', label: 'HARDWARE', sublabel: 'Körpergefühl', value: 7, status: 'NOMINAL' },
+                  { icon: '🧠', label: 'SOFTWARE', sublabel: 'Fokus & Kognition', value: 3, status: 'KRITISCH', critical: true },
+                  { icon: '⚡', label: 'BATTERIE', sublabel: 'Energielevel', value: 6, status: 'NOMINAL' },
                 ].map(item => (
-                  <div key={item.label}>
-                    <div className="flex justify-between text-xs mb-1">
-                      <span className={item.highlight ? 'text-slate-300 font-bold' : 'text-slate-400'}>{item.label}</span>
-                      <span className={item.highlight ? 'text-white font-black' : 'text-slate-300 font-bold'}>{item.value}/10</span>
+                  <div key={item.label} className="bg-slate-900/60 rounded-lg border border-slate-800 px-3 py-2.5">
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="flex items-center gap-2">
+                        <div className="w-6 h-6 rounded-md bg-slate-800 border border-slate-700 flex items-center justify-center text-[11px]">{item.icon}</div>
+                        <div>
+                          <p className="text-[10px] font-bold tracking-widest text-slate-200 uppercase">{item.label}</p>
+                          <p className="text-[10px] text-slate-500">{item.sublabel}</p>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <span className="text-lg font-bold font-mono text-white">{item.value}</span>
+                        <span className="text-[10px] text-slate-600 font-mono">/10</span>
+                        <p className={`text-[9px] font-bold tracking-widest mt-0.5 ${item.critical ? 'text-red-400' : 'text-cyan-400'}`}>{item.status}</p>
+                      </div>
                     </div>
-                    <div className="h-1.5 rounded-full bg-slate-700 overflow-hidden">
-                      <div className={`h-full rounded-full ${item.color}`} style={{ width: `${item.value * 10}%` }} />
+                    <div className="h-1 rounded-full bg-slate-800 overflow-hidden">
+                      <div className={`h-full rounded-full ${item.critical ? 'bg-red-500' : 'bg-cyan-500'}`} style={{ width: `${item.value * 10}%` }} />
                     </div>
                   </div>
                 ))}
+                <p className="text-[10px] font-mono text-slate-500 border-l-2 border-cyan-500/40 pl-2">⚠ SOFTWARE kritisch — neurologische Ursache erkannt</p>
               </div>
-              <p className="text-xs text-slate-400 font-medium mt-1">⚠ Fokus-Defizit erkannt – neurologische Ursache</p>
             </div>
 
             {/* Pfeil 1 */}
