@@ -10,14 +10,7 @@ import { createPageUrl } from '@/utils';
 export default function FAQ() {
   const [openIndex, setOpenIndex] = useState(null);
 
-  // Lade dynamische FAQs aus der Datenbank
-  const { data: dbFaqs = [] } = useQuery({
-    queryKey: ['faqsAll'],
-    queryFn: async () => {
-      const all = await base44.entities.FAQ.list('order', 200);
-      return all.filter(f => f.published !== false);
-    }
-  });
+  const dbFaqs = [];
 
   const faqs = [
     {
