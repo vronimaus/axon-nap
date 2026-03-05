@@ -17,7 +17,7 @@ export default function FocusScreenContainer({
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
       transition={{ duration: 0.2, ease: 'easeOut' }}
-      className={`min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 flex flex-col ${className}`}
+      className={`min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 flex flex-col overflow-y-auto ${className}`}
     >
       {/* Header */}
       {showBackButton && (
@@ -35,7 +35,7 @@ export default function FocusScreenContainer({
       )}
 
       {/* Content */}
-      <div className="flex-1 flex flex-col items-center justify-center px-4 py-8">
+      <div className="flex-1 flex flex-col items-center px-4 py-8 pb-24">
         {/* Title */}
         {title && (
           <motion.h1
