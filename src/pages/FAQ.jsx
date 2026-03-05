@@ -387,7 +387,7 @@ export default function FAQ() {
             Noch Fragen?
           </h3>
           <p className="text-slate-300 mb-8 max-w-lg mx-auto">
-            Starte deine 7-Tage-Testphase und erlebe AXON selbst – alle Features, kein Risiko.
+            Starte deine 7-Tage-Testphase und erlebe AXON-nap selbst – alle Features, kein Risiko.
           </p>
           <a
             href="/"
