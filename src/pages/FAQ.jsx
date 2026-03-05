@@ -96,19 +96,19 @@ export default function FAQ() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 py-20 px-4">
       <Helmet>
-        <title>FAQ - Häufig gestellte Fragen | AXON Protocol</title>
-        <meta name="description" content="Alle Antworten zu AXON: Funktionsweise, Training, MFR-Nodes, Daily Readiness Check und mehr. Deine Bedienungsanleitung für optimales Training." />
-        <meta name="keywords" content="AXON FAQ, Neuro-Training Anleitung, MFR erklärt, Faszienmobilität Tutorial, Training FAQ" />
+        <title>FAQ - Häufig gestellte Fragen | AXON-nap – Neuro Athletic Protocol</title>
+        <meta name="description" content="Alle Antworten zu AXON-nap (Neuro Athletic Protocol): Funktionsweise, Training, MFR-Nodes, Daily Readiness Check und mehr." />
+        <meta name="keywords" content="AXON-nap FAQ, Neuro Athletic Protocol, Neuro-Training Anleitung, MFR erklärt, Faszienmobilität Tutorial" />
         
         {/* Open Graph */}
-        <meta property="og:title" content="FAQ - AXON Protocol" />
-        <meta property="og:description" content="Alle Antworten zu AXON Training, MFR-Nodes, Readiness Check und mehr" />
+        <meta property="og:title" content="FAQ - AXON-nap Neuro Athletic Protocol" />
+        <meta property="og:description" content="Alle Antworten zu AXON-nap Training, MFR-Nodes, Readiness Check und mehr" />
         <meta property="og:type" content="website" />
         
         {/* Twitter */}
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="FAQ - Häufig gestellte Fragen | AXON Protocol" />
-        <meta name="twitter:description" content="Alle Antworten zu AXON: Funktionsweise, Training, MFR-Nodes und mehr." />
+        <meta name="twitter:title" content="FAQ - AXON-nap | Neuro Athletic Protocol" />
+        <meta name="twitter:description" content="Alle Antworten zu AXON-nap: Funktionsweise, Training, MFR-Nodes und mehr." />
         
         {/* Structured Data - alle FAQs inkl. DB-FAQs */}
         <script type="application/ld+json">
