@@ -129,7 +129,7 @@ export default function FAQ() {
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="text-center mb-12"
+          className="text-center mb-10"
         >
           <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center mb-6 mx-auto shadow-[0_0_30px_rgba(59,130,246,0.3)]">
             <HelpCircle className="w-8 h-8 text-white" />
@@ -140,6 +140,71 @@ export default function FAQ() {
           <p className="text-lg text-slate-400 max-w-2xl mx-auto">
             Alles, was du über AXON wissen musst – von den Grundlagen bis zu fortgeschrittenen Techniken
           </p>
+        </motion.div>
+
+        {/* Hero Split Visual */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.15 }}
+          className="mb-14 rounded-3xl border border-cyan-500/20 bg-slate-900/60 overflow-hidden grid grid-cols-1 md:grid-cols-2"
+        >
+          {/* Left: Readiness Score */}
+          <div className="p-8 flex flex-col justify-center gap-5 border-b md:border-b-0 md:border-r border-slate-800/60">
+            <p className="text-xs font-bold uppercase tracking-widest text-cyan-500">Die Analyse</p>
+            <div className="flex items-center gap-4">
+              <div className="w-16 h-16 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center shadow-[0_0_20px_rgba(16,185,129,0.2)]">
+                <span className="text-2xl font-black text-emerald-400">8.2</span>
+              </div>
+              <div>
+                <p className="text-white font-bold text-lg">Daily Readiness</p>
+                <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">GRÜN – Vollgas heute</span>
+              </div>
+            </div>
+            <div className="space-y-2.5">
+              {[
+                { label: 'Gefühl (Hardware)', value: 8, color: 'bg-cyan-500' },
+                { label: 'Fokus (Software)', value: 9, color: 'bg-purple-500' },
+                { label: 'Energie (Batterie)', value: 7, color: 'bg-amber-500' },
+              ].map(item => (
+                <div key={item.label}>
+                  <div className="flex justify-between text-xs text-slate-400 mb-1">
+                    <span>{item.label}</span><span className="font-bold text-slate-200">{item.value}/10</span>
+                  </div>
+                  <div className="h-1.5 rounded-full bg-slate-800 overflow-hidden">
+                    <div className={`h-full rounded-full ${item.color}`} style={{ width: `${item.value * 10}%` }} />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Right: MFR Node Solution */}
+          <div className="p-8 flex flex-col justify-center gap-4">
+            <p className="text-xs font-bold uppercase tracking-widest text-purple-400">Die Lösung</p>
+            <div className="flex items-start gap-4">
+              <div className="w-12 h-12 rounded-xl bg-purple-500/10 border border-purple-500/30 flex items-center justify-center flex-shrink-0">
+                <Brain className="w-6 h-6 text-purple-400" />
+              </div>
+              <div>
+                <p className="text-white font-bold">MFR Node N4 · Brustkorb</p>
+                <p className="text-xs text-slate-400 mt-1">Stecco CC – koordiniert Vorwärtsbewegung des Arms</p>
+              </div>
+            </div>
+            <div className="bg-slate-800/60 rounded-xl p-4 border border-slate-700/50 text-sm text-slate-300 leading-relaxed">
+              Komprimiere 90 Sekunden, dann aktiviere mit <span className="text-cyan-400 font-medium">Wall Slides</span> · Die Faszienforschung zeigt: nach 60s löst sich die neuronale Schutzspannung.
+            </div>
+            <div className="flex items-center gap-2 text-xs text-amber-400">
+              <Zap className="w-3.5 h-3.5" />
+              <span className="font-medium">Neuro-Drill empfohlen: Horizontale Sakkaden (30s)</span>
+            </div>
+            <Link
+              to={createPageUrl('Landing')}
+              className="mt-1 inline-flex items-center gap-1.5 text-xs font-bold text-cyan-400 hover:text-cyan-300 transition-colors"
+            >
+              Selbst erleben – 7 Tage kostenlos →
+            </Link>
+          </div>
         </motion.div>
 
         {/* FAQ Items */}
