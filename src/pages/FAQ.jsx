@@ -166,7 +166,7 @@ export default function FAQ() {
                   </div>
                 ))}
               </div>
-              <p className="text-xs text-red-400/80 font-medium mt-1">⚠ Fokus-Defizit – neurologische Ursache</p>
+              <p className="text-xs text-slate-400 font-medium mt-1">⚠ Fokus-Defizit erkannt – neurologische Ursache</p>
             </div>
 
             {/* Pfeil 1 */}
