@@ -2,8 +2,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown, HelpCircle, Zap, Activity, Brain, Lightbulb } from 'lucide-react';
 import { Helmet } from 'react-helmet-async';
-import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 
