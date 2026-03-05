@@ -130,8 +130,9 @@ export default function FAQ() {
             Häufig gestellte Fragen
           </h1>
           <p className="text-lg text-slate-400 max-w-2xl mx-auto">
-            Schnelle Antworten zum AXON-Protokoll – versteh dein System, kenn dein Protokoll.
+            Schnelle Antworten zum AXON-nap Protokoll – versteh dein System, kenn dein Protokoll.
           </p>
+          <p className="text-xs text-slate-600 mt-2 font-mono tracking-widest uppercase">nap = Neuro Athletic Protocol</p>
         </motion.div>
 
         {/* Hero: AXON Workflow – kausal verbunden */}
