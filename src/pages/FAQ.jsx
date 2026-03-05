@@ -155,33 +155,35 @@ export default function FAQ() {
                   <p className="text-[9px] text-slate-500 tracking-widest uppercase">System-Kalibrierung</p>
                 </div>
               </div>
-              <div className="p-4 flex flex-col gap-3">
+              <div className="p-4 space-y-3">
                 {[
-                  { icon: '🔧', label: 'HARDWARE', sublabel: 'Körpergefühl', value: 7, status: 'NOMINAL' },
-                  { icon: '🧠', label: 'SOFTWARE', sublabel: 'Fokus & Kognition', value: 3, status: 'KRITISCH', critical: true },
-                  { icon: '⚡', label: 'BATTERIE', sublabel: 'Energielevel', value: 6, status: 'NOMINAL' },
-                ].map(item => (
-                  <div key={item.label} className="bg-slate-900/60 rounded-lg border border-slate-800 px-3 py-2.5">
+                  { Icon: Wrench, label: 'HARDWARE', sublabel: 'Körpergefühl', value: 7, status: 'NOMINAL', critical: false },
+                  { Icon: Brain, label: 'SOFTWARE', sublabel: 'Fokus & Kognition', value: 3, status: 'KRITISCH', critical: true },
+                  { Icon: Zap, label: 'BATTERIE', sublabel: 'Energielevel', value: 6, status: 'NOMINAL', critical: false },
+                ].map(({ Icon, label, sublabel, value, status, critical }) => (
+                  <div key={label} className="bg-slate-900/60 rounded-xl border border-slate-800 p-3">
                     <div className="flex items-center justify-between mb-2">
                       <div className="flex items-center gap-2">
-                        <div className="w-6 h-6 rounded-md bg-slate-800 border border-slate-700 flex items-center justify-center text-[11px]">{item.icon}</div>
+                        <div className="w-7 h-7 rounded-lg bg-slate-800 border border-slate-700 flex items-center justify-center">
+                          <Icon className="w-3.5 h-3.5 text-cyan-400" />
+                        </div>
                         <div>
-                          <p className="text-[10px] font-bold tracking-widest text-slate-200 uppercase">{item.label}</p>
-                          <p className="text-[10px] text-slate-500">{item.sublabel}</p>
+                          <p className="text-[10px] font-bold tracking-widest text-slate-200 uppercase">{label}</p>
+                          <p className="text-[10px] text-slate-400">{sublabel}</p>
                         </div>
                       </div>
                       <div className="text-right">
-                        <span className="text-lg font-bold font-mono text-white">{item.value}</span>
-                        <span className="text-[10px] text-slate-600 font-mono">/10</span>
-                        <p className={`text-[9px] font-bold tracking-widest mt-0.5 ${item.critical ? 'text-red-400' : 'text-cyan-400'}`}>{item.status}</p>
+                        <span className="text-xl font-bold font-mono text-white">{value}</span>
+                        <span className="text-xs text-slate-600 font-mono">/10</span>
+                        <p className={`text-[9px] font-bold tracking-widest mt-0.5 ${critical ? 'text-red-400' : 'text-cyan-400'}`}>{status}</p>
                       </div>
                     </div>
-                    <div className="h-1 rounded-full bg-slate-800 overflow-hidden">
-                      <div className={`h-full rounded-full ${item.critical ? 'bg-red-500' : 'bg-cyan-500'}`} style={{ width: `${item.value * 10}%` }} />
+                    <div className="h-1.5 rounded-lg bg-slate-800 overflow-hidden">
+                      <div className={`h-full rounded-lg ${critical ? 'bg-red-500' : 'bg-cyan-500'}`} style={{ width: `${value * 10}%` }} />
                     </div>
                   </div>
                 ))}
-                <p className="text-[10px] font-mono text-slate-500 border-l-2 border-cyan-500/40 pl-2">⚠ SOFTWARE kritisch — neurologische Ursache erkannt</p>
+                <p className="text-[10px] font-mono text-slate-500 border-l-2 border-cyan-500/40 pl-2">SOFTWARE kritisch — neurologische Ursache erkannt</p>
               </div>
             </div>
 
