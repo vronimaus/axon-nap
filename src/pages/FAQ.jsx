@@ -248,8 +248,14 @@ export default function FAQ() {
                     transition={{ duration: 0.3 }}
                     className="overflow-hidden"
                   >
-                    <div className="px-6 pb-6 text-slate-300 leading-relaxed border-t border-slate-800/50 pt-4 text-sm sm:text-base">
-                      {faq.answer}
+                    <div className="px-6 pb-6 border-t border-slate-800/50 pt-4">
+                      <p className="text-slate-300 leading-relaxed text-sm sm:text-base">{faq.answer}</p>
+                      {faq.pro_tip && (
+                        <div className="mt-4 flex gap-3 border-l-2 border-cyan-500/60 pl-4 py-1">
+                          <Lightbulb className="w-4 h-4 text-cyan-400 flex-shrink-0 mt-0.5" />
+                          <p className="text-sm text-cyan-300/80 leading-relaxed">{faq.pro_tip}</p>
+                        </div>
+                      )}
                     </div>
                   </motion.div>
                 )}
