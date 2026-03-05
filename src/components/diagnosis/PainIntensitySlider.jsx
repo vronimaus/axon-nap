@@ -8,36 +8,42 @@ export default function PainIntensitySlider({ onSubmit, loading, initialValue = 
   const [intensity, setIntensity] = useState(initialValue);
 
   const getIntensityLabel = (value) => {
-    if (value <= 3) return { text: 'Leicht', color: 'text-green-400' };
-    if (value <= 6) return { text: 'Moderat', color: 'text-yellow-400' };
-    return { text: 'Stark', color: 'text-red-400' };
+    if (value <= 3) return { text: 'Leicht', color: 'text-cyan-400', status: 'LOW' };
+    if (value <= 6) return { text: 'Moderat', color: 'text-amber-400', status: 'MEDIUM' };
+    return { text: 'Stark', color: 'text-red-400', status: 'HIGH' };
   };
 
   const label = getIntensityLabel(intensity);
 
   return (
-    <div className="w-full space-y-8">
-      {/* Visual Intensity Display */}
-      <div className="text-center">
-        <motion.div
-          key={intensity}
-          initial={{ scale: 0.8, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          className={`text-8xl font-bold ${label.color} mb-4`}
-        >
-          {intensity}
-        </motion.div>
-        <p className={`text-2xl font-semibold ${label.color}`}>
-          {label.text}
-        </p>
+    <div className="w-full space-y-6">
+      {/* HUD Display */}
+      <div className="rounded-2xl border border-slate-700/80 bg-slate-900/70 overflow-hidden">
+        <div className="bg-slate-900 border-b border-slate-800 px-4 py-3 flex items-center gap-2">
+          <div className="w-1.5 h-1.5 rounded-full bg-cyan-400 shadow-[0_0_6px_rgba(6,182,212,0.8)]" />
+          <p className="text-[10px] font-bold tracking-widest uppercase text-white">NRS Schmerz-Score</p>
+          <span className={`ml-auto text-[9px] font-mono tracking-widest uppercase font-bold ${label.color}`}>{label.status}</span>
+        </div>
+        <div className="p-6 text-center">
+          <motion.div
+            key={intensity}
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            className={`text-7xl font-bold font-mono ${label.color} mb-1`}
+          >
+            {intensity}
+          </motion.div>
+          <p className={`text-sm font-bold tracking-widest uppercase font-mono ${label.color}`}>
+            {label.text}
+          </p>
+        </div>
       </div>
 
       {/* Slider */}
-      <div className="px-8">
+      <div className="px-2">
         <Slider
           value={[intensity]}
           onValueChange={(value) => {
-            // Batch updates using requestAnimationFrame
             requestAnimationFrame(() => setIntensity(value[0]));
           }}
           min={1}
@@ -45,9 +51,9 @@ export default function PainIntensitySlider({ onSubmit, loading, initialValue = 
           step={1}
           className="w-full"
         />
-        <div className="flex justify-between mt-2 text-sm text-slate-500">
-          <span>1 - Kaum spürbar</span>
-          <span>10 - Unerträglich</span>
+        <div className="flex justify-between mt-2 text-[10px] font-mono text-slate-500 tracking-widest uppercase">
+          <span>1 – Minimal</span>
+          <span>10 – Maximal</span>
         </div>
       </div>
 
@@ -55,10 +61,10 @@ export default function PainIntensitySlider({ onSubmit, loading, initialValue = 
       <Button
         onClick={() => onSubmit(intensity)}
         disabled={loading}
-        className="w-full h-14 bg-gradient-to-r from-red-500 to-pink-600 hover:from-red-600 hover:to-pink-700 text-white font-bold text-lg"
+        className="w-full h-12 bg-cyan-500/10 hover:bg-cyan-500/20 border border-cyan-500/40 text-cyan-400 font-bold tracking-widest uppercase text-sm"
       >
         Weiter
-        <ArrowRight className="w-5 h-5 ml-2" />
+        <ArrowRight className="w-4 h-4 ml-2" />
       </Button>
     </div>
   );
