@@ -130,7 +130,7 @@ export default function FAQ() {
             Häufig gestellte Fragen
           </h1>
           <p className="text-lg text-slate-400 max-w-2xl mx-auto">
-            Alles, was du über AXON wissen musst – von den Grundlagen bis zu fortgeschrittenen Techniken
+            Schnelle Antworten zum AXON-Protokoll – versteh dein System, kenn dein Protokoll.
           </p>
         </motion.div>
 
