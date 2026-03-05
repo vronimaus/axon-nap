@@ -157,8 +157,8 @@ export default function FAQ() {
                 ].map(item => (
                   <div key={item.label}>
                     <div className="flex justify-between text-xs mb-1">
-                      <span className={item.highlight ? 'text-red-400 font-bold' : 'text-slate-400'}>{item.label}</span>
-                      <span className={item.highlight ? 'text-red-400 font-black' : 'text-slate-300 font-bold'}>{item.value}/10</span>
+                      <span className={item.highlight ? 'text-slate-300 font-bold' : 'text-slate-400'}>{item.label}</span>
+                      <span className={item.highlight ? 'text-white font-black' : 'text-slate-300 font-bold'}>{item.value}/10</span>
                     </div>
                     <div className="h-1.5 rounded-full bg-slate-700 overflow-hidden">
                       <div className={`h-full rounded-full ${item.color}`} style={{ width: `${item.value * 10}%` }} />
