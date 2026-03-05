@@ -54,7 +54,7 @@ export default function FocusScreenContainer({
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="text-lg sm:text-xl text-slate-300 text-center mb-12 max-w-2xl"
+            className="text-lg sm:text-xl text-slate-300 text-center mb-8 max-w-2xl"
           >
             {instruction}
           </motion.p>
