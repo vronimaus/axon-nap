@@ -46,8 +46,8 @@ export default function DiagnosisLoadingAnimation({ message = "Analysiere dein P
           }}
           className="absolute inset-0 flex items-center justify-center"
         >
-          <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-cyan-500 to-purple-600 flex items-center justify-center neuro-glow">
-            <Brain className="w-10 h-10 text-white" />
+          <div className="w-20 h-20 rounded-2xl bg-slate-900 border border-cyan-500/40 flex items-center justify-center shadow-[0_0_20px_rgba(6,182,212,0.2)]">
+            <Brain className="w-10 h-10 text-cyan-400" />
           </div>
         </motion.div>
 
