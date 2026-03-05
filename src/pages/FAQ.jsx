@@ -188,42 +188,66 @@ export default function FAQ() {
             </div>
 
             {/* Pfeil 1 */}
-            <div className="flex justify-center items-center text-slate-600 text-2xl font-black rotate-90 md:rotate-0">→</div>
+            <div className="flex justify-center items-center text-slate-500 text-xl font-black rotate-90 md:rotate-0">→</div>
 
             {/* Schritt 2: Ursache */}
-            <div className="rounded-2xl bg-slate-800/80 border border-purple-500/30 p-5 flex flex-col gap-3">
-              <span className="text-[10px] font-bold uppercase tracking-widest text-purple-400">② Ursache lokalisiert</span>
-              <p className="text-white font-bold text-base">MFR Node N3 · Schädelbasis</p>
-              <p className="text-xs text-slate-400 leading-relaxed">Stecco CC · Koordiniert vestibuläre Stabilität und visuelle Schärfe – typische Ursache für Tunnelblick und Konzentrationsmangel.</p>
-              <div className="flex items-center gap-2 bg-purple-500/10 border border-purple-500/20 rounded-xl px-3 py-2">
-                <Brain className="w-4 h-4 text-purple-400 flex-shrink-0" />
-                <p className="text-xs text-purple-300">Nicht der Muskel – der neurologische Ursprung</p>
+            <div className="rounded-xl bg-slate-950 border border-slate-700/80 overflow-hidden flex flex-col">
+              <div className="bg-slate-900 border-b border-slate-800 px-4 py-3 flex items-center gap-2">
+                <div className="w-1.5 h-1.5 rounded-full bg-purple-400 shadow-[0_0_6px_rgba(168,85,247,0.8)]" />
+                <div>
+                  <p className="text-[10px] font-bold tracking-widest uppercase text-white">Ursache lokalisiert</p>
+                  <p className="text-[9px] text-slate-500 tracking-widest uppercase">MFR Node Analyse</p>
+                </div>
+              </div>
+              <div className="p-4 flex flex-col gap-3">
+                <div className="bg-slate-900/60 rounded-xl border border-slate-800 p-3">
+                  <p className="text-[10px] font-bold tracking-widest text-purple-400 uppercase mb-1">MFR Node N3</p>
+                  <p className="text-white font-bold text-sm">Schädelbasis</p>
+                </div>
+                <p className="text-xs text-slate-300 leading-relaxed">Stecco CC · Koordiniert vestibuläre Stabilität und visuelle Schärfe – typische Ursache für Tunnelblick und Konzentrationsmangel.</p>
+                <div className="flex items-center gap-2 bg-slate-900/60 border border-slate-800 rounded-xl px-3 py-2.5">
+                  <Brain className="w-3.5 h-3.5 text-purple-400 flex-shrink-0" />
+                  <p className="text-[10px] font-mono text-slate-300">Nicht der Muskel – neurologischer Ursprung</p>
+                </div>
               </div>
             </div>
 
             {/* Pfeil 2 */}
-            <div className="flex justify-center items-center text-slate-600 text-2xl font-black rotate-90 md:rotate-0">→</div>
+            <div className="flex justify-center items-center text-slate-500 text-xl font-black rotate-90 md:rotate-0">→</div>
 
             {/* Schritt 3: Ergebnis */}
-            <div className="rounded-2xl bg-slate-800/80 border border-emerald-500/30 p-5 flex flex-col gap-3">
-              <span className="text-[10px] font-bold uppercase tracking-widest text-emerald-400">③ Problem gelöst</span>
-              <p className="text-white font-bold text-base">90s Kompression + Neuro-Drill</p>
-              <div className="space-y-2">
-                <div className="flex items-center gap-2 text-xs text-slate-300">
-                  <Zap className="w-3.5 h-3.5 text-amber-400 flex-shrink-0" />
-                  <span>Horizontale Sakkaden (30s) → Fokus ↑</span>
-                </div>
-                <div className="flex items-center gap-2 text-xs text-slate-300">
-                  <Activity className="w-3.5 h-3.5 text-cyan-400 flex-shrink-0" />
-                  <span>Integration: Chin Tucks · neuronale Verankerung</span>
+            <div className="rounded-xl bg-slate-950 border border-slate-700/80 overflow-hidden flex flex-col">
+              <div className="bg-slate-900 border-b border-slate-800 px-4 py-3 flex items-center gap-2">
+                <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_6px_rgba(52,211,153,0.8)]" />
+                <div>
+                  <p className="text-[10px] font-bold tracking-widest uppercase text-white">Problem gelöst</p>
+                  <p className="text-[9px] text-slate-500 tracking-widest uppercase">90s Protokoll</p>
                 </div>
               </div>
-              <div className="mt-1 flex justify-between items-center text-xs font-bold">
-                <span className="text-slate-500">Fokus (Software)</span>
-                <span className="text-emerald-400">3 → 8/10 ✓</span>
-              </div>
-              <div className="h-1.5 rounded-full bg-slate-700 overflow-hidden">
-                <div className="h-full rounded-full bg-emerald-500 w-4/5" />
+              <div className="p-4 flex flex-col gap-3">
+                <div className="bg-slate-900/60 rounded-xl border border-slate-800 p-3 space-y-2">
+                  <div className="flex items-center gap-2">
+                    <div className="w-7 h-7 rounded-lg bg-slate-800 border border-slate-700 flex items-center justify-center">
+                      <Zap className="w-3.5 h-3.5 text-cyan-400" />
+                    </div>
+                    <p className="text-xs text-slate-200">Horizontale Sakkaden (30s) → Fokus ↑</p>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-7 h-7 rounded-lg bg-slate-800 border border-slate-700 flex items-center justify-center">
+                      <Activity className="w-3.5 h-3.5 text-cyan-400" />
+                    </div>
+                    <p className="text-xs text-slate-200">Integration: Chin Tucks · neuronale Verankerung</p>
+                  </div>
+                </div>
+                <div className="bg-slate-900/60 rounded-xl border border-slate-800 px-3 py-2.5">
+                  <div className="flex justify-between items-center text-xs font-bold mb-2">
+                    <span className="text-slate-400 font-mono text-[10px] tracking-widest uppercase">Fokus (Software)</span>
+                    <span className="text-emerald-400 font-mono">3 → 8/10</span>
+                  </div>
+                  <div className="h-1.5 rounded-lg bg-slate-800 overflow-hidden">
+                    <div className="h-full rounded-lg bg-emerald-500 w-4/5" />
+                  </div>
+                </div>
               </div>
             </div>
           </div>
