@@ -142,67 +142,88 @@ export default function FAQ() {
           </p>
         </motion.div>
 
-        {/* Hero Split Visual */}
+        {/* Hero: AXON Workflow – kausal verbunden */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.15 }}
-          className="mb-14 rounded-3xl border border-cyan-500/20 bg-slate-900/60 overflow-hidden grid grid-cols-1 md:grid-cols-2"
+          className="mb-14 rounded-3xl border border-slate-700/50 bg-slate-900/70 overflow-hidden p-6 md:p-8"
         >
-          {/* Left: Readiness Score */}
-          <div className="p-8 flex flex-col justify-center gap-5 border-b md:border-b-0 md:border-r border-slate-800/60">
-            <p className="text-xs font-bold uppercase tracking-widest text-cyan-500">Die Analyse</p>
-            <div className="flex items-center gap-4">
-              <div className="w-16 h-16 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center shadow-[0_0_20px_rgba(16,185,129,0.2)]">
-                <span className="text-2xl font-black text-emerald-400">8.2</span>
+          <p className="text-xs font-bold uppercase tracking-widest text-slate-500 text-center mb-6">So funktioniert AXON – in einem Beispiel</p>
+
+          <div className="grid grid-cols-1 md:grid-cols-[1fr_auto_1fr_auto_1fr] gap-4 items-center">
+
+            {/* Schritt 1: Symptom */}
+            <div className="rounded-2xl bg-slate-800/80 border border-amber-500/20 p-5 flex flex-col gap-3">
+              <span className="text-[10px] font-bold uppercase tracking-widest text-amber-400">① Symptom erkannt</span>
+              <p className="text-white font-bold text-base">Daily Readiness Check</p>
+              <div className="space-y-2">
+                {[
+                  { label: 'Gefühl (Hardware)', value: 7, color: 'bg-cyan-500' },
+                  { label: 'Fokus (Software)', value: 3, color: 'bg-red-500', highlight: true },
+                  { label: 'Energie (Batterie)', value: 6, color: 'bg-amber-500' },
+                ].map(item => (
+                  <div key={item.label}>
+                    <div className="flex justify-between text-xs mb-1">
+                      <span className={item.highlight ? 'text-red-400 font-bold' : 'text-slate-400'}>{item.label}</span>
+                      <span className={item.highlight ? 'text-red-400 font-black' : 'text-slate-300 font-bold'}>{item.value}/10</span>
+                    </div>
+                    <div className="h-1.5 rounded-full bg-slate-700 overflow-hidden">
+                      <div className={`h-full rounded-full ${item.color}`} style={{ width: `${item.value * 10}%` }} />
+                    </div>
+                  </div>
+                ))}
               </div>
-              <div>
-                <p className="text-white font-bold text-lg">Daily Readiness</p>
-                <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">GRÜN – Vollgas heute</span>
+              <p className="text-xs text-red-400/80 font-medium mt-1">⚠ Fokus-Defizit – neurologische Ursache</p>
+            </div>
+
+            {/* Pfeil 1 */}
+            <div className="flex justify-center items-center text-slate-600 text-2xl font-black rotate-90 md:rotate-0">→</div>
+
+            {/* Schritt 2: Ursache */}
+            <div className="rounded-2xl bg-slate-800/80 border border-purple-500/30 p-5 flex flex-col gap-3">
+              <span className="text-[10px] font-bold uppercase tracking-widest text-purple-400">② Ursache lokalisiert</span>
+              <p className="text-white font-bold text-base">MFR Node N3 · Schädelbasis</p>
+              <p className="text-xs text-slate-400 leading-relaxed">Stecco CC · Koordiniert vestibuläre Stabilität und visuelle Schärfe – typische Ursache für Tunnelblick und Konzentrationsmangel.</p>
+              <div className="flex items-center gap-2 bg-purple-500/10 border border-purple-500/20 rounded-xl px-3 py-2">
+                <Brain className="w-4 h-4 text-purple-400 flex-shrink-0" />
+                <p className="text-xs text-purple-300">Nicht der Muskel – der neurologische Ursprung</p>
               </div>
             </div>
-            <div className="space-y-2.5">
-              {[
-                { label: 'Gefühl (Hardware)', value: 8, color: 'bg-cyan-500' },
-                { label: 'Fokus (Software)', value: 9, color: 'bg-purple-500' },
-                { label: 'Energie (Batterie)', value: 7, color: 'bg-amber-500' },
-              ].map(item => (
-                <div key={item.label}>
-                  <div className="flex justify-between text-xs text-slate-400 mb-1">
-                    <span>{item.label}</span><span className="font-bold text-slate-200">{item.value}/10</span>
-                  </div>
-                  <div className="h-1.5 rounded-full bg-slate-800 overflow-hidden">
-                    <div className={`h-full rounded-full ${item.color}`} style={{ width: `${item.value * 10}%` }} />
-                  </div>
+
+            {/* Pfeil 2 */}
+            <div className="flex justify-center items-center text-slate-600 text-2xl font-black rotate-90 md:rotate-0">→</div>
+
+            {/* Schritt 3: Ergebnis */}
+            <div className="rounded-2xl bg-slate-800/80 border border-emerald-500/30 p-5 flex flex-col gap-3">
+              <span className="text-[10px] font-bold uppercase tracking-widest text-emerald-400">③ Problem gelöst</span>
+              <p className="text-white font-bold text-base">90s Kompression + Neuro-Drill</p>
+              <div className="space-y-2">
+                <div className="flex items-center gap-2 text-xs text-slate-300">
+                  <Zap className="w-3.5 h-3.5 text-amber-400 flex-shrink-0" />
+                  <span>Horizontale Sakkaden (30s) → Fokus ↑</span>
                 </div>
-              ))}
+                <div className="flex items-center gap-2 text-xs text-slate-300">
+                  <Activity className="w-3.5 h-3.5 text-cyan-400 flex-shrink-0" />
+                  <span>Integration: Chin Tucks · neuronale Verankerung</span>
+                </div>
+              </div>
+              <div className="mt-1 flex justify-between items-center text-xs font-bold">
+                <span className="text-slate-500">Fokus (Software)</span>
+                <span className="text-emerald-400">3 → 8/10 ✓</span>
+              </div>
+              <div className="h-1.5 rounded-full bg-slate-700 overflow-hidden">
+                <div className="h-full rounded-full bg-emerald-500 w-4/5" />
+              </div>
             </div>
           </div>
 
-          {/* Right: MFR Node Solution */}
-          <div className="p-8 flex flex-col justify-center gap-4">
-            <p className="text-xs font-bold uppercase tracking-widest text-purple-400">Die Lösung</p>
-            <div className="flex items-start gap-4">
-              <div className="w-12 h-12 rounded-xl bg-purple-500/10 border border-purple-500/30 flex items-center justify-center flex-shrink-0">
-                <Brain className="w-6 h-6 text-purple-400" />
-              </div>
-              <div>
-                <p className="text-white font-bold">MFR Node N4 · Brustkorb</p>
-                <p className="text-xs text-slate-400 mt-1">Stecco CC – koordiniert Vorwärtsbewegung des Arms</p>
-              </div>
-            </div>
-            <div className="bg-slate-800/60 rounded-xl p-4 border border-slate-700/50 text-sm text-slate-300 leading-relaxed">
-              Komprimiere 90 Sekunden, dann aktiviere mit <span className="text-cyan-400 font-medium">Wall Slides</span> · Die Faszienforschung zeigt: nach 60s löst sich die neuronale Schutzspannung.
-            </div>
-            <div className="flex items-center gap-2 text-xs text-amber-400">
-              <Zap className="w-3.5 h-3.5" />
-              <span className="font-medium">Neuro-Drill empfohlen: Horizontale Sakkaden (30s)</span>
-            </div>
+          <div className="text-center mt-6">
             <Link
               to={createPageUrl('Landing')}
-              className="mt-1 inline-flex items-center gap-1.5 text-xs font-bold text-cyan-400 hover:text-cyan-300 transition-colors"
+              className="inline-flex items-center gap-1.5 text-xs font-bold text-cyan-400 hover:text-cyan-300 transition-colors"
             >
-              Selbst erleben – 7 Tage kostenlos →
+              Dein System analysieren – 7 Tage kostenlos →
             </Link>
           </div>
         </motion.div>
