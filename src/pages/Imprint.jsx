@@ -30,8 +30,12 @@ export default function Imprint() {
 
             <section>
               <h2 className="text-2xl font-bold text-cyan-400 mb-4">Kontakt</h2>
-              <p className="leading-relaxed">
-                E-Mail: info@axon-nap.de
+              <p className="leading-relaxed flex items-center gap-2">
+                E-Mail:{' '}
+                {/* Email als SVG – nicht von Bots lesbar */}
+                <svg xmlns="http://www.w3.org/2000/svg" width="200" height="20" viewBox="0 0 200 20">
+                  <text x="0" y="15" fontFamily="monospace" fontSize="14" fill="#94a3b8">support@axon-nap.de</text>
+                </svg>
               </p>
             </section>
 
