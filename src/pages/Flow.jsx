@@ -621,7 +621,7 @@ export default function Flow() {
                   )}
 
                   {/* Advanced Progression */}
-                  {currentExercise.progression_advanced && (
+                  {(currentSequence.progression_advanced || currentExercise?.progression_advanced) && (
                     <motion.div
                       className="bg-slate-900/40 rounded-xl border border-slate-800 overflow-hidden"
                       initial={{ opacity: 0 }}
