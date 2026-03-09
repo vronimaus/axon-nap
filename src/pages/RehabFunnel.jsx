@@ -255,47 +255,32 @@ export default function RehabFunnel() {
 
               {/* Phase overview */}
               <div className="space-y-3">
-                {plan.phases.map((phase, idx) => (
+                {plan.phases.map((phase) => (
                   <div
                     key={phase.phase_number}
-                    className={`rounded-2xl border p-4 ${
-                      idx === 0
-                        ? 'bg-slate-900/80 border-slate-700'
-                        : 'relative overflow-hidden bg-slate-900/40 border-slate-800/50'
-                    }`}
+                    className="rounded-2xl border bg-slate-900/80 border-slate-700 p-4"
                   >
-                    {/* Phase 1 is visible, others are blurred */}
-                    <div className={idx > 0 ? 'blur-sm select-none pointer-events-none' : ''}>
-                      <div className="flex items-center justify-between mb-2">
-                        <span className="text-xs font-bold uppercase tracking-widest text-cyan-400">
-                          Phase {phase.phase_number}
-                        </span>
-                        <span className="text-xs text-slate-500">{phase.duration_days} Tage</span>
-                      </div>
-                      <h3 className="font-bold text-white">{phase.title}</h3>
-                      <p className="text-xs text-slate-400 mt-1">{phase.description}</p>
-                      <div className="mt-3 space-y-1">
-                        {(phase.exercises || []).slice(0, 3).map((ex, i) => (
-                          <div key={i} className="flex items-center gap-2 text-xs text-slate-300">
-                            <div className="w-1 h-1 rounded-full bg-cyan-500/50" />
-                            {ex.name} – {ex.sets_reps_tempo}
-                          </div>
-                        ))}
-                        {phase.exercises?.length > 3 && (
-                          <div className="text-xs text-slate-500 pl-3">+ {phase.exercises.length - 3} weitere Übungen</div>
-                        )}
-                      </div>
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-xs font-bold uppercase tracking-widest text-cyan-400">
+                        Phase {phase.phase_number}
+                      </span>
+                      <span className="text-xs text-slate-500">{phase.duration_days} Tage</span>
                     </div>
-
-                    {/* Lock overlay for phases 2 & 3 */}
-                    {idx > 0 && (
-                      <div className="absolute inset-0 flex items-center justify-center bg-slate-950/60 rounded-2xl">
-                        <div className="flex items-center gap-2 bg-slate-800 border border-slate-600 rounded-full px-3 py-1.5">
-                          <Lock className="w-3.5 h-3.5 text-slate-400" />
-                          <span className="text-xs text-slate-300 font-medium">Gesperrt</span>
-                        </div>
-                      </div>
-                    )}
+                    <h3 className="font-bold text-white">{phase.title}</h3>
+                    <p className="text-xs text-slate-400 mt-1">{phase.description}</p>
+                    <div className="mt-3 space-y-1">
+                      {(phase.exercises || []).map((ex, i) => {
+                        // Group by category/section
+                        const isFirstInCategory = !phase.exercises.slice(0, i).some(e => e.category === ex.category);
+                        return (
+                          <div key={i} className={`flex items-center gap-2 text-xs ${isFirstInCategory ? 'text-slate-300' : 'text-slate-500 opacity-60'}`}>
+                            <div className={`w-1 h-1 rounded-full ${isFirstInCategory ? 'bg-cyan-500/50' : 'bg-slate-600/30'}`} />
+                            {ex.name} – {ex.sets_reps_tempo}
+                            {!isFirstInCategory && <span className="text-[10px] ml-auto">🔒</span>}
+                          </div>
+                        );
+                      })}
+                    </div>
                   </div>
                 ))}
               </div>
