@@ -38,17 +38,17 @@ const colorMap = {
     text: 'text-emerald-400',
     tag: 'bg-emerald-500/10 text-emerald-400',
   },
-  amber: {
-    border: 'border-amber-500/30 hover:border-amber-500/60',
-    bg: 'bg-amber-500/10',
-    text: 'text-amber-400',
-    tag: 'bg-amber-500/10 text-amber-400',
-  },
   purple: {
     border: 'border-purple-500/30 hover:border-purple-500/60',
     bg: 'bg-purple-500/10',
     text: 'text-purple-400',
     tag: 'bg-purple-500/10 text-purple-400',
+  },
+  blue: {
+    border: 'border-blue-500/30 hover:border-blue-500/60',
+    bg: 'bg-blue-500/10',
+    text: 'text-blue-400',
+    tag: 'bg-blue-500/10 text-blue-400',
   },
 };
 
