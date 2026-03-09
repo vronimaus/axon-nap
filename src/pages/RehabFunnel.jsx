@@ -51,8 +51,11 @@ export default function RehabFunnel() {
   const handleUnlock = () => {
     // Track intent
     base44.analytics.track({ eventName: 'rehab_funnel_unlock_clicked', properties: { region } });
-    // Store mode so Layout.js knows to redirect to checkout after login
+    // Store mode & pending plan so Layout.js knows to redirect to checkout after login
     localStorage.setItem('axon_selected_mode', 'direct');
+    if (plan) {
+      sessionStorage.setItem('axon_pending_rehab_plan', JSON.stringify(plan));
+    }
     // Redirect to login – after login, Layout.js will handle checkout redirect
     base44.auth.redirectToLogin(createPageUrl('RehabPlan'));
   };
