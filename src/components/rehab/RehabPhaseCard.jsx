@@ -1,12 +1,15 @@
-import React, { useMemo } from 'react';
-import { motion } from 'framer-motion';
+import React, { useMemo, useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Target, TrendingUp, Zap, CheckCircle2, Brain, Activity, Dumbbell, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import RehabExerciseCard from './RehabExerciseCard';
+import { canPlayExercise } from './ExerciseAccessControl';
+import ExerciseLockedPaywall from './ExerciseLockedPaywall';
 
-export default function RehabPhaseCard({ phase, index, totalPhases, isCompleted, onComplete, onNext, onPrev, rehabPlanId, queryClient, onFeedbackSubmit }) {
+export default function RehabPhaseCard({ phase, index, totalPhases, isCompleted, onComplete, onNext, onPrev, rehabPlanId, queryClient, onFeedbackSubmit, phases = [], hasAccess = true }) {
   // Accordion State: All closed by default
   const [openCardKey, setOpenCardKey] = React.useState(null);
+  const [lockedExerciseName, setLockedExerciseName] = useState(null);
 
   // Track completed exercises locally for optimistic UI updates
   const [completedExercises, setCompletedExercises] = React.useState(() => {
@@ -57,13 +60,23 @@ export default function RehabPhaseCard({ phase, index, totalPhases, isCompleted,
   }, [phase.exercises]);
 
   return (
-    <motion.div
-      key={index}
-      initial={{ opacity: 0, x: 20 }}
-      animate={{ opacity: 1, x: 0 }}
-      exit={{ opacity: 0, x: -20 }}
-      className="space-y-8"
-    >
+    <>
+      <AnimatePresence>
+        {lockedExerciseName && (
+          <ExerciseLockedPaywall
+            exerciseName={lockedExerciseName}
+            onClose={() => setLockedExerciseName(null)}
+          />
+        )}
+      </AnimatePresence>
+
+      <motion.div
+        key={index}
+        initial={{ opacity: 0, x: 20 }}
+        animate={{ opacity: 1, x: 0 }}
+        exit={{ opacity: 0, x: -20 }}
+        className="space-y-8"
+      >
       {/* Phase Info Card (Modern/Dark) */}
       <div className="relative rounded-2xl border border-slate-800 bg-slate-900/80 p-6 overflow-hidden shadow-2xl">
          {/* Tech Background Elements - Green Theme */}
@@ -112,21 +125,35 @@ export default function RehabPhaseCard({ phase, index, totalPhases, isCompleted,
                 const uniqueKey = `${section.key}-${exIdx}`;
                 const isExCompleted = completedExercises[uniqueKey] || exercise.completed;
                 const isActive = openCardKey === uniqueKey;
+                const canPlay = canPlayExercise(exercise.exercise_id, phases, hasAccess);
+                const isLocked = !canPlay && !isExCompleted;
+
+                const handleClick = () => {
+                  if (isLocked) {
+                    setLockedExerciseName(exercise.name || exercise.exercise_name || 'Übung');
+                    return;
+                  }
+                  setOpenCardKey(isActive ? null : uniqueKey);
+                };
 
                 return (
                   <button
                     key={uniqueKey}
-                    onClick={() => setOpenCardKey(isActive ? null : uniqueKey)}
+                    onClick={handleClick}
                     className={`
-                      w-12 h-12 rounded-xl flex items-center justify-center text-sm font-bold transition-all duration-300
+                      w-12 h-12 rounded-xl flex items-center justify-center text-sm font-bold transition-all duration-300 relative
                       ${isActive 
                         ? 'bg-emerald-500 text-slate-900 shadow-[0_0_15px_rgba(16,185,129,0.4)] scale-110 z-10' 
                         : isExCompleted 
                           ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' 
-                          : 'bg-slate-800 text-slate-500 border border-slate-700 hover:border-emerald-500/50 hover:text-emerald-400'}
+                          : isLocked
+                            ? 'bg-slate-800/50 text-slate-600 border border-slate-700 opacity-50 cursor-not-allowed'
+                            : 'bg-slate-800 text-slate-500 border border-slate-700 hover:border-emerald-500/50 hover:text-emerald-400'}
                     `}
+                    disabled={isLocked}
                   >
                     {isExCompleted ? <CheckCircle2 className="w-5 h-5" /> : exIdx + 1}
+                    {isLocked && <div className="absolute inset-0 flex items-center justify-center rounded-xl bg-black/20"><span className="text-[10px] font-bold text-slate-400">🔒</span></div>}
                   </button>
                 );
               })}
@@ -206,5 +233,6 @@ export default function RehabPhaseCard({ phase, index, totalPhases, isCompleted,
         ) : null}
       </div>
     </motion.div>
+    </>
   );
 }
