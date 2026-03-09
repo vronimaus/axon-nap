@@ -348,68 +348,68 @@ export default function Literatur() {
         {!isLoading && (
           <>
             {/* Header */}
-        <div className="mb-10">
-          <div className="flex items-center gap-2 text-xs text-slate-500 mb-4">
-            <Link to={createPageUrl('Wissen')} className="hover:text-cyan-400 transition-colors">Wissen</Link>
-            <span>/</span>
-            <span className="text-slate-400">Literatur</span>
-          </div>
-          <div className="flex items-center gap-3 mb-4">
-            <div className="p-3 rounded-xl bg-cyan-500/10 border border-cyan-500/30">
-              <BookOpen className="w-6 h-6 text-cyan-400" />
-            </div>
-            <div>
-              <h1 className="text-2xl sm:text-3xl font-bold text-white leading-tight">
-                Wissenschaftliche Quellen
-              </h1>
-              <p className="text-sm text-slate-400">AXON Neuro-Athletic-Protocol – Literaturverzeichnis</p>
-            </div>
-          </div>
-          <p className="text-slate-300 text-sm leading-relaxed max-w-2xl">
-            Jede Übung, jede Routine, jedes Protokoll in AXON basiert auf peer-reviewed Forschung oder validierten Expertenmethoden. 
-            Hier findest du alle <strong className="text-cyan-400">{totalRefs} Primärquellen</strong> – von Stanford bis Nature Neuroscience.
-          </p>
-          <div className="mt-4 flex flex-wrap gap-2">
-            {['Peer-reviewed', 'Evidenzbasiert', 'Klinisch validiert', 'Sport-wissenschaftlich'].map(tag => (
-              <span key={tag} className="text-xs px-3 py-1 rounded-full bg-slate-800 border border-slate-700 text-slate-400">{tag}</span>
-            ))}
-          </div>
-        </div>
-
-        {/* Reference Categories */}
-        <div className="space-y-10">
-          {references.map((cat) => {
-            const Icon = cat.icon;
-            const c = colorMap[cat.color];
-            return (
-              <section key={cat.category}>
-                <div className="flex items-center gap-3 mb-4">
-                  <Icon className={`w-5 h-5 ${c.text}`} />
-                  <h2 className={`text-lg font-semibold ${c.text}`}>{cat.category}</h2>
-                  <span className={`text-xs px-2 py-0.5 rounded-full ${c.badge}`}>{cat.entries.length} Quellen</span>
+            <div className="mb-10">
+              <div className="flex items-center gap-2 text-xs text-slate-500 mb-4">
+                <Link to={createPageUrl('Wissen')} className="hover:text-cyan-400 transition-colors">Wissen</Link>
+                <span>/</span>
+                <span className="text-slate-400">Literatur</span>
+              </div>
+              <div className="flex items-center gap-3 mb-4">
+                <div className="p-3 rounded-xl bg-cyan-500/10 border border-cyan-500/30">
+                  <BookOpen className="w-6 h-6 text-cyan-400" />
                 </div>
-                <div className="grid gap-3">
-                  {cat.entries.map(entry => (
-                    <ReferenceCard key={entry.id} entry={entry} color={cat.color} />
-                  ))}
+                <div>
+                  <h1 className="text-2xl sm:text-3xl font-bold text-white leading-tight">
+                    Wissenschaftliche Quellen
+                  </h1>
+                  <p className="text-sm text-slate-400">AXON Neuro-Athletic-Protocol – Literaturverzeichnis</p>
                 </div>
-              </section>
-            );
-          })}
-        </div>
+              </div>
+              <p className="text-slate-300 text-sm leading-relaxed max-w-2xl">
+                Jede Übung, jede Routine, jedes Protokoll in AXON basiert auf peer-reviewed Forschung oder validierten Expertenmethoden. 
+                Hier findest du alle <strong className="text-cyan-400">{totalRefs} Primärquellen</strong> – von Stanford bis Nature Neuroscience.
+              </p>
+              <div className="mt-4 flex flex-wrap gap-2">
+                {['Peer-reviewed', 'Evidenzbasiert', 'Klinisch validiert', 'Sport-wissenschaftlich'].map(tag => (
+                  <span key={tag} className="text-xs px-3 py-1 rounded-full bg-slate-800 border border-slate-700 text-slate-400">{tag}</span>
+                ))}
+              </div>
+            </div>
 
-        {/* Footer note */}
-        <div className="mt-12 p-5 rounded-xl border border-slate-700 bg-slate-800/30 text-center">
-          <p className="text-xs text-slate-500 leading-relaxed max-w-xl mx-auto">
-            Alle Quellen wurden für die Entwicklung des AXON Neuro-Athletic-Protocols herangezogen. 
-            AXON erhebt keinen Anspruch auf medizinische Diagnose oder Therapie. 
-            Bei gesundheitlichen Beschwerden konsultiere bitte einen Arzt oder Physiotherapeuten.
-          </p>
-          <Link to={createPageUrl('Wissen')} className="inline-block mt-3 text-xs text-cyan-400 hover:text-cyan-300 transition-colors">
-            ← Zurück zur Wissensbasis
-          </Link>
-        </div>
-        </>
+            {/* Reference Categories */}
+            <div className="space-y-10">
+              {references.map((cat) => {
+                const Icon = cat.icon;
+                const c = colorMap[cat.color];
+                return (
+                  <section key={cat.category}>
+                    <div className="flex items-center gap-3 mb-4">
+                      <Icon className={`w-5 h-5 ${c.text}`} />
+                      <h2 className={`text-lg font-semibold ${c.text}`}>{cat.category}</h2>
+                      <span className={`text-xs px-2 py-0.5 rounded-full ${c.badge}`}>{cat.entries.length} Quellen</span>
+                    </div>
+                    <div className="grid gap-3">
+                      {cat.entries.map(entry => (
+                        <ReferenceCard key={entry.id} entry={entry} color={cat.color} />
+                      ))}
+                    </div>
+                  </section>
+                );
+              })}
+            </div>
+
+            {/* Footer note */}
+            <div className="mt-12 p-5 rounded-xl border border-slate-700 bg-slate-800/30 text-center">
+              <p className="text-xs text-slate-500 leading-relaxed max-w-xl mx-auto">
+                Alle Quellen wurden für die Entwicklung des AXON Neuro-Athletic-Protocols herangezogen. 
+                AXON erhebt keinen Anspruch auf medizinische Diagnose oder Therapie. 
+                Bei gesundheitlichen Beschwerden konsultiere bitte einen Arzt oder Physiotherapeuten.
+              </p>
+              <Link to={createPageUrl('Wissen')} className="inline-block mt-3 text-xs text-cyan-400 hover:text-cyan-300 transition-colors">
+                ← Zurück zur Wissensbasis
+              </Link>
+            </div>
+          </>
         )}
       </div>
     </div>
