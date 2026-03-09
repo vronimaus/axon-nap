@@ -63,6 +63,12 @@ export default function RehabFunnel() {
     base44.auth.redirectToLogin(createPageUrl('RehabPlan'));
   };
 
+  const handlePlayExercise = (exercise) => {
+    // Show paywall message
+    base44.analytics.track({ eventName: 'rehab_funnel_exercise_clicked', properties: { exercise: exercise.name } });
+    setSelectedExercise(exercise);
+  };
+
   return (
     <div className="min-h-screen bg-slate-950 text-white">
       {/* Header */}
