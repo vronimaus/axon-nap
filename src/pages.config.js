@@ -82,6 +82,8 @@ import TrainingPlan from './pages/TrainingPlan';
 import TrialInfo from './pages/TrialInfo';
 import Wissen from './pages/Wissen';
 import WissenArtikel from './pages/WissenArtikel';
+import robots from './pages/robots';
+import sitemap from './pages/sitemap';
 import __Layout from './Layout.jsx';
 
 
@@ -121,6 +123,8 @@ export const PAGES = {
     "TrialInfo": TrialInfo,
     "Wissen": Wissen,
     "WissenArtikel": WissenArtikel,
+    "robots": robots,
+    "sitemap": sitemap,
 }
 
 export const pagesConfig = {
