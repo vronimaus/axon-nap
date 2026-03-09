@@ -1,10 +1,11 @@
 import { motion } from 'framer-motion';
+import { ArrowRight } from 'lucide-react';
 
 const PAINS = [
-  { emoji: '😤', text: 'Nacken ist schon wieder steif – und du weißt selbst, es liegt am Schreibtisch.' },
-  { emoji: '😩', text: 'Rücken zieht nach dem Workout. Du streckst dich, hilft kurz, ist morgen wieder da.' },
-  { emoji: '🤦', text: 'Schulter macht komische Geräusche. Nicht schlimm genug für den Arzt – aber nervig genug.' },
-  { emoji: '💸', text: 'Physio kostet 80€ die Stunde. Für "mach das 3x täglich" – kannst du auch selbst.' },
+  { tag: 'HWS', text: 'Nacken ist schon wieder steif – und du weißt selbst, es liegt am Schreibtisch.' },
+  { tag: 'LWS', text: 'Rücken zieht nach dem Workout. Du streckst dich, hilft kurz, ist morgen wieder da.' },
+  { tag: 'SHD', text: 'Schulter macht komische Geräusche. Nicht schlimm genug für den Arzt – aber nervig genug.' },
+  { tag: 'SYS', text: 'Physio kostet 80 € die Stunde. Für "mach das 3x täglich" – kannst du auch selbst.' },
 ];
 
 export default function PainAgitationSection({ onFunnelClick }) {
@@ -22,7 +23,7 @@ export default function PainAgitationSection({ onFunnelClick }) {
           <p className="text-xs font-bold uppercase tracking-[0.3em] text-slate-500 mb-4">Kennst du das?</p>
           <h2 className="text-3xl md:text-5xl font-black text-white leading-tight">
             Nicht krank genug für den Arzt.<br />
-            <span className="text-slate-400">Aber schmerzhaft genug um zu stören.</span>
+            <span className="text-slate-400">Aber störend genug, um täglich präsent zu sein.</span>
           </h2>
           <p className="text-slate-400 mt-6 text-lg max-w-2xl mx-auto leading-relaxed">
             Du willst dir selbst helfen. Nicht warten. Nicht erklären. Einfach <strong className="text-white">den Hebel finden und drehen.</strong>
@@ -40,7 +41,7 @@ export default function PainAgitationSection({ onFunnelClick }) {
               transition={{ delay: i * 0.08 }}
               className="flex items-start gap-4 bg-slate-900/60 border border-slate-800 rounded-2xl p-5"
             >
-              <span className="text-2xl shrink-0 mt-0.5">{p.emoji}</span>
+              <span className="text-[10px] font-black text-cyan-500 tracking-widest uppercase bg-cyan-500/10 border border-cyan-500/20 px-2 py-1 rounded-lg shrink-0 mt-0.5">{p.tag}</span>
               <p className="text-slate-300 text-sm leading-relaxed">{p.text}</p>
             </motion.div>
           ))}
@@ -58,16 +59,17 @@ export default function PainAgitationSection({ onFunnelClick }) {
             <span className="text-white font-bold">Es ist, dass du nie das richtige Protokoll hattest.</span>
           </p>
           <p className="text-slate-500 text-sm max-w-xl mx-auto">
-            AXON kombiniert myofasziale Druckpunkte, Neuro-Drills und gezielte Bewegung – 
-            zu einem System, das du selbst anwendest. In 5–15 Minuten. Ohne Gerät. Ohne Physio.
+            AXON kombiniert myofasziale Druckpunkte, funktionelle Bewegung und neurologische Verankerung — 
+            zu einem System, das du selbst anwendest. In 5–15 Minuten.
           </p>
 
-          {/* Inline CTA */}
+          {/* CTA */}
           <button
             onClick={onFunnelClick}
-            className="mt-4 inline-flex items-center gap-3 bg-gradient-to-r from-red-500 to-pink-600 hover:from-red-400 hover:to-pink-500 text-white font-black text-sm px-8 py-4 rounded-2xl shadow-[0_0_30px_rgba(239,68,68,0.25)] transition-all duration-300 hover:scale-105"
+            className="mt-4 inline-flex items-center gap-3 bg-white hover:bg-cyan-50 text-black font-black text-sm px-10 py-5 rounded-2xl shadow-[0_0_30px_rgba(255,255,255,0.08)] hover:shadow-[0_0_40px_rgba(6,182,212,0.3)] transition-all duration-300 hover:scale-105 uppercase tracking-wide"
           >
-            🩺 Meinen Schmerzpunkt markieren →
+            Beschwerden analysieren
+            <ArrowRight className="w-4 h-4" />
           </button>
           <p className="text-xs text-slate-600">Kostenlos · Kein Account · 60 Sekunden</p>
         </motion.div>
