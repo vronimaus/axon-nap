@@ -229,6 +229,81 @@ function ReferenceCard({ entry, color }) {
 }
 
 export default function Literatur() {
+  const [references, setReferences] = useState(staticReferences);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const loadDynamicReferences = async () => {
+      try {
+        // Fetch all relevant entities in parallel
+        const [routines, exercises, articles, goals, scientific] = await Promise.all([
+          base44.entities.Routine.list(),
+          base44.entities.Exercise.list(),
+          base44.entities.KnowledgeArticle.list(),
+          base44.entities.PerformanceGoal.list(),
+          base44.entities.ScientificKnowledge.list(),
+        ]);
+
+        const dynamicRefs = [...staticReferences];
+
+        // Extract and add references from KnowledgeArticle (Fachwissen)
+        if (articles.length > 0) {
+          const fachwissenRefs = articles
+            .filter(a => a.source && a.year)
+            .map((article, idx) => ({
+              id: `article_${idx}`,
+              authors: article.expert_name || 'AXON',
+              year: article.published ? new Date(article.updated_date).getFullYear() : new Date().getFullYear(),
+              title: article.headline,
+              source: article.source || 'AXON Knowledge Base',
+              url: '',
+              relevance: article.summary
+            }));
+          if (fachwissenRefs.length > 0) {
+            dynamicRefs.push({
+              category: 'Fachwissen & Expert-Insights',
+              icon: Brain,
+              color: 'purple',
+              entries: fachwissenRefs
+            });
+          }
+        }
+
+        // Extract and add references from ScientificKnowledge
+        if (scientific.length > 0) {
+          const sciRefs = scientific
+            .filter(s => s.year && s.summary)
+            .map((paper, idx) => ({
+              id: `science_${idx}`,
+              authors: paper.source || 'Forschungsgruppe',
+              year: paper.year,
+              title: paper.title,
+              source: paper.source || 'Peer-reviewed',
+              url: paper.file_url || '',
+              relevance: paper.key_findings
+            }));
+          if (sciRefs.length > 0) {
+            dynamicRefs.push({
+              category: 'Neueste Forschung',
+              icon: Zap,
+              color: 'cyan',
+              entries: sciRefs
+            });
+          }
+        }
+
+        setReferences(dynamicRefs);
+      } catch (error) {
+        console.error('Error loading dynamic references:', error);
+        // Fallback to static references
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadDynamicReferences();
+  }, []);
+
   const totalRefs = references.reduce((sum, cat) => sum + cat.entries.length, 0);
 
   // Schema.org structured data
