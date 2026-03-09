@@ -613,6 +613,11 @@ export default function AdminHub() {
             <ExerciseMappingTab />
           </TabsContent>
 
+          {/* Audit Tab */}
+          <TabsContent value="audit" className="mt-0">
+            <ExerciseAuditTab />
+          </TabsContent>
+
           {/* Roadmap Tab */}
           <TabsContent value="roadmap" className="mt-0">
             <RoadmapTab />
