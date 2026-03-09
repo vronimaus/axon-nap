@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { ExternalLink, BookOpen, Brain, Wind, Activity, Zap, Moon, ChevronDown, ChevronUp } from 'lucide-react';
+import { ExternalLink, BookOpen, Brain, Wind, Activity, Zap, Moon, ChevronDown, ChevronUp, Loader2 } from 'lucide-react';
+import { base44 } from '@/api/base44Client';
 
-const references = [
+const staticReferences = [
   {
     category: "Neurowissenschaft & Neuroathletik",
     icon: Brain,
