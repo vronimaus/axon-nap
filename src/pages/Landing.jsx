@@ -9,6 +9,7 @@ import { Helmet } from 'react-helmet-async';
 import HeroSection from '@/components/landing/HeroSection';
 import { Suspense, lazy } from 'react';
 
+
 const AppInsideSection = lazy(() => import('@/components/landing/AppInsideSection'));
 const PricingSection = lazy(() => import('@/components/landing/PricingSection'));
 
