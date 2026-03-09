@@ -489,6 +489,10 @@ export default function AdminHub() {
                 <GitMerge className="w-4 h-4" />
                 <span>Mapping</span>
               </TabsTrigger>
+              <TabsTrigger value="audit" className="flex items-center gap-2">
+                <SearchCheck className="w-4 h-4" />
+                <span>Audit</span>
+              </TabsTrigger>
               <TabsTrigger value="roadmap" className="flex items-center gap-2">
                 <Zap className="w-4 h-4" />
                 <span>Roadmap</span>
