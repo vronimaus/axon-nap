@@ -454,7 +454,13 @@ export default function Layout({ children, currentPageName }) {
       {/* Footer */}
       <footer className="hidden md:block border-t border-cyan-500/20 glass mt-auto mb-16 md:mb-0">
         <div className="max-w-6xl mx-auto px-4 py-8 text-center">
-            <div className="flex justify-center items-center gap-6 mb-8 text-xs font-bold uppercase tracking-widest text-slate-400">
+            <div className="flex justify-center items-center gap-6 mb-8 text-xs font-bold uppercase tracking-widest text-slate-400 flex-wrap">
+                <Link to={createPageUrl('Literatur')} className="hover:text-cyan-400 transition-colors">Literatur</Link>
+                <span>•</span>
+                <Link to={createPageUrl('Wissen')} className="hover:text-cyan-400 transition-colors">Wissen</Link>
+                <span>•</span>
+                <Link to={createPageUrl('FAQ')} className="hover:text-cyan-400 transition-colors">FAQ</Link>
+                <span>•</span>
                 <Link to={createPageUrl('Imprint')} className="hover:text-cyan-400 transition-colors">Impressum</Link>
                 <span>•</span>
                 <Link to={createPageUrl('Privacy')} className="hover:text-cyan-400 transition-colors">Datenschutz</Link>
