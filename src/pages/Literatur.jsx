@@ -409,6 +409,8 @@ export default function Literatur() {
             ← Zurück zur Wissensbasis
           </Link>
         </div>
+        </>
+        )}
       </div>
     </div>
   );
