@@ -306,21 +306,6 @@ export default function Layout({ children, currentPageName }) {
                             </Link>
                           );
                         })}
-
-                        {/* Public Nav Items */}
-                        {publicNavItems.map((item) => (
-                          <Link
-                            key={item.page}
-                            to={createPageUrl(item.page)}
-                            className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${
-                              currentPageName === item.page
-                                ? 'bg-cyan-500/20 text-cyan-400'
-                                : 'text-slate-400 hover:text-cyan-400 hover:bg-slate-800/50'
-                            }`}
-                          >
-                            {item.name}
-                          </Link>
-                        ))}
                       </div>
 
                       {/* User Menu / Login */}
