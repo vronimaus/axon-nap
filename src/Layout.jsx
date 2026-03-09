@@ -399,7 +399,7 @@ export default function Layout({ children, currentPageName }) {
               <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-slate-900/95 backdrop-blur border-t border-cyan-500/20 safe-area-pb">
                 <div className="flex justify-around items-center px-2 py-3">
                   {navItems.map((item) => {
-                    const colorMap = { cyan: 'text-cyan-400', purple: 'text-purple-400', emerald: 'text-emerald-400', amber: 'text-amber-400' };
+                    const colorMap = { cyan: 'text-cyan-400', blue: 'text-blue-400', emerald: 'text-emerald-400', purple: 'text-purple-400' };
                     return (
                       <button
                         key={item.page}
