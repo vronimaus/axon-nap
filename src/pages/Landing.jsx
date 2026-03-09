@@ -86,21 +86,32 @@ export default function Landing() {
             {user && <Link to={createPageUrl('Dashboard')} className="hover:text-cyan-400 transition-colors">Dashboard</Link>}
           </div>
 
-          <div className="flex items-center gap-3 sm:gap-4">
-            {user ? (
-              <Link to={createPageUrl('Dashboard')}>
-                <Button className="bg-cyan-500 hover:bg-cyan-400 text-black font-bold rounded-full px-4 sm:px-6 text-[10px] sm:text-xs uppercase tracking-wide">
-                  Dashboard
-                </Button>
-              </Link>
-            ) : (
-              <Button
-                onClick={() => window.location.href = createPageUrl('RehabFunnel')}
-                className="bg-white hover:bg-cyan-50 text-black font-bold rounded-full px-4 sm:px-6 text-[10px] sm:text-xs uppercase tracking-wide transition-all duration-300"
-              >
-                Plan erstellen
-              </Button>
-            )}
+          <div className="flex items-center gap-2 sm:gap-4">
+             {user ? (
+               <>
+                 <Link to={createPageUrl('Dashboard')}>
+                   <Button className="bg-cyan-500 hover:bg-cyan-400 text-black font-bold rounded-full px-4 sm:px-6 text-[10px] sm:text-xs uppercase tracking-wide">
+                     Dashboard
+                   </Button>
+                 </Link>
+               </>
+             ) : (
+               <>
+                 <Button
+                   onClick={() => base44.auth.redirectToLogin(window.location.href)}
+                   variant="outline"
+                   className="border-cyan-500/50 text-cyan-400 hover:bg-cyan-500/10 font-bold rounded-full px-3 sm:px-5 text-[10px] sm:text-xs uppercase tracking-wide transition-all duration-300"
+                 >
+                   Login
+                 </Button>
+                 <Button
+                   onClick={() => window.location.href = createPageUrl('RehabFunnel')}
+                   className="bg-white hover:bg-cyan-50 text-black font-bold rounded-full px-4 sm:px-6 text-[10px] sm:text-xs uppercase tracking-wide transition-all duration-300"
+                 >
+                   Plan erstellen
+                 </Button>
+               </>
+             )}
             <div className="md:hidden">
               <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="text-slate-400 hover:text-white p-1">
                 {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
