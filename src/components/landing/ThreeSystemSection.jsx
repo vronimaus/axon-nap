@@ -125,9 +125,9 @@ export default function ThreeSystemSection() {
           <p className="text-slate-500 text-sm flex items-center justify-center gap-3">
             <span className="text-emerald-400 font-bold">Rehab</span>
             <ArrowRight className="w-3 h-3 text-slate-600" />
-            <span className="text-amber-400 font-bold">Flow</span>
+            <span className="text-purple-400 font-bold">Flow</span>
             <ArrowRight className="w-3 h-3 text-slate-600" />
-            <span className="text-purple-400 font-bold">Goals</span>
+            <span className="text-blue-400 font-bold">Goals</span>
             <ArrowRight className="w-3 h-3 text-slate-600" />
             <span className="text-slate-300 font-bold">Du · verletzungsfrei · stärker</span>
           </p>
