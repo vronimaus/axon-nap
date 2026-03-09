@@ -7,6 +7,7 @@ import { motion } from 'framer-motion';
 import { base44 } from '@/api/base44Client';
 import { Helmet } from 'react-helmet-async';
 import HeroSection from '@/components/landing/HeroSection';
+import { Link } from 'react-router-dom';
 import { Suspense, lazy } from 'react';
 
 const AppInsideSection = lazy(() => import('@/components/landing/AppInsideSection'));
