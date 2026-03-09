@@ -411,18 +411,7 @@ export default function Flow() {
       </AnimatePresence>
 
       <div className="max-w-4xl mx-auto">
-        {/* RehabCoaching Panel - Shows RIS Status & Recommendations */}
-        {coachingActive && currentExerciseId && (
-          <RehabCoachingPanel
-            exerciseId={currentExerciseId}
-            nrsScore={currentNRS || 2}
-            recentSessions={[]}
-            onProgramUpdate={(data) => {
-              // Update UI based on coaching data if needed
-              console.log('RehabCoaching update:', data);
-            }}
-          />
-        )}
+
 
         {/* Readiness Recommendation */}
          {readinessStatus && (
