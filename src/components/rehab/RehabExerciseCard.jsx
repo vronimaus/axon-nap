@@ -1,10 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronDown, ChevronUp, Brain, Check, Edit2, Play, Settings2, AlertCircle, Zap, Activity } from 'lucide-react';
+import { ChevronDown, ChevronUp, Brain, Check, Edit2, Play, Settings2, AlertCircle, Zap, Activity, Lock } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { toast } from 'sonner';
 import { Slider } from '@/components/ui/slider';
 import OuchInterventionModal from './OuchInterventionModal';
+import { canPlayExercise } from './ExerciseAccessControl';
+import ExerciseLockedPaywall from './ExerciseLockedPaywall';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -57,11 +59,15 @@ const EditableNumber = ({ value, label, onChange, unit }) => {
   );
 };
 
-export default function RehabExerciseCard({ exercise, idx, isOpen, onToggle, onComplete, rehabPlanId, queryClient }) {
+export default function RehabExerciseCard({ exercise, idx, isOpen, onToggle, onComplete, rehabPlanId, queryClient, phases = [], hasAccess = true }) {
   // Props fallback
   const [localExpanded, setLocalExpanded] = useState(false);
   const isExpanded = isOpen !== undefined ? isOpen : localExpanded;
   const toggle = onToggle || (() => setLocalExpanded(!localExpanded));
+  
+  // Check if exercise is locked
+  const canPlay = canPlayExercise(exercise.exercise_id, phases, hasAccess);
+  const [showPaywall, setShowPaywall] = useState(false);
 
   // Exercise Data State
   const [fullExercise, setFullExercise] = useState(exercise);
@@ -157,14 +163,72 @@ export default function RehabExerciseCard({ exercise, idx, isOpen, onToggle, onC
   // Hidden state handled by parent or return null if forced
   if (!isExpanded) return null;
 
+  // If locked and not completed, show paywall instead
+  if (!canPlay && !isCompleted) {
+    return (
+      <>
+        <AnimatePresence>
+          {showPaywall && (
+            <ExerciseLockedPaywall
+              exerciseName={fullExercise.name || exercise.name || 'Übung'}
+              onClose={() => setShowPaywall(false)}
+            />
+          )}
+        </AnimatePresence>
+        <motion.div
+          layout
+          initial={{ opacity: 0, scale: 0.98 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="bg-slate-950 rounded-2xl border border-slate-800 overflow-hidden shadow-2xl relative opacity-50"
+        >
+          <div className="p-5 border-b border-slate-800 bg-slate-900/50 flex items-start justify-between">
+            <div>
+              <h3 className="text-xl md:text-2xl font-black text-slate-500 uppercase tracking-tight leading-none mb-1">
+                {fullExercise.name}
+              </h3>
+              <div className="flex items-center gap-2">
+                <span className="text-[10px] bg-slate-800 text-slate-600 px-1.5 py-0.5 rounded border border-slate-700">
+                  {fullExercise.category || 'Rehab'}
+                </span>
+              </div>
+            </div>
+            <Lock className="w-5 h-5 text-slate-600" />
+          </div>
+          <div className="p-8 flex flex-col items-center justify-center text-center space-y-4">
+            <Lock className="w-12 h-12 text-slate-600" />
+            <div>
+              <p className="text-slate-400 text-sm font-medium mb-2">Diese Übung ist gesperrt</p>
+              <p className="text-slate-500 text-xs">Schließe zuerst die erste Übung dieser Kategorie ab</p>
+            </div>
+            <button
+              onClick={() => setShowPaywall(true)}
+              className="mt-4 px-6 py-2 bg-amber-500/20 text-amber-400 text-sm font-bold rounded-lg hover:bg-amber-500/30 transition-colors"
+            >
+              Alle freischalten
+            </button>
+          </div>
+        </motion.div>
+      </>
+    );
+  }
+
   // Full "One-Page" View for Open State
   return (
-    <motion.div
-      layout
-      initial={{ opacity: 0, scale: 0.98 }}
-      animate={{ opacity: 1, scale: 1 }}
-      className="bg-slate-950 rounded-2xl border border-emerald-500/30 overflow-hidden shadow-2xl relative"
-    >
+    <>
+      <AnimatePresence>
+        {showPaywall && (
+          <ExerciseLockedPaywall
+            exerciseName={fullExercise.name || exercise.name || 'Übung'}
+            onClose={() => setShowPaywall(false)}
+          />
+        )}
+      </AnimatePresence>
+      <motion.div
+        layout
+        initial={{ opacity: 0, scale: 0.98 }}
+        animate={{ opacity: 1, scale: 1 }}
+        className="bg-slate-950 rounded-2xl border border-emerald-500/30 overflow-hidden shadow-2xl relative"
+      >
       {/* 1. Header */}
       <div className="p-5 border-b border-slate-800 bg-slate-900/50 flex items-start justify-between">
          <div>
@@ -340,14 +404,15 @@ export default function RehabExerciseCard({ exercise, idx, isOpen, onToggle, onC
          </div>
       </div>
 
-      <OuchInterventionModal
-        isOpen={isOuchModalOpen}
-        onClose={() => setIsOuchModalOpen(false)}
-        exerciseId={fullExercise.exercise_id}
-        exerciseName={fullExercise.name}
-        rehabPlanId={rehabPlanId}
-        onExerciseSubstituted={() => { if (queryClient) queryClient.invalidateQueries({ queryKey: ['rehabPlan'] }); }}
-      />
-    </motion.div>
+        <OuchInterventionModal
+          isOpen={isOuchModalOpen}
+          onClose={() => setIsOuchModalOpen(false)}
+          exerciseId={fullExercise.exercise_id}
+          exerciseName={fullExercise.name}
+          rehabPlanId={rehabPlanId}
+          onExerciseSubstituted={() => { if (queryClient) queryClient.invalidateQueries({ queryKey: ['rehabPlan'] }); }}
+        />
+      </motion.div>
+    </>
   );
 }
