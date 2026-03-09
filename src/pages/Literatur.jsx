@@ -336,6 +336,17 @@ export default function Literatur() {
       </Helmet>
 
       <div className="max-w-4xl mx-auto px-4 pt-10">
+        {isLoading && (
+          <div className="flex items-center justify-center min-h-[60vh]">
+            <div className="flex flex-col items-center gap-3">
+              <Loader2 className="w-6 h-6 text-cyan-400 animate-spin" />
+              <p className="text-sm text-slate-500">Quellen laden...</p>
+            </div>
+          </div>
+        )}
+
+        {!isLoading && (
+        <>
         {/* Header */}
         <div className="mb-10">
           <div className="flex items-center gap-2 text-xs text-slate-500 mb-4">
