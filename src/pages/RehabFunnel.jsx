@@ -89,7 +89,7 @@ export default function RehabFunnel() {
             >
               <div className="text-center space-y-2">
                 <h1 className="text-2xl font-black tracking-tight">
-                  Wo hast du <span className="text-red-400">Schmerzen?</span>
+                  Wo hast du <span className="text-cyan-400">Beschwerden?</span>
                 </h1>
                 <p className="text-slate-400 text-sm">
                   Tippe auf die Körperstelle – wir erstellen deinen persönlichen Rehab-Plan.
@@ -109,8 +109,8 @@ export default function RehabFunnel() {
               className="space-y-8"
             >
               <div className="space-y-1">
-                <div className="inline-flex items-center gap-2 bg-red-500/10 border border-red-500/30 rounded-full px-3 py-1 text-xs text-red-400 font-medium">
-                  📍 {region}
+                <div className="inline-flex items-center gap-2 bg-cyan-500/10 border border-cyan-500/30 rounded-full px-3 py-1 text-xs text-cyan-400 font-medium">
+                  {region}
                 </div>
                 <h2 className="text-xl font-bold mt-3">Noch 2 kurze Fragen</h2>
                 <p className="text-slate-400 text-sm">Damit dein Plan wirklich zu dir passt.</p>
@@ -119,7 +119,7 @@ export default function RehabFunnel() {
               {/* Pain intensity */}
               <div className="space-y-3">
                 <label className="text-sm font-semibold text-slate-300">
-                  Wie stark sind die Schmerzen? <span className="text-red-400">{painIntensity}/10</span>
+                  Wie stark sind die Beschwerden? <span className="text-cyan-400">{painIntensity}/10</span>
                 </label>
                 <input
                   type="range"
@@ -127,7 +127,7 @@ export default function RehabFunnel() {
                   max="10"
                   value={painIntensity}
                   onChange={(e) => setPainIntensity(Number(e.target.value))}
-                  className="w-full accent-red-500"
+                  className="w-full accent-cyan-500"
                 />
                 <div className="flex justify-between text-xs text-slate-500">
                   <span>Leicht (1)</span>
@@ -160,10 +160,10 @@ export default function RehabFunnel() {
                 <label className="text-sm font-semibold text-slate-300">Wie aktiv bist du?</label>
                 <div className="grid grid-cols-2 gap-2">
                   {[
-                    { value: 'sedentary', label: '🪑 Wenig aktiv' },
-                    { value: 'lightly_active', label: '🚶 Etwas aktiv' },
-                    { value: 'moderately_active', label: '🏃 Regelmäßig aktiv' },
-                    { value: 'very_active', label: '💪 Sehr aktiv' }
+                    { value: 'sedentary', label: 'Wenig aktiv' },
+                    { value: 'lightly_active', label: 'Etwas aktiv' },
+                    { value: 'moderately_active', label: 'Regelmäßig aktiv' },
+                    { value: 'very_active', label: 'Sehr aktiv' }
                   ].map((opt) => (
                     <button
                       key={opt.value}
@@ -297,22 +297,13 @@ export default function RehabFunnel() {
                 ))}
               </div>
 
-              {/* Social proof */}
-              <div className="flex items-center justify-center gap-1">
-                {[...Array(5)].map((_, i) => (
-                  <Star key={i} className="w-4 h-4 fill-amber-400 text-amber-400" />
-                ))}
-                <span className="text-xs text-slate-400 ml-2">Bereits von hunderten Nutzern getestet</span>
-              </div>
-
               {/* CTA */}
               <div className="space-y-3 pt-2">
                 <Button
                   onClick={handleUnlock}
-                  className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-black font-black text-lg py-7 rounded-2xl shadow-[0_0_40px_rgba(6,182,212,0.4)] hover:shadow-[0_0_50px_rgba(6,182,212,0.6)] transition-all"
+                  className="w-full bg-white hover:bg-cyan-50 text-black font-black text-lg py-8 rounded-2xl shadow-[0_0_40px_rgba(6,182,212,0.25)] hover:shadow-[0_0_50px_rgba(6,182,212,0.45)] hover:scale-[1.01] transition-all uppercase tracking-wide"
                 >
-                  <Lock className="w-5 h-5 mr-2" />
-                  Plan freischalten – €59 einmalig
+                  Plan freischalten — 59 € einmalig
                 </Button>
                 <p className="text-center text-xs text-slate-500">
                   Einmalzahlung · Lebenslanger Zugriff · Kein Abo
@@ -321,7 +312,7 @@ export default function RehabFunnel() {
 
               {/* Guarantee */}
               <div className="bg-slate-900/50 border border-slate-700/50 rounded-2xl p-4 text-center space-y-1">
-                <p className="text-sm font-semibold text-white">💯 Zufriedenheitsgarantie</p>
+                <p className="text-sm font-semibold text-white">30-Tage Geld-zurück-Garantie</p>
                 <p className="text-xs text-slate-400">Wenn du innerhalb von 14 Tagen nicht zufrieden bist, erstatten wir dir den Betrag zurück.</p>
               </div>
             </motion.div>

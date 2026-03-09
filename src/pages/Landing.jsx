@@ -144,17 +144,17 @@ export default function Landing() {
           <p className="text-xs font-bold uppercase tracking-[0.3em] text-slate-500 mb-4">Kein Esoterik. Keine Hacks.</p>
           <h2 className="text-2xl md:text-3xl font-black text-white mb-4">Evidenz statt Hype.</h2>
           <p className="text-slate-400 max-w-2xl mx-auto mb-12 text-base leading-relaxed">
-            AXON basiert auf moderner Faszienforschung (Stecco), Neuro-Athletik (Farias) und Biomechanik (McGill/Starrett) –
-            übersetzt in Protokolle die du selbst anwendest. In unter 15 Minuten.
+            AXON basiert auf publizierter Forschung aus Faszienbiologie, Neuromotorischer Rehabilitation und funktioneller Biomechanik —
+            übersetzt in Protokolle, die du selbst anwendest. In unter 15 Minuten.
           </p>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-left">
             {[
-              { icon: '🧠', title: 'Neural Control', text: 'Bewegung startet im Hirnstamm. Unklare Signale von Augen oder Gleichgewicht aktivieren die neuronale Schutzspannung. Wir lösen die Handbremse.' },
-              { icon: '🕸️', title: 'Fascial Chains', text: 'Schmerz entsteht selten dort, wo er sitzt. Myofasziale Ketten übertragen Spannung über den ganzen Körper. Wir finden den Ursprung.' },
-              { icon: '⚡', title: 'Loaded Mobility', text: 'Dehnen ohne Kraft ist temporär. Dein Gehirn speichert neue Beweglichkeit erst, wenn du darin Kraft erzeugst. Wir sichern den Fortschritt.' },
+              { label: 'MFR', title: 'Myofasziale Ketten', text: 'Beschwerden entstehen selten dort, wo sie spürbar sind. Myofasziale Ketten übertragen Spannung über den ganzen Körper. AXON findet den Ursprung.' },
+              { label: 'FMV', title: 'Funktionelle Bewegung', text: 'Isolierte Übungen greifen zu kurz. Bewegung ist ein komplexes Zusammenspiel von Gelenken, Ketten und Mustern — AXON trainiert das System, nicht den Muskel.' },
+              { label: 'NDT', title: 'Neurologische Verankerung', text: 'Neue Beweglichkeit muss verankert werden. Das Gehirn speichert Fortschritt erst, wenn Bewegung unter Kontrolle erprobt wurde. AXON schließt diesen Loop.' },
             ].map((s, i) => (
               <motion.div key={i} whileHover={{ y: -4 }} className="bg-slate-900/60 border border-slate-800 rounded-2xl p-6 space-y-3">
-                <span className="text-2xl">{s.icon}</span>
+                <span className="text-[10px] font-black uppercase tracking-widest text-cyan-500">{s.label}</span>
                 <h3 className="font-bold text-white">{s.title}</h3>
                 <p className="text-sm text-slate-400 leading-relaxed">{s.text}</p>
               </motion.div>

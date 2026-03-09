@@ -74,6 +74,7 @@ import MFRIntegration from './pages/MFRIntegration';
 import Performance from './pages/Performance';
 import Privacy from './pages/Privacy';
 import Profile from './pages/Profile';
+import RehabFunnel from './pages/RehabFunnel';
 import RehabPlan from './pages/RehabPlan';
 import Success from './pages/Success';
 import Terms from './pages/Terms';
@@ -81,7 +82,6 @@ import TrainingPlan from './pages/TrainingPlan';
 import TrialInfo from './pages/TrialInfo';
 import Wissen from './pages/Wissen';
 import WissenArtikel from './pages/WissenArtikel';
-import RehabFunnel from './pages/RehabFunnel';
 import __Layout from './Layout.jsx';
 
 
@@ -113,6 +113,7 @@ export const PAGES = {
     "Performance": Performance,
     "Privacy": Privacy,
     "Profile": Profile,
+    "RehabFunnel": RehabFunnel,
     "RehabPlan": RehabPlan,
     "Success": Success,
     "Terms": Terms,
@@ -120,7 +121,6 @@ export const PAGES = {
     "TrialInfo": TrialInfo,
     "Wissen": Wissen,
     "WissenArtikel": WissenArtikel,
-    "RehabFunnel": RehabFunnel,
 }
 
 export const pagesConfig = {
