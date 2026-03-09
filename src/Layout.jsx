@@ -69,9 +69,9 @@ export default function Layout({ children, currentPageName }) {
   
   const navItems = [
     { name: 'Command', icon: LayoutDashboard, page: 'Dashboard', color: 'cyan' },
-    { name: 'Training', icon: Target, page: 'TrainingPlan', color: 'purple' },
+    { name: 'Training', icon: Target, page: 'TrainingPlan', color: 'blue' },
     { name: 'Rehab', icon: Activity, page: 'RehabPlan', color: 'emerald' },
-    { name: 'Flow', icon: Zap, page: 'Flow', color: 'amber' }
+    { name: 'Flow', icon: Zap, page: 'Flow', color: 'purple' }
   ];
 
   const getColorClasses = (color) => {
