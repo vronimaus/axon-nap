@@ -13,7 +13,7 @@ const PILLARS = [
   },
   {
     icon: Zap,
-    color: 'amber',
+    color: 'purple',
     tag: '02 · Flow',
     title: 'Beweglichkeit täglich aufbauen',
     description:
@@ -22,7 +22,7 @@ const PILLARS = [
   },
   {
     icon: Target,
-    color: 'purple',
+    color: 'blue',
     tag: '03 · Goals',
     title: 'Trainingsziele sicher erreichen',
     description:
