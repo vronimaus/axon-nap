@@ -265,32 +265,50 @@ export default function RehabFunnel() {
               {/* Phase overview */}
               <div className="space-y-3">
                 {plan.phases.map((phase) => (
-                  <div
+                  <motion.div
                     key={phase.phase_number}
-                    className="rounded-2xl border bg-slate-900/80 border-slate-700 p-4"
+                    className="rounded-2xl border bg-slate-900/80 border-slate-700 overflow-hidden"
                   >
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-xs font-bold uppercase tracking-widest text-cyan-400">
-                        Phase {phase.phase_number}
-                      </span>
-                      <span className="text-xs text-slate-500">{phase.duration_days} Tage</span>
-                    </div>
-                    <h3 className="font-bold text-white">{phase.title}</h3>
-                    <p className="text-xs text-slate-400 mt-1">{phase.description}</p>
-                    <div className="mt-3 space-y-1">
-                      {(phase.exercises || []).map((ex, i) => {
-                        // Group by category/section
-                        const isFirstInCategory = !phase.exercises.slice(0, i).some(e => e.category === ex.category);
-                        return (
-                          <div key={i} className={`flex items-center gap-2 text-xs ${isFirstInCategory ? 'text-slate-300' : 'text-slate-500 opacity-60'}`}>
-                            <div className={`w-1 h-1 rounded-full ${isFirstInCategory ? 'bg-cyan-500/50' : 'bg-slate-600/30'}`} />
-                            {ex.name} – {ex.sets_reps_tempo}
-                            {!isFirstInCategory && <span className="text-[10px] ml-auto">🔒</span>}
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </div>
+                    {/* Phase header - clickable to expand */}
+                    <button
+                      onClick={() => setExpandedPhase(expandedPhase === phase.phase_number ? null : phase.phase_number)}
+                      className="w-full px-4 py-3 flex items-center justify-between hover:bg-slate-800/50 transition-colors"
+                    >
+                      <div className="text-left">
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs font-bold uppercase tracking-widest text-cyan-400">
+                            Phase {phase.phase_number}
+                          </span>
+                          <span className="text-xs text-slate-500">{phase.duration_days} Tage</span>
+                        </div>
+                        <h3 className="font-bold text-white mt-1">{phase.title}</h3>
+                      </div>
+                      <div className="text-slate-400">{expandedPhase === phase.phase_number ? '−' : '+'}</div>
+                    </button>
+
+                    {/* Exercises - shown when expanded */}
+                    {expandedPhase === phase.phase_number && (
+                      <motion.div
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: 'auto' }}
+                        exit={{ opacity: 0, height: 0 }}
+                        className="border-t border-slate-700/50 bg-slate-950/50 px-4 py-3 space-y-2"
+                      >
+                        <p className="text-xs text-slate-400 mb-3">{phase.description}</p>
+                        {(phase.exercises || []).map((ex, i) => {
+                          const isFirstInCategory = !phase.exercises.slice(0, i).some(e => e.category === ex.category);
+                          return (
+                            <RehabFunnelExerciseCard
+                              key={i}
+                              exercise={ex}
+                              isFirstInCategory={isFirstInCategory}
+                              onPlayClick={handlePlayExercise}
+                            />
+                          );
+                        })}
+                      </motion.div>
+                    )}
+                  </motion.div>
                 ))}
               </div>
 
