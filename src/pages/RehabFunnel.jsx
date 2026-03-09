@@ -5,6 +5,7 @@ import { ArrowRight, Loader2, Lock, CheckCircle2, Zap, Star } from 'lucide-react
 import { base44 } from '@/api/base44Client';
 import { createPageUrl } from '@/utils';
 import InteractiveBodyMapInput from '@/components/diagnosis/InteractiveBodyMapInput';
+import RehabFunnelExerciseCard from '@/components/rehab/RehabFunnelExerciseCard';
 
 // Step indicators
 const STEPS = ['body', 'questions', 'loading', 'preview'];
