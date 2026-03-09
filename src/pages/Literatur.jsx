@@ -346,8 +346,8 @@ export default function Literatur() {
         )}
 
         {!isLoading && (
-        <>
-        {/* Header */}
+          <>
+            {/* Header */}
         <div className="mb-10">
           <div className="flex items-center gap-2 text-xs text-slate-500 mb-4">
             <Link to={createPageUrl('Wissen')} className="hover:text-cyan-400 transition-colors">Wissen</Link>
