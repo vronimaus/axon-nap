@@ -18,6 +18,8 @@ export default function RehabFunnel() {
   const [activityLevel, setActivityLevel] = useState('');
   const [plan, setPlan] = useState(null);
   const [error, setError] = useState('');
+  const [expandedPhase, setExpandedPhase] = useState(0);
+  const [selectedExercise, setSelectedExercise] = useState(null);
 
   const handleBodyMapSubmit = (mapData) => {
     setRegion(mapData.region);
