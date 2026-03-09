@@ -69,6 +69,7 @@ import KnowledgeHub from './pages/KnowledgeHub';
 import KnowledgeHubArticle from './pages/KnowledgeHubArticle';
 import KnowledgeUpload from './pages/KnowledgeUpload';
 import Landing from './pages/Landing';
+import Literatur from './pages/Literatur';
 import MFRIntegration from './pages/MFRIntegration';
 import Performance from './pages/Performance';
 import Privacy from './pages/Privacy';
@@ -80,7 +81,7 @@ import TrainingPlan from './pages/TrainingPlan';
 import TrialInfo from './pages/TrialInfo';
 import Wissen from './pages/Wissen';
 import WissenArtikel from './pages/WissenArtikel';
-import Literatur from './pages/Literatur';
+import RehabFunnel from './pages/RehabFunnel';
 import __Layout from './Layout.jsx';
 
 
@@ -107,6 +108,7 @@ export const PAGES = {
     "KnowledgeHubArticle": KnowledgeHubArticle,
     "KnowledgeUpload": KnowledgeUpload,
     "Landing": Landing,
+    "Literatur": Literatur,
     "MFRIntegration": MFRIntegration,
     "Performance": Performance,
     "Privacy": Privacy,
@@ -118,7 +120,7 @@ export const PAGES = {
     "TrialInfo": TrialInfo,
     "Wissen": Wissen,
     "WissenArtikel": WissenArtikel,
-    "Literatur": Literatur,
+    "RehabFunnel": RehabFunnel,
 }
 
 export const pagesConfig = {
