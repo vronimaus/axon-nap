@@ -116,7 +116,7 @@ export default function Layout({ children, currentPageName }) {
       try {
         if (!user) {
           // Nicht eingeloggt: nur auf Landing & Public Pages erlaubt
-          const publicPages = ['Landing', 'Success', 'Checkout', 'Login', 'Imprint', 'Privacy', 'Terms', 'KnowledgeHub', 'KnowledgeHubArticle', 'FAQ', 'Glossary', 'Wissen', 'WissenArtikel', 'Faq', 'Glossar'];
+          const publicPages = ['Landing', 'Success', 'Checkout', 'Login', 'Imprint', 'Privacy', 'Terms', 'KnowledgeHub', 'KnowledgeHubArticle', 'FAQ', 'Glossary', 'Wissen', 'WissenArtikel', 'Faq', 'Glossar', 'RehabFunnel'];
           if (!publicPages.includes(currentPageName)) {
             window.location.href = createPageUrl('Landing');
           }
