@@ -16,25 +16,27 @@ export default function HeroSection({ onCtaClick }) {
           <div className="inline-block px-4 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-[10px] font-black uppercase tracking-widest mb-6">
             Early Stage Access • Lifetime Deal
           </div>
-          <h1 className="text-5xl md:text-7xl font-black mb-8 leading-[1.1] text-white">
-            Dein Körper braucht kein Abo.<br /> 
-            Er braucht ein <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">Update.</span>
+          <h1 className="text-5xl md:text-7xl font-black mb-6 leading-[1.1] text-white">
+            Nacken steif.<br />Rücken zieht.<br />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">Selbst lösen.</span>
           </h1>
-          <p className="text-slate-400 text-lg md:text-xl mb-10 leading-relaxed max-w-xl">
-            Verabschiede dich von starren Trainingsplänen. AXON<span style={{color: '#398bf7'}}>-nap</span> ist eine Web-APP, die funktionales Training, Faszien-Entspannung (MFR) mit Neuro-Athletik-Training verknüpft.
+          <p className="text-slate-400 text-lg md:text-xl mb-4 leading-relaxed max-w-xl">
+            AXON gibt dir das Protokoll, das Physios anwenden — zum selbst machen. Schmerzpunkt markieren, Plan erhalten, in 15 Minuten spüren.
+          </p>
+          <p className="text-slate-500 text-sm mb-10 font-medium">
+            Kein Physiotherapeut. Keine Wartezeit. Keine Monatsgebühr.
           </p>
           <div className="flex flex-col sm:flex-row gap-4">
             <Button 
                 onClick={onCtaClick}
                 className="bg-white hover:bg-cyan-50 text-black px-8 py-6 rounded-2xl font-black text-base uppercase tracking-wide transition-all shadow-[0_0_20px_rgba(255,255,255,0.1)] hover:shadow-[0_0_30px_rgba(6,182,212,0.4)]"
             >
-                7 TAGE KOSTENLOS TESTEN
+                Rehab-Plan erstellen — kostenlos
             </Button>
             <div className="flex items-center space-x-3 px-4 py-2 bg-slate-900/50 rounded-2xl border border-white/5">
               <div className="flex -space-x-3">
                  {[1,2,3].map(i => (
-                    <div key={i} className="w-8 h-8 rounded-full bg-slate-800 border-2 border-slate-950 flex items-center justify-center text-[10px] text-slate-400">
-                        {/* Placeholder Avatar */}
+                    <div key={i} className="w-8 h-8 rounded-full border-2 border-slate-950">
                         <div className="w-full h-full rounded-full bg-gradient-to-br from-slate-700 to-slate-800" />
                     </div>
                  ))}
