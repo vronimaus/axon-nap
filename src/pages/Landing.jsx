@@ -177,6 +177,34 @@ export default function Landing() {
       {/* Hero Section */}
       <HeroSection onCtaClick={() => handleSelectOption('trial')} />
 
+      {/* Rehab Funnel CTA Banner */}
+      {!user && (
+        <section className="py-12 px-6">
+          <div className="max-w-2xl mx-auto">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="bg-gradient-to-br from-red-500/10 to-pink-500/10 border border-red-500/20 rounded-[2rem] p-8 text-center space-y-5"
+            >
+              <div className="text-4xl">🩺</div>
+              <div className="space-y-2">
+                <h2 className="text-2xl font-black text-white">Hast du Schmerzen oder Beschwerden?</h2>
+                <p className="text-slate-400 text-sm max-w-md mx-auto">
+                  Markiere deinen Schmerzpunkt – AXON erstellt deinen personalisierten Rehab-Plan in 60 Sekunden. <strong className="text-white">Kostenlos & ohne Registrierung.</strong>
+                </p>
+              </div>
+              <Link to={createPageUrl('RehabFunnel')}>
+                <Button className="bg-gradient-to-r from-red-500 to-pink-600 hover:from-red-400 hover:to-pink-500 text-white font-black text-base px-8 py-6 rounded-2xl shadow-[0_0_30px_rgba(239,68,68,0.3)]">
+                  Meinen Rehab-Plan erstellen →
+                </Button>
+              </Link>
+              <p className="text-xs text-slate-500">Bereits von hunderten Nutzern genutzt</p>
+            </motion.div>
+          </div>
+        </section>
+      )}
+
       {/* App Inside Section */}
       <Suspense fallback={<div className="h-96 flex items-center justify-center text-cyan-500/50">Lade Engine...</div>}>
         <AppInsideSection />
