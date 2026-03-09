@@ -30,14 +30,16 @@ export default function RehabFunnel() {
     setStep('loading');
     setError('');
     try {
+      // Generate the FULL real plan (not a preview) - same as authenticated RehabPlan generates
       const res = await base44.functions.invoke('generateRehabPlanPublic', {
         region,
         pain_intensity: painIntensity,
         duration,
-        activity_level: activityLevel
+        activity_level: activityLevel,
+        fullPlan: true  // Request complete multi-phase plan
       });
       if (res.data?.success && res.data?.plan) {
-        // Store in sessionStorage for post-login persistence
+        // Store complete plan in sessionStorage for post-login persistence & payment
         sessionStorage.setItem('axon_pending_rehab_plan', JSON.stringify(res.data.plan));
         setPlan(res.data.plan);
         setStep('preview');
