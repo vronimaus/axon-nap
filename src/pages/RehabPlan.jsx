@@ -9,10 +9,12 @@ import { toast } from 'sonner';
 import DailyReadinessCheck from '../components/dashboard/DailyReadinessCheck';
 import { Helmet } from 'react-helmet-async';
 import RehabPhaseCard from '../components/rehab/RehabPhaseCard';
+import { useTrialStatus } from '../components/useTrialStatus';
 
 const WeaknessGenerator = React.lazy(() => import('../components/rehab/WeaknessGenerator'));
 
 export default function RehabPlan() {
+  const { hasAccess } = useTrialStatus();
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [showReadinessCheck, setShowReadinessCheck] = useState(false);
@@ -334,11 +336,13 @@ export default function RehabPlan() {
         {rehabPlan.phases && rehabPlan.phases[activePhaseIdx] && (
           <RehabPhaseCard
             phase={rehabPlan.phases[activePhaseIdx]}
+            phases={rehabPlan.phases}
             index={activePhaseIdx}
             totalPhases={rehabPlan.phases.length}
             isCompleted={completedPhases[activePhaseIdx] || (activePhaseIdx + 1) < (rehabPlan.current_phase || 1)}
             rehabPlanId={rehabPlan.id}
             queryClient={queryClient}
+            hasAccess={hasAccess}
             onFeedbackSubmit={({ exerciseId, metricValue, notes }) =>
               submitFeedbackMutation.mutate({ exerciseId, metricValue, notes })
             }
