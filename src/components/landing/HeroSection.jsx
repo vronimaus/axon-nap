@@ -2,6 +2,8 @@ import React from 'react';
 import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
 
+import { createPageUrl } from '@/utils';
+
 export default function HeroSection({ onCtaClick }) {
   return (
     <header className="pt-32 pb-20 px-6 overflow-hidden relative" id="vision">

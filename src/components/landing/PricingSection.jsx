@@ -1,70 +1,70 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { Check } from 'lucide-react';
+import { Check, ShieldCheck } from 'lucide-react';
 import { motion } from 'framer-motion';
+
+const FEATURES = [
+  "Lebenslanger Zugriff — einmal zahlen, nie wieder",
+  "Personalisierter Rehab-Plan per KI in 60 Sekunden",
+  "226 AXON Exercise-Codes mit Neuro-Protokoll",
+  "Alle zukünftigen Updates inklusive",
+];
 
 export default function PricingSection({ onCtaClick }) {
   return (
     <section id="pricing" className="py-24 px-6 relative overflow-hidden">
-      {/* Background accents */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-cyan-900/10 rounded-full blur-[100px] pointer-events-none"></div>
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-cyan-900/10 rounded-full blur-[100px] pointer-events-none" />
 
-      <div className="container mx-auto max-w-4xl relative z-10">
-        <motion.div 
-            initial={{ opacity: 0, scale: 0.95 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            className="bg-gradient-to-br from-cyan-600 to-blue-700 rounded-[3rem] p-8 md:p-12 lg:p-16 text-center shadow-2xl shadow-cyan-500/20 border border-white/10"
+      <div className="container mx-auto max-w-3xl relative z-10">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={{ once: true }}
+          className="bg-gradient-to-br from-cyan-600 to-blue-700 rounded-[3rem] p-8 md:p-12 text-center shadow-2xl shadow-cyan-500/20 border border-white/10"
         >
-            <h2 className="text-4xl md:text-6xl font-black text-white mb-6">Besitze deine Gesundheit.</h2>
-            <p className="text-cyan-100 text-lg md:text-xl mb-12 max-w-xl mx-auto font-medium leading-relaxed">
-                Nur für kurze Zeit bieten wir AXON als Lifetime-Deal an. Unterstütze die Entwicklung als Early Adopter und zahle nie wieder monatliche Gebühren.
-            </p>
-            
-            {/* Price Box */}
-            <div className="bg-slate-950/30 backdrop-blur-md inline-flex flex-col p-8 md:p-10 rounded-3xl border border-white/20 mb-12 relative overflow-hidden group hover:border-white/40 transition-colors">
-                <div className="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                <span className="text-xs font-bold uppercase tracking-widest text-cyan-200 mb-2">Early Bird Preis</span>
-                <span className="text-6xl md:text-7xl font-black text-white tracking-tight">59,90 €</span>
-                <span className="text-sm text-cyan-200/60 line-through mt-2 font-medium">Später 179,00 €</span>
-            </div>
+          {/* Headline */}
+          <p className="text-xs font-black uppercase tracking-[0.3em] text-cyan-200/70 mb-3">Besitze deine Gesundheit</p>
+          <h2 className="text-3xl md:text-5xl font-black text-white mb-4 leading-tight">
+            In 15 Minuten spürst du den Unterschied —<br />
+            <span className="text-cyan-200">oder du bekommst dein Geld zurück.</span>
+          </h2>
+          <p className="text-cyan-100/80 text-base mb-10 max-w-lg mx-auto leading-relaxed">
+            Nur für kurze Zeit als Lifetime-Deal. Unterstütze die Entwicklung als Early Adopter und zahle nie wieder monatliche Gebühren.
+          </p>
 
-            <div className="flex justify-center mb-12">
-                <ul className="text-left space-y-4 text-white font-semibold text-sm md:text-base">
-                    {[
-                        "Lebenslanger Zugriff auf die Plattform",
-                        "Alle 226 AXON Exercise-Codes",
-                        "KI-basierte Trainingsanpassung",
-                        "Alle zukünftigen Updates inklusive"
-                    ].map((item, i) => (
-                        <li key={i} className="flex items-center space-x-3">
-                            <div className="w-6 h-6 rounded-full bg-white text-cyan-600 flex items-center justify-center shadow-sm">
-                                <Check className="w-3.5 h-3.5" strokeWidth={4} />
-                            </div>
-                            <span>{item}</span>
-                        </li>
-                    ))}
-                </ul>
-            </div>
+          {/* Price Box */}
+          <div className="bg-slate-950/30 backdrop-blur-md inline-flex flex-col p-8 rounded-3xl border border-white/20 mb-10">
+            <span className="text-xs font-bold uppercase tracking-widest text-cyan-200 mb-2">Early Bird Preis</span>
+            <span className="text-6xl md:text-7xl font-black text-white tracking-tight">59,90 €</span>
+            <span className="text-sm text-cyan-200/60 line-through mt-2 font-medium">Später 179,00 €</span>
+            <span className="text-xs text-cyan-200/60 mt-1">Einmalzahlung. Kein Abo.</span>
+          </div>
 
-            <div className="flex flex-col sm:flex-row justify-center gap-4 max-w-2xl mx-auto">
-                <Button 
-                    onClick={() => onCtaClick('trial')}
-                    className="w-full bg-white hover:bg-cyan-50 text-black py-8 rounded-2xl font-black text-lg hover:scale-105 transition-all shadow-xl shadow-cyan-900/20 uppercase tracking-wide"
-                >
-                    7 TAGE KOSTENLOS TESTEN
-                </Button>
-                <Button 
-                    onClick={() => onCtaClick('direct')}
-                    variant="outline"
-                    className="w-full border-2 border-white/20 bg-transparent hover:bg-white/10 text-white py-8 rounded-2xl font-bold text-lg transition-all uppercase tracking-wide"
-                >
-                    DIREKT KAUFEN
-                </Button>
-            </div>
-            <p className="text-cyan-200/60 text-xs mt-6 font-medium">
-                Kostenlose Testphase: Nach 7 Tagen 59,90 € (Einmalzahlung via Stripe). Vorher jederzeit kündbar.
-            </p>
+          {/* Features */}
+          <ul className="text-left space-y-3 text-white font-semibold text-sm md:text-base mb-10 max-w-md mx-auto">
+            {FEATURES.map((item, i) => (
+              <li key={i} className="flex items-center space-x-3">
+                <div className="w-6 h-6 rounded-full bg-white text-cyan-600 flex items-center justify-center shrink-0">
+                  <Check className="w-3.5 h-3.5" strokeWidth={4} />
+                </div>
+                <span>{item}</span>
+              </li>
+            ))}
+          </ul>
+
+          {/* CTA */}
+          <Button
+            onClick={() => onCtaClick('direct')}
+            className="w-full max-w-sm bg-white hover:bg-cyan-50 text-black py-8 rounded-2xl font-black text-lg hover:scale-105 transition-all shadow-xl shadow-cyan-900/20 uppercase tracking-wide"
+          >
+            Jetzt kaufen
+          </Button>
+
+          {/* Trust Line */}
+          <div className="flex items-center justify-center gap-2 mt-6 text-cyan-200/70 text-xs font-medium">
+            <ShieldCheck className="w-4 h-4 shrink-0" />
+            <span>30-Tage Geld-zurück-Garantie. Keine Fragen gestellt. Sicherer Checkout via Stripe.</span>
+          </div>
         </motion.div>
       </div>
     </section>
