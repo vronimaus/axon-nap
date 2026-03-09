@@ -104,7 +104,8 @@ export default function Layout({ children, currentPageName }) {
 
   const publicNavItems = [
     { name: 'Wissen', page: 'Wissen' },
-    { name: 'FAQ', page: 'Faq' }
+    { name: 'FAQ', page: 'Faq' },
+    { name: 'Literatur', page: 'Literatur' }
   ];
 
   useEffect(() => {
