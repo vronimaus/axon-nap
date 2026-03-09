@@ -55,7 +55,7 @@ Deno.serve(async (req) => {
           Authorization: `Bearer ${Deno.env.get('STRIPE_SECRET_KEY')}`,
           'Content-Type': 'application/x-www-form-urlencoded'
         },
-        body: `amount=5900&currency=eur&customer=${customerId}&confirm=true&payment_method=pm_card_chargeDeclined&metadata[base44_app_id]=${Deno.env.get('BASE44_APP_ID')}&off_session=true`
+        body: `amount=5900&currency=eur&customer=${customerId}&confirm=true&metadata[base44_app_id]=${Deno.env.get('BASE44_APP_ID')}&off_session=true`
       });
 
       const piData = await piResponse.json();
