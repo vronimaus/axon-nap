@@ -180,6 +180,8 @@ export default function RehabPhaseCard({ phase, index, totalPhases, isCompleted,
                       onToggle={() => setOpenCardKey(null)}
                       rehabPlanId={rehabPlanId}
                       queryClient={queryClient}
+                      phases={phases}
+                      hasAccess={hasAccess}
                       onComplete={(data) => {
                          // Mark locally as completed
                          setCompletedExercises(prev => ({ ...prev, [uniqueKey]: true }));
@@ -200,8 +202,8 @@ export default function RehabPhaseCard({ phase, index, totalPhases, isCompleted,
                          } else {
                             setTimeout(() => setOpenCardKey(null), 800);
                          }
-                      }}
-                    />
+                       }}
+                     />
                   </motion.div>
                 );
               })}
