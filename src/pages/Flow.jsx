@@ -632,7 +632,7 @@ export default function Flow() {
                         className="w-full flex items-center justify-between p-4 hover:bg-slate-800/50 transition-colors"
                       >
                         <span className="text-xs uppercase tracking-widest font-bold text-cyan-400">
-                          📈 Advanced: {currentExercise.progression_advanced.label}
+                          📈 Advanced: {(currentSequence.progression_advanced || currentExercise?.progression_advanced).label}
                         </span>
                         <ChevronDown
                           className={`w-4 h-4 text-cyan-500 transition-transform ${
@@ -649,9 +649,9 @@ export default function Flow() {
                             transition={{ duration: 0.2 }}
                             className="px-4 pb-4 border-t border-slate-800/50 pt-3 mt-1"
                           >
-                            <p className="text-sm text-slate-300 leading-relaxed mb-2">{currentExercise.progression_advanced.description}</p>
+                            <p className="text-sm text-slate-300 leading-relaxed mb-2">{(currentSequence.progression_advanced || currentExercise?.progression_advanced).description}</p>
                             <p className="text-xs text-cyan-500/80">
-                              <span className="font-bold uppercase tracking-wider text-cyan-500">Fokus:</span> {currentExercise.progression_advanced.focus}
+                              <span className="font-bold uppercase tracking-wider text-cyan-500">Fokus:</span> {(currentSequence.progression_advanced || currentExercise?.progression_advanced).focus}
                             </p>
                           </motion.div>
                         )}
