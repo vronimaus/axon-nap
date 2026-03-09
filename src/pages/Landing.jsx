@@ -7,6 +7,8 @@ import { motion } from 'framer-motion';
 import { base44 } from '@/api/base44Client';
 import { Helmet } from 'react-helmet-async';
 import HeroSection from '@/components/landing/HeroSection';
+import PainAgitationSection from '@/components/landing/PainAgitationSection';
+import ThreeSystemSection from '@/components/landing/ThreeSystemSection';
 import { Suspense, lazy } from 'react';
 
 
