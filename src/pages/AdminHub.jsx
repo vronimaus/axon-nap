@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { AlertCircle, Zap, BookOpen, Palette, ArrowLeft, Image, Trash2, Filter, ChevronUp, ChevronDown, GitMerge, Edit } from 'lucide-react';
 import ExerciseMappingTab from '../components/admin/ExerciseMappingTab';
+import ExerciseAuditTab from '../components/admin/ExerciseAuditTab';
 import ExerciseEditorTab from '../components/admin/ExerciseEditorTab';
 import EnrichmentLogTab from '../components/admin/EnrichmentLogTab';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
