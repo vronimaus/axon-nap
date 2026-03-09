@@ -290,7 +290,7 @@ export default function Layout({ children, currentPageName }) {
               {/* Nav Links - Desktop only */}
                       <div className="hidden md:flex items-center gap-1">
                         {navItems.map((item) => {
-                          const colorMap = { cyan: 'text-cyan-400', purple: 'text-purple-400', emerald: 'text-emerald-400', amber: 'text-amber-400' };
+                          const colorMap = { cyan: 'text-cyan-400', blue: 'text-blue-400', emerald: 'text-emerald-400', purple: 'text-purple-400' };
                           return (
                             <Link
                               key={item.page}
