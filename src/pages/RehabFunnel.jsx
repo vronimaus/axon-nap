@@ -330,11 +330,70 @@ export default function RehabFunnel() {
                 <p className="text-sm font-semibold text-white">30-Tage Geld-zurück-Garantie</p>
                 <p className="text-xs text-slate-400">Wenn du innerhalb von 14 Tagen nicht zufrieden bist, erstatten wir dir den Betrag zurück.</p>
               </div>
-            </motion.div>
-          )}
 
-        </AnimatePresence>
-      </div>
-    </div>
-  );
-}
+              {/* Exercise detail modal when user clicks on first exercise */}
+              {selectedExercise && (
+                <AnimatePresence>
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    className="fixed inset-0 bg-black/60 flex items-end z-50"
+                    onClick={() => setSelectedExercise(null)}
+                  >
+                    <motion.div
+                      initial={{ y: 300 }}
+                      animate={{ y: 0 }}
+                      exit={{ y: 300 }}
+                      onClick={(e) => e.stopPropagation()}
+                      className="w-full bg-slate-900 border-t border-slate-700 rounded-t-3xl p-6 max-h-[80vh] overflow-y-auto space-y-4"
+                    >
+                      <button
+                        onClick={() => setSelectedExercise(null)}
+                        className="absolute top-4 right-4 text-slate-400 hover:text-white text-2xl"
+                      >
+                        ×
+                      </button>
+
+                      <h2 className="text-2xl font-bold text-white pr-8">{selectedExercise.name}</h2>
+                      <p className="text-sm text-slate-400">{selectedExercise.sets_reps_tempo}</p>
+
+                      {selectedExercise.instruction && (
+                        <div className="space-y-2">
+                          <h3 className="text-sm font-semibold text-cyan-400">Anleitung</h3>
+                          <p className="text-xs text-slate-300 leading-relaxed">{selectedExercise.instruction}</p>
+                        </div>
+                      )}
+
+                      {selectedExercise.notes && (
+                        <div className="space-y-2">
+                          <h3 className="text-sm font-semibold text-cyan-400">Hinweise</h3>
+                          <p className="text-xs text-slate-300 leading-relaxed">{selectedExercise.notes}</p>
+                        </div>
+                      )}
+
+                      <div className="bg-slate-800/50 border border-slate-700/50 rounded-2xl p-4 mt-4">
+                        <p className="text-xs text-slate-300 text-center">
+                          Um alle Übungen freizuschalten und Videos anzuschauen,<br />
+                          <strong>bezahle einmalig 59€</strong>
+                        </p>
+                      </div>
+
+                      <Button
+                        onClick={handleUnlock}
+                        className="w-full bg-white hover:bg-cyan-50 text-black font-black py-4 rounded-lg"
+                      >
+                        Plan freischalten — 59 € einmalig
+                      </Button>
+                    </motion.div>
+                  </motion.div>
+                </AnimatePresence>
+              )}
+              </motion.div>
+              )}
+
+              </AnimatePresence>
+              </div>
+              </div>
+              );
+              }
