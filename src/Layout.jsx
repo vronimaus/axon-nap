@@ -77,9 +77,9 @@ export default function Layout({ children, currentPageName }) {
   const getColorClasses = (color) => {
     const colors = {
       cyan: 'text-cyan-400 bg-cyan-500/10 hover:bg-cyan-500/20',
-      purple: 'text-purple-400 bg-purple-500/10 hover:bg-purple-500/20',
+      blue: 'text-blue-400 bg-blue-500/10 hover:bg-blue-500/20',
       emerald: 'text-emerald-400 bg-emerald-500/10 hover:bg-emerald-500/20',
-      amber: 'text-amber-400 bg-amber-500/10 hover:bg-amber-500/20'
+      purple: 'text-purple-400 bg-purple-500/10 hover:bg-purple-500/20'
     };
     return colors[color] || colors.cyan;
   };
