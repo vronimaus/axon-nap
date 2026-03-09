@@ -125,7 +125,7 @@ export default function Landing() {
       )}
 
       {/* 1. Hero */}
-      <HeroSection onCtaClick={() => handleSelectOption('trial')} />
+      <HeroSection onCtaClick={() => window.location.href = createPageUrl('RehabFunnel')} />
 
       {/* 2. Pain Agitation – "Ich will mir selbst helfen" */}
       <PainAgitationSection onFunnelClick={() => window.location.href = createPageUrl('RehabFunnel')} />
