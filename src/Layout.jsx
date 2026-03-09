@@ -13,7 +13,7 @@ import { HelmetProvider } from 'react-helmet-async';
 import { useQueryClient } from '@tanstack/react-query';
 
 const ROOT_TABS = ['Dashboard', 'TrainingPlan', 'RehabPlan', 'Flow'];
-const PAGES_WITHOUT_NAV = ['Landing', 'Success', 'Checkout', 'Login'];
+const PAGES_WITHOUT_NAV = ['Landing', 'Success', 'Checkout', 'Login', 'RehabFunnel'];
 
 // Map each tab to its "owned" pages so the tab stays highlighted
 const TAB_OWNERSHIP = {
