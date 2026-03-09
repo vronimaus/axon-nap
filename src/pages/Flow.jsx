@@ -578,11 +578,11 @@ export default function Flow() {
                 </div>
               )}
 
-              {/* Progression Variants */}
-              {currentExercise && (
+              {/* Progression Variants - use sequence data first, fall back to exercise entity */}
+              {(currentSequence.progression_basic || currentSequence.progression_advanced || currentExercise) && (
                 <div className="space-y-3">
                   {/* Basic Progression */}
-                  {currentExercise.progression_basic && (
+                  {(currentSequence.progression_basic || currentExercise?.progression_basic) && (
                     <motion.div
                       className="bg-slate-900/40 rounded-xl border border-slate-800 overflow-hidden"
                       initial={{ opacity: 0 }}
