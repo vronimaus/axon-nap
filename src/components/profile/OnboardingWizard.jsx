@@ -396,6 +396,48 @@ export default function OnboardingWizard({ user, onComplete }) {
               </div>
             </motion.div>
           )}
+          {step === 6 && (
+            <motion.div
+              key="step6"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+            >
+              <h2 className="text-xl font-semibold text-white mb-2">
+                Wähle deinen Coach 🎯
+              </h2>
+              <p className="text-slate-400 text-sm mb-6">Mit wem fühlst du dich am wohlsten beim Training?</p>
+              <div className="grid grid-cols-3 gap-4">
+                {COACHES.map(coach => (
+                  <button
+                    key={coach.id}
+                    onClick={() => handleChange('preferred_coach', coach.id)}
+                    className={`relative rounded-xl overflow-hidden border-2 transition-all ${
+                      formData.preferred_coach === coach.id
+                        ? 'border-cyan-400 shadow-[0_0_20px_rgba(6,182,212,0.4)]'
+                        : 'border-slate-700 hover:border-slate-500'
+                    }`}
+                  >
+                    <img
+                      src={coach.url}
+                      alt={coach.name}
+                      className="w-full aspect-square object-cover object-top"
+                    />
+                    <div className={`absolute inset-0 bg-gradient-to-t from-slate-950/90 via-transparent to-transparent`} />
+                    <div className="absolute bottom-0 left-0 right-0 p-2 text-center">
+                      <p className="text-white text-xs font-bold">{coach.name}</p>
+                      <p className="text-slate-400 text-[10px]">{coach.label}</p>
+                    </div>
+                    {formData.preferred_coach === coach.id && (
+                      <div className="absolute top-2 right-2 w-5 h-5 bg-cyan-400 rounded-full flex items-center justify-center">
+                        <span className="text-slate-900 text-xs font-bold">✓</span>
+                      </div>
+                    )}
+                  </button>
+                ))}
+              </div>
+            </motion.div>
+          )}
         </AnimatePresence>
 
         {/* Footer Buttons */}
