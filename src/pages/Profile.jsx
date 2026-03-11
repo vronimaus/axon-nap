@@ -186,6 +186,20 @@ export default function Profile() {
             </div>
           </div>
           <div className="mt-4 space-y-3">
+            <Button
+              onClick={async () => {
+                localStorage.removeItem('axon_howto_seen');
+                if (profile) {
+                  await base44.entities.UserNeuroProfile.delete(profile.id);
+                }
+                window.location.href = createPageUrl('HowToUse');
+              }}
+              variant="outline"
+              className="w-full border-cyan-500/50 text-cyan-400 hover:bg-cyan-500/10"
+            >
+              <RefreshCw className="w-4 h-4 mr-2" />
+              Onboarding wiederholen
+            </Button>
             {!user?.has_paid && user?.role !== 'admin' && (
               <Button
                 onClick={async () => {
