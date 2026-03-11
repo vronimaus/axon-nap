@@ -163,23 +163,26 @@ ${targetSlings.length > 0 ? targetSlings.join(', ') : 'alle Ketten berücksichti
 
 ===== PHASEN-PHILOSOPHIE (CRITICAL – unterschiedliche Übungen pro Phase!) =====
 
-PHASE 1 – "RELEASE & CALM" (7 Tage, Akut-Phase):
+PHASE 1 – "RELEASE & CALM" (Akut-Phase):
 → Ziel: Schmerzlinderung, parasympathische Aktivierung, MFR, Atemarbeit
 → Nur beginner-Übungen: Kategorie neuro, breath, mfr, mobility
 → Sanft: Kein Kraft, kein Impuls
-→ Beispiel-Fokus: Nervenberuhigung, Faszienentspannung, Körperwahrnehmung
+→ duration_days: Bestimme EHRLICH basierend auf Schmerzintensität. Bei leicht (1-3): 3 Tage. Bei mittel (4-6): 5 Tage. Bei stark (7-10): 7 Tage.
+→ phase_rationale: Erkläre KURZ warum du genau diese Dauer gewählt hast (1 Satz).
 
-PHASE 2 – "BUILD & STABILIZE" (14 Tage, Aufbau-Phase):
+PHASE 2 – "BUILD & STABILIZE" (Aufbau-Phase):
 → Ziel: Kräftigung, Stabilität, Bewegungsmuster neu lernen
 → intermediate-Übungen: Kategorie core, mobility, plank, row, pull, push
-→ Aufbau der neuronalen Ansteuerung, tiefe Stabilisatoren aktivieren
 → ANDERE Übungen als Phase 1 – Progression!
+→ duration_days: Typisch 7-10 Tage. Abhängig von Komplexität der Region und Phase 1 Dauer.
+→ phase_rationale: Erkläre KURZ warum du genau diese Dauer gewählt hast.
 
-PHASE 3 – "INTEGRATE & PERFORM" (14 Tage, Performance-Phase):
+PHASE 3 – "INTEGRATE & PERFORM" (Performance-Phase):
 → Ziel: Funktionelle Bewegung, Alltagsintegration, Prävention, Performance
 → intermediate/advanced: Komplexe Bewegungen, Kraft + Neuro kombiniert
-→ Kategorie: squat, hinge, carry, functional, strength
 → ANDERE Übungen als Phase 1 & 2 – deutlicher Schwierigkeitssprung
+→ duration_days: Typisch 7-14 Tage. Wähle konservativ wenn Phase 1/2 kurz waren.
+→ phase_rationale: Erkläre KURZ warum du genau diese Dauer gewählt hast.
 
 ===== ÜBUNGSKATALOG (ALLE IDs sind real – EXAKT so übernehmen) =====
 ${exerciseCatalog}
