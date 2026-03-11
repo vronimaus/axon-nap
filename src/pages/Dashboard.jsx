@@ -208,7 +208,12 @@ export default function Dashboard() {
         >
           <div className="text-center mb-8 sm:mb-12">
             <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-3 sm:mb-4">
-              Willkommen zu AXON
+              {(() => {
+                const h = new Date().getHours();
+                const greeting = h < 12 ? 'Guten Morgen' : h < 18 ? 'Hallo' : 'Guten Abend';
+                const firstName = user?.full_name?.split(' ')[0];
+                return firstName ? `${greeting}, ${firstName}` : `${greeting}`;
+              })()}
             </h1>
             <p className="text-base sm:text-lg text-slate-400">
               Drei Wege zu deinem optimalen Körper
