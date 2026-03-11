@@ -165,8 +165,8 @@ ${exerciseCatalog}`,
       return Response.json({ error: 'No valid exercises generated' }, { status: 502 });
     }
 
-    // Save plan using service role to bypass RLS
-    const plan = await base44.asServiceRole.entities.RehabPlan.create({
+    // Save plan using user-scoped client (RLS requires data.user_email == user.email)
+    const plan = await base44.entities.RehabPlan.create({
       user_email: user.email,
       diagnosis_session_id: diagnosis_session_id || null,
       problem_summary: problemDescription,
