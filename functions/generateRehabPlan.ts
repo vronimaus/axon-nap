@@ -103,13 +103,30 @@ Deno.serve(async (req) => {
     console.log(`[generateRehabPlan] Region "${region}" → MFR Nodes: ${relevantMFRNodes.length}, Target Slings: [${targetSlings.join(', ')}]`);
 
     // Smart filtering: exercises matching target slings via smart_tags.kinetic_chain_slings.primary_sling
+    // Smart filtering: exercises matching target slings OR region keywords in category/description
+    const regionKeywords = regionLower.split(/\s+/).filter(k => k.length > 3);
     const smartFilteredExercises = validExercises.filter(e => {
       if (!targetSlings.length) return true;
       const primarySling = (e.smart_tags?.kinetic_chain_slings?.primary_sling || '').toLowerCase();
-      return targetSlings.some(sling => primarySling.includes(sling));
+      const category = (e.category || '').toLowerCase();
+      const purpose = (e.purpose_explanation || '').toLowerCase();
+      const slingsMatch = targetSlings.some(sling => primarySling.includes(sling));
+      const regionMatch = regionKeywords.some(k => category.includes(k) || purpose.includes(k));
+      return slingsMatch || regionMatch;
     });
 
-    const bestExercises = smartFilteredExercises.length >= 15 ? smartFilteredExercises : validExercises;
+    // Phase-buckets: always include beginner/intermediate/advanced to cover all 3 phases
+    const beginnerEx = validExercises.filter(e => e.difficulty === 'beginner').slice(0, 20);
+    const intermediateEx = validExercises.filter(e => e.difficulty === 'intermediate').slice(0, 20);
+    const advancedEx = validExercises.filter(e => e.difficulty === 'advanced').slice(0, 15);
+
+    // Build best set: smart-filtered + phase-buckets, capped at 80
+    const smartSet = smartFilteredExercises.slice(0, 45);
+    const allIds = new Set(smartSet.map(e => e.exercise_id));
+    const phasePool = [...beginnerEx, ...intermediateEx, ...advancedEx].filter(e => !allIds.has(e.exercise_id));
+    const bestExercises = [...smartSet, ...phasePool].slice(0, 80);
+
+    console.log(`[generateRehabPlan] Exercise pool: ${bestExercises.length} (smart:${smartSet.length} + phase-pool:${phasePool.length})`);
 
     // Build a rich catalog: each exercise on its own line with all relevant fields
     const exerciseCatalog = bestExercises
