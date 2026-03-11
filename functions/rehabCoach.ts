@@ -9,21 +9,91 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const {
-      current_exercise_id,
-      nrs_score,
-      hardware_score,
-      software_score,
-      battery_score,
-      recent_sessions,
-      current_plan_id
-    } = await req.json();
+    const body = await req.json();
+    const { action } = body;
 
-    if (!current_exercise_id || nrs_score === undefined) {
-      return Response.json({ 
-        error: 'current_exercise_id and nrs_score required' 
-      }, { status: 400 });
+    // ============================================================
+    // ACTION: GENERATE EXERCISE (for WeaknessGenerator)
+    // ============================================================
+    if (action === 'generate_exercise') {
+      const { weakness, rehabPlan } = body;
+      
+      if (!weakness || !rehabPlan) {
+        return Response.json({ 
+          error: 'weakness and rehabPlan required for generate_exercise' 
+        }, { status: 400 });
+      }
+
+      try {
+        const prompt = `
+You are an expert rehabilitation coach. A user has described the following issue with their rehabilitation plan:
+
+Problem: ${weakness}
+
+Current Rehab Focus: ${rehabPlan.problem_summary || 'General rehabilitation'}
+
+Generate ONE custom exercise that directly addresses this weakness. The exercise should:
+1. Be safe and progressive
+2. Match the rehabilitation context
+3. Include clear instructions
+4. Have a specific benefit statement
+
+Respond with valid JSON (no markdown, no code blocks):
+{
+  "name": "Exercise Name",
+  "goal_explanation": "What this exercise targets",
+  "benefits": "How it helps",
+  "instruction": "Step-by-step instructions",
+  "sets_reps_tempo": "3x10 @ 2-1-2"
+}
+`;
+
+        const llmResponse = await base44.integrations.Core.InvokeLLM({
+          prompt,
+          response_json_schema: {
+            type: 'object',
+            properties: {
+              name: { type: 'string' },
+              goal_explanation: { type: 'string' },
+              benefits: { type: 'string' },
+              instruction: { type: 'string' },
+              sets_reps_tempo: { type: 'string' }
+            }
+          }
+        });
+
+        return Response.json({
+          success: true,
+          exercise: llmResponse
+        });
+      } catch (llmError) {
+        console.error('LLM Error in generate_exercise:', llmError);
+        return Response.json({ 
+          error: 'Failed to generate exercise with LLM',
+          details: llmError.message 
+        }, { status: 500 });
+      }
     }
+
+    // ============================================================
+    // ACTION: SESSION COACHING (original logic)
+    // ============================================================
+    if (action === 'session_coaching') {
+      const {
+        current_exercise_id,
+        nrs_score,
+        hardware_score,
+        software_score,
+        battery_score,
+        recent_sessions,
+        current_plan_id
+      } = body;
+
+      if (!current_exercise_id || nrs_score === undefined) {
+        return Response.json({ 
+          error: 'current_exercise_id and nrs_score required for session_coaching' 
+        }, { status: 400 });
+      }
 
     // ============================================================
     // 1. CALCULATE READINESS STATUS
