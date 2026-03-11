@@ -192,16 +192,13 @@ export default function DiagnosisChat() {
               </p>
               <div className="space-y-2">
                 {[
-                  { phase: 'Phase 1', label: 'Akut-Linderung', duration: '7 Tage' },
-                  { phase: 'Phase 2', label: 'Aufbau & Stabilität', duration: '14 Tage' },
-                  { phase: 'Phase 3', label: 'Integration & Prävention', duration: '14 Tage' },
-                ].map(({ phase, label, duration }) => (
-                  <div key={phase} className="flex items-center justify-between bg-slate-950/60 border border-slate-800 rounded-xl px-4 py-3">
-                    <div className="flex items-center gap-3">
-                      <span className="text-[10px] font-bold tracking-widest text-cyan-400 font-mono uppercase">{phase}</span>
-                      <span className="text-sm text-slate-300">{label}</span>
-                    </div>
-                    <span className="text-[10px] font-mono text-slate-500">{duration}</span>
+                  { phase: 'Phase 1', label: 'Akut-Linderung' },
+                  { phase: 'Phase 2', label: 'Aufbau & Stabilität' },
+                  { phase: 'Phase 3', label: 'Integration & Prävention' },
+                ].map(({ phase, label }) => (
+                  <div key={phase} className="flex items-center gap-3 bg-slate-950/60 border border-slate-800 rounded-xl px-4 py-3">
+                    <span className="text-[10px] font-bold tracking-widest text-cyan-400 font-mono uppercase">{phase}</span>
+                    <span className="text-sm text-slate-300">{label}</span>
                   </div>
                 ))}
               </div>
