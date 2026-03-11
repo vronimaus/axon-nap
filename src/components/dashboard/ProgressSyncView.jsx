@@ -161,7 +161,11 @@ export default function ProgressSyncView({ dashboardData, sessionDecision, onClo
                 </LineChart>
               </ResponsiveContainer>
             ) : (
-              <div className="flex h-full items-center justify-center text-xs sm:text-sm text-slate-500">Nicht genügend Daten für den Verlauf.</div>
+              <div className="flex flex-col h-full items-center justify-center gap-2 text-center">
+                <span className="text-2xl">📊</span>
+                <p className="text-xs text-slate-500">Noch keine Verlaufsdaten vorhanden.</p>
+                <p className="text-[10px] text-slate-600">Starte deinen ersten Bio-Sync, um die Kurve zu aktivieren.</p>
+              </div>
             )}
           </div>
         </div>
