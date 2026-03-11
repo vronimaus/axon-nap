@@ -74,8 +74,10 @@ export default function OnboardingWizard({ user, onComplete }) {
     }));
   };
 
+  const TOTAL_STEPS = 6;
+
   const handleNext = () => {
-    if (step < 5) {
+    if (step < TOTAL_STEPS - 1) {
       setStep(step + 1);
     } else {
       createProfileMutation.mutate(formData);
