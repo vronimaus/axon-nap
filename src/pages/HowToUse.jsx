@@ -377,7 +377,29 @@ export default function HowToUse() {
               </div>
             </div>
 
-            {step.isCoachSelection ? (
+            {step.isNameInput ? (
+              <div className="py-4 space-y-4">
+                <div className="flex items-center gap-3 bg-slate-800/60 rounded-xl border border-slate-700 px-4 py-3">
+                  <span className="text-2xl">👋</span>
+                  <p className="text-sm text-slate-300">Hey! Wie heißt du?</p>
+                </div>
+                <input
+                  type="text"
+                  value={userName}
+                  onChange={(e) => setUserName(e.target.value)}
+                  onKeyDown={(e) => e.key === 'Enter' && setCurrentStep(s => s + 1)}
+                  placeholder="Dein Vorname..."
+                  autoFocus
+                  className="w-full px-4 py-3 rounded-xl bg-slate-800/50 border border-slate-600 text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400/30 text-base"
+                />
+                {userName.trim() && (
+                  <div className="flex items-center gap-3 bg-cyan-500/10 rounded-xl border border-cyan-500/30 px-4 py-3">
+                    <span className="text-2xl">🧠</span>
+                    <p className="text-sm text-cyan-300">Willkommen, <strong>{userName}</strong>! Bereit für dein neuro-athletisches System?</p>
+                  </div>
+                )}
+              </div>
+            ) : step.isCoachSelection ? (
               <div className="space-y-3 py-2">
                 {coaches.map((coach) => (
                   <button
