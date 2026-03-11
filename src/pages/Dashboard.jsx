@@ -227,7 +227,7 @@ export default function Dashboard() {
                 />
               ) : (
                 <motion.div key="decision" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} transition={{ duration: 0.2 }}>
-                  <SessionDecision user={user} data={sessionDecision} onClick={() => setShowProgress(true)} />
+                  <SessionDecision user={user} data={sessionDecision} isLoading={sessionLoading} isError={sessionError} onClick={() => setShowProgress(true)} />
                 </motion.div>
               )}
             </AnimatePresence>
