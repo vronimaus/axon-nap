@@ -299,9 +299,27 @@ const steps = [
 ];
 
 const coaches = [
-  { value: 'male', label: 'Max', subtitle: 'Direkt & fokussiert', emoji: '💪', color: 'border-blue-500/50 bg-blue-500/10 text-blue-400' },
-  { value: 'female', label: 'Lena', subtitle: 'Präzise & motivierend', emoji: '🎯', color: 'border-pink-500/50 bg-pink-500/10 text-pink-400' },
-  { value: 'neuro', label: 'AXON AI', subtitle: 'Analytisch & präzise', emoji: '🧠', color: 'border-cyan-500/50 bg-cyan-500/10 text-cyan-400' },
+  {
+    value: 'male',
+    label: 'Max',
+    subtitle: 'Direkt & fokussiert',
+    avatar: 'https://images.unsplash.com/photo-1567013127542-490d757e51fc?w=120&h=120&fit=crop&crop=face',
+    color: 'border-blue-500/50 bg-blue-500/10 text-blue-400'
+  },
+  {
+    value: 'female',
+    label: 'Lena',
+    subtitle: 'Präzise & motivierend',
+    avatar: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=120&h=120&fit=crop&crop=face',
+    color: 'border-pink-500/50 bg-pink-500/10 text-pink-400'
+  },
+  {
+    value: 'neuro',
+    label: 'AXON AI',
+    subtitle: 'Analytisch & präzise',
+    avatar: null,
+    color: 'border-cyan-500/50 bg-cyan-500/10 text-cyan-400'
+  },
 ];
 
 export default function HowToUse() {
