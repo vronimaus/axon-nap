@@ -11,25 +11,18 @@ Deno.serve(async (req) => {
 
     const today = new Date().toISOString().split('T')[0];
     
-    // Fetch data in parallel (Global Sync Engine)
-    let dashboardRes = null;
-    try {
-        dashboardRes = await base44.functions.invoke('dashboardDataAggregator', { daysBack: 7 });
-    } catch(e) {
-        console.error("Dashboard agg error: ", e);
-    }
+    // Fetch data in parallel — NO nested function calls to avoid CPU timeout
     const [readinessChecks, rehabPlans, trainingPlans] = await Promise.all([
-      base44.entities.ReadinessCheck.filter({ user_email: user.email }),
-      base44.entities.RehabPlan.filter({ user_email: user.email, status: 'active' }),
-      base44.entities.TrainingPlan.filter({ user_email: user.email, status: 'active' })
+      base44.entities.ReadinessCheck.filter({ user_email: user.email }, '-check_date', 10),
+      base44.entities.RehabPlan.filter({ user_email: user.email, status: 'active' }, '-updated_date', 3),
+      base44.entities.TrainingPlan.filter({ user_email: user.email, status: 'active' }, '-updated_date', 3),
     ]);
 
     const activeRehab = rehabPlans[0] || null;
     const activeTraining = trainingPlans[0] || null;
-    const dashboardData = dashboardRes?.data || {};
 
     // === 1. Calculate MCS (Master Consistency Score) Components ===
-    
+
     // A. Readiness Score (30%)
     const todayReadiness = readinessChecks
       .filter(r => r.check_date === today)
@@ -41,11 +34,11 @@ Deno.serve(async (req) => {
         else if (todayReadiness.readiness_status === 'red') readinessScore = 0.0;
     }
 
-    // B. Sling Integrity Score (40%)
+    // B. Sling Integrity Score (40%) — derived directly from active rehab plan
     let slingScore = 1.0;
-    const slingAlerts = dashboardData.sling_alerts || [];
-    if (slingAlerts.some(a => a.severity === 'critical')) slingScore = 0.0;
-    else if (slingAlerts.some(a => a.severity === 'moderate')) slingScore = 0.5;
+    if (activeRehab?.intervention_mode === 'red_stop') slingScore = 0.0;
+    else if (activeRehab?.intervention_mode === 'yellow_pivot') slingScore = 0.5;
+    else if (todayReadiness?.readiness_status === 'red') slingScore = 0.3;
 
     // C. History / Consistency (30%) - based on last 7 days of readiness checks
     const sevenDaysAgo = new Date();
