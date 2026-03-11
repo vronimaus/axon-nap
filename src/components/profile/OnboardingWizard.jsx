@@ -28,8 +28,30 @@ export default function OnboardingWizard({ user, onComplete }) {
     baseline_stress_level: 5,
     sleep_quality_avg: 'medium',
     previous_assessments: [],
-    training_preferences: []
+    training_preferences: [],
+    preferred_coach: 'male'
   });
+
+  const COACHES = [
+    {
+      id: 'female',
+      name: 'Dr. Sara',
+      label: 'Erfahrene Athletin',
+      url: 'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/8adc06114_GeneratedImageMarch112026-9_12PM.png'
+    },
+    {
+      id: 'male',
+      name: 'Coach Marcus',
+      label: 'Neuro-Athletic Coach',
+      url: 'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/8c2317a79_GeneratedImageMarch112026-9_18PM.png'
+    },
+    {
+      id: 'neuro',
+      name: 'AXON AI',
+      label: 'Neuro-System',
+      url: 'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/d5de071d5_GeneratedImageMarch112026-9_21PM.png'
+    }
+  ];
 
   const createProfileMutation = useMutation({
     mutationFn: async (data) => {
