@@ -108,6 +108,8 @@ export default function Layout({ children, currentPageName }) {
     { name: 'Literatur', page: 'Literatur' }
   ];
 
+  const PUBLIC_PAGES = ['Landing', 'Success', 'Checkout', 'Login', 'Imprint', 'Privacy', 'Terms', 'KnowledgeHub', 'KnowledgeHubArticle', 'FAQ', 'Glossary', 'Wissen', 'WissenArtikel', 'Faq', 'Glossar', 'RehabFunnel'];
+
   useEffect(() => {
     if (trialLoading) return;
 
@@ -116,8 +118,7 @@ export default function Layout({ children, currentPageName }) {
       try {
         if (!user) {
           // Nicht eingeloggt: nur auf Landing & Public Pages erlaubt
-          const publicPages = ['Landing', 'Success', 'Checkout', 'Login', 'Imprint', 'Privacy', 'Terms', 'KnowledgeHub', 'KnowledgeHubArticle', 'FAQ', 'Glossary', 'Wissen', 'WissenArtikel', 'Faq', 'Glossar', 'RehabFunnel'];
-          if (!publicPages.includes(currentPageName)) {
+          if (!PUBLIC_PAGES.includes(currentPageName)) {
             window.location.href = createPageUrl('Landing');
           }
           setIsChecking(false);
@@ -216,8 +217,7 @@ export default function Layout({ children, currentPageName }) {
         }
 
         // Ohne Zahlung und ohne aktive Trial -> zurück zum Landing
-        const publicPages = ['Landing', 'Success', 'Checkout', 'Login', 'Imprint', 'Privacy', 'Terms', 'KnowledgeHub', 'KnowledgeHubArticle', 'FAQ', 'Glossary', 'Wissen', 'WissenArtikel', 'Faq', 'Glossar', 'RehabFunnel'];
-        if (!hasAccess && !publicPages.includes(currentPageName) && currentPageName !== 'HowToUse') {
+        if (!hasAccess && !PUBLIC_PAGES.includes(currentPageName) && currentPageName !== 'HowToUse') {
           window.location.href = createPageUrl('Landing');
           return;
         }
@@ -281,6 +281,9 @@ export default function Layout({ children, currentPageName }) {
                       src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/f960cb731_AxonnapLogo500x180Neu.png"
                       alt="AXON"
                       className="h-8 sm:h-10 object-contain mt-1"
+                      loading="lazy"
+                      width="100"
+                      height="40"
                     />
                     <span className="text-[10px] text-white font-medium tracking-widest mt-1">Neuro-Athletic-Protocol</span>
                   </div>

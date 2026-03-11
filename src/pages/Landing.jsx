@@ -74,6 +74,9 @@ export default function Landing() {
               src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/f960cb731_AxonnapLogo500x180Neu.png"
               alt="AXON"
               className="h-8 sm:h-10 object-contain"
+              loading="lazy"
+              width="100"
+              height="40"
             />
             <span className="text-[10px] text-white font-medium tracking-widest mt-0.5">Neuro-Athletic-Protocol</span>
           </div>
