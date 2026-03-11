@@ -364,7 +364,30 @@ export default function HowToUse() {
               </div>
             </div>
 
-            {step.visual}
+            {step.isCoachSelection ? (
+              <div className="space-y-3 py-2">
+                {coaches.map((coach) => (
+                  <button
+                    key={coach.value}
+                    onClick={() => setSelectedCoach(coach.value)}
+                    className={`w-full flex items-center gap-4 rounded-xl border-2 px-4 py-3 transition-all ${
+                      selectedCoach === coach.value
+                        ? coach.color + ' shadow-lg scale-[1.02]'
+                        : 'border-slate-700 bg-slate-900/60 text-slate-400 hover:border-slate-600'
+                    }`}
+                  >
+                    <span className="text-2xl">{coach.emoji}</span>
+                    <div className="text-left">
+                      <p className="font-bold text-sm text-white">{coach.label}</p>
+                      <p className="text-[10px] text-slate-400">{coach.subtitle}</p>
+                    </div>
+                    {selectedCoach === coach.value && (
+                      <CheckCircle2 className="w-5 h-5 ml-auto text-current" />
+                    )}
+                  </button>
+                ))}
+              </div>
+            ) : step.visual}
 
             <p className="text-sm text-slate-300 leading-relaxed mt-3 border-t border-slate-800 pt-3">
               {step.description}
