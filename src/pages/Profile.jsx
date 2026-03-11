@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { motion } from 'framer-motion';
-import { Loader2, Save, LogOut, Trash2, Lock, Dumbbell, Target, Settings, Eye, Building2 } from 'lucide-react';
+import { Loader2, Save, LogOut, Trash2, Lock, Dumbbell, Target, Settings, Eye, Building2, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 import { createPageUrl } from '@/utils';
