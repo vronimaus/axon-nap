@@ -116,7 +116,11 @@ export default function ProgressSyncView({ dashboardData, sessionDecision, onClo
               )}
             </>
           ) : (
-             <div className="flex h-24 sm:h-32 items-center justify-center text-xs sm:text-sm text-slate-500">Keine Heatmap Daten.</div>
+             <div className="flex flex-col h-24 sm:h-32 items-center justify-center gap-2 text-center">
+               <span className="text-2xl">🧬</span>
+               <p className="text-xs text-slate-500">Noch keine Rehab-Daten vorhanden.</p>
+               <p className="text-[10px] text-slate-600">Starte eine Diagnose oder absolviere deinen ersten Rehab-Plan.</p>
+             </div>
           )}
         </div>
 
