@@ -303,21 +303,21 @@ const coaches = [
     value: 'male',
     label: 'Max',
     subtitle: 'Direkt & fokussiert',
-    avatar: 'https://images.unsplash.com/photo-1567013127542-490d757e51fc?w=120&h=120&fit=crop&crop=face',
+    avatar: 'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/3031e6f06_TechnicalSystemsArchitectAXON-nap.jpg',
     color: 'border-blue-500/50 bg-blue-500/10 text-blue-400'
   },
   {
     value: 'female',
     label: 'Lena',
     subtitle: 'Präzise & motivierend',
-    avatar: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=120&h=120&fit=crop&crop=face',
+    avatar: 'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/a7949b2c4_EmpatheticGuideAXON-nap.jpg',
     color: 'border-pink-500/50 bg-pink-500/10 text-pink-400'
   },
   {
     value: 'neuro',
     label: 'AXON AI',
     subtitle: 'Analytisch & präzise',
-    avatar: null,
+    avatar: 'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/2df3d8dc0_NeuralGuideAXON-nap.jpg',
     color: 'border-cyan-500/50 bg-cyan-500/10 text-cyan-400'
   },
 ];
