@@ -3,7 +3,7 @@ import { ArrowRight } from 'lucide-react';
 
 const PAINS = [
   { tag: 'HWS', text: 'Nacken-Mobilität ist dein Performance-Limit. Rotation eingeschränkt, Haltung kompensiert – und du kannst das mit Dehnen nicht lösen.' },
-  { tag: 'LWS', text: 'Nach dem Workout zieht's in der Lendengegend. Nicht akut, aber chronisch genug, dass es dich aus dem Flow bringt.' },
+  { tag: 'LWS', text: 'Nach dem Workout zieht\'s in der Lendengegend. Nicht akut, aber chronisch genug, dass es dich aus dem Flow bringt.' },
   { tag: 'SHD', text: 'Schulter-Overhead-Pattern ist eingeschränkt. Du weißt, die Koordination stimmt nicht – aber wo genau ist das Problem?' },
   { tag: 'SYS', text: 'Du brauchst kein "Trainiere trotzdem". Du brauchst Systeme, die Defizite findet und behebt – schnell und selbstbestimmt.' },
 ];
