@@ -429,7 +429,7 @@ export default function HowToUse() {
                         : 'border-slate-700 bg-slate-900/60 text-slate-400 hover:border-slate-600'
                     }`}
                   >
-                    <span className="text-2xl">{coach.emoji}</span>
+                    <img src={coach.avatar} alt={coach.label} className="w-12 h-12 rounded-full object-cover flex-shrink-0" />
                     <div className="text-left">
                       <p className="font-bold text-sm text-white">{coach.label}</p>
                       <p className="text-[10px] text-slate-400">{coach.subtitle}</p>
