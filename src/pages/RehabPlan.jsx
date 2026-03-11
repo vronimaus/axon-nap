@@ -13,12 +13,19 @@ import { useTrialStatus } from '../components/useTrialStatus';
 
 const WeaknessGenerator = React.lazy(() => import('../components/rehab/WeaknessGenerator'));
 
+const COACH_AVATARS = {
+  male: 'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/3031e6f06_TechnicalSystemsArchitectAXON-nap.jpg',
+  female: 'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/a7949b2c4_EmpatheticGuideAXON-nap.jpg',
+  neuro: 'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/2df3d8dc0_NeuralGuideAXON-nap.jpg'
+};
+
 export default function RehabPlan() {
   const { hasAccess } = useTrialStatus();
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [showReadinessCheck, setShowReadinessCheck] = useState(false);
   const [readinessStatus, setReadinessStatus] = useState(null);
+  const [preferredCoach, setPreferredCoach] = useState('male');
   const [activePhaseIdx, setActivePhaseIdx] = useState(0);
   const [completedPhases, setCompletedPhases] = useState({});
   const queryClient = useQueryClient();
@@ -32,6 +39,16 @@ export default function RehabPlan() {
           return;
         }
         setUser(currentUser);
+        
+        // Load preferred coach from UserNeuroProfile
+        try {
+          const profiles = await base44.entities.UserNeuroProfile.filter({ user_email: currentUser.email });
+          if (profiles.length > 0 && profiles[0].preferred_coach) {
+            setPreferredCoach(profiles[0].preferred_coach);
+          }
+        } catch (_e) {
+          // Use default if profile not found
+        }
         
         // Check if readiness check already done today (via sessionStorage)
         const today = new Date().toISOString().split('T')[0];
@@ -260,15 +277,16 @@ export default function RehabPlan() {
           >
             {/* Avatar */}
             <div className="relative flex-shrink-0">
-              <div className="w-14 h-14 rounded-full p-[2px] bg-gradient-to-b from-emerald-400 to-teal-500 shadow-[0_0_15px_rgba(16,185,129,0.4)]">
-                <div className="w-full h-full rounded-full overflow-hidden bg-slate-900">
-                  <img 
-                    src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/36d608561_Gemini_Generated_Image_y1tl62y1tl62y1tl.png" 
-                    alt="Coach" 
-                    className="w-full h-full object-cover" 
-                  />
-                </div>
-              </div>
+             <div className="w-14 h-14 rounded-full p-[2px] bg-gradient-to-b from-emerald-400 to-teal-500 shadow-[0_0_15px_rgba(16,185,129,0.4)]">
+               <div className="w-full h-full rounded-full overflow-hidden bg-slate-900">
+                 <img 
+                   src={COACH_AVATARS[preferredCoach] || COACH_AVATARS.male}
+                   alt="Coach" 
+                   className="w-full h-full object-cover"
+                   loading="lazy"
+                 />
+               </div>
+             </div>
               {/* Status Indicator Dot */}
               <div className={`absolute bottom-0 right-0 w-4 h-4 rounded-full border-2 border-slate-900 ${
                 readinessStatus === 'green' ? 'bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.6)]' : 
