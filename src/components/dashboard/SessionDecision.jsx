@@ -47,8 +47,17 @@ const CONFIG = {
   },
 };
 
-export default function SessionDecision({ user, data, onClick }) {
-  if (!data) {
+export default function SessionDecision({ user, data, isLoading, isError, onClick }) {
+  if (isError || (!isLoading && !data)) {
+    return (
+      <div className="glass rounded-xl border border-slate-700/50 p-3 flex items-center justify-center gap-3 relative z-10">
+        <Zap className="w-4 h-4 text-purple-400 flex-shrink-0" />
+        <span className="text-sm text-slate-400">Wähle deinen Bereich und starte durch.</span>
+      </div>
+    );
+  }
+
+  if (isLoading && !data) {
     return (
       <div className="glass rounded-xl border border-slate-700 p-3 flex items-center justify-center gap-3 relative z-10">
         <Loader2 className="w-4 h-4 text-cyan-400 animate-spin flex-shrink-0" />
