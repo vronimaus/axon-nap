@@ -307,6 +307,7 @@ const coaches = [
 export default function HowToUse() {
   const [currentStep, setCurrentStep] = useState(0);
   const [selectedCoach, setSelectedCoach] = useState('male');
+  const [userName, setUserName] = useState('');
   const step = steps[currentStep];
   const Icon = step.icon;
   const isLast = currentStep === steps.length - 1;
