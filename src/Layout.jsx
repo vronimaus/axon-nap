@@ -97,9 +97,9 @@ export default function Layout({ children, currentPageName }) {
       // Already at root: do nothing (no reload)
       return;
     }
-    // Different tab tapped → restore last state if available
-    const lastPage = sessionStorage.getItem(`axon_tab_stack_${page}`);
-    window.location.href = createPageUrl(lastPage || page);
+    // Different tab tapped → always go to root (no stack restore)
+    // Stack restore caused confusion (e.g. DiagnosisChat re-opening unexpectedly)
+    window.location.href = createPageUrl(page);
   };
 
   const publicNavItems = [
