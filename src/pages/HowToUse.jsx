@@ -473,7 +473,7 @@ export default function HowToUse() {
                 : 'bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-400 border border-cyan-500/40'
             }`}
           >
-            {isLast ? "▶  Los geht's" : <>Weiter <ChevronRight className="w-4 h-4 ml-1 inline" /></>}
+            {isLast ? <>System starten <ChevronRight className="w-4 h-4 ml-1 inline" /></> : <>Weiter <ChevronRight className="w-4 h-4 ml-1 inline" /></>}
           </Button>
         </div>
 
