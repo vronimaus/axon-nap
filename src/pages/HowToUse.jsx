@@ -253,6 +253,15 @@ const steps = [
   },
   {
     id: 8,
+    icon: UserCircle2,
+    title: 'Wähle deinen Coach',
+    subtitle: 'Dein persönlicher Trainingsbegleiter',
+    description: 'Wähle den Avatar, mit dem du am liebsten trainierst. Du kannst ihn jederzeit im Profil ändern.',
+    isCoachSelection: true,
+    visual: null
+  },
+  {
+    id: 9,
     icon: CheckCircle2,
     title: 'Du bist bereit.',
     subtitle: 'Starte deinen ersten Bio-Sync',
