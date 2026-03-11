@@ -282,13 +282,13 @@ const steps = [
         </div>
         <div className="w-full space-y-2">
           {[
-            { icon: '🎯', text: 'Täglicher Bio-Sync → passende Empfehlungen' },
-            { icon: '⚡', text: 'GOALS → dein Skill-Progressionsplan' },
-            { icon: '🔧', text: 'REHAB → bei Schmerz sofort starten' },
-            { icon: '🌊', text: 'FLOW → 5-30 Min täglich Pflege' },
-          ].map(({ icon, text }) => (
+            { icon: Wrench, text: 'Täglicher Bio-Sync → passende Empfehlungen', color: 'text-cyan-400' },
+            { icon: Zap, text: 'GOALS → dein Skill-Progressionsplan', color: 'text-blue-400' },
+            { icon: Target, text: 'REHAB → bei Schmerz sofort starten', color: 'text-emerald-400' },
+            { icon: Activity, text: 'FLOW → 5-30 Min täglich Pflege', color: 'text-purple-400' },
+          ].map(({ icon: Icon, text, color }) => (
             <div key={text} className="flex items-center gap-3 bg-slate-900/60 rounded-xl border border-slate-800 px-3 py-2">
-              <span className="text-base flex-shrink-0">{icon}</span>
+              <Icon className={`w-4 h-4 flex-shrink-0 ${color}`} />
               <p className="text-[10px] text-slate-300">{text}</p>
             </div>
           ))}
