@@ -44,6 +44,15 @@ const steps = [
   },
   {
     id: 2,
+    icon: UserCircle2,
+    title: 'Wie sollen wir dich nennen?',
+    subtitle: 'Personalisierung · 10 Sekunden',
+    description: 'Dein Name wird verwendet, um dich persönlich anzusprechen – in Empfehlungen, Coaching-Hinweisen und Fortschrittsmeldungen.',
+    isNameInput: true,
+    visual: null
+  },
+  {
+    id: 3,
     icon: Wrench,
     title: 'Bio-Sync: Tägliche Kalibrierung',
     subtitle: 'Schritt 1 · 30 Sekunden',
