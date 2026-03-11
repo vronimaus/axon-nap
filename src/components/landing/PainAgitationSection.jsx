@@ -2,10 +2,10 @@ import { motion } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
 
 const PAINS = [
-  { tag: 'HWS', text: 'Nacken ist schon wieder steif – und du weißt selbst, es liegt am Schreibtisch.' },
-  { tag: 'LWS', text: 'Rücken zieht nach dem Workout. Du streckst dich, hilft kurz, ist morgen wieder da.' },
-  { tag: 'SHD', text: 'Schulter macht komische Geräusche. Nicht schlimm genug für den Arzt – aber nervig genug.' },
-  { tag: 'SYS', text: 'Physio kostet 80 € die Stunde. Für "mach das 3x täglich" – kannst du auch selbst.' },
+  { tag: 'HWS', text: 'Nacken-Mobilität ist dein Performance-Limit. Rotation eingeschränkt, Haltung kompensiert – und du kannst das mit Dehnen nicht lösen.' },
+  { tag: 'LWS', text: 'Nach dem Workout zieht's in der Lendengegend. Nicht akut, aber chronisch genug, dass es dich aus dem Flow bringt.' },
+  { tag: 'SHD', text: 'Schulter-Overhead-Pattern ist eingeschränkt. Du weißt, die Koordination stimmt nicht – aber wo genau ist das Problem?' },
+  { tag: 'SYS', text: 'Du brauchst kein "Trainiere trotzdem". Du brauchst Systeme, die Defizite findet und behebt – schnell und selbstbestimmt.' },
 ];
 
 export default function PainAgitationSection({ onFunnelClick }) {
