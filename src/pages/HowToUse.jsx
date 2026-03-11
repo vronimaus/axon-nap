@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronRight, ChevronLeft, Zap, Activity, Target, Brain, Wrench, CheckCircle2, Search, Wind, Layers, ArrowRight } from 'lucide-react';
+import { ChevronRight, ChevronLeft, Zap, Activity, Target, Brain, Wrench, CheckCircle2, Search, Wind, Layers, ArrowRight, UserCircle2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { createPageUrl } from '@/utils';
+import { base44 } from '@/api/base44Client';
 
 const steps = [
   {
