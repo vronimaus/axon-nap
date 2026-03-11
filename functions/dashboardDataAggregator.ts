@@ -8,13 +8,13 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { daysBack = 30 } = await req.json().catch(() => ({}));
+    const { daysBack = 10 } = await req.json().catch(() => ({}));
 
-    // Fetch data from all relevant sources in parallel
+    // Fetch data from all relevant sources in parallel — small limits to avoid CPU timeout
     const [readinessChecks, rehabPlans, trainingPlans] = await Promise.all([
-      base44.entities.ReadinessCheck.filter({ user_email: user.email }, '-check_date', daysBack),
-      base44.entities.RehabPlan.filter({ user_email: user.email }, '-updated_date', 5),
-      base44.entities.TrainingPlan.filter({ user_email: user.email }, '-updated_date', 5),
+      base44.entities.ReadinessCheck.filter({ user_email: user.email }, '-check_date', 10),
+      base44.entities.RehabPlan.filter({ user_email: user.email }, '-updated_date', 3),
+      base44.entities.TrainingPlan.filter({ user_email: user.email }, '-updated_date', 3),
     ]);
 
     const hasNoData = readinessChecks.length === 0 && rehabPlans.length === 0 && trainingPlans.length === 0;
