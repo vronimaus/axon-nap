@@ -466,7 +466,7 @@ export default function OnboardingWizard({ user, onComplete }) {
               <Loader2 className="w-4 h-4 animate-spin" />
             ) : (
               <>
-                {step === 5 ? 'Fertig!' : 'Weiter'}
+                {step === 6 ? 'Fertig!' : 'Weiter'}
                 {step < 5 && <ChevronRight className="w-4 h-4" />}
               </>
             )}
