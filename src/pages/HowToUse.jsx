@@ -289,12 +289,38 @@ const steps = [
   }
 ];
 
+const coaches = [
+  { value: 'male', label: 'Max', subtitle: 'Direkt & fokussiert', emoji: '💪', color: 'border-blue-500/50 bg-blue-500/10 text-blue-400' },
+  { value: 'female', label: 'Lena', subtitle: 'Präzise & motivierend', emoji: '🎯', color: 'border-pink-500/50 bg-pink-500/10 text-pink-400' },
+  { value: 'neuro', label: 'AXON AI', subtitle: 'Analytisch & präzise', emoji: '🧠', color: 'border-cyan-500/50 bg-cyan-500/10 text-cyan-400' },
+];
+
 export default function HowToUse() {
   const [currentStep, setCurrentStep] = useState(0);
+  const [selectedCoach, setSelectedCoach] = useState('male');
   const step = steps[currentStep];
   const Icon = step.icon;
   const isLast = currentStep === steps.length - 1;
   const isFirst = currentStep === 0;
+
+  const saveAndFinish = async () => {
+    localStorage.setItem('axon_howto_seen', 'true');
+    try {
+      const user = await base44.auth.me();
+      if (user) {
+        const profiles = await base44.entities.UserNeuroProfile.filter({ user_email: user.email });
+        if (profiles.length > 0) {
+          await base44.entities.UserNeuroProfile.update(profiles[0].id, { preferred_coach: selectedCoach });
+        } else {
+          await base44.entities.UserNeuroProfile.create({ user_email: user.email, preferred_coach: selectedCoach });
+        }
+      }
+    } catch (e) {
+      // Speichern im localStorage als Fallback
+      localStorage.setItem('axon_preferred_coach', selectedCoach);
+    }
+    window.location.href = createPageUrl('Dashboard');
+  };
 
   return (
     <div className="min-h-screen bg-slate-950 flex items-center justify-center p-4">
