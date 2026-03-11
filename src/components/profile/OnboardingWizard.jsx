@@ -429,7 +429,8 @@ export default function OnboardingWizard({ user, onComplete }) {
                     <div className={`absolute inset-0 bg-gradient-to-t from-slate-950/90 via-transparent to-transparent`} />
                     <div className="absolute bottom-0 left-0 right-0 p-2 text-center">
                       <p className="text-white text-xs font-bold">{coach.name}</p>
-                      <p className="text-slate-400 text-[10px]">{coach.label}</p>
+                      <p className="text-cyan-300 text-[10px]">{coach.label}</p>
+                      <p className="text-slate-400 text-[9px] mt-0.5 leading-tight">{coach.vibe}</p>
                     </div>
                     {formData.preferred_coach === coach.id && (
                       <div className="absolute top-2 right-2 w-5 h-5 bg-cyan-400 rounded-full flex items-center justify-center">
