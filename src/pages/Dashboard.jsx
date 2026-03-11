@@ -95,7 +95,7 @@ export default function Dashboard() {
     enabled: !!user
   });
 
-   const { data: sessionDecision } = useQuery({
+   const { data: sessionDecision, isLoading: sessionLoading, isError: sessionError } = useQuery({
     queryKey: ['sessionDecision', user?.email],
     queryFn: async () => {
       if (!user?.email) return null;
@@ -109,6 +109,8 @@ export default function Dashboard() {
     },
     enabled: !!user?.email,
     staleTime: 5 * 60 * 1000,
+    retry: 1,
+    retryDelay: 2000,
   });
 
   const { data: dashboardData = {} } = useQuery({
