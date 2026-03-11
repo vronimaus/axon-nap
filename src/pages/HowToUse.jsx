@@ -318,6 +318,9 @@ export default function HowToUse() {
     try {
       const user = await base44.auth.me();
       if (user) {
+        if (userName.trim()) {
+          await base44.auth.updateMe({ full_name: userName.trim() });
+        }
         const profiles = await base44.entities.UserNeuroProfile.filter({ user_email: user.email });
         if (profiles.length > 0) {
           await base44.entities.UserNeuroProfile.update(profiles[0].id, { preferred_coach: selectedCoach });
