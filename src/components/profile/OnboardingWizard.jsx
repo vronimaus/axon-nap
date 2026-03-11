@@ -35,23 +35,23 @@ export default function OnboardingWizard({ user, onComplete }) {
   const COACHES = [
     {
       id: 'female',
-      name: 'Empathetic Guide',
-      label: 'Energie & Regeneration',
-      vibe: 'Warm · Unterstützend · Sicher',
+      name: 'Dr. Mara',
+      label: 'Ruhig · Einfühlsam · Präzise',
+      vibe: 'Führt dich sicher durch jeden Schritt',
       url: 'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/90a93629b_EmpatheticGuideAXON-nap.jpg'
     },
     {
       id: 'neuro',
-      name: 'Neural Guide',
-      label: 'Biologie & System',
-      vibe: 'Funktional · Neutral · Futuristisch',
+      name: 'AXON Core',
+      label: 'Neutral · Datengetrieben · Klar',
+      vibe: 'Reine Biologie, keine Ablenkung',
       url: 'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/252797126_NeuralGuideAXON-nap.jpg'
     },
     {
       id: 'male',
-      name: 'Systems Architect',
-      label: 'Software & Daten',
-      vibe: 'Präzise · Klinisch · Analytisch',
+      name: 'Dr. Lars',
+      label: 'Direkt · Analytisch · Fordernd',
+      vibe: 'Kein Smalltalk – nur Ergebnisse',
       url: 'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/4851700fc_TechnicalSystemsArchitectAXON-nap.jpg'
     }
   ];
