@@ -326,7 +326,7 @@ ${availableFaqIds.join(', ')}`,
       return Response.json({ error: 'No valid exercises generated', hallucinations }, { status: 502 });
     }
 
-    const plan = await base44.entities.RehabPlan.create({
+    const plan = await base44.asServiceRole.entities.RehabPlan.create({
       user_email: user.email,
       diagnosis_session_id: diagnosis_session_id || null,
       problem_summary: problemDescription,
