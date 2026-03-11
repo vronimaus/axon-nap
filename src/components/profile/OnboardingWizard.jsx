@@ -117,7 +117,7 @@ export default function OnboardingWizard({ user, onComplete }) {
         {/* Progress Bar */}
         <div className="mb-8">
           <div className="flex gap-2">
-            {[0, 1, 2, 3, 4, 5].map(i => (
+            {[0, 1, 2, 3, 4, 5, 6].map(i => (
               <div
                 key={i}
                 className={`h-1.5 flex-1 rounded-full ${
@@ -126,7 +126,7 @@ export default function OnboardingWizard({ user, onComplete }) {
               />
             ))}
           </div>
-          <p className="text-xs text-slate-500 mt-2">Schritt {step + 1} von 6</p>
+          <p className="text-xs text-slate-500 mt-2">Schritt {step + 1} von 7</p>
         </div>
 
         {/* Content */}
