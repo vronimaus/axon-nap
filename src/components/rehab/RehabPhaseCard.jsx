@@ -226,13 +226,16 @@ export default function RehabPhaseCard({ phase, index, totalPhases, isCompleted,
         ) : <div className="hidden sm:block" />}
 
         {!isCompleted ? (
-          <Button
-            onClick={onComplete}
-            className="w-full sm:w-auto bg-emerald-500 hover:bg-emerald-600 text-slate-900 font-bold shadow-[0_0_20px_rgba(16,185,129,0.3)] hover:shadow-[0_0_30px_rgba(16,185,129,0.5)] transition-all px-8 py-6 text-lg"
-          >
-            <CheckCircle2 className="w-5 h-5 mr-2" />
-            Phase abschließen
-          </Button>
+          <div className="w-full sm:w-auto flex flex-col items-center gap-1">
+            <Button
+              onClick={onComplete}
+              className="w-full sm:w-auto bg-emerald-500 hover:bg-emerald-600 text-slate-900 font-bold shadow-[0_0_20px_rgba(16,185,129,0.3)] hover:shadow-[0_0_30px_rgba(16,185,129,0.5)] transition-all px-8 py-5 text-base"
+            >
+              <CheckCircle2 className="w-5 h-5 mr-2" />
+              Ich bin bereit für die nächste Phase ✓
+            </Button>
+            <p className="text-[10px] text-slate-500 text-center">Nur weiter, wenn du dich wirklich besser fühlst</p>
+          </div>
         ) : index < totalPhases - 1 ? (
           <Button onClick={onNext} className="w-full sm:w-auto bg-emerald-500 hover:bg-emerald-600 text-slate-900 font-bold px-8 py-6">
             Nächste Phase →
