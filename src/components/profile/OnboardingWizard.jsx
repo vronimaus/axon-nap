@@ -467,7 +467,7 @@ export default function OnboardingWizard({ user, onComplete }) {
             ) : (
               <>
                 {step === 6 ? 'Fertig!' : 'Weiter'}
-                {step < 5 && <ChevronRight className="w-4 h-4" />}
+                {step < 6 && <ChevronRight className="w-4 h-4" />}
               </>
             )}
           </Button>
