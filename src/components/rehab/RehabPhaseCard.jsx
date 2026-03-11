@@ -92,11 +92,16 @@ export default function RehabPhaseCard({ phase, index, totalPhases, isCompleted,
                 {isCompleted && <span className="text-[10px] text-emerald-400 font-bold tracking-wider">✓ COMPLETED</span>}
               </div>
               <h3 className="text-2xl font-bold text-white tracking-tight">{phase.title}</h3>
-              <p className="text-sm text-slate-400 mt-1 font-medium flex items-center gap-2">
+              <p className="text-sm text-slate-400 mt-1 font-medium flex items-center gap-2 flex-wrap">
                 <span className="bg-slate-800/80 px-2 py-0.5 rounded text-emerald-400 text-xs border border-emerald-500/20">
-                  Dauer: {phase.duration_days} Tage
+                  ~{phase.duration_days} Tage empfohlen
                 </span>
               </p>
+              {phase.phase_rationale && (
+                <p className="text-xs text-slate-500 mt-2 italic leading-relaxed max-w-sm">
+                  💡 {phase.phase_rationale}
+                </p>
+              )}
             </div>
             
             {/* Minimal Circular Progress or Icon */}
