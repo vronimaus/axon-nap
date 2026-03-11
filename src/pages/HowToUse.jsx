@@ -426,10 +426,7 @@ export default function HowToUse() {
 
         {!isLast && (
           <button
-            onClick={() => {
-            localStorage.setItem('axon_howto_seen', 'true');
-            window.location.href = createPageUrl('Dashboard');
-          }}
+            onClick={() => saveAndFinish()}
             className="w-full text-center text-[10px] text-slate-600 hover:text-slate-400 transition-colors mt-4 py-2"
           >
             Überspringen
