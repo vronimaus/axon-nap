@@ -409,8 +409,7 @@ export default function HowToUse() {
           <Button
             onClick={() => {
               if (isLast) {
-                localStorage.setItem('axon_howto_seen', 'true');
-                window.location.href = createPageUrl('Dashboard');
+                saveAndFinish();
               } else {
                 setCurrentStep(s => s + 1);
               }
