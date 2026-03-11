@@ -217,9 +217,10 @@ ${availableFaqIds.join(', ')}`,
                     },
                     required: ['exercise_id', 'name', 'sets_reps_tempo', 'instruction']
                   }
-                }
+                },
+                phase_rationale: { type: 'string' }
               },
-              required: ['phase_number', 'title', 'description', 'duration_days', 'exercises']
+              required: ['phase_number', 'title', 'description', 'duration_days', 'exercises', 'phase_rationale']
             }
           },
           recommended_mfr_routines: {
