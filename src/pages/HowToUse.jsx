@@ -412,7 +412,7 @@ export default function HowToUse() {
                 />
                 {userName.trim() && (
                   <div className="flex items-center gap-3 bg-cyan-500/10 rounded-xl border border-cyan-500/30 px-4 py-3">
-                    <span className="text-2xl">🧠</span>
+                    <Brain className="w-5 h-5 text-cyan-400 flex-shrink-0" />
                     <p className="text-sm text-cyan-300">Willkommen, <strong>{userName}</strong>! Bereit für dein neuro-athletisches System?</p>
                   </div>
                 )}
