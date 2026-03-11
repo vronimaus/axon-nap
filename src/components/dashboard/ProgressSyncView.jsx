@@ -45,11 +45,6 @@ export default function ProgressSyncView({ dashboardData, sessionDecision, onClo
       </div>
 
       <div className="text-center mb-6 sm:mb-8 relative flex flex-col items-center">
-        {isDemo && (
-          <span className="bg-purple-500/20 text-purple-400 text-[10px] px-2 py-0.5 rounded-full border border-purple-500/30 mb-2 font-semibold">
-            DEMO DATEN
-          </span>
-        )}
         <h2 className="text-xl sm:text-2xl font-bold text-white tracking-wide uppercase">Fortschritt & Sync</h2>
         <p className="text-xs sm:text-sm text-slate-400 mt-1">Deep Data Analysis</p>
       </div>
