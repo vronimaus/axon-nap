@@ -54,8 +54,34 @@ export default function Landing() {
     "@type": "Product",
     "name": "AXON Protocol - Lebenslanger Zugriff",
     "description": "Neuro-Athletic Training App mit personalisierten Rehab-, Flow- und Trainingsplänen. Selbsthilfe bei Verspannungen, Schmerzen und Bewegungseinschränkungen.",
+    "image": "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/f960cb731_AxonnapLogo500x180Neu.png",
     "brand": { "@type": "Brand", "name": "AXON" },
-    "offers": { "@type": "Offer", "url": "https://axon-nap.de", "priceCurrency": "EUR", "price": "59.90", "availability": "https://schema.org/InStock" }
+    "offers": {
+      "@type": "Offer",
+      "url": "https://axon-nap.de/",
+      "priceCurrency": "EUR",
+      "price": "59.90",
+      "availability": "https://schema.org/InStock",
+      "priceValidUntil": "2027-12-31",
+      "hasMerchantReturnPolicy": {
+        "@type": "MerchantReturnPolicy",
+        "applicableCountry": "DE",
+        "returnPolicyCategory": "https://schema.org/MerchantReturnFiniteReturnWindow",
+        "merchantReturnDays": 14,
+        "returnMethod": "https://schema.org/ReturnByMail",
+        "returnFees": "https://schema.org/FreeReturn"
+      },
+      "shippingDetails": {
+        "@type": "OfferShippingDetails",
+        "shippingRate": { "@type": "MonetaryAmount", "value": "0", "currency": "EUR" },
+        "shippingDestination": { "@type": "DefinedRegion", "addressCountry": "DE" },
+        "deliveryTime": {
+          "@type": "ShippingDeliveryTime",
+          "handlingTime": { "@type": "QuantitativeValue", "minValue": 0, "maxValue": 0, "unitCode": "DAY" },
+          "transitTime": { "@type": "QuantitativeValue", "minValue": 0, "maxValue": 0, "unitCode": "DAY" }
+        }
+      }
+    }
   };
 
   return (
