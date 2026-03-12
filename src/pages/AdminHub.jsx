@@ -4,7 +4,7 @@ import { createPageUrl } from '@/utils';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { AlertCircle, Zap, BookOpen, Palette, ArrowLeft, Image, Trash2, Filter, ChevronUp, ChevronDown, GitMerge, Edit, SearchCheck } from 'lucide-react';
+import { AlertCircle, Zap, BookOpen, Palette, ArrowLeft, Image, Trash2, Filter, ChevronUp, ChevronDown, GitMerge, Edit, SearchCheck, KeyRound } from 'lucide-react';
 import ExerciseMappingTab from '../components/admin/ExerciseMappingTab';
 import ExerciseAuditTab from '../components/admin/ExerciseAuditTab';
 import ExerciseEditorTab from '../components/admin/ExerciseEditorTab';
@@ -464,7 +464,7 @@ export default function AdminHub() {
       {/* Main Content */}
       <div className="max-w-6xl mx-auto px-4 py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-8 lg:w-fit mb-8 bg-slate-900 border border-cyan-500/20">
+          <TabsList className="grid w-full grid-cols-9 lg:w-fit mb-8 bg-slate-900 border border-cyan-500/20">
               <TabsTrigger value="flow" className="flex items-center gap-2">
                 <Palette className="w-4 h-4" />
                 <span>Flow</span>
@@ -500,6 +500,10 @@ export default function AdminHub() {
               <TabsTrigger value="logs" className="flex items-center gap-2">
                 <BookOpen className="w-4 h-4" />
                 <span>Logs</span>
+              </TabsTrigger>
+              <TabsTrigger value="invites" className="flex items-center gap-2">
+                <KeyRound className="w-4 h-4" />
+                <span>Codes</span>
               </TabsTrigger>
             </TabsList>
 
@@ -626,6 +630,11 @@ export default function AdminHub() {
           {/* Logs Tab */}
           <TabsContent value="logs" className="mt-0">
             <EnrichmentLogTab />
+          </TabsContent>
+
+          {/* Invite Codes Tab */}
+          <TabsContent value="invites" className="mt-0">
+            <InviteCodesTab />
           </TabsContent>
         </Tabs>
       </div>
