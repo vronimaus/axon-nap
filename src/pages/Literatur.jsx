@@ -268,15 +268,6 @@ const staticReferences = [
         relevance: "FMS-Grundprinzipien für Bewegungsscreening und Qualität vor Quantität – integriert in AXON Assessment-Design."
       },
       {
-        id: "boyle_2016",
-        authors: "Boyle, M.",
-        year: 2016,
-        title: "New Functional Training for Sports (2nd ed.)",
-        source: "Human Kinetics",
-        url: "https://humankinetics.com",
-        relevance: "Joint-by-Joint Approach als Basis für AXON's Progressions-Logik und Mobility-Strength-Integration."
-      },
-      {
         id: "wulf_2013",
         authors: "Wulf, G. & Lewthwaite, R.",
         year: 2013,
