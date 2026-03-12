@@ -9,6 +9,7 @@ import ExerciseMappingTab from '../components/admin/ExerciseMappingTab';
 import ExerciseAuditTab from '../components/admin/ExerciseAuditTab';
 import ExerciseEditorTab from '../components/admin/ExerciseEditorTab';
 import EnrichmentLogTab from '../components/admin/EnrichmentLogTab';
+import InviteCodesTab from '../components/admin/InviteCodesTab';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
 // Prefix-Definitionen
