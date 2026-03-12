@@ -7,6 +7,126 @@ import { base44 } from '@/api/base44Client';
 
 const staticReferences = [
   {
+    category: "Funktionelle Biomechanik & 3D-Bewegungsanalyse",
+    icon: Activity,
+    color: "cyan",
+    entries: [
+      {
+        id: "gray_1995",
+        authors: "Gray, G.",
+        year: 1995,
+        title: "Chain Reaction® Biomechanics: The Science of Functional Movement",
+        source: "Gray Institute, Adrian MI",
+        url: "https://www.grayinstitute.com",
+        relevance: "Wissenschaftliche Basis für das 3D-Bewegungsverständnis in AXON: Gelenke reagieren in allen drei Ebenen kettenartig. Grundlage für Diagnose-Logik und Übungsdesign."
+      },
+      {
+        id: "gray_3dmaps",
+        authors: "Gray, G.",
+        year: 2012,
+        title: "3DMAPS: Three-Dimensional Movement Analysis & Performance System",
+        source: "Gray Institute",
+        url: "https://grayinstitute.com/courses/3dmapsthree-dimensional-movement-analysis-and-performance-system",
+        relevance: "Direkte Grundlage für das AXON Movement-Screening: 6 Vital Transformational Zones, Mobilitäts- vs. Stabilitätsbewertung in Sagittal-, Frontal- und Transversalebene."
+      },
+      {
+        id: "gambetta_2007",
+        authors: "Gambetta, V.",
+        year: 2007,
+        title: "Athletic Development: The Art & Science of Functional Sports Conditioning",
+        source: "Human Kinetics",
+        url: "https://www.amazon.com/Athletic-Development-Science-Functional-Conditioning/dp/0736051007",
+        relevance: "Vern Gambettas Prinzipien für sport-spezifische Bewegungsentwicklung, Energiesysteme und athletische Qualitäten sind in AXON's Trainingsplan-Logik und Progressionsdesign integriert."
+      },
+      {
+        id: "boyle_2016",
+        authors: "Boyle, M.",
+        year: 2016,
+        title: "New Functional Training for Sports (2nd ed.)",
+        source: "Human Kinetics",
+        url: "https://humankinetics.com",
+        relevance: "Joint-by-Joint Approach als Basis für AXON's Progressions-Logik und Mobility-Strength-Integration."
+      }
+    ]
+  },
+  {
+    category: "Mobilität, Rehabilitation & Schmerzwissenschaft",
+    icon: Zap,
+    color: "emerald",
+    entries: [
+      {
+        id: "starrett_2013",
+        authors: "Starrett, K. & Cordoza, G.",
+        year: 2013,
+        title: "Becoming a Supple Leopard: The Ultimate Guide to Resolving Pain, Preventing Injury, and Optimizing Athletic Performance",
+        source: "Victory Belt Publishing",
+        url: "https://www.thereadystate.com",
+        relevance: "Couch Stretch, Voodoo Flossing und Joint Mobilization – direkte Grundlage für AXON Mobility-Module und Positions-Korrekturen."
+      },
+      {
+        id: "starrett_deskbound_2016",
+        authors: "Starrett, K. & Starrett, J.",
+        year: 2016,
+        title: "Deskbound: Standing Up to a Sitting World",
+        source: "Victory Belt Publishing",
+        url: "https://www.thereadystate.com",
+        relevance: "Systematische Analyse von sitzbedingten Hüft- und Wirbelsäulenproblemen – Basis für AXON's Diagnose-Szenarien bei HWS, LWS und Hüftbeschwerden."
+      },
+      {
+        id: "mcgill_2015",
+        authors: "McGill, S.M.",
+        year: 2015,
+        title: "Low Back Disorders: Evidence-Based Prevention and Rehabilitation (3rd ed.)",
+        source: "Human Kinetics",
+        url: "https://www.humankineticslb.com",
+        relevance: "Grundlage für Core-Stabilisation, Hollow Body und Bracing-Prinzip in allen AXON Kraft-Sequenzen."
+      },
+      {
+        id: "mcgill_2009",
+        authors: "McGill, S.M.",
+        year: 2009,
+        title: "Ultimate Back Fitness and Performance (4th ed.)",
+        source: "Backfitpro Inc.",
+        url: "https://www.backfitpro.com",
+        relevance: "Big Three (Bird Dog, McGill Curl-up, Side Plank) als sichere Basis-Übungen – direkt in AXON Rehab-Plänen für LWS-Beschwerden integriert."
+      }
+    ]
+  },
+  {
+    category: "Krafttraining & Strength Science",
+    icon: Activity,
+    color: "amber",
+    entries: [
+      {
+        id: "tsatsouline_2012",
+        authors: "Tsatsouline, P.",
+        year: 2012,
+        title: "Enter the Kettlebell: Strength Secret of the Soviet Supermen",
+        source: "Dragon Door Publications",
+        url: "https://www.strongfirst.com",
+        relevance: "Turkish Get-Up Protokoll, Kettlebell-Periodisierung und Greasing the Groove – Grundlage für AXON Kraft-Module."
+      },
+      {
+        id: "john_tsatsouline_2011",
+        authors: "John, D. & Tsatsouline, P.",
+        year: 2011,
+        title: "Easy Strength: How to Get a Lot Stronger Than Your Competition While Barely Breaking a Sweat",
+        source: "Dragon Door Publications",
+        url: "https://danjohnuniversity.com/bookstore",
+        relevance: "Easy Strength-Methodik und Loaded Carries als Grundlage für AXON's Kraft-Progressionen: 5 fundamentale Bewegungsmuster, niedrige Intensität, hohe Frequenz."
+      },
+      {
+        id: "john_2013",
+        authors: "John, D.",
+        year: 2013,
+        title: "Intervention: Course Corrections for the Athlete and Trainer",
+        source: "On Target Publications",
+        url: "https://www.otpbooks.com/otpbooks-authors/dan-john/",
+        relevance: "Dan Johns 40/30/30 Paradigma und fundamentale Bewegungsmuster (Push, Pull, Hinge, Squat, Carry) – direkte Grundlage für AXON Trainingsplan-Struktur."
+      }
+    ]
+  },
+  {
     category: "Neurowissenschaft & Neuroathletik",
     icon: Brain,
     color: "cyan",
