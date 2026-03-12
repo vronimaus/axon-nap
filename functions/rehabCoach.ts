@@ -9,269 +9,193 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const body = await req.json();
-    const { action } = body;
+    const {
+      current_exercise_id,
+      nrs_score,
+      hardware_score,
+      software_score,
+      battery_score,
+      recent_sessions,
+      current_plan_id
+    } = await req.json();
 
-    // ============================================================
-    // ACTION: GENERATE EXERCISE (for WeaknessGenerator)
-    // ============================================================
-    if (action === 'generate_exercise') {
-      const { weakness, rehabPlan } = body;
-      
-      if (!weakness || !rehabPlan) {
-        return Response.json({ 
-          error: 'weakness and rehabPlan required for generate_exercise' 
-        }, { status: 400 });
-      }
-
-      try {
-        const prompt = `
-You are an expert rehabilitation coach. A user has described the following issue with their rehabilitation plan:
-
-Problem: ${weakness}
-
-Current Rehab Focus: ${rehabPlan.problem_summary || 'General rehabilitation'}
-
-Generate ONE custom exercise that directly addresses this weakness. The exercise should:
-1. Be safe and progressive
-2. Match the rehabilitation context
-3. Include clear instructions
-4. Have a specific benefit statement
-
-Respond with valid JSON (no markdown, no code blocks):
-{
-  "name": "Exercise Name",
-  "goal_explanation": "What this exercise targets",
-  "benefits": "How it helps",
-  "instruction": "Step-by-step instructions",
-  "sets_reps_tempo": "3x10 @ 2-1-2"
-}
-`;
-
-        const llmResponse = await base44.integrations.Core.InvokeLLM({
-          prompt,
-          response_json_schema: {
-            type: 'object',
-            properties: {
-              name: { type: 'string' },
-              goal_explanation: { type: 'string' },
-              benefits: { type: 'string' },
-              instruction: { type: 'string' },
-              sets_reps_tempo: { type: 'string' }
-            }
-          }
-        });
-
-        return Response.json({
-          success: true,
-          exercise: llmResponse
-        });
-      } catch (llmError) {
-        console.error('LLM Error in generate_exercise:', llmError);
-        return Response.json({ 
-          error: 'Failed to generate exercise with LLM',
-          details: llmError.message 
-        }, { status: 500 });
-      }
+    if (!current_exercise_id || nrs_score === undefined) {
+      return Response.json({ 
+        error: 'current_exercise_id and nrs_score required' 
+      }, { status: 400 });
     }
 
     // ============================================================
-    // ACTION: SESSION COACHING (original logic)
+    // 1. CALCULATE READINESS STATUS
     // ============================================================
-    if (action === 'session_coaching') {
-      const {
-        current_exercise_id,
-        nrs_score,
-        hardware_score,
-        software_score,
-        battery_score,
-        recent_sessions,
-        current_plan_id
-      } = body;
+    const readiness_score = Math.round((hardware_score + software_score + battery_score) / 3);
+    let readiness_status = 'green';
+    if (readiness_score < 5) readiness_status = 'red';
+    else if (readiness_score < 7) readiness_status = 'yellow';
 
-      if (!current_exercise_id || nrs_score === undefined) {
-        return Response.json({ 
-          error: 'current_exercise_id and nrs_score required for session_coaching' 
-        }, { status: 400 });
-      }
+    // ============================================================
+    // 2. CALCULATE RIS STATUS (STUCK/TESTING/READY)
+    // ============================================================
+    const stable_sessions = recent_sessions?.filter(s => 
+      s.nrs_score >= (nrs_score - 1) && s.nrs_score <= (nrs_score + 1)
+    )?.length || 0;
 
-      // ============================================================
-      // 1. CALCULATE READINESS STATUS
-      // ============================================================
-      const readiness_score = Math.round((hardware_score + software_score + battery_score) / 3);
-      let readiness_status = 'green';
-      if (readiness_score < 5) readiness_status = 'red';
-      else if (readiness_score < 7) readiness_status = 'yellow';
+    let ris_status = 'STUCK';
+    let safety_flare_triggered = false;
 
-      // ============================================================
-      // 2. CALCULATE RIS STATUS (STUCK/TESTING/READY)
-      // ============================================================
-      const stable_sessions = recent_sessions?.filter(s => 
-        s.nrs_score >= (nrs_score - 1) && s.nrs_score <= (nrs_score + 1)
-      )?.length || 0;
+    // Rule: NRS > 3 = STUCK, Safety Flare
+    if (nrs_score > 3) {
+      ris_status = 'STUCK';
+      safety_flare_triggered = true;
+    }
+    // Rule: NRS 0-2 with 3+ stable sessions = READY
+    else if (nrs_score >= 0 && nrs_score <= 2 && stable_sessions >= 3) {
+      ris_status = 'READY';
+    }
+    // Rule: NRS 1-3 with 1-2 stable sessions = TESTING
+    else if (nrs_score >= 1 && nrs_score <= 3 && stable_sessions >= 1) {
+      ris_status = 'TESTING';
+    }
+    // Otherwise = STUCK
+    else {
+      ris_status = 'STUCK';
+    }
 
-      let ris_status = 'STUCK';
-      let safety_flare_triggered = false;
+    // ============================================================
+    // 3. FETCH CURRENT EXERCISE & PLAN
+    // ============================================================
+    const exerciseData = await base44.entities.Exercise.filter(
+      { exercise_id: current_exercise_id }
+    );
+    
+    if (!exerciseData || exerciseData.length === 0) {
+      return Response.json({ error: 'Exercise not found' }, { status: 404 });
+    }
 
-      // Rule: NRS > 3 = STUCK, Safety Flare
-      if (nrs_score > 3) {
-        ris_status = 'STUCK';
-        safety_flare_triggered = true;
-      }
-      // Rule: NRS 0-2 with 3+ stable sessions = READY
-      else if (nrs_score >= 0 && nrs_score <= 2 && stable_sessions >= 3) {
-        ris_status = 'READY';
-      }
-      // Rule: NRS 1-3 with 1-2 stable sessions = TESTING
-      else if (nrs_score >= 1 && nrs_score <= 3 && stable_sessions >= 1) {
-        ris_status = 'TESTING';
-      }
-      // Otherwise = STUCK
-      else {
-        ris_status = 'STUCK';
-      }
+    const current_exercise = exerciseData[0];
+    let current_plan = null;
 
-      // ============================================================
-      // 3. FETCH CURRENT EXERCISE & PLAN
-      // ============================================================
-      const exerciseData = await base44.entities.Exercise.filter(
-        { exercise_id: current_exercise_id }
+    if (current_plan_id) {
+      const planData = await base44.entities.RehabPlan.filter(
+        { id: current_plan_id }
       );
-      
-      if (!exerciseData || exerciseData.length === 0) {
-        return Response.json({ error: 'Exercise not found' }, { status: 404 });
-      }
-
-      const current_exercise = exerciseData[0];
-      let current_plan = null;
-
-      if (current_plan_id) {
-        const planData = await base44.entities.RehabPlan.filter(
-          { id: current_plan_id }
-        );
-        current_plan = planData[0] || null;
-      }
-
-      // ============================================================
-      // 4. DETERMINE RECOMMENDED ACTION & NEXT EXERCISE
-      // ============================================================
-      let recommended_action = 'hold';
-      let next_exercise = null;
-      let use_hybrid_bridge = false;
-      let regression_reason = null;
-
-      // SAFETY FLARE: NRS > 3, Readiness < 3, or Aggravatoren active
-      if (safety_flare_triggered || readiness_score < 3) {
-        recommended_action = 'regression';
-        regression_reason = safety_flare_triggered ? 'NRS > 3 (Safety Flare)' : 'Low Readiness Score';
-
-        // Find regression exercise (from progression_basic)
-        if (current_exercise.progression_basic?.description) {
-          next_exercise = {
-            exercise_id: current_exercise.exercise_id,
-            variant: 'basic',
-            name: `${current_exercise.name} (Regression)`,
-            description: current_exercise.progression_basic.description,
-            focus: current_exercise.progression_basic.focus,
-            reason: `Regression due to ${regression_reason}`
-          };
-        }
-      }
-      // TESTING: Use Hybrid-Bridge (Isometric + Load, Slow Eccentric)
-      else if (ris_status === 'TESTING') {
-        recommended_action = 'hybrid_bridge';
-        use_hybrid_bridge = true;
-
-        next_exercise = {
-          exercise_id: current_exercise.exercise_id,
-          variant: 'hybrid_bridge',
-          name: `${current_exercise.name} (Hybrid-Bridge)`,
-          description: `Isometric hold with light load OR slow eccentric (3-5s) without concentric movement`,
-          focus: 'Neuro-muscular preparation without pain provocation',
-          reason: '1-2 stable sessions. Use Hybrid-Bridge to prepare for full progression.'
-        };
-      }
-      // READY: Progression to next level in chain
-      else if (ris_status === 'READY') {
-        recommended_action = 'progression';
-
-        // Find next exercise in progression_advanced
-        if (current_exercise.progression_advanced?.description) {
-          next_exercise = {
-            exercise_id: current_exercise.exercise_id,
-            variant: 'advanced',
-            name: `${current_exercise.name} (Progression)`,
-            description: current_exercise.progression_advanced.description,
-            focus: current_exercise.progression_advanced.focus,
-            reason: '3+ stable sessions with NRS 0-2. Ready for progression!'
-          };
-        }
-      }
-      // STUCK: Hold or mild regression
-      else {
-        recommended_action = 'hold';
-        next_exercise = {
-          exercise_id: current_exercise.exercise_id,
-          variant: 'current',
-          name: current_exercise.name,
-          description: 'Maintain current level. Consistency is the key.',
-          focus: 'Stabilize progress',
-          reason: 'Less than 1 stable session. Stay consistent before progressing.'
-        };
-      }
-
-      // ============================================================
-      // 5. APPLY 3-PHASE SESSION STRUCTURE
-      // ============================================================
-      const session_structure = {
-        phase_1_primer: {
-          name: 'Primer (Neuro/Prep)',
-          duration_minutes: 5,
-          description: 'Neural calibration + joint preparation',
-          purpose: 'Prepare nervous system and joints for work'
-        },
-        phase_2_engine: {
-          name: 'Engine (Power/Stability)',
-          duration_minutes: 20,
-          exercise: next_exercise,
-          sets_reps: recommendedSetsReps(ris_status, current_exercise),
-          description: 'Main training work'
-        },
-        phase_3_reset: {
-          name: 'Reset (Vagus/Recovery)',
-          duration_minutes: 5,
-          description: 'Neuro-dampening, parasympathetic activation',
-          purpose: 'Mandatory shutdown. Do NOT skip.'
-        }
-      };
-
-      // ============================================================
-      // 6. BUILD RESPONSE
-      // ============================================================
-      const response = {
-        success: true,
-        ris_status,
-        readiness_status,
-        readiness_score,
-        nrs_score,
-        stable_sessions,
-        safety_flare_triggered,
-        regression_reason: regression_reason || null,
-        recommended_action,
-        use_hybrid_bridge,
-        session_structure,
-        next_exercise,
-        coaching_message: generateCoachingMessage(ris_status, safety_flare_triggered, stable_sessions),
-        timestamp: new Date().toISOString()
-      };
-
-      return Response.json(response);
+      current_plan = planData[0] || null;
     }
 
-    // Unknown action
-    return Response.json({ 
-      error: `Unknown action: ${action}` 
-    }, { status: 400 });
+    // ============================================================
+    // 4. DETERMINE RECOMMENDED ACTION & NEXT EXERCISE
+    // ============================================================
+    let recommended_action = 'hold';
+    let next_exercise = null;
+    let use_hybrid_bridge = false;
+    let regression_reason = null;
+
+    // SAFETY FLARE: NRS > 3, Readiness < 3, or Aggravatoren active
+    if (safety_flare_triggered || readiness_score < 3) {
+      recommended_action = 'regression';
+      regression_reason = safety_flare_triggered ? 'NRS > 3 (Safety Flare)' : 'Low Readiness Score';
+
+      // Find regression exercise (from progression_basic)
+      if (current_exercise.progression_basic?.description) {
+        next_exercise = {
+          exercise_id: current_exercise.exercise_id,
+          variant: 'basic',
+          name: `${current_exercise.name} (Regression)`,
+          description: current_exercise.progression_basic.description,
+          focus: current_exercise.progression_basic.focus,
+          reason: `Regression due to ${regression_reason}`
+        };
+      }
+    }
+    // TESTING: Use Hybrid-Bridge (Isometric + Load, Slow Eccentric)
+    else if (ris_status === 'TESTING') {
+      recommended_action = 'hybrid_bridge';
+      use_hybrid_bridge = true;
+
+      next_exercise = {
+        exercise_id: current_exercise.exercise_id,
+        variant: 'hybrid_bridge',
+        name: `${current_exercise.name} (Hybrid-Bridge)`,
+        description: `Isometric hold with light load OR slow eccentric (3-5s) without concentric movement`,
+        focus: 'Neuro-muscular preparation without pain provocation',
+        reason: '1-2 stable sessions. Use Hybrid-Bridge to prepare for full progression.'
+      };
+    }
+    // READY: Progression to next level in chain
+    else if (ris_status === 'READY') {
+      recommended_action = 'progression';
+
+      // Find next exercise in progression_advanced
+      if (current_exercise.progression_advanced?.description) {
+        next_exercise = {
+          exercise_id: current_exercise.exercise_id,
+          variant: 'advanced',
+          name: `${current_exercise.name} (Progression)`,
+          description: current_exercise.progression_advanced.description,
+          focus: current_exercise.progression_advanced.focus,
+          reason: '3+ stable sessions with NRS 0-2. Ready for progression!'
+        };
+      }
+    }
+    // STUCK: Hold or mild regression
+    else {
+      recommended_action = 'hold';
+      next_exercise = {
+        exercise_id: current_exercise.exercise_id,
+        variant: 'current',
+        name: current_exercise.name,
+        description: 'Maintain current level. Consistency is the key.',
+        focus: 'Stabilize progress',
+        reason: 'Less than 1 stable session. Stay consistent before progressing.'
+      };
+    }
+
+    // ============================================================
+    // 5. APPLY 3-PHASE SESSION STRUCTURE
+    // ============================================================
+    const session_structure = {
+      phase_1_primer: {
+        name: 'Primer (Neuro/Prep)',
+        duration_minutes: 5,
+        description: 'Neural calibration + joint preparation',
+        purpose: 'Prepare nervous system and joints for work'
+      },
+      phase_2_engine: {
+        name: 'Engine (Power/Stability)',
+        duration_minutes: 20,
+        exercise: next_exercise,
+        sets_reps: recommendedSetsReps(ris_status, current_exercise),
+        description: 'Main training work'
+      },
+      phase_3_reset: {
+        name: 'Reset (Vagus/Recovery)',
+        duration_minutes: 5,
+        description: 'Neuro-dampening, parasympathetic activation',
+        purpose: 'Mandatory shutdown. Do NOT skip.'
+      }
+    };
+
+    // ============================================================
+    // 6. BUILD RESPONSE
+    // ============================================================
+    const response = {
+      success: true,
+      ris_status,
+      readiness_status,
+      readiness_score,
+      nrs_score,
+      stable_sessions,
+      safety_flare_triggered,
+      regression_reason: regression_reason || null,
+      recommended_action,
+      use_hybrid_bridge,
+      session_structure,
+      next_exercise,
+      coaching_message: generateCoachingMessage(ris_status, safety_flare_triggered, stable_sessions),
+      timestamp: new Date().toISOString()
+    };
+
+    return Response.json(response);
 
   } catch (error) {
     console.error('rehabCoach error:', error);

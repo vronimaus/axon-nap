@@ -2,10 +2,10 @@ import { motion } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
 
 const PAINS = [
-  { tag: 'HWS', text: 'Nacken-Mobilität ist dein Performance-Limit. Rotation eingeschränkt, Haltung kompensiert – und du kannst das mit Dehnen nicht lösen.' },
-  { tag: 'LWS', text: 'Nach dem Workout zieht\'s in der Lendengegend. Nicht akut, aber chronisch genug, dass es dich aus dem Flow bringt.' },
-  { tag: 'SHD', text: 'Schulter-Overhead-Pattern ist eingeschränkt. Du weißt, die Koordination stimmt nicht – aber wo genau ist das Problem?' },
-  { tag: 'SYS', text: 'Du brauchst keine teure Physio. Du brauchst Systeme, die Defizite findet und behebt – schnell und selbstbestimmt.' },
+  { tag: 'HWS', text: 'Nacken ist schon wieder steif – und du weißt selbst, es liegt am Schreibtisch.' },
+  { tag: 'LWS', text: 'Rücken zieht nach dem Workout. Du streckst dich, hilft kurz, ist morgen wieder da.' },
+  { tag: 'SHD', text: 'Schulter macht komische Geräusche. Nicht schlimm genug für den Arzt – aber nervig genug.' },
+  { tag: 'SYS', text: 'Physio kostet 80 € die Stunde. Für "mach das 3x täglich" – kannst du auch selbst.' },
 ];
 
 export default function PainAgitationSection({ onFunnelClick }) {
@@ -22,7 +22,7 @@ export default function PainAgitationSection({ onFunnelClick }) {
         >
           <p className="text-xs font-bold uppercase tracking-[0.3em] text-slate-500 mb-4">Kennst du das?</p>
           <h2 className="text-3xl md:text-5xl font-black text-white leading-tight">
-            Nicht schlimm genug für die Physio.<br />
+            Nicht krank genug für den Arzt.<br />
             <span className="text-slate-400">Aber störend genug, um täglich präsent zu sein.</span>
           </h2>
           <p className="text-slate-400 mt-6 text-lg max-w-2xl mx-auto leading-relaxed">
@@ -56,7 +56,7 @@ export default function PainAgitationSection({ onFunnelClick }) {
         >
           <p className="text-slate-300 text-lg font-medium">
             Das Problem ist nicht dein Körper.<br />
-            <span className="text-white font-bold">Du weißt nur noch nicht, wie du ihn richtig liest.</span>
+            <span className="text-white font-bold">Es ist, dass du nie das richtige Protokoll hattest.</span>
           </p>
           <p className="text-slate-500 text-sm max-w-xl mx-auto">
             AXON kombiniert myofasziale Druckpunkte, funktionelle Bewegung und neurologische Verankerung — 
