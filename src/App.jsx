@@ -59,6 +59,7 @@ const AuthenticatedApp = () => {
           }
         />
       ))}
+      <Route path="/InviteRedeem" element={<InviteRedeem />} />
       <Route path="*" element={<PageNotFound />} />
     </Routes>
   );
