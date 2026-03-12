@@ -149,24 +149,6 @@ const staticReferences = [
         url: "https://www.humankineticslb.com",
         relevance: "Grundlage für Core-Stabilisation, Hollow Body und Bracing-Prinzip in allen AXON Kraft-Sequenzen."
       },
-      {
-        id: "tsatsouline_2012",
-        authors: "Tsatsouline, P.",
-        year: 2012,
-        title: "Enter the Kettlebell: Strength Secret of the Soviet Supermen",
-        source: "Dragon Door Publications",
-        url: "https://www.strongfirst.com",
-        relevance: "Turkish Get-Up Protokoll, Kettlebell-Periodisierung und Greasing the Groove – Grundlage für AXON Kraft-Module."
-      },
-      {
-        id: "starrett_2013",
-        authors: "Starrett, K. & Cordoza, G.",
-        year: 2013,
-        title: "Becoming a Supple Leopard: The Ultimate Guide to Resolving Pain, Preventing Injury, and Optimizing Athletic Performance",
-        source: "Victory Belt Publishing",
-        url: "https://www.thereadystate.com",
-        relevance: "Couch Stretch, Voodoo Flossing und Joint Mobilization – direkte Grundlage für AXON Mobility-Module."
-      }
     ]
   },
   {
