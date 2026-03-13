@@ -247,10 +247,12 @@ export default function WissenArtikel() {
           transition={{ delay: 0.6 }}
           className="mb-8"
         >
-          <FAQWidget
-            faqIds={article.related_faqs?.length > 0 ? article.related_faqs : []}
-            articleSlug={article.related_faqs?.length > 0 ? null : slug}
-          />
+          {slug && (
+            <FAQWidget
+              faqIds={article.related_faqs?.length > 0 ? article.related_faqs : []}
+              articleSlug={article.related_faqs?.length > 0 ? null : slug}
+            />
+          )}
         </motion.div>
 
         {/* Rechtlicher Disclaimer */}
