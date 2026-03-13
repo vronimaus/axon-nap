@@ -16,15 +16,18 @@ export default function FAQWidget({ faqIds = [], category = null, tags = [], lim
 
       if (faqIds.length > 0) {
         // Lade spezifische FAQs nach IDs
-        const allFaqs = await base44.entities.FAQ.list();
+        const allFaqs = await base44.entities.FAQ.list('-order', 200);
         filteredFaqs = allFaqs.filter(faq => faqIds.includes(faq.faq_id) && faq.published !== false);
       } else {
-        const allFaqs = await base44.entities.FAQ.list('order', 100);
+        const allFaqs = await base44.entities.FAQ.list('order', 200);
         
         filteredFaqs = allFaqs.filter(faq => {
           if (faq.published === false) return false;
           // Filter nach articleSlug wenn angegeben
-          if (articleSlug) return faq.related_articles?.includes(articleSlug);
+          if (articleSlug) {
+            const relatedArr = Array.isArray(faq.related_articles) ? faq.related_articles : [];
+            return relatedArr.includes(articleSlug);
+          }
           if (category && faq.category !== category) return false;
           if (tags.length > 0 && !tags.some(tag => faq.tags?.includes(tag))) return false;
           return true;
