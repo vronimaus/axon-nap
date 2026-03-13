@@ -8,6 +8,7 @@ import PageNotFound from './lib/PageNotFound';
 import InviteRedeem from './pages/InviteRedeem';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
+import { Navigate } from 'react-router-dom';
 
 const { Pages, Layout, mainPage } = pagesConfig;
 const mainPageKey = mainPage ?? Object.keys(Pages)[0];
@@ -60,6 +61,8 @@ const AuthenticatedApp = () => {
         />
       ))}
       <Route path="/InviteRedeem" element={<InviteRedeem />} />
+      <Route path="/KnowledgeHub" element={<Navigate to="/Wissen" replace />} />
+      <Route path="/KnowledgeHubArticle" element={<Navigate to="/WissenArtikel" replace />} />
       <Route path="*" element={<PageNotFound />} />
     </Routes>
   );
