@@ -6,11 +6,11 @@ import { motion, AnimatePresence } from 'framer-motion';
 import ReactMarkdown from 'react-markdown';
 import { Helmet } from 'react-helmet-async';
 
-export default function FAQWidget({ faqIds = [], category = null, tags = [], limit = null }) {
+export default function FAQWidget({ faqIds = [], category = null, tags = [], limit = null, articleSlug = null }) {
   const [openIndex, setOpenIndex] = useState(null);
 
   const { data: faqs = [], isLoading } = useQuery({
-    queryKey: ['faqs', faqIds, category, tags],
+    queryKey: ['faqs', faqIds, category, tags, articleSlug],
     queryFn: async () => {
       let filteredFaqs = [];
 
@@ -19,13 +19,12 @@ export default function FAQWidget({ faqIds = [], category = null, tags = [], lim
         const allFaqs = await base44.entities.FAQ.list();
         filteredFaqs = allFaqs.filter(faq => faqIds.includes(faq.faq_id) && faq.published !== false);
       } else {
-        // Lade FAQs nach Kategorie und/oder Tags
-        const query = { published: true };
-        if (category) query.category = category;
-        
         const allFaqs = await base44.entities.FAQ.list('order', 100);
         
         filteredFaqs = allFaqs.filter(faq => {
+          if (faq.published === false) return false;
+          // Filter nach articleSlug wenn angegeben
+          if (articleSlug) return faq.related_articles?.includes(articleSlug);
           if (category && faq.category !== category) return false;
           if (tags.length > 0 && !tags.some(tag => faq.tags?.includes(tag))) return false;
           return true;
