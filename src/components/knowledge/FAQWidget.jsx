@@ -11,6 +11,7 @@ export default function FAQWidget({ faqIds = [], category = null, tags = [], lim
 
   const { data: faqs = [], isLoading } = useQuery({
     queryKey: ['faqs', faqIds, category, tags, articleSlug],
+    enabled: faqIds.length > 0 || !!articleSlug || !!category || tags.length > 0,
     queryFn: async () => {
       let filteredFaqs = [];
 
