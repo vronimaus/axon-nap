@@ -131,7 +131,7 @@ Länge: 150-250 Wörter. Mit Zeilenumbrüchen für Lesbarkeit auf Mobile.`,
 
       {activeView === 'carousel' && <CarouselBuilder />}
 
-      {activeView === 'posts' && <>
+      {activeView === 'posts' && <React.Fragment>
       {/* LinkedIn Profile Card */}
       <div className="glass rounded-2xl border border-blue-500/30 p-6">
         <div className="flex items-center justify-between mb-4">
