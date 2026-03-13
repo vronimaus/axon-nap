@@ -107,6 +107,31 @@ Länge: 150-250 Wörter. Mit Zeilenumbrüchen für Lesbarkeit auf Mobile.`,
       animate={{ opacity: 1, y: 0 }}
       className="space-y-6"
     >
+      {/* View Toggle */}
+      <div className="flex gap-2 bg-slate-900 border border-slate-700 rounded-xl p-1 w-fit">
+        <button
+          onClick={() => setActiveView('posts')}
+          className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all ${
+            activeView === 'posts' ? 'bg-cyan-500/20 text-cyan-400' : 'text-slate-400 hover:text-slate-200'
+          }`}
+        >
+          <Linkedin className="w-4 h-4" />
+          Posts
+        </button>
+        <button
+          onClick={() => setActiveView('carousel')}
+          className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all ${
+            activeView === 'carousel' ? 'bg-purple-500/20 text-purple-400' : 'text-slate-400 hover:text-slate-200'
+          }`}
+        >
+          <LayoutTemplate className="w-4 h-4" />
+          Karussell Builder
+        </button>
+      </div>
+
+      {activeView === 'carousel' && <CarouselBuilder />}
+
+      {activeView === 'posts' && <>
       {/* LinkedIn Profile Card */}
       <div className="glass rounded-2xl border border-blue-500/30 p-6">
         <div className="flex items-center justify-between mb-4">
