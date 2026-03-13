@@ -253,6 +253,7 @@ Länge: 150-250 Wörter. Mit Zeilenumbrüchen für Lesbarkeit auf Mobile.`,
           ))}
         </div>
       </div>
+      </>}
     </motion.div>
   );
 }
