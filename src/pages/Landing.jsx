@@ -201,8 +201,8 @@ export default function Landing() {
             ))}
           </div>
           <div className="mt-10">
-            <Link to={createPageUrl('KnowledgeHub')} className="inline-flex items-center gap-2 text-cyan-400 text-sm font-bold uppercase tracking-widest hover:text-cyan-300 transition-colors group">
-              KnowledgeHub durchsuchen
+            <Link to={createPageUrl('Wissen')} className="inline-flex items-center gap-2 text-cyan-400 text-sm font-bold uppercase tracking-widest hover:text-cyan-300 transition-colors group">
+              Wissensbasis durchsuchen
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </Link>
           </div>
