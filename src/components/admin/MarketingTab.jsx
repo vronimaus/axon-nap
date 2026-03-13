@@ -66,6 +66,7 @@ export default function MarketingTab() {
   const [aiTopic, setAiTopic] = useState('');
   const [generatedPost, setGeneratedPost] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
+  const [activeView, setActiveView] = useState('posts'); // 'posts' | 'carousel'
 
   const handleCopy = (text, index) => {
     navigator.clipboard.writeText(text);
