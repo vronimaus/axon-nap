@@ -110,7 +110,7 @@ export default function Landing() {
           <div className="hidden md:flex items-center space-x-8 text-xs font-bold uppercase tracking-widest text-slate-400">
             <a href="#system" className="hover:text-cyan-400 transition-colors">Das System</a>
             <a href="#inside" className="hover:text-cyan-400 transition-colors">App Einblick</a>
-            <Link to={createPageUrl('KnowledgeHub')} className="hover:text-cyan-400 transition-colors">Knowledge Hub</Link>
+            <Link to={createPageUrl('Wissen')} className="hover:text-cyan-400 transition-colors">Wissen</Link>
             <Link to={createPageUrl('FAQ')} className="hover:text-cyan-400 transition-colors">FAQ</Link>
             {user && <Link to={createPageUrl('Dashboard')} className="hover:text-cyan-400 transition-colors">Dashboard</Link>}
           </div>
