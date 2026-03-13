@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Linkedin, ExternalLink, Copy, Check, Sparkles } from 'lucide-react';
+import { Linkedin, ExternalLink, Copy, Check, Sparkles, LayoutTemplate } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { base44 } from '@/api/base44Client';
+import CarouselBuilder from './CarouselBuilder';
 
 const LINKEDIN_PROFILE = 'https://www.linkedin.com/in/v-schumacher/';
 
