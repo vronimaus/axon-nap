@@ -466,48 +466,55 @@ export default function AdminHub() {
       {/* Main Content */}
       <div className="max-w-6xl mx-auto px-4 py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-9 lg:w-fit mb-8 bg-slate-900 border border-cyan-500/20">
-              <TabsTrigger value="flow" className="flex items-center gap-2">
-                <Palette className="w-4 h-4" />
+          {/* Mobile: horizontal scroll, Desktop: wrap */}
+          <div className="overflow-x-auto pb-2 mb-6 -mx-1 px-1">
+            <TabsList className="flex w-max gap-1 bg-slate-900 border border-cyan-500/20 p-1 rounded-xl">
+              <TabsTrigger value="flow" className="flex items-center gap-1.5 whitespace-nowrap px-3 py-2 text-xs sm:text-sm">
+                <Palette className="w-3.5 h-3.5 shrink-0" />
                 <span>Flow</span>
               </TabsTrigger>
-              <TabsTrigger value="exercises" className="flex items-center gap-2">
-                <Image className="w-4 h-4" />
+              <TabsTrigger value="exercises" className="flex items-center gap-1.5 whitespace-nowrap px-3 py-2 text-xs sm:text-sm">
+                <Image className="w-3.5 h-3.5 shrink-0" />
                 <span>Übungen</span>
               </TabsTrigger>
-              <TabsTrigger value="exercise-editor" className="flex items-center gap-2">
-                <Edit className="w-4 h-4" />
+              <TabsTrigger value="exercise-editor" className="flex items-center gap-1.5 whitespace-nowrap px-3 py-2 text-xs sm:text-sm">
+                <Edit className="w-3.5 h-3.5 shrink-0" />
                 <span>Editor</span>
               </TabsTrigger>
-              <TabsTrigger value="diagnosis" className="flex items-center gap-2">
-                <Zap className="w-4 h-4" />
+              <TabsTrigger value="diagnosis" className="flex items-center gap-1.5 whitespace-nowrap px-3 py-2 text-xs sm:text-sm">
+                <Zap className="w-3.5 h-3.5 shrink-0" />
                 <span>Diagnose</span>
               </TabsTrigger>
-              <TabsTrigger value="tools" className="flex items-center gap-2">
-                <BookOpen className="w-4 h-4" />
+              <TabsTrigger value="tools" className="flex items-center gap-1.5 whitespace-nowrap px-3 py-2 text-xs sm:text-sm">
+                <BookOpen className="w-3.5 h-3.5 shrink-0" />
                 <span>Tools</span>
               </TabsTrigger>
-              <TabsTrigger value="mapping" className="flex items-center gap-2">
-                <GitMerge className="w-4 h-4" />
+              <TabsTrigger value="marketing" className="flex items-center gap-1.5 whitespace-nowrap px-3 py-2 text-xs sm:text-sm">
+                <Megaphone className="w-3.5 h-3.5 shrink-0" />
+                <span>Marketing</span>
+              </TabsTrigger>
+              <TabsTrigger value="mapping" className="flex items-center gap-1.5 whitespace-nowrap px-3 py-2 text-xs sm:text-sm">
+                <GitMerge className="w-3.5 h-3.5 shrink-0" />
                 <span>Mapping</span>
               </TabsTrigger>
-              <TabsTrigger value="audit" className="flex items-center gap-2">
-                <SearchCheck className="w-4 h-4" />
+              <TabsTrigger value="audit" className="flex items-center gap-1.5 whitespace-nowrap px-3 py-2 text-xs sm:text-sm">
+                <SearchCheck className="w-3.5 h-3.5 shrink-0" />
                 <span>Audit</span>
               </TabsTrigger>
-              <TabsTrigger value="roadmap" className="flex items-center gap-2">
-                <Zap className="w-4 h-4" />
+              <TabsTrigger value="roadmap" className="flex items-center gap-1.5 whitespace-nowrap px-3 py-2 text-xs sm:text-sm">
+                <Zap className="w-3.5 h-3.5 shrink-0" />
                 <span>Roadmap</span>
               </TabsTrigger>
-              <TabsTrigger value="logs" className="flex items-center gap-2">
-                <BookOpen className="w-4 h-4" />
+              <TabsTrigger value="logs" className="flex items-center gap-1.5 whitespace-nowrap px-3 py-2 text-xs sm:text-sm">
+                <BookOpen className="w-3.5 h-3.5 shrink-0" />
                 <span>Logs</span>
               </TabsTrigger>
-              <TabsTrigger value="invites" className="flex items-center gap-2">
-                <KeyRound className="w-4 h-4" />
+              <TabsTrigger value="invites" className="flex items-center gap-1.5 whitespace-nowrap px-3 py-2 text-xs sm:text-sm">
+                <KeyRound className="w-3.5 h-3.5 shrink-0" />
                 <span>Codes</span>
               </TabsTrigger>
             </TabsList>
+          </div>
 
           {/* Flow Tab */}
           <TabsContent value="flow" className="mt-0">
