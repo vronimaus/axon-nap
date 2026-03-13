@@ -253,7 +253,7 @@ Länge: 150-250 Wörter. Mit Zeilenumbrüchen für Lesbarkeit auf Mobile.`,
           ))}
         </div>
       </div>
-      </>}
+      </React.Fragment>}
     </motion.div>
   );
 }
