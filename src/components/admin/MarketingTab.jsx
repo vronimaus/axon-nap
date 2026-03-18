@@ -208,11 +208,38 @@ Format:
         <div className="flex items-center gap-3 mb-4">
           <Sparkles className="w-5 h-5 text-purple-400" />
           <h3 className="text-lg font-bold text-purple-400">KI Post-Generator</h3>
+          <span className="text-xs text-slate-500 ml-auto">5-Tage Content-Strategie</span>
         </div>
+
+        {/* Category Selector */}
+        <div className="mb-4">
+          <p className="text-xs text-slate-500 mb-2 uppercase tracking-widest font-bold">Wochentag / Kategorie</p>
+          <div className="flex flex-wrap gap-2">
+            {CONTENT_CATEGORIES.map(cat => (
+              <button
+                key={cat.id}
+                onClick={() => setSelectedCategory(cat.id)}
+                className={`px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all ${
+                  selectedCategory === cat.id
+                    ? 'border-purple-500/60 bg-purple-500/15 text-purple-300'
+                    : 'border-slate-700 bg-slate-800/60 text-slate-400 hover:border-slate-500 hover:text-slate-200'
+                }`}
+              >
+                {cat.label}
+              </button>
+            ))}
+          </div>
+          {selectedCategory && (
+            <p className="text-xs text-slate-500 mt-2 italic">
+              {CONTENT_CATEGORIES.find(c => c.id === selectedCategory)?.description}
+            </p>
+          )}
+        </div>
+
         <div className="flex gap-3 mb-4">
           <input
             type="text"
-            placeholder="Thema eingeben (z.B. 'Rückenschmerzen MRT', 'Neuro-Drills erklären'...)"
+            placeholder="Konkretes Thema (z.B. 'Nackensteifheit nach Homeoffice', 'Sakkaden-Training'...)"
             value={aiTopic}
             onChange={(e) => setAiTopic(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && handleGeneratePost()}
