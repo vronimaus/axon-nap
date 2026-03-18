@@ -223,6 +223,44 @@ Nur JSON zurückgeben, kein anderer Text.`,
     setTimeout(() => setCopied(false), 2000);
   };
 
+  const slidePreviewRef = useRef(null);
+  const [isExporting, setIsExporting] = useState(false);
+
+  const exportSlideAsImage = async () => {
+    if (!slidePreviewRef.current) return;
+    setIsExporting(true);
+    try {
+      const canvas = await html2canvas(slidePreviewRef.current, {
+        scale: 3,
+        useCORS: true,
+        backgroundColor: null,
+      });
+      const link = document.createElement('a');
+      link.download = `axon-folie-${activeSlide + 1}.png`;
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
+  const exportAllSlides = async () => {
+    // Export one by one
+    for (let i = 0; i < slides.length; i++) {
+      setActiveSlide(i);
+      await new Promise(r => setTimeout(r, 300)); // wait for render
+      if (!slidePreviewRef.current) continue;
+      setIsExporting(true);
+      const canvas = await html2canvas(slidePreviewRef.current, { scale: 3, useCORS: true, backgroundColor: null });
+      const link = document.createElement('a');
+      link.download = `axon-folie-${i + 1}.png`;
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+      await new Promise(r => setTimeout(r, 200));
+    }
+    setIsExporting(false);
+  };
+
   const active = slides[activeSlide] || slides[0];
 
   return (
