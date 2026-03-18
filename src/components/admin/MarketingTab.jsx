@@ -61,9 +61,45 @@ Das ist kein Trend. Das ist Neurologie.
   },
 ];
 
+const CONTENT_CATEGORIES = [
+  { id: 'neuro_happen',   label: '🔵 Mo – Neuro-Happen',       day: 'Montag',     color: 'blue',   description: 'Quick-Win Neuro-Drill, sofort anwendbar' },
+  { id: 'deep_dive',     label: '🟣 Di – Science Deep Dive',   day: 'Dienstag',   color: 'purple', description: 'Wissenschaftliches Konzept vereinfacht erklärt' },
+  { id: 'mythos',        label: '🟡 Mi – Mythos vs. Realität', day: 'Mittwoch',   color: 'yellow', description: 'Fitness-Mythos aufdecken, Wahrheit zeigen' },
+  { id: 'praxis',        label: '🟠 Do – AXON Praxis',         day: 'Donnerstag', color: 'orange', description: 'Konkretes Beschwerdebild → 3-Schritte Lösung' },
+  { id: 'weekend',       label: '🟢 Fr – Weekend-Toolkit',     day: 'Freitag',    color: 'green',  description: 'Erholungs-Tipps & Regeneration fürs Wochenende' },
+];
+
+const CATEGORY_PROMPTS = {
+  neuro_happen: `Erstelle einen LinkedIn-Post der Kategorie "Neuro-Happen" (Montag).
+Ziel: Einen sofort anwendbaren Neuro-Drill oder Quick-Win teilen – kein AXON-Werbung, reiner Mehrwert.
+Struktur: Hook (überraschende Aussage) → Alltagsproblem → konkreter 30-60s Drill → Was man spürt → Soft CTA (Diskussion einladen).
+Ton: Energetisch, direkt, motivierend. Kein Produkt-Pitch.`,
+
+  deep_dive: `Erstelle einen LinkedIn-Post der Kategorie "Science Deep Dive" (Dienstag).
+Ziel: Ein wissenschaftliches Konzept (Faszien, Neurologie, Schmerz) verständlich erklären.
+Struktur: Mythos oder überraschender Fakt als Hook → Konzept erklären → Forscher nennen (Stecco, McGill, Myers) → Alltagsrelevanz → Fazit in einem Satz → Frage an die Community.
+Ton: Neugierig, lehrreich. KEIN Sales-CTA.`,
+
+  mythos: `Erstelle einen LinkedIn-Post der Kategorie "Mythos vs. Realität" (Mittwoch).
+Ziel: Einen populären Fitness/Gesundheitsmythos aufdecken und die wissenschaftliche Wahrheit zeigen.
+Struktur: Mythos als provokativer Hook → Wissenschaft dagegen → Warum hält sich der Mythos → Was wirklich funktioniert (Neuro-Ansatz) → Mini-Selbsttest → Frage: 'Welchen Mythos glaubst du noch?'
+Ton: Mutig, kritisch aber respektvoll. Kein Produkt-Pitch.`,
+
+  praxis: `Erstelle einen LinkedIn-Post der Kategorie "AXON Praxis" (Donnerstag).
+Ziel: Ein konkretes Beschwerdebild mit einem 3-Schritte-Protokoll lösen – tiefes Wissen, nicht Werbung.
+Struktur: Konkretes Problem empathisch beschreiben → Neuro-anatomische Ursache → 3-Schritte (Hardware → Software → Integration) → Was man spürt → Wann zum Arzt → Community-Frage.
+Ton: Empathisch, lösungsorientiert. Soft CTA: Einladung zur Diskussion.`,
+
+  weekend: `Erstelle einen LinkedIn-Post der Kategorie "Weekend-Toolkit" (Freitag).
+Ziel: Leichte Erholungs- und Regenerationstipps für das Wochenende – locker, einladend, gemeinschaftsfördernd.
+Struktur: Freitags-Hook (Körper nach langer Woche) → 2-3 schnelle Erholungstipps → Warum Erholung neurologisch ist → Wochenend-Challenge → 'Was ist dein Erholungsritual?'
+Ton: Entspannt, einladend. KEIN Sales-CTA.`,
+};
+
 export default function MarketingTab() {
   const [copiedIndex, setCopiedIndex] = useState(null);
   const [aiTopic, setAiTopic] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('neuro_happen');
   const [generatedPost, setGeneratedPost] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
   const [activeView, setActiveView] = useState('posts'); // 'posts' | 'carousel'
