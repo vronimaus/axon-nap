@@ -494,6 +494,10 @@ export default function AdminHub() {
                 <Megaphone className="w-3.5 h-3.5 shrink-0" />
                 <span>Marketing</span>
               </TabsTrigger>
+              <TabsTrigger value="kanban" className="flex items-center gap-1.5 whitespace-nowrap px-3 py-2 text-xs sm:text-sm">
+                <Kanban className="w-3.5 h-3.5 shrink-0" />
+                <span>Kanban</span>
+              </TabsTrigger>
               <TabsTrigger value="mapping" className="flex items-center gap-1.5 whitespace-nowrap px-3 py-2 text-xs sm:text-sm">
                 <GitMerge className="w-3.5 h-3.5 shrink-0" />
                 <span>Mapping</span>
