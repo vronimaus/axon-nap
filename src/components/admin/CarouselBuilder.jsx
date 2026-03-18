@@ -105,12 +105,12 @@ function SlidePreview({ slide, index, total }) {
             </span>
           )}
           {slide.title && (
-            <h2 className="text-xl font-black leading-tight">
+            <h2 className="text-3xl font-black leading-tight tracking-tight">
               {slide.title}
             </h2>
           )}
           {slide.text && (
-            <p className="text-[11px] leading-relaxed opacity-80 whitespace-pre-wrap">
+            <p className="text-base leading-relaxed opacity-90 whitespace-pre-wrap font-medium">
               {slide.text}
             </p>
           )}
