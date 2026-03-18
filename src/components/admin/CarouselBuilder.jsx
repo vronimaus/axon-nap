@@ -426,10 +426,34 @@ Nur JSON zurückgeben, kein anderer Text.`,
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.97 }}
               transition={{ duration: 0.15 }}
+              ref={slidePreviewRef}
             >
               <SlidePreview slide={active} index={activeSlide} total={slides.length} />
             </motion.div>
           </AnimatePresence>
+
+          {/* Export Buttons */}
+          <div className="flex gap-2 mt-3">
+            <Button
+              onClick={exportSlideAsImage}
+              disabled={isExporting}
+              size="sm"
+              className="flex-1 bg-cyan-600 hover:bg-cyan-700 gap-2 text-xs"
+            >
+              {isExporting ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Download className="w-3.5 h-3.5" />}
+              Folie {activeSlide + 1} speichern
+            </Button>
+            <Button
+              onClick={exportAllSlides}
+              disabled={isExporting}
+              size="sm"
+              variant="outline"
+              className="border-slate-600 text-slate-300 gap-2 text-xs"
+            >
+              {isExporting ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Download className="w-3.5 h-3.5" />}
+              Alle ({slides.length})
+            </Button>
+          </div>
 
           {/* Navigation dots */}
           <div className="flex justify-center gap-1.5 mt-3">
