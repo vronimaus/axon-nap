@@ -1,8 +1,9 @@
 import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, Trash2, Sparkles, ChevronUp, ChevronDown, Loader2, Copy, Check } from 'lucide-react';
+import { Plus, Trash2, Sparkles, ChevronUp, ChevronDown, Loader2, Copy, Check, Download } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { base44 } from '@/api/base44Client';
+import html2canvas from 'html2canvas';
 
 // Farbschemas für Folien
 const SLIDE_THEMES = [
