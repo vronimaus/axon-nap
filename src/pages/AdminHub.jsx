@@ -11,6 +11,7 @@ import ExerciseEditorTab from '../components/admin/ExerciseEditorTab';
 import EnrichmentLogTab from '../components/admin/EnrichmentLogTab';
 import InviteCodesTab from '../components/admin/InviteCodesTab';
 import MarketingTab from '../components/admin/MarketingTab';
+import ContentKanban from '../components/admin/ContentKanban';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
 // Prefix-Definitionen
