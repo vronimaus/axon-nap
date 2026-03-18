@@ -1,40 +1,160 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, Trash2, Sparkles, Download, Image, ChevronUp, ChevronDown, Loader2, Check } from 'lucide-react';
+import { Plus, Trash2, Sparkles, ChevronUp, ChevronDown, Loader2, Copy, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { base44 } from '@/api/base44Client';
 
-const AXON_STYLE_SUFFIX = `
-Visueller Stil: Dunkler Hintergrund (Dunkelblau/Schwarz), cyan/blaue Akzentfarbe (#06b6d4), 
-moderne minimalistische Typografie, kein Clipart-Look. 
-Medizinisch-athletisch, professionell, kein Stock-Photo-Feel.
-Das Bild soll zu einem LinkedIn-Karussell-Post passen, hochkant (4:5 Format).`;
+// Farbschemas für Folien
+const SLIDE_THEMES = [
+  { id: 'axon-dark',    label: 'AXON Dark',     bg: 'from-slate-950 to-slate-900',     accent: '#06b6d4', text: 'text-white',       border: 'border-cyan-500/30' },
+  { id: 'axon-cyan',   label: 'Cyan Highlight', bg: 'from-cyan-950 to-slate-900',      accent: '#22d3ee', text: 'text-white',       border: 'border-cyan-400/40' },
+  { id: 'axon-blue',   label: 'Deep Blue',      bg: 'from-blue-950 to-slate-950',      accent: '#60a5fa', text: 'text-white',       border: 'border-blue-400/40' },
+  { id: 'axon-purple', label: 'Neuro Purple',   bg: 'from-purple-950 to-slate-950',    accent: '#a78bfa', text: 'text-white',       border: 'border-purple-400/40' },
+  { id: 'axon-emerald',label: 'Rehab Green',    bg: 'from-emerald-950 to-slate-950',   accent: '#34d399', text: 'text-white',       border: 'border-emerald-400/40' },
+  { id: 'axon-light',  label: 'Light Mode',     bg: 'from-slate-100 to-white',         accent: '#0891b2', text: 'text-slate-900',   border: 'border-slate-300' },
+];
 
-const EMPTY_SLIDE = { title: '', text: '', visualIdea: '', imageUrl: null, isGenerating: false };
+// Grafische Elemente / Icons als SVG-Shapes
+const GRAPHIC_ELEMENTS = [
+  { id: 'none',    label: 'Keine',         render: () => null },
+  { id: 'brain',   label: 'Gehirn (Neuro)',render: (color) => (
+    <svg viewBox="0 0 100 100" className="w-full h-full opacity-15" fill={color}>
+      <ellipse cx="50" cy="45" rx="30" ry="25" /><ellipse cx="35" cy="60" rx="15" ry="12" /><ellipse cx="65" cy="60" rx="15" ry="12" />
+      <line x1="50" y1="20" x2="50" y2="70" stroke={color} strokeWidth="2" /><line x1="25" y1="45" x2="75" y2="45" stroke={color} strokeWidth="2" />
+    </svg>
+  )},
+  { id: 'network', label: 'Netzwerk',      render: (color) => (
+    <svg viewBox="0 0 100 100" className="w-full h-full opacity-15" stroke={color} strokeWidth="1.5" fill="none">
+      <circle cx="50" cy="50" r="6" fill={color} opacity="0.4"/>
+      <circle cx="20" cy="25" r="4" fill={color} opacity="0.4"/><circle cx="80" cy="25" r="4" fill={color} opacity="0.4"/>
+      <circle cx="20" cy="75" r="4" fill={color} opacity="0.4"/><circle cx="80" cy="75" r="4" fill={color} opacity="0.4"/>
+      <circle cx="50" cy="10" r="3" fill={color} opacity="0.3"/><circle cx="50" cy="90" r="3" fill={color} opacity="0.3"/>
+      <line x1="50" y1="50" x2="20" y2="25"/><line x1="50" y1="50" x2="80" y2="25"/>
+      <line x1="50" y1="50" x2="20" y2="75"/><line x1="50" y1="50" x2="80" y2="75"/>
+      <line x1="50" y1="50" x2="50" y2="10"/><line x1="50" y1="50" x2="50" y2="90"/>
+      <line x1="20" y1="25" x2="80" y2="25"/><line x1="20" y1="75" x2="80" y2="75"/>
+    </svg>
+  )},
+  { id: 'hexagons', label: 'Hexagone',    render: (color) => (
+    <svg viewBox="0 0 100 100" className="w-full h-full opacity-10" fill={color}>
+      {[[50,30],[25,47],[75,47],[50,64],[25,81],[75,81]].map(([cx,cy],i) => (
+        <polygon key={i} points={`${cx},${cy-12} ${cx+10},${cy-6} ${cx+10},${cy+6} ${cx},${cy+12} ${cx-10},${cy+6} ${cx-10},${cy-6}`} />
+      ))}
+    </svg>
+  )},
+  { id: 'wave',    label: 'Welle',         render: (color) => (
+    <svg viewBox="0 0 100 100" className="w-full h-full opacity-20" fill="none" stroke={color} strokeWidth="2">
+      <path d="M0,50 Q12,35 25,50 T50,50 T75,50 T100,50" /><path d="M0,60 Q12,45 25,60 T50,60 T75,60 T100,60" opacity="0.5"/>
+      <path d="M0,40 Q12,25 25,40 T50,40 T75,40 T100,40" opacity="0.5"/>
+    </svg>
+  )},
+  { id: 'dna',     label: 'DNA / Helix',   render: (color) => (
+    <svg viewBox="0 0 100 100" className="w-full h-full opacity-15" fill="none" stroke={color} strokeWidth="2">
+      <path d="M30,10 Q60,25 30,50 Q0,75 30,90" /><path d="M70,10 Q40,25 70,50 Q100,75 70,90" />
+      {[20,35,50,65,80].map((y,i) => <line key={i} x1="30" y1={y} x2="70" y2={y} opacity="0.5"/>)}
+    </svg>
+  )},
+  { id: 'arrow',   label: 'Pfeil / Fokus', render: (color) => (
+    <svg viewBox="0 0 100 100" className="w-full h-full opacity-20" fill={color}>
+      <polygon points="50,10 90,55 68,55 68,90 32,90 32,55 10,55" />
+    </svg>
+  )},
+  { id: 'dots',    label: 'Punkte-Muster', render: (color) => (
+    <svg viewBox="0 0 100 100" className="w-full h-full opacity-10" fill={color}>
+      {Array.from({length:7}, (_,row) => Array.from({length:7}, (_,col) => (
+        <circle key={`${row}-${col}`} cx={10+col*14} cy={10+row*14} r="2.5" />
+      )))}
+    </svg>
+  )},
+];
+
+const EMPTY_SLIDE = { title: '', text: '', theme: 'axon-dark', graphic: 'none', tag: '' };
+
+// Slide Preview Component
+function SlidePreview({ slide, index, total }) {
+  const theme = SLIDE_THEMES.find(t => t.id === slide.theme) || SLIDE_THEMES[0];
+  const graphicEl = GRAPHIC_ELEMENTS.find(g => g.id === slide.graphic) || GRAPHIC_ELEMENTS[0];
+
+  return (
+    <div className={`aspect-[4/5] rounded-2xl overflow-hidden relative bg-gradient-to-br ${theme.bg} border ${theme.border} flex flex-col`}>
+      {/* Background graphic */}
+      {graphicEl.id !== 'none' && (
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none">
+          <div className="w-3/4 h-3/4">
+            {graphicEl.render(theme.accent)}
+          </div>
+        </div>
+      )}
+
+      {/* Accent line top */}
+      <div className="absolute top-0 left-0 right-0 h-1 rounded-t-2xl" style={{ background: `linear-gradient(90deg, ${theme.accent}, transparent)` }} />
+
+      {/* Content */}
+      <div className={`relative z-10 flex flex-col h-full p-7 justify-between ${theme.text}`}>
+        {/* Header */}
+        <div className="flex items-center justify-between">
+          <span className="text-[9px] font-black tracking-[0.25em] uppercase" style={{ color: theme.accent }}>AXON-nap</span>
+          <span className="text-[9px] opacity-40">{index + 1}/{total}</span>
+        </div>
+
+        {/* Main content */}
+        <div className="flex-1 flex flex-col justify-center py-4 gap-3">
+          {slide.tag && (
+            <span className="text-[9px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-full w-fit" style={{ background: theme.accent + '22', color: theme.accent }}>
+              {slide.tag}
+            </span>
+          )}
+          {slide.title && (
+            <h2 className="text-xl font-black leading-tight">
+              {slide.title}
+            </h2>
+          )}
+          {slide.text && (
+            <p className="text-[11px] leading-relaxed opacity-80 whitespace-pre-wrap">
+              {slide.text}
+            </p>
+          )}
+          {!slide.title && !slide.text && (
+            <p className="opacity-30 text-xs italic">Folie bearbeiten...</p>
+          )}
+        </div>
+
+        {/* Footer */}
+        <div className="flex items-center gap-2">
+          <div className="w-0.5 h-6 rounded-full" style={{ background: theme.accent }} />
+          <span className="text-[9px] opacity-40 font-mono">axon-nap.de</span>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export default function CarouselBuilder() {
   const [slides, setSlides] = useState([
-    { ...EMPTY_SLIDE },
-    { ...EMPTY_SLIDE },
-    { ...EMPTY_SLIDE },
+    { ...EMPTY_SLIDE, theme: 'axon-cyan' },
+    { ...EMPTY_SLIDE, theme: 'axon-dark' },
+    { ...EMPTY_SLIDE, theme: 'axon-blue' },
   ]);
-  const [topic, setTopic] = useState('');
-  const [isParsingAgent, setIsParsingAgent] = useState(false);
   const [agentOutput, setAgentOutput] = useState('');
+  const [isParsingAgent, setIsParsingAgent] = useState(false);
   const [activeSlide, setActiveSlide] = useState(0);
+  const [copied, setCopied] = useState(false);
 
   const updateSlide = (index, field, value) => {
     setSlides(prev => prev.map((s, i) => i === index ? { ...s, [field]: value } : s));
   };
 
   const addSlide = () => {
-    setSlides(prev => [...prev, { ...EMPTY_SLIDE }]);
+    const themes = SLIDE_THEMES.map(t => t.id);
+    const nextTheme = themes[slides.length % themes.length];
+    setSlides(prev => [...prev, { ...EMPTY_SLIDE, theme: nextTheme }]);
     setActiveSlide(slides.length);
   };
 
   const removeSlide = (index) => {
+    if (slides.length <= 1) return;
     setSlides(prev => prev.filter((_, i) => i !== index));
-    setActiveSlide(Math.max(0, activeSlide - 1));
+    setActiveSlide(Math.max(0, activeSlide > 0 ? activeSlide - 1 : 0));
   };
 
   const moveSlide = (index, dir) => {
@@ -46,39 +166,21 @@ export default function CarouselBuilder() {
     setActiveSlide(target);
   };
 
-  const generateImageForSlide = async (index) => {
-    const slide = slides[index];
-    if (!slide.visualIdea && !slide.title) return;
-    updateSlide(index, 'isGenerating', true);
-    try {
-      const prompt = `LinkedIn Karussell Folie ${index + 1}: "${slide.title}". ${slide.visualIdea || slide.text}${AXON_STYLE_SUFFIX}`;
-      const result = await base44.integrations.Core.GenerateImage({ prompt });
-      updateSlide(index, 'imageUrl', result.url);
-    } finally {
-      updateSlide(index, 'isGenerating', false);
-    }
-  };
-
-  const generateAllImages = async () => {
-    for (let i = 0; i < slides.length; i++) {
-      if (!slides[i].imageUrl && (slides[i].visualIdea || slides[i].title)) {
-        await generateImageForSlide(i);
-      }
-    }
-  };
-
   const parseAgentOutput = async () => {
     if (!agentOutput.trim()) return;
     setIsParsingAgent(true);
     try {
       const result = await base44.integrations.Core.InvokeLLM({
-        prompt: `Extrahiere aus folgendem Agenten-Output die Karussell-Folien und gib sie als JSON zurück.
-        
+        prompt: `Extrahiere aus folgendem Agenten-Output die Karussell-Folien und gib sie als strukturiertes JSON zurück.
+
 Agenten-Output:
 ${agentOutput}
 
-Gib zurück als JSON Array: [{"title": "...", "text": "...", "visualIdea": "..."}, ...]
-Nur das JSON Array, kein anderer Text.`,
+Gib zurück: { "slides": [ { "title": "...", "text": "...", "tag": "optionaler kurzer Tag/Label" }, ... ] }
+- title: kurze, prägnante Überschrift (max. 8 Wörter)
+- text: Fließtext der Folie (max. 5 Sätze)
+- tag: optionaler Kategorie-Tag (z.B. "Tipp #1", "Fakt", "Warum?")
+Nur JSON zurückgeben, kein anderer Text.`,
         response_json_schema: {
           type: "object",
           properties: {
@@ -89,7 +191,7 @@ Nur das JSON Array, kein anderer Text.`,
                 properties: {
                   title: { type: "string" },
                   text: { type: "string" },
-                  visualIdea: { type: "string" }
+                  tag: { type: "string" }
                 }
               }
             }
@@ -97,7 +199,13 @@ Nur das JSON Array, kein anderer Text.`,
         }
       });
       if (result?.slides?.length > 0) {
-        setSlides(result.slides.map(s => ({ ...EMPTY_SLIDE, ...s })));
+        const themes = SLIDE_THEMES.map(t => t.id);
+        setSlides(result.slides.map((s, i) => ({
+          ...EMPTY_SLIDE,
+          ...s,
+          theme: themes[i % themes.length],
+          graphic: i === 0 ? 'network' : i % 3 === 1 ? 'dots' : 'none'
+        })));
         setActiveSlide(0);
       }
     } finally {
@@ -105,23 +213,31 @@ Nur das JSON Array, kein anderer Text.`,
     }
   };
 
-  const hasImages = slides.some(s => s.imageUrl);
-  const pendingSlides = slides.filter(s => !s.imageUrl && (s.visualIdea || s.title)).length;
+  const copyAllText = () => {
+    const text = slides.map((s, i) =>
+      `--- Folie ${i + 1} ---\n${s.tag ? `[${s.tag}]\n` : ''}${s.title}\n${s.text}`
+    ).join('\n\n');
+    navigator.clipboard.writeText(text);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  const active = slides[activeSlide] || slides[0];
 
   return (
     <div className="space-y-6">
       {/* Agent Output Parser */}
       <div className="glass rounded-2xl border border-purple-500/30 p-6">
-        <div className="flex items-center gap-3 mb-4">
+        <div className="flex items-center gap-3 mb-3">
           <Sparkles className="w-5 h-5 text-purple-400" />
           <h3 className="text-lg font-bold text-purple-400">Agenten-Output importieren</h3>
         </div>
-        <p className="text-xs text-slate-400 mb-3">Kopiere den kompletten Output des LinkedIn-Agenten hier rein – er wird automatisch in Folien umgewandelt.</p>
+        <p className="text-xs text-slate-400 mb-3">Kopiere den Output des LinkedIn-Agenten hier rein – er wird automatisch in Folien umgewandelt.</p>
         <textarea
           value={agentOutput}
           onChange={(e) => setAgentOutput(e.target.value)}
-          placeholder="Agenten-Output hier einfügen (Folie 1: Titel | Text | Visual-Idee ...)..."
-          className="w-full h-32 px-4 py-3 rounded-xl bg-slate-800 border border-slate-600 text-white text-sm placeholder-slate-500 focus:outline-none focus:border-purple-500/50 resize-none"
+          placeholder="Agenten-Output hier einfügen..."
+          className="w-full h-28 px-4 py-3 rounded-xl bg-slate-800 border border-slate-600 text-white text-sm placeholder-slate-500 focus:outline-none focus:border-purple-500/50 resize-none"
         />
         <Button
           onClick={parseAgentOutput}
@@ -133,92 +249,132 @@ Nur das JSON Array, kein anderer Text.`,
         </Button>
       </div>
 
-      {/* Slides Editor + Preview */}
+      {/* Editor + Preview */}
       <div className="grid lg:grid-cols-2 gap-6">
-        {/* Left: Slide List */}
-        <div className="space-y-3">
-          <div className="flex items-center justify-between mb-2">
+        {/* Left: Slide List + Editor */}
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
             <h3 className="text-base font-bold text-cyan-400">{slides.length} Folien</h3>
             <div className="flex gap-2">
-              {pendingSlides > 0 && (
-                <Button
-                  size="sm"
-                  onClick={generateAllImages}
-                  className="bg-cyan-600 hover:bg-cyan-700 gap-1.5 text-xs"
-                >
-                  <Image className="w-3.5 h-3.5" />
-                  Alle Bilder generieren ({pendingSlides})
-                </Button>
-              )}
+              <Button size="sm" variant="outline" onClick={copyAllText} className="border-slate-600 text-slate-300 gap-1.5 text-xs">
+                {copied ? <Check className="w-3.5 h-3.5 text-green-400" /> : <Copy className="w-3.5 h-3.5" />}
+                {copied ? 'Kopiert!' : 'Text kopieren'}
+              </Button>
               <Button size="sm" variant="outline" onClick={addSlide} className="border-slate-600 text-slate-300 gap-1.5 text-xs">
                 <Plus className="w-3.5 h-3.5" /> Folie
               </Button>
             </div>
           </div>
 
-          {slides.map((slide, index) => (
-            <motion.div
-              key={index}
-              layout
-              onClick={() => setActiveSlide(index)}
-              className={`rounded-xl border p-4 cursor-pointer transition-all ${
-                activeSlide === index
-                  ? 'border-cyan-500/60 bg-cyan-500/5'
-                  : 'border-slate-700 bg-slate-800/40 hover:border-slate-600'
-              }`}
-            >
-              <div className="flex items-start gap-3">
-                <span className="w-6 h-6 rounded-full bg-slate-700 text-slate-300 text-xs flex items-center justify-center font-bold flex-shrink-0 mt-0.5">
-                  {index + 1}
-                </span>
-                <div className="flex-1 min-w-0">
-                  <input
-                    type="text"
-                    value={slide.title}
-                    onChange={(e) => updateSlide(index, 'title', e.target.value)}
-                    placeholder="Folientitel..."
-                    onClick={(e) => e.stopPropagation()}
-                    className="w-full bg-transparent text-sm font-semibold text-white placeholder-slate-500 focus:outline-none mb-1"
-                  />
-                  <textarea
-                    value={slide.text}
-                    onChange={(e) => updateSlide(index, 'text', e.target.value)}
-                    placeholder="Text der Folie..."
-                    onClick={(e) => e.stopPropagation()}
-                    className="w-full bg-transparent text-xs text-slate-400 placeholder-slate-600 focus:outline-none resize-none leading-relaxed"
-                    rows={2}
-                  />
-                  <input
-                    type="text"
-                    value={slide.visualIdea}
-                    onChange={(e) => updateSlide(index, 'visualIdea', e.target.value)}
-                    placeholder="Visual-Idee für KI-Bild..."
-                    onClick={(e) => e.stopPropagation()}
-                    className="w-full bg-transparent text-xs text-purple-400/70 placeholder-slate-600 focus:outline-none mt-1"
-                  />
-                </div>
-                <div className="flex flex-col gap-1 flex-shrink-0">
-                  <button onClick={(e) => { e.stopPropagation(); moveSlide(index, -1); }} className="p-1 text-slate-500 hover:text-slate-300 transition-colors">
-                    <ChevronUp className="w-3.5 h-3.5" />
-                  </button>
-                  <button onClick={(e) => { e.stopPropagation(); moveSlide(index, 1); }} className="p-1 text-slate-500 hover:text-slate-300 transition-colors">
-                    <ChevronDown className="w-3.5 h-3.5" />
-                  </button>
-                  <button
-                    onClick={(e) => { e.stopPropagation(); generateImageForSlide(index); }}
-                    disabled={slide.isGenerating}
-                    className="p-1 text-purple-400 hover:text-purple-300 transition-colors disabled:opacity-50"
-                    title="Bild generieren"
-                  >
-                    {slide.isGenerating ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : slide.imageUrl ? <Check className="w-3.5 h-3.5 text-green-400" /> : <Image className="w-3.5 h-3.5" />}
-                  </button>
-                  <button onClick={(e) => { e.stopPropagation(); removeSlide(index); }} className="p-1 text-slate-600 hover:text-red-400 transition-colors">
-                    <Trash2 className="w-3.5 h-3.5" />
-                  </button>
+          {/* Slide List */}
+          <div className="space-y-2">
+            {slides.map((slide, index) => {
+              const theme = SLIDE_THEMES.find(t => t.id === slide.theme) || SLIDE_THEMES[0];
+              return (
+                <motion.div
+                  key={index}
+                  layout
+                  onClick={() => setActiveSlide(index)}
+                  className={`rounded-xl border p-3 cursor-pointer transition-all ${
+                    activeSlide === index
+                      ? 'border-cyan-500/60 bg-cyan-500/5'
+                      : 'border-slate-700 bg-slate-800/40 hover:border-slate-600'
+                  }`}
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="w-5 h-5 rounded-full flex-shrink-0" style={{ background: theme.accent }} />
+                    <span className="w-5 h-5 rounded-full bg-slate-700 text-slate-300 text-xs flex items-center justify-center font-bold flex-shrink-0">
+                      {index + 1}
+                    </span>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-semibold text-white truncate">{slide.title || <span className="text-slate-600 italic text-xs">Kein Titel</span>}</p>
+                      {slide.text && <p className="text-xs text-slate-500 truncate mt-0.5">{slide.text}</p>}
+                    </div>
+                    <div className="flex items-center gap-0.5 flex-shrink-0">
+                      <button onClick={(e) => { e.stopPropagation(); moveSlide(index, -1); }} className="p-1 text-slate-500 hover:text-slate-300"><ChevronUp className="w-3.5 h-3.5" /></button>
+                      <button onClick={(e) => { e.stopPropagation(); moveSlide(index, 1); }} className="p-1 text-slate-500 hover:text-slate-300"><ChevronDown className="w-3.5 h-3.5" /></button>
+                      <button onClick={(e) => { e.stopPropagation(); removeSlide(index); }} className="p-1 text-slate-600 hover:text-red-400"><Trash2 className="w-3.5 h-3.5" /></button>
+                    </div>
+                  </div>
+                </motion.div>
+              );
+            })}
+          </div>
+
+          {/* Active Slide Editor */}
+          {active && (
+            <div className="glass rounded-xl border border-slate-700 p-5 space-y-4">
+              <h4 className="text-sm font-bold text-slate-300">Folie {activeSlide + 1} bearbeiten</h4>
+
+              <div>
+                <label className="text-xs text-slate-500 mb-1 block">Tag / Label (optional)</label>
+                <input
+                  type="text"
+                  value={active.tag}
+                  onChange={(e) => updateSlide(activeSlide, 'tag', e.target.value)}
+                  placeholder="z.B. Tipp #1 · Fakt · Warum?"
+                  className="w-full px-3 py-2 rounded-lg bg-slate-800 border border-slate-600 text-white text-sm placeholder-slate-500 focus:outline-none focus:border-cyan-500/50"
+                />
+              </div>
+
+              <div>
+                <label className="text-xs text-slate-500 mb-1 block">Titel</label>
+                <input
+                  type="text"
+                  value={active.title}
+                  onChange={(e) => updateSlide(activeSlide, 'title', e.target.value)}
+                  placeholder="Kurze, prägnante Überschrift..."
+                  className="w-full px-3 py-2 rounded-lg bg-slate-800 border border-slate-600 text-white text-sm placeholder-slate-500 focus:outline-none focus:border-cyan-500/50"
+                />
+              </div>
+
+              <div>
+                <label className="text-xs text-slate-500 mb-1 block">Text</label>
+                <textarea
+                  value={active.text}
+                  onChange={(e) => updateSlide(activeSlide, 'text', e.target.value)}
+                  placeholder="Inhalt der Folie..."
+                  rows={4}
+                  className="w-full px-3 py-2 rounded-lg bg-slate-800 border border-slate-600 text-white text-sm placeholder-slate-500 focus:outline-none focus:border-cyan-500/50 resize-none leading-relaxed"
+                />
+              </div>
+
+              {/* Theme picker */}
+              <div>
+                <label className="text-xs text-slate-500 mb-2 block">Farbschema</label>
+                <div className="flex flex-wrap gap-2">
+                  {SLIDE_THEMES.map(t => (
+                    <button
+                      key={t.id}
+                      onClick={() => updateSlide(activeSlide, 'theme', t.id)}
+                      title={t.label}
+                      className={`w-7 h-7 rounded-full bg-gradient-to-br ${t.bg} border-2 transition-all ${active.theme === t.id ? 'border-white scale-110' : 'border-transparent hover:scale-105'}`}
+                    />
+                  ))}
                 </div>
               </div>
-            </motion.div>
-          ))}
+
+              {/* Graphic picker */}
+              <div>
+                <label className="text-xs text-slate-500 mb-2 block">Hintergrund-Grafik</label>
+                <div className="flex flex-wrap gap-2">
+                  {GRAPHIC_ELEMENTS.map(g => (
+                    <button
+                      key={g.id}
+                      onClick={() => updateSlide(activeSlide, 'graphic', g.id)}
+                      className={`px-2.5 py-1 rounded-lg text-xs border transition-all ${
+                        active.graphic === g.id
+                          ? 'border-cyan-500/60 bg-cyan-500/10 text-cyan-400'
+                          : 'border-slate-700 bg-slate-800 text-slate-400 hover:border-slate-500'
+                      }`}
+                    >
+                      {g.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Right: Preview */}
@@ -226,103 +382,46 @@ Nur das JSON Array, kein anderer Text.`,
           <h3 className="text-base font-bold text-slate-300 mb-3">Vorschau – Folie {activeSlide + 1}</h3>
           <AnimatePresence mode="wait">
             <motion.div
-              key={activeSlide}
-              initial={{ opacity: 0, scale: 0.96 }}
+              key={activeSlide + '-' + active?.theme + '-' + active?.graphic}
+              initial={{ opacity: 0, scale: 0.97 }}
               animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.96 }}
+              exit={{ opacity: 0, scale: 0.97 }}
               transition={{ duration: 0.15 }}
-              className="aspect-[4/5] rounded-2xl overflow-hidden relative bg-gradient-to-br from-slate-900 to-slate-950 border border-slate-700 flex flex-col"
             >
-              {slides[activeSlide]?.imageUrl ? (
-                <img
-                  src={slides[activeSlide].imageUrl}
-                  alt="Generated"
-                  className="absolute inset-0 w-full h-full object-cover opacity-60"
-                />
-              ) : (
-                <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-slate-900 to-cyan-950/30" />
-              )}
-              {/* AXON Brand overlay */}
-              <div className="relative z-10 flex flex-col h-full p-8 justify-between">
-                <div className="flex items-center justify-between">
-                  <span className="text-[10px] font-black tracking-widest text-cyan-400/80 uppercase">AXON-nap</span>
-                  <span className="text-[10px] text-slate-500">{activeSlide + 1}/{slides.length}</span>
-                </div>
-                <div>
-                  {slides[activeSlide]?.title && (
-                    <h2 className="text-2xl font-black text-white leading-tight mb-4">
-                      {slides[activeSlide].title}
-                    </h2>
-                  )}
-                  {slides[activeSlide]?.text && (
-                    <p className="text-sm text-slate-300 leading-relaxed">
-                      {slides[activeSlide].text}
-                    </p>
-                  )}
-                  {!slides[activeSlide]?.title && !slides[activeSlide]?.text && (
-                    <p className="text-slate-600 text-sm italic">Folie bearbeiten...</p>
-                  )}
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-1 h-8 bg-cyan-400 rounded-full" />
-                  <span className="text-[10px] text-slate-500 font-mono">axon-nap.de</span>
-                </div>
-              </div>
-              {/* Generate button overlay if no image */}
-              {!slides[activeSlide]?.imageUrl && !slides[activeSlide]?.isGenerating && (
-                <button
-                  onClick={() => generateImageForSlide(activeSlide)}
-                  className="absolute bottom-4 right-4 z-20 flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-purple-600/80 hover:bg-purple-600 text-white text-xs font-semibold transition-all backdrop-blur-sm"
-                >
-                  <Image className="w-3.5 h-3.5" />
-                  Bild generieren
-                </button>
-              )}
-              {slides[activeSlide]?.isGenerating && (
-                <div className="absolute inset-0 z-20 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm">
-                  <div className="flex flex-col items-center gap-3">
-                    <Loader2 className="w-8 h-8 text-cyan-400 animate-spin" />
-                    <p className="text-xs text-slate-400">Generiere Bild...</p>
-                  </div>
-                </div>
-              )}
+              <SlidePreview slide={active} index={activeSlide} total={slides.length} />
             </motion.div>
           </AnimatePresence>
 
           {/* Navigation dots */}
           <div className="flex justify-center gap-1.5 mt-3">
-            {slides.map((s, i) => (
+            {slides.map((_, i) => (
               <button
                 key={i}
                 onClick={() => setActiveSlide(i)}
-                className={`rounded-full transition-all ${
-                  i === activeSlide ? 'w-4 h-2 bg-cyan-400' : 'w-2 h-2 bg-slate-600 hover:bg-slate-400'
-                }`}
+                className={`rounded-full transition-all ${i === activeSlide ? 'w-4 h-2 bg-cyan-400' : 'w-2 h-2 bg-slate-600 hover:bg-slate-400'}`}
               />
             ))}
           </div>
 
-          {/* Download all images */}
-          {hasImages && (
-            <div className="mt-4 space-y-2">
-              <p className="text-xs text-slate-500 text-center">Bilder speichern</p>
-              <div className="grid grid-cols-2 gap-2">
-                {slides.filter(s => s.imageUrl).map((s, i) => (
-                  <a
+          {/* Theme preview row */}
+          <div className="mt-4 p-3 rounded-xl bg-slate-800/50 border border-slate-700">
+            <p className="text-xs text-slate-500 mb-2">Alle Folien – Farbübersicht</p>
+            <div className="flex gap-2 flex-wrap">
+              {slides.map((s, i) => {
+                const t = SLIDE_THEMES.find(th => th.id === s.theme) || SLIDE_THEMES[0];
+                return (
+                  <button
                     key={i}
-                    href={s.imageUrl}
-                    download={`axon-karussell-folie-${i + 1}.jpg`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-slate-800 border border-slate-700 hover:border-cyan-500/40 text-xs text-slate-300 hover:text-cyan-400 transition-all"
+                    onClick={() => setActiveSlide(i)}
+                    className={`flex items-center gap-1.5 px-2 py-1 rounded-lg border text-xs transition-all ${i === activeSlide ? 'border-cyan-500/60 text-cyan-400' : 'border-slate-700 text-slate-400 hover:border-slate-500'}`}
                   >
-                    <Download className="w-3.5 h-3.5" />
-                    Folie {slides.indexOf(s) + 1}
-                  </a>
-                ))}
-              </div>
+                    <div className={`w-3 h-3 rounded-full bg-gradient-to-br ${t.bg} border border-slate-600`} />
+                    {i + 1}
+                  </button>
+                );
+              })}
             </div>
-          )}
+          </div>
         </div>
       </div>
     </div>
