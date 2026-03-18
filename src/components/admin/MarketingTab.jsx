@@ -114,20 +114,27 @@ export default function MarketingTab() {
     if (!aiTopic.trim()) return;
     setIsGenerating(true);
     setGeneratedPost('');
+    const categoryPrompt = CATEGORY_PROMPTS[selectedCategory] || CATEGORY_PROMPTS.neuro_happen;
     try {
       const result = await base44.integrations.Core.InvokeLLM({
-        prompt: `Erstelle einen professionellen LinkedIn-Post für Vanessa Schumacher, Gründerin von AXON Protocol (axon-nap.de).
+        prompt: `Du bist Vanessa Schumachers LinkedIn Content-Stratege für AXON-nap (axon-nap.de).
+WICHTIG: Kein werblicher CTA wie "Jetzt testen" oder "App laden". Mehrwert und Wissen stehen im Vordergrund.
 
-Thema: ${aiTopic}
+${categoryPrompt}
 
-AXON ist ein Neuro-Athletic-Protokoll basierend auf:
-- Faszien-Wissenschaft (Stecco, Myers)
-- Neuro-Drills (neurologische Steuerung)
+Thema / Kontext: ${aiTopic}
+
+AXON-Wissenshintergrund:
+- Faszien-Wissenschaft (Stecco, Myers, Schleip)
+- Neuro-Drills (neurologische Steuerung der Bewegung)
 - Bewegungsintegration (McGill, Starrett, Gray Cook)
+- Hardware (Körper/Faszien) vs. Software (Nervensystem) Denken
 
-Stil: Authentisch, direkt, wissenschaftlich fundiert aber verständlich. Deutsche Sprache. 
-Keine Hashtag-Flut. Max 4-5 relevante Hashtags am Ende.
-Länge: 150-250 Wörter. Mit Zeilenumbrüchen für Lesbarkeit auf Mobile.`,
+Format:
+- Deutsche Sprache, authentische Stimme von Vanessa
+- Zeilenumbrüche für Mobile-Lesbarkeit
+- 150-250 Wörter
+- Max 4-5 Hashtags am Ende (Wissens-/Community-Fokus, kein Brand-Spam)`,
       });
       setGeneratedPost(result);
     } catch (e) {
