@@ -631,6 +631,11 @@ export default function AdminHub() {
             <MarketingTab />
           </TabsContent>
 
+          {/* Kanban Tab */}
+          <TabsContent value="kanban" className="mt-0">
+            <ContentKanban />
+          </TabsContent>
+
           {/* Mapping Tab */}
           <TabsContent value="mapping" className="mt-0">
             <ExerciseMappingTab />
