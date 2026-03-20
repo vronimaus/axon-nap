@@ -106,7 +106,7 @@ export default function TrainingExerciseCard({ exercise, idx, onDetailClick, isO
     if (level === 'advanced' && fullExercise.progression_advanced) {
       return { description: fullExercise.progression_advanced.description, focus: fullExercise.progression_advanced.focus };
     }
-    return { description: fullExercise.instruction || fullExercise.description, focus: fullExercise.axon_moment };
+    return { description: fullExercise.description || fullExercise.instruction, focus: fullExercise.axon_moment };
   }, [level, fullExercise]);
 
   const handleFinishClick = (e) => {
