@@ -118,8 +118,14 @@ Deno.serve(async (req) => {
       if (ex.exercise_id) exerciseLookup[ex.exercise_id] = ex;
     }
 
+    const performanceLabel = isPerformanceGoal
+      ? `⚡ PERFORMANCE-MODUS AKTIV: Der User ist ${expLvl}/${activityLvl} und will "${goal_description}". Das ist ein klares Performance-Ziel. Der Performance-Block MUSS dominant sein – harte Belastung, hohe Intensität, progressive Überlastung über die 3 Phasen. Keine lasche Herangehensweise.`
+      : `Balanced-Modus: Ausgewogener Ansatz mit Neuro + Performance.`;
+
     const planData = await base44.integrations.Core.InvokeLLM({
       prompt: `Du bist AXON V2, ein Elite-Neuro-Athletik-System. Erstelle einen "Fluid Logic" Trainingsplan basierend auf Stecco-Faszien-Mechanik.
+
+    ${performanceLabel}
 
     PROFIL:
     Ziel: "${goal_description}"
@@ -132,25 +138,33 @@ Deno.serve(async (req) => {
     AXON FLUID LOGIC (V2) STRUKTUR
     ════════════════════════════════════════════
     Erstelle 3 progressive Phasen (Foundation, Development, Mastery).
-    JEDE Phase repräsentiert eine komplette SESSION-Struktur und MUSS 7-10 Übungen enthalten, strikt unterteilt in diese 4 Blöcke:
+    JEDE Phase repräsentiert eine komplette SESSION-Struktur und MUSS 8-12 Übungen enthalten, strikt unterteilt in diese 4 Blöcke:
 
-    1. NEURO-PRIMER (1-2 Übungen)
-    - Ziel: Input für das Gehirn (Vision, Vestibular, Atmung).
+    1. NEURO-PRIMER (1-2 Übungen, MAX 2)
+    - Ziel: Kurze neuronale Aktivierung (Vision, Vestibular, Atmung).
     - Typ: 'neuro', 'breath', 'mobility' (Hals/Nacken).
+    - WICHTIG: Kurz halten – dieser Block darf den Performance-Block nicht dominieren.
 
     2. SLING-ACTIVATION (2-3 Übungen)
-    - Ziel: Fasziale Ketten "aufwecken" & Gelenk-Vorbereitung.
+    - Ziel: Fasziale Ketten "aufwecken" & Gelenk-Vorbereitung für den Hauptreiz.
     - Typ: 'mobility', 'mfr', 'core', 'plank'.
     - Fokus auf Stecco-Nodes N1-N12.
+    - Bei Performance-Zielen: Wähle Aktivierungs-Übungen die direkt auf die Ziel-Bewegungsmuster vorbereiten.
 
-    3. PERFORMANCE-BLOCK (3-4 Übungen)
-    - Ziel: Der Hauptreiz (Kraft, Skill, Power).
-    - Typ: 'strength', 'explosive', 'squat', 'hinge', 'push', 'pull'.
-    - Progression über die 3 Phasen (Iso -> Exzentrik -> Dynamik).
+    3. PERFORMANCE-BLOCK (4-6 Übungen) ← HAUPTFOKUS
+    - Ziel: Der primäre Trainingsreiz. Dieser Block IST der Plan.
+    - Typ: 'push', 'pull', 'squat', 'hinge', 'carry', 'dip', 'row', 'explosive', 'core'.
+    - Bei Performance-Zielen: Wähle die schwersten, direktesten Übungen für das Ziel.
+    - sets_reps_tempo MUSS der Intensität entsprechen:
+      * Anfänger: 3x8-12, moderate Intensität
+      * Intermediate: 4x6-10, hohe Intensität  
+      * Advanced/Elite: 5x3-8 oder AMRAP/Circuit-Protokolle, maximale Intensität
+    - Progression über die 3 Phasen: Phase 1 (Volumen-Aufbau) → Phase 2 (Intensität) → Phase 3 (Peak/Max).
+    - intensity_factor: Phase 1 = 1.5-2.0, Phase 2 = 2.0-2.5, Phase 3 = 2.5-3.0
 
     4. RESILIENCE / COOL-DOWN (1-2 Übungen)
     - Ziel: De-Tonisierung & Integration.
-    - Typ: 'breath', 'mfr', 'flow'.
+    - Typ: 'breath', 'mfr', 'mobility'.
 
     ════════════════════════════════════════════
     STECCO NODE MAPPING (Verwende diese IDs für 'target_nodes')
