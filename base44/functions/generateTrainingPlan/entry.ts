@@ -97,7 +97,7 @@ Deno.serve(async (req) => {
       return { ex: e, score };
     });
     scored.sort((a, b) => b.score - a.score);
-    const filteredExercises = scored.slice(0, 80).map(s => s.ex);
+    const filteredExercises = scored.slice(0, 50).map(s => s.ex);
 
     const exerciseCatalog = filteredExercises
       .map(e => {
