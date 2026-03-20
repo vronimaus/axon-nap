@@ -61,6 +61,11 @@ Deno.serve(async (req) => {
     // Build compact exercise catalog — smart-filter to max 80 relevant exercises
     const validExercises = allExercises.filter(e => e.exercise_id);
 
+    // Determine performance orientation from goal + level
+    const isPerformanceGoal = ['advanced', 'elite', 'athlete'].includes(expLvl) ||
+      ['very_active', 'athlete'].includes(activityLvl) ||
+      /burpee|pull.?up|push.?up|squat|sprint|jump|planche|muscle.?up|handstand|pistol|dip|carry|deadlift|bench|press|power|strength|performance|100|50|max/i.test(goal_description);
+
     // Score exercises by relevance to goal_description + user level
     const goalLower = (goal_description + ' ' + expLvl + ' ' + sport).toLowerCase();
     const scored = validExercises.map(e => {
@@ -68,14 +73,27 @@ Deno.serve(async (req) => {
       const text = [e.name, e.category, e.difficulty, (e.related_performance_goals || []).join(' '), (e.mechanical_impact_type || []).join(' ')].join(' ').toLowerCase();
       // Boost if goal keywords match
       const keywords = goalLower.split(/\s+/).filter(w => w.length > 3);
-      for (const kw of keywords) { if (text.includes(kw)) score += 2; }
+      for (const kw of keywords) { if (text.includes(kw)) score += 3; }
       // Boost by difficulty match
-      if (e.difficulty === expLvl) score += 3;
-      if (e.difficulty === 'beginner' && expLvl === 'beginner') score += 2;
-      if (e.difficulty === 'advanced' && (expLvl === 'advanced' || expLvl === 'elite')) score += 2;
-      // Ensure coverage of all categories
-      if (['neuro', 'breath'].includes(e.category)) score += 2;
-      if (['mobility', 'mfr'].includes(e.category)) score += 1;
+      if (e.difficulty === 'intermediate' && (expLvl === 'intermediate')) score += 3;
+      if (e.difficulty === 'advanced' && (expLvl === 'advanced' || expLvl === 'elite')) score += 5;
+      if (e.difficulty === 'beginner' && expLvl === 'beginner') score += 3;
+
+      if (isPerformanceGoal) {
+        // Performance-focused: heavily favor strength, power, conditioning exercises
+        if (['push', 'pull', 'squat', 'hinge', 'carry', 'dip', 'row', 'core', 'plank'].includes(e.category)) score += 4;
+        if (['explosive'].includes(e.category)) score += 5;
+        if ((e.mechanical_impact_type || []).includes('strength')) score += 3;
+        if ((e.mechanical_impact_type || []).includes('explosive')) score += 4;
+        // Neuro/Breath still needed but reduced priority
+        if (['neuro', 'breath'].includes(e.category)) score += 1;
+        if (['mobility', 'mfr'].includes(e.category)) score += 1;
+      } else {
+        // Balanced: equal weight for all categories
+        if (['neuro', 'breath'].includes(e.category)) score += 2;
+        if (['mobility', 'mfr'].includes(e.category)) score += 2;
+        if (['push', 'pull', 'squat', 'hinge'].includes(e.category)) score += 2;
+      }
       return { ex: e, score };
     });
     scored.sort((a, b) => b.score - a.score);
