@@ -102,8 +102,7 @@ Deno.serve(async (req) => {
     const exerciseCatalog = filteredExercises
       .map(e => {
         const tags = [e.category, e.difficulty].filter(Boolean).join('|');
-        const goals = (e.related_performance_goals || []).slice(0, 2).join(',');
-        return `${e.exercise_id}: "${e.name}" [${tags}]${goals ? ' Ziele:' + goals : ''}`;
+        return `${e.exercise_id}: "${e.name}" [${tags}]`;
       })
       .join('\n');
 
