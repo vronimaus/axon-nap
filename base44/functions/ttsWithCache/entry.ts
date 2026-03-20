@@ -189,13 +189,16 @@ Deno.serve(async (req) => {
     const combinedPCM = audioChunks.length === 1 ? audioChunks[0] : combineBase64PCM(audioChunks);
     const wavBase64 = buildWavFromPCMBase64(combinedPCM);
 
-    // 4. Upload to private storage
+    // 4. Upload to private storage using multipart/form-data
     const wavBinary = atob(wavBase64);
     const wavBytes = new Uint8Array(wavBinary.length);
     for (let i = 0; i < wavBinary.length; i++) wavBytes[i] = wavBinary.charCodeAt(i);
     const wavBlob = new Blob([wavBytes], { type: 'audio/wav' });
 
-    const { file_uri } = await base44.integrations.Core.UploadPrivateFile({ file: wavBlob });
+    const formData = new FormData();
+    formData.append('file', wavBlob, `tts_${textHash.substring(0, 12)}.wav`);
+
+    const { file_uri } = await base44.integrations.Core.UploadPrivateFile({ file: formData.get('file') });
     console.log(`[TTS Cache] Uploaded to: ${file_uri}`);
 
     // 5. Save to cache entity
