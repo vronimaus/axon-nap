@@ -118,7 +118,8 @@ Deno.serve(async (req) => {
     }
 
     // Choose model and build mode-specific prompt context
-    const llmModel = isPerformanceGoal ? 'gpt_5' : undefined;
+    // Use default model — heavy models (gpt_5, claude) exceed Deno Deploy's CPU/time limits
+    const llmModel = undefined;
 
     const performancePromptSection = isPerformanceGoal ? `
     ════════════════════════════════════════════
