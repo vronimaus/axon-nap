@@ -92,7 +92,7 @@ Deno.serve(async (req) => {
     // ID-only list for strict constraint (only filtered ones in prompt)
     const exactIdList = filteredExercises.map(e => e.exercise_id).join(', ');
 
-    console.log(`[generateTrainingPlan] Goal: ${goal_description}, Exercises: ${availableExerciseIds.length}`);
+    console.log(`[generateTrainingPlan] Goal: ${goal_description}, Exercises total: ${validExercises.length}, filtered for prompt: ${filteredExercises.length}`);
 
     // Build exercise lookup for enrichment
     const exerciseLookup = {};
