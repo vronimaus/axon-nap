@@ -118,10 +118,6 @@ Deno.serve(async (req) => {
       if (ex.exercise_id) exerciseLookup[ex.exercise_id] = ex;
     }
 
-    const performanceLabel = isPerformanceGoal
-      ? `⚡ PERFORMANCE-MODUS AKTIV: Der User ist ${expLvl}/${activityLvl} und will "${goal_description}". Das ist ein klares Performance-Ziel. Der Performance-Block MUSS dominant sein – harte Belastung, hohe Intensität, progressive Überlastung über die 3 Phasen. Keine lasche Herangehensweise.`
-      : `Balanced-Modus: Ausgewogener Ansatz mit Neuro + Performance.`;
-
     // Choose model and build mode-specific prompt context
     const llmModel = isPerformanceGoal ? 'claude_sonnet_4_6' : undefined;
 
