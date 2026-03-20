@@ -271,8 +271,9 @@ Deno.serve(async (req) => {
             return {
               ...exercise,
               name: dbEx.name || exercise.name,
+              instruction: dbEx.description || dbEx.instruction || exercise.instruction,
               description: dbEx.description || exercise.instruction,
-              axon_moment: dbEx.axon_moment,
+              axon_moment: dbEx.axon_moment || exercise.notes,
               breathing_instruction: dbEx.breathing_instruction,
               purpose_explanation: dbEx.purpose_explanation,
               cues: dbEx.cues,

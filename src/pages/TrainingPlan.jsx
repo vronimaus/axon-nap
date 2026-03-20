@@ -218,7 +218,7 @@ export default function TrainingPlan() {
                   <div className="w-14 h-14 rounded-full p-[2px] bg-gradient-to-b from-cyan-400 to-purple-500 shadow-[0_0_15px_rgba(6,182,212,0.4)]">
                     <div className="w-full h-full rounded-full overflow-hidden bg-slate-900">
                       <img 
-                        src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/36d608561_Gemini_Generated_Image_y1tl62y1tl62y1tl.png" 
+                        src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/26f8e99a4_Gemini_Generated_Image_y1tl62y1tl62y1tl.png" 
                         alt="Coach" 
                         className="w-full h-full object-cover" 
                       />
