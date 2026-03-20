@@ -156,13 +156,14 @@ ${extraContext ? '\nNUTZERKONTEXT:\n' + extraContext : ''}
 ZIEL-FASZIEN-KETTEN (aus Schmerzregion erkannt):
 ${targetSlings.length > 0 ? targetSlings.join(', ') : 'alle Ketten berücksichtigen'}
 
-===== ABSOLUT ZWINGENDE REGELN =====
-1. Verwende NUR exercise_ids aus dem ÜBUNGSKATALOG unten. NIEMALS erfinden.
-2. Kopiere die exercise_id EXAKT so wie sie im Katalog steht.
-3. JEDE Phase MUSS 5-7 VERSCHIEDENE Übungen enthalten.
-4. Die 3 Phasen MÜSSEN sich deutlich voneinander unterscheiden – andere Übungen, andere Progression.
-5. sets_reps_tempo MUSS sehr konkret sein, z.B. "3×10 langsam (3 Sek. runter, 1 Sek. oben)", "2×60 Sek. halten", "4×8 explosiv".
-6. notes MUSS den AXON-Moment beschreiben (was der User fühlen/lernen soll). Sei spezifisch.
+===== ABSOLUT ZWINGENDE REGELN – VERLETZUNG = FEHLER =====
+1. Du MUSST NUR exercise_ids aus der EXAKTEN ID-LISTE unten verwenden. Jede andere ID ist ein fataler Fehler.
+2. Kopiere jede exercise_id BUCHSTABEN- UND ZEICHENGENAU aus der ID-LISTE (z.B. "BW_COR_001_DYN" nicht "Dead Bug").
+3. Schreibe NIEMALS Namen als exercise_id. Nur IDs aus der Liste.
+4. JEDE Phase MUSS 5-7 VERSCHIEDENE Übungen enthalten.
+5. Die 3 Phasen MÜSSEN sich deutlich voneinander unterscheiden – andere IDs, andere Progression.
+6. sets_reps_tempo MUSS sehr konkret sein, z.B. "3×10 langsam (3 Sek. runter, 1 Sek. oben)", "2×60 Sek. halten", "4×8 explosiv".
+7. notes MUSS den AXON-Moment beschreiben (was der User fühlen/lernen soll). Sei spezifisch.
 
 ===== PHASEN-PHILOSOPHIE (CRITICAL – unterschiedliche Übungen pro Phase!) =====
 
@@ -187,7 +188,10 @@ PHASE 3 – "INTEGRATE & PERFORM" (Performance-Phase):
 → duration_days: Typisch 7-14 Tage. Wähle konservativ wenn Phase 1/2 kurz waren.
 → phase_rationale: Erkläre KURZ warum du genau diese Dauer gewählt hast.
 
-===== ÜBUNGSKATALOG (ALLE IDs sind real – EXAKT so übernehmen) =====
+===== ERLAUBTE EXERCISE_IDs – NUR DIESE VERWENDEN =====
+${exactIdList}
+
+===== ÜBUNGSKATALOG (Details zu den IDs oben) =====
 ${exerciseCatalog}
 
 ===== VERFÜGBARE ROUTINE-IDs =====

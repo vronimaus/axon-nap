@@ -125,9 +125,13 @@ Deno.serve(async (req) => {
     - Wähle Übungen, die mechanisch und neurologisch Sinn ergeben.
     - 'intensity_factor': 1.0 (Neuro/Rehab) bis 3.0 (Max Power).
     - 'sling_id': anterior, posterior, lateral, deep_frontal.
-    - Nutze NUR die unten gelisteten 'exercise_id's.
+    - KRITISCH: Nutze AUSSCHLIESSLICH exercise_ids aus der ERLAUBTEN ID-LISTE. Jede andere ID ist ein fataler Fehler.
+    - Schreibe NIEMALS Übungsnamen als exercise_id – nur exakte IDs aus der Liste unten.
 
-    VERFÜGBARE ÜBUNGEN (ID: Name [Tags]):
+    ===== ERLAUBTE EXERCISE_IDs – NUR DIESE VERWENDEN =====
+    ${exactIdList}
+
+    VERFÜGBARE ÜBUNGEN (Details zu den IDs oben):
     ${exerciseCatalog}
 
     Verfügbare Routinen:
