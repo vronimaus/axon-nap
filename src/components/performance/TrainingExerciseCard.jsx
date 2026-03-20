@@ -78,7 +78,6 @@ export default function TrainingExerciseCard({ exercise, idx, onDetailClick, isO
               ...prev,
               ...dbEx,
               sets_reps_tempo: exercise.sets_reps_tempo || dbEx.sets_reps_tempo,
-              instruction: dbEx.description || dbEx.instruction || exercise.instruction,
             }));
 
             const specs = exercise.sets_reps_tempo || dbEx.sets_reps_tempo || "3x12";
