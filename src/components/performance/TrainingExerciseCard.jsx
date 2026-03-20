@@ -55,9 +55,7 @@ export default function TrainingExerciseCard({ exercise, idx, onDetailClick, isO
   const isExpanded = isOpen !== undefined ? isOpen : localExpanded;
 
   const [fullExercise, setFullExercise] = useState(exercise);
-  // Always start at 'standard' to show the main DB description. 
-  // defaultLevel is only used as initial if it's explicitly 'basic'.
-  const [level, setLevel] = useState(defaultLevel === 'basic' ? 'basic' : 'standard');
+  const [level, setLevel] = useState(defaultLevel || 'standard');
 
   const [sets, setSets] = useState(3);
   const [reps, setReps] = useState(12);
