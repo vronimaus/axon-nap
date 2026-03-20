@@ -58,19 +58,39 @@ Deno.serve(async (req) => {
     const availableRoutineIds = allRoutines.slice(0, 10).map(r => r.id).filter(Boolean);
     const availableFaqIds = allFaqs.slice(0, 10).map(f => f.faq_id).filter(Boolean);
 
-    // Build compact exercise catalog — only EXACT IDs from DB
+    // Build compact exercise catalog — smart-filter to max 80 relevant exercises
     const validExercises = allExercises.filter(e => e.exercise_id);
-    const exerciseCatalog = validExercises
+
+    // Score exercises by relevance to goal_description + user level
+    const goalLower = (goal_description + ' ' + expLvl + ' ' + sport).toLowerCase();
+    const scored = validExercises.map(e => {
+      let score = 0;
+      const text = [e.name, e.category, e.difficulty, (e.related_performance_goals || []).join(' '), (e.mechanical_impact_type || []).join(' ')].join(' ').toLowerCase();
+      // Boost if goal keywords match
+      const keywords = goalLower.split(/\s+/).filter(w => w.length > 3);
+      for (const kw of keywords) { if (text.includes(kw)) score += 2; }
+      // Boost by difficulty match
+      if (e.difficulty === expLvl) score += 3;
+      if (e.difficulty === 'beginner' && expLvl === 'beginner') score += 2;
+      if (e.difficulty === 'advanced' && (expLvl === 'advanced' || expLvl === 'elite')) score += 2;
+      // Ensure coverage of all categories
+      if (['neuro', 'breath'].includes(e.category)) score += 2;
+      if (['mobility', 'mfr'].includes(e.category)) score += 1;
+      return { ex: e, score };
+    });
+    scored.sort((a, b) => b.score - a.score);
+    const filteredExercises = scored.slice(0, 80).map(s => s.ex);
+
+    const exerciseCatalog = filteredExercises
       .map(e => {
         const tags = [e.category, e.difficulty].filter(Boolean).join('|');
-        const goals = (e.related_performance_goals || []).slice(0, 3).join(',');
-        const mechanics = (e.mechanical_impact_type || []).join(',');
-        return `${e.exercise_id}: "${e.name}" [${tags}]${goals ? ' Ziele:' + goals : ''}${mechanics ? ' Mech:' + mechanics : ''}`;
+        const goals = (e.related_performance_goals || []).slice(0, 2).join(',');
+        return `${e.exercise_id}: "${e.name}" [${tags}]${goals ? ' Ziele:' + goals : ''}`;
       })
       .join('\n');
 
-    // Explicit ID-only list to reinforce constraint
-    const exactIdList = validExercises.map(e => e.exercise_id).join('\n');
+    // ID-only list for strict constraint (only filtered ones in prompt)
+    const exactIdList = filteredExercises.map(e => e.exercise_id).join(', ');
 
     console.log(`[generateTrainingPlan] Goal: ${goal_description}, Exercises: ${availableExerciseIds.length}`);
 
