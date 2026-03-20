@@ -32,8 +32,8 @@ export function useTTS() {
   // Silently pre-fetches the TTS audio in the background without playing it.
   const preload = useCallback(async (text) => {
     if (!text?.trim()) return;
-    if (preloadCacheRef.current[text]) return; // already preloading or done
-    preloadCacheRef.current[text] = 'loading';
+    if (preloadCacheRef.current[text]) return; // already preloading or cached — skip
+    preloadCacheRef.current[text] = 'loading'; // mark immediately to block concurrent calls
     try {
       const { data } = await base44.functions.invoke('ttsWithCache', { text });
       if (data?.signed_url) {
