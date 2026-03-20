@@ -165,13 +165,8 @@ Deno.serve(async (req) => {
     4. RESILIENCE (1-2 Übungen): De-Tonisierung, Integration
     `;
 
-    const llmParams = {
-      prompt: `Du bist AXON V2`
-    };
-    if (llmModel) llmParams.model = llmModel;
-
     const planData = await base44.integrations.Core.InvokeLLM({
-      ...llmParams,
+      ...(llmModel ? { model: llmModel } : {}),
       prompt: `Du bist AXON V2, ein Elite-Neuro-Athletik-Coach-System.
 
     PROFIL:
