@@ -266,16 +266,39 @@ export default function RehabExerciseCard({ exercise, idx, isOpen, onToggle, onC
          
          {/* Collapsible Detail Toggle */}
          <div>
-            <button 
-              onClick={() => setShowDetails(!showDetails)}
-              className="w-full flex items-center justify-between px-4 py-3 rounded-lg border-2 bg-emerald-950/20 border-emerald-500/40 hover:border-emerald-500/70 hover:bg-emerald-950/40 transition-all duration-200 group mb-2"
-            >
-               <span className="flex items-center gap-2 text-sm font-bold text-emerald-400">
-                 <Settings2 className="w-4 h-4" />
-                 Setup & Ausführung (Klick für Anleitung)
-               </span>
-               <ChevronDown className={`w-4 h-4 text-emerald-400 transition-transform duration-300 ${showDetails ? 'rotate-180' : ''}`} />
-            </button>
+            <div className="flex items-center gap-2 mb-2">
+              <button 
+                onClick={() => setShowDetails(!showDetails)}
+                className="flex-1 flex items-center justify-between px-4 py-3 rounded-lg border-2 bg-emerald-950/20 border-emerald-500/40 hover:border-emerald-500/70 hover:bg-emerald-950/40 transition-all duration-200 group"
+              >
+                <span className="flex items-center gap-2 text-sm font-bold text-emerald-400">
+                  <Settings2 className="w-4 h-4" />
+                  Setup & Ausführung (Klick für Anleitung)
+                </span>
+                <ChevronDown className={`w-4 h-4 text-emerald-400 transition-transform duration-300 ${showDetails ? 'rotate-180' : ''}`} />
+              </button>
+              {/* TTS Button */}
+              <button
+                onClick={() => {
+                  const ttsText = [
+                    fullExercise.axon_moment ? `AXON Moment: ${fullExercise.axon_moment}` : '',
+                    fullExercise.instruction || fullExercise.description || '',
+                    fullExercise.cues?.length ? `Cues: ${fullExercise.cues.join('. ')}` : ''
+                  ].filter(Boolean).join('. ');
+                  if (isPlaying) stop();
+                  else playText(ttsText);
+                }}
+                disabled={isTTSLoading}
+                title={isPlaying ? 'Stoppen' : 'Anleitung vorlesen'}
+                className={`flex-shrink-0 w-11 h-11 rounded-lg border-2 flex items-center justify-center transition-all ${
+                  isPlaying 
+                    ? 'bg-emerald-500/20 border-emerald-400 text-emerald-300' 
+                    : 'bg-slate-900 border-slate-700 text-slate-400 hover:border-emerald-500/50 hover:text-emerald-400'
+                }`}
+              >
+                {isTTSLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : isPlaying ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
+              </button>
+            </div>
 
             <AnimatePresence>
                {showDetails && (
