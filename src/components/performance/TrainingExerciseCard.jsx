@@ -362,8 +362,8 @@ export default function TrainingExerciseCard({ exercise, idx, onDetailClick, isO
                   {isCompleted ? 'Bereits abgeschlossen' : '[ ÜBUNG BEENDET ]'}
                </button>
             </div>
-         </div>
-      </div>
-    </motion.div>
-  );
-}
+            </div>
+            </div>
+            </motion.div>
+            );
+            }
