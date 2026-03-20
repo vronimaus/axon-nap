@@ -247,6 +247,13 @@ export default function TrainingExerciseCard({ exercise, idx, onDetailClick, isO
                     </div>
                   )}
 
+                  {currentContent.levelHint && level === 'advanced' && (
+                    <div className="rounded-xl border border-green-500/30 bg-green-500/5 px-4 py-2.5 flex items-center gap-2">
+                      <Zap className="w-3.5 h-3.5 text-green-400 flex-shrink-0" />
+                      <p className="text-xs text-green-300 font-medium">{currentContent.levelHint}</p>
+                    </div>
+                  )}
+
                   <div className="bg-slate-900/50 rounded-xl p-4 border border-slate-800">
                     <h5 className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-2">Ausführung</h5>
                     <div className="text-sm text-slate-300 leading-relaxed pl-1 prose prose-sm prose-invert max-w-none prose-p:my-1 prose-li:my-0.5 prose-strong:text-cyan-300 prose-ul:pl-4">
