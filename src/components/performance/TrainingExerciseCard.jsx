@@ -101,13 +101,24 @@ export default function TrainingExerciseCard({ exercise, idx, onDetailClick, isO
   }, [exercise.exercise_id]);
 
   const currentContent = useMemo(() => {
+    const mainDescription = fullExercise.description || fullExercise.instruction;
     if (level === 'basic' && fullExercise.progression_basic) {
-      return { description: fullExercise.progression_basic.description, focus: fullExercise.progression_basic.focus };
+      // Basic: use simplified description if available, otherwise main description
+      return {
+        description: fullExercise.progression_basic.description || mainDescription,
+        focus: fullExercise.progression_basic.focus || fullExercise.axon_moment,
+        levelHint: fullExercise.progression_basic.label
+      };
     }
     if (level === 'advanced' && fullExercise.progression_advanced) {
-      return { description: fullExercise.progression_advanced.description, focus: fullExercise.progression_advanced.focus };
+      // Advanced: ALWAYS show full main description, just add the advanced focus/hint
+      return {
+        description: mainDescription,
+        focus: fullExercise.axon_moment,
+        levelHint: fullExercise.progression_advanced.focus || fullExercise.progression_advanced.label
+      };
     }
-    return { description: fullExercise.description || fullExercise.instruction, focus: fullExercise.axon_moment };
+    return { description: mainDescription, focus: fullExercise.axon_moment };
   }, [level, fullExercise]);
 
   const handleFinishClick = (e) => {
