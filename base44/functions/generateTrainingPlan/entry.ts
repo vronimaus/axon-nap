@@ -118,7 +118,7 @@ Deno.serve(async (req) => {
     }
 
     // Choose model and build mode-specific prompt context
-    const llmModel = isPerformanceGoal ? 'claude_sonnet_4_6' : undefined;
+    const llmModel = isPerformanceGoal ? 'gpt_5' : undefined;
 
     const performancePromptSection = isPerformanceGoal ? `
     ════════════════════════════════════════════
