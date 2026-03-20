@@ -242,8 +242,8 @@ export default function TrainingExerciseCard({ exercise, idx, onDetailClick, isO
                        {/* Setup / Instructions */}
                        <div className="bg-slate-900/50 rounded-xl p-4 border border-slate-800">
                           <h5 className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-2">Ausführung</h5>
-                          <div className="text-sm text-slate-300 leading-relaxed whitespace-pre-line pl-1">
-                             {currentContent.description}
+                          <div className="text-sm text-slate-300 leading-relaxed pl-1 prose prose-sm prose-invert max-w-none prose-p:my-1 prose-li:my-0.5 prose-strong:text-cyan-300 prose-ul:pl-4">
+                             <ReactMarkdown>{currentContent.description || ''}</ReactMarkdown>
                           </div>
                           {fullExercise.cues && fullExercise.cues.length > 0 && (
                             <div className="mt-4 pt-4 border-t border-slate-800">
