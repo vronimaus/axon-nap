@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronDown, Brain, Edit2, Settings2, Volume2, VolumeX, Loader2 } from 'lucide-react';
+import { ChevronDown, Brain, Edit2, Settings2, Volume2, VolumeX, Loader2, Zap } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import { base44 } from '@/api/base44Client';
 import { toast } from 'sonner';
