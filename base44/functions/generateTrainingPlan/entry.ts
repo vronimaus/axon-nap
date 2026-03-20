@@ -122,49 +122,70 @@ Deno.serve(async (req) => {
       ? `⚡ PERFORMANCE-MODUS AKTIV: Der User ist ${expLvl}/${activityLvl} und will "${goal_description}". Das ist ein klares Performance-Ziel. Der Performance-Block MUSS dominant sein – harte Belastung, hohe Intensität, progressive Überlastung über die 3 Phasen. Keine lasche Herangehensweise.`
       : `Balanced-Modus: Ausgewogener Ansatz mit Neuro + Performance.`;
 
-    const planData = await base44.integrations.Core.InvokeLLM({
-      prompt: `Du bist AXON V2, ein Elite-Neuro-Athletik-System. Erstelle einen "Fluid Logic" Trainingsplan basierend auf Stecco-Faszien-Mechanik.
+    // Choose model and build mode-specific prompt context
+    const llmModel = isPerformanceGoal ? 'claude_sonnet_4_6' : undefined;
 
-    ${performanceLabel}
+    const performancePromptSection = isPerformanceGoal ? `
+    ════════════════════════════════════════════
+    PERFORMANCE-ATHLETIK MODUS — KEIN SANFTER EINSTIEG
+    ════════════════════════════════════════════
+    Dieser User ist ${expLvl}/${activityLvl} und will "${goal_description}".
+    Das ist ein konkretes, anspruchsvolles Performance-Ziel. Behandle ihn wie einen Athleten.
+
+    DENKWEISE: Was würde ein S&C-Coach aus dem Profi-Sport für dieses Ziel programmieren?
+    - Direkte Übertragung: Wähle Übungen, die EXAKT die Muskeln/Muster für das Ziel trainieren
+    - Progressive Überlastung: Jede Phase erhöht Volumen ODER Intensität, nicht beides gleichzeitig
+    - Phase 1 (Foundation): Volumen-Aufbau, technische Basis, 4x8-12 oder 5x5
+    - Phase 2 (Intensität): Schwerere Loads / mehr Schwierigkeit, 4x5-8 oder EMOM/AMRAP
+    - Phase 3 (Peak): Maximale Intensität, Skill-Transfer, 3x3-5 oder Max-Set-Protokolle
+
+    PERFORMANCE-BLOCK (4-6 Übungen) — DAS IST DER PLAN:
+    - Direkte Ziel-Übungen zuerst (z.B. bei Burpees: Burpee-Varianten, Push-ups, Squat-Jumps, Core)
+    - sets_reps_tempo für ${expLvl}:
+      * intermediate: 4x8, 5x5, 3x10, EMOM 10min
+      * advanced: 5x5, 4x6, AMRAP, Superset-Protokolle, Max-Sets
+      * elite: 6x3, Wave-Loading, Cluster-Sets, Sport-spezifische Circuits
+    - intensity_factor: Phase 1 = 2.0, Phase 2 = 2.5, Phase 3 = 3.0
+    - Keine "leichten" Einstiegsübungen im Performance-Block
+
+    NEURO-PRIMER (NUR 1 Übung — kurz und zweckgebunden):
+    - Maximal 1 Übung zur neuronalen Vorbereitung, die DIREKT das Ziel-Muster aktiviert
+    - Nicht: allgemeine Atemübungen oder generischer Neuro-Kram
+    - Ja: etwas das die CNS für die kommende Belastung schärft
+
+    SLING-ACTIVATION (2-3 Übungen — zielspezifisch):
+    - Aktiviere die faszialen Ketten, die für das Ziel gebraucht werden
+    - Kein generisches Mobility-Programm — gezielt auf den Performance-Block vorbereiten
+    ` : `
+    ════════════════════════════════════════════
+    AXON FLUID LOGIC (V2) STRUKTUR — BALANCED
+    ════════════════════════════════════════════
+    Erstelle 3 progressive Phasen (Foundation, Development, Mastery).
+
+    1. NEURO-PRIMER (1-2 Übungen): Vision, Vestibular, Atmung
+    2. SLING-ACTIVATION (2-3 Übungen): Fasziale Ketten, MFR, Gelenk-Prep
+    3. PERFORMANCE-BLOCK (3-4 Übungen): Hauptreiz, Kraft/Skill/Power
+       - intensity_factor: Phase 1 = 1.5, Phase 2 = 2.0, Phase 3 = 2.5
+    4. RESILIENCE (1-2 Übungen): De-Tonisierung, Integration
+    `;
+
+    const planData = await base44.integrations.Core.InvokeLLM({
+      model: llmModel,
+      prompt: `Du bist AXON V2, ein Elite-Neuro-Athletik-Coach-System.
 
     PROFIL:
     Ziel: "${goal_description}"
     Baseline: ${baseline || 'Nicht angegeben'}
     Assessment: ${baselineData || 'Kein Assessment'}
-    Level: ${activityLvl}, XP: ${expLvl}
+    Fitness-Level: ${activityLvl} | Trainingserfahrung: ${expLvl}
     Sport: ${sport || 'Keiner'}
+    ${performancePromptSection}
 
     ════════════════════════════════════════════
-    AXON FLUID LOGIC (V2) STRUKTUR
+    ALLGEMEINE REGELN (für beide Modi)
     ════════════════════════════════════════════
-    Erstelle 3 progressive Phasen (Foundation, Development, Mastery).
-    JEDE Phase repräsentiert eine komplette SESSION-Struktur und MUSS 8-12 Übungen enthalten, strikt unterteilt in diese 4 Blöcke:
-
-    1. NEURO-PRIMER (1-2 Übungen, MAX 2)
-    - Ziel: Kurze neuronale Aktivierung (Vision, Vestibular, Atmung).
-    - Typ: 'neuro', 'breath', 'mobility' (Hals/Nacken).
-    - WICHTIG: Kurz halten – dieser Block darf den Performance-Block nicht dominieren.
-
-    2. SLING-ACTIVATION (2-3 Übungen)
-    - Ziel: Fasziale Ketten "aufwecken" & Gelenk-Vorbereitung für den Hauptreiz.
-    - Typ: 'mobility', 'mfr', 'core', 'plank'.
-    - Fokus auf Stecco-Nodes N1-N12.
-    - Bei Performance-Zielen: Wähle Aktivierungs-Übungen die direkt auf die Ziel-Bewegungsmuster vorbereiten.
-
-    3. PERFORMANCE-BLOCK (4-6 Übungen) ← HAUPTFOKUS
-    - Ziel: Der primäre Trainingsreiz. Dieser Block IST der Plan.
-    - Typ: 'push', 'pull', 'squat', 'hinge', 'carry', 'dip', 'row', 'explosive', 'core'.
-    - Bei Performance-Zielen: Wähle die schwersten, direktesten Übungen für das Ziel.
-    - sets_reps_tempo MUSS der Intensität entsprechen:
-      * Anfänger: 3x8-12, moderate Intensität
-      * Intermediate: 4x6-10, hohe Intensität  
-      * Advanced/Elite: 5x3-8 oder AMRAP/Circuit-Protokolle, maximale Intensität
-    - Progression über die 3 Phasen: Phase 1 (Volumen-Aufbau) → Phase 2 (Intensität) → Phase 3 (Peak/Max).
-    - intensity_factor: Phase 1 = 1.5-2.0, Phase 2 = 2.0-2.5, Phase 3 = 2.5-3.0
-
-    4. RESILIENCE / COOL-DOWN (1-2 Übungen)
-    - Ziel: De-Tonisierung & Integration.
-    - Typ: 'breath', 'mfr', 'mobility'.
+    Erstelle 3 progressive Phasen. JEDE Phase = komplette SESSION-Struktur mit den 4 Blöcken:
+    section-Werte: "neuro_primer" | "sling_activation" | "performance" | "resilience"
 
     ════════════════════════════════════════════
     STECCO NODE MAPPING (Verwende diese IDs für 'target_nodes')
