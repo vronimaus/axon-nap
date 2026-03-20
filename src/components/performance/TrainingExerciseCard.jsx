@@ -79,6 +79,9 @@ export default function TrainingExerciseCard({ exercise, idx, onDetailClick, isO
   const [rpe, setRpe] = useState(7);
   const [isCompleted, setIsCompleted] = useState(exercise.completed || false);
 
+  // TTS
+  const { isPlaying, isLoading: isTTSLoading, playText, stop, preload } = useTTS();
+
   // Parse initial data
   useEffect(() => {
     if (exercise.exercise_id) {
