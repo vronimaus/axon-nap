@@ -15,9 +15,16 @@ import { Helmet } from 'react-helmet-async';
 import PhaseCard from '../components/performance/PhaseCard';
 import { User } from 'lucide-react';
 
+const COACH_AVATARS = {
+  male: 'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/3031e6f06_TechnicalSystemsArchitectAXON-nap.jpg',
+  female: 'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/a7949b2c4_EmpatheticGuideAXON-nap.jpg',
+  neuro: 'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/2df3d8dc0_NeuralGuideAXON-nap.jpg'
+};
+
 export default function TrainingPlan() {
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [preferredCoach, setPreferredCoach] = useState('male');
   const [activePhaseIdx, setActivePhaseIdx] = useState(0);
   const [completedPhases, setCompletedPhases] = useState({});
   const [showComplementaryDrills, setShowComplementaryDrills] = useState(true);
