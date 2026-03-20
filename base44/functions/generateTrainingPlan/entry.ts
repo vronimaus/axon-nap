@@ -61,7 +61,6 @@ Deno.serve(async (req) => {
     // Build compact exercise catalog — only EXACT IDs from DB
     const validExercises = allExercises.filter(e => e.exercise_id);
     const exerciseCatalog = validExercises
-      .slice(0, 150)
       .map(e => {
         const tags = [e.category, e.difficulty].filter(Boolean).join('|');
         const goals = (e.related_performance_goals || []).slice(0, 3).join(',');
@@ -70,8 +69,8 @@ Deno.serve(async (req) => {
       })
       .join('\n');
 
-    // Explicit ID list to reinforce constraint
-    const exactIdList = validExercises.slice(0, 150).map(e => e.exercise_id).join(', ');
+    // Explicit ID-only list to reinforce constraint
+    const exactIdList = validExercises.map(e => e.exercise_id).join('\n');
 
     console.log(`[generateTrainingPlan] Goal: ${goal_description}, Exercises: ${availableExerciseIds.length}`);
 

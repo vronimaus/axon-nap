@@ -141,6 +141,9 @@ Deno.serve(async (req) => {
       ].join(' | '))
       .join('\n');
 
+    // Explicit ID-only list to reinforce the constraint
+    const exactIdList = bestExercises.map(e => e.exercise_id).join('\n');
+
     console.log(`[generateRehabPlan] Filtered exercises: ${bestExercises.length}/${validExercises.length}`);
 
     const planData = await base44.integrations.Core.InvokeLLM({
