@@ -214,9 +214,10 @@ export default function TrainingExerciseCard({ exercise, idx, onDetailClick, isO
          
          {/* Collapsible Detail Toggle */}
          <div>
+            <div className="flex items-center gap-2 mb-2">
             <button 
               onClick={() => setShowDetails(!showDetails)}
-              className="w-full flex items-center justify-between px-4 py-3 rounded-lg border-2 bg-cyan-950/20 border-cyan-500/40 hover:border-cyan-500/70 hover:bg-cyan-950/40 transition-all duration-200 group mb-2"
+              className="flex-1 flex items-center justify-between px-4 py-3 rounded-lg border-2 bg-cyan-950/20 border-cyan-500/40 hover:border-cyan-500/70 hover:bg-cyan-950/40 transition-all duration-200 group"
             >
                <span className="flex items-center gap-2 text-sm font-bold text-cyan-400">
                  <Settings2 className="w-4 h-4" />
