@@ -225,6 +225,30 @@ export default function TrainingExerciseCard({ exercise, idx, onDetailClick, isO
                </span>
                <ChevronDown className={`w-4 h-4 text-cyan-400 transition-transform duration-300 ${showDetails ? 'rotate-180' : ''}`} />
             </button>
+            {/* TTS Button - Amber/Orange für bessere Sichtbarkeit */}
+            <button
+              onClick={() => {
+                const ttsText = [
+                  fullExercise.axon_moment ? `AXON Moment: ${fullExercise.axon_moment}` : '',
+                  fullExercise.instruction || fullExercise.description || '',
+                  fullExercise.cues?.length ? `Cues: ${fullExercise.cues.join('. ')}` : ''
+                ].filter(Boolean).join('. ');
+                if (isPlaying) stop();
+                else playText(ttsText);
+              }}
+              disabled={isTTSLoading}
+              title={isPlaying ? 'Audio stoppen' : 'Anleitung vorlesen lassen'}
+              className={`flex-shrink-0 w-11 h-11 rounded-lg border-2 flex items-center justify-center transition-all shadow-sm ${
+                isPlaying
+                  ? 'bg-amber-500 border-amber-400 text-slate-900 shadow-amber-500/40 shadow-lg animate-pulse'
+                  : isTTSLoading
+                  ? 'bg-amber-500/20 border-amber-500/40 text-amber-400'
+                  : 'bg-amber-500/20 border-amber-500/50 text-amber-400 hover:bg-amber-500/40 hover:border-amber-400 hover:shadow-amber-500/20 hover:shadow-md'
+              }`}
+            >
+              {isTTSLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : isPlaying ? <VolumeX className="w-5 h-5" /> : <Volume2 className="w-5 h-5" />}
+            </button>
+            </div>
 
             <AnimatePresence>
                {showDetails && (
