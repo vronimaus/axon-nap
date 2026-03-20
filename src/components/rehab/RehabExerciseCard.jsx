@@ -98,12 +98,13 @@ export default function RehabExerciseCard({ exercise, idx, isOpen, onToggle, onC
         .then(results => {
           if (results?.length > 0) {
             const dbEx = results[0];
-            setFullExercise(prev => ({
-              ...prev,
+            const merged = {
+              ...exercise,
               ...dbEx,
               sets_reps_tempo: exercise.sets_reps_tempo || dbEx.sets_reps_tempo,
               instruction: dbEx.description || dbEx.instruction || exercise.instruction,
-            }));
+            };
+            setFullExercise(prev => ({ ...prev, ...merged }));
             
             // Try to parse sets/reps
             const specs = exercise.sets_reps_tempo || dbEx.sets_reps_tempo || "3x10";
@@ -111,6 +112,14 @@ export default function RehabExerciseCard({ exercise, idx, isOpen, onToggle, onC
             const repMatch = specs.match(/[xX]\s*(\d+)/);
             if (setMatch) setSets(parseInt(setMatch[1]));
             if (repMatch) setReps(parseInt(repMatch[1]));
+
+            // Preload TTS in background
+            const ttsText = [
+              merged.axon_moment ? `AXON Moment: ${merged.axon_moment}` : '',
+              merged.instruction || merged.description || '',
+              merged.cues?.length ? `Cues: ${merged.cues.join('. ')}` : ''
+            ].filter(Boolean).join('. ');
+            if (ttsText.trim()) preload(ttsText);
           }
         })
         .catch(() => {});
