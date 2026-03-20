@@ -89,7 +89,7 @@ export default function RehabExerciseCard({ exercise, idx, isOpen, onToggle, onC
   const [isUpgrading, setIsUpgrading] = useState(false);
 
   // TTS
-  const { isPlaying, isLoading: isTTSLoading, playText, stop } = useTTS();
+  const { isPlaying, isLoading: isTTSLoading, playText, stop, preload } = useTTS();
 
   // Parse initial data
   useEffect(() => {
