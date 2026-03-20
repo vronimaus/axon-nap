@@ -54,9 +54,9 @@ Deno.serve(async (req) => {
     const availableExerciseIds = allExercises.map(e => e.exercise_id).filter(Boolean);
 
     // Format Nodes for Context
-    const nodeContext = allNodes.map(n => `${n.node_id}: ${n.name_de} (${n.body_area})`).join('\n');
-    const availableRoutineIds = allRoutines.slice(0, 10).map(r => r.id).filter(Boolean);
-    const availableFaqIds = allFaqs.slice(0, 10).map(f => f.faq_id).filter(Boolean);
+    const nodeContext = allNodes.slice(0, 12).map(n => `${n.node_id}: ${n.name_de}`).join(', ');
+    const availableRoutineIds = allRoutines.slice(0, 5).map(r => r.id).filter(Boolean);
+    const availableFaqIds = allFaqs.slice(0, 5).map(f => f.faq_id).filter(Boolean);
 
     // Build compact exercise catalog — smart-filter to max 80 relevant exercises
     const validExercises = allExercises.filter(e => e.exercise_id);
