@@ -46,6 +46,14 @@ export default function TrainingPlan() {
           return;
         }
         setUser(currentUser);
+
+        // Load preferred coach from UserNeuroProfile
+        try {
+          const profiles = await base44.entities.UserNeuroProfile.filter({ user_email: currentUser.email });
+          if (profiles.length > 0 && profiles[0].preferred_coach) {
+            setPreferredCoach(profiles[0].preferred_coach);
+          }
+        } catch (_e) {}
         
         // Check if readiness check already done today (via sessionStorage)
         const today = new Date().toISOString().split('T')[0];
