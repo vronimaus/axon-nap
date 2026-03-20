@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown, ChevronUp, Brain, Check, Edit2, Play, Settings2 } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
