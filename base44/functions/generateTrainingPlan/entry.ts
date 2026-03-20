@@ -187,31 +187,23 @@ Deno.serve(async (req) => {
     Erstelle 3 progressive Phasen. JEDE Phase = komplette SESSION-Struktur mit den 4 Blöcken:
     section-Werte: "neuro_primer" | "sling_activation" | "performance" | "resilience"
 
-    ════════════════════════════════════════════
-    STECCO NODE MAPPING (Verwende diese IDs für 'target_nodes')
-    ════════════════════════════════════════════
+    STECCO NODE MAPPING (für 'target_nodes'):
     ${nodeContext}
 
-    ════════════════════════════════════════════
-    REGELN
-    ════════════════════════════════════════════
-    - Wähle Übungen, die mechanisch und neurologisch Sinn ergeben.
-    - 'intensity_factor': 1.0 (Neuro/Rehab) bis 3.0 (Max Power).
-    - 'sling_id': anterior, posterior, lateral, deep_frontal.
-    - KRITISCH: Nutze AUSSCHLIESSLICH exercise_ids aus der ERLAUBTEN ID-LISTE. Jede andere ID ist ein fataler Fehler.
-    - Schreibe NIEMALS Übungsnamen als exercise_id – nur exakte IDs aus der Liste unten.
+    KRITISCHE PFLICHT-REGELN:
+    - 'sling_id': anterior | posterior | lateral | deep_frontal
+    - 'intensity_factor': 1.0 (Neuro/leicht) bis 3.0 (Max Power)
+    - FATAL ERROR wenn exercise_id nicht exakt aus der Liste unten stammt
+    - NIEMALS Übungsnamen als exercise_id schreiben
 
-    ===== ERLAUBTE EXERCISE_IDs – NUR DIESE VERWENDEN =====
+    ===== ERLAUBTE EXERCISE_IDs – NUR DIESE =====
     ${exactIdList}
 
-    VERFÜGBARE ÜBUNGEN (Details zu den IDs oben):
+    ÜBUNGS-DETAILS:
     ${exerciseCatalog}
 
-    Verfügbare Routinen:
-    ${availableRoutineIds.map((id, i) => `${i + 1}. ${id}`).join('\n')}
-
-    Verfügbare FAQ-IDs:
-    ${availableFaqIds.map((id, i) => `${i + 1}. ${id}`).join('\n')}`,
+    Routinen: ${availableRoutineIds.join(', ')}
+    FAQs: ${availableFaqIds.join(', ')}`,
       response_json_schema: {
         type: 'object',
         properties: {
