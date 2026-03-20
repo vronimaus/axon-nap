@@ -17,6 +17,8 @@ export function useTTS() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const audioRef = useRef(null);
+  // Preload cache: text → signed_url
+  const preloadCacheRef = useRef({});
 
   const stop = useCallback(() => {
     if (audioRef.current) {
@@ -27,34 +29,54 @@ export function useTTS() {
     setIsPlaying(false);
   }, []);
 
+  // Silently pre-fetches the TTS audio in the background without playing it.
+  const preload = useCallback(async (text) => {
+    if (!text?.trim()) return;
+    if (preloadCacheRef.current[text]) return; // already preloading or done
+    preloadCacheRef.current[text] = 'loading';
+    try {
+      const { data } = await base44.functions.invoke('ttsWithCache', { text });
+      if (data?.signed_url) {
+        preloadCacheRef.current[text] = data.signed_url;
+      } else {
+        delete preloadCacheRef.current[text];
+      }
+    } catch {
+      delete preloadCacheRef.current[text];
+    }
+  }, []);
+
   const playText = useCallback(async (text) => {
     if (!text?.trim()) return;
 
-    // If already playing, stop first
     if (isPlaying) {
       stop();
+      return;
+    }
+
+    // Use preloaded URL if available
+    const cached = preloadCacheRef.current[text];
+    if (cached && cached !== 'loading') {
+      const audio = new Audio(cached);
+      audioRef.current = audio;
+      audio.onended = () => { setIsPlaying(false); audioRef.current = null; };
+      audio.onerror = () => { setIsPlaying(false); audioRef.current = null; };
+      await audio.play();
+      setIsPlaying(true);
       return;
     }
 
     setIsLoading(true);
     try {
       const { data } = await base44.functions.invoke('ttsWithCache', { text });
-
       if (!data?.signed_url) throw new Error('No audio URL received');
+
+      preloadCacheRef.current[text] = data.signed_url;
 
       const audio = new Audio(data.signed_url);
       audioRef.current = audio;
-
-      audio.onended = () => {
-        setIsPlaying(false);
-        audioRef.current = null;
-      };
-
-      audio.onerror = () => {
-        setIsPlaying(false);
-        audioRef.current = null;
-      };
-
+      audio.onended = () => { setIsPlaying(false); audioRef.current = null; };
+      audio.onerror = () => { setIsPlaying(false); audioRef.current = null; };
       await audio.play();
       setIsPlaying(true);
     } catch (error) {
@@ -65,5 +87,5 @@ export function useTTS() {
     }
   }, [isPlaying, stop]);
 
-  return { isPlaying, isLoading, playText, stop };
+  return { isPlaying, isLoading, playText, stop, preload };
 }
