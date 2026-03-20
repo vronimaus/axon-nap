@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronDown, ChevronUp, Brain, Check, Edit2, Play, Settings2 } from 'lucide-react';
+import { ChevronDown, ChevronUp, Brain, Check, Edit2, Play, Settings2, Volume2, VolumeX, Loader2 } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import { base44 } from '@/api/base44Client';
 import { toast } from 'sonner';
 import { Slider } from '@/components/ui/slider';
+import { useTTS } from '@/hooks/useTTS';
 import {
   DropdownMenu,
   DropdownMenuContent,
