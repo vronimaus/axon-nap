@@ -109,7 +109,7 @@ Deno.serve(async (req) => {
     // ID-only list for strict constraint (only filtered ones in prompt)
     const exactIdList = filteredExercises.map(e => e.exercise_id).join(', ');
 
-    console.log(`[generateTrainingPlan] Goal: "${goal_description}" | Mode: ${isPerformanceGoal ? '⚡ PERFORMANCE (gpt_5)' : 'BALANCED (default)'} | Level: ${expLvl}/${activityLvl} | Exercises: ${validExercises.length} → filtered: ${filteredExercises.length}`);
+    console.log(`[generateTrainingPlan] Goal: "${goal_description}" | Mode: ${isPerformanceGoal ? '⚡ PERFORMANCE' : 'BALANCED'} | Level: ${expLvl}/${activityLvl} | Exercises: ${validExercises.length} → filtered: ${filteredExercises.length}`);
 
     // Build exercise lookup for enrichment
     const exerciseLookup = {};
