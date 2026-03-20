@@ -102,6 +102,14 @@ export default function TrainingExerciseCard({ exercise, idx, onDetailClick, isO
             const repMatch = specs.match(/[xX]\s*(\d+)/);
             if (setMatch) setSets(parseInt(setMatch[1]));
             if (repMatch) setReps(parseInt(repMatch[1]));
+
+            // Preload TTS in background
+            const ttsText = [
+              dbEx.axon_moment ? `AXON Moment: ${dbEx.axon_moment}` : '',
+              dbEx.description || dbEx.instruction || exercise.instruction || '',
+              dbEx.cues?.length ? `Cues: ${dbEx.cues.join('. ')}` : ''
+            ].filter(Boolean).join('. ');
+            if (ttsText.trim()) preload(ttsText);
           }
         })
         .catch(() => {});
