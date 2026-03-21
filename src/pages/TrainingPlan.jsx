@@ -350,21 +350,18 @@ export default function TrainingPlan() {
                 {/* Active Phase Card */}
                 {activePlan.phases && activePlan.phases[activePhaseIdx] && (
                   <PhaseCard
-                    phase={activePlan.phases[activePhaseIdx]}
-                    index={activePhaseIdx}
-                    totalPhases={activePlan.phases.length}
-                    isCompleted={completedPhases[activePhaseIdx]}
-                    readinessStatus={readinessStatus}
-                    onComplete={() => {
-                      const newCompleted = { ...completedPhases, [activePhaseIdx]: true };
-                      setCompletedPhases(newCompleted);
-                      toast.success('Phase abgeschlossen! 🎉');
-                      if (activePhaseIdx < activePlan.phases.length - 1) {
-                        setTimeout(() => setActivePhaseIdx(activePhaseIdx + 1), 600);
-                      }
-                    }}
-                    onNext={() => setActivePhaseIdx(activePhaseIdx + 1)}
-                    onPrev={() => setActivePhaseIdx(activePhaseIdx - 1)}
+                  phase={activePlan.phases[activePhaseIdx]}
+                  index={activePhaseIdx}
+                  totalPhases={activePlan.phases.length}
+                  isCompleted={completedPhases[activePhaseIdx]}
+                  readinessStatus={readinessStatus}
+                  goalDescription={activePlan.goal_description}
+                  onComplete={() => {
+                    const newCompleted = { ...completedPhases, [activePhaseIdx]: true };
+                    setCompletedPhases(newCompleted);
+                  }}
+                  onNext={() => setActivePhaseIdx(activePhaseIdx + 1)}
+                  onPrev={() => setActivePhaseIdx(activePhaseIdx - 1)}
                   />
                 )}
 
