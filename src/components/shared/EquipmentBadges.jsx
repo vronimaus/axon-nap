@@ -1,86 +1,75 @@
 import React, { useMemo } from 'react';
-import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
-import { Package } from 'lucide-react';
 
-// Equipment type → Emoji Icon
-const TYPE_ICONS = {
-  kettlebell: '🏋️',
-  resistance_band: '🪢',
-  neuro_tool: '🧠',
-  flossing_band: '🩹',
-  slider: '🔵',
-  mobility_tool: '🔄',
-  other: '📦',
-};
+// Equipment-Keyword → Emoji + Label
+const EQUIPMENT_PATTERNS = [
+  { keywords: ['kettlebell', 'kb', 'goblet'], icon: '🏋️', label: 'Kettlebell' },
+  { keywords: ['barbell', 'langhantel', 'stange'], icon: '🏋️', label: 'Langhantel' },
+  { keywords: ['dumbbell', 'kurzhantel', 'hantel'], icon: '🏋️', label: 'Kurzhantel' },
+  { keywords: ['resistance band', 'band', 'widerstandsband', 'theraband'], icon: '🪢', label: 'Widerstandsband' },
+  { keywords: ['pull-up bar', 'klimmzugstange', 'stange', 'pullup bar', 'pull up bar'], icon: '🔩', label: 'Klimmzugstange' },
+  { keywords: ['foam roller', 'faszienrolle', 'rolle'], icon: '🔵', label: 'Faszienrolle' },
+  { keywords: ['mat', 'matte', 'yogamatte'], icon: '🟩', label: 'Trainingsmatte' },
+  { keywords: ['box', 'plyo box', 'plyobox', 'kasten'], icon: '📦', label: 'Plyo Box' },
+  { keywords: ['ring', 'gymnastics ring', 'turnring'], icon: '⭕', label: 'Turnringe' },
+  { keywords: ['cable', 'kabelzug', 'kabel'], icon: '🔗', label: 'Kabelzug' },
+  { keywords: ['bench', 'bank', 'hantelbank'], icon: '🛋️', label: 'Hantelbank' },
+  { keywords: ['trx', 'suspension', 'sling trainer'], icon: '🪢', label: 'TRX / Slingtrainer' },
+  { keywords: ['jump rope', 'springseil', 'seilspringen'], icon: '🪢', label: 'Springseil' },
+  { keywords: ['wall', 'wand'], icon: '🧱', label: 'Wand' },
+];
+
+function extractEquipmentFromPlan(plan) {
+  if (!plan?.phases) return [];
+
+  // Collect all text from the plan
+  const texts = [];
+  for (const phase of plan.phases) {
+    for (const ex of (phase.exercises || [])) {
+      texts.push(
+        ex.name || '',
+        ex.instruction || '',
+        ex.notes || '',
+        ex.sets_reps_tempo || '',
+        ex.description || '',
+        (ex.required_equipment || []).join(' ')
+      );
+    }
+  }
+  const combined = texts.join(' ').toLowerCase();
+
+  const found = [];
+  const addedLabels = new Set();
+
+  for (const eq of EQUIPMENT_PATTERNS) {
+    if (addedLabels.has(eq.label)) continue;
+    const matches = eq.keywords.some(kw => combined.includes(kw.toLowerCase()));
+    if (matches) {
+      found.push(eq);
+      addedLabels.add(eq.label);
+    }
+  }
+
+  return found;
+}
 
 export default function EquipmentBadges({ plan }) {
-  // Collect all unique required_equipment IDs from all phases/exercises
-  const equipmentIds = useMemo(() => {
-    if (!plan?.phases) return [];
-    const ids = new Set();
-    for (const phase of plan.phases) {
-      for (const exercise of (phase.exercises || [])) {
-        for (const eqId of (exercise.required_equipment || [])) {
-          if (eqId) ids.add(eqId);
-        }
-      }
-    }
-    return [...ids];
-  }, [plan]);
+  const equipment = useMemo(() => extractEquipmentFromPlan(plan), [plan]);
 
-  const { data: allEquipment = [] } = useQuery({
-    queryKey: ['equipment'],
-    queryFn: () => base44.entities.Equipment.list(),
-    staleTime: 1000 * 60 * 10,
-    enabled: equipmentIds.length > 0,
-  });
-
-  // Match fetched equipment to the IDs found in the plan
-  const matchedEquipment = useMemo(() => {
-    if (!equipmentIds.length) return [];
-    return allEquipment.filter(eq => equipmentIds.includes(eq.equipment_id));
-  }, [allEquipment, equipmentIds]);
-
-  // If no equipment is referenced, show "Kein Equipment nötig"
-  if (equipmentIds.length === 0) {
-    return (
-      <div className="flex items-center gap-2 px-4 py-3 rounded-xl border border-slate-800 bg-slate-900/50">
-        <Package className="w-4 h-4 text-slate-500 flex-shrink-0" />
-        <span className="text-xs text-slate-500 font-medium">Kein Equipment erforderlich</span>
-      </div>
-    );
-  }
+  if (!equipment.length) return null;
 
   return (
     <div className="space-y-2">
       <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500">Benötigtes Equipment</p>
       <div className="flex flex-wrap gap-2">
-        {matchedEquipment.length > 0 ? (
-          matchedEquipment.map(eq => (
-            <div
-              key={eq.equipment_id}
-              title={eq.description || eq.name}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-700 bg-slate-800/60 hover:border-slate-500 transition-colors"
-            >
-              <span className="text-base leading-none">
-                {TYPE_ICONS[eq.type] || '📦'}
-              </span>
-              <span className="text-xs font-semibold text-slate-300 leading-none">{eq.name}</span>
-            </div>
-          ))
-        ) : (
-          // IDs found but not yet in DB → show generic badges
-          equipmentIds.map(id => (
-            <div
-              key={id}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-700 bg-slate-800/60"
-            >
-              <Package className="w-3.5 h-3.5 text-slate-400" />
-              <span className="text-xs font-semibold text-slate-400 leading-none">{id}</span>
-            </div>
-          ))
-        )}
+        {equipment.map(eq => (
+          <div
+            key={eq.label}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-700 bg-slate-800/60"
+          >
+            <span className="text-base leading-none">{eq.icon}</span>
+            <span className="text-xs font-semibold text-slate-300 leading-none">{eq.label}</span>
+          </div>
+        ))}
       </div>
     </div>
   );
