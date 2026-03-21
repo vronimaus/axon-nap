@@ -156,12 +156,33 @@ Deno.serve(async (req) => {
     ── INTENSITÄTSFAKTOREN ──────────────────
     - intensity_factor: Phase 1 = 1.5, Phase 2 = 2.2, Phase 3 = 3.0
 
-    NEURO-PRIMER (NUR 1 Übung — CNS-Aktivierung für Cornerstone-Muster):
-    - Aktiviert das neuronale Muster der Hauptübung, nicht generisches Warm-Up
-    - Maximal 5 Min., explosiv oder koordinativ
+    ── NEURO-PRIMER (1 Übung — max. 5 Min.) ─
+    ZIEL: Das exakte Bewegungsmuster der ersten Cornerstone-Übung neuronal voraktivieren.
+    Regel: Die Übung muss das gleiche Gelenk / gleiche Bewegungsebene ansprechen wie die Hauptübung.
+    Beispiele:
+    - Vor Squat → Vestibular-Drill: Kopfrotation + Air Squat (Muster + Gleichgewicht)
+    - Vor Pull-Up → Sakkadentracking + Scapula Wall Slide (visuell + Schulterblatt-Kontrolle)
+    - Vor Deadlift → Hip-Hinge Neuro-Pattern mit Stab (motorisches Einlernen)
+    - Vor Press → Thorakale Rotation + Arm-Reach (Schulterachse entriegeln)
+    instruction-Feld: Erkläre WARUM dieser Drill direkt die Cornerstone-Übung verbessert.
 
-    SLING-ACTIVATION (2-3 Übungen — zielspezifische Faszien-Vorbereitung):
-    - Bereitet die faszialen Ketten für die Cornerstone Exercises vor
+    ── SLING-ACTIVATION: MFR als "Pre-Load Tissue Prep" (2-3 Übungen) ─
+    KEIN generisches Mobility-Programm. Jede Übung hat eine biomechanische Rechtfertigung.
+    Struktur pro Übung:
+    1. MFR-Node (60-90s): Entsperre das Gewebe, das die Cornerstone-Übung LIMITIERT.
+       - Vor Squat: N8 (Hüfte/TFL) oder N11 (Wade/Achillessehne)
+       - Vor Pull-Up: N3 (Brustbein/Pec) + N1 (Schädelbasis/Nacken)
+       - Vor Deadlift: N9 (Ischiokrurales) oder N10 (Lumbal)
+       - Vor Press: N3 (Pec) oder N4 (Schulterblatt)
+    2. Mobility-Drill: Aktiviere die neu gewonnene Range sofort in Bewegung.
+    notes-Feld PFLICHT: "MFR Pre-Load: [Node X] entsperrt [Gewebe] → direkt mehr Range/Kraft in [Cornerstone-Übung]"
+
+    ── RESILIENCE (1-2 Übungen — Neural Cool-Down nach CNS-Stress) ─
+    ZIEL: Nach maximalem IWT-Stress das autonome Nervensystem von Sympathikus → Parasympathikus schalten.
+    IMMER: 1 Atemübung (Vagus-Aktivierung) + optional 1 Integration-Bewegung.
+    Atemübung: 4-7-8 Atmung ODER Box-Breathing (4s ein, 4s halten, 4s aus, 4s halten).
+    Integration: Langsame, kontrollierte Variante einer Übung aus dem Performance-Block (20% Last, 5 Reps).
+    notes-Feld: "Neural Cool-Down: Schaltet CNS von Kampfmodus in Regeneration → Adaptation passiert HIER."
     ` : `
     ════════════════════════════════════════════
     O'SHEA BALANCED MODUS
@@ -179,11 +200,21 @@ Deno.serve(async (req) => {
        - Phase 3 (Mastery): 4-5x5-6 @ 78-85% 1RM
     5. intensity_factor: Phase 1 = 1.3, Phase 2 = 1.8, Phase 3 = 2.3
 
-    AXON FLUID LOGIC STRUKTUR:
-    1. NEURO-PRIMER (1-2 Übungen): Vision, Vestibular, Atmung
-    2. SLING-ACTIVATION (2-3 Übungen): Fasziale Ketten, MFR, Gelenk-Prep
-    3. PERFORMANCE-BLOCK (3-5 Übungen): Cornerstone First → Supporting → Optional Isolation
-    4. RESILIENCE (1-2 Übungen): De-Tonisierung, Integration
+    AXON FLUID LOGIC STRUKTUR — auch im Balanced-Modus biomechanisch begründet:
+
+    1. NEURO-PRIMER (1 Übung): Aktiviert das Muster der ersten Hauptübung.
+       Nicht generisch — spezifisch für das Ziel. Gleiche Regeln wie im Performance-Modus.
+
+    2. SLING-ACTIVATION (2 Übungen): MFR als "Pre-Load Tissue Prep":
+       - 1 MFR-Node (60s) der das Gewebe für die Hauptübung entsperrt
+       - 1 Mobility-Drill der die neue Range sofort nutzt
+       notes-Feld PFLICHT: "MFR Pre-Load: [Node] entsperrt [Gewebe] → mehr Range in [Übung]"
+
+    3. PERFORMANCE-BLOCK (3-4 Übungen): Cornerstone First → Supporting.
+       % 1RM und O'Shea-Zyklen wie oben beschrieben.
+
+    4. RESILIENCE (1 Übung): Vagus-Aktivierung durch Atemübung.
+       notes-Feld: "Neural Cool-Down → Adaptation passiert HIER."
     `;
 
     const planData = await base44.integrations.Core.InvokeLLM({
