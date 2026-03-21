@@ -81,7 +81,7 @@ const buildScript = (results, goalLabel) => {
     type: 'axon',
     icon: 'zap',
     text: goalLabel
-      ? `Dein Plan für **${goalLabel}** wird gerade generiert — maßgeschneidert auf exakt diese Baseline.`
+      ? `Dein Plan für **${goalLabel}** ist bereit — maßgeschneidert auf exakt diese Baseline.`
       : `AXON kennt jetzt dein Fundament. Jeder Plan wird präzise darauf aufgebaut.`,
     delay: 800,
   });
