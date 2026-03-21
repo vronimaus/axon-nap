@@ -151,14 +151,14 @@ export default function PhaseCard({ phase, index, totalPhases, isCompleted, onCo
       {/* Sections & Exercises */}
       <div className="space-y-8">
         {sections.map((section, secIdx) => (
-          <div key={section.key} className="space-y-6">
-            {/* Modern Section Header */}
-            <div className="flex items-center gap-3 pl-1 mt-4">
-               <h4 className="text-xs font-bold uppercase tracking-[0.15em] text-cyan-400 flex items-center gap-2">
-                  <section.icon className="w-3.5 h-3.5" />
+          <div key={section.key} className="space-y-4">
+            {/* Section Header */}
+            <div className={`flex items-center gap-3 px-3 py-2 rounded-lg border ${section.accent}`}>
+               <section.icon className={`w-4 h-4 ${section.color} flex-shrink-0`} />
+               <h4 className={`text-xs font-bold uppercase tracking-[0.15em] ${section.color} flex-1`}>
                   {section.label}
                </h4>
-               <div className="h-px flex-1 bg-gradient-to-r from-cyan-500/20 to-transparent" />
+               <span className="text-[10px] text-slate-500 font-mono">{section.exercises.length} Übungen</span>
             </div>
 
             {/* Horizontal Button Selector */}
