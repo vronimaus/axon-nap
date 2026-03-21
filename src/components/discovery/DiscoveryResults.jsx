@@ -311,6 +311,11 @@ export default function DiscoveryResults({ tests, answers, onContinue, isGenerat
     );
   };
 
+  // Show full-screen loading view when plan is being generated
+  if (isGeneratingPlan) {
+    return <PlanGeneratingScreen goalLabel={goalLabel} />;
+  }
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 30 }}
