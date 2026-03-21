@@ -18,24 +18,35 @@ export default function PhaseCard({ phase, index, totalPhases, isCompleted, onCo
     return initial;
   });
 
-  // Group exercises by section
+  // Group exercises by section — with smart fallback assignment
   const sections = useMemo(() => {
     if (!phase.exercises) return [];
 
     const groups = {
-      neuro_primer: { label: 'Neuro-Primer', icon: Brain, exercises: [], color: 'text-cyan-400' },
-      sling_activation: { label: 'Sling Activation', icon: Activity, exercises: [], color: 'text-cyan-400' },
-      performance: { label: 'Performance', icon: Dumbbell, exercises: [], color: 'text-cyan-400' },
-      resilience: { label: 'Resilience', icon: Sparkles, exercises: [], color: 'text-cyan-400' },
-      other: { label: 'Andere Übungen', icon: Target, exercises: [], color: 'text-slate-400' }
+      neuro_primer:    { label: 'Neuro-Primer',     icon: Brain,     exercises: [], color: 'text-cyan-400',    accent: 'border-cyan-500/30 bg-cyan-500/5' },
+      sling_activation:{ label: 'MFR / Sling Prep', icon: Activity,  exercises: [], color: 'text-purple-400',  accent: 'border-purple-500/30 bg-purple-500/5' },
+      performance:     { label: 'Performance',       icon: Dumbbell,  exercises: [], color: 'text-blue-400',    accent: 'border-blue-500/30 bg-blue-500/5' },
+      resilience:      { label: 'Resilience',        icon: Wind,      exercises: [], color: 'text-emerald-400', accent: 'border-emerald-500/30 bg-emerald-500/5' },
+      other:           { label: 'Übungen',            icon: Target,    exercises: [], color: 'text-slate-400',   accent: 'border-slate-700 bg-slate-800/20' },
     };
 
     phase.exercises.forEach((ex, globalIndex) => {
-      if (groups[ex.section]) {
-        groups[ex.section].exercises.push({ ...ex, globalIndex });
-      } else {
-        groups['other'].exercises.push({ ...ex, globalIndex });
+      // Smart fallback: infer section from category/name if not set
+      let section = ex.section;
+      if (!section || !groups[section]) {
+        const cat = (ex.category || '').toLowerCase();
+        const name = (ex.name || '').toLowerCase();
+        if (cat === 'neuro' || cat === 'breath' || name.includes('neuro') || name.includes('sakkaden') || name.includes('vestibular')) {
+          section = 'neuro_primer';
+        } else if (cat === 'mfr' || cat === 'mobility' || name.includes('mfr') || name.includes('release') || name.includes('mobilit')) {
+          section = 'sling_activation';
+        } else if (cat === 'resilience' || name.includes('atem') || name.includes('breath') || name.includes('cool')) {
+          section = 'resilience';
+        } else {
+          section = 'performance';
+        }
       }
+      groups[section].exercises.push({ ...ex, globalIndex });
     });
 
     return Object.entries(groups)
