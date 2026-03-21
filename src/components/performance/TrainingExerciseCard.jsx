@@ -59,7 +59,7 @@ export default function TrainingExerciseCard({ exercise, idx, onDetailClick, isO
 
   const [sets, setSets] = useState(3);
   const [reps, setReps] = useState(12);
-  const [weight, setWeight] = useState(0);
+  const [weight, setWeight] = useState(null); // null = not yet parsed
 
   const [showDetails, setShowDetails] = useState(false);
   const [isFinishing, setIsFinishing] = useState(false);
