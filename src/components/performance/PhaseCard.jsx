@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Target, Zap, CheckCircle2, Brain, Activity, Dumbbell, Sparkles, AlertTriangle, Wind } from 'lucide-react';
 import { Button } from '@/components/ui/button';
