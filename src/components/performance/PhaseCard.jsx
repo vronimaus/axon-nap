@@ -161,8 +161,8 @@ export default function PhaseCard({ phase, index, totalPhases, isCompleted, onCo
                <span className="text-[10px] text-slate-500 font-mono">{section.exercises.length} Übungen</span>
             </div>
 
-            {/* Horizontal Button Selector */}
-            <div className="flex flex-wrap gap-2 px-1">
+            {/* Exercise Selector — pill buttons with truncated name */}
+            <div className="flex flex-col gap-1.5 px-1">
               {section.exercises.map((exercise, exIdx) => {
                 const uniqueKey = `${section.key}-${exIdx}`;
                 const isExCompleted = completedExercises[uniqueKey] || exercise.completed;
@@ -173,15 +173,24 @@ export default function PhaseCard({ phase, index, totalPhases, isCompleted, onCo
                     key={uniqueKey}
                     onClick={() => setOpenCardKey(isActive ? null : uniqueKey)}
                     className={`
-                      w-12 h-12 rounded-xl flex items-center justify-center text-sm font-bold transition-all duration-300
+                      flex items-center gap-3 w-full px-4 py-2.5 rounded-xl text-sm font-medium text-left transition-all duration-200
                       ${isActive 
-                        ? 'bg-cyan-500 text-slate-900 shadow-[0_0_15px_rgba(6,182,212,0.4)] scale-110 z-10' 
+                        ? `border ${section.accent} ${section.color} shadow-sm` 
                         : isExCompleted 
-                          ? 'bg-green-500/20 text-green-400 border border-green-500/30' 
-                          : 'bg-slate-800 text-slate-500 border border-slate-700 hover:border-cyan-500/50 hover:text-cyan-400'}
+                          ? 'bg-green-500/10 text-green-400 border border-green-500/20' 
+                          : 'bg-slate-800/60 text-slate-300 border border-slate-700/60 hover:border-slate-500 hover:text-white'}
                     `}
                   >
-                    {isExCompleted ? <CheckCircle2 className="w-5 h-5" /> : exIdx + 1}
+                    <span className={`w-6 h-6 rounded-md flex items-center justify-center text-xs font-bold flex-shrink-0 ${
+                      isExCompleted ? 'bg-green-500/20 text-green-400' : isActive ? 'bg-white/10' : 'bg-slate-700 text-slate-400'
+                    }`}>
+                      {isExCompleted ? <CheckCircle2 className="w-3.5 h-3.5" /> : exIdx + 1}
+                    </span>
+                    <span className="flex-1 truncate">{exercise.name || `Übung ${exIdx + 1}`}</span>
+                    {exercise.sets_reps_tempo && (
+                      <span className="text-xs text-slate-500 flex-shrink-0 hidden sm:block">{exercise.sets_reps_tempo}</span>
+                    )}
+                    <span className={`text-xs transition-transform ${isActive ? 'rotate-180' : ''}`}>▾</span>
                   </button>
                 );
               })}
