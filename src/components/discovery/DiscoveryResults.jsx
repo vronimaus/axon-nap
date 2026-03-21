@@ -213,7 +213,7 @@ const buildScript = (results, goalLabel) => {
   return messages;
 };
 
-export default function DiscoveryResults({ tests, answers, onContinue, isGeneratingPlan, goalLabel }) {
+export default function DiscoveryResults({ tests, answers, onContinue, isGeneratingPlan, goalLabel, shadowPlanId }) {
   const results = tests.map(test => {
     const val = answers[test.id];
     const level = getLevel(val, test.thresholds);
