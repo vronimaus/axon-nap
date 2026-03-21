@@ -14,6 +14,7 @@ import DailyReadinessCheck from '../components/dashboard/DailyReadinessCheck';
 import { Helmet } from 'react-helmet-async';
 import PhaseCard from '../components/performance/PhaseCard';
 import { User } from 'lucide-react';
+import EquipmentBadges from '../components/shared/EquipmentBadges';
 
 const COACH_AVATARS = {
   male: 'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/3031e6f06_TechnicalSystemsArchitectAXON-nap.jpg',

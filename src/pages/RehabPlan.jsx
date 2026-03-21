@@ -10,6 +10,7 @@ import DailyReadinessCheck from '../components/dashboard/DailyReadinessCheck';
 import { Helmet } from 'react-helmet-async';
 import RehabPhaseCard from '../components/rehab/RehabPhaseCard';
 import { useTrialStatus } from '../components/useTrialStatus';
+import EquipmentBadges from '../components/shared/EquipmentBadges';
 
 const WeaknessGenerator = React.lazy(() => import('../components/rehab/WeaknessGenerator'));
 
