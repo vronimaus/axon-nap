@@ -123,45 +123,66 @@ Deno.serve(async (req) => {
 
     const performancePromptSection = isPerformanceGoal ? `
     ════════════════════════════════════════════
-    PERFORMANCE-ATHLETIK MODUS — KEIN SANFTER EINSTIEG
+    O'SHEA PERFORMANCE-ATHLETIK MODUS
+    (Scientific Principles and Methods of Strength Fitness)
     ════════════════════════════════════════════
     Dieser User ist ${expLvl}/${activityLvl} und will "${goal_description}".
-    Das ist ein konkretes, anspruchsvolles Performance-Ziel. Behandle ihn wie einen Athleten.
+    Wende die Trainingsphilosophie von John Patrick O'Shea an.
 
-    DENKWEISE: Was würde ein S&C-Coach aus dem Profi-Sport für dieses Ziel programmieren?
-    - Direkte Übertragung: Wähle Übungen, die EXAKT die Muskeln/Muster für das Ziel trainieren
-    - Progressive Überlastung: Jede Phase erhöht Volumen ODER Intensität, nicht beides gleichzeitig
-    - Phase 1 (Foundation): Volumen-Aufbau, technische Basis, 4x8-12 oder 5x5
-    - Phase 2 (Intensität): Schwerere Loads / mehr Schwierigkeit, 4x5-8 oder EMOM/AMRAP
-    - Phase 3 (Peak): Maximale Intensität, Skill-Transfer, 3x3-5 oder Max-Set-Protokolle
+    ── O'SHEA KERNPRINZIPIEN ──────────────────
+    1. CORNERSTONE EXERCISES ZUERST: Priorisiere immer die Grundübungen (Squat, Deadlift,
+       Press, Pull-Up, Row). Isolationsübungen sind ergänzend, nie Hauptreiz.
+    2. PROZENTUALE LASTSTEUERUNG: Schreibe Lasten als % des 1RM in sets_reps_tempo.
+       Beispiel: "5x5 @ 80% 1RM" oder "3x10 @ 65% 1RM – Active Rest: 90s Jumping Jacks"
+       Nutzer kennen ihr 1RM oder schätzen es. Das ist die Verantwortung des Users.
+    3. INTERVAL WEIGHT TRAINING (IWT): Kombiniere Kraft und Ausdauer innerhalb derselben
+       Session. Format im notes-Feld: "KRAFTSATZ → ACTIVE REST (30-60s Ausdauer) → ERHOLUNG
+       bis Herzfrequenz ≤110 BPM (check auf Smartwatch) → nächster Satz".
+       Active Rest Beispiele: Jumping Jacks, Mountain Climbers, Seilspringen, Burpees, Row.
+    4. QUANTUM-ZYKLEN (Periodisierung): Strukturiere die 3 Phasen als O'Shea-Zyklen:
+       - Phase 1 (Anatomische Adaptation / Volume): 3-4x12-15 @ 60-70% 1RM – Technik, Basis
+       - Phase 2 (Hypertrophie/Kraft): 4-5x6-10 @ 70-80% 1RM – Hauptreiz aufbauen
+       - Phase 3 (Peak Strength / Intensität): 5-6x3-5 @ 82-92% 1RM – maximale Kraft
+    5. ÜBUNGSHIERARCHIE: Immer in dieser Reihenfolge im Performance-Block:
+       a) 1-2 Compound Cornerstone Exercises (volle Last, volle Konzentration)
+       b) 1-2 unterstützende Verbundübungen (60-75% des Cornerstone-Volumens)
+       c) 1 Isolationsübung optional (nur wenn biomechanisch sinnvoll)
 
-    PERFORMANCE-BLOCK (4-6 Übungen) — DAS IST DER PLAN:
-    - Direkte Ziel-Übungen zuerst (z.B. bei Burpees: Burpee-Varianten, Push-ups, Squat-Jumps, Core)
-    - sets_reps_tempo für ${expLvl}:
-      * intermediate: 4x8, 5x5, 3x10, EMOM 10min
-      * advanced: 5x5, 4x6, AMRAP, Superset-Protokolle, Max-Sets
-      * elite: 6x3, Wave-Loading, Cluster-Sets, Sport-spezifische Circuits
-    - intensity_factor: Phase 1 = 2.0, Phase 2 = 2.5, Phase 3 = 3.0
-    - Keine "leichten" Einstiegsübungen im Performance-Block
+    ── NOTES-FELD PFLICHT-FORMAT (IWT) ──────
+    Für jede Performance-Block Übung MUSS das notes-Feld enthalten:
+    "IWT: Nach jedem Satz → [spezifische Active Rest Übung] für [30-60s] → Pause bis HF ≤110 BPM"
+    Beispiel: "IWT: Nach jedem Satz → 45s Jumping Jacks → Pause bis HF ≤110 BPM (Smartwatch prüfen)"
 
-    NEURO-PRIMER (NUR 1 Übung — kurz und zweckgebunden):
-    - Maximal 1 Übung zur neuronalen Vorbereitung, die DIREKT das Ziel-Muster aktiviert
-    - Nicht: allgemeine Atemübungen oder generischer Neuro-Kram
-    - Ja: etwas das die CNS für die kommende Belastung schärft
+    ── INTENSITÄTSFAKTOREN ──────────────────
+    - intensity_factor: Phase 1 = 1.5, Phase 2 = 2.2, Phase 3 = 3.0
 
-    SLING-ACTIVATION (2-3 Übungen — zielspezifisch):
-    - Aktiviere die faszialen Ketten, die für das Ziel gebraucht werden
-    - Kein generisches Mobility-Programm — gezielt auf den Performance-Block vorbereiten
+    NEURO-PRIMER (NUR 1 Übung — CNS-Aktivierung für Cornerstone-Muster):
+    - Aktiviert das neuronale Muster der Hauptübung, nicht generisches Warm-Up
+    - Maximal 5 Min., explosiv oder koordinativ
+
+    SLING-ACTIVATION (2-3 Übungen — zielspezifische Faszien-Vorbereitung):
+    - Bereitet die faszialen Ketten für die Cornerstone Exercises vor
     ` : `
     ════════════════════════════════════════════
-    AXON FLUID LOGIC (V2) STRUKTUR — BALANCED
+    O'SHEA BALANCED MODUS
+    (Scientific Principles and Methods of Strength Fitness)
     ════════════════════════════════════════════
-    Erstelle 3 progressive Phasen (Foundation, Development, Mastery).
+    Wende O'Sheas Grundprinzipien auch im Balanced-Modus an:
 
+    1. CORNERSTONE EXERCISES: Squat, Hinge, Push, Pull als Basis — immer priorisiert.
+    2. PROZENTUALE LAST: sets_reps_tempo immer mit % 1RM angeben (z.B. "3x10 @ 65% 1RM").
+    3. IWT LIGHT: Im notes-Feld optional: "Active Rest: 30s leichte Ausdauer zwischen Sätzen,
+       Pause bis HF ≤110 BPM (Smartwatch prüfen)".
+    4. QUANTUM-ZYKLEN:
+       - Phase 1 (Foundation): 3x12-15 @ 60-65% 1RM
+       - Phase 2 (Development): 4x8-10 @ 70-75% 1RM
+       - Phase 3 (Mastery): 4-5x5-6 @ 78-85% 1RM
+    5. intensity_factor: Phase 1 = 1.3, Phase 2 = 1.8, Phase 3 = 2.3
+
+    AXON FLUID LOGIC STRUKTUR:
     1. NEURO-PRIMER (1-2 Übungen): Vision, Vestibular, Atmung
     2. SLING-ACTIVATION (2-3 Übungen): Fasziale Ketten, MFR, Gelenk-Prep
-    3. PERFORMANCE-BLOCK (3-4 Übungen): Hauptreiz, Kraft/Skill/Power
-       - intensity_factor: Phase 1 = 1.5, Phase 2 = 2.0, Phase 3 = 2.5
+    3. PERFORMANCE-BLOCK (3-5 Übungen): Cornerstone First → Supporting → Optional Isolation
     4. RESILIENCE (1-2 Übungen): De-Tonisierung, Integration
     `;
 
