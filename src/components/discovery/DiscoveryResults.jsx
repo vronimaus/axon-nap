@@ -1,7 +1,124 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
-import { ArrowRight, Loader2, CheckCircle2, Zap, AlertTriangle } from 'lucide-react';
+import { ArrowRight, Loader2, CheckCircle2, Zap, AlertTriangle, Brain, Activity, Target, Dumbbell } from 'lucide-react';
+
+// Loading screen shown while plan generates
+const LOADING_STEPS = [
+  { icon: Brain,    text: 'Neuro-Profil wird analysiert…',          color: 'text-cyan-400' },
+  { icon: Target,   text: 'Cornerstone Exercises werden ausgewählt…', color: 'text-blue-400' },
+  { icon: Activity, text: 'O\'Shea Quantum-Zyklen werden berechnet…', color: 'text-purple-400' },
+  { icon: Zap,      text: 'MFR-Nodes und Neuro-Primer werden zugeordnet…', color: 'text-amber-400' },
+  { icon: Dumbbell, text: 'IWT-Protokoll wird konfiguriert…',        color: 'text-emerald-400' },
+  { icon: CheckCircle2, text: 'Plan wird finalisiert…',             color: 'text-green-400' },
+];
+
+function PlanGeneratingScreen({ goalLabel }) {
+  const [step, setStep] = useState(0);
+  const [progress, setProgress] = useState(0);
+  const intervalRef = useRef(null);
+  const progressRef = useRef(null);
+
+  useEffect(() => {
+    // Advance steps every ~10s (total ~60s for 6 steps)
+    intervalRef.current = setInterval(() => {
+      setStep(s => Math.min(s + 1, LOADING_STEPS.length - 1));
+    }, 10000);
+
+    // Smooth progress bar — reaches ~95% in 60s, never 100% until done
+    progressRef.current = setInterval(() => {
+      setProgress(p => {
+        if (p >= 94) return 94;
+        return p + 0.5;
+      });
+    }, 300);
+
+    return () => {
+      clearInterval(intervalRef.current);
+      clearInterval(progressRef.current);
+    };
+  }, []);
+
+  const CurrentIcon = LOADING_STEPS[step].icon;
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, scale: 0.95 }}
+      animate={{ opacity: 1, scale: 1 }}
+      className="max-w-lg w-full space-y-8 text-center"
+    >
+      {/* Animated Icon */}
+      <div className="flex justify-center">
+        <motion.div
+          key={step}
+          initial={{ scale: 0.7, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+          className="w-24 h-24 rounded-3xl bg-gradient-to-br from-slate-800 to-slate-900 border border-slate-700 flex items-center justify-center shadow-xl"
+        >
+          <CurrentIcon className={`w-12 h-12 ${LOADING_STEPS[step].color}`} />
+        </motion.div>
+      </div>
+
+      <div>
+        <h2 className="text-2xl font-bold text-white mb-2">
+          Dein Plan wird erstellt
+        </h2>
+        {goalLabel && (
+          <p className="text-slate-400 text-sm">
+            Ziel: <span className="text-blue-400 font-semibold">{goalLabel}</span>
+          </p>
+        )}
+      </div>
+
+      {/* Progress Bar */}
+      <div className="space-y-2">
+        <div className="h-2 bg-slate-800 rounded-full overflow-hidden">
+          <motion.div
+            animate={{ width: `${progress}%` }}
+            transition={{ duration: 0.3, ease: 'linear' }}
+            className="h-full bg-gradient-to-r from-blue-500 via-cyan-500 to-blue-500 rounded-full"
+          />
+        </div>
+        <p className="text-xs text-slate-500 font-mono">{Math.round(progress)}%</p>
+      </div>
+
+      {/* Step List */}
+      <div className="space-y-2 text-left">
+        {LOADING_STEPS.map((s, i) => {
+          const Icon = s.icon;
+          const isDone = i < step;
+          const isCurrent = i === step;
+          return (
+            <motion.div
+              key={i}
+              animate={{ opacity: i <= step ? 1 : 0.25 }}
+              className="flex items-center gap-3"
+            >
+              <div className={`w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 transition-all ${
+                isDone ? 'bg-green-500/20 border border-green-500/40' :
+                isCurrent ? 'bg-slate-700 border border-slate-600' :
+                'bg-slate-900 border border-slate-800'
+              }`}>
+                {isDone
+                  ? <CheckCircle2 className="w-4 h-4 text-green-400" />
+                  : <Icon className={`w-4 h-4 ${isCurrent ? s.color : 'text-slate-600'} ${isCurrent ? 'animate-pulse' : ''}`} />
+                }
+              </div>
+              <span className={`text-sm ${isDone ? 'text-slate-400 line-through' : isCurrent ? 'text-white font-medium' : 'text-slate-600'}`}>
+                {s.text}
+              </span>
+            </motion.div>
+          );
+        })}
+      </div>
+
+      <p className="text-xs text-slate-500">
+        Das dauert ca. 60 Sekunden — dein Plan wird vollständig auf deine Baseline kalibriert.
+      </p>
+    </motion.div>
+  );
+}
 
 const LEVEL_CONFIG = {
   beginner:     { label: 'Beginner',     color: 'text-slate-400',  bg: 'bg-slate-500/20',  border: 'border-slate-500/40' },
