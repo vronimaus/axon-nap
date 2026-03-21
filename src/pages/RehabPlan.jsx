@@ -351,6 +351,9 @@ export default function RehabPlan() {
 
 
 
+        {/* Equipment Badges */}
+        <EquipmentBadges plan={rehabPlan} />
+
         {/* Active Phase Card */}
         {rehabPlan.phases && rehabPlan.phases[activePhaseIdx] && (
           <RehabPhaseCard

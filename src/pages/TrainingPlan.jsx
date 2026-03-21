@@ -314,6 +314,9 @@ export default function TrainingPlan() {
 
 
 
+                {/* Equipment Badges */}
+                <EquipmentBadges plan={activePlan} />
+
                 {/* Sequential Phase Navigation */}
                 {activePlan.phases && activePlan.phases.length > 1 && (
                   <div className="flex gap-2 overflow-x-auto pb-1">
