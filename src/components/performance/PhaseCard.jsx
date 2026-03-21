@@ -5,11 +5,10 @@ import { Button } from '@/components/ui/button';
 import TrainingExerciseCard from './TrainingExerciseCard';
 import PhaseCompleteModal from './PhaseCompleteModal';
 
-export default function PhaseCard({ phase, index, totalPhases, isCompleted, onComplete, onNext, onPrev, readinessStatus }) {
-  // Accordion State: All closed by default
+export default function PhaseCard({ phase, index, totalPhases, isCompleted, onComplete, onNext, onPrev, readinessStatus, goalDescription }) {
   const [openCardKey, setOpenCardKey] = React.useState(null);
+  const [showCompleteModal, setShowCompleteModal] = useState(false);
 
-  // Track completed exercises locally for optimistic UI updates
   const [completedExercises, setCompletedExercises] = React.useState(() => {
     if (!phase.exercises) return {};
     const initial = {};
