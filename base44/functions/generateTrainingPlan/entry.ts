@@ -144,9 +144,19 @@ Deno.serve(async (req) => {
        - Phase 2 (Hypertrophie/Kraft): 4-5x6-10 @ 70-80% 1RM – Hauptreiz aufbauen
        - Phase 3 (Peak Strength / Intensität): 5-6x3-5 @ 82-92% 1RM – maximale Kraft
     5. ÜBUNGSHIERARCHIE: Immer in dieser Reihenfolge im Performance-Block:
-       a) 1-2 Compound Cornerstone Exercises (volle Last, volle Konzentration)
-       b) 1-2 unterstützende Verbundübungen (60-75% des Cornerstone-Volumens)
-       c) 1 Isolationsübung optional (nur wenn biomechanisch sinnvoll)
+      a) 2-3 Compound Cornerstone Exercises (volle Last, volle Konzentration)
+      b) 2-3 unterstützende Verbundübungen (60-75% des Cornerstone-Volumens)
+      c) 1-2 Isolationsübungen optional (nur wenn biomechanisch sinnvoll)
+
+    ── MINDEST-ÜBUNGSANZAHL PRO PHASE (PFLICHT) ──
+    JEDE Phase MUSS enthalten:
+    - neuro_primer:     genau 1 Übung
+    - sling_activation: mindestens 2, maximal 3 Übungen
+    - performance:      mindestens 4, maximal 6 Übungen (Cornerstone first)
+    - resilience:       mindestens 1, maximal 2 Übungen
+    GESAMT pro Phase: mindestens 8, maximal 12 Übungen.
+    LOAD-PFLICHT: sets_reps_tempo MUSS bei Equipment-Übungen ein konkretes Gewicht enthalten,
+    z.B. "4x8 @ 24kg KB" oder "5x5 @ 80% 1RM". Nie nur "% 1RM" ohne Kontext.
 
     ── NOTES-FELD PFLICHT-FORMAT (IWT) ──────
     Für jede Performance-Block Übung MUSS das notes-Feld enthalten:
