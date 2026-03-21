@@ -220,8 +220,9 @@ Deno.serve(async (req) => {
        - 1 Mobility-Drill der die neue Range sofort nutzt
        notes-Feld PFLICHT: "MFR Pre-Load: [Node] entsperrt [Gewebe] → mehr Range in [Übung]"
 
-    3. PERFORMANCE-BLOCK (3-4 Übungen): Cornerstone First → Supporting.
+    3. PERFORMANCE-BLOCK (4-5 Übungen): Cornerstone First → Supporting.
        % 1RM und O'Shea-Zyklen wie oben beschrieben.
+       LOAD-PFLICHT: bei Equipment-Übungen immer konkretes Gewicht angeben (z.B. "3x10 @ 16kg KB").
 
     4. RESILIENCE (1 Übung): Vagus-Aktivierung durch Atemübung.
        notes-Feld: "Neural Cool-Down → Adaptation passiert HIER."
