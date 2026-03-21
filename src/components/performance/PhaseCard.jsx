@@ -252,7 +252,7 @@ export default function PhaseCard({ phase, index, totalPhases, isCompleted, onCo
 
         {!isCompleted ? (
           <Button
-            onClick={onComplete}
+            onClick={() => setShowCompleteModal(true)}
             className="w-full sm:w-auto bg-cyan-500 hover:bg-cyan-600 text-slate-900 font-bold shadow-[0_0_20px_rgba(6,182,212,0.3)] hover:shadow-[0_0_30px_rgba(6,182,212,0.5)] transition-all px-8 py-6 text-lg"
           >
             <CheckCircle2 className="w-5 h-5 mr-2" />
@@ -264,6 +264,26 @@ export default function PhaseCard({ phase, index, totalPhases, isCompleted, onCo
           </Button>
         ) : null}
       </div>
+
+      {/* Phase Complete Modal */}
+      <AnimatePresence>
+        {showCompleteModal && (
+          <PhaseCompleteModal
+            phase={phase}
+            phaseIndex={index}
+            totalPhases={totalPhases}
+            goalDescription={goalDescription || phase.title}
+            isLastPhase={index === totalPhases - 1}
+            onContinue={() => {
+              setShowCompleteModal(false);
+              onComplete();
+              if (index < totalPhases - 1) onNext();
+            }}
+            onRepeatPhase={() => setShowCompleteModal(false)}
+            onClose={() => setShowCompleteModal(false)}
+          />
+        )}
+      </AnimatePresence>
     </motion.div>
   );
 }
