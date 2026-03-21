@@ -1,8 +1,9 @@
 import React, { useMemo, useState } from 'react';
-import { motion } from 'framer-motion';
-import { Target, Zap, CheckCircle2, Brain, Activity, Dumbbell, Sparkles, AlertTriangle, Wind } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Target, Zap, CheckCircle2, Brain, Activity, Dumbbell, AlertTriangle, Wind } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import TrainingExerciseCard from './TrainingExerciseCard';
+import PhaseCompleteModal from './PhaseCompleteModal';
 
 export default function PhaseCard({ phase, index, totalPhases, isCompleted, onComplete, onNext, onPrev, readinessStatus }) {
   // Accordion State: All closed by default
