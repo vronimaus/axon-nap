@@ -16,7 +16,7 @@ const TYPE_ICONS = {
 
 export default function EquipmentBadges({ plan }) {
   // Collect all unique required_equipment IDs from all phases/exercises
-  const equipmentIds = React.useMemo(() => {
+  const equipmentIds = useMemo(() => {
     if (!plan?.phases) return [];
     const ids = new Set();
     for (const phase of plan.phases) {
@@ -37,7 +37,7 @@ export default function EquipmentBadges({ plan }) {
   });
 
   // Match fetched equipment to the IDs found in the plan
-  const matchedEquipment = React.useMemo(() => {
+  const matchedEquipment = useMemo(() => {
     if (!equipmentIds.length) return [];
     return allEquipment.filter(eq => equipmentIds.includes(eq.equipment_id));
   }, [allEquipment, equipmentIds]);
