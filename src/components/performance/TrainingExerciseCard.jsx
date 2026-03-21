@@ -83,8 +83,12 @@ export default function TrainingExerciseCard({ exercise, idx, onDetailClick, isO
             const specs = exercise.sets_reps_tempo || dbEx.sets_reps_tempo || "3x12";
             const setMatch = specs.match(/(\d+)\s*[xX]/);
             const repMatch = specs.match(/[xX]\s*(\d+)/);
+            // Weight: try to parse kg value, e.g. "20kg", "20 kg", "@ 20kg"
+            const kgMatch = specs.match(/(\d+(?:\.\d+)?)\s*kg/i);
             if (setMatch) setSets(parseInt(setMatch[1]));
             if (repMatch) setReps(parseInt(repMatch[1]));
+            // Only set weight if we found a concrete kg value — otherwise leave null (placeholder)
+            if (kgMatch) setWeight(parseFloat(kgMatch[1]));
 
             const ttsText = [
               dbEx.axon_moment ? `AXON Moment: ${dbEx.axon_moment}` : '',
