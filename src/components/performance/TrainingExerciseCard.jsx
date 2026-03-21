@@ -314,14 +314,21 @@ export default function TrainingExerciseCard({ exercise, idx, onDetailClick, isO
           </AnimatePresence>
 
           <div className={`transition-all duration-300 ${isFinishing ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
-            <div className="flex items-center justify-center gap-4 md:gap-8 mb-8">
+            <div className="flex items-center justify-center gap-4 md:gap-8 mb-4">
               <div className="text-slate-600 text-xl font-light">×</div>
               <EditableNumber value={sets} label="Sätze" onChange={setSets} />
               <div className="text-slate-600 text-xl font-light">×</div>
               <EditableNumber value={reps} label="Reps" onChange={setReps} />
               <div className="text-slate-600 text-xl font-light">@</div>
-              <EditableNumber value={weight} label="Load" unit="kg" onChange={setWeight} />
+              <EditableNumber value={weight ?? '—'} label="Load" unit="kg" onChange={(v) => setWeight(v === '—' ? null : Number(v))} />
             </div>
+
+            {/* Load hint from sets_reps_tempo if no concrete kg value */}
+            {weight === null && fullExercise.sets_reps_tempo && (
+              <p className="text-center text-xs text-amber-400/80 font-mono mb-2 px-4">
+                💡 {fullExercise.sets_reps_tempo} — Wähle dein Gewicht manuell
+              </p>
+            )}
 
             <p className="text-center text-[10px] text-slate-500 font-mono mb-6">
               PAUSE: 60 SEK (Auto-Start nach Abschluss)
