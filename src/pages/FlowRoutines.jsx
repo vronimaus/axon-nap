@@ -149,7 +149,7 @@ export default function FlowRoutines() {
             <div className="flex items-center gap-3">
               <TriageIcon className={`w-5 h-5 flex-shrink-0 ${triageConfig.color}`} />
               <div>
-                <p className="text-xs text-slate-500 uppercase tracking-widest">AXON empfiehlt</p>
+                <p className="text-xs text-slate-400 uppercase tracking-widest">AXON empfiehlt</p>
                 <p className={`font-semibold text-sm ${triageConfig.color}`}>{triageConfig.label}</p>
               </div>
             </div>
@@ -263,7 +263,7 @@ export default function FlowRoutines() {
             ))}
             
             {routines.filter(r => selectedCategory === 'all' || r.category === selectedCategory).length === 0 && (
-              <div className="text-center py-8 text-slate-500 text-sm glass rounded-xl border border-slate-700/50">
+              <div className="text-center py-8 text-slate-400 text-sm glass rounded-xl border border-slate-700/50">
                 Keine Routinen in dieser Kategorie gefunden.
               </div>
             )}
@@ -314,13 +314,13 @@ function RoutineCard({ routine, idx, completed, highlighted, onClick }) {
             {routine.description}
           </p>
           <div className="flex items-center gap-3 mt-2">
-            <span className="flex items-center gap-1 text-xs text-slate-500">
+            <span className="flex items-center gap-1 text-xs text-slate-400">
               <Clock className="w-3 h-3" />
               {routine.total_duration} Min.
             </span>
-            <span className="text-xs text-slate-600">·</span>
-            <span className="text-xs text-slate-500">{categoryLabel}</span>
-            <span className="text-xs text-slate-600">·</span>
+            <span className="text-xs text-slate-500">·</span>
+            <span className="text-xs text-slate-400">{categoryLabel}</span>
+            <span className="text-xs text-slate-500">·</span>
             <span className={`text-xs ${intensity.color}`}>{intensity.label}</span>
           </div>
         </div>

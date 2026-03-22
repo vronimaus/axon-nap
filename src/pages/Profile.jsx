@@ -173,13 +173,13 @@ export default function Profile() {
           </div>
           <div className="grid md:grid-cols-2 gap-6">
             <div className="glass rounded-lg p-4 border border-cyan-500/30 shadow-[0_0_20px_rgba(6,182,212,0.1)]">
-              <p className="text-sm text-slate-400 mb-1">Nutzer-Rolle</p>
+              <p className="text-sm text-slate-300 mb-1">Nutzer-Rolle</p>
               <p className="text-lg font-semibold text-cyan-400">
                 {user?.role === 'admin' ? 'Admin' : 'Benutzer'}
               </p>
             </div>
             <div className={`rounded-lg p-4 border ${user?.has_paid ? 'glass border-cyan-500/30 shadow-[0_0_20px_rgba(6,182,212,0.1)]' : 'bg-amber-950/20 border-amber-500/30'}`}>
-              <p className="text-sm text-slate-400 mb-1">Zahlungsstatus</p>
+              <p className="text-sm text-slate-300 mb-1">Zahlungsstatus</p>
               <p className={`text-lg font-semibold ${user?.has_paid ? 'text-green-400' : 'text-amber-400'}`}>
                 {user?.has_paid ? '✓ Bezahlt (59€)' : '⏳ 7-Tage Trial'}
               </p>
@@ -648,7 +648,7 @@ function FormField({ label, type, value, onChange, placeholder, options, min, ma
             onChange={onChange}
             className="w-5 h-5 rounded accent-cyan-400"
           />
-          <span className="text-slate-400">Ja, zutreffend</span>
+          <span className="text-slate-300">Ja, zutreffend</span>
         </label>
       )}
     </div>

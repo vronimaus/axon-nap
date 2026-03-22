@@ -446,12 +446,12 @@ export default function Discovery() {
                   <div>
                     <strong className="text-white">{t.name}</strong>
                     {goalKey && <span className="ml-2 text-xs text-blue-400 font-mono">Test {i+1}</span>}
-                    <span className="text-slate-500"> — {t.question.slice(0, 50)}…</span>
+                    <span className="text-slate-400"> — {t.question.slice(0, 50)}…</span>
                   </div>
                 </div>
               ))}
             </div>
-            <p className="text-xs text-slate-500">Dauer: ~{TESTS.length <= 2 ? '2' : '3-5'} Minuten • Kein Equipment nötig</p>
+            <p className="text-xs text-slate-400">Dauer: ~{TESTS.length <= 2 ? '2' : '3-5'} Minuten • Kein Equipment nötig</p>
             <Button
               onClick={() => setPhase('testing')}
               className="w-full h-14 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-bold text-lg shadow-lg shadow-blue-500/25"
@@ -460,7 +460,7 @@ export default function Discovery() {
             </Button>
             <button
               onClick={() => window.location.href = createPageUrl('Dashboard')}
-              className="text-sm text-slate-500 hover:text-slate-300 transition-colors"
+              className="text-sm text-slate-400 hover:text-slate-200 transition-colors"
             >
               Später machen
             </button>
@@ -524,7 +524,7 @@ export default function Discovery() {
           >
             <Loader2 className="w-12 h-12 text-amber-400 animate-spin mx-auto" />
             <p className="text-white font-semibold text-lg">AXON analysiert deine Baselines…</p>
-            <p className="text-slate-400 text-sm">Dein neuronales Profil wird kalibriert.</p>
+            <p className="text-slate-300 text-sm">Dein neuronales Profil wird kalibriert.</p>
           </motion.div>
         )}
 
