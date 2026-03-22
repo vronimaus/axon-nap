@@ -250,12 +250,14 @@ export default function Dashboard() {
                 <Zap className="w-7 h-7 sm:w-8 sm:h-8 text-white" />
               </div>
               <h2 className="text-xl sm:text-2xl font-bold text-blue-400 mb-2 sm:mb-3">GOALS</h2>
-              <p className="text-sm sm:text-base text-slate-300 mb-3 sm:mb-4 leading-relaxed">
+              <p className="text-sm sm:text-base text-slate-300 mb-4 leading-relaxed">
                 Schalte neue Fähigkeiten frei: Von ersten Klimmzügen bis zum Human Flag. Dein personalisierter Trainingsplan basiert auf deinen Baselines.
               </p>
-              <p className="text-xs sm:text-sm text-slate-500 leading-relaxed">
-                Progressive Trainingsplanung • Mobility + Kraft • Messbare Fortschritte • Skill-Progression
-              </p>
+              <div className="flex flex-wrap gap-1.5">
+                {['Skill-Progression', 'Trainingsplan', 'Kraft + Mobility'].map(tag => (
+                  <span key={tag} className="text-[10px] font-semibold uppercase tracking-wider px-2 py-1 rounded-md bg-blue-500/10 text-blue-300 border border-blue-500/20">{tag}</span>
+                ))}
+              </div>
             </motion.button>
 
             {/* 2. REHAB (Schmerz) - NOW SECOND */}
