@@ -464,14 +464,14 @@ export default function Flow() {
           <h1 className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-500 mb-2">
             {routine.routine_name}
           </h1>
-          <div className="text-slate-400 max-w-2xl mx-auto">
+          <div className="text-slate-300 max-w-2xl mx-auto">
             <InstructionWithGlossary instruction={routine.description || ''} />
           </div>
         </motion.div>
 
         {/* Progress Bar */}
         <div className="mb-8">
-          <div className="flex justify-between text-xs text-slate-400 mb-2">
+          <div className="flex justify-between text-xs text-slate-300 mb-2">
             <span>Schritt {currentStep + 1} von {routine.sequence.length}</span>
             <span>{Math.round(progress)}%</span>
           </div>
@@ -545,7 +545,7 @@ export default function Flow() {
 
               {/* Setup / Instructions */}
               <div className="bg-slate-900/50 rounded-xl p-4 border border-slate-800 mb-6">
-                 <h5 className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-4">Ausführung</h5>
+                 <h5 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">Ausführung</h5>
                  <InstructionWithGlossary instruction={detailedContent.instruction} />
               </div>
 
@@ -554,13 +554,13 @@ export default function Flow() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
                   {detailedContent.purposeExplanation && (
                     <div className="bg-slate-800/50 border border-slate-700/50 rounded-xl p-4">
-                      <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">Warum diese Übung?</p>
+                      <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Warum diese Übung?</p>
                       <p className="text-xs text-slate-300 leading-relaxed">{detailedContent.purposeExplanation}</p>
                     </div>
                   )}
                   {detailedContent.benefits && (
                     <div className="bg-slate-800/50 border border-slate-700/50 rounded-xl p-4">
-                      <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">Was du danach spürst</p>
+                      <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Was du danach spürst</p>
                       <p className="text-xs text-slate-300 leading-relaxed">{detailedContent.benefits}</p>
                     </div>
                   )}
@@ -612,7 +612,7 @@ export default function Flow() {
                           >
                             <p className="text-sm text-slate-300 leading-relaxed mb-2">{(currentSequence.progression_basic || currentExercise?.progression_basic).description}</p>
                             <p className="text-xs text-slate-400">
-                              <span className="font-bold uppercase tracking-wider text-slate-500">Fokus:</span> {(currentSequence.progression_basic || currentExercise?.progression_basic).focus}
+                              <span className="font-bold uppercase tracking-wider text-slate-400">Fokus:</span> {(currentSequence.progression_basic || currentExercise?.progression_basic).focus}
                             </p>
                           </motion.div>
                         )}

@@ -329,7 +329,7 @@ export default function RehabPlan() {
         <div className="space-y-2">
           <div className="flex justify-between items-end">
             <div className="flex flex-col">
-               <span className="text-[10px] uppercase tracking-widest text-slate-500 font-bold">Progress</span>
+               <span className="text-[10px] uppercase tracking-widest text-slate-400 font-bold">Progress</span>
                <span className="text-sm font-bold text-white tracking-wide">
                   PHASE {rehabPlan.current_phase || 1} <span className="text-slate-600 mx-1">/</span> {rehabPlan.phases?.length || 3}
                </span>
@@ -387,13 +387,13 @@ export default function RehabPlan() {
               <Activity className="w-5 h-5 text-purple-400" />
               <h3 className="text-sm font-bold text-purple-400 uppercase tracking-widest">Empfohlene FLOW-Routinen</h3>
             </div>
-            <p className="text-xs text-slate-400 mb-3">Diese Routinen unterstützen deine Rehabilitation:</p>
+            <p className="text-xs text-slate-300 mb-3">Diese Routinen unterstützen deine Rehabilitation:</p>
             <div className="space-y-2">
               {rehabPlan.recommended_mfr_routines.map((r, i) => (
                 <div key={i} className="flex items-start gap-3 p-3 rounded-lg bg-slate-800/50 border border-slate-700">
                   <div className="flex-1">
                     <p className="text-sm font-semibold text-white">{r.routine_name}</p>
-                    {r.reason && <p className="text-xs text-slate-400 mt-0.5">{r.reason}</p>}
+                    {r.reason && <p className="text-xs text-slate-300 mt-0.5">{r.reason}</p>}
                   </div>
                 </div>
               ))}
@@ -432,7 +432,7 @@ export default function RehabPlan() {
 
         {/* AI-Powered Weakness Generator (Keep this as extra tool at bottom) */}
         <div className="mt-8 pt-8 border-t border-slate-800">
-            <h3 className="text-sm font-bold text-slate-500 uppercase tracking-widest mb-4">AI Plan-Optimierung</h3>
+            <h3 className="text-sm font-bold text-slate-400 uppercase tracking-widest mb-4">AI Plan-Optimierung</h3>
             <React.Suspense fallback={<div className="glass rounded-xl p-6 border border-slate-700 text-center text-slate-400">Lädt...</div>}>
               <WeaknessGenerator
               rehabPlan={rehabPlan}

@@ -122,7 +122,7 @@ export default function DailyReadinessCheck({ user, onClose }) {
                 <div className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse shadow-[0_0_8px_rgba(6,182,212,0.8)]" />
                 <div>
                   <h2 className="text-sm font-bold text-white tracking-widest uppercase">AXON Bio-Sync</h2>
-                  <p className="text-[10px] text-slate-500 tracking-widest uppercase mt-0.5">System-Kalibrierung v2.1</p>
+                  <p className="text-[10px] text-slate-400 tracking-widest uppercase mt-0.5">System-Kalibrierung v2.1</p>
                 </div>
               </div>
               <button onClick={onClose} className="text-slate-600 hover:text-slate-300 transition-colors p-1">
@@ -150,7 +150,7 @@ export default function DailyReadinessCheck({ user, onClose }) {
                     </div>
                     <div className="text-right">
                       <span className="text-xl font-bold font-mono text-white">{value}</span>
-                      <span className="text-xs text-slate-600 font-mono">/10</span>
+                      <span className="text-xs text-slate-400 font-mono">/10</span>
                       <p className={`text-[9px] font-bold tracking-widest mt-0.5 ${value <= 4 ? 'text-red-400' : value <= 7 ? 'text-cyan-400' : 'text-cyan-300'}`}>
                         {getValueLabel(value)}
                       </p>
@@ -170,7 +170,7 @@ export default function DailyReadinessCheck({ user, onClose }) {
                     />
                   </div>
 
-                  <div className="flex justify-between text-[10px] text-slate-400 font-mono">
+                  <div className="flex justify-between text-[10px] text-slate-300 font-mono">
                     <span>◀ {low}</span>
                     <span>{high} ▶</span>
                   </div>
