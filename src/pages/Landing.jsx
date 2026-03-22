@@ -181,7 +181,7 @@ export default function Landing() {
       {/* 5. Evidenz / Wissenschaft */}
       <section id="science" className="py-20 bg-slate-950">
         <div className="max-w-5xl mx-auto px-6 text-center">
-          <p className="text-xs font-bold uppercase tracking-[0.3em] text-slate-500 mb-4">Kein Esoterik. Keine Hacks.</p>
+          <p className="text-xs font-bold uppercase tracking-[0.3em] text-slate-400 mb-4">Kein Esoterik. Keine Hacks.</p>
           <h2 className="text-2xl md:text-3xl font-black text-white mb-4">Evidenz statt Hype.</h2>
           <p className="text-slate-400 max-w-2xl mx-auto mb-12 text-base leading-relaxed">
             AXON basiert auf publizierter Forschung aus Faszienbiologie, Neuromotorischer Rehabilitation und funktioneller Biomechanik —
