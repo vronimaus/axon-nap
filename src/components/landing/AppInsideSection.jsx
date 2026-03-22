@@ -34,7 +34,7 @@ export default function AppInsideSection() {
                 <div className="mb-8 p-4 bg-slate-950/50 rounded-3xl border border-white/5">
                     <SyncChart />
                 </div>
-                <p className="text-sm text-slate-400 leading-relaxed">
+                <p className="text-sm text-slate-300 leading-relaxed">
                     Analysiere deinen <strong>Neuro-Resilience Score</strong> und den myofaszialen Status deiner Faszienketten. AXON zeigt dir genau, wo dein Körper "blockiert", bevor du es spürst.
                 </p>
             </motion.div>
@@ -60,7 +60,7 @@ export default function AppInsideSection() {
                         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-slate-600"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
                     </div>
                 </div>
-                <p className="text-sm text-slate-400 leading-relaxed">
+                <p className="text-sm text-slate-300 leading-relaxed">
                     Verletzungen sind kein Stoppschild. AXON passt deinen Plan dynamisch an den Heilungsverlauf an. Von <strong>Release</strong> (Schmerzfreiheit) zu <strong>Load</strong> (Belastbarkeit).
                 </p>
             </motion.div>
@@ -91,7 +91,7 @@ export default function AppInsideSection() {
                         </div>
                     </div>
                 </div>
-                <p className="text-sm text-slate-400 leading-relaxed">
+                <p className="text-sm text-slate-300 leading-relaxed">
                     Egal ob Kraft oder Skill-Mastery. AXON integriert Hardware-Training perfekt mit deiner aktuellen neuronalen Kapazität.
                 </p>
             </motion.div>

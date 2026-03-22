@@ -63,7 +63,7 @@ export default function ThreeSystemSection() {
           viewport={{ once: true }}
           className="text-center mb-16"
         >
-          <p className="text-xs font-bold uppercase tracking-[0.3em] text-slate-500 mb-4">Das System</p>
+          <p className="text-xs font-bold uppercase tracking-[0.3em] text-slate-400 mb-4">Das System</p>
           <h2 className="text-3xl md:text-5xl font-black text-white leading-tight">
             Drei Module. Ein Körper.<br />
             <span className="text-cyan-400">Alles arbeitet zusammen.</span>
@@ -99,13 +99,13 @@ export default function ThreeSystemSection() {
 
                 <div>
                   <h3 className="font-bold text-lg text-white mb-2">{p.title}</h3>
-                  <p className="text-slate-400 text-sm leading-relaxed">{p.description}</p>
+                  <p className="text-slate-300 text-sm leading-relaxed">{p.description}</p>
                 </div>
 
                 {/* SEO keyword chips */}
                 <div className="flex flex-wrap gap-2 mt-auto pt-2">
                   {p.keywords.map((k) => (
-                    <span key={k} className="text-[10px] text-slate-500 border border-slate-700 rounded-full px-2 py-0.5">
+                    <span key={k} className="text-[10px] text-slate-400 border border-slate-600 rounded-full px-2 py-0.5">
                       {k}
                     </span>
                   ))}

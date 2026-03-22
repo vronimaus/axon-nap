@@ -23,7 +23,7 @@ export default function HeroSection({ onCtaClick }) {
           <p className="text-slate-300 text-lg md:text-xl mb-4 leading-relaxed max-w-xl">
             AXON kombiniert Faszienarbeit, funktionelle Bewegung und neurologische Drills — nicht als Routine, sondern als Antwort auf das, was dein Körper gerade braucht.
           </p>
-          <p className="text-slate-500 text-sm mb-10 font-medium">
+          <p className="text-slate-400 text-sm mb-10 font-medium">
             Kein einzelnes Tool. Kein isolierter Ansatz. Das richtige System zur richtigen Zeit.
           </p>
           <div className="flex flex-col sm:flex-row gap-4">
