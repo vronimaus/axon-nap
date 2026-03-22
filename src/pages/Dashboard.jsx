@@ -150,7 +150,7 @@ export default function Dashboard() {
       <motion.div 
         animate={{ boxShadow: `inset 0 0 120px ${glowColor}` }}
         transition={{ repeat: Infinity, duration: 4, repeatType: "reverse", ease: "easeInOut" }}
-        className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 flex items-center justify-center p-4 pb-20 md:pb-4 relative overflow-hidden"
+        className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 flex items-center justify-center p-4 pb-28 md:pb-4 relative overflow-hidden"
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
