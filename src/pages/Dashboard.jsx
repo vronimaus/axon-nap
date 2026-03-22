@@ -306,9 +306,9 @@ export default function Dashboard() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.3 }}
-            className="mt-8 glass rounded-xl border border-slate-700 p-4 text-center"
+            className="mt-10 glass rounded-xl border border-slate-700/60 p-4 text-center"
           >
-            <p className="text-sm text-slate-400">
+            <p className="text-sm text-slate-300">
               AXON deckt den kompletten Lebenszyklus ab: Probleme lösen → Ziele erreichen → System pflegen
             </p>
           </motion.div>
