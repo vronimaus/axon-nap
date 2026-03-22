@@ -173,12 +173,12 @@ export default function PhaseCard({ phase, index, totalPhases, isCompleted, onCo
                     key={uniqueKey}
                     onClick={() => setOpenCardKey(isActive ? null : uniqueKey)}
                     className={`
-                      flex items-center gap-3 w-full px-4 py-2.5 rounded-xl text-sm font-medium text-left transition-all duration-200
-                      ${isActive 
-                        ? `border ${section.accent} ${section.color} shadow-sm` 
-                        : isExCompleted 
-                          ? 'bg-green-500/10 text-green-400 border border-green-500/20' 
-                          : 'bg-slate-800/60 text-slate-300 border border-slate-700/60 hover:border-slate-500 hover:text-white'}
+                    flex items-center gap-3 w-full px-4 py-3 rounded-xl text-sm font-medium text-left transition-all duration-200
+                    ${isActive 
+                      ? `border ${section.accent} ${section.color} shadow-sm` 
+                      : isExCompleted 
+                        ? 'bg-green-500/10 text-green-400 border border-green-500/20' 
+                        : 'bg-slate-800/60 text-slate-200 border border-slate-700/60 hover:border-slate-500 hover:text-white'}
                     `}
                   >
                     <span className={`w-6 h-6 rounded-md flex items-center justify-center text-xs font-bold flex-shrink-0 ${
