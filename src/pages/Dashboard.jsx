@@ -455,7 +455,7 @@ export default function Dashboard() {
       )}
 
       {/* Main Content - Centered */}
-      <div className="max-w-4xl mx-auto px-3 sm:px-4 py-4 sm:py-6 pb-20 md:pb-6">
+      <div className="max-w-4xl mx-auto px-3 sm:px-4 py-4 sm:py-6 pb-28 md:pb-6">
             <motion.div
               key={mode}
               initial={{ opacity: 0, scale: 0.95 }}
