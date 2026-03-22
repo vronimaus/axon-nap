@@ -77,7 +77,7 @@ export default function PhaseCard({ phase, index, totalPhases, isCompleted, onCo
       initial={{ opacity: 0, x: 20 }}
       animate={{ opacity: 1, x: 0 }}
       exit={{ opacity: 0, x: -20 }}
-      className="space-y-8"
+      className="space-y-10"
     >
       {/* Readiness Banner */}
       {readinessStatus && readinessStatus !== 'green' && (
