@@ -221,7 +221,7 @@ export default function Dashboard() {
           </div>
 
           {/* Session Decision — AXON Triage */}
-          <div className="mb-6 relative z-10">
+          <div className="mb-10 relative z-10">
             <AnimatePresence mode="wait">
               {showProgress ? (
                 <ProgressSyncView 
