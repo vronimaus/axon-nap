@@ -206,7 +206,7 @@ export default function Dashboard() {
           animate={{ opacity: 1, y: 0 }}
           className="max-w-5xl w-full"
         >
-          <div className="text-center mb-8 sm:mb-12">
+          <div className="text-center mb-10 sm:mb-14">
             <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-3 sm:mb-4">
               {(() => {
                 const h = new Date().getHours();
@@ -215,7 +215,7 @@ export default function Dashboard() {
                 return firstName ? `${greeting}, ${firstName}` : `${greeting}`;
               })()}
             </h1>
-            <p className="text-base sm:text-lg text-slate-400">
+            <p className="text-base sm:text-lg text-slate-300">
               Drei Wege zu deinem optimalen Körper
             </p>
           </div>
