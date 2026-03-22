@@ -188,7 +188,7 @@ export default function PhaseCard({ phase, index, totalPhases, isCompleted, onCo
                     </span>
                     <span className="flex-1 truncate">{exercise.name || `Übung ${exIdx + 1}`}</span>
                     {exercise.sets_reps_tempo && (
-                      <span className="text-xs text-slate-500 flex-shrink-0 hidden sm:block">{exercise.sets_reps_tempo}</span>
+                      <span className="text-xs text-slate-400 flex-shrink-0 hidden sm:block font-mono">{exercise.sets_reps_tempo}</span>
                     )}
                     <span className={`text-xs transition-transform ${isActive ? 'rotate-180' : ''}`}>▾</span>
                   </button>
