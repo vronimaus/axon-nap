@@ -158,7 +158,7 @@ export default function PhaseCard({ phase, index, totalPhases, isCompleted, onCo
                <h4 className={`text-xs font-bold uppercase tracking-[0.15em] ${section.color} flex-1`}>
                   {section.label}
                </h4>
-               <span className="text-[10px] text-slate-500 font-mono">{section.exercises.length} Übungen</span>
+               <span className="text-[10px] text-slate-400 font-mono">{section.exercises.length} Übungen</span>
             </div>
 
             {/* Exercise Selector — pill buttons with truncated name */}
