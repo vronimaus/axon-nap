@@ -196,7 +196,7 @@ export default function Landing() {
               <motion.div key={i} whileHover={{ y: -4 }} className="bg-slate-900/60 border border-slate-800 rounded-2xl p-6 space-y-3">
                 <span className="text-[10px] font-black uppercase tracking-widest text-cyan-500">{s.label}</span>
                 <h3 className="font-bold text-white">{s.title}</h3>
-                <p className="text-sm text-slate-400 leading-relaxed">{s.text}</p>
+                <p className="text-sm text-slate-300 leading-relaxed">{s.text}</p>
               </motion.div>
             ))}
           </div>
