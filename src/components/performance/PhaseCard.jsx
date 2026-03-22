@@ -149,7 +149,7 @@ export default function PhaseCard({ phase, index, totalPhases, isCompleted, onCo
       </div>
 
       {/* Sections & Exercises */}
-      <div className="space-y-8">
+      <div className="space-y-10">
         {sections.map((section, secIdx) => (
           <div key={section.key} className="space-y-4">
             {/* Section Header */}
