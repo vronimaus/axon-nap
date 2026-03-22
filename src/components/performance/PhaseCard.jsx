@@ -243,7 +243,7 @@ export default function PhaseCard({ phase, index, totalPhases, isCompleted, onCo
       </div>
 
       {/* Footer Navigation */}
-      <div className="flex flex-col-reverse sm:flex-row gap-3 pt-6 items-center sm:justify-between">
+      <div className="flex flex-col-reverse sm:flex-row gap-3 pt-10 items-center sm:justify-between">
         {index > 0 ? (
           <Button variant="outline" onClick={onPrev} className="w-full sm:w-auto border-slate-700 text-slate-400 hover:text-white">
             ← Zurück
