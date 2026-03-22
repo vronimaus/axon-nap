@@ -265,7 +265,7 @@ export default function TrainingPlan() {
                       </span>
                     </div>
                     
-                    <p className="text-slate-200 text-sm font-medium leading-relaxed">
+                    <p className="text-slate-100 text-sm font-medium leading-relaxed">
                        {readinessStatus === 'green' 
                          ? `Dein System ist bereit. Fokus heute: ${activePlan.goal_description || 'Maximale Performance'}.`
                          : readinessStatus === 'yellow'
