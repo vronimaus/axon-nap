@@ -147,7 +147,7 @@ export default function TrainingExerciseCard({ exercise, idx, onDetailClick, isO
       className="bg-slate-950 rounded-2xl border border-cyan-500/30 overflow-hidden shadow-2xl relative"
     >
       {/* Header */}
-      <div className="p-5 border-b border-slate-800 bg-slate-900/50 flex items-start justify-between">
+      <div className="p-6 border-b border-slate-800 bg-slate-900/50 flex items-start justify-between">
         <div>
           <h3 className="text-xl md:text-2xl font-black text-white uppercase tracking-tight leading-none mb-1">
             {fullExercise.name}
@@ -178,7 +178,7 @@ export default function TrainingExerciseCard({ exercise, idx, onDetailClick, isO
       </div>
 
       {/* Content Area */}
-      <div className="p-5 space-y-6">
+      <div className="p-6 space-y-8">
 
         {/* Detail Toggle + TTS Button */}
         <div>
@@ -257,13 +257,13 @@ export default function TrainingExerciseCard({ exercise, idx, onDetailClick, isO
                   )}
 
                   <div className="bg-slate-900/50 rounded-xl p-4 border border-slate-800">
-                    <h5 className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-2">Ausführung</h5>
+                    <h5 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3">Ausführung</h5>
                     <div className="text-sm text-slate-300 leading-relaxed pl-1 prose prose-sm prose-invert max-w-none prose-p:my-1 prose-li:my-0.5 prose-strong:text-cyan-300 prose-ul:pl-4">
                       <ReactMarkdown>{currentContent.description || ''}</ReactMarkdown>
                     </div>
                     {fullExercise.cues && fullExercise.cues.length > 0 && (
                       <div className="mt-4 pt-4 border-t border-slate-800">
-                        <h5 className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-2">Pro-Cues</h5>
+                        <h5 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3">Pro-Cues</h5>
                         <ul className="list-disc list-outside ml-4 space-y-1">
                           {fullExercise.cues.map((cue, i) => (
                             <li key={i} className="text-xs text-slate-400">{cue}</li>
@@ -330,7 +330,7 @@ export default function TrainingExerciseCard({ exercise, idx, onDetailClick, isO
               </p>
             )}
 
-            <p className="text-center text-[10px] text-slate-500 font-mono mb-6">
+            <p className="text-center text-[10px] text-slate-400 font-mono mb-8">
               PAUSE: 60 SEK (Auto-Start nach Abschluss)
             </p>
 

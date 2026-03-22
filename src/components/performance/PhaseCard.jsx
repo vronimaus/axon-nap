@@ -149,11 +149,11 @@ export default function PhaseCard({ phase, index, totalPhases, isCompleted, onCo
       </div>
 
       {/* Sections & Exercises */}
-      <div className="space-y-10">
+      <div className="space-y-12">
         {sections.map((section, secIdx) => (
-          <div key={section.key} className="space-y-4">
+          <div key={section.key} className="space-y-5">
             {/* Section Header */}
-            <div className={`flex items-center gap-3 px-3 py-2 rounded-lg border ${section.accent}`}>
+            <div className={`flex items-center gap-3 px-4 py-3 rounded-xl border ${section.accent}`}>
                <section.icon className={`w-4 h-4 ${section.color} flex-shrink-0`} />
                <h4 className={`text-xs font-bold uppercase tracking-[0.15em] ${section.color} flex-1`}>
                   {section.label}
@@ -162,7 +162,7 @@ export default function PhaseCard({ phase, index, totalPhases, isCompleted, onCo
             </div>
 
             {/* Exercise Selector — pill buttons with truncated name */}
-            <div className="flex flex-col gap-1.5 px-1">
+            <div className="flex flex-col gap-2 px-1">
               {section.exercises.map((exercise, exIdx) => {
                 const uniqueKey = `${section.key}-${exIdx}`;
                 const isExCompleted = completedExercises[uniqueKey] || exercise.completed;
@@ -173,7 +173,7 @@ export default function PhaseCard({ phase, index, totalPhases, isCompleted, onCo
                     key={uniqueKey}
                     onClick={() => setOpenCardKey(isActive ? null : uniqueKey)}
                     className={`
-                    flex items-center gap-3 w-full px-4 py-3 rounded-xl text-sm font-medium text-left transition-all duration-200
+                    flex items-center gap-3 w-full px-4 py-4 rounded-xl text-sm font-medium text-left transition-all duration-200
                     ${isActive 
                       ? `border ${section.accent} ${section.color} shadow-sm` 
                       : isExCompleted 
@@ -243,7 +243,7 @@ export default function PhaseCard({ phase, index, totalPhases, isCompleted, onCo
       </div>
 
       {/* Footer Navigation */}
-      <div className="flex flex-col-reverse sm:flex-row gap-3 pt-10 items-center sm:justify-between">
+      <div className="flex flex-col-reverse sm:flex-row gap-3 pt-14 items-center sm:justify-between">
         {index > 0 ? (
           <Button variant="outline" onClick={onPrev} className="w-full sm:w-auto border-slate-700 text-slate-400 hover:text-white">
             ← Zurück
