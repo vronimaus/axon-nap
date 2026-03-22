@@ -270,12 +270,14 @@ export default function Dashboard() {
                 <Target className="w-7 h-7 sm:w-8 sm:h-8 text-white" />
               </div>
               <h2 className="text-xl sm:text-2xl font-bold text-emerald-400 mb-2 sm:mb-3">REHAB</h2>
-              <p className="text-sm sm:text-base text-slate-300 mb-3 sm:mb-4 leading-relaxed">
+              <p className="text-sm sm:text-base text-slate-300 mb-4 leading-relaxed">
                 Akuter Schmerz? AXON analysiert die Root Cause über Hardware-Tests und Neuro-Drills, dann gibt dir einen phasierten Reha-Plan.
               </p>
-              <p className="text-xs sm:text-sm text-slate-500 leading-relaxed">
-                Detective-Diagnose • Faszien-Release (MFR) • Neuro-Reset • Strukturierte Wiederherstellung
-              </p>
+              <div className="flex flex-wrap gap-1.5">
+                {['Diagnose', 'MFR-Release', 'Neuro-Reset'].map(tag => (
+                  <span key={tag} className="text-[10px] font-semibold uppercase tracking-wider px-2 py-1 rounded-md bg-emerald-500/10 text-emerald-300 border border-emerald-500/20">{tag}</span>
+                ))}
+              </div>
             </motion.button>
 
             {/* 3. FLOW (Daily Maintenance) - UNCHANGED */}
