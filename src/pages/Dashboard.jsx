@@ -290,12 +290,14 @@ export default function Dashboard() {
                 <Activity className="w-7 h-7 sm:w-8 sm:h-8 text-white" />
               </div>
               <h2 className="text-xl sm:text-2xl font-bold text-purple-400 mb-2 sm:mb-3">FLOW</h2>
-              <p className="text-sm sm:text-base text-slate-300 mb-3 sm:mb-4 leading-relaxed">
+              <p className="text-sm sm:text-base text-slate-300 mb-4 leading-relaxed">
                 Tägliche Pflegeroutinen für dein System: Faszien-Release, Neuro-Drills, Mobility-Flows und Atemarbeit in 5-30 Min Sessions.
               </p>
-              <p className="text-xs sm:text-sm text-slate-500 leading-relaxed">
-                12 MFR-Nodes • Mobility-CARs • Neuro-Hygiene • Regeneration • Daily Maintenance
-              </p>
+              <div className="flex flex-wrap gap-1.5">
+                {['MFR-Nodes', 'Mobility-CARs', 'Regeneration'].map(tag => (
+                  <span key={tag} className="text-[10px] font-semibold uppercase tracking-wider px-2 py-1 rounded-md bg-purple-500/10 text-purple-300 border border-purple-500/20">{tag}</span>
+                ))}
+              </div>
             </motion.button>
           </div>
 
