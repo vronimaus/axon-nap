@@ -64,14 +64,10 @@ export default function ThreeSystemSection() {
           className="text-center mb-16"
         >
           <p className="text-xs font-bold uppercase tracking-[0.3em] text-slate-400 mb-4">Das System</p>
-          <h2 className="text-3xl md:text-5xl font-black text-white leading-tight">
+          <h2 className="text-3xl md:text-4xl font-black text-white leading-tight">
             Drei Module. Ein Körper.<br />
             <span className="text-cyan-400">Alles arbeitet zusammen.</span>
           </h2>
-          <p className="text-slate-400 mt-5 text-base max-w-2xl mx-auto leading-relaxed">
-            Rehab löst den Schmerz. Flow hält dich geschmeidig. Goals trainieren das System.
-            Kein Modul funktioniert isoliert – genau wie dein Körper.
-          </p>
         </motion.div>
 
         {/* Pillar Cards */}
