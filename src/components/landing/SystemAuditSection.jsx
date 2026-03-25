@@ -119,19 +119,7 @@ const TAG_COLORS = {
 
 /* ─── Sub-components ────────────────────────────────────────────────────────── */
 
-function PlaceholderPanel() {
-  return (
-    <motion.div
-      key="placeholder"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      className="h-full flex flex-col items-center justify-center text-center py-10"
-    >
-      <p className="text-slate-500 text-sm">← Markiere eine Stelle auf der Body-Map</p>
-    </motion.div>
-  );
-}
+
 
 function DiagnosisPanel({ regionData, selectedRegion, onCtaClick }) {
   const tagClass = TAG_COLORS[regionData.tag] || 'bg-slate-700/30 text-slate-300 border-slate-600';
