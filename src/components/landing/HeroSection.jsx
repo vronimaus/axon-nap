@@ -43,16 +43,16 @@ export default function HeroSection({ onCtaClick }) {
           </div>
         </motion.div>
 
-        {/* App Mockup */}
+        {/* App Mockup — decorative, compact */}
         <motion.div 
             initial={{ opacity: 0, scale: 0.9, rotate: 5 }}
             animate={{ opacity: 1, scale: 1, rotate: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="relative"
+            className="relative hidden lg:block"
         >
           <div className="absolute -top-20 -right-20 w-96 h-96 bg-cyan-500/10 blur-[120px] rounded-full pointer-events-none"></div>
           
-          <div className="relative z-10 bg-slate-900 border-[8px] border-slate-800 rounded-[2.5rem] shadow-2xl shadow-cyan-900/20 max-w-[320px] mx-auto overflow-hidden aspect-[9/18.5] flex flex-col">
+          <div className="relative z-10 bg-slate-900 border-[6px] border-slate-800 rounded-[2rem] shadow-2xl shadow-cyan-900/20 max-w-[200px] mx-auto overflow-hidden aspect-[9/18.5] flex flex-col">
             
             {/* Mockup Header */}
             <div className="bg-slate-950 p-6 pb-4">

@@ -10,68 +10,59 @@ const PAINS = [
 
 export default function PainAgitationSection({ onFunnelClick }) {
   return (
-    <section className="py-20 px-6 bg-slate-950">
-      <div className="max-w-4xl mx-auto">
-        
-        {/* Hook */}
+    <section className="py-14 px-6 bg-slate-950">
+      <div className="max-w-lg mx-auto">
+
+        {/* Hook — short & punchy */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center mb-14"
+          className="text-center mb-8"
         >
-          <p className="text-xs font-bold uppercase tracking-[0.3em] text-slate-400 mb-4">Kennst du das?</p>
-          <h2 className="text-3xl md:text-5xl font-black text-white leading-tight">
+          <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-slate-400 mb-3">Kennst du das?</p>
+          <h2 className="text-2xl md:text-3xl font-black text-white leading-tight mb-3">
             Nicht krank genug für den Arzt.<br />
-            <span className="text-slate-400">Aber störend genug, um täglich präsent zu sein.</span>
+            <span className="text-slate-400">Aber nervig genug für jeden Tag.</span>
           </h2>
-          <p className="text-slate-400 mt-6 text-lg max-w-2xl mx-auto leading-relaxed">
-            Du willst dir selbst helfen. Nicht warten. Nicht erklären. Einfach <strong className="text-white">den Hebel finden und drehen.</strong>
+          <p className="text-slate-400 text-sm">
+            Du willst den <strong className="text-white">Hebel finden und drehen.</strong>
           </p>
         </motion.div>
 
-        {/* Pain Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-14">
-          {PAINS.map((p, i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, y: 16 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.08 }}
-              className="flex items-start gap-4 bg-slate-900/60 border border-slate-800 rounded-2xl p-5"
-            >
-              <span className="text-[10px] font-black text-cyan-500 tracking-widest uppercase bg-cyan-500/10 border border-cyan-500/20 px-2 py-1 rounded-lg shrink-0 mt-0.5">{p.tag}</span>
-              <p className="text-slate-300 text-sm leading-relaxed">{p.text}</p>
-            </motion.div>
-          ))}
-        </div>
-
-        {/* Bridge to solution */}
+        {/* Pain tags — compact chips instead of cards */}
         <motion.div
-          initial={{ opacity: 0, y: 16 }}
+          initial={{ opacity: 0, y: 12 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center space-y-5"
+          className="flex flex-wrap justify-center gap-2 mb-8"
         >
-          <p className="text-slate-300 text-lg font-medium">
-            Das Problem ist nicht dein Körper.<br />
-            <span className="text-white font-bold">Es ist, dass du nie das richtige Protokoll hattest.</span>
-          </p>
-          <p className="text-slate-400 text-sm max-w-xl mx-auto">
-            AXON kombiniert myofasziale Druckpunkte, funktionelle Bewegung und neurologische Verankerung — 
-            zu einem System, das du selbst anwendest. In 5–15 Minuten.
-          </p>
+          {PAINS.map((p, i) => (
+            <span
+              key={i}
+              className="text-xs text-slate-300 bg-slate-800/80 border border-slate-700 rounded-full px-3 py-1.5 font-medium"
+            >
+              <span className="text-cyan-400 font-bold mr-1.5">{p.tag}</span>
+              {p.short}
+            </span>
+          ))}
+        </motion.div>
 
-          {/* CTA */}
+        {/* CTA */}
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="text-center"
+        >
           <button
             onClick={onFunnelClick}
-            className="mt-4 inline-flex items-center gap-3 bg-white hover:bg-cyan-50 text-black font-black text-sm px-10 py-5 rounded-2xl shadow-[0_0_30px_rgba(255,255,255,0.08)] hover:shadow-[0_0_40px_rgba(6,182,212,0.3)] transition-all duration-300 hover:scale-105 uppercase tracking-wide"
+            className="inline-flex items-center gap-3 bg-white hover:bg-cyan-50 text-black font-black text-sm px-8 py-4 rounded-2xl transition-all duration-200 hover:scale-105 uppercase tracking-wide"
           >
             Beschwerden analysieren
             <ArrowRight className="w-4 h-4" />
           </button>
-          <p className="text-xs text-slate-400">Kostenlos · Kein Account · 60 Sekunden</p>
+          <p className="text-xs text-slate-500 mt-3">Kostenlos · Kein Account · 60 Sek.</p>
         </motion.div>
 
       </div>
