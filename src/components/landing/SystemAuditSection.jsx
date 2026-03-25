@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowRight, Scan, Zap, ChevronRight } from 'lucide-react';
+import { Zap, ChevronRight } from 'lucide-react';
 import InteractiveBodyMapInput from '@/components/diagnosis/InteractiveBodyMapInput';
 
 /* ─── Data ─────────────────────────────────────────────────────────────────── */
