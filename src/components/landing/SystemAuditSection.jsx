@@ -183,11 +183,18 @@ function DiagnosisPanel({ regionData, selectedRegion, onPricingClick }) {
 }
 
 /* ─── Main Section ──────────────────────────────────────────────────────────── */
-export default function SystemAuditSection({ onCtaClick }) {
+export default function SystemAuditSection({ onPricingClick }) {
   const [selectedRegion, setSelectedRegion] = useState(null);
 
   const handleBodyMapSubmit = (mapData) => {
     setSelectedRegion(mapData.region);
+    // Scroll to pricing after a short delay
+    setTimeout(() => {
+      const pricingEl = document.getElementById('pricing');
+      if (pricingEl) {
+        pricingEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }, 800);
   };
 
   const regionData = selectedRegion
@@ -240,7 +247,7 @@ export default function SystemAuditSection({ onCtaClick }) {
           {regionData && (
             <div className="bg-slate-900/60 border border-slate-800 rounded-3xl p-5">
               <AnimatePresence mode="wait">
-                <DiagnosisPanel regionData={regionData} selectedRegion={selectedRegion} onCtaClick={onCtaClick} />
+                <DiagnosisPanel regionData={regionData} selectedRegion={selectedRegion} onPricingClick={onPricingClick} />
               </AnimatePresence>
             </div>
           )}
