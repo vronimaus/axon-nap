@@ -238,14 +238,14 @@ export default function SystemAuditSection({ onCtaClick }) {
             <InteractiveBodyMapInput onSubmit={handleBodyMapSubmit} />
           </div>
 
-          {/* Right: Diagnosis Module */}
-          <div className="bg-slate-900/60 border border-slate-800 rounded-3xl p-5 min-h-[420px]">
-            {regionData && (
+          {/* Right: Diagnosis Module — only show when region is selected */}
+          {regionData && (
+            <div className="bg-slate-900/60 border border-slate-800 rounded-3xl p-5">
               <AnimatePresence mode="wait">
                 <DiagnosisPanel regionData={regionData} selectedRegion={selectedRegion} onCtaClick={onCtaClick} />
               </AnimatePresence>
-            )}
-          </div>
+            </div>
+          )}
         </motion.div>
 
       </div>
