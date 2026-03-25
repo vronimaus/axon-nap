@@ -126,27 +126,12 @@ function PlaceholderPanel() {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="h-full flex flex-col items-center justify-center text-center py-10 space-y-5"
+      className="h-full flex flex-col items-center justify-center text-center py-10"
     >
-      <div className="space-y-1.5">
-        <p className="text-white font-bold text-lg">Wo drückt der Schuh?</p>
-        <p className="text-slate-400 text-sm leading-relaxed max-w-xs">
-          Wähle links deine Schmerzstelle — AXON zeigt dir Root-Cause + Protokoll.
-        </p>
-      </div>
-      <div className="grid grid-cols-2 gap-2 w-full max-w-xs">
-        {[
-          { tag: 'HWS', label: 'Nacken / Kopf' },
-          { tag: 'SHD', label: 'Schulter / Arm' },
-          { tag: 'LWS', label: 'Lendenwirbel' },
-          { tag: 'KNE', label: 'Knie / Bein' },
-        ].map(({ tag, label }) => (
-          <div key={tag} className={`flex items-center gap-2 rounded-xl border px-3 py-2 text-xs font-medium ${TAG_COLORS[tag] || ''}`}>
-            <span className="font-bold">{tag}</span>
-            <span className="opacity-80">{label}</span>
-          </div>
-        ))}
-      </div>
+      <p className="text-white font-bold text-lg mb-2">Wo drückt der Schuh?</p>
+      <p className="text-slate-400 text-sm leading-relaxed max-w-xs">
+        Markiere deine Schmerzstelle auf der Body-Map —<br />AXON zeigt dir Root-Cause + Protokoll.
+      </p>
     </motion.div>
   );
 }
