@@ -112,10 +112,10 @@ export default function Landing() {
             {user && <Link to={createPageUrl('Dashboard')} className="hover:text-cyan-400 transition-colors">Dashboard</Link>}
           </div>
 
-          <div className="flex items-center gap-2 sm:gap-4">
+          <div className="flex items-center gap-1.5 sm:gap-4">
             {user ? (
               <Link to={createPageUrl('Dashboard')}>
-                <Button className="bg-cyan-500 hover:bg-cyan-400 text-black font-bold rounded-full px-4 sm:px-6 text-[10px] sm:text-xs uppercase tracking-wide">
+                <Button className="bg-cyan-500 hover:bg-cyan-400 text-black font-bold rounded-full px-3 sm:px-6 text-[9px] sm:text-xs uppercase tracking-wide">
                   Dashboard
                 </Button>
               </Link>
@@ -124,15 +124,15 @@ export default function Landing() {
                 <Button
                   onClick={() => base44.auth.redirectToLogin(window.location.href)}
                   variant="outline"
-                  className="border-cyan-500/50 text-cyan-400 hover:bg-cyan-500/10 font-bold rounded-full px-3 sm:px-5 text-[10px] sm:text-xs uppercase tracking-wide transition-all duration-300"
+                  className="border-cyan-500/50 text-cyan-400 hover:bg-cyan-500/10 font-bold rounded-full px-2 sm:px-5 text-[9px] sm:text-xs uppercase tracking-wide transition-all duration-300 whitespace-nowrap"
                 >
                   Login
                 </Button>
                 <Button
                   onClick={handleFunnelClick}
-                  className="bg-white hover:bg-cyan-50 text-black font-bold rounded-full px-4 sm:px-6 text-[10px] sm:text-xs uppercase tracking-wide transition-all duration-300"
+                  className="bg-white hover:bg-cyan-50 text-black font-bold rounded-full px-3 sm:px-6 text-[9px] sm:text-xs uppercase tracking-wide transition-all duration-300 whitespace-nowrap"
                 >
-                  Plan erstellen
+                  Plan
                 </Button>
               </>
             )}
