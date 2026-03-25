@@ -11,9 +11,9 @@ const AUDIO_DEMO = {
 };
 
 const BENEFITS = [
-  { icon: '👁️', title: 'Eyes-Free Training', text: 'Volle Konzentration auf Augen- und Kopfpositionen — besonders bei Neuro-Drills entscheidend.' },
-  { icon: '🎯', title: 'Echtzeit-Korrektur', text: 'Präzise Cues zu Atmung und Körperspannung, exakt in dem Moment, in dem du sie brauchst.' },
-  { icon: '🧘', title: 'Tiefer Flow-Zustand', text: 'Audio wirkt wie ein Metronom — kein Unterbrechen, kein Nachschauen, kein Rauschen.' },
+  { icon: 'Eye', title: 'Eyes-Free Training', text: 'Volle Konzentration auf Körperspositionen — kein Bildschirm-Starren.' },
+  { icon: 'Target', title: 'Echtzeit-Korrektur', text: 'Präzise Cues zu Atmung und Spannung, genau dann, wenn du sie brauchst.' },
+  { icon: 'Waves', title: 'Tiefer Flow-Zustand', text: 'Audio wirkt wie ein Metronom — kein Unterbrechen, kein Nachschauen.' },
 ];
 
 export default function AudioCoachSection({ onCtaClick }) {
