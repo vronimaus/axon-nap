@@ -120,21 +120,13 @@ export default function Landing() {
                 </Button>
               </Link>
             ) : (
-              <>
-                <Button
-                  onClick={() => base44.auth.redirectToLogin(window.location.href)}
-                  variant="outline"
-                  className="border-cyan-500/50 text-cyan-400 hover:bg-cyan-500/10 font-bold rounded-full px-2 sm:px-5 text-[9px] sm:text-xs uppercase tracking-wide transition-all duration-300 whitespace-nowrap"
-                >
-                  Login
-                </Button>
-                <Button
-                  onClick={handleFunnelClick}
-                  className="bg-white hover:bg-cyan-50 text-black font-bold rounded-full px-3 sm:px-6 text-[9px] sm:text-xs uppercase tracking-wide transition-all duration-300 whitespace-nowrap"
-                >
-                  Plan
-                </Button>
-              </>
+              <Button
+                onClick={() => base44.auth.redirectToLogin(window.location.href)}
+                variant="outline"
+                className="border-cyan-500/50 text-cyan-400 hover:bg-cyan-500/10 font-bold rounded-full px-2 sm:px-5 text-[9px] sm:text-xs uppercase tracking-wide transition-all duration-300 whitespace-nowrap"
+              >
+                Login
+              </Button>
             )}
             <div className="md:hidden">
               <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="text-slate-400 hover:text-white p-1">
