@@ -246,9 +246,9 @@ export default function SystemAuditSection({ onCtaClick }) {
         >
           {/* Left: Body Map Module */}
           <div className="bg-slate-900/60 border border-slate-800 rounded-3xl p-5">
-            <div className="flex items-center gap-2 mb-4">
-              <div className="w-2 h-2 rounded-full bg-cyan-400" />
-              <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Body-Map Scanner</p>
+            <div className="mb-4">
+              <p className="text-white font-bold text-base mb-1">Wo drückt der Schuh?</p>
+              <p className="text-slate-400 text-xs">Markiere deine Schmerzstelle — AXON zeigt Root-Cause + Protokoll.</p>
             </div>
             <InteractiveBodyMapInput onSubmit={handleBodyMapSubmit} />
           </div>
