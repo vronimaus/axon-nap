@@ -132,7 +132,7 @@ export default function HeroSection({ onCtaClick }) {
                     <div className="w-10 h-10 rounded-full bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center text-white shadow-lg shadow-cyan-500/20">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="3"></circle></svg>
                     </div>
-                    <div className="text-lg hover:text-white transition-colors cursor-pointer">📈</div>
+                    <div className="text-lg hover:text-white transition-colors cursor-pointer">↑</div>
                 </div>
             </div>
 
