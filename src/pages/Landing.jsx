@@ -156,13 +156,13 @@ export default function Landing() {
       )}
 
       {/* MODULE 1: Hero */}
-      <HeroSection onCtaClick={handleFunnelClick} />
+      <HeroSection onCtaClick={handlePricingScroll} />
 
       {/* MODULE 2: Problem Agitation */}
-      <PainAgitationSection onFunnelClick={handleFunnelClick} />
+      <PainAgitationSection onFunnelClick={handlePricingScroll} />
 
       {/* MODULE 3: Interaktives System-Audit */}
-      <SystemAuditSection onCtaClick={handleFunnelClick} />
+      <SystemAuditSection onPricingClick={handlePricingScroll} />
 
       {/* MODULE 4: Das System (3 Säulen) */}
       <Suspense fallback={<LazyFallback />}>
