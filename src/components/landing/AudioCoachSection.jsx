@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Play, Pause, Volume2, ArrowRight } from 'lucide-react';
+import { Play, Pause, Volume2, ArrowRight, Eye, Crosshair, Wind } from 'lucide-react';
 
 const AUDIO_DEMO = {
   // A short TTS-generated sample instruction (placeholder — swap with real URL)
