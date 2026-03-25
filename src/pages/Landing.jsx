@@ -171,12 +171,12 @@ export default function Landing() {
 
       {/* MODULE 5: Audio-Coaching USP */}
       <Suspense fallback={<LazyFallback />}>
-        <AudioCoachSection onCtaClick={handleFunnelClick} />
+        <AudioCoachSection onCtaClick={handlePricingScroll} />
       </Suspense>
 
       {/* MODULE 6: Founder Story + Social Proof */}
       <Suspense fallback={<LazyFallback />}>
-        <FounderStorySection onCtaClick={handleFunnelClick} />
+        <FounderStorySection onCtaClick={handlePricingScroll} />
       </Suspense>
 
       {/* MODULE 7: Fairness / Pricing */}
