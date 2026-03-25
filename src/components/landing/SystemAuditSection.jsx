@@ -128,10 +128,7 @@ function PlaceholderPanel() {
       exit={{ opacity: 0 }}
       className="h-full flex flex-col items-center justify-center text-center py-10"
     >
-      <p className="text-white font-bold text-lg mb-2">Wo drückt der Schuh?</p>
-      <p className="text-slate-400 text-sm leading-relaxed max-w-xs">
-        Markiere deine Schmerzstelle auf der Body-Map —<br />AXON zeigt dir Root-Cause + Protokoll.
-      </p>
+      <p className="text-slate-500 text-sm">← Markiere eine Stelle auf der Body-Map</p>
     </motion.div>
   );
 }
