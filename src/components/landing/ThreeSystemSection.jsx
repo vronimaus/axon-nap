@@ -94,17 +94,8 @@ export default function ThreeSystemSection() {
                 </div>
 
                 <div>
-                  <h3 className="font-bold text-lg text-white mb-2">{p.title}</h3>
-                  <p className="text-slate-300 text-sm leading-relaxed">{p.description}</p>
-                </div>
-
-                {/* SEO keyword chips */}
-                <div className="flex flex-wrap gap-2 mt-auto pt-2">
-                  {p.keywords.map((k) => (
-                    <span key={k} className="text-[10px] text-slate-400 border border-slate-600 rounded-full px-2 py-0.5">
-                      {k}
-                    </span>
-                  ))}
+                  <h3 className="font-bold text-base text-white mb-1.5">{p.title}</h3>
+                  <p className="text-slate-500 text-xs leading-relaxed">{p.description}</p>
                 </div>
               </motion.div>
             );
