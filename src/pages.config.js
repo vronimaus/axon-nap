@@ -68,7 +68,7 @@ import Imprint from './pages/Imprint';
 import KnowledgeHub from './pages/KnowledgeHub';
 import KnowledgeHubArticle from './pages/KnowledgeHubArticle';
 import KnowledgeUpload from './pages/KnowledgeUpload';
-import Landing from './pages/Landing.jsx';
+import Landing from './pages/Landing';
 import Literatur from './pages/Literatur';
 import MFRIntegration from './pages/MFRIntegration';
 import Performance from './pages/Performance';
