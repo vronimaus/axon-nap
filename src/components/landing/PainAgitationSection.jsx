@@ -21,13 +21,10 @@ export default function PainAgitationSection({ onFunnelClick }) {
           className="text-center mb-14"
         >
           <p className="text-xs font-bold uppercase tracking-[0.3em] text-slate-400 mb-4">Kennst du das?</p>
-          <h2 className="text-3xl md:text-5xl font-black text-white leading-tight">
+          <h2 className="text-3xl md:text-4xl font-black text-white leading-tight">
             Nicht krank genug für den Arzt.<br />
-            <span className="text-slate-400">Aber störend genug, um täglich präsent zu sein.</span>
+            <span className="text-slate-500">Aber täglich präsent.</span>
           </h2>
-          <p className="text-slate-400 mt-6 text-lg max-w-2xl mx-auto leading-relaxed">
-            Du willst dir selbst helfen. Nicht warten. Nicht erklären. Einfach <strong className="text-white">den Hebel finden und drehen.</strong>
-          </p>
         </motion.div>
 
         {/* Pain Cards */}
