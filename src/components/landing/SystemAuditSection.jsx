@@ -247,7 +247,7 @@ export default function SystemAuditSection({ onPricingClick }) {
           {regionData && (
             <div className="bg-slate-900/60 border border-slate-800 rounded-3xl p-5">
               <AnimatePresence mode="wait">
-                <DiagnosisPanel regionData={regionData} selectedRegion={selectedRegion} onPricingClick={onPricingClick} />
+                <DiagnosisPanel regionData={regionData} selectedRegion={selectedRegion} onPricingClick={onPricingClick} onContinue={handleDiagnosisContinue} />
               </AnimatePresence>
             </div>
           )}
