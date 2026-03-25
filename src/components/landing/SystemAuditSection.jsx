@@ -252,11 +252,6 @@ export default function SystemAuditSection({ onCtaClick }) {
 
           {/* Right: Diagnosis Module */}
           <div className="bg-slate-900/60 border border-slate-800 rounded-3xl p-5 min-h-[420px]">
-            <div className="flex items-center gap-2 mb-4">
-              <div className={`w-2 h-2 rounded-full transition-colors duration-300 ${regionData ? 'bg-cyan-400' : 'bg-slate-600'}`} />
-              <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Diagnose-Modul</p>
-            </div>
-
             <AnimatePresence mode="wait">
               {regionData
                 ? <DiagnosisPanel regionData={regionData} selectedRegion={selectedRegion} onCtaClick={onCtaClick} />
