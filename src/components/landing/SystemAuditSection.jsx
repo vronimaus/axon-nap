@@ -119,7 +119,7 @@ const TAG_COLORS = {
 
 /* ─── Sub-components ────────────────────────────────────────────────────────── */
 
-function DiagnosisPanel({ regionData, selectedRegion, onPricingClick }) {
+function DiagnosisPanel({ regionData, selectedRegion, onPricingClick, onContinue }) {
   const tagClass = TAG_COLORS[regionData.tag] || 'bg-slate-700/30 text-slate-300 border-slate-600';
 
   return (
