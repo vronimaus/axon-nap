@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 
 export default function HeroSection({ onCtaClick }) {
   return (
-    <header className="pt-16 pb-10 px-6 overflow-hidden relative" id="vision">
+    <header className="pt-24 pb-10 px-6 overflow-hidden relative" id="vision">
       <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
         
         {/* Text Content */}
