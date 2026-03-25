@@ -119,9 +119,7 @@ const TAG_COLORS = {
 
 /* ─── Sub-components ────────────────────────────────────────────────────────── */
 
-
-
-function DiagnosisPanel({ regionData, selectedRegion, onCtaClick }) {
+function DiagnosisPanel({ regionData, selectedRegion, onPricingClick }) {
   const tagClass = TAG_COLORS[regionData.tag] || 'bg-slate-700/30 text-slate-300 border-slate-600';
 
   return (
@@ -174,10 +172,10 @@ function DiagnosisPanel({ regionData, selectedRegion, onCtaClick }) {
 
       {/* CTA */}
       <button
-        onClick={onCtaClick}
+        onClick={onPricingClick}
         className="w-full flex items-center justify-between gap-2 bg-white hover:bg-cyan-50 text-black font-black text-sm px-5 py-4 rounded-2xl transition-colors duration-200 cursor-pointer group"
       >
-        <span>Vollständiges Protokoll starten</span>
+        <span>Jetzt kaufen</span>
         <ChevronRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform duration-150" />
       </button>
     </motion.div>
