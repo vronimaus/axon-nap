@@ -2,10 +2,11 @@ import { motion } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
 
 const PAINS = [
-  { tag: 'HWS', text: 'Nacken ist schon wieder steif – und du weißt selbst, es liegt am Schreibtisch.' },
-  { tag: 'LWS', text: 'Rücken zieht nach dem Workout. Du streckst dich, hilft kurz, ist morgen wieder da.' },
-  { tag: 'SHD', text: 'Schulter macht komische Geräusche. Nicht schlimm genug für den Arzt – aber nervig genug.' },
-  { tag: 'SYS', text: 'Physio kostet 80 € die Stunde. Für "mach das 3x täglich" – kannst du auch selbst.' },
+  { tag: 'HWS', short: 'Nacken steif' },
+  { tag: 'LWS', short: 'Rücken zieht' },
+  { tag: 'SHD', short: 'Schulter knackt' },
+  { tag: 'KNE', short: 'Knie schmerzt' },
+  { tag: 'MFR', short: 'Physio zu teuer' },
 ];
 
 export default function PainAgitationSection({ onFunnelClick }) {
