@@ -126,17 +126,15 @@ function PlaceholderPanel() {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="h-full flex flex-col items-center justify-center text-center py-16 space-y-6"
+      className="h-full flex flex-col items-center justify-center text-center py-10 space-y-5"
     >
-      <div className="w-16 h-16 rounded-2xl bg-slate-800 border border-slate-700 flex items-center justify-center">
-        <Scan className="w-7 h-7 text-slate-500" />
+      <div className="space-y-1.5">
+        <p className="text-white font-bold text-lg">Wo drückt der Schuh?</p>
+        <p className="text-slate-400 text-sm leading-relaxed max-w-xs">
+          Wähle links deine Schmerzstelle — AXON zeigt dir Root-Cause + Protokoll.
+        </p>
       </div>
-      <div className="space-y-2">
-        <p className="text-slate-300 font-semibold text-base">Klicke auf deine Schmerzstelle</p>
-        <p className="text-slate-500 text-sm">AXON zeigt dir sofort Root-Cause + Protokoll</p>
-      </div>
-      {/* Mini legend */}
-      <div className="grid grid-cols-2 gap-2 w-full max-w-xs mt-2">
+      <div className="grid grid-cols-2 gap-2 w-full max-w-xs">
         {[
           { tag: 'HWS', label: 'Nacken / Kopf' },
           { tag: 'SHD', label: 'Schulter / Arm' },
