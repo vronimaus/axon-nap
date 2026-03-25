@@ -240,12 +240,11 @@ export default function SystemAuditSection({ onCtaClick }) {
 
           {/* Right: Diagnosis Module */}
           <div className="bg-slate-900/60 border border-slate-800 rounded-3xl p-5 min-h-[420px]">
-            <AnimatePresence mode="wait">
-              {regionData
-                ? <DiagnosisPanel regionData={regionData} selectedRegion={selectedRegion} onCtaClick={onCtaClick} />
-                : <PlaceholderPanel />
-              }
-            </AnimatePresence>
+            {regionData && (
+              <AnimatePresence mode="wait">
+                <DiagnosisPanel regionData={regionData} selectedRegion={selectedRegion} onCtaClick={onCtaClick} />
+              </AnimatePresence>
+            )}
           </div>
         </motion.div>
 
