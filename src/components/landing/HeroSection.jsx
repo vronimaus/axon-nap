@@ -20,11 +20,8 @@ export default function HeroSection({ onCtaClick }) {
             Dein Körper<br />braucht kein Abo.<br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">Er braucht ein System.</span>
           </h1>
-          <p className="text-slate-300 text-lg md:text-xl mb-4 leading-relaxed max-w-xl">
-            AXON kombiniert Faszienarbeit, funktionelle Bewegung und neurologische Drills — nicht als Routine, sondern als Antwort auf das, was dein Körper gerade braucht.
-          </p>
-          <p className="text-slate-400 text-sm mb-10 font-medium">
-            Kein einzelnes Tool. Kein isolierter Ansatz. Das richtige System zur richtigen Zeit.
+          <p className="text-slate-400 text-base mb-10 leading-relaxed max-w-sm">
+            MFR · Neuro-Drills · Funktionelle Bewegung — als Antwort auf das, was dein Körper gerade braucht.
           </p>
           <div className="flex flex-col sm:flex-row gap-4">
             <Button 
