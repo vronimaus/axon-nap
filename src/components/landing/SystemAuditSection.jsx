@@ -172,10 +172,10 @@ function DiagnosisPanel({ regionData, selectedRegion, onPricingClick, onContinue
 
       {/* CTA */}
       <button
-        onClick={onPricingClick}
+        onClick={onContinue}
         className="w-full flex items-center justify-between gap-2 bg-white hover:bg-cyan-50 text-black font-black text-sm px-5 py-4 rounded-2xl transition-colors duration-200 cursor-pointer group"
       >
-        <span>Jetzt kaufen</span>
+        <span>Mein Protokoll freischalten</span>
         <ChevronRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform duration-150" />
       </button>
     </motion.div>
