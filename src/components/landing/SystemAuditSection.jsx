@@ -188,13 +188,13 @@ export default function SystemAuditSection({ onPricingClick }) {
 
   const handleBodyMapSubmit = (mapData) => {
     setSelectedRegion(mapData.region);
-    // Scroll to pricing after a short delay
-    setTimeout(() => {
-      const pricingEl = document.getElementById('pricing');
-      if (pricingEl) {
-        pricingEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }
-    }, 800);
+  };
+
+  const handleDiagnosisContinue = () => {
+    const pricingEl = document.getElementById('pricing');
+    if (pricingEl) {
+      pricingEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
   };
 
   const regionData = selectedRegion
