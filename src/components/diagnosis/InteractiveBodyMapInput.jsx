@@ -224,11 +224,6 @@ export default function InteractiveBodyMapInput({ onSubmit }) {
         </div>
       </div>
 
-      {/* Instructions */}
-      <p className="text-center text-sm text-slate-400">
-        Tippe auf die Stelle, wo es schmerzt
-      </p>
-
       {/* Action Buttons */}
       <div className="flex gap-3">
         <Button

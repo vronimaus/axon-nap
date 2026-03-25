@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 
 export default function HeroSection({ onCtaClick }) {
   return (
-    <header className="pt-32 pb-20 px-6 overflow-hidden relative" id="vision">
+    <header className="pt-16 pb-10 px-6 overflow-hidden relative" id="vision">
       <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
         
         {/* Text Content */}
@@ -16,15 +16,12 @@ export default function HeroSection({ onCtaClick }) {
           <div className="inline-block px-4 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-[10px] font-black uppercase tracking-widest mb-6">
             Early Stage Access • Lifetime Deal
           </div>
-          <h1 className="text-5xl md:text-7xl font-black mb-6 leading-[1.1] text-white">
+          <h1 className="text-3xl md:text-5xl font-black mb-4 leading-[1.1] text-white">
             Dein Körper<br />braucht kein Abo.<br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">Er braucht ein System.</span>
           </h1>
-          <p className="text-slate-300 text-lg md:text-xl mb-4 leading-relaxed max-w-xl">
-            AXON kombiniert Faszienarbeit, funktionelle Bewegung und neurologische Drills — nicht als Routine, sondern als Antwort auf das, was dein Körper gerade braucht.
-          </p>
-          <p className="text-slate-400 text-sm mb-10 font-medium">
-            Kein einzelnes Tool. Kein isolierter Ansatz. Das richtige System zur richtigen Zeit.
+          <p className="text-slate-300 text-sm md:text-base mb-6 leading-relaxed max-w-xl">
+            AXON kombiniert Faszienarbeit, Bewegung und Neuro-Drills — als Antwort auf das, was dein Körper gerade braucht.
           </p>
           <div className="flex flex-col sm:flex-row gap-4">
             <Button 

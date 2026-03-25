@@ -61,54 +61,34 @@ export default function ThreeSystemSection() {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center mb-16"
+          className="text-center mb-8"
         >
-          <p className="text-xs font-bold uppercase tracking-[0.3em] text-slate-400 mb-4">Das System</p>
-          <h2 className="text-3xl md:text-5xl font-black text-white leading-tight">
-            Drei Module. Ein Körper.<br />
-            <span className="text-cyan-400">Alles arbeitet zusammen.</span>
+          <p className="text-xs font-bold uppercase tracking-[0.3em] text-slate-400 mb-2">Das System</p>
+          <h2 className="text-2xl md:text-3xl font-black text-white leading-tight">
+            Drei Module. <span className="text-cyan-400">Ein Körper.</span>
           </h2>
-          <p className="text-slate-400 mt-5 text-base max-w-2xl mx-auto leading-relaxed">
-            Rehab löst den Schmerz. Flow hält dich geschmeidig. Goals trainieren das System.
-            Kein Modul funktioniert isoliert – genau wie dein Körper.
-          </p>
         </motion.div>
 
-        {/* Pillar Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+        {/* Pillar Cards — compact horizontal on mobile */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-8">
           {PILLARS.map((p, i) => {
             const c = colorMap[p.color];
             const Icon = p.icon;
             return (
               <motion.div
                 key={i}
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 16 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ delay: i * 0.1 }}
-                className={`relative bg-slate-900/60 border ${c.border} rounded-[1.5rem] p-7 flex flex-col gap-5 transition-all duration-300`}
+                transition={{ delay: i * 0.08 }}
+                className={`relative bg-slate-900/60 border ${c.border} rounded-2xl p-4 flex gap-4 items-start transition-all duration-300 md:flex-col md:gap-3`}
               >
-                {/* Tag */}
-                <span className={`self-start text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-full ${c.tag}`}>
-                  {p.tag}
-                </span>
-
-                <div className={`w-11 h-11 rounded-xl ${c.bg} flex items-center justify-center`}>
-                  <Icon className={`w-5 h-5 ${c.text}`} />
+                <div className={`w-9 h-9 rounded-xl ${c.bg} flex items-center justify-center shrink-0`}>
+                  <Icon className={`w-4 h-4 ${c.text}`} />
                 </div>
-
-                <div>
-                  <h3 className="font-bold text-lg text-white mb-2">{p.title}</h3>
-                  <p className="text-slate-300 text-sm leading-relaxed">{p.description}</p>
-                </div>
-
-                {/* SEO keyword chips */}
-                <div className="flex flex-wrap gap-2 mt-auto pt-2">
-                  {p.keywords.map((k) => (
-                    <span key={k} className="text-[10px] text-slate-400 border border-slate-600 rounded-full px-2 py-0.5">
-                      {k}
-                    </span>
-                  ))}
+                <div className="min-w-0">
+                  <span className={`text-[9px] font-bold uppercase tracking-widest ${c.text} block mb-0.5`}>{p.tag}</span>
+                  <h3 className="font-bold text-sm text-white leading-snug">{p.title}</h3>
                 </div>
               </motion.div>
             );
