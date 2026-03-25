@@ -122,7 +122,7 @@ export default function AudioCoachSection({ onCtaClick }) {
               transition={{ delay: i * 0.1 }}
               className="bg-slate-900/60 border border-slate-800 rounded-2xl p-5 space-y-3"
             >
-              <span className="text-2xl">{b.icon}</span>
+              <b.Icon className="w-5 h-5 text-cyan-400" />
               <h3 className="font-bold text-white text-sm">{b.title}</h3>
               <p className="text-slate-400 text-xs leading-relaxed">{b.text}</p>
             </motion.div>
