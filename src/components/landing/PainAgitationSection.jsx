@@ -21,10 +21,13 @@ export default function PainAgitationSection({ onFunnelClick }) {
           className="text-center mb-14"
         >
           <p className="text-xs font-bold uppercase tracking-[0.3em] text-slate-400 mb-4">Kennst du das?</p>
-          <h2 className="text-3xl md:text-4xl font-black text-white leading-tight">
+          <h2 className="text-3xl md:text-5xl font-black text-white leading-tight">
             Nicht krank genug für den Arzt.<br />
-            <span className="text-slate-500">Aber täglich präsent.</span>
+            <span className="text-slate-400">Aber störend genug, um täglich präsent zu sein.</span>
           </h2>
+          <p className="text-slate-400 mt-6 text-lg max-w-2xl mx-auto leading-relaxed">
+            Du willst dir selbst helfen. Nicht warten. Nicht erklären. Einfach <strong className="text-white">den Hebel finden und drehen.</strong>
+          </p>
         </motion.div>
 
         {/* Pain Cards */}
@@ -51,9 +54,13 @@ export default function PainAgitationSection({ onFunnelClick }) {
           viewport={{ once: true }}
           className="text-center space-y-5"
         >
-          <p className="text-white font-bold text-lg">
+          <p className="text-slate-300 text-lg font-medium">
             Das Problem ist nicht dein Körper.<br />
-            <span className="text-slate-400 font-normal text-base">Du hattest nie das richtige Protokoll.</span>
+            <span className="text-white font-bold">Es ist, dass du nie das richtige Protokoll hattest.</span>
+          </p>
+          <p className="text-slate-400 text-sm max-w-xl mx-auto">
+            AXON kombiniert myofasziale Druckpunkte, funktionelle Bewegung und neurologische Verankerung — 
+            zu einem System, das du selbst anwendest. In 5–15 Minuten.
           </p>
 
           {/* CTA */}

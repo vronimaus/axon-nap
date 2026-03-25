@@ -1,46 +1,28 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
+import { createPageUrl } from '@/utils';
 
 const BODY_REGIONS = [
-  { id: 'nacken', label: 'Nacken', x: '50%', y: '8%',
-    diagnosis: 'Nackensteifigkeit ist oft eine Schutzreaktion des Gehirns auf Unsicherheit in der BWS — nicht das eigentliche Problem.',
-    solution: 'AXON testet die myofasziale Kette entlang Schulter-Nacken-Schädelbasis und gibt dir einen präzisen Release-Plan.' },
-  { id: 'schulter', label: 'Schulter', x: '26%', y: '19%',
-    diagnosis: 'Schulterprobleme entstehen meist durch blockierte Skapula-Dynamik — der Arm ist nur das Symptom.',
-    solution: 'AXON identifiziert den spezifischen Druckpunkt (z.B. Pectoralis Minor) und gibt dir ein Hardware+Software Protokoll.' },
-  { id: 'ruecken', label: 'Rücken', x: '50%', y: '36%',
-    diagnosis: 'LWS-Schmerzen entstehen zu 80% durch eingeschränkte Hüftmobilität. Die LWS übernimmt Arbeit, die die Hüfte leisten sollte.',
-    solution: 'AXON findet die Root Cause und erstellt ein Protokoll aus Psoas-Release, Gluteus-Aktivierung und neurologischer Verankerung.' },
-  { id: 'hueft', label: 'Hüfte', x: '50%', y: '53%',
-    diagnosis: 'Einschränkungen in der Hüfte verursachen Kaskaden: LWS-Schmerz oben, Knieschmerz unten.',
-    solution: 'AXON prüft alle 6 Rotationsebenen und erstellt einen gezielten Mobilisierungsplan für deine spezifische Einschränkung.' },
-  { id: 'knie', label: 'Knie', x: '35%', y: '68%',
-    diagnosis: 'Knieschmerzen sind fast immer ein Hinweis auf Dysbalancen darüber (Hüfte) oder darunter (Sprunggelenk).',
-    solution: 'AXON analysiert die gesamte untere Kette und erstellt ein Protokoll, das an der Ursache ansetzt.' },
-  { id: 'sprunggelenk', label: 'Sprunggelenk', x: '40%', y: '88%',
-    diagnosis: 'Eingeschränkte Dorsalflexion blockiert die gesamte Bewegungskette nach oben — bis zur Hüfte.',
+  { id: 'nacken', label: 'Nacken', emoji: '🧠', x: '50%', y: '8%',
+    diagnosis: 'Nackensteifigkeit ist oft eine Schutzreaktion des Gehirns auf Unsicherheit in der Brustwirbelsäule oder den Schulterblättern — nicht das eigentliche Problem.',
+    solution: 'AXON testet die myofasziale Kette entlang der Schulter-Nacken-Schädelbasis und gibt dir einen präzisen Release-Plan mit Neuro-Verankerung.' },
+  { id: 'schulter', label: 'Schulter', emoji: '💪', x: '28%', y: '18%',
+    diagnosis: 'Schulterprobleme entstehen meistens durch eine blockierte Skapula-Dynamik oder einen eingeschränkten Brustkorb — der Arm ist nur das Symptom.',
+    solution: 'AXON identifiziert den spezifischen Druckpunkt (z.B. Pectoralis Minor oder Serratus anterior) und gibt dir ein Hardware+Software Protokoll.' },
+  { id: 'ruecken', label: 'Rücken', emoji: '🔧', x: '50%', y: '35%',
+    diagnosis: 'LWS-Schmerzen entstehen zu 80% durch eingeschränkte Hüftmobilität oder überaktive Hüftbeuger. Die LWS übernimmt Arbeit, die die Hüfte leisten sollte.',
+    solution: 'AXON findet die Root Cause über den Joint-by-Joint Test und erstellt ein Protokoll aus Psoas-Release, Gluteus-Aktivierung und neurologischer Verankerung.' },
+  { id: 'hueft', label: 'Hüfte', emoji: '⚙️', x: '50%', y: '52%',
+    diagnosis: 'Die Hüfte ist das Fundament des gesamten Systems. Einschränkungen hier verursachen Kaskaden: LWS-Schmerz oben, Knieschmerz unten.',
+    solution: 'AXON prüft alle 6 Rotationsebenen der Hüfte und erstellt einen gezielten Mobilisierungsplan für deine spezifische Einschränkung.' },
+  { id: 'knie', label: 'Knie', emoji: '🦵', x: '35%', y: '68%',
+    diagnosis: 'Knieschmerzen sind fast immer ein Hinweis auf Dysbalancen darüber (Hüfte/Gluteus) oder darunter (Sprunggelenk). Das Knie ist das "Opfer".',
+    solution: 'AXON analysiert die gesamte untere Kette und erstellt ein Protokoll, das an der Ursache ansetzt — nicht am Symptom.' },
+  { id: 'sprunggelenk', label: 'Sprunggelenk', emoji: '🦶', x: '40%', y: '88%',
+    diagnosis: 'Eingeschränkte Dorsalflexion des Sprunggelenks blockiert die gesamte Bewegungskette nach oben — bis zur LWS und Hüfte.',
     solution: 'AXON testet die Dorsalflexion und gibt dir einen gezielten Soleus/Achilles-Release mit Neuro-Integration.' },
 ];
-
-// Dot colors per region
-const DOT_COLORS = {
-  nacken: 'bg-cyan-400 shadow-cyan-400/60',
-  schulter: 'bg-purple-400 shadow-purple-400/60',
-  ruecken: 'bg-blue-400 shadow-blue-400/60',
-  hueft: 'bg-emerald-400 shadow-emerald-400/60',
-  knie: 'bg-amber-400 shadow-amber-400/60',
-  sprunggelenk: 'bg-rose-400 shadow-rose-400/60',
-};
-
-const LABEL_COLORS = {
-  nacken: 'text-cyan-400 border-cyan-400/40',
-  schulter: 'text-purple-400 border-purple-400/40',
-  ruecken: 'text-blue-400 border-blue-400/40',
-  hueft: 'text-emerald-400 border-emerald-400/40',
-  knie: 'text-amber-400 border-amber-400/40',
-  sprunggelenk: 'text-rose-400 border-rose-400/40',
-};
 
 export default function SystemAuditSection({ onCtaClick }) {
   const [selected, setSelected] = useState(null);
@@ -48,60 +30,65 @@ export default function SystemAuditSection({ onCtaClick }) {
   const region = BODY_REGIONS.find(r => r.id === selected);
 
   return (
-    <section id="audit" className="py-24 px-6 bg-slate-950">
+    <section id="audit" className="py-20 px-6 bg-slate-950">
       <div className="max-w-4xl mx-auto">
 
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center mb-16"
+          className="text-center mb-12"
         >
-          <p className="text-[10px] font-bold uppercase tracking-[0.4em] text-cyan-400 mb-4">System-Audit</p>
-          <h2 className="text-3xl md:text-4xl font-black text-white leading-tight mb-3">
+          <p className="text-xs font-bold uppercase tracking-[0.3em] text-cyan-400 mb-4">System-Audit</p>
+          <h2 className="text-3xl md:text-4xl font-black text-white leading-tight mb-4">
             Dein Schmerzpunkt verrät dir<br />
-            <span className="text-slate-500">nicht die Ursache.</span>
+            <span className="text-slate-400">nicht die Ursache.</span>
           </h2>
-          <p className="text-slate-400 max-w-xs mx-auto text-sm">
-            Tippe auf die Stelle, die dir zu schaffen macht.
+          <p className="text-slate-400 max-w-xl mx-auto text-base leading-relaxed">
+            Tippe auf die Körperstelle, die dir gerade zu schaffen macht — und erfahre, was AXON wirklich dahinter findet.
           </p>
         </motion.div>
 
-        <div className="flex flex-col md:flex-row gap-10 items-start justify-center">
+        <div className="flex flex-col md:flex-row gap-8 items-start">
+          {/* Body Silhouette */}
+          <div className="relative mx-auto flex-shrink-0" style={{ width: 200, height: 380 }}>
+            {/* Simple body outline */}
+            <svg viewBox="0 0 200 380" className="w-full h-full opacity-20 absolute inset-0">
+              {/* Head */}
+              <ellipse cx="100" cy="30" rx="22" ry="26" fill="none" stroke="#06b6d4" strokeWidth="1.5"/>
+              {/* Neck */}
+              <rect x="90" y="54" width="20" height="16" rx="4" fill="none" stroke="#06b6d4" strokeWidth="1.5"/>
+              {/* Torso */}
+              <path d="M62 70 L138 70 L148 180 L52 180 Z" fill="none" stroke="#06b6d4" strokeWidth="1.5"/>
+              {/* Left arm */}
+              <path d="M62 75 L30 100 L22 170 L38 172 L46 110 L68 90" fill="none" stroke="#06b6d4" strokeWidth="1.5"/>
+              {/* Right arm */}
+              <path d="M138 75 L170 100 L178 170 L162 172 L154 110 L132 90" fill="none" stroke="#06b6d4" strokeWidth="1.5"/>
+              {/* Left leg */}
+              <path d="M80 180 L70 270 L66 340 L84 340 L90 280 L100 230" fill="none" stroke="#06b6d4" strokeWidth="1.5"/>
+              {/* Right leg */}
+              <path d="M120 180 L130 270 L134 340 L116 340 L110 280 L100 230" fill="none" stroke="#06b6d4" strokeWidth="1.5"/>
+            </svg>
 
-          {/* Body Map */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            className="relative mx-auto flex-shrink-0"
-            style={{ width: 200, height: 440 }}
-          >
-            {/* Real anatomy image - front */}
-            <img
-              src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/ad6e52b61_generated_image.png"
-              alt="Körper Anatomie"
-              className="w-full h-full object-contain opacity-70"
-              draggable={false}
-            />
-
-            {/* Clickable region dots */}
+            {/* Clickable dots */}
             {BODY_REGIONS.map((r) => (
               <button
                 key={r.id}
                 onClick={() => setSelected(selected === r.id ? null : r.id)}
                 style={{ left: r.x, top: r.y, transform: 'translate(-50%, -50%)' }}
-                className={`absolute z-10 transition-all duration-200 rounded-full ${
+                className={`absolute z-10 flex items-center justify-center transition-all duration-200 ${
                   selected === r.id
-                    ? `w-5 h-5 ${DOT_COLORS[r.id]} shadow-[0_0_14px_4px] scale-125`
-                    : `w-4 h-4 ${DOT_COLORS[r.id]} opacity-70 hover:opacity-100 hover:scale-110 shadow-md`
+                    ? 'w-10 h-10 bg-cyan-500 rounded-full shadow-[0_0_20px_rgba(6,182,212,0.8)]'
+                    : 'w-7 h-7 bg-slate-800 border-2 border-cyan-500/50 rounded-full hover:border-cyan-400 hover:bg-slate-700'
                 }`}
-              />
+              >
+                <span className="text-xs">{r.emoji}</span>
+              </button>
             ))}
-          </motion.div>
+          </div>
 
           {/* Info Panel */}
-          <div className="flex-1 w-full md:max-w-sm">
+          <div className="flex-1 min-h-[200px]">
             <AnimatePresence mode="wait">
               {!region ? (
                 <motion.div
@@ -109,19 +96,18 @@ export default function SystemAuditSection({ onCtaClick }) {
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
-                  className="flex flex-col items-start justify-start pt-4"
+                  className="h-full flex flex-col items-center justify-center text-center py-12"
                 >
-                  <p className="text-slate-500 text-sm mb-6 leading-relaxed">
-                    Wähle eine Körperregion — AXON zeigt dir, was wirklich dahinter steckt.
-                  </p>
-                  <div className="flex flex-wrap gap-2">
+                  <div className="text-4xl mb-4">👆</div>
+                  <p className="text-slate-500 text-sm">Tippe auf eine Körperregion<br />um mehr zu erfahren</p>
+                  <div className="mt-6 flex flex-wrap gap-2 justify-center">
                     {BODY_REGIONS.map(r => (
                       <button
                         key={r.id}
                         onClick={() => setSelected(r.id)}
-                        className={`text-xs border rounded-full px-3 py-1.5 font-medium transition-colors ${LABEL_COLORS[r.id]} hover:bg-white/5`}
+                        className="text-xs text-slate-400 border border-slate-700 rounded-full px-3 py-1 hover:border-cyan-500/50 hover:text-cyan-400 transition-colors"
                       >
-                        {r.label}
+                        {r.emoji} {r.label}
                       </button>
                     ))}
                   </div>
@@ -129,37 +115,37 @@ export default function SystemAuditSection({ onCtaClick }) {
               ) : (
                 <motion.div
                   key={region.id}
-                  initial={{ opacity: 0, x: 16 }}
+                  initial={{ opacity: 0, x: 20 }}
                   animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -16 }}
-                  className="space-y-4"
+                  exit={{ opacity: 0, x: -20 }}
+                  className="space-y-5"
                 >
-                  <h3 className={`text-lg font-black uppercase tracking-wide ${LABEL_COLORS[region.id].split(' ')[0]}`}>
-                    {region.label}
-                  </h3>
+                  <div className="flex items-center gap-3">
+                    <span className="text-2xl">{region.emoji}</span>
+                    <h3 className="text-xl font-bold text-white">{region.label}</h3>
+                  </div>
 
-                  <div className="bg-slate-900/80 border border-slate-800 rounded-2xl p-4">
-                    <p className="text-[10px] font-bold uppercase tracking-widest text-red-400 mb-2">Was wirklich dahinter steckt</p>
+                  <div className="bg-slate-900/60 border border-red-500/20 rounded-2xl p-4">
+                    <p className="text-[10px] font-bold uppercase tracking-widest text-red-400 mb-2">Was dein System sagt</p>
                     <p className="text-slate-300 text-sm leading-relaxed">{region.diagnosis}</p>
                   </div>
 
-                  <div className="bg-slate-900/80 border border-slate-800 rounded-2xl p-4">
+                  <div className="bg-slate-900/60 border border-cyan-500/20 rounded-2xl p-4">
                     <p className="text-[10px] font-bold uppercase tracking-widest text-cyan-400 mb-2">Die AXON Lösung</p>
                     <p className="text-slate-300 text-sm leading-relaxed">{region.solution}</p>
                   </div>
 
                   <button
                     onClick={onCtaClick}
-                    className="w-full flex items-center justify-center gap-2 bg-white hover:bg-cyan-50 text-black font-black text-sm px-6 py-4 rounded-2xl transition-all hover:scale-[1.02] uppercase tracking-wide"
+                    className="w-full flex items-center justify-center gap-2 bg-white hover:bg-cyan-50 text-black font-black text-sm px-6 py-4 rounded-2xl transition-all hover:scale-105 uppercase tracking-wide"
                   >
-                    Mein {region.label}-Protokoll starten
+                    Vollständiges Protokoll für {region.label}
                     <ArrowRight className="w-4 h-4" />
                   </button>
                 </motion.div>
               )}
             </AnimatePresence>
           </div>
-
         </div>
       </div>
     </section>

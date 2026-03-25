@@ -20,8 +20,11 @@ export default function HeroSection({ onCtaClick }) {
             Dein Körper<br />braucht kein Abo.<br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">Er braucht ein System.</span>
           </h1>
-          <p className="text-slate-400 text-base mb-10 leading-relaxed max-w-sm">
-            MFR · Neuro-Drills · Funktionelle Bewegung — als Antwort auf das, was dein Körper gerade braucht.
+          <p className="text-slate-300 text-lg md:text-xl mb-4 leading-relaxed max-w-xl">
+            AXON kombiniert Faszienarbeit, funktionelle Bewegung und neurologische Drills — nicht als Routine, sondern als Antwort auf das, was dein Körper gerade braucht.
+          </p>
+          <p className="text-slate-400 text-sm mb-10 font-medium">
+            Kein einzelnes Tool. Kein isolierter Ansatz. Das richtige System zur richtigen Zeit.
           </p>
           <div className="flex flex-col sm:flex-row gap-4">
             <Button 
@@ -132,7 +135,7 @@ export default function HeroSection({ onCtaClick }) {
                     <div className="w-10 h-10 rounded-full bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center text-white shadow-lg shadow-cyan-500/20">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="3"></circle></svg>
                     </div>
-                    <div className="text-lg hover:text-white transition-colors cursor-pointer">↑</div>
+                    <div className="text-lg hover:text-white transition-colors cursor-pointer">📈</div>
                 </div>
             </div>
 
