@@ -13,22 +13,22 @@ export default function HeroSection({ onCtaClick }) {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6 }}
         >
-          <div className="inline-block px-4 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-[10px] font-black uppercase tracking-widest mb-6">
+          <div className="inline-block px-4 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-[10px] font-black uppercase tracking-widest mb-4 md:mb-6">
             Early Stage Access • Lifetime Deal
           </div>
-          <h1 className="text-3xl md:text-5xl font-black mb-4 leading-[1.1] text-white">
+          <h1 className="text-2xl md:text-5xl font-black mb-3 md:mb-4 leading-[1.1] text-white">
             Dein Körper<br />braucht kein Abo.<br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">Er braucht ein System.</span>
           </h1>
-          <p className="text-slate-300 text-sm md:text-base mb-6 leading-relaxed max-w-xl">
+          <p className="text-slate-300 text-xs md:text-base mb-5 md:mb-6 leading-relaxed max-w-xl">
             AXON kombiniert Faszienarbeit, Bewegung und Neuro-Drills — als Antwort auf das, was dein Körper gerade braucht.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4">
+          <div className="flex flex-col sm:flex-row gap-3 md:gap-4">
             <Button 
                 onClick={onCtaClick}
-                className="bg-white hover:bg-cyan-50 text-black px-8 py-6 rounded-2xl font-black text-base uppercase tracking-wide transition-all shadow-[0_0_20px_rgba(255,255,255,0.1)] hover:shadow-[0_0_30px_rgba(6,182,212,0.4)]"
+                className="bg-white hover:bg-cyan-50 text-black px-4 md:px-8 py-3 md:py-6 rounded-2xl font-black text-xs md:text-base uppercase tracking-wide transition-all shadow-[0_0_20px_rgba(255,255,255,0.1)] hover:shadow-[0_0_30px_rgba(6,182,212,0.4)] whitespace-nowrap"
             >
-                Persönlichen Plan erstellen — kostenlos
+                Plan erstellen — kostenlos
             </Button>
             <div className="flex items-center space-x-3 px-4 py-2 bg-slate-900/50 rounded-2xl border border-white/5">
               <div className="flex -space-x-3">
