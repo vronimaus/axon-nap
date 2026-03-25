@@ -59,8 +59,11 @@ export default function Landing() {
     base44.auth.redirectToLogin(window.location.href);
   };
 
-  const handleFunnelClick = () => {
-    window.location.href = createPageUrl('RehabFunnel');
+  const handlePricingScroll = () => {
+    const pricingEl = document.getElementById('pricing');
+    if (pricingEl) {
+      pricingEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
   };
 
   const productSchema = {
