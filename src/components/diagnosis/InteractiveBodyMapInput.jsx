@@ -216,11 +216,7 @@ export default function InteractiveBodyMapInput({ onSubmit }) {
             style={{ pointerEvents: imageLoaded ? 'auto' : 'none', touchAction: 'none' }}
           />
           
-          {!imageLoaded && !imageError && (
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="text-slate-400 text-sm">Lade Körperbild...</div>
-            </div>
-          )}
+
         </div>
       </div>
 
