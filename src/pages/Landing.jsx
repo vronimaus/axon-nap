@@ -89,19 +89,19 @@ export default function Landing() {
       </Helmet>
 
       {/* Navigation */}
-      <nav className="fixed w-full z-50 py-4 bg-slate-950/80 backdrop-blur-md border-b border-white/5">
-        <div className="max-w-7xl mx-auto px-6 flex justify-between items-center">
-          <div className="flex flex-col items-center">
-            <img
-              src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/f960cb731_AxonnapLogo500x180Neu.png"
-              alt="AXON"
-              className="h-8 sm:h-10 object-contain"
-              loading="lazy"
-              width="100"
-              height="40"
-            />
-            <span className="text-[10px] text-white font-medium tracking-widest mt-0.5">Neuro-Athletic-Protocol</span>
-          </div>
+       <nav className="fixed w-full z-50 py-3 md:py-4 bg-slate-950/80 backdrop-blur-md border-b border-white/5">
+         <div className="max-w-7xl mx-auto px-3 md:px-6 flex justify-between items-center">
+           <div className="flex flex-col items-center">
+             <img
+               src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/f960cb731_AxonnapLogo500x180Neu.png"
+               alt="AXON"
+               className="h-6 md:h-8 lg:h-10 object-contain"
+               loading="lazy"
+               width="100"
+               height="40"
+             />
+             <span className="hidden md:block text-[10px] text-white font-medium tracking-widest mt-0.5">Neuro-Athletic-Protocol</span>
+           </div>
 
           <div className="hidden md:flex items-center space-x-8 text-xs font-bold uppercase tracking-widest text-slate-400">
             <a href="#audit" className="hover:text-cyan-400 transition-colors">System-Audit</a>
