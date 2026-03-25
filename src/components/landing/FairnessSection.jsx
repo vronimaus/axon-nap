@@ -85,9 +85,9 @@ export default function FairnessSection({ onCtaClick }) {
         >
           <p className="text-xs font-black uppercase tracking-[0.3em] text-cyan-200/70 mb-2">Early Bird Preis</p>
           <div className="mb-2">
-            <span className="text-5xl md:text-6xl font-black text-white tracking-tight">59,90 €</span>
+            <span className="text-4xl font-black text-white tracking-tight">59,90 €</span>
           </div>
-          <p className="text-sm text-cyan-200/60 line-through mb-1">Später 179,00 €</p>
+          <p className="text-xs text-cyan-200/60 line-through mb-1">Später 179,00 €</p>
           <p className="text-xs text-cyan-200/60 mb-6">Einmalzahlung · Kein Abo · Alle Updates inklusive</p>
 
           <Button

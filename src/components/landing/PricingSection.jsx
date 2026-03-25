@@ -33,9 +33,9 @@ export default function PricingSection({ onCtaClick }) {
           </p>
 
           {/* Price Box */}
-          <div className="bg-slate-950/30 backdrop-blur-md inline-flex flex-col p-8 rounded-3xl border border-white/20 mb-10">
+          <div className="bg-slate-950/30 backdrop-blur-md inline-flex flex-col p-6 rounded-3xl border border-white/20 mb-8">
             <span className="text-xs font-bold uppercase tracking-widest text-cyan-200 mb-2">Early Bird Preis</span>
-            <span className="text-6xl md:text-7xl font-black text-white tracking-tight">59,90 €</span>
+            <span className="text-5xl font-black text-white tracking-tight">59,90 €</span>
             <span className="text-sm text-cyan-200/60 line-through mt-2 font-medium">Später 179,00 €</span>
             <span className="text-xs text-cyan-200/60 mt-1">Einmalzahlung. Kein Abo.</span>
           </div>
