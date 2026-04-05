@@ -1,0 +1,465 @@
+{
+  "name": "Exercise",
+  "type": "object",
+  "properties": {
+    "exercise_id": {
+      "type": "string",
+      "description": "Eindeutige ID (z.B. pullup_negative, pushup_wall)"
+    },
+    "name": {
+      "type": "string",
+      "description": "Vollst\u00e4ndiger Name der \u00dcbung"
+    },
+    "parent_exercise": {
+      "type": "string",
+      "description": "Parent-\u00dcbung (z.B. alle pullup_* haben parent 'pullup')"
+    },
+    "progression_level": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 5,
+      "default": 1,
+      "description": "Progressions-Stufe (1=einfach, 5=expert)"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "pull",
+        "push",
+        "squat",
+        "hinge",
+        "carry",
+        "core",
+        "mobility",
+        "plank",
+        "row",
+        "dip",
+        "neuro",
+        "breath",
+        "mfr",
+        "other"
+      ],
+      "description": "\u00dcbungs-Kategorie"
+    },
+    "description": {
+      "type": "string",
+      "description": "Schritt-f\u00fcr-Schritt Anleitung (Standard)"
+    },
+    "axon_moment": {
+      "type": "string",
+      "description": "Der AXON-Moment: Was soll der User sp\u00fcren/verstehen?"
+    },
+    "cues": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Ausf\u00fchrungs-Tipps und Cues"
+    },
+    "breathing_instruction": {
+      "type": "string",
+      "description": "Detaillierte Anweisungen zur Atmung w\u00e4hrend der \u00dcbung"
+    },
+    "purpose_explanation": {
+      "type": "string",
+      "description": "Warum ist diese \u00dcbung wichtig? Welchen Zweck erf\u00fcllt sie?"
+    },
+    "pre_post_test_instruction": {
+      "type": "string",
+      "description": "Anleitung, wenn die \u00dcbung selbst ein Test ist (z.B. Gleichgewichtstest)"
+    },
+    "related_performance_goals": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Verlinkte Performance-Ziele (z.B. ['pullup', 'handstand'])"
+    },
+    "difficulty": {
+      "type": "string",
+      "enum": [
+        "beginner",
+        "intermediate",
+        "advanced"
+      ],
+      "default": "intermediate",
+      "description": "Schwierigkeitsgrad"
+    },
+    "stecco_chain": {
+      "type": "string",
+      "description": "Betroffene Fascial Chain nach Stecco (z.B. 'SBL')"
+    },
+    "affected_nodes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Liste der betroffenen MFR-Nodes (z.B. ['N4', 'N9', 'N10'])"
+    },
+    "mcgill_safety": {
+      "type": "string",
+      "description": "McGill-Sicherheitsprinzipien f\u00fcr diese \u00dcbung"
+    },
+    "fms_pattern": {
+      "type": "string",
+      "description": "Zugeh\u00f6riger FMS-Pattern (z.B. 'Squat Pattern', 'Push Pattern')"
+    },
+    "pavel_protocol": {
+      "type": "string",
+      "description": "Pavel's Strength Protocol f\u00fcr diese \u00dcbung"
+    },
+    "image_url": {
+      "type": "string",
+      "description": "URL zum \u00dcbungsbild (Standard)"
+    },
+    "gif_url": {
+      "type": "string",
+      "description": "URL zum animierten GIF"
+    },
+    "goal_explanation": {
+      "type": "string",
+      "description": "Erkl\u00e4rung, warum diese \u00dcbung wichtig f\u00fcr die Rehabilitation ist und worauf sie abzielt"
+    },
+    "benefits": {
+      "type": "string",
+      "description": "Konkrete Vorteile, die der Nutzer von dieser \u00dcbung erwarten kann"
+    },
+    "min_feeling_hardware": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 10,
+      "description": "Minimaler Gef\u00fchl/Hardware-Wert (1-10) f\u00fcr diese \u00dcbung"
+    },
+    "min_focus_software": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 10,
+      "description": "Minimaler Fokus/Software-Wert (1-10) f\u00fcr diese \u00dcbung"
+    },
+    "min_energy_battery": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 10,
+      "description": "Minimaler Energie/Batterie-Wert (1-10) f\u00fcr diese \u00dcbung"
+    },
+    "neuro_impact_type": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "calming",
+          "activating",
+          "visual_tracking",
+          "vestibular_stim",
+          "balance"
+        ]
+      },
+      "description": "Neurologischer Effekt der \u00dcbung"
+    },
+    "mechanical_impact_type": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "mfr",
+          "mobility",
+          "stability",
+          "strength",
+          "explosive"
+        ]
+      },
+      "description": "Mechanischer Effekt der \u00dcbung"
+    },
+    "modification_suggestions_yellow": {
+      "type": "string",
+      "description": "Modifikationen bei 'Gelb'-Status (z.B. 'Reduziere S\u00e4tze/Wiederholungen')"
+    },
+    "modification_suggestions_red": {
+      "type": "string",
+      "description": "Modifikationen bei 'Rot'-Status (z.B. 'Ersetzen durch MFR', 'Streichen')"
+    },
+    "progression_basic": {
+      "type": "object",
+      "description": "Basic-Variante (einfacher)",
+      "properties": {
+        "label": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "focus": {
+          "type": "string"
+        }
+      }
+    },
+    "progression_advanced": {
+      "type": "object",
+      "description": "Advanced-Variante (schwerer)",
+      "properties": {
+        "label": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "focus": {
+          "type": "string"
+        }
+      }
+    },
+    "next_progression_id": {
+      "type": "string",
+      "description": "AXON Upgrade-System: ID der n\u00e4chsten Progressions-\u00dcbung bei positivem Feedback ('I feel great!'). Definiert den vordefinierten sicheren Upgrade-Pfad."
+    },
+    "upgrade_boost_description": {
+      "type": "string",
+      "description": "Beschreibung was sich beim Upgrade \u00e4ndert (z.B. 'Komplexit\u00e4t: Augen fixieren, Kopf bewegt sich')"
+    },
+    "upgrade_neuro_reason": {
+      "type": "string",
+      "description": "Neuro-mechanischer Grund f\u00fcr diesen Upgrade-Pfad"
+    },
+    "upgrade_blocked_if_pain_nodes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "MFR-Node-IDs (z.B. ['N10']) die dieses Upgrade blockieren, wenn dort Schmerz gemeldet wurde"
+    },
+    "required_equipment": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "IDs der ben\u00f6tigten Equipments f\u00fcr diese \u00dcbung (z.B. ['equip_kb_001'])"
+    },
+    "nms_trigger": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "redline",
+          "stressed",
+          "solid",
+          "peak"
+        ]
+      },
+      "description": "NMS-Zust\u00e4nde, die diese \u00dcbung adressiert (neurometa-Filterung)"
+    },
+    "nms_category": {
+      "type": "string",
+      "enum": [
+        "neural_calm",
+        "neural_activate",
+        "vagus",
+        "visual",
+        "breath",
+        "mobility",
+        "strength"
+      ],
+      "description": "neurometa-Protokoll-Kategorie dieser \u00dcbung"
+    },
+    "smart_tags": {
+      "type": "object",
+      "description": "AXON Smart-Tag Checklist f\u00fcr AI-Entscheidungsfindung",
+      "properties": {
+        "identity_classification": {
+          "type": "object",
+          "properties": {
+            "movement_family": {
+              "type": "string"
+            },
+            "anatomical_focus": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "joint_actions": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "biomechanical_stress": {
+          "type": "object",
+          "properties": {
+            "compression_demand": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 10
+            },
+            "shear_demand": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 10
+            },
+            "grip_demand": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 10
+            },
+            "rotational_demand": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 10
+            },
+            "loading_vector": {
+              "type": "string"
+            }
+          }
+        },
+        "kinetic_chain_slings": {
+          "type": "object",
+          "properties": {
+            "primary_sling": {
+              "type": "string",
+              "enum": [
+                "anterior",
+                "posterior",
+                "lateral",
+                "deep_frontal",
+                "spiral",
+                "ipsilateral",
+                "contralateral"
+              ]
+            },
+            "secondary_slings": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "stabilization_requirement": {
+              "type": "string",
+              "enum": [
+                "proximal",
+                "distal",
+                "both"
+              ]
+            }
+          }
+        },
+        "neuro_complexity": {
+          "type": "object",
+          "properties": {
+            "coordination_demand": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 10
+            },
+            "balance_requirement": {
+              "type": "boolean"
+            },
+            "visual_tracking": {
+              "type": "boolean"
+            },
+            "vestibular_challenge": {
+              "type": "boolean"
+            },
+            "proprioceptive_demand": {
+              "type": "boolean"
+            }
+          }
+        },
+        "execution_parameters": {
+          "type": "object",
+          "properties": {
+            "tempo_recommendation": {
+              "type": "string"
+            },
+            "range_of_motion": {
+              "type": "string"
+            },
+            "breathing_pattern": {
+              "type": "string"
+            },
+            "load_category": {
+              "type": "string",
+              "enum": [
+                "bodyweight",
+                "light",
+                "moderate",
+                "heavy",
+                "explosive"
+              ]
+            }
+          }
+        },
+        "contraindications": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "condition": {
+                "type": "string"
+              },
+              "severity": {
+                "type": "string",
+                "enum": [
+                  "absolute",
+                  "relative"
+                ]
+              },
+              "reasoning": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "breath_pattern_correlation": {
+          "type": "object",
+          "properties": {
+            "optimal_breath_phase": {
+              "type": "string",
+              "enum": [
+                "inhale",
+                "exhale",
+                "hold",
+                "continuous"
+              ]
+            },
+            "neuro_goal": {
+              "type": "string",
+              "enum": [
+                "calming",
+                "activating",
+                "centering",
+                "focus"
+              ]
+            },
+            "cue": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
+  },
+  "required": [
+    "exercise_id",
+    "name",
+    "description"
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": {},
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

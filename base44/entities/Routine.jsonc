@@ -1,0 +1,278 @@
+{
+  "name": "Routine",
+  "type": "object",
+  "properties": {
+    "routine_name": {
+      "type": "string",
+      "description": "Name der Routine (z.B. '5-Min Wake-up', 'Full Body Reset')"
+    },
+    "description": {
+      "type": "string",
+      "description": "Kurze Beschreibung der Routine und ihres Zwecks"
+    },
+    "total_duration": {
+      "type": "integer",
+      "description": "Gesamtdauer in Minuten"
+    },
+    "total_duration_seconds": {
+      "type": "integer",
+      "description": "Gesamtdauer in Sekunden"
+    },
+    "difficulty": {
+      "type": "string",
+      "enum": [
+        "easy",
+        "medium",
+        "advanced"
+      ],
+      "default": "medium",
+      "description": "Schwierigkeitsgrad"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "neuro",
+        "mobility",
+        "breathwork",
+        "faszien",
+        "funktionale-bewegung"
+      ],
+      "description": "Kategorie der Routine"
+    },
+    "icon": {
+      "type": "string",
+      "description": "Emoji-Icon f\u00fcr die Routine"
+    },
+    "progression_level": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 3,
+      "default": 1,
+      "description": "Progressions-Level (1=Foundation, 2=Development, 3=Mastery)"
+    },
+    "gatekeeper_question": {
+      "type": "string",
+      "description": "Die Frage, die dem User gestellt wird, um die Eignung f\u00fcr diese Routine zu pr\u00fcfen"
+    },
+    "gatekeeper_yes_message": {
+      "type": "string",
+      "description": "Nachricht bei erfolgreicher Pr\u00fcfung"
+    },
+    "gatekeeper_no_message": {
+      "type": "string",
+      "description": "Nachricht bei nicht bestandener Pr\u00fcfung"
+    },
+    "fallback_routine_id": {
+      "type": "string",
+      "description": "ID der empfohlenen Fallback-Routine bei Gatekeeper-Fail"
+    },
+    "pre_routine_assessment": {
+      "type": "string",
+      "description": "Beschreibung des Assessments, das vor der Routine durchgef\u00fchrt wird"
+    },
+    "post_routine_assessment": {
+      "type": "string",
+      "description": "Beschreibung des Assessments, das nach der Routine durchgef\u00fchrt wird"
+    },
+    "expert_explanation": {
+      "type": "string",
+      "description": "Zusammenfassende Erkl\u00e4rung der Routine aus Expertensicht, warum sie funktioniert"
+    },
+    "completion_title": {
+      "type": "string",
+      "description": "\u00dcberschrift f\u00fcr den Abschlussbildschirm"
+    },
+    "completion_message": {
+      "type": "string",
+      "description": "Motivierende Nachricht nach Abschluss der Routine"
+    },
+    "equipment_required": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Liste der erforderlichen Ausr\u00fcstung f\u00fcr diese Routine"
+    },
+    "nms_trigger": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "redline",
+          "stressed",
+          "solid",
+          "peak"
+        ]
+      },
+      "description": "NMS-Zust\u00e4nde, f\u00fcr die diese Routine geeignet ist (neurometa-Filterung)"
+    },
+    "nms_category": {
+      "type": "string",
+      "enum": [
+        "neural_calm",
+        "neural_activate",
+        "vagus",
+        "visual",
+        "breath",
+        "mobility",
+        "strength"
+      ],
+      "description": "neurometa-Protokoll-Kategorie dieser Routine"
+    },
+    "sequence": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "mfr",
+              "neuro",
+              "strength",
+              "breath",
+              "mobility"
+            ]
+          },
+          "node_id": {
+            "type": "string"
+          },
+          "exercise_id": {
+            "type": "string"
+          },
+          "exercise_name": {
+            "type": "string",
+            "description": "Name der \u00dcbung"
+          },
+          "exercise_description": {
+            "type": "string",
+            "description": "Anleitung zur Durchf\u00fchrung"
+          },
+          "axon_moment": {
+            "type": "string",
+            "description": "Was soll der User sp\u00fcren/verstehen"
+          },
+          "duration_seconds": {
+            "type": "integer",
+            "description": "Dauer der \u00dcbung in Sekunden"
+          },
+          "instruction": {
+            "type": "string"
+          },
+          "notes": {
+            "type": "string",
+            "description": "Zus\u00e4tzliche Notizen und Hinweise zur Ausf\u00fchrung"
+          },
+          "phase": {
+            "type": "string",
+            "description": "Phase der Routine"
+          },
+          "module_name": {
+            "type": "string",
+            "description": "Name des Moduls innerhalb der Phase"
+          },
+          "sets": {
+            "type": "integer",
+            "description": "Anzahl der S\u00e4tze"
+          },
+          "reps": {
+            "type": "integer",
+            "description": "Wiederholungen pro Satz"
+          },
+          "rest_seconds": {
+            "type": "integer",
+            "description": "Pausenzeit in Sekunden zwischen den S\u00e4tzen"
+          },
+          "progression_basic": {
+            "type": "object",
+            "properties": {
+              "label": {
+                "type": "string"
+              },
+              "description": {
+                "type": "string"
+              },
+              "focus": {
+                "type": "string"
+              }
+            }
+          },
+          "progression_advanced": {
+            "type": "object",
+            "properties": {
+              "label": {
+                "type": "string"
+              },
+              "description": {
+                "type": "string"
+              },
+              "focus": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "description": "Sequenz der \u00dcbungen in der Routine"
+    },
+    "min_readiness_status": {
+      "type": "string",
+      "enum": [
+        "green",
+        "yellow"
+      ],
+      "description": "Minimaler Gesamt-Readiness-Status f\u00fcr diese Routine"
+    },
+    "primary_benefit_for_yellow": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "mobility",
+          "neuro-calming",
+          "recovery",
+          "technique"
+        ]
+      },
+      "description": "Hauptvorteile, wenn der Status 'Gelb' ist"
+    },
+    "not_recommended_for_red": {
+      "type": "boolean",
+      "default": false,
+      "description": "Routine ungeeignet bei 'Rot'-Status"
+    },
+    "intensity_level": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high"
+      ],
+      "description": "Allgemeine Intensit\u00e4t der Routine"
+    }
+  },
+  "required": [
+    "routine_name",
+    "total_duration",
+    "category",
+    "sequence"
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": {},
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}
