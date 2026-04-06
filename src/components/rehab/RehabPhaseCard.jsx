@@ -140,7 +140,6 @@ export default function RehabPhaseCard({ phase, index, totalPhases, isCompleted,
               {section.exercises.map((exercise, exIdx) => {
                 const uniqueKey = `${section.key}-${exIdx}`;
                 const isExCompleted = completedExercises[uniqueKey] || exercise.completed;
-                const isActive = openCardKey === uniqueKey;
                 const canPlay = canPlayExercise(exercise.exercise_id, phases, hasAccess);
                 const isLocked = !canPlay && !isExCompleted;
 
