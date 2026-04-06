@@ -23,13 +23,19 @@ async function generateAudioForExercise(base44, exercise) {
     
     if (!fullText.trim()) return null;
     
-    // Generate audio via ttsWithCache (auto-cached)
-    await base44.functions.invoke('ttsWithCache', {
+    // Call ttsWithCache via Deno-safe SDK invocation
+    // The function handles caching + audio generation automatically
+    const result = await base44.asServiceRole.functions.invoke('ttsWithCache', {
       text: fullText
     });
     
-    console.log(`[Bulk Audio Gen] ✓ ${exercise.name}`);
-    return true;
+    if (result?.signed_url) {
+      console.log(`[Bulk Audio Gen] ✓ ${exercise.name}`);
+      return true;
+    } else {
+      console.log(`[Bulk Audio Gen] ⚠ No URL for ${exercise.name}`);
+      return false;
+    }
     
   } catch (error) {
     console.error(`[Bulk Audio Gen] Error for ${exercise.name}:`, error.message);
