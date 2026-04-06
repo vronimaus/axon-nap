@@ -40,18 +40,14 @@ export default function RehabIntroModal({ isOpen, onStart, rehabPlan, userName, 
             className="fixed inset-0 z-50 bg-black/85 backdrop-blur-sm"
           />
 
-          {/* Bottom Sheet — same format as ExerciseDetailModal */}
+          {/* Full Screen Modal */}
           <motion.div
-            initial={{ opacity: 0, y: '100%' }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: '100%' }}
-            transition={{ type: 'spring', damping: 28, stiffness: 260 }}
-            className="fixed inset-x-0 bottom-0 z-50 max-h-[88vh] overflow-y-auto rounded-t-3xl bg-slate-950 border-t border-emerald-500/30 shadow-2xl"
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.95 }}
+            transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+            className="fixed inset-0 z-50 bg-slate-950 overflow-y-auto flex flex-col"
           >
-            {/* Drag Handle */}
-            <div className="flex justify-center pt-3 pb-1">
-              <div className="w-10 h-1 rounded-full bg-slate-700" />
-            </div>
 
             {/* Header */}
             <div className="sticky top-0 z-10 flex items-center justify-between px-5 py-4 bg-slate-950 border-b border-slate-800">
@@ -77,7 +73,7 @@ export default function RehabIntroModal({ isOpen, onStart, rehabPlan, userName, 
               </div>
             </div>
 
-            <div className="px-5 py-6 space-y-4 pb-10">
+            <div className="flex-1 flex flex-col items-center justify-center px-5 py-6 space-y-4">
               <AnimatePresence mode="wait">
 
                 {/* Step 0: Coach Intro */}
