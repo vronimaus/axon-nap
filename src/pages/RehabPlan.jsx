@@ -11,6 +11,8 @@ import { Helmet } from 'react-helmet-async';
 import { useTrialStatus } from '../components/useTrialStatus';
 import RehabIntroModal from '../components/rehab/RehabIntroModal';
 import ExerciseDetailModal from '../components/rehab/ExerciseDetailModal';
+import EquipmentBadges from '../components/shared/EquipmentBadges';
+import RehabPhaseCard from '../components/rehab/RehabPhaseCard';
 
 export default function RehabPlan() {
   const { hasAccess } = useTrialStatus();
