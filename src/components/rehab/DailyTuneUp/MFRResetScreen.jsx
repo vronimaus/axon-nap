@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
-import { Volume2, VolumeX, Loader2, Play, Check } from 'lucide-react';
+import { Loader2, Play, Check } from 'lucide-react';
 import { useTTS } from '@/hooks/useTTS';
 import { base44 } from '@/api/base44Client';
 
