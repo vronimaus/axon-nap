@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Volume2, VolumeX, Loader2, Check, AlertCircle, ChevronDown } from 'lucide-react';
-import { useTTS } from '@/hooks/useTTS';
 import { base44 } from '@/api/base44Client';
 import { Slider } from '@/components/ui/slider';
 import OuchInterventionModal from './OuchInterventionModal';
@@ -30,6 +29,15 @@ const CAUSAL_FIELD = {
   mobility: 'hardware_scientific_mechanism',
 };
 
+// Simple hash function for text
+async function hashText(text) {
+  const encoder = new TextEncoder();
+  const data = encoder.encode(text.trim());
+  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
 export default function ExerciseDetailModal({
   exercise,
   isOpen,
@@ -48,8 +56,9 @@ export default function ExerciseDetailModal({
   const [painLevel, setPainLevel] = useState(0);
   const [showDetails, setShowDetails] = useState(false);
   const [isOuchModalOpen, setIsOuchModalOpen] = useState(false);
-
-  const { isPlaying, isLoading: isTTSLoading, playText, stop } = useTTS();
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [isTTSLoading, setIsTTSLoading] = useState(false);
+  const audioRef = useRef(null);
 
   useEffect(() => {
     if (!isOpen || !exercise?.exercise_id) return;
@@ -90,11 +99,59 @@ export default function ExerciseDetailModal({
     return parts.join('. ');
   };
 
-  const handlePlayAudio = () => {
-    if (isPlaying) { stop(); return; }
-    const text = buildTTSText(fullExercise);
-    if (text) playText(text);
+  const handlePlayAudio = async () => {
+    if (isPlaying) {
+      if (audioRef.current) audioRef.current.pause();
+      setIsPlaying(false);
+      return;
+    }
+
+    setIsTTSLoading(true);
+    try {
+      const text = buildTTSText(fullExercise);
+      if (!text) {
+        setIsTTSLoading(false);
+        return;
+      }
+
+      // Hash the text to check TTSCache
+      const textHash = await hashText(text);
+
+      // Check cache first
+      const cached = await base44.entities.TTSCache.filter({ text_hash: textHash });
+      let audioUrl;
+
+      if (cached?.length > 0) {
+        // Use cached audio
+        const signedUrlResp = await base44.integrations.Core.CreateFileSignedUrl({
+          file_uri: cached[0].file_uri,
+          expires_in: 3600
+        });
+        audioUrl = signedUrlResp.signed_url;
+      } else {
+        // Generate new audio via ttsWithCache
+        const ttsResp = await base44.functions.invoke('ttsWithCache', { text });
+        audioUrl = ttsResp.data?.signed_url;
+      }
+
+      if (audioUrl && audioRef.current) {
+        audioRef.current.src = audioUrl;
+        audioRef.current.play();
+        setIsPlaying(true);
+      }
+    } catch (error) {
+      console.error('Audio playback error:', error);
+    } finally {
+      setIsTTSLoading(false);
+    }
   };
+
+  useEffect(() => {
+    if (!audioRef.current) return;
+    const handleEnded = () => setIsPlaying(false);
+    audioRef.current.addEventListener('ended', handleEnded);
+    return () => audioRef.current?.removeEventListener('ended', handleEnded);
+  }, []);
 
   const confirmFinish = () => {
     setIsCompleted(true);
@@ -190,20 +247,23 @@ export default function ExerciseDetailModal({
                 }
               </button>
 
-              {/* Playing wave indicator */}
-              {isPlaying && (
-                <div className="flex items-center justify-center gap-1">
-                  {[1,2,3,4,5].map(i => (
-                    <motion.div
-                      key={i}
-                      animate={{ scaleY: [0.4, 1, 0.4] }}
-                      transition={{ duration: 0.8, repeat: Infinity, delay: i * 0.1 }}
-                      className="w-1 h-6 bg-emerald-400 rounded-full"
-                    />
-                  ))}
-                  <span className="text-xs text-emerald-400 ml-2 font-medium">Coach spricht…</span>
-                </div>
-              )}
+              {/* Hidden audio element */}
+            <audio ref={audioRef} />
+
+            {/* Playing wave indicator */}
+            {isPlaying && (
+              <div className="flex items-center justify-center gap-1">
+                {[1,2,3,4,5].map(i => (
+                  <motion.div
+                    key={i}
+                    animate={{ scaleY: [0.4, 1, 0.4] }}
+                    transition={{ duration: 0.8, repeat: Infinity, delay: i * 0.1 }}
+                    className="w-1 h-6 bg-emerald-400 rounded-full"
+                  />
+                ))}
+                <span className="text-xs text-emerald-400 ml-2 font-medium">Coach spricht…</span>
+              </div>
+            )}
 
               {/* ── AXON Moment — als Quote ── */}
               {fullExercise.axon_moment && (
