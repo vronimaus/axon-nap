@@ -1,0 +1,320 @@
+{
+  "name": "RehabPlan",
+  "type": "object",
+  "properties": {
+    "user_email": {
+      "type": "string",
+      "description": "Foreign Key zur User Entity"
+    },
+    "diagnosis_session_id": {
+      "type": "string",
+      "description": "Referenz zur DiagnosisSession"
+    },
+    "three_d_assessment_id": {
+      "type": "string",
+      "description": "Referenz zur ThreeDMAPSAssessment Entity mit detaillierten 3DMAPS-Diagnose-Daten"
+    },
+    "problem_summary": {
+      "type": "string",
+      "description": "Zusammenfassung des Problems"
+    },
+    "three_d_assessment_summary": {
+      "type": "string",
+      "description": "Zusammenfassende Beschreibung der 3DMAPS-Diagnose (z.B. 'Defizit in Anterior Chain Mobility, Sagittalebene rechts')"
+    },
+    "three_d_assessment_gaps": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Array von identifizierten Engp\u00e4ssen (Gaposis) aus dem 3DMAPS-Assessment"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "paused",
+        "completed"
+      ],
+      "default": "active",
+      "description": "Status des Plans"
+    },
+    "current_phase": {
+      "type": "integer",
+      "default": 1,
+      "description": "Aktuelle Phase des Plans"
+    },
+    "phase_start_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Startdatum der aktuellen Phase"
+    },
+    "plan_generated_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Datum der Plan-Generierung"
+    },
+    "nms_trigger_input": {
+      "type": "string",
+      "enum": [
+        "redline",
+        "stressed",
+        "solid",
+        "peak",
+        "vulnerable",
+        "sluggish",
+        "stuck",
+        "weak_pain"
+      ],
+      "description": "NMS-Zustand des Users VOR der Intervention (IF-Zustand)"
+    },
+    "nms_trigger_output": {
+      "type": "string",
+      "enum": [
+        "balanced",
+        "solid",
+        "resilient",
+        "explosive",
+        "fluid",
+        "bulletproof",
+        "peak"
+      ],
+      "description": "Erwarteter NMS-Zustand des Users NACH der Intervention (WHICH LEADS TO)"
+    },
+    "phases": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "phase_number": {
+            "type": "integer"
+          },
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "duration_days": {
+            "type": "integer"
+          },
+          "exercises": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "exercise_id": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "sets_reps_tempo": {
+                  "type": "string"
+                },
+                "instruction": {
+                  "type": "string"
+                },
+                "notes": {
+                  "type": "string"
+                },
+                "category": {
+                  "type": "string"
+                },
+                "completed": {
+                  "type": "boolean",
+                  "default": false
+                }
+              }
+            }
+          }
+        }
+      },
+      "description": "Phasen des Rehab-Plans"
+    },
+    "feedback_history": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string",
+            "format": "date"
+          },
+          "exercise_id": {
+            "type": "string"
+          },
+          "metric_value": {
+            "type": "number"
+          },
+          "notes": {
+            "type": "string"
+          }
+        }
+      },
+      "description": "Historie des User-Feedbacks"
+    },
+    "expert_notes": {
+      "type": "string",
+      "description": "Notizen vom System/Experten"
+    },
+    "recommended_mfr_routines": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "routine_id": {
+            "type": "string",
+            "description": "ID der empfohlenen Routine"
+          },
+          "routine_name": {
+            "type": "string",
+            "description": "Name der Routine"
+          },
+          "reason": {
+            "type": "string",
+            "description": "Warum diese Routine empfohlen wird"
+          }
+        }
+      },
+      "maxItems": 3,
+      "description": "Maximal 3 empfohlene MFR-Routinen basierend auf der Diagnose"
+    },
+    "recommended_faqs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "faq_id": {
+            "type": "string",
+            "description": "ID der FAQ"
+          },
+          "question": {
+            "type": "string",
+            "description": "Die Frage"
+          },
+          "reason": {
+            "type": "string",
+            "description": "Warum diese FAQ relevant ist"
+          }
+        }
+      },
+      "maxItems": 3,
+      "description": "Maximal 3 empfohlene FAQs zu diesem Rehab-Plan"
+    },
+    "live_adjust_log": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "timestamp": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Zeitstempel der Intervention"
+          },
+          "exercise_id": {
+            "type": "string",
+            "description": "ID der betroffenen \u00dcbung"
+          },
+          "exercise_name": {
+            "type": "string",
+            "description": "Name der \u00dcbung"
+          },
+          "node_feedback": {
+            "type": "string",
+            "description": "Node-ID bei Discomfort (z.B. 'N5', 'N10')"
+          },
+          "pain_nrs": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 10,
+            "description": "NRS-Schmerz-Score bei Intervention"
+          },
+          "action_taken": {
+            "type": "string",
+            "enum": [
+              "regress_exercise",
+              "modify_parameter",
+              "pivot_to_drill",
+              "stop_exercise",
+              "tempo_adjustment",
+              "load_reduction"
+            ],
+            "description": "Durchgef\u00fchrte Ma\u00dfnahme"
+          },
+          "new_exercise_id": {
+            "type": "string",
+            "description": "ID der neuen \u00dcbung (falls Pivot)"
+          },
+          "reasoning": {
+            "type": "string",
+            "description": "AI-Begr\u00fcndung der Anpassung"
+          },
+          "user_feedback_post_adjustment": {
+            "type": "string",
+            "description": "Wie hat sich der User nach der Anpassung gef\u00fchlt"
+          }
+        }
+      },
+      "description": "Live-Adjust-Logbuch: Dokumentation aller KI-Interventionen w\u00e4hrend Sessions"
+    },
+    "session_status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "paused_intervention",
+        "completed"
+      ],
+      "default": "active",
+      "description": "Aktueller Status der Live-Session"
+    },
+    "current_exercise_substituted": {
+      "type": "boolean",
+      "default": false,
+      "description": "Wurde die aktuelle \u00dcbung durch 'Ouch!' ersetzt?"
+    },
+    "substituted_exercise_id": {
+      "type": "string",
+      "description": "ID der Ersatz-\u00dcbung (falls current_exercise_substituted = true)"
+    },
+    "pain_feedback_node": {
+      "type": "string",
+      "description": "Node ID, wo der Schmerz gemeldet wurde (z.B. 'N10')"
+    },
+    "pain_nrs": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 10,
+      "description": "NRS-Schmerz-Score der letzten 'Ouch!'-Intervention"
+    },
+    "intervention_mode": {
+      "type": "string",
+      "enum": [
+        "none",
+        "yellow_pivot",
+        "red_stop"
+      ],
+      "default": "none",
+      "description": "Welcher Decision-Tree-Modus wurde aktiviert?"
+    }
+  },
+  "required": [
+    "user_email",
+    "problem_summary",
+    "phases"
+  ],
+  "rls": {
+    "create": {
+      "data.user_email": "{{user.email}}"
+    },
+    "read": {
+      "data.user_email": "{{user.email}}"
+    },
+    "update": {
+      "data.user_email": "{{user.email}}"
+    },
+    "delete": {
+      "data.user_email": "{{user.email}}"
+    }
+  }
+}

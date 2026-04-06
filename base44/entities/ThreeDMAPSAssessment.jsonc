@@ -1,0 +1,140 @@
+{
+  "name": "ThreeDMAPSAssessment",
+  "type": "object",
+  "properties": {
+    "user_email": {
+      "type": "string",
+      "description": "Email des Users (Foreign Key zu User Entity)"
+    },
+    "assessment_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Zeitstempel der Diagnose"
+    },
+    "problem_summary": {
+      "type": "string",
+      "description": "Zusammenfassung des Ausgangsproblems"
+    },
+    "assessment_notes": {
+      "type": "string",
+      "description": "Allgemeine Notizen zum Assessment"
+    },
+    "transformational_zones": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "zone_number": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 6,
+            "description": "Transformational Zone 1-6"
+          },
+          "zone_name": {
+            "type": "string",
+            "description": "Name der Zone (z.B. 'Ankle/Foot Complex', 'Knee Complex', etc.)"
+          },
+          "sagittal_mobility_score": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 10,
+            "description": "Mobilit\u00e4ts-Score in Sagittalebene (0=immobil, 10=optimal)"
+          },
+          "sagittal_stability_score": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 10,
+            "description": "Stabilit\u00e4ts-Score in Sagittalebene"
+          },
+          "frontal_mobility_score": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 10,
+            "description": "Mobilit\u00e4ts-Score in Frontalebene"
+          },
+          "frontal_stability_score": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 10,
+            "description": "Stabilit\u00e4ts-Score in Frontalebene"
+          },
+          "transverse_mobility_score": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 10,
+            "description": "Mobilit\u00e4ts-Score in Transversalebene"
+          },
+          "transverse_stability_score": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 10,
+            "description": "Stabilit\u00e4ts-Score in Transversalebene"
+          },
+          "primary_gaposis": {
+            "type": "string",
+            "description": "Hauptengpass in dieser Zone (z.B. 'Mobility Deficit - Sagittal')"
+          },
+          "secondary_gaposis": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Sekund\u00e4re Engp\u00e4sse in dieser Zone"
+          },
+          "assessment_notes": {
+            "type": "string",
+            "description": "Beobachtungen und Notizen f\u00fcr diese Zone"
+          }
+        }
+      },
+      "description": "Details f\u00fcr alle 6 Transformational Zones in den 3 Bewegungsebenen"
+    },
+    "primary_gaposis_overall": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Gesamtliste der prim\u00e4ren Engp\u00e4sse (Gaposis) \u00fcber alle Zonen hinweg (z.B. 'Anterior Chain Mobility - Sagittal')"
+    },
+    "movement_quality_findings": {
+      "type": "string",
+      "description": "Zusammenfassung der Bewegungsqualit\u00e4ts-Befunde nach Gary Gray 3DMAPS"
+    },
+    "compensation_patterns_identified": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Identifizierte Kompensationsmuster (z.B. 'Excessive Lumbar Flexion', 'Shoulder Hiking')"
+    },
+    "three_d_complexity_rating": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 5,
+      "description": "Gesamtkomplexit\u00e4t des 3D-Bewegungsproblems (1=einfach, 5=extrem komplex)"
+    },
+    "coach_observations": {
+      "type": "string",
+      "description": "Direkte Beobachtungen und Erkenntnisse des Coaches w\u00e4hrend des Assessments"
+    }
+  },
+  "required": [
+    "user_email",
+    "assessment_date",
+    "transformational_zones"
+  ],
+  "rls": {
+    "create": {
+      "data.user_email": "{{user.email}}"
+    },
+    "read": {
+      "data.user_email": "{{user.email}}"
+    },
+    "update": {
+      "data.user_email": "{{user.email}}"
+    },
+    "delete": {
+      "data.user_email": "{{user.email}}"
+    }
+  }
+}
