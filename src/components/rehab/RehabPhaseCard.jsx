@@ -1,19 +1,18 @@
 import React, { useMemo, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Target, TrendingUp, Zap, CheckCircle2, Brain, Activity, Dumbbell, Sparkles } from 'lucide-react';
+import { Target, Zap, CheckCircle2, Brain, Activity, Dumbbell, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import RehabExerciseCard from './RehabExerciseCard';
 import { canPlayExercise } from './ExerciseAccessControl';
 import ExerciseLockedPaywall from './ExerciseLockedPaywall';
 import AxonJourneyCard from './AxonJourneyCard';
+import ExerciseDetailModal from './ExerciseDetailModal';
 
 export default function RehabPhaseCard({ phase, index, totalPhases, isCompleted, onComplete, onNext, onPrev, rehabPlanId, queryClient, onFeedbackSubmit, phases = [], hasAccess = true }) {
-  // Accordion State: All closed by default
-  const [openCardKey, setOpenCardKey] = React.useState(null);
   const [lockedExerciseName, setLockedExerciseName] = useState(null);
+  const [modalExercise, setModalExercise] = useState(null);
 
   // Track completed exercises locally for optimistic UI updates
-  const [completedExercises, setCompletedExercises] = React.useState(() => {
+  const [completedExercises, setCompletedExercises] = useState(() => {
     if (!phase.exercises) return {};
     const initial = {};
     phase.exercises.forEach((ex, idx) => {
@@ -21,6 +20,15 @@ export default function RehabPhaseCard({ phase, index, totalPhases, isCompleted,
     });
     return initial;
   });
+
+  // Build phase context object for causal explanations in modal
+  const phaseContext = {
+    nms_shift_explanation: phase.nms_shift_explanation,
+    synergy_highlight: phase.synergy_highlight,
+    hardware_scientific_mechanism: phase.hardware_scientific_mechanism,
+    software_scientific_mechanism: phase.software_scientific_mechanism,
+    strength_scientific_mechanism: phase.strength_scientific_mechanism,
+  };
 
   // Group exercises by category (or just flatten if no useful categories)
   const sections = useMemo(() => {
@@ -141,7 +149,7 @@ export default function RehabPhaseCard({ phase, index, totalPhases, isCompleted,
                     setLockedExerciseName(exercise.name || exercise.exercise_name || 'Übung');
                     return;
                   }
-                  setOpenCardKey(isActive ? null : uniqueKey);
+                  setModalExercise({ ...exercise, uniqueKey });
                 };
 
                 return (
@@ -150,13 +158,11 @@ export default function RehabPhaseCard({ phase, index, totalPhases, isCompleted,
                     onClick={handleClick}
                     className={`
                       w-12 h-12 rounded-xl flex items-center justify-center text-sm font-bold transition-all duration-300 relative
-                      ${isActive 
-                        ? 'bg-emerald-500 text-slate-900 shadow-[0_0_15px_rgba(16,185,129,0.4)] scale-110 z-10' 
-                        : isExCompleted 
-                          ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' 
-                          : isLocked
-                            ? 'bg-slate-800/50 text-slate-600 border border-slate-700 opacity-50 cursor-not-allowed'
-                            : 'bg-slate-800 text-slate-500 border border-slate-700 hover:border-emerald-500/50 hover:text-emerald-400'}
+                      ${isExCompleted
+                        ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
+                        : isLocked
+                          ? 'bg-slate-800/50 text-slate-600 border border-slate-700 opacity-50 cursor-not-allowed'
+                          : 'bg-slate-800 text-slate-500 border border-slate-700 hover:border-emerald-500/50 hover:text-emerald-400 active:scale-95'}
                     `}
                     disabled={isLocked}
                   >
@@ -166,59 +172,25 @@ export default function RehabPhaseCard({ phase, index, totalPhases, isCompleted,
                 );
               })}
             </div>
-
-            {/* Active Exercise Detail View */}
-            <div className="relative">
-              {section.exercises.map((exercise, exIdx) => {
-                const uniqueKey = `${section.key}-${exIdx}`;
-                if (openCardKey !== uniqueKey) return null;
-
-                return (
-                  <motion.div
-                    key={uniqueKey}
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -10 }}
-                    transition={{ duration: 0.2 }}
-                  >
-                    <RehabExerciseCard
-                      exercise={exercise}
-                      idx={exIdx} 
-                      isOpen={true}
-                      onToggle={() => setOpenCardKey(null)}
-                      rehabPlanId={rehabPlanId}
-                      queryClient={queryClient}
-                      phases={phases}
-                      hasAccess={hasAccess}
-                      onComplete={(data) => {
-                         // Mark locally as completed
-                         setCompletedExercises(prev => ({ ...prev, [uniqueKey]: true }));
-                         if (onFeedbackSubmit) {
-                             onFeedbackSubmit({ 
-                                 exerciseId: exercise.exercise_id, 
-                                 metricValue: data.pain_level, 
-                                 notes: 'Completed via new card'
-                             });
-                         }
-
-                         // Auto-advance logic
-                         const allSectionKeys = section.exercises.map((_, i) => `${section.key}-${i}`);
-                         const currentLocalIdx = allSectionKeys.indexOf(uniqueKey);
-
-                         if (currentLocalIdx < allSectionKeys.length - 1) {
-                            setTimeout(() => setOpenCardKey(allSectionKeys[currentLocalIdx + 1]), 800);
-                         } else {
-                            setTimeout(() => setOpenCardKey(null), 800);
-                         }
-                       }}
-                     />
-                  </motion.div>
-                );
-              })}
-            </div>
           </div>
         ))}
       </div>
+
+      {/* Exercise Detail Modal */}
+      <ExerciseDetailModal
+        exercise={modalExercise}
+        isOpen={!!modalExercise}
+        onClose={() => setModalExercise(null)}
+        rehabPlanId={rehabPlanId}
+        queryClient={queryClient}
+        phaseContext={phaseContext}
+        onComplete={(data) => {
+          const uniqueKey = modalExercise?.uniqueKey;
+          if (uniqueKey) setCompletedExercises(prev => ({ ...prev, [uniqueKey]: true }));
+          if (onFeedbackSubmit) onFeedbackSubmit({ exerciseId: data.exercise_id, metricValue: data.pain_level, notes: 'Completed via modal' });
+          setModalExercise(null);
+        }}
+      />
 
       {/* Footer Navigation */}
       <div className="flex flex-col-reverse sm:flex-row gap-3 pt-12 items-center sm:justify-between">
