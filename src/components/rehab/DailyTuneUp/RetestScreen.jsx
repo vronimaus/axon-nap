@@ -37,63 +37,75 @@ export default function RetestScreen({ onComplete, threatBefore }) {
         </p>
       </div>
 
-      {/* Comparison */}
-      <div className="grid grid-cols-2 gap-3">
-        {/* Before */}
-        <div className="rounded-xl border border-orange-500/30 bg-orange-500/5 p-4 text-center">
-          <p className="text-[10px] font-bold text-orange-400 uppercase tracking-widest mb-2">
-            Vorher
-          </p>
-          <div className="text-3xl font-black text-orange-400">
-            {threatBefore}
-          </div>
-          <p className="text-xs text-slate-500 mt-1">Blockiert</p>
-        </div>
-
-        {/* After */}
+      {/* Comparison - Large Impact */}
+      <div className="grid grid-cols-2 gap-4">
+        {/* Before - Red Zone */}
         <motion.div
-          animate={{
-            scale: [0.95, 1.05, 0.95],
-          }}
-          transition={{
-            duration: 2,
-            repeat: Infinity,
-          }}
-          className="rounded-xl border border-emerald-500/30 bg-emerald-500/5 p-4 text-center"
+          initial={{ scale: 0.9, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          className="rounded-2xl border-2 border-red-500/50 bg-gradient-to-br from-red-600/20 to-red-500/5 p-6 text-center shadow-[0_0_20px_rgba(239,68,68,0.2)]"
         >
-          <p className="text-[10px] font-bold text-emerald-400 uppercase tracking-widest mb-2">
-            Nachher
+          <p className="text-[11px] font-black text-red-400 uppercase tracking-[0.15em] mb-3">
+            🔴 Vorher
           </p>
-          <div className="text-3xl font-black text-emerald-400">
+          <motion.div
+            animate={{ scale: [1, 1.05, 1] }}
+            transition={{ duration: 2, repeat: Infinity }}
+            className="text-5xl font-black text-red-500 mb-2"
+          >
+            {threatBefore}
+          </motion.div>
+          <p className="text-xs text-slate-400">Angespannt & Blockiert</p>
+        </motion.div>
+
+        {/* After - Blue Zone */}
+        <motion.div
+          initial={{ scale: 0.9, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ delay: 0.2 }}
+          className="rounded-2xl border-2 border-cyan-400/60 bg-gradient-to-br from-cyan-500/20 to-blue-500/10 p-6 text-center shadow-[0_0_30px_rgba(34,211,238,0.3)]"
+        >
+          <p className="text-[11px] font-black text-cyan-400 uppercase tracking-[0.15em] mb-3">
+            🟦 Nachher
+          </p>
+          <motion.div
+            animate={{ scale: [1, 1.08, 1] }}
+            transition={{ duration: 1.5, repeat: Infinity }}
+            className="text-5xl font-black text-cyan-400 mb-2"
+          >
             {Math.round(threatAfter)}
-          </div>
-          <p className="text-xs text-slate-500 mt-1">Aktuell</p>
+          </motion.div>
+          <p className="text-xs text-slate-400">Gelöst & Flüssig</p>
         </motion.div>
       </div>
 
-      {/* Improvement Indicator */}
+      {/* Improvement Indicator - Strong Visual */}
       {improvement > 0 && (
         <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="rounded-2xl bg-gradient-to-r from-emerald-500/10 via-emerald-500/5 to-transparent border border-emerald-500/30 p-5"
+          initial={{ opacity: 0, y: 20, scale: 0.9 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          className="rounded-3xl bg-gradient-to-r from-emerald-500/20 via-cyan-500/15 to-blue-500/10 border-2 border-emerald-400/60 p-6 shadow-[0_0_40px_rgba(16,185,129,0.3)]"
         >
-          <div className="flex items-start gap-3">
-            <motion.div
-              animate={{ y: [-2, 2, -2] }}
-              transition={{ duration: 2, repeat: Infinity }}
+          <div className="flex items-center justify-center gap-3 mb-3">
+            <motion.span
+              animate={{ scale: [1, 1.2, 1] }}
+              transition={{ duration: 0.6, repeat: Infinity }}
+              className="text-4xl"
             >
-              <TrendingDown className="w-6 h-6 text-emerald-400 flex-shrink-0" />
-            </motion.div>
-            <div>
-              <p className="text-base font-black text-emerald-400 mb-1">
-                -{improvement} Punkte! 🎉
+              ⚡
+            </motion.span>
+            <div className="text-left">
+              <p className="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400">
+                -{improvement} Punkte!
               </p>
-              <p className="text-xs text-slate-300">
-                {impactLabel}. Dein Nervensystem hat sich bemerkenswert schnell reorganisiert.
+              <p className="text-sm font-bold text-emerald-300">
+                {impactLabel}
               </p>
             </div>
           </div>
+          <p className="text-xs text-slate-300 text-center leading-relaxed">
+            Dein Nervensystem hat sich <span className="text-cyan-400 font-bold">bemerkenswert schnell</span> reorganisiert. Das ist der AXON-Effekt.
+          </p>
         </motion.div>
       )}
 
