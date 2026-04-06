@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
-import { Loader2, Play, Check } from 'lucide-react';
+import { Loader2, Play, Check, Gauge } from 'lucide-react';
 import { useTTS } from '@/hooks/useTTS';
 import { base44 } from '@/api/base44Client';
 
@@ -111,17 +111,31 @@ export default function MFRResetScreen({ onComplete, rehabPlan }) {
               exit={{ opacity: 0, x: -16 }}
               className="space-y-4"
             >
+              {/* Large Icon Header */}
+              <div className="flex justify-center mb-4">
+                <div className="w-20 h-20 rounded-full bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center shadow-lg shadow-orange-500/40 animate-pulse">
+                  <Gauge className="w-10 h-10 text-white" />
+                </div>
+              </div>
+
+              {/* Main Title */}
+              <div className="text-center">
+                <h3 className="text-2xl font-black text-orange-400 mb-2">AUSGANGSMESSUNG</h3>
+                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Schritt 1 von 3</p>
+              </div>
+
               <div className="rounded-xl border border-orange-500/30 bg-gradient-to-br from-orange-500/10 to-transparent p-4">
                 <p className="text-sm text-slate-200 leading-relaxed">
                   <span className="text-orange-400 font-bold">Gary Gray Prinzip:</span> Wir testen deine aktuelle Mobilität vor dem Reset, um die Verbesserung zu messen.
                 </p>
               </div>
 
-              <div className="rounded-2xl border border-orange-500/40 bg-gradient-to-br from-orange-500/15 to-orange-500/5 p-5 text-center">
-                <p className="text-[10px] font-bold text-orange-400 uppercase tracking-widest mb-3">
-                  Pretest: {mfrNode?.name_de || 'Stecco-Punkt'}
-                </p>
-                <p className="text-xs text-slate-300 mb-4">
+              <div className="rounded-2xl border border-orange-500/40 bg-gradient-to-br from-orange-500/15 to-orange-500/5 p-6 text-center">
+                <p className="text-xs text-orange-300 font-bold uppercase tracking-widest mb-2">Test-Punkt:</p>
+                <h4 className="text-lg font-bold text-white mb-1">{mfrNode?.name_de || 'Stecco-Punkt'}</h4>
+                {mfrNode?.body_area && <p className="text-xs text-slate-400 mb-4">{mfrNode.body_area}</p>}
+
+                <p className="text-xs text-slate-300 mb-6 font-semibold">
                   Wie ist deine aktuelle Beweglichkeit/Empfindung?
                 </p>
                 <div className="space-y-2">
@@ -129,7 +143,7 @@ export default function MFRResetScreen({ onComplete, rehabPlan }) {
                     <button
                       key={val}
                       onClick={() => handlePretestComplete(val)}
-                      className="w-full py-2 rounded-lg border border-orange-500/30 hover:bg-orange-500/20 transition-colors text-sm font-semibold text-orange-400"
+                      className="w-full py-3 rounded-lg border border-orange-500/30 hover:bg-orange-500/20 active:bg-orange-500/30 transition-colors text-sm font-semibold text-orange-400"
                     >
                       {val === 1 && '① Sehr steif/blockiert'}
                       {val === 2 && '② Steif'}
@@ -151,14 +165,20 @@ export default function MFRResetScreen({ onComplete, rehabPlan }) {
               exit={{ opacity: 0, x: 16 }}
               className="space-y-4"
             >
+              {/* Title */}
+              <div className="text-center">
+                <h3 className="text-2xl font-black text-emerald-400 mb-2">90-SEKUNDEN RESET</h3>
+                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Schritt 2 von 3</p>
+              </div>
+
               {/* Target Node Display */}
               <motion.div 
                 initial={{ scale: 0.95, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
-                className="rounded-2xl border border-orange-500/40 bg-gradient-to-br from-orange-500/15 to-orange-500/5 p-5 text-center"
+                className="rounded-2xl border border-emerald-500/40 bg-gradient-to-br from-emerald-500/15 to-emerald-500/5 p-5 text-center"
               >
-                <p className="text-[10px] font-bold text-orange-400 uppercase tracking-widest mb-2">
-                  Hardware-Reset
+                <p className="text-xs text-emerald-300 font-bold uppercase tracking-widest mb-2">
+                  Zu bearbeitender Punkt
                 </p>
                 <h3 className="text-xl font-black text-white mb-1">
                   {mfrNode?.name_de || 'Stecco-Punkt'}
@@ -274,6 +294,12 @@ export default function MFRResetScreen({ onComplete, rehabPlan }) {
           exit={{ opacity: 0, x: 16 }}
           className="space-y-4"
           >
+          {/* Title */}
+          <div className="text-center">
+            <h3 className="text-2xl font-black text-purple-400 mb-2">DIE WISSENSCHAFT</h3>
+            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Schritt 3 von 3</p>
+          </div>
+
           <div className="rounded-xl border border-purple-500/30 bg-gradient-to-br from-purple-500/10 to-transparent p-4 space-y-3">
             <div>
               <p className="text-[10px] font-bold text-purple-400 uppercase tracking-widest mb-1">
