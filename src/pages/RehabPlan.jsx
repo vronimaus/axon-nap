@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { createPageUrl } from '@/utils';
-import { AlertCircle, ArrowLeft, Activity, Zap } from 'lucide-react';
+import { AlertCircle, ArrowLeft, Activity, Zap, Zap as ZapIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 import DailyReadinessCheck from '@/components/dashboard/DailyReadinessCheck';
@@ -12,6 +12,7 @@ import { useTrialStatus } from '@/components/useTrialStatus';
 import RehabIntroModal from '@/components/rehab/RehabIntroModal';
 import ExerciseDetailModal from '@/components/rehab/ExerciseDetailModal';
 import RehabPhaseCard from '@/components/rehab/RehabPhaseCard';
+import DailyTuneUpModal from '@/components/rehab/DailyTuneUpModal';
 
 export default function RehabPlan() {
   const { hasAccess } = useTrialStatus();
@@ -27,6 +28,7 @@ export default function RehabPlan() {
   const [activeModalExercise, setActiveModalExercise] = useState(null);
   const [sessionExercises, setSessionExercises] = useState([]);
   const [sessionStarted, setSessionStarted] = useState(false);
+  const [showDailyTuneUp, setShowDailyTuneUp] = useState(false);
   const queryClient = useQueryClient();
 
   useEffect(() => {
@@ -258,6 +260,15 @@ export default function RehabPlan() {
         <meta name="robots" content="noindex, nofollow" />
       </Helmet>
 
+      {/* Daily Tune-Up Modal */}
+      <DailyTuneUpModal
+        isOpen={showDailyTuneUp}
+        onClose={() => setShowDailyTuneUp(false)}
+        rehabPlan={rehabPlan}
+        user={user}
+        queryClient={queryClient}
+      />
+
       {/* Rehab Intro Modal */}
       <RehabIntroModal
         isOpen={showIntroModal && !showReadinessCheck}
@@ -359,6 +370,27 @@ export default function RehabPlan() {
         </div>
 
 
+
+        {/* Daily Tune-Up CTA */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="glass rounded-xl border border-emerald-500/30 bg-gradient-to-r from-emerald-500/10 to-transparent p-5"
+        >
+          <div className="flex items-center gap-3 mb-3">
+            <Zap className="w-5 h-5 text-emerald-400" />
+            <h3 className="text-sm font-bold text-emerald-400 uppercase tracking-widest">Daily Tune-Up</h3>
+          </div>
+          <p className="text-xs text-slate-300 mb-4">
+            Starte eine 15-minütige Test-Reset-Retest-Session, um sofort zu spüren, wie effektiv der Protokoll ist.
+          </p>
+          <Button
+            onClick={() => setShowDailyTuneUp(true)}
+            className="w-full bg-emerald-500 hover:bg-emerald-600 text-slate-900 font-bold"
+          >
+            Tune-Up starten →
+          </Button>
+        </motion.div>
 
         {/* Active Phase Card */}
         {rehabPlan.phases && rehabPlan.phases[activePhaseIdx] && (
