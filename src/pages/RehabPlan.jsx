@@ -6,13 +6,13 @@ import { createPageUrl } from '@/utils';
 import { AlertCircle, ArrowLeft, Activity, Zap } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
-import DailyReadinessCheck from '../components/dashboard/DailyReadinessCheck';
+import DailyReadinessCheck from '@/components/dashboard/DailyReadinessCheck';
 import { Helmet } from 'react-helmet-async';
-import { useTrialStatus } from '../components/useTrialStatus';
-import RehabIntroModal from '../components/rehab/RehabIntroModal';
-import ExerciseDetailModal from '../components/rehab/ExerciseDetailModal';
-import EquipmentBadges from '../components/shared/EquipmentBadges';
-import RehabPhaseCard from '../components/rehab/RehabPhaseCard';
+import { useTrialStatus } from '@/components/useTrialStatus';
+import RehabIntroModal from '@/components/rehab/RehabIntroModal';
+import ExerciseDetailModal from '@/components/rehab/ExerciseDetailModal';
+import EquipmentBadges from '@/components/shared/EquipmentBadges';
+import RehabPhaseCard from '@/components/rehab/RehabPhaseCard';
 
 export default function RehabPlan() {
   const { hasAccess } = useTrialStatus();
