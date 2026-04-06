@@ -340,12 +340,31 @@ export default function RehabPlan() {
         </div>
       </div>
 
-      {/* Main Content */}
+      {/* Main Content - Reorganized: Tune-Up Button oben */}
       <div className="max-w-4xl mx-auto px-4 py-6 space-y-6">
         
+        {/* 1. Daily Tune-Up CTA - OBEN */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="glass rounded-xl border border-emerald-500/30 bg-gradient-to-r from-emerald-500/10 to-transparent p-5"
+        >
+          <div className="flex items-center gap-3 mb-3">
+            <Zap className="w-5 h-5 text-emerald-400" />
+            <h3 className="text-sm font-bold text-emerald-400 uppercase tracking-widest">Daily Tune-Up</h3>
+          </div>
+          <p className="text-xs text-slate-300 mb-4">
+            Starte eine 15-minütige Test-Reset-Retest-Session, um sofort zu spüren, wie effektiv der Protokoll ist.
+          </p>
+          <Button
+            onClick={() => setShowDailyTuneUp(true)}
+            className="w-full bg-emerald-500 hover:bg-emerald-600 text-slate-900 font-bold"
+          >
+            Tune-Up starten →
+          </Button>
+        </motion.div>
 
-
-        {/* Tech Progress Bar - Green Theme */}
+        {/* 2. Tech Progress Bar */}
         <div className="space-y-2">
           <div className="flex justify-between items-end">
             <div className="flex flex-col">
@@ -369,30 +388,7 @@ export default function RehabPlan() {
           </div>
         </div>
 
-
-
-        {/* Daily Tune-Up CTA */}
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="glass rounded-xl border border-emerald-500/30 bg-gradient-to-r from-emerald-500/10 to-transparent p-5"
-        >
-          <div className="flex items-center gap-3 mb-3">
-            <Zap className="w-5 h-5 text-emerald-400" />
-            <h3 className="text-sm font-bold text-emerald-400 uppercase tracking-widest">Daily Tune-Up</h3>
-          </div>
-          <p className="text-xs text-slate-300 mb-4">
-            Starte eine 15-minütige Test-Reset-Retest-Session, um sofort zu spüren, wie effektiv der Protokoll ist.
-          </p>
-          <Button
-            onClick={() => setShowDailyTuneUp(true)}
-            className="w-full bg-emerald-500 hover:bg-emerald-600 text-slate-900 font-bold"
-          >
-            Tune-Up starten →
-          </Button>
-        </motion.div>
-
-        {/* Active Phase Card */}
+        {/* 3. Active Phase Card */}
         {rehabPlan.phases && rehabPlan.phases[activePhaseIdx] && (
           <RehabPhaseCard
             phase={rehabPlan.phases[activePhaseIdx]}
@@ -414,7 +410,7 @@ export default function RehabPlan() {
           />
         )}
 
-        {/* Recommended FLOW Routines */}
+        {/* 4. Recommended FLOW Routines */}
         {rehabPlan.recommended_mfr_routines && rehabPlan.recommended_mfr_routines.length > 0 && (
           <motion.div
             initial={{ opacity: 0, y: 10 }}
@@ -447,7 +443,7 @@ export default function RehabPlan() {
           </motion.div>
         )}
 
-        {/* Cross-Link: Rehab completed → suggest Goals */}
+        {/* 5. Cross-Link: Rehab completed → suggest Goals */}
         {rehabPlan.status === 'completed' && (
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
@@ -467,8 +463,6 @@ export default function RehabPlan() {
             </Button>
           </motion.div>
         )}
-
-
 
       </div>
     </div>
