@@ -13,7 +13,7 @@ import { HelmetProvider } from 'react-helmet-async';
 import { useQueryClient } from '@tanstack/react-query';
 
 const ROOT_TABS = ['Dashboard', 'TrainingPlan', 'RehabPlan', 'Flow'];
-const PAGES_WITHOUT_NAV = ['Landing', 'Success', 'Checkout', 'Login', 'RehabFunnel'];
+const PAGES_WITHOUT_NAV = ['Landing', 'Success', 'Checkout', 'Login'];
 
 // Map each tab to its "owned" pages so the tab stays highlighted
 const TAB_OWNERSHIP = {
@@ -108,7 +108,7 @@ export default function Layout({ children, currentPageName }) {
     { name: 'Literatur', page: 'Literatur' }
   ];
 
-  const PUBLIC_PAGES = ['Landing', 'Success', 'Checkout', 'Login', 'Imprint', 'Privacy', 'Terms', 'KnowledgeHub', 'KnowledgeHubArticle', 'FAQ', 'Glossary', 'Wissen', 'WissenArtikel', 'Faq', 'Glossar', 'RehabFunnel'];
+  const PUBLIC_PAGES = ['Landing', 'Success', 'Checkout', 'Login', 'Imprint', 'Privacy', 'Terms', 'KnowledgeHub', 'KnowledgeHubArticle', 'FAQ', 'Glossary', 'Wissen', 'WissenArtikel', 'Faq', 'Glossar'];
 
   useEffect(() => {
     if (trialLoading) return;
