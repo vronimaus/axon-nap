@@ -132,24 +132,16 @@ export default function DailyTuneUpModal({
         className="fixed inset-0 z-[9998] bg-black/85 backdrop-blur-sm"
       />
 
-      {/* Modal */}
+      {/* Modal - Full Screen */}
       <motion.div
-        initial={{ opacity: 0, y: '100%' }}
-        animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: '100%' }}
-        transition={{ type: 'spring', damping: 28, stiffness: 260 }}
-        className="fixed inset-x-0 bottom-0 z-[9999] max-h-[92vh] overflow-y-auto rounded-t-3xl bg-slate-950 border-t border-emerald-500/30 shadow-2xl"
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        exit={{ opacity: 0, scale: 0.95 }}
+        transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+        className="fixed inset-0 z-[9999] bg-slate-950 overflow-y-auto flex flex-col"
       >
-        {/* Drag Handle */}
-        <div className="flex justify-center pt-3 pb-1">
-          <div className="w-10 h-1 rounded-full bg-slate-700" />
-        </div>
-
-        {/* Neural Charge Bar */}
-        <NeuralChargeBar charge={neuralCharge} />
-
         {/* Header */}
-        <div className="sticky top-0 z-10 flex items-center justify-between px-5 py-4 bg-slate-950 border-b border-slate-800">
+        <div className="flex items-center justify-between px-5 py-4 bg-gradient-to-b from-slate-950 via-slate-950 to-transparent border-b border-emerald-500/20">
           <div>
             <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-emerald-500">
               {SCREENS[currentScreen].label}
@@ -170,8 +162,13 @@ export default function DailyTuneUpModal({
           </button>
         </div>
 
+        {/* Neural Charge Bar */}
+        <div className="px-5 py-4">
+          <NeuralChargeBar charge={neuralCharge} />
+        </div>
+
         {/* Screen Content */}
-        <div className="px-5 py-6 pb-10 min-h-[60vh]">
+        <div className="flex-1 flex flex-col items-center justify-center px-5 py-6 overflow-y-auto">
           <AnimatePresence mode="wait">
             {currentScreen === 0 && (
               <ThreatLevelScreen
