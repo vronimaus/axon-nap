@@ -8,10 +8,9 @@ import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 import DailyReadinessCheck from '../components/dashboard/DailyReadinessCheck';
 import { Helmet } from 'react-helmet-async';
-import RehabPhaseCard from '../components/rehab/RehabPhaseCard';
 import { useTrialStatus } from '../components/useTrialStatus';
-import EquipmentBadges from '../components/shared/EquipmentBadges';
 import RehabIntroModal from '../components/rehab/RehabIntroModal';
+import ExerciseDetailModal from '../components/rehab/ExerciseDetailModal';
 
 export default function RehabPlan() {
   const { hasAccess } = useTrialStatus();
@@ -23,6 +22,10 @@ export default function RehabPlan() {
   const [activePhaseIdx, setActivePhaseIdx] = useState(0);
   const [completedPhases, setCompletedPhases] = useState({});
   const [showIntroModal, setShowIntroModal] = useState(true);
+  const [activeExerciseIdx, setActiveExerciseIdx] = useState(0);
+  const [activeModalExercise, setActiveModalExercise] = useState(null);
+  const [sessionExercises, setSessionExercises] = useState([]);
+  const [sessionStarted, setSessionStarted] = useState(false);
   const queryClient = useQueryClient();
 
   useEffect(() => {
@@ -180,6 +183,33 @@ export default function RehabPlan() {
     }
   });
 
+  const handleStartSession = () => {
+    const currentPhaseIdx = Math.max(0, (rehabPlan?.current_phase || 1) - 1);
+    const currentPhase = rehabPlan?.phases?.[currentPhaseIdx];
+    const exercises = currentPhase?.exercises || [];
+    setSessionExercises(exercises);
+    setActiveExerciseIdx(0);
+    setActiveModalExercise(exercises[0] || null);
+    setShowIntroModal(false);
+    setSessionStarted(true);
+  };
+
+  const handleExerciseComplete = (data) => {
+    const nextIdx = activeExerciseIdx + 1;
+    if (nextIdx < sessionExercises.length) {
+      setActiveExerciseIdx(nextIdx);
+      setActiveModalExercise(sessionExercises[nextIdx]);
+    } else {
+      // All exercises done
+      setActiveModalExercise(null);
+      setSessionStarted(false);
+      toast.success('🎉 Session abgeschlossen! Gut gemacht!');
+    }
+    if (data?.exercise_id) {
+      submitFeedbackMutation.mutate({ exerciseId: data.exercise_id, metricValue: data.pain_level || 0, notes: 'Completed' });
+    }
+  };
+
   const handleReadinessCheckClose = async () => {
     setShowReadinessCheck(false);
     // Mark check as done for today
@@ -230,10 +260,27 @@ export default function RehabPlan() {
       {/* Rehab Intro Modal */}
       <RehabIntroModal
         isOpen={showIntroModal && !showReadinessCheck}
-        onStart={() => setShowIntroModal(false)}
+        onStart={handleStartSession}
         rehabPlan={rehabPlan}
         userName={user?.full_name}
         preferredCoach={preferredCoach}
+      />
+
+      {/* Sequential Exercise Modal */}
+      <ExerciseDetailModal
+        exercise={activeModalExercise}
+        isOpen={!!activeModalExercise && sessionStarted}
+        onClose={() => {
+          // Closing mid-session: just pause, show session summary
+          setActiveModalExercise(null);
+          setSessionStarted(false);
+        }}
+        onComplete={handleExerciseComplete}
+        rehabPlanId={rehabPlan?.id}
+        queryClient={queryClient}
+        totalExercises={sessionExercises.length}
+        currentExerciseIdx={activeExerciseIdx}
+        isSequential={true}
       />
 
       {/* Readiness Check Modal */}

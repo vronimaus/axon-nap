@@ -38,6 +38,9 @@ export default function ExerciseDetailModal({
   rehabPlanId,
   queryClient,
   phaseContext,
+  isSequential = false,
+  totalExercises = 0,
+  currentExerciseIdx = 0,
 }) {
   const [fullExercise, setFullExercise] = useState(exercise || {});
   const [isCompleted, setIsCompleted] = useState(exercise?.completed || false);
@@ -97,7 +100,7 @@ export default function ExerciseDetailModal({
     setIsCompleted(true);
     setIsFinishing(false);
     if (onComplete) onComplete({ ...exercise, completed: true, pain_level: painLevel });
-    onClose();
+    if (!isSequential) onClose();
   };
 
   if (!isOpen || !exercise || !fullExercise) return null;
@@ -132,6 +135,22 @@ export default function ExerciseDetailModal({
             <div className="flex justify-center pt-3 pb-1">
               <div className="w-10 h-1 rounded-full bg-slate-700" />
             </div>
+
+            {/* Sequential Progress Bar */}
+            {isSequential && totalExercises > 0 && (
+              <div className="px-5 pt-2 pb-0">
+                <div className="flex justify-between text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">
+                  <span>Übung {currentExerciseIdx + 1} von {totalExercises}</span>
+                  <span className="text-emerald-400">{Math.round(((currentExerciseIdx) / totalExercises) * 100)}% done</span>
+                </div>
+                <div className="h-1 bg-slate-800 rounded-full overflow-hidden">
+                  <div
+                    className="h-full bg-gradient-to-r from-emerald-600 to-teal-400 transition-all duration-500"
+                    style={{ width: `${(currentExerciseIdx / totalExercises) * 100}%` }}
+                  />
+                </div>
+              </div>
+            )}
 
             {/* Header */}
             <div className="sticky top-0 z-10 flex items-start justify-between px-5 py-4 bg-slate-950 border-b border-slate-800">
@@ -266,14 +285,14 @@ export default function ExerciseDetailModal({
                     <AlertCircle className="w-4 h-4" /> Ouch! — Schmerz melden
                   </button>
                   <button
-                    onClick={() => isCompleted ? onClose() : setIsFinishing(true)}
-                    className={`w-full py-4 rounded-2xl font-black text-sm uppercase tracking-[0.15em] transition-all active:scale-[0.98] shadow-lg ${
-                      isCompleted
-                        ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
-                        : 'bg-emerald-500 hover:bg-emerald-400 text-slate-900 shadow-emerald-500/20'
-                    }`}
+                    onClick={() => setIsFinishing(true)}
+                    className="w-full py-4 rounded-2xl font-black text-sm uppercase tracking-[0.15em] transition-all active:scale-[0.98] shadow-lg bg-emerald-500 hover:bg-emerald-400 text-slate-900 shadow-emerald-500/20"
                   >
-                    {isCompleted ? <><Check className="w-4 h-4 inline mr-2" />Abgeschlossen</> : '✓ Übung abschließen'}
+                    {isSequential
+                      ? currentExerciseIdx + 1 < totalExercises
+                        ? '✓ Fertig · Weiter →'
+                        : '✓ Session abschließen 🎉'
+                      : '✓ Übung abschließen'}
                   </button>
                 </div>
               ) : (
@@ -295,7 +314,7 @@ export default function ExerciseDetailModal({
                     onClick={confirmFinish}
                     className="w-full bg-emerald-500 hover:bg-emerald-400 text-slate-900 font-bold py-4 rounded-2xl shadow-lg active:scale-95 transition-all"
                   >
-                    Fortschritt speichern
+                    {isSequential && currentExerciseIdx + 1 < totalExercises ? 'Speichern & Weiter →' : 'Fortschritt speichern'}
                   </button>
                 </div>
               )}
