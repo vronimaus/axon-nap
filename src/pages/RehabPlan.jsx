@@ -253,6 +253,18 @@ export default function RehabPlan() {
                   {rehabPlan.problem_summary}
                 </h1>
               )}
+              {/* NMS-Shift Übersicht */}
+              {rehabPlan.nms_trigger_input && rehabPlan.nms_trigger_output && (
+                <div className="flex items-center gap-2 mt-1">
+                  <span className="text-[10px] font-bold text-orange-400 bg-orange-500/10 border border-orange-500/30 px-2 py-0.5 rounded-full">
+                    {rehabPlan.nms_trigger_input}
+                  </span>
+                  <span className="text-[10px] text-slate-500">→</span>
+                  <span className="text-[10px] font-bold text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 px-2 py-0.5 rounded-full">
+                    {rehabPlan.nms_trigger_output}
+                  </span>
+                </div>
+              )}
             </div>
             <Button
               variant="ghost"

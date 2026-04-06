@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import RehabExerciseCard from './RehabExerciseCard';
 import { canPlayExercise } from './ExerciseAccessControl';
 import ExerciseLockedPaywall from './ExerciseLockedPaywall';
+import AxonJourneyCard from './AxonJourneyCard';
 
 export default function RehabPhaseCard({ phase, index, totalPhases, isCompleted, onComplete, onNext, onPrev, rehabPlanId, queryClient, onFeedbackSubmit, phases = [], hasAccess = true }) {
   // Accordion State: All closed by default
@@ -99,11 +100,6 @@ export default function RehabPhaseCard({ phase, index, totalPhases, isCompleted,
                   </span>
                 </p>
               )}
-              {phase.phase_rationale && (
-                <p className="text-xs text-slate-500 mt-2 italic leading-relaxed max-w-sm">
-                  💡 {phase.phase_rationale}
-                </p>
-              )}
             </div>
             
             {/* Minimal Circular Progress or Icon */}
@@ -112,6 +108,9 @@ export default function RehabPhaseCard({ phase, index, totalPhases, isCompleted,
             </div>
          </div>
       </div>
+
+      {/* AXON Kausalitätskette */}
+      <AxonJourneyCard phase={phase} />
 
       {/* Sections & Exercises */}
       <div className="space-y-12">
