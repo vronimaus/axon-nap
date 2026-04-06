@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { createPageUrl } from '@/utils';
-import { Check, AlertCircle, ArrowLeft, AlertTriangle, Activity, Zap } from 'lucide-react';
+import { AlertCircle, ArrowLeft, Activity, Zap } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 import DailyReadinessCheck from '../components/dashboard/DailyReadinessCheck';
@@ -11,14 +11,7 @@ import { Helmet } from 'react-helmet-async';
 import RehabPhaseCard from '../components/rehab/RehabPhaseCard';
 import { useTrialStatus } from '../components/useTrialStatus';
 import EquipmentBadges from '../components/shared/EquipmentBadges';
-
-const WeaknessGenerator = React.lazy(() => import('../components/rehab/WeaknessGenerator'));
-
-const COACH_AVATARS = {
-  male: 'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/3031e6f06_TechnicalSystemsArchitectAXON-nap.jpg',
-  female: 'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/a7949b2c4_EmpatheticGuideAXON-nap.jpg',
-  neuro: 'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/2df3d8dc0_NeuralGuideAXON-nap.jpg'
-};
+import RehabIntroModal from '../components/rehab/RehabIntroModal';
 
 export default function RehabPlan() {
   const { hasAccess } = useTrialStatus();
@@ -29,6 +22,7 @@ export default function RehabPlan() {
   const [preferredCoach, setPreferredCoach] = useState('male');
   const [activePhaseIdx, setActivePhaseIdx] = useState(0);
   const [completedPhases, setCompletedPhases] = useState({});
+  const [showIntroModal, setShowIntroModal] = useState(true);
   const queryClient = useQueryClient();
 
   useEffect(() => {
@@ -233,6 +227,15 @@ export default function RehabPlan() {
         <meta name="robots" content="noindex, nofollow" />
       </Helmet>
 
+      {/* Rehab Intro Modal */}
+      <RehabIntroModal
+        isOpen={showIntroModal && !showReadinessCheck}
+        onStart={() => setShowIntroModal(false)}
+        rehabPlan={rehabPlan}
+        userName={user?.full_name}
+        preferredCoach={preferredCoach}
+      />
+
       {/* Readiness Check Modal */}
       <AnimatePresence>
         {showReadinessCheck && (
@@ -281,61 +284,7 @@ export default function RehabPlan() {
       {/* Main Content */}
       <div className="max-w-4xl mx-auto px-4 py-6 space-y-6">
         
-        {/* Coach Message & Readiness Bubble - Green Theme */}
-        {readinessStatus && (
-          <motion.div 
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="flex items-start gap-4 mb-8 pl-1"
-          >
-            {/* Avatar */}
-            <div className="relative flex-shrink-0">
-             <div className="w-14 h-14 rounded-full p-[2px] bg-gradient-to-b from-emerald-400 to-teal-500 shadow-[0_0_15px_rgba(16,185,129,0.4)]">
-               <div className="w-full h-full rounded-full overflow-hidden bg-slate-900">
-                 <img 
-                   src={COACH_AVATARS[preferredCoach] || COACH_AVATARS.male}
-                   alt="Coach" 
-                   className="w-full h-full object-cover"
-                   loading="lazy"
-                 />
-               </div>
-             </div>
-              {/* Status Indicator Dot */}
-              <div className={`absolute bottom-0 right-0 w-4 h-4 rounded-full border-2 border-slate-900 ${
-                readinessStatus === 'green' ? 'bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.6)]' : 
-                readinessStatus === 'yellow' ? 'bg-amber-500 shadow-[0_0_10px_rgba(245,158,11,0.6)]' : 
-                'bg-red-500 shadow-[0_0_10px_rgba(239,68,68,0.6)]'
-              }`} />
-            </div>
-            
-            {/* Speech Bubble */}
-            <div className="flex-1 relative">
-              {/* Bubble Tail */}
-              <div className="absolute top-4 -left-2 w-4 h-4 bg-slate-800/80 border-l border-b border-emerald-500/30 transform rotate-45 z-0" />
-              
-              <div className="relative z-10 p-5 rounded-2xl rounded-tl-sm bg-[#0B1221] border border-emerald-500/50 shadow-[0_0_30px_rgba(16,185,129,0.4)]">
-                {/* Header line inside bubble */}
-                <div className="flex items-center justify-between mb-2 pb-2 border-b border-slate-800/50">
-                  <span className={`text-[10px] font-bold uppercase tracking-widest ${
-                    readinessStatus === 'green' ? 'text-emerald-400' : 
-                    readinessStatus === 'yellow' ? 'text-amber-400' : 'text-red-400'
-                  }`}>
-                    {readinessStatus === 'green' ? '● System Ready' : readinessStatus === 'yellow' ? '● Maintenance Mode' : '● Low Battery'}
-                  </span>
-                </div>
-                
-                <p className="text-slate-200 text-sm font-medium leading-relaxed">
-                   {readinessStatus === 'green' 
-                     ? "Dein System ist bereit. Wir können heute vollen Fokus auf die Wiederherstellung legen."
-                     : readinessStatus === 'yellow'
-                     ? "Wir gehen es heute ruhig an. Fokus: Schmerzlinderung und sanfte Mobilität."
-                     : "Rote Ampel. Nur die nötigsten MFR-Übungen. Hör auf deinen Körper."
-                   }
-                </p>
-              </div>
-            </div>
-          </motion.div>
-        )}
+
 
         {/* Tech Progress Bar - Green Theme */}
         <div className="space-y-2">
@@ -442,27 +391,7 @@ export default function RehabPlan() {
           </motion.div>
         )}
 
-        {/* AI-Powered Weakness Generator (Keep this as extra tool at bottom) */}
-        <div className="mt-8 pt-8 border-t border-slate-800">
-            <h3 className="text-sm font-bold text-slate-400 uppercase tracking-widest mb-4">AI Plan-Optimierung</h3>
-            <React.Suspense fallback={<div className="glass rounded-xl p-6 border border-slate-700 text-center text-slate-400">Lädt...</div>}>
-              <WeaknessGenerator
-              rehabPlan={rehabPlan}
-              currentExercises={rehabPlan.phases[activePhaseIdx]?.exercises}
-              onExerciseGenerated={async (newExercise) => {
-                const updatedPhases = [...rehabPlan.phases];
-                updatedPhases[activePhaseIdx].exercises.push({
-                  exercise_id: `custom_${Date.now()}`,
-                  ...newExercise
-                });
-                await base44.entities.RehabPlan.update(rehabPlan.id, {
-                  phases: updatedPhases
-                });
-                queryClient.invalidateQueries({ queryKey: ['rehabPlan'] });
-                }}
-                />
-            </React.Suspense>
-        </div>
+
 
       </div>
     </div>
