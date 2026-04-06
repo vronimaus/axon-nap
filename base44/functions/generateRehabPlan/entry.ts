@@ -70,16 +70,45 @@ Deno.serve(async (req) => {
     }
     const extraContext = contextParts.join('\n');
 
-    // Fetch exercises, routines, FAQs, MFRNodes, and AxonScenarios (GOLDEN SOURCE)
-    const [allExercises, allRoutines, allFaqs, allMFRNodes, allScenarios] = await Promise.all([
-      base44.asServiceRole.entities.Exercise.list('-updated_date', 500),
+    // Fetch exercises by category directly (avoid loading all 500)
+    const REHAB_PHASE1_CATS = ['mfr', 'neuro', 'breath', 'mobility'];
+    const REHAB_PHASE2_CATS = ['core', 'plank', 'row'];
+    const REHAB_PHASE3_CATS = ['pull', 'push', 'squat', 'hinge', 'carry'];
+
+    const [
+      phase1Exercises, phase2Exercises, phase3Exercises,
+      allRoutines, allFaqs, allMFRNodes, allScenarios
+    ] = await Promise.all([
+      // Phase 1: mfr/neuro/breath/mobility – no limit, these are all gentle
+      Promise.all(REHAB_PHASE1_CATS.map(cat =>
+        base44.asServiceRole.entities.Exercise.filter({ category: cat }, '-updated_date', 40)
+      )).then(results => results.flat()),
+      // Phase 2: core/plank/row – beginner + intermediate only
+      Promise.all(REHAB_PHASE2_CATS.map(cat =>
+        base44.asServiceRole.entities.Exercise.filter({ category: cat }, '-updated_date', 20)
+      )).then(results => results.flat()),
+      // Phase 3: strength patterns – intermediate + advanced
+      Promise.all(REHAB_PHASE3_CATS.map(cat =>
+        base44.asServiceRole.entities.Exercise.filter({ category: cat }, '-updated_date', 20)
+      )).then(results => results.flat()),
       base44.asServiceRole.entities.Routine.list('-updated_date', 100),
       base44.asServiceRole.entities.FAQ.list('-updated_date', 100),
       base44.asServiceRole.entities.MFRNode.list('-updated_date', 50),
       base44.asServiceRole.entities.AxonScenario.list('-updated_date', 50)
     ]);
 
-    const validExercises = allExercises.filter(e => e.exercise_id && e.name);
+    // Deduplicate and validate
+    const dedup = (arr) => {
+      const seen = new Set();
+      return arr.filter(e => e.exercise_id && e.name && !seen.has(e.exercise_id) && seen.add(e.exercise_id));
+    };
+
+    const validPhase1 = dedup(phase1Exercises);
+    const validPhase2 = dedup([...phase2Exercises, ...phase1Exercises.filter(e => e.category === 'mobility')]);
+    const validPhase3 = dedup([...phase3Exercises, ...phase2Exercises]);
+    const validExercises = dedup([...phase1Exercises, ...phase2Exercises, ...phase3Exercises]);
+
+    console.log(`[generateRehabPlan] Loaded exercises: P1=${validPhase1.length}, P2=${validPhase2.length}, P3=${validPhase3.length} (total unique: ${validExercises.length})`);
     const availableExerciseIds = validExercises.map(e => e.exercise_id);
     const availableRoutineIds = allRoutines.slice(0, 10).map(r => r.id).filter(Boolean);
     const availableFaqIds = allFaqs.slice(0, 10).map(f => f.faq_id).filter(Boolean);
@@ -128,68 +157,12 @@ Protokoll: ${s.full_protocol || '-'}
 
     console.log(`[generateRehabPlan] Matched AXON Scenarios: ${matchedScenarios.length} for region "${region}"`);
 
-    // Smart filtering: exercises matching target slings via smart_tags.kinetic_chain_slings.primary_sling
-    // Smart filtering: exercises matching target slings OR region keywords in category/description
-    const regionKeywords = regionLower.split(/\s+/).filter(k => k.length > 3);
-    const smartFilteredExercises = validExercises.filter(e => {
-      if (!targetSlings.length) return true;
-      const primarySling = (e.smart_tags?.kinetic_chain_slings?.primary_sling || '').toLowerCase();
-      const category = (e.category || '').toLowerCase();
-      const purpose = (e.purpose_explanation || '').toLowerCase();
-      const slingsMatch = targetSlings.some(sling => primarySling.includes(sling));
-      const regionMatch = regionKeywords.some(k => category.includes(k) || purpose.includes(k));
-      return slingsMatch || regionMatch;
-    });
+    // Use pre-loaded phase pools directly (already category-filtered from DB)
+    const safePhase1 = validPhase1;
+    const safePhase2 = validPhase2.filter(e => e.difficulty === 'beginner' || e.difficulty === 'intermediate');
+    const safePhase3 = validPhase3.filter(e => e.difficulty === 'intermediate' || e.difficulty === 'advanced');
 
-    // Phase-buckets: always include beginner/intermediate/advanced to cover all 3 phases
-    const beginnerEx = validExercises.filter(e => e.difficulty === 'beginner').slice(0, 20);
-    const intermediateEx = validExercises.filter(e => e.difficulty === 'intermediate').slice(0, 20);
-    const advancedEx = validExercises.filter(e => e.difficulty === 'advanced').slice(0, 15);
-
-    // Build best set: smart-filtered + phase-buckets, capped at 80
-    const smartSet = smartFilteredExercises.slice(0, 45);
-    const allIds = new Set(smartSet.map(e => e.exercise_id));
-    const phasePool = [...beginnerEx, ...intermediateEx, ...advancedEx].filter(e => !allIds.has(e.exercise_id));
-    const bestExercises = [...smartSet, ...phasePool].slice(0, 80);
-
-    console.log(`[generateRehabPlan] Exercise pool: ${bestExercises.length} (smart:${smartSet.length} + phase-pool:${phasePool.length})`);
-
-    // Build a rich catalog: each exercise on its own line with all relevant fields
-    const exerciseCatalog = bestExercises
-      .map(e => [
-        `ID: ${e.exercise_id}`,
-        `Name: ${e.name}`,
-        `Kategorie: ${e.category || '-'}`,
-        `Schwierigkeit: ${e.difficulty || '-'}`,
-        `Sling: ${e.smart_tags?.kinetic_chain_slings?.primary_sling || '-'}`,
-        `Zweck: ${e.purpose_explanation || '-'}`,
-        `AXONMoment: ${e.axon_moment || '-'}`
-      ].join(' | '))
-      .join('\n');
-
-    // Explicit ID-only list to reinforce the constraint
-    const exactIdList = bestExercises.map(e => e.exercise_id).join('\n');
-
-    console.log(`[generateRehabPlan] Filtered exercises: ${bestExercises.length}/${validExercises.length}`);
-
-    // Pre-filter exercises per phase category – STRICT (from ALL valid exercises, not just region-filtered)
-    const phase1Categories = ['mfr', 'neuro', 'breath', 'mobility'];
-    const phase2Categories = ['core', 'mobility', 'plank', 'row', 'pull', 'push'];
-    const phase3Categories = ['pull', 'push', 'squat', 'hinge', 'carry', 'core', 'neuro'];
-
-    // Phase 1: ONLY mfr/neuro/breath/mobility – no difficulty restriction (they're all gentle)
-    const phase1Pool = validExercises.filter(e => phase1Categories.includes(e.category));
-    // Phase 2: core/mobility/plank/row/pull/push – beginner or intermediate
-    const phase2Pool = validExercises.filter(e => phase2Categories.includes(e.category) && (e.difficulty === 'beginner' || e.difficulty === 'intermediate'));
-    // Phase 3: strength patterns – intermediate or advanced
-    const phase3Pool = validExercises.filter(e => phase3Categories.includes(e.category) && (e.difficulty === 'intermediate' || e.difficulty === 'advanced'));
-
-    // Safety: ensure at least 5 per pool, expand if needed
-    const safePhase1 = phase1Pool.length >= 5 ? phase1Pool : [...phase1Pool, ...validExercises.filter(e => e.difficulty === 'beginner' && !phase1Pool.find(p => p.exercise_id === e.exercise_id))].slice(0, 20);
-    const safePhase2 = phase2Pool.length >= 5 ? phase2Pool : [...phase2Pool, ...validExercises.filter(e => e.difficulty === 'intermediate' && !phase2Pool.find(p => p.exercise_id === e.exercise_id))].slice(0, 20);
-    const safePhase3 = phase3Pool.length >= 5 ? phase3Pool : [...phase3Pool, ...validExercises.filter(e => e.difficulty === 'advanced' && !phase3Pool.find(p => p.exercise_id === e.exercise_id))].slice(0, 20);
-
-    console.log(`[generateRehabPlan] Phase pools: P1=${safePhase1.length}(mfr/neuro/breath), P2=${safePhase2.length}(core/mobility), P3=${safePhase3.length}(strength/neuro)`);
+    console.log(`[generateRehabPlan] Phase pools ready: P1=${safePhase1.length}, P2=${safePhase2.length}, P3=${safePhase3.length}`);
 
     const buildCatalog = (pool) => pool.map(e => `ID: ${e.exercise_id} | Name: ${e.name} | Kat: ${e.category} | Diff: ${e.difficulty} | Zweck: ${(e.purpose_explanation || '-').substring(0, 80)}`).join('\n');
     const buildIdList = (pool) => pool.map(e => e.exercise_id).join('\n');
