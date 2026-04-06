@@ -33,7 +33,7 @@ export default function ExerciseDetailModal({
   queryClient,
   phaseContext, // { nms_shift_explanation, synergy_highlight, hardware_scientific_mechanism, software_scientific_mechanism, strength_scientific_mechanism }
 }) {
-  const [fullExercise, setFullExercise] = useState(exercise);
+  const [fullExercise, setFullExercise] = useState(exercise || {});
   const [isCompleted, setIsCompleted] = useState(exercise?.completed || false);
   const [isFinishing, setIsFinishing] = useState(false);
   const [painLevel, setPainLevel] = useState(0);
@@ -98,9 +98,9 @@ export default function ExerciseDetailModal({
     onClose();
   };
 
-  if (!isOpen || !exercise) return null;
+  if (!isOpen || !exercise || !fullExercise) return null;
 
-  const cat = fullExercise.category;
+  const cat = fullExercise?.category || 'mfr';
   const causal = CATEGORY_CAUSAL_MAP[cat] || CATEGORY_CAUSAL_MAP['mfr'];
   const causalText = phaseContext?.[causal.field];
   const CausalIcon = causal.icon;
