@@ -11,7 +11,6 @@ import { Helmet } from 'react-helmet-async';
 import { useTrialStatus } from '@/components/useTrialStatus';
 import RehabIntroModal from '@/components/rehab/RehabIntroModal';
 import ExerciseDetailModal from '@/components/rehab/ExerciseDetailModal';
-import EquipmentBadges from '@/components/shared/EquipmentBadges';
 import RehabPhaseCard from '@/components/rehab/RehabPhaseCard';
 
 export default function RehabPlan() {
@@ -360,9 +359,6 @@ export default function RehabPlan() {
         </div>
 
 
-
-        {/* Equipment Badges */}
-        <EquipmentBadges plan={rehabPlan} />
 
         {/* Active Phase Card */}
         {rehabPlan.phases && rehabPlan.phases[activePhaseIdx] && (
