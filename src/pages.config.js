@@ -57,16 +57,12 @@ import DiagnosisWizard from './pages/DiagnosisWizard';
 import Discovery from './pages/Discovery';
 import ExerciseImageGenerator from './pages/ExerciseImageGenerator';
 import ExerciseImageUpload from './pages/ExerciseImageUpload';
-import FAQ from './pages/FAQ';
 import Faq from './pages/Faq';
 import Flow from './pages/Flow';
 import FlowRoutines from './pages/FlowRoutines';
 import Glossar from './pages/Glossar';
-import Glossary from './pages/Glossary';
 import HowToUse from './pages/HowToUse';
 import Imprint from './pages/Imprint';
-import KnowledgeHub from './pages/KnowledgeHub';
-import KnowledgeHubArticle from './pages/KnowledgeHubArticle';
 import KnowledgeUpload from './pages/KnowledgeUpload';
 import Landing from './pages/Landing';
 import Literatur from './pages/Literatur';
@@ -95,16 +91,12 @@ export const PAGES = {
     "Discovery": Discovery,
     "ExerciseImageGenerator": ExerciseImageGenerator,
     "ExerciseImageUpload": ExerciseImageUpload,
-    "FAQ": FAQ,
     "Faq": Faq,
     "Flow": Flow,
     "FlowRoutines": FlowRoutines,
     "Glossar": Glossar,
-    "Glossary": Glossary,
     "HowToUse": HowToUse,
     "Imprint": Imprint,
-    "KnowledgeHub": KnowledgeHub,
-    "KnowledgeHubArticle": KnowledgeHubArticle,
     "KnowledgeUpload": KnowledgeUpload,
     "Landing": Landing,
     "Literatur": Literatur,

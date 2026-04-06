@@ -61,8 +61,7 @@ const AuthenticatedApp = () => {
         />
       ))}
       <Route path="/InviteRedeem" element={<InviteRedeem />} />
-      <Route path="/KnowledgeHub" element={<Navigate to="/Wissen" replace />} />
-      <Route path="/KnowledgeHubArticle" element={<Navigate to="/WissenArtikel" replace />} />
+
       <Route path="*" element={<PageNotFound />} />
     </Routes>
   );
