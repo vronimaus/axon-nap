@@ -75,17 +75,21 @@ export default function MFRResetScreen({ onComplete, rehabPlan }) {
 
   return (
     <motion.div
-      initial={{ opacity: 0, x: 20 }}
-      animate={{ opacity: 1, x: 0 }}
-      exit={{ opacity: 0, x: -20 }}
-      className="space-y-6"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -20 }}
+      className="space-y-5 max-w-sm mx-auto w-full"
     >
       {/* Description */}
-      <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5">
-        <p className="text-slate-300 text-sm leading-relaxed">
-          Drücke den Stecco-Punkt für <span className="font-semibold text-emerald-400">90 Sekunden</span>. Lass dich auf die Sensation ein – das ist der erste Schritt zur Mobilisierung.
+      <motion.div 
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="bg-gradient-to-br from-orange-500/10 to-transparent border border-orange-500/20 rounded-xl p-4"
+      >
+        <p className="text-slate-200 text-sm leading-relaxed font-medium">
+          <span className="text-orange-400 font-bold">90 Sekunden</span> Hardware-Reset
         </p>
-      </div>
+      </motion.div>
 
       {isLoadingNode ? (
         <div className="flex items-center justify-center py-8">
@@ -94,30 +98,31 @@ export default function MFRResetScreen({ onComplete, rehabPlan }) {
       ) : (
         <>
           {/* Target Node Display */}
-          <div className="rounded-2xl border border-emerald-500/30 bg-emerald-500/5 p-6 text-center">
-            <p className="text-xs font-bold text-emerald-400 uppercase tracking-widest mb-2">
-              Heute: Hardware-Reset
+          <motion.div 
+            initial={{ scale: 0.95, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            className="rounded-2xl border border-orange-500/40 bg-gradient-to-br from-orange-500/15 to-orange-500/5 p-5 text-center"
+          >
+            <p className="text-[10px] font-bold text-orange-400 uppercase tracking-widest mb-2">
+              Hardware-Reset
             </p>
-            <h3 className="text-2xl font-black text-white mb-1">
+            <h3 className="text-xl font-black text-white mb-1">
               {mfrNode?.name_de || 'Stecco-Punkt'}
             </h3>
-            {mfrNode?.body_area && (
-              <p className="text-sm text-slate-400">{mfrNode.body_area}</p>
-            )}
-          </div>
+          </motion.div>
 
           {/* Timer Display */}
-          <div className="flex flex-col items-center gap-6">
+          <div className="flex flex-col items-center gap-4">
             {/* Big Timer */}
             <motion.div
               animate={{
                 scale: isRunning ? [0.98, 1.02, 0.98] : 1,
               }}
               transition={{
-                duration: 1.5,
+                duration: 1.2,
                 repeat: isRunning ? Infinity : 0,
               }}
-              className="relative w-40 h-40 rounded-full border-4 border-emerald-500/30 flex items-center justify-center bg-slate-900/50"
+              className="relative w-36 h-36 rounded-full border-4 border-orange-500/40 flex items-center justify-center bg-gradient-to-br from-orange-500/10 to-transparent shadow-lg shadow-orange-500/20"
             >
               <div className="text-center">
                 <span className="text-6xl font-black text-emerald-400 font-mono">
@@ -156,30 +161,30 @@ export default function MFRResetScreen({ onComplete, rehabPlan }) {
             </motion.div>
 
             {/* Controls */}
-            <div className="flex gap-3 w-full">
+            <div className="flex gap-2 w-full">
               {!isRunning ? (
                 <Button
                   onClick={handleStartTimer}
-                  className="flex-1 bg-emerald-500 hover:bg-emerald-600 text-slate-900 font-bold py-3 rounded-xl flex items-center justify-center gap-2"
+                  className="flex-1 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-slate-900 font-bold py-2 rounded-lg text-sm flex items-center justify-center gap-2 shadow-lg shadow-orange-500/30"
                 >
-                  <Play className="w-5 h-5" />
-                  Timer starten
+                  <Play className="w-4 h-4" />
+                  Starten
                 </Button>
               ) : (
                 <>
                   <Button
                     onClick={() => setIsRunning(false)}
                     variant="outline"
-                    className="flex-1 border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/10"
+                    className="flex-1 border-orange-500/30 text-orange-400 hover:bg-orange-500/10 text-sm py-2"
                   >
-                    Pausieren
+                    Pause
                   </Button>
                   <Button
                     onClick={handleReset}
                     variant="outline"
-                    className="flex-1 border-slate-700 text-slate-400"
+                    className="flex-1 border-slate-700 text-slate-400 text-sm py-2"
                   >
-                    Zurücksetzen
+                    Reset
                   </Button>
                 </>
               )}
@@ -194,10 +199,10 @@ export default function MFRResetScreen({ onComplete, rehabPlan }) {
             >
               <Button
                 onClick={handleComplete}
-                className="w-full bg-emerald-500 hover:bg-emerald-600 text-slate-900 font-bold py-4 rounded-2xl flex items-center justify-center gap-2"
+                className="w-full bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-slate-900 font-bold py-3 rounded-xl text-sm flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/30"
               >
-                <Check className="w-5 h-5" />
-                Reset abgeschlossen →
+                <Check className="w-4 h-4" />
+                Weiter →
               </Button>
             </motion.div>
           )}

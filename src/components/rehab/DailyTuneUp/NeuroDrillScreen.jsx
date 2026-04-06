@@ -55,45 +55,53 @@ export default function NeuroDrillScreen({ onComplete }) {
 
   return (
     <motion.div
-      initial={{ opacity: 0, x: 20 }}
-      animate={{ opacity: 1, x: 0 }}
-      exit={{ opacity: 0, x: -20 }}
-      className="space-y-6"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -20 }}
+      className="space-y-5 max-w-sm mx-auto w-full"
     >
       {/* Description */}
-      <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5">
-        <p className="text-slate-300 text-sm leading-relaxed">
-          Audio-geführte Neuro-Drills für dein Zentrales Nervensystem. <span className="text-cyan-400 font-semibold">Höre zu und spüre</span> – führe die Bewegungen in deiner Umgebung aus.
+      <motion.div 
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="bg-gradient-to-br from-cyan-500/10 to-transparent border border-cyan-500/20 rounded-xl p-4"
+      >
+        <p className="text-slate-200 text-sm leading-relaxed font-medium">
+          <span className="text-cyan-400 font-bold">Neuro-Drills</span> für dein ZNS
         </p>
-      </div>
+      </motion.div>
 
       {/* Progress */}
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-1.5">
         {drillSequence.map((_, idx) => (
           <motion.div
             key={idx}
+            initial={{ scaleX: 0 }}
+            animate={{ scaleX: 1 }}
             className={`h-1 flex-1 rounded-full transition-colors ${
-              idx <= drillStep ? 'bg-cyan-500' : 'bg-slate-800'
+              idx <= drillStep ? 'bg-cyan-500 shadow-lg shadow-cyan-500/40' : 'bg-slate-800'
             }`}
+            style={{ transformOrigin: 'left' }}
           />
         ))}
       </div>
 
       {/* Current Drill */}
-      <div className="rounded-2xl border border-cyan-500/30 bg-cyan-500/5 p-6">
-        <p className="text-xs font-bold text-cyan-400 uppercase tracking-widest mb-2">
-          Drill {drillStep + 1} von {drillSequence.length}
+      <motion.div 
+        initial={{ scale: 0.95, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        className="rounded-xl border border-cyan-500/40 bg-gradient-to-br from-cyan-500/15 to-cyan-500/5 p-5"
+      >
+        <p className="text-[10px] font-bold text-cyan-400 uppercase tracking-widest mb-2">
+          Drill {drillStep + 1} / {drillSequence.length}
         </p>
-        <h3 className="text-2xl font-black text-white mb-3">
+        <h3 className="text-lg font-black text-white mb-2">
           {currentDrill.name}
         </h3>
-        <p className="text-slate-300 text-sm leading-relaxed mb-3">
+        <p className="text-slate-300 text-xs leading-relaxed">
           {currentDrill.instruction}
         </p>
-        <p className="text-xs text-slate-500 font-mono">
-          Dauer: {currentDrill.duration}
-        </p>
-      </div>
+      </motion.div>
 
       {/* Audio Button */}
       <button
@@ -132,9 +140,9 @@ export default function NeuroDrillScreen({ onComplete }) {
       {!drillCompleted ? (
         <Button
           onClick={handleStepComplete}
-          className="w-full bg-emerald-500 hover:bg-emerald-600 text-slate-900 font-bold py-4 rounded-2xl"
+          className="w-full bg-gradient-to-r from-cyan-500 to-cyan-600 hover:from-cyan-600 hover:to-cyan-700 text-slate-900 font-bold py-3 rounded-xl text-sm shadow-lg shadow-cyan-500/30"
         >
-          {drillStep < drillSequence.length - 1 ? 'Nächster Drill →' : 'Alle Drills abgeschlossen'}
+          {drillStep < drillSequence.length - 1 ? 'Nächster →' : 'Fertig'}
         </Button>
       ) : (
         <motion.div
@@ -143,10 +151,10 @@ export default function NeuroDrillScreen({ onComplete }) {
         >
           <Button
             onClick={handleComplete}
-            className="w-full bg-emerald-500 hover:bg-emerald-600 text-slate-900 font-bold py-4 rounded-2xl flex items-center justify-center gap-2"
+            className="w-full bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-slate-900 font-bold py-3 rounded-xl text-sm flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/30"
           >
-            <Check className="w-5 h-5" />
-            Software aktualisiert →
+            <Check className="w-4 h-4" />
+            Weiter →
           </Button>
         </motion.div>
       )}

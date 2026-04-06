@@ -45,10 +45,10 @@ export default function IntegrationScreen({
 
   return (
     <motion.div
-      initial={{ opacity: 0, x: 20 }}
-      animate={{ opacity: 1, x: 0 }}
-      exit={{ opacity: 0, x: -20 }}
-      className="space-y-6"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -20 }}
+      className="space-y-5 max-w-sm mx-auto w-full"
     >
       {/* Highlight: Improvement */}
       {improvement > 0 && (
@@ -57,56 +57,52 @@ export default function IntegrationScreen({
             scale: [0.98, 1.02, 0.98],
           }}
           transition={{
-            duration: 2,
+            duration: 1.8,
             repeat: Infinity,
           }}
-          className="rounded-2xl bg-gradient-to-r from-emerald-500/20 to-transparent border-2 border-emerald-500 p-6 text-center"
+          className="rounded-xl bg-gradient-to-br from-emerald-500/20 to-emerald-500/5 border-2 border-emerald-500/60 p-5 text-center shadow-lg shadow-emerald-500/25"
         >
-          <p className="text-sm text-emerald-300 mb-2 uppercase tracking-widest font-bold">
-            Dein Erfolg heute
+          <p className="text-xs text-emerald-300 mb-2 uppercase tracking-widest font-bold">
+            Erfolg
           </p>
-          <h2 className="text-4xl font-black text-emerald-400 mb-2">
+          <h2 className="text-3xl font-black text-emerald-400">
             -{improvement} Punkte
           </h2>
-          <p className="text-xs text-slate-400">
-            Von {5} auf {5 - improvement} in 15 Minuten – das ist echte Veränderung!
-          </p>
         </motion.div>
       )}
 
       {/* Integration Exercise */}
-      <div className="rounded-2xl border border-purple-500/30 bg-purple-500/5 p-6">
-        <p className="text-xs font-bold text-purple-400 uppercase tracking-widest mb-2">
+      <motion.div 
+        initial={{ scale: 0.95, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        className="rounded-xl border border-purple-500/40 bg-gradient-to-br from-purple-500/15 to-purple-500/5 p-5"
+      >
+        <p className="text-[10px] font-bold text-purple-400 uppercase tracking-widest mb-2">
           Finale Integration
         </p>
-        <h3 className="text-2xl font-black text-white mb-3">
+        <h3 className="text-lg font-black text-white mb-2">
           {integration.name}
         </h3>
-        <p className="text-slate-300 text-sm leading-relaxed mb-4">
+        <p className="text-slate-300 text-xs leading-relaxed mb-3">
           {integration.instruction}
         </p>
-        <div className="bg-slate-900/50 border border-slate-800 rounded-lg p-4">
-          <p className="text-xs text-slate-400 leading-relaxed">
-            <span className="text-purple-400 font-semibold">Warum?</span> {integration.why}
-          </p>
-        </div>
-      </div>
+      </motion.div>
 
       {/* Audio Button */}
       <button
         onClick={handlePlayAudio}
         disabled={isTTSLoading}
-        className={`w-full flex items-center justify-center gap-3 py-6 rounded-2xl font-black text-base transition-all active:scale-[0.98] ${
+        className={`w-full flex items-center justify-center gap-2 py-4 rounded-xl font-bold text-sm transition-all active:scale-[0.96] ${
           isPlaying
             ? 'bg-purple-500/20 border-2 border-purple-400 text-purple-300'
             : 'bg-purple-500 hover:bg-purple-600 text-white shadow-lg shadow-purple-500/30'
         }`}
       >
         {isTTSLoading
-          ? <><Loader2 className="w-6 h-6 animate-spin" /> Wird geladen…</>
+          ? <><Loader2 className="w-5 h-5 animate-spin" /> Laden…</>
           : isPlaying
-          ? <><VolumeX className="w-6 h-6" /> Stoppen</>
-          : <><Volume2 className="w-6 h-6" /> Audio-Anleitung</>
+          ? <><VolumeX className="w-5 h-5" /> Stop</>
+          : <><Volume2 className="w-5 h-5" /> Audio</>
         }
       </button>
 
@@ -114,9 +110,9 @@ export default function IntegrationScreen({
       {!exerciseCompleted ? (
         <Button
           onClick={handleCompleteExercise}
-          className="w-full bg-emerald-500 hover:bg-emerald-600 text-slate-900 font-bold py-4 rounded-2xl"
+          className="w-full bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white font-bold py-3 rounded-xl text-sm shadow-lg shadow-purple-500/30"
         >
-          Übung abgeschlossen
+          Fertig ✓
         </Button>
       ) : (
         <motion.div
@@ -124,27 +120,24 @@ export default function IntegrationScreen({
           animate={{ opacity: 1, y: 0 }}
           className="space-y-3"
         >
-          <div className="rounded-2xl bg-gradient-to-r from-emerald-500/20 to-transparent border border-emerald-500 p-5 text-center">
+          <div className="rounded-xl bg-gradient-to-br from-emerald-500/20 to-emerald-500/5 border border-emerald-500/50 p-4 text-center">
             <motion.div
               animate={{ scale: [0.8, 1, 0.8] }}
               transition={{ duration: 1.5, repeat: Infinity }}
             >
-              <CheckCircle2 className="w-12 h-12 text-emerald-400 mx-auto mb-3" />
+              <CheckCircle2 className="w-10 h-10 text-emerald-400 mx-auto mb-2" />
             </motion.div>
-            <p className="text-base font-black text-emerald-400 mb-1">
-              Neural Permission Granted! ✓
-            </p>
-            <p className="text-xs text-slate-400">
-              Dein Nervensystem hat die neue Freiheit akzeptiert.
+            <p className="text-sm font-black text-emerald-400 mb-1">
+              Permission Granted! ✓
             </p>
           </div>
 
           <Button
             onClick={handleFinalSubmit}
             disabled={isSubmitting}
-            className="w-full bg-emerald-500 hover:bg-emerald-600 text-slate-900 font-bold py-4 rounded-2xl"
+            className="w-full bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-slate-900 font-bold py-3 rounded-xl text-sm shadow-lg shadow-emerald-500/30"
           >
-            {isSubmitting ? 'Speichern...' : 'Session abschließen 🎉'}
+            {isSubmitting ? 'Speichert...' : 'Session abschließen 🎉'}
           </Button>
         </motion.div>
       )}

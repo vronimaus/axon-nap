@@ -23,25 +23,30 @@ export default function ThreatLevelScreen({ onComplete, isFirst, threat }) {
 
   return (
     <motion.div
-      initial={{ opacity: 0, x: 20 }}
-      animate={{ opacity: 1, x: 0 }}
-      exit={{ opacity: 0, x: -20 }}
-      className="space-y-6"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -20 }}
+      className="space-y-5 max-w-sm mx-auto w-full"
     >
       {isFirst && (
-        <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5">
-          <p className="text-slate-300 text-sm leading-relaxed">
-            Bewerte dein aktuelles Threat-Level: Wie blockiert oder angespannt fühlt sich dein Körper an?
+        <motion.div 
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="bg-gradient-to-br from-emerald-500/10 to-transparent border border-emerald-500/20 rounded-xl p-4"
+        >
+          <p className="text-slate-200 text-sm leading-relaxed font-medium">
+            Wie fühlt sich dein Körper an?
           </p>
-        </div>
+        </motion.div>
       )}
 
       {/* Visual Display */}
-      <div className="flex flex-col items-center justify-center py-8">
+      <div className="flex flex-col items-center justify-center py-6">
         <motion.div
-          initial={{ scale: 0.8, opacity: 0 }}
+          initial={{ scale: 0.9, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
-          className={`relative w-48 h-48 rounded-full border-4 flex items-center justify-center mb-8 bg-gradient-to-br ${label.bg} ${label.border} ${label.glow}`}
+          transition={{ duration: 0.4, type: 'spring', stiffness: 120 }}
+          className={`relative w-40 h-40 rounded-full border-4 flex items-center justify-center bg-gradient-to-br ${label.bg} ${label.border} ${label.glow}`}
         >
           {/* Pulsing ring */}
           <motion.div
@@ -106,12 +111,18 @@ export default function ThreatLevelScreen({ onComplete, isFirst, threat }) {
       </div>
 
       {/* Submit Button */}
-      <Button
-        onClick={handleSubmit}
-        className="w-full bg-emerald-500 hover:bg-emerald-600 text-slate-900 font-bold py-4 rounded-2xl text-base"
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.3 }}
       >
-        Bereit für den Reset →
-      </Button>
+        <Button
+          onClick={handleSubmit}
+          className="w-full bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-slate-900 font-bold py-3 rounded-xl text-sm shadow-lg shadow-emerald-500/30 active:scale-[0.96]"
+        >
+          Reset starten →
+        </Button>
+      </motion.div>
     </motion.div>
   );
 }

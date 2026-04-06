@@ -25,86 +25,83 @@ export default function RetestScreen({ onComplete, threatBefore }) {
 
   return (
     <motion.div
-      initial={{ opacity: 0, x: 20 }}
-      animate={{ opacity: 1, x: 0 }}
-      exit={{ opacity: 0, x: -20 }}
-      className="space-y-6"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -20 }}
+      className="space-y-5 max-w-sm mx-auto w-full"
     >
       {/* Description */}
-      <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5">
-        <p className="text-slate-300 text-sm leading-relaxed">
-          Wie fühlt sich dein Körper <span className="text-emerald-400 font-semibold">jetzt</span> an, nach dem Reset und den Neuro-Drills?
+      <motion.div 
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="bg-gradient-to-br from-purple-500/10 to-transparent border border-purple-500/20 rounded-xl p-4"
+      >
+        <p className="text-slate-200 text-sm leading-relaxed font-medium">
+          Wie fühlst du dich <span className="text-purple-400 font-bold">jetzt</span>?
         </p>
-      </div>
+      </motion.div>
 
       {/* Comparison - Large Impact */}
-      <div className="grid grid-cols-2 gap-4">
-        {/* Before - Red Zone */}
+      <div className="grid grid-cols-2 gap-3">
+        {/* Before */}
         <motion.div
           initial={{ scale: 0.9, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
-          className="rounded-2xl border-2 border-red-500/50 bg-gradient-to-br from-red-600/20 to-red-500/5 p-6 text-center shadow-[0_0_20px_rgba(239,68,68,0.2)]"
+          className="rounded-xl border-2 border-red-500/40 bg-gradient-to-br from-red-500/15 to-red-500/5 p-4 text-center"
         >
-          <p className="text-[11px] font-black text-red-400 uppercase tracking-[0.15em] mb-3">
-            🔴 Vorher
+          <p className="text-[10px] font-bold text-red-400 uppercase tracking-widest mb-2">
+            Vorher
           </p>
           <motion.div
             animate={{ scale: [1, 1.05, 1] }}
             transition={{ duration: 2, repeat: Infinity }}
-            className="text-5xl font-black text-red-500 mb-2"
+            className="text-4xl font-black text-red-500"
           >
             {threatBefore}
           </motion.div>
-          <p className="text-xs text-slate-400">Angespannt & Blockiert</p>
         </motion.div>
 
-        {/* After - Blue Zone */}
+        {/* After */}
         <motion.div
           initial={{ scale: 0.9, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
-          transition={{ delay: 0.2 }}
-          className="rounded-2xl border-2 border-cyan-400/60 bg-gradient-to-br from-cyan-500/20 to-blue-500/10 p-6 text-center shadow-[0_0_30px_rgba(34,211,238,0.3)]"
+          transition={{ delay: 0.15 }}
+          className="rounded-xl border-2 border-cyan-400/50 bg-gradient-to-br from-cyan-500/15 to-cyan-500/5 p-4 text-center shadow-lg shadow-cyan-500/20"
         >
-          <p className="text-[11px] font-black text-cyan-400 uppercase tracking-[0.15em] mb-3">
-            🟦 Nachher
+          <p className="text-[10px] font-bold text-cyan-400 uppercase tracking-widest mb-2">
+            Nachher
           </p>
           <motion.div
             animate={{ scale: [1, 1.08, 1] }}
             transition={{ duration: 1.5, repeat: Infinity }}
-            className="text-5xl font-black text-cyan-400 mb-2"
+            className="text-4xl font-black text-cyan-400"
           >
             {Math.round(threatAfter)}
           </motion.div>
-          <p className="text-xs text-slate-400">Gelöst & Flüssig</p>
         </motion.div>
       </div>
 
-      {/* Improvement Indicator - Strong Visual */}
+      {/* Improvement Indicator */}
       {improvement > 0 && (
         <motion.div
           initial={{ opacity: 0, y: 20, scale: 0.9 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
-          className="rounded-3xl bg-gradient-to-r from-emerald-500/20 via-cyan-500/15 to-blue-500/10 border-2 border-emerald-400/60 p-6 shadow-[0_0_40px_rgba(16,185,129,0.3)]"
+          className="rounded-xl bg-gradient-to-br from-emerald-500/20 to-emerald-500/5 border-2 border-emerald-400/50 p-4 shadow-lg shadow-emerald-500/25 text-center"
         >
-          <div className="flex items-center justify-center gap-3 mb-3">
+          <div className="flex items-center justify-center gap-2 mb-2">
             <motion.span
-              animate={{ scale: [1, 1.2, 1] }}
+              animate={{ scale: [1, 1.15, 1] }}
               transition={{ duration: 0.6, repeat: Infinity }}
-              className="text-4xl"
+              className="text-3xl"
             >
               ⚡
             </motion.span>
-            <div className="text-left">
-              <p className="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400">
-                -{improvement} Punkte!
-              </p>
-              <p className="text-sm font-bold text-emerald-300">
-                {impactLabel}
-              </p>
-            </div>
+            <p className="text-lg font-black text-emerald-400">
+              -{improvement}
+            </p>
           </div>
-          <p className="text-xs text-slate-300 text-center leading-relaxed">
-            Dein Nervensystem hat sich <span className="text-cyan-400 font-bold">bemerkenswert schnell</span> reorganisiert. Das ist der AXON-Effekt.
+          <p className="text-xs text-emerald-300 font-medium">
+            {impactLabel}
           </p>
         </motion.div>
       )}
@@ -129,13 +126,19 @@ export default function RetestScreen({ onComplete, threatBefore }) {
       </div>
 
       {/* Submit Button */}
-      <Button
-        onClick={handleSubmit}
-        className="w-full bg-emerald-500 hover:bg-emerald-600 text-slate-900 font-bold py-4 rounded-2xl flex items-center justify-center gap-2"
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.3 }}
       >
-        <Sparkles className="w-5 h-5" />
-        Ergebnis speichern →
-      </Button>
+        <Button
+          onClick={handleSubmit}
+          className="w-full bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-slate-900 font-bold py-3 rounded-xl text-sm flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/30"
+        >
+          <Sparkles className="w-4 h-4" />
+          Weiter →
+        </Button>
+      </motion.div>
     </motion.div>
   );
 }
