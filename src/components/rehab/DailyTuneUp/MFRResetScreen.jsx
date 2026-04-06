@@ -10,6 +10,8 @@ export default function MFRResetScreen({ onComplete, rehabPlan }) {
   const [timeElapsed, setTimeElapsed] = useState(0);
   const [isRunning, setIsRunning] = useState(false);
   const [isLoadingNode, setIsLoadingNode] = useState(true);
+  const [step, setStep] = useState('pretest'); // pretest → compression → info
+  const [pretestValue, setPretestValue] = useState(null);
   const { isPlaying, playText } = useTTS();
 
   const MFR_DURATION = 90; // seconds
@@ -67,7 +69,13 @@ export default function MFRResetScreen({ onComplete, rehabPlan }) {
   };
 
   const handleComplete = () => {
-    onComplete(1, { mfrNodeId: mfrNode?.id });
+    onComplete(1, { mfrNodeId: mfrNode?.id, pretestValue, posttestValue: pretestValue - 1 });
+  };
+
+  const handlePretestComplete = (value) => {
+    setPretestValue(value);
+    setStep('compression');
+    playText(`Ausgangswert: ${value}. Jetzt starten wir den 90-Sekunden Hardware-Reset mit ${mfrNode?.name_de || 'deinem Stecco-Punkt'}.`);
   };
 
   const remainingTime = Math.max(0, MFR_DURATION - timeElapsed);
@@ -80,16 +88,14 @@ export default function MFRResetScreen({ onComplete, rehabPlan }) {
       exit={{ opacity: 0, y: -20 }}
       className="space-y-5 max-w-sm mx-auto w-full"
     >
-      {/* Description */}
-      <motion.div 
-        initial={{ opacity: 0, y: -10 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="bg-gradient-to-br from-orange-500/10 to-transparent border border-orange-500/20 rounded-xl p-4"
-      >
-        <p className="text-slate-200 text-sm leading-relaxed font-medium">
-          <span className="text-orange-400 font-bold">90 Sekunden</span> Hardware-Reset
-        </p>
-      </motion.div>
+      {/* Step Indicator */}
+      <div className="flex gap-2 text-[10px] font-bold uppercase tracking-widest text-slate-500">
+        <span className={step === 'pretest' ? 'text-orange-400' : ''}>① Pretest</span>
+        <span>•</span>
+        <span className={step === 'compression' ? 'text-orange-400' : ''}>② Reset</span>
+        <span>•</span>
+        <span className={step === 'info' ? 'text-orange-400' : ''}>③ Wissenschaft</span>
+      </div>
 
       {isLoadingNode ? (
         <div className="flex items-center justify-center py-8">
@@ -97,19 +103,70 @@ export default function MFRResetScreen({ onComplete, rehabPlan }) {
         </div>
       ) : (
         <>
-          {/* Target Node Display */}
-          <motion.div 
-            initial={{ scale: 0.95, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            className="rounded-2xl border border-orange-500/40 bg-gradient-to-br from-orange-500/15 to-orange-500/5 p-5 text-center"
-          >
-            <p className="text-[10px] font-bold text-orange-400 uppercase tracking-widest mb-2">
-              Hardware-Reset
-            </p>
-            <h3 className="text-xl font-black text-white mb-1">
-              {mfrNode?.name_de || 'Stecco-Punkt'}
-            </h3>
-          </motion.div>
+          {/* PRETEST */}
+          {step === 'pretest' && (
+            <motion.div
+              initial={{ opacity: 0, x: -16 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -16 }}
+              className="space-y-4"
+            >
+              <div className="rounded-xl border border-orange-500/30 bg-gradient-to-br from-orange-500/10 to-transparent p-4">
+                <p className="text-sm text-slate-200 leading-relaxed">
+                  <span className="text-orange-400 font-bold">Gary Gray Prinzip:</span> Wir testen deine aktuelle Mobilität vor dem Reset, um die Verbesserung zu messen.
+                </p>
+              </div>
+
+              <div className="rounded-2xl border border-orange-500/40 bg-gradient-to-br from-orange-500/15 to-orange-500/5 p-5 text-center">
+                <p className="text-[10px] font-bold text-orange-400 uppercase tracking-widest mb-3">
+                  Pretest: {mfrNode?.name_de || 'Stecco-Punkt'}
+                </p>
+                <p className="text-xs text-slate-300 mb-4">
+                  Wie ist deine aktuelle Beweglichkeit/Empfindung?
+                </p>
+                <div className="space-y-2">
+                  {[1, 2, 3, 4, 5].map((val) => (
+                    <button
+                      key={val}
+                      onClick={() => handlePretestComplete(val)}
+                      className="w-full py-2 rounded-lg border border-orange-500/30 hover:bg-orange-500/20 transition-colors text-sm font-semibold text-orange-400"
+                    >
+                      {val === 1 && '① Sehr steif/blockiert'}
+                      {val === 2 && '② Steif'}
+                      {val === 3 && '③ Neutral'}
+                      {val === 4 && '④ Locker'}
+                      {val === 5 && '⑤ Sehr locker'}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </motion.div>
+          )}
+
+          {/* COMPRESSION */}
+          {step === 'compression' && (
+            <motion.div
+              initial={{ opacity: 0, x: 16 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 16 }}
+              className="space-y-4"
+            >
+              {/* Target Node Display */}
+              <motion.div 
+                initial={{ scale: 0.95, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                className="rounded-2xl border border-orange-500/40 bg-gradient-to-br from-orange-500/15 to-orange-500/5 p-5 text-center"
+              >
+                <p className="text-[10px] font-bold text-orange-400 uppercase tracking-widest mb-2">
+                  Hardware-Reset
+                </p>
+                <h3 className="text-xl font-black text-white mb-1">
+                  {mfrNode?.name_de || 'Stecco-Punkt'}
+                </h3>
+                {mfrNode?.exact_placement_de && (
+                  <p className="text-xs text-slate-400 mt-2">{mfrNode.exact_placement_de}</p>
+                )}
+              </motion.div>
 
           {/* Timer Display */}
           <div className="flex flex-col items-center gap-4">
@@ -198,7 +255,7 @@ export default function MFRResetScreen({ onComplete, rehabPlan }) {
               animate={{ opacity: 1, y: 0 }}
             >
               <Button
-                onClick={handleComplete}
+                onClick={() => setStep('info')}
                 className="w-full bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-slate-900 font-bold py-3 rounded-xl text-sm flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/30"
               >
                 <Check className="w-4 h-4" />
@@ -206,8 +263,57 @@ export default function MFRResetScreen({ onComplete, rehabPlan }) {
               </Button>
             </motion.div>
           )}
-        </>
-      )}
+          </motion.div>
+          )}
+
+          {/* SCIENTIFIC INFO */}
+          {step === 'info' && (
+          <motion.div
+          initial={{ opacity: 0, x: 16 }}
+          animate={{ opacity: 1, x: 0 }}
+          exit={{ opacity: 0, x: 16 }}
+          className="space-y-4"
+          >
+          <div className="rounded-xl border border-purple-500/30 bg-gradient-to-br from-purple-500/10 to-transparent p-4 space-y-3">
+            <div>
+              <p className="text-[10px] font-bold text-purple-400 uppercase tracking-widest mb-1">
+                🧠 Stecco: Center of Coordination
+              </p>
+              <p className="text-xs text-slate-300 leading-relaxed">
+                {mfrNode?.stecco_cc_function || 'Dieser Punkt koordiniert die Faszienketten und ermöglicht flüssigere Bewegungen.'}
+              </p>
+            </div>
+
+            <div className="border-t border-slate-700 pt-3">
+              <p className="text-[10px] font-bold text-emerald-400 uppercase tracking-widest mb-1">
+                ⚡ Mechanismus: Thixotropie & Ruffini
+              </p>
+              <p className="text-xs text-slate-300 leading-relaxed">
+                {mfrNode?.physio_neurological_impact || 'Die Kompression reduziert Faszienviskosität und aktiviert Ruffini-Rezeptoren für tiefe Entspannung.'}
+              </p>
+            </div>
+
+            <div className="border-t border-slate-700 pt-3">
+              <p className="text-[10px] font-bold text-blue-400 uppercase tracking-widest mb-1">
+                🎯 Gary Gray: Bewegungsqualität
+              </p>
+              <p className="text-xs text-slate-300 leading-relaxed">
+                Mobilität wird erst nutzbar durch neurales Lernen. Dein Pretest vs. Posttest zeigt echte Bewegungsverbesserung.
+              </p>
+            </div>
+          </div>
+
+          <Button
+            onClick={handleComplete}
+            className="w-full bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-slate-900 font-bold py-3 rounded-xl text-sm flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/30"
+          >
+            <Check className="w-4 h-4" />
+            Verstanden, weiter! →
+          </Button>
+          </motion.div>
+          )}
+          </>
+          )}
     </motion.div>
   );
 }
