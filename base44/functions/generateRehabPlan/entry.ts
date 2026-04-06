@@ -218,9 +218,11 @@ ${nmsShiftContext}
 ===== KRITISCHE PHASEN-REGELN (NICHT VERLETZBAR) =====
 
 ⚠️ PHASE 1 – NUR aus PHASE-1-ÜBUNGEN wählen (MFR, Neuro, Atemarbeit, sanfte Mobilität):
-- KEINE Core-Übungen, KEINE Kraft, KEINE Planks, KEINE Hantelübungen
-- Nur: Atmung, MFR/Faszienarbeit, Neuro-Drills, sanfte Mobilisation
-- Typische Übungen: Zwerchfellatmung, sanfte Rollübungen, Augenbewegungen, passive Dehnungen
+- KEINE Core-Übungen, KEINE Kraft, KEINE Planks, KEINE Hantelübungen, KEINE V-Sit, KEINE Kettlebell
+- Nur: Atmung (breath), MFR/Faszienarbeit (mfr), Neuro-Drills (neuro), sanfte Mobilisation (mobility)
+- PRIORITÄT: Wähle Übungen die direkt die betroffene Region (${region || problemDescription}) ansprechen
+- Typisch für Phase 1: Zwerchfellatmung, MFR-Node-Release, Augenbewegungen, passive Dehnungen, Vagus-Aktivierung
+- KEIN V-Sit, KEIN Ball-Exchange, KEINE koordinativen Kraft-Übungen
 
 ⚠️ PHASE 2 – Aus PHASE-2-ÜBUNGEN (Core, Stabilität, leichte Kraft):
 - Aufbauend, aber noch kein hochintensives Training
@@ -397,19 +399,32 @@ ${availableFaqIds.join(', ')}`,
 
         console.log(`[generateRehabPlan] Phase ${phase.phase_number}: ${enrichedExercises.length}/${(phase.exercises||[]).length} valid`);
 
-        // Fallback: if LLM left nms_shift_explanation empty, use AxonScenario data
-        let nmsExplanation = phase.nms_shift_explanation || '';
-        let synergyHighlight = phase.synergy_highlight || '';
-        if (!nmsExplanation && primaryScenario) {
+        // Fallback: if LLM left nms_shift_explanation empty OR it's a generic/short text, use AxonScenario data
+        let nmsExplanation = (phase.nms_shift_explanation || '').trim();
+        let synergyHighlight = (phase.synergy_highlight || '').trim();
+
+        // Always enrich with scenario data if available (even if LLM gave something, we prepend scenario mechanism)
+        if (primaryScenario) {
           const mechanismByPhase = {
             1: primaryScenario.hardware_scientific_mechanism,
             2: primaryScenario.software_scientific_mechanism,
             3: primaryScenario.strength_scientific_mechanism
           };
-          nmsExplanation = `${mechanismByPhase[phase.phase_number] || ''} NMS-Shift: ${primaryScenario.nms_trigger_input} → ${primaryScenario.nms_trigger_output}`;
-        }
-        if (!synergyHighlight && primaryScenario) {
-          synergyHighlight = primaryScenario.synergy_explanation || '';
+          const scenarioMechanism = mechanismByPhase[phase.phase_number] || '';
+          const nmsShift = `${primaryScenario.nms_trigger_input} → ${primaryScenario.nms_trigger_output}`;
+
+          if (!nmsExplanation) {
+            nmsExplanation = scenarioMechanism
+              ? `${scenarioMechanism} (NMS-Shift: ${nmsShift})`
+              : `NMS-Shift: ${nmsShift}`;
+          } else if (nmsExplanation.length < 60) {
+            // Too short – augment with scenario data
+            nmsExplanation = `${nmsExplanation} ${scenarioMechanism ? '– ' + scenarioMechanism : ''} (${nmsShift})`.trim();
+          }
+
+          if (!synergyHighlight && primaryScenario.synergy_explanation) {
+            synergyHighlight = primaryScenario.synergy_explanation;
+          }
         }
 
         return { ...phase, exercises: enrichedExercises, nms_shift_explanation: nmsExplanation, synergy_highlight: synergyHighlight };

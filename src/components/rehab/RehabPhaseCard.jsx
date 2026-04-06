@@ -32,6 +32,7 @@ export default function RehabPhaseCard({ phase, index, totalPhases, isCompleted,
     const groups = {
         mfr: { label: 'Myofaszialer Release', icon: Activity, exercises: [] },
         neuro: { label: 'Neuro-Drills', icon: Brain, exercises: [] },
+        breath: { label: 'Atemarbeit', icon: Zap, exercises: [] },
         mobility: { label: 'Mobilität', icon: Target, exercises: [] },
         strength: { label: 'Integration & Kraft', icon: Dumbbell, exercises: [] },
         other: { label: 'Übungen', icon: Sparkles, exercises: [] }
@@ -40,12 +41,13 @@ export default function RehabPhaseCard({ phase, index, totalPhases, isCompleted,
     phase.exercises.forEach((ex, globalIndex) => {
         let cat = 'other';
         if (ex.category) {
-            if (ex.category.includes('mfr')) cat = 'mfr';
-            else if (ex.category.includes('neuro')) cat = 'neuro';
-            else if (ex.category.includes('mobility')) cat = 'mobility';
-            else if (ex.category.includes('strength') || ex.category.includes('functional')) cat = 'strength';
+            if (ex.category === 'mfr') cat = 'mfr';
+            else if (ex.category === 'neuro') cat = 'neuro';
+            else if (ex.category === 'breath') cat = 'breath';
+            else if (ex.category === 'mobility') cat = 'mobility';
+            else if (ex.category === 'strength' || ex.category === 'functional') cat = 'strength';
+            else if (['pull', 'push', 'squat', 'hinge', 'carry', 'core', 'plank', 'row', 'dip'].includes(ex.category)) cat = 'strength';
         } else if (ex.section) {
-             // Fallback to section if available
              if (ex.section === 'neuro_primer') cat = 'neuro';
              else if (ex.section === 'sling_activation') cat = 'mfr';
              else if (ex.section === 'performance') cat = 'strength';
