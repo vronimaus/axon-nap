@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Play, ChevronRight } from 'lucide-react';
+import { Play, ChevronRight } from 'lucide-react';
 
 const COACH_AVATARS = {
   male: 'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/3031e6f06_TechnicalSystemsArchitectAXON-nap.jpg',
@@ -15,7 +15,7 @@ const COACH_NAMES = {
 };
 
 export default function RehabIntroModal({ isOpen, onStart, rehabPlan, userName, preferredCoach = 'male' }) {
-  const [step, setStep] = useState(0); // 0 = intro, 1 = plan overview
+  const [step, setStep] = useState(0);
 
   if (!isOpen || !rehabPlan) return null;
 
@@ -24,7 +24,6 @@ export default function RehabIntroModal({ isOpen, onStart, rehabPlan, userName, 
   const firstName = userName?.split(' ')[0] || 'du';
   const problem = rehabPlan.problem_summary || 'dein Anliegen';
 
-  // Collect all exercises from current phase
   const currentPhaseIdx = Math.max(0, (rehabPlan.current_phase || 1) - 1);
   const currentPhase = rehabPlan.phases?.[currentPhaseIdx];
   const exercises = currentPhase?.exercises || [];
@@ -38,51 +37,60 @@ export default function RehabIntroModal({ isOpen, onStart, rehabPlan, userName, 
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md"
+            className="fixed inset-0 z-50 bg-black/85 backdrop-blur-sm"
           />
 
-          {/* Modal Content */}
+          {/* Bottom Sheet — same format as ExerciseDetailModal */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.95, y: 20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.95, y: 20 }}
+            initial={{ opacity: 0, y: '100%' }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: '100%' }}
             transition={{ type: 'spring', damping: 28, stiffness: 260 }}
-            className="fixed inset-0 z-50 flex items-center justify-center p-4"
+            className="fixed inset-x-0 bottom-0 z-50 max-h-[88vh] overflow-y-auto rounded-t-3xl bg-slate-950 border-t border-emerald-500/30 shadow-2xl"
           >
-            <div className="w-full max-w-sm bg-slate-950 rounded-3xl border border-emerald-500/30 shadow-2xl overflow-hidden">
+            {/* Drag Handle */}
+            <div className="flex justify-center pt-3 pb-1">
+              <div className="w-10 h-1 rounded-full bg-slate-700" />
+            </div>
 
-              {/* Step 0: Coach Intro */}
+            {/* Header */}
+            <div className="sticky top-0 z-10 flex items-center justify-between px-5 py-4 bg-slate-950 border-b border-slate-800">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full p-[2px] bg-gradient-to-b from-emerald-400 to-teal-600 flex-shrink-0">
+                  <div className="w-full h-full rounded-full overflow-hidden bg-slate-900">
+                    <img src={avatarSrc} alt={coachName} className="w-full h-full object-cover" />
+                  </div>
+                </div>
+                <div>
+                  <span className="text-[10px] font-bold uppercase tracking-widest text-emerald-400">
+                    {coachName}
+                  </span>
+                  <h2 className="text-lg font-black text-white uppercase tracking-tight leading-tight">
+                    {step === 0 ? 'Dein Coach' : 'Heutiges Training'}
+                  </h2>
+                </div>
+              </div>
+              {/* Live badge */}
+              <div className="flex items-center gap-1 bg-slate-900 border border-emerald-500/50 rounded-full px-2 py-1">
+                <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                <span className="text-[9px] font-bold text-emerald-400 uppercase tracking-wider">Live</span>
+              </div>
+            </div>
+
+            <div className="px-5 py-6 space-y-4 pb-10">
               <AnimatePresence mode="wait">
+
+                {/* Step 0: Coach Intro */}
                 {step === 0 && (
                   <motion.div
                     key="intro"
-                    initial={{ opacity: 0, x: -20 }}
+                    initial={{ opacity: 0, x: -16 }}
                     animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: -20 }}
-                    className="p-6 flex flex-col items-center text-center"
+                    exit={{ opacity: 0, x: -16 }}
+                    className="space-y-4"
                   >
-                    {/* Large Avatar */}
-                    <div className="relative mb-5">
-                      <div className="w-36 h-36 rounded-full p-[3px] bg-gradient-to-b from-emerald-400 to-teal-600 shadow-[0_0_40px_rgba(16,185,129,0.5)]">
-                        <div className="w-full h-full rounded-full overflow-hidden bg-slate-900">
-                          <img
-                            src={avatarSrc}
-                            alt={coachName}
-                            className="w-full h-full object-cover"
-                          />
-                        </div>
-                      </div>
-                      {/* Live indicator */}
-                      <div className="absolute bottom-2 right-2 flex items-center gap-1 bg-slate-900 border border-emerald-500/50 rounded-full px-2 py-0.5">
-                        <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                        <span className="text-[9px] font-bold text-emerald-400 uppercase tracking-wider">Live</span>
-                      </div>
-                    </div>
-
-                    <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-emerald-400 mb-1">{coachName}</p>
-
                     {/* Speech Bubble */}
-                    <div className="bg-slate-900 border border-slate-700 rounded-2xl rounded-tl-sm p-5 text-left mt-2 mb-6">
+                    <div className="bg-slate-900 border border-slate-700 rounded-2xl rounded-tl-sm p-5">
                       <p className="text-white text-sm leading-relaxed font-medium">
                         Hey <span className="text-emerald-400 font-bold">{firstName}</span>! 👋
                         <br /><br />
@@ -106,30 +114,24 @@ export default function RehabIntroModal({ isOpen, onStart, rehabPlan, userName, 
                   </motion.div>
                 )}
 
+                {/* Step 1: Exercise List */}
                 {step === 1 && (
                   <motion.div
                     key="plan"
-                    initial={{ opacity: 0, x: 20 }}
+                    initial={{ opacity: 0, x: 16 }}
                     animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: 20 }}
-                    className="p-6"
+                    exit={{ opacity: 0, x: 16 }}
+                    className="space-y-4"
                   >
-                    {/* Small avatar + speech */}
-                    <div className="flex items-start gap-3 mb-5">
-                      <div className="w-12 h-12 rounded-full p-[2px] bg-gradient-to-b from-emerald-400 to-teal-600 flex-shrink-0">
-                        <div className="w-full h-full rounded-full overflow-hidden bg-slate-900">
-                          <img src={avatarSrc} alt={coachName} className="w-full h-full object-cover" />
-                        </div>
-                      </div>
-                      <div className="bg-slate-900 border border-slate-700 rounded-2xl rounded-tl-sm p-4 flex-1">
-                        <p className="text-white text-sm leading-relaxed">
-                          Dein Programm für heute — ich begleite dich durch jede Übung per Audio. 🎧
-                        </p>
-                      </div>
+                    {/* Speech bubble */}
+                    <div className="bg-slate-900 border border-slate-700 rounded-2xl rounded-tl-sm p-4">
+                      <p className="text-white text-sm leading-relaxed">
+                        Dein Programm für heute — ich begleite dich durch jede Übung per Audio. 🎧
+                      </p>
                     </div>
 
                     {/* Exercise List */}
-                    <div className="space-y-2 mb-6">
+                    <div className="space-y-2">
                       {exercises.slice(0, 6).map((ex, i) => (
                         <div key={i} className="flex items-center gap-3 p-3 rounded-xl bg-slate-900/80 border border-slate-800">
                           <div className="w-7 h-7 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center flex-shrink-0">
@@ -157,7 +159,7 @@ export default function RehabIntroModal({ isOpen, onStart, rehabPlan, userName, 
 
                     <button
                       onClick={() => setStep(0)}
-                      className="w-full mt-2 py-2 text-xs text-slate-500 hover:text-slate-300 transition-colors"
+                      className="w-full py-2 text-xs text-slate-500 hover:text-slate-300 transition-colors"
                     >
                       ← Zurück
                     </button>
