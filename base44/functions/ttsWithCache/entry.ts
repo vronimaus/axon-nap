@@ -22,7 +22,17 @@ async function hashText(text) {
 }
 
 // Split text into chunks of max ~500 chars at sentence boundaries
+// AUDIO-OPTIMIZED: Respects existing pause markers (...) for natural speech
 function splitIntoChunks(text, maxChars = 500) {
+  // First, split by triple-dots (pause markers) if present
+  const pauseSections = text.split(/\.\.\./).map(s => s.trim()).filter(s => s);
+  
+  if (pauseSections.length > 1) {
+    // Has pause markers — keep them for natural pacing
+    return pauseSections;
+  }
+  
+  // Otherwise, split by sentences at .!?
   const sentences = text.split(/(?<=[.!?])\s+/);
   const chunks = [];
   let current = '';
@@ -40,7 +50,14 @@ function splitIntoChunks(text, maxChars = 500) {
 }
 
 // Call Gemini TTS for a single chunk, returns base64 PCM string
+// AUDIO-OPTIMIZED: Instructs Gemini to use natural pacing for coaching audio
 async function generateChunkAudio(text, apiKey) {
+  // AUDIO-OPTIMIZED prompt: Signal to Gemini that this is coaching/training audio
+  // → Natural pauses, clear articulation, motivational tone
+  const ttsPrompt = text.includes('Phase') || text.includes('Training') || text.includes('Übung')
+    ? `Lies diesen Text vor als Fitness-Coach. Nutze natürliche Pausen zwischen Sätzen. Sprich klar und motivierend. Deutsche Sprache: ${text}`
+    : `Lies diesen Text vor in warmem, professionellem Ton auf Deutsch: ${text}`;
+
   const response = await fetch(
     `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent?key=${apiKey}`,
     {
@@ -49,7 +66,7 @@ async function generateChunkAudio(text, apiKey) {
       body: JSON.stringify({
         contents: [{
           role: 'user',
-          parts: [{ text: `Lies diesen Text vor in warmem, professionellem Ton auf Deutsch: ${text}` }]
+          parts: [{ text: ttsPrompt }]
         }],
         generationConfig: {
           temperature: 1,
