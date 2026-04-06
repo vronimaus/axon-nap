@@ -70,12 +70,13 @@ Deno.serve(async (req) => {
     }
     const extraContext = contextParts.join('\n');
 
-    // Fetch exercises, routines, FAQs, and MFRNodes (GOLDEN SOURCE)
-    const [allExercises, allRoutines, allFaqs, allMFRNodes] = await Promise.all([
+    // Fetch exercises, routines, FAQs, MFRNodes, and AxonScenarios (GOLDEN SOURCE)
+    const [allExercises, allRoutines, allFaqs, allMFRNodes, allScenarios] = await Promise.all([
       base44.asServiceRole.entities.Exercise.list('-updated_date', 500),
       base44.asServiceRole.entities.Routine.list('-updated_date', 100),
       base44.asServiceRole.entities.FAQ.list('-updated_date', 100),
-      base44.asServiceRole.entities.MFRNode.list('-updated_date', 50)
+      base44.asServiceRole.entities.MFRNode.list('-updated_date', 50),
+      base44.asServiceRole.entities.AxonScenario.list('-updated_date', 50)
     ]);
 
     const validExercises = allExercises.filter(e => e.exercise_id && e.name);
@@ -101,6 +102,31 @@ Deno.serve(async (req) => {
     )];
 
     console.log(`[generateRehabPlan] Region "${region}" → MFR Nodes: ${relevantMFRNodes.length}, Target Slings: [${targetSlings.join(', ')}]`);
+
+    // Match AxonScenarios to region/problem via trigger_keywords and problem_category
+    const matchedScenarios = allScenarios.filter(s => {
+      const keywords = (s.trigger_keywords || []).map(k => k.toLowerCase());
+      const regionWords = regionLower.split(/\s+/).filter(k => k.length > 3);
+      return keywords.some(k => regionWords.some(rw => k.includes(rw) || rw.includes(k)));
+    }).slice(0, 3);
+
+    // Build scenario context block for the LLM
+    const scenarioContext = matchedScenarios.length > 0
+      ? matchedScenarios.map(s => `
+--- AXON SCENARIO: ${s.problem_title} ---
+NMS-Shift: ${s.nms_trigger_input || '?'} → ${s.nms_trigger_output || '?'}
+MFR-Node: ${s.hardware_node} | Mechanismus: ${s.hardware_scientific_mechanism || s.hardware_description || '-'}
+Neuro-Drill: ${s.software_drill} | Mechanismus: ${s.software_scientific_mechanism || s.software_description || '-'}
+Integration: ${s.strength_exercise} | Mechanismus: ${s.strength_scientific_mechanism || s.strength_description || '-'}
+Experten-Prinzip: ${s.expert_principle || '-'}
+GESAMT-SYNERGIE: ${s.synergy_explanation || '-'}
+Erwartete Outcomes: ${(s.expected_outcomes || []).join(' | ')}
+Kontraindikationen: ${s.contraindications || 'keine bekannt'}
+Protokoll: ${s.full_protocol || '-'}
+`.trim()).join('\n\n')
+      : 'Keine spezifischen AXON-Szenarien für diese Region gefunden – allgemeine AXON-Methodik anwenden.';
+
+    console.log(`[generateRehabPlan] Matched AXON Scenarios: ${matchedScenarios.length} for region "${region}"`);
 
     // Smart filtering: exercises matching target slings via smart_tags.kinetic_chain_slings.primary_sling
     // Smart filtering: exercises matching target slings OR region keywords in category/description
@@ -155,6 +181,14 @@ ${extraContext ? '\nNUTZERKONTEXT:\n' + extraContext : ''}
 
 ZIEL-FASZIEN-KETTEN (aus Schmerzregion erkannt):
 ${targetSlings.length > 0 ? targetSlings.join(', ') : 'alle Ketten berücksichtigen'}
+
+===== AXON KAUSALITÄTSKETTEN (WISSENSCHAFTLICHE GRUNDLAGE – NUTZE DIESE!) =====
+Diese Szenarien basieren auf bewährten If-When-Kausalitätsketten aus dem AXON-System.
+Nutze die Mechanismen, Synergieeffekte, Experten-Prinzipien und Outcomes als Leitfaden
+für die Begründung und Struktur des Plans. Erkläre dem User in der phase_rationale
+den wissenschaftlichen Mechanismus (BECAUSE) und den erwarteten NMS-Shift.
+
+${scenarioContext}
 
 ===== ABSOLUT ZWINGENDE REGELN – VERLETZUNG = FEHLER =====
 1. Du MUSST NUR exercise_ids aus der EXAKTEN ID-LISTE unten verwenden. Jede andere ID ist ein fataler Fehler.
@@ -225,9 +259,11 @@ ${availableFaqIds.join(', ')}`,
                     required: ['exercise_id', 'name', 'sets_reps_tempo', 'instruction']
                   }
                 },
-                phase_rationale: { type: 'string' }
+                phase_rationale: { type: 'string' },
+                nms_shift_explanation: { type: 'string' },
+                synergy_highlight: { type: 'string' }
               },
-              required: ['phase_number', 'title', 'description', 'duration_days', 'exercises', 'phase_rationale']
+              required: ['phase_number', 'title', 'description', 'duration_days', 'exercises', 'phase_rationale', 'nms_shift_explanation']
             }
           },
           recommended_mfr_routines: {
@@ -347,6 +383,9 @@ ${availableFaqIds.join(', ')}`,
       plan_generated_date: new Date().toISOString().split('T')[0],
       current_phase: 1,
       status: 'active',
+      matched_scenario_ids: matchedScenarios.map(s => s.scenario_id),
+      nms_trigger_input: matchedScenarios[0]?.nms_trigger_input || null,
+      nms_trigger_output: matchedScenarios[0]?.nms_trigger_output || null,
       // Initialize new "Ouch!" scenario fields
       session_status: 'active',
       current_exercise_substituted: false,
