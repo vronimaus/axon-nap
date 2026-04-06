@@ -50,23 +50,22 @@ export default function DailyTuneUpModal({
     if (screenId === 0) {
       setThreatLevelBefore(data.threatLevel);
       setCurrentScreen(1);
+      // Coach-Audio nur bei Screen 0 (Intro)
       playText(`Okay, dein Ausgangswert ist ${data.threatLevel}. Jetzt machen wir einen MFR-Reset.`);
     } else if (screenId === 1) {
       setMFRNodeCompleted(true);
       setCurrentScreen(2);
-      playText(`Exzellent. Die Hardware ist jetzt mobilisiert. Lass uns das Nervensystem aktualisieren.`);
+      // Silent transition
     } else if (screenId === 2) {
       setNeuroDrillCompleted(true);
       setCurrentScreen(3);
-      playText(`Perfekt. Jetzt testen wir sofort, wie dein Körper reagiert hat.`);
+      // Silent transition
     } else if (screenId === 3) {
       setThreatLevelAfter(data.threatLevel);
       setCurrentScreen(4);
-      const improvement = threatLevelBefore - data.threatLevel;
-      playText(`Wow! Eine Verbesserung von ${improvement} Punkten. Jetzt verankern wir das mit einer Integration.`);
+      // Silent transition
     } else if (screenId === 4) {
       setIntegrationCompleted(true);
-      // Submit session
       await submitSession();
     }
   };
@@ -130,7 +129,7 @@ export default function DailyTuneUpModal({
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         onClick={onClose}
-        className="fixed inset-0 z-50 bg-black/85 backdrop-blur-sm"
+        className="fixed inset-0 z-[9998] bg-black/85 backdrop-blur-sm"
       />
 
       {/* Modal */}
@@ -139,7 +138,7 @@ export default function DailyTuneUpModal({
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: '100%' }}
         transition={{ type: 'spring', damping: 28, stiffness: 260 }}
-        className="fixed inset-x-0 bottom-0 z-50 max-h-[92vh] overflow-y-auto rounded-t-3xl bg-slate-950 border-t border-emerald-500/30 shadow-2xl"
+        className="fixed inset-x-0 bottom-0 z-[9999] max-h-[92vh] overflow-y-auto rounded-t-3xl bg-slate-950 border-t border-emerald-500/30 shadow-2xl"
       >
         {/* Drag Handle */}
         <div className="flex justify-center pt-3 pb-1">
