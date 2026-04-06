@@ -10,7 +10,8 @@ export default function MFRResetScreen({ onComplete, rehabPlan }) {
   const [timeElapsed, setTimeElapsed] = useState(0);
   const [isRunning, setIsRunning] = useState(false);
   const [isLoadingNode, setIsLoadingNode] = useState(true);
-  const [step, setStep] = useState('compression'); // compression → info
+  const [step, setStep] = useState('pretest'); // pretest → compression → info
+  const [pretestValue, setPretestValue] = useState(null);
   const { isPlaying, playText } = useTTS();
 
   const MFR_DURATION = 90; // seconds
@@ -68,7 +69,13 @@ export default function MFRResetScreen({ onComplete, rehabPlan }) {
   };
 
   const handleComplete = () => {
-    onComplete(1, { mfrNodeId: mfrNode?.id });
+    onComplete(1, { mfrNodeId: mfrNode?.id, pretestValue, posttestValue: pretestValue - 1 });
+  };
+
+  const handlePretestComplete = (value) => {
+    setPretestValue(value);
+    setStep('compression');
+    playText(`Ausgangswert: ${value}. Jetzt starten wir den 90-Sekunden Hardware-Reset mit ${mfrNode?.name_de || 'deinem Stecco-Punkt'}.`);
   };
 
   const remainingTime = Math.max(0, MFR_DURATION - timeElapsed);
@@ -83,9 +90,11 @@ export default function MFRResetScreen({ onComplete, rehabPlan }) {
     >
       {/* Step Indicator */}
       <div className="flex gap-2 text-[10px] font-bold uppercase tracking-widest text-slate-500">
-        <span className={step === 'compression' ? 'text-orange-400' : ''}>① Reset</span>
+        <span className={step === 'pretest' ? 'text-orange-400' : ''}>① Pretest</span>
         <span>•</span>
-        <span className={step === 'info' ? 'text-orange-400' : ''}>② Wissenschaft</span>
+        <span className={step === 'compression' ? 'text-orange-400' : ''}>② Reset</span>
+        <span>•</span>
+        <span className={step === 'info' ? 'text-orange-400' : ''}>③ Wissenschaft</span>
       </div>
 
       {isLoadingNode ? (
@@ -94,6 +103,46 @@ export default function MFRResetScreen({ onComplete, rehabPlan }) {
         </div>
       ) : (
         <>
+          {/* PRETEST */}
+          {step === 'pretest' && (
+            <motion.div
+              initial={{ opacity: 0, x: -16 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -16 }}
+              className="space-y-4"
+            >
+              <div className="rounded-xl border border-orange-500/30 bg-gradient-to-br from-orange-500/10 to-transparent p-4">
+                <p className="text-sm text-slate-200 leading-relaxed">
+                  <span className="text-orange-400 font-bold">Gary Gray Prinzip:</span> Wir testen deine aktuelle Mobilität vor dem Reset, um die Verbesserung zu messen.
+                </p>
+              </div>
+
+              <div className="rounded-2xl border border-orange-500/40 bg-gradient-to-br from-orange-500/15 to-orange-500/5 p-5 text-center">
+                <p className="text-[10px] font-bold text-orange-400 uppercase tracking-widest mb-3">
+                  Pretest: {mfrNode?.name_de || 'Stecco-Punkt'}
+                </p>
+                <p className="text-xs text-slate-300 mb-4">
+                  Wie ist deine aktuelle Beweglichkeit/Empfindung?
+                </p>
+                <div className="space-y-2">
+                  {[1, 2, 3, 4, 5].map((val) => (
+                    <button
+                      key={val}
+                      onClick={() => handlePretestComplete(val)}
+                      className="w-full py-2 rounded-lg border border-orange-500/30 hover:bg-orange-500/20 transition-colors text-sm font-semibold text-orange-400"
+                    >
+                      {val === 1 && '① Sehr steif/blockiert'}
+                      {val === 2 && '② Steif'}
+                      {val === 3 && '③ Neutral'}
+                      {val === 4 && '④ Locker'}
+                      {val === 5 && '⑤ Sehr locker'}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </motion.div>
+          )}
+
           {/* COMPRESSION */}
           {step === 'compression' && (
             <motion.div
