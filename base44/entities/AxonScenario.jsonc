@@ -1,0 +1,198 @@
+{
+  "name": "AxonScenario",
+  "type": "object",
+  "properties": {
+    "scenario_id": {
+      "type": "integer",
+      "description": "Eindeutige Scenario-ID (01-20)"
+    },
+    "problem_title": {
+      "type": "string",
+      "description": "Problem/Zielsetzung (z.B. 'Nacken steif (Rotation)')"
+    },
+    "problem_category": {
+      "type": "string",
+      "enum": [
+        "neck",
+        "lower_back",
+        "knee",
+        "shoulder",
+        "hip",
+        "calf",
+        "elbow",
+        "breathing",
+        "headache",
+        "ankle",
+        "thoracic",
+        "pelvis",
+        "groin",
+        "lateral_hip",
+        "shin",
+        "lumbar",
+        "wrist",
+        "knee_it_band",
+        "stiffness",
+        "balance",
+        "explosive_power",
+        "deceleration"
+      ],
+      "description": "K\u00f6rper-Region/Kategorie"
+    },
+    "nms_trigger_input": {
+      "type": "string",
+      "enum": [
+        "redline",
+        "stressed",
+        "solid",
+        "peak",
+        "vulnerable",
+        "sluggish",
+        "stuck",
+        "weak_pain"
+      ],
+      "description": "NMS-Zustand des Users VOR der Intervention (IF-Zustand)"
+    },
+    "nms_trigger_output": {
+      "type": "string",
+      "enum": [
+        "balanced",
+        "solid",
+        "resilient",
+        "explosive",
+        "fluid",
+        "bulletproof",
+        "peak"
+      ],
+      "description": "Erwarteter NMS-Zustand des Users NACH der Intervention (WHICH LEADS TO)"
+    },
+    "hardware_node": {
+      "type": "string",
+      "description": "MFR-Node (z.B. 'N1', 'N12') mit Beschreibung"
+    },
+    "hardware_description": {
+      "type": "string",
+      "description": "Detaillierte Hardware-Erkl\u00e4rung und Lokalisierung"
+    },
+    "hardware_duration_seconds": {
+      "type": "integer",
+      "default": 90,
+      "description": "Empfohlene Kompressionszeit in Sekunden (biologischer Schwellenwert)"
+    },
+    "hardware_scientific_mechanism": {
+      "type": "string",
+      "description": "BECAUSE (MFR): Wissenschaftlicher Mechanismus des MFR-Schritts \u2013 z.B. Thixotropie, Ruffini-Rezeptoren, Hyalurons\u00e4ure-Viskosit\u00e4t, Parasympathikus-Shift"
+    },
+    "software_drill": {
+      "type": "string",
+      "description": "Neuro-Drill Name (z.B. 'Horizontale Sakkaden')"
+    },
+    "software_description": {
+      "type": "string",
+      "description": "Detaillierte Neuro-Drill-Anleitung und Mechanismus"
+    },
+    "software_scientific_mechanism": {
+      "type": "string",
+      "description": "BECAUSE (Neuro): Wissenschaftlicher Mechanismus des Neuro-Drills \u2013 z.B. VOR-Rekalibrierung, Kortikale Karte, Propriozeption, Parasympathikus-Integration"
+    },
+    "software_video_url": {
+      "type": "string",
+      "description": "URL zu Kurzvideo oder GIF des Neuro-Drills"
+    },
+    "strength_exercise": {
+      "type": "string",
+      "description": "Integrations-/Kraft\u00fcbung Name (z.B. 'Bird-Dog')"
+    },
+    "strength_description": {
+      "type": "string",
+      "description": "Anleitung f\u00fcr neuronale Verankerung (3-5 Wiederholungen, slow, hochkonzentriert)"
+    },
+    "strength_scientific_mechanism": {
+      "type": "string",
+      "description": "BECAUSE (Integration): Wissenschaftlicher Mechanismus der Integrations\u00fcbung \u2013 z.B. Myelinisierung, Irradiation, synaptische Plastizit\u00e4t, motorische Einheiten-Synchronisation"
+    },
+    "strength_reps": {
+      "type": "integer",
+      "default": 5,
+      "description": "Empfohlene Wiederholungen (neuronale Verankerung, nicht Muskelaufbau)"
+    },
+    "expert_reference": {
+      "type": "string",
+      "enum": [
+        "starrett",
+        "dan_john",
+        "gray_cook",
+        "vern_gambetta",
+        "pavel",
+        "stecco",
+        "combined"
+      ],
+      "description": "Prim\u00e4rer Experte, dessen Prinzip in der Integrations\u00fcbung angewendet wird"
+    },
+    "expert_principle": {
+      "type": "string",
+      "description": "Das spezifische Prinzip des Experten, das hier angewendet wird (z.B. 'Irradiation nach Pavel', 'Joint-by-Joint nach Gray Cook', 'Loaded Carry nach Dan John')"
+    },
+    "synergy_explanation": {
+      "type": "string",
+      "description": "BECAUSE (Gesamt-Synergie): Erkl\u00e4rt, WARUM die Sequenz MFR \u2192 Neuro \u2192 Integration zusammen st\u00e4rker wirkt als die Summe der Teile. F\u00fcr Investoren-Pitches und wissenschaftliche Kommunikation."
+    },
+    "expected_outcomes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "WHICH LEADS TO: Liste konkreter, messbarer Outcomes (z.B. 'Erh\u00f6hung der HWS-Rotation um ~15\u00b0', 'Schmerzreduktion VAS -3 Punkte')"
+    },
+    "outcome_timeframe": {
+      "type": "string",
+      "enum": [
+        "immediate",
+        "1_session",
+        "1_week",
+        "2_4_weeks",
+        "long_term"
+      ],
+      "description": "Zeitrahmen, in dem die Outcomes zu erwarten sind"
+    },
+    "contraindications": {
+      "type": "string",
+      "description": "Absolute oder relative Gegenanzeigen f\u00fcr dieses Szenario (z.B. akute Entz\u00fcndung, Nervenwurzelkompression)"
+    },
+    "full_protocol": {
+      "type": "string",
+      "description": "Komplette Ablauf-Beschreibung: Hardware (90s) \u2192 Software (Neuro) \u2192 Integration (Strength)"
+    },
+    "trigger_keywords": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Stichw\u00f6rter zur Scenario-Erkennung im Chat (z.B. ['Nacken', 'steif', 'Rotation'])"
+    }
+  },
+  "required": [
+    "scenario_id",
+    "problem_title",
+    "hardware_node",
+    "software_drill",
+    "strength_exercise"
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": {},
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

@@ -1,0 +1,132 @@
+{
+  "name": "MFRNode",
+  "type": "object",
+  "properties": {
+    "node_id": {
+      "type": "string",
+      "description": "Eindeutige Node-ID (N1-N12)"
+    },
+    "name_de": {
+      "type": "string",
+      "description": "Deutsche Bezeichnung des Nodes"
+    },
+    "position": {
+      "type": "string",
+      "enum": [
+        "front",
+        "back",
+        "side"
+      ],
+      "description": "Position auf Body-Map (Vorderseite, R\u00fcckseite, Seite)"
+    },
+    "body_area": {
+      "type": "string",
+      "description": "K\u00f6rperregion (z.B. Sch\u00e4delbasis, Brust-Schulter)"
+    },
+    "target_chain": {
+      "type": "string",
+      "description": "Zielkette/Funktion"
+    },
+    "stecco_cc_name": {
+      "type": "string",
+      "description": "Stecco Center of Coordination Name (z.B. 'CC Ante-Medio (Thorax)')"
+    },
+    "stecco_cc_function": {
+      "type": "string",
+      "description": "Funktion des Stecco CC (z.B. 'Koordiniert die Vorw\u00e4rtsbewegung des Arms')"
+    },
+    "exact_placement_de": {
+      "type": "string",
+      "description": "Exakte anatomische Platzierung (Landmarke) - pr\u00e4zisiert f\u00fcr Stecco-Punkt"
+    },
+    "user_instruction": {
+      "type": "string",
+      "description": "Schritt-f\u00fcr-Schritt Anleitung f\u00fcr den User beim Start des Timers"
+    },
+    "expert_tip": {
+      "type": "string",
+      "description": "Experten-Tipp als Pop-up/Tooltip f\u00fcr fortgeschrittene Anwender"
+    },
+    "neuro_instruction": {
+      "type": "string",
+      "description": "Post-MFR Neuro-Drill zur neurologischen Verankerung der neuen Bewegungsfreiheit"
+    },
+    "integration_movement": {
+      "type": "string",
+      "description": "Bewegung zur funktionellen Integration der neu gewonnenen Freiheit (z.B. 'Wall Slides', 'Lunges')"
+    },
+    "expert_insight_stecco": {
+      "type": "string",
+      "description": "Wissenschaftlicher Hintergrund nach Stecco - wird als Deep Dive in der App angezeigt"
+    },
+    "physio_neurological_impact": {
+      "type": "string",
+      "description": "BECAUSE (Mechanismus): Breiter physiologisch-neurologischer Mechanismus \u00fcber Stecco hinaus \u2013 z.B. Thixotropie, Ruffini/Pacini-Rezeptoren, Parasympathikus-Shift, nozizeptiver Input, Interozeption. F\u00fcr wissenschaftliche Kommunikation und Investor-Pitches."
+    },
+    "starrett_mobility_principle": {
+      "type": "string",
+      "description": "Kelly Starrett's spezifisches Mobilit\u00e4tsprinzip f\u00fcr diesen Node (z.B. 'Voodoo Flossing', 'Upstream/Downstream', 'Tissue Quality')"
+    },
+    "linked_scenarios": {
+      "type": "array",
+      "items": {
+        "type": "integer"
+      },
+      "description": "Liste der AxonScenario-IDs, in denen dieser Node prim\u00e4r eingesetzt wird"
+    },
+    "x": {
+      "type": "number",
+      "description": "X-Koordinate auf K\u00f6rpermodell (0-100)"
+    },
+    "y": {
+      "type": "number",
+      "description": "Y-Koordinate auf K\u00f6rpermodell (0-100)"
+    },
+    "compression_time_min": {
+      "type": "integer",
+      "default": 60,
+      "description": "Minimale Kompressionszeit in Sekunden"
+    },
+    "compression_time_max": {
+      "type": "integer",
+      "default": 90,
+      "description": "Maximale Kompressionszeit in Sekunden"
+    },
+    "pressure_rule_burning": {
+      "type": "string",
+      "description": "Regel f\u00fcr brennendes Gef\u00fchl"
+    },
+    "pressure_rule_depth": {
+      "type": "string",
+      "description": "Regel f\u00fcr tiefe Punkte"
+    },
+    "order": {
+      "type": "integer",
+      "description": "Reihenfolge f\u00fcr Standard-Protokoll"
+    }
+  },
+  "required": [
+    "node_id",
+    "name_de",
+    "position",
+    "target_chain"
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": {},
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}
