@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { createPageUrl } from '@/utils';
-import { AlertCircle, ArrowLeft, Activity, Zap, Zap as ZapIcon } from 'lucide-react';
+import { AlertCircle, ArrowLeft, Activity, Zap, Zap as ZapIcon, Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 import DailyReadinessCheck from '@/components/dashboard/DailyReadinessCheck';
@@ -364,28 +364,44 @@ export default function RehabPlan() {
           </Button>
         </motion.div>
 
-        {/* 2. Tech Progress Bar */}
-        <div className="space-y-2">
-          <div className="flex justify-between items-end">
-            <div className="flex flex-col">
-               <span className="text-[10px] uppercase tracking-widest text-slate-400 font-bold">Progress</span>
-               <span className="text-sm font-bold text-white tracking-wide">
-                  PHASE {rehabPlan.current_phase || 1} <span className="text-slate-600 mx-1">/</span> {rehabPlan.phases?.length || 3}
-               </span>
-            </div>
-            <span className="text-[10px] text-emerald-400 font-mono">
-              {((rehabPlan.current_phase || 1) / (rehabPlan.phases?.length || 3) * 100).toFixed(0)}% RECOVERED
+        {/* 2. Progress Indicator with Circular Chart */}
+        <div className="flex items-center justify-between">
+          <div className="flex flex-col flex-1">
+            <span className="text-[10px] uppercase tracking-widest text-slate-400 font-bold">Progress</span>
+            <span className="text-sm font-bold text-white tracking-wide">
+              PHASE {rehabPlan.current_phase || 1} <span className="text-slate-600 mx-1">/</span> {rehabPlan.phases?.length || 3}
             </span>
           </div>
-          
-          <div className="h-1.5 w-full bg-slate-800 rounded-full overflow-hidden relative">
-            <div className="absolute inset-0 bg-slate-800 z-0" />
-            <motion.div
-              initial={{ width: 0 }}
-              animate={{ width: `${((rehabPlan.current_phase || 1) / (rehabPlan.phases?.length || 3)) * 100}%` }}
-              className="h-full bg-gradient-to-r from-emerald-600 via-emerald-400 to-teal-300 relative z-10 shadow-[0_0_10px_rgba(16,185,129,0.5)]"
-            />
-          </div>
+
+          {/* Circular Progress Chart */}
+          <motion.div
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            className="relative w-20 h-20 flex-shrink-0"
+          >
+            <svg className="w-full h-full" viewBox="0 0 100 100">
+              <circle cx="50" cy="50" r="45" fill="none" stroke="currentColor" strokeWidth="2" className="text-slate-700" />
+              <motion.circle
+                cx="50"
+                cy="50"
+                r="45"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="3"
+                className="text-emerald-400"
+                strokeDasharray={2 * Math.PI * 45}
+                strokeDashoffset={2 * Math.PI * 45 * (1 - ((rehabPlan.current_phase || 1) / (rehabPlan.phases?.length || 3)))}
+                strokeLinecap="round"
+                style={{ transformOrigin: '50% 50%', transform: 'rotate(-90deg)' }}
+              />
+            </svg>
+            <div className="absolute inset-0 flex items-center justify-center flex-col">
+              <span className="text-lg font-black text-emerald-400">
+                {((rehabPlan.current_phase || 1) / (rehabPlan.phases?.length || 3) * 100).toFixed(0)}%
+              </span>
+              <span className="text-[10px] text-slate-400 font-mono">recovered</span>
+            </div>
+          </motion.div>
         </div>
 
         {/* 3. Active Phase Card */}
