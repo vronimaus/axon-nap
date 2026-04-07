@@ -98,11 +98,22 @@ export default function MFRResetScreenDynamic({ onComplete, nodeId = 'N1', scree
               <strong className="text-orange-400">Symptom:</strong> {causalChain?.symptom}
             </p>
           </div>
-          <div className="rounded-2xl border border-orange-500/40 bg-gradient-to-br from-orange-500/15 to-orange-500/5 p-6 text-center">
-            <p className="text-xs text-orange-300 font-bold uppercase tracking-widest mb-2">Node:</p>
-            <h4 className="text-lg font-bold text-white mb-1">{causalChain?.node_name_de}</h4>
-            <p className="text-xs text-slate-400 mb-4">{causalChain?.körperregion}</p>
-            <p className="text-xs text-slate-300 mb-6 font-semibold">Wie ist deine aktuelle Beweglichkeit/Empfindung?</p>
+          <div className="rounded-2xl border border-orange-500/40 bg-gradient-to-br from-orange-500/15 to-orange-500/5 p-6 text-center space-y-4">
+            <div>
+              <p className="text-xs text-orange-300 font-bold uppercase tracking-widest mb-2">Node:</p>
+              <h4 className="text-lg font-bold text-white mb-1">{causalChain?.node_name_de}</h4>
+              <p className="text-xs text-slate-400">{causalChain?.körperregion}</p>
+            </div>
+
+            {/* Test-Bewegungs-Anleitung */}
+            <div className="border-t border-orange-500/20 pt-4">
+              <p className="text-xs text-orange-300 font-bold uppercase tracking-widest mb-2">📋 So testest du:</p>
+              <p className="text-xs text-slate-200 leading-relaxed">
+                {causalChain?.hardware_reset?.technik || 'Führe eine langsame Bewegung durch und spüre die aktuelle Einschränkung.'}
+              </p>
+            </div>
+
+            <p className="text-xs text-slate-300 font-semibold">Wie ist deine aktuelle Beweglichkeit/Empfindung?</p>
             <div className="space-y-3 mt-2">
               {[
                 { val: 1, label: 'Sehr limitiert', icon: '⚠️', sub: 'Kaum Bewegung möglich', color: 'border-red-500/40 hover:bg-red-500/15 text-red-400' },
