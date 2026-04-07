@@ -170,11 +170,11 @@ export default function MFRResetScreenDynamic({ onComplete, nodeId = 'N1', scree
       {/* COMPRESSION */}
       {step === 'compression' && (
         <motion.div initial={{ opacity: 0, x: 16 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 16 }} className="space-y-5">
-          <div className="rounded-2xl border border-emerald-500/30 bg-gradient-to-br from-emerald-500/10 to-transparent p-6 space-y-4">
+          <div className="rounded-2xl border border-cyan-500/30 bg-gradient-to-br from-cyan-500/10 to-transparent p-6 space-y-4">
             <div className="flex items-start gap-3">
-              <MapPin className="w-5 h-5 text-emerald-400 flex-shrink-0 mt-0.5" />
+              <MapPin className="w-5 h-5 text-cyan-400 flex-shrink-0 mt-0.5" />
               <div>
-                <h3 className="text-lg font-bold text-white mb-1">90-Sekunden Reset</h3>
+                <h3 className="text-lg font-bold text-white mb-1">Faszien-Entlastung</h3>
                 <p className="text-xs text-slate-400">Myofasziale Freigabe</p>
               </div>
             </div>
@@ -202,19 +202,19 @@ export default function MFRResetScreenDynamic({ onComplete, nodeId = 'N1', scree
             )}
           </div>
           <div className="flex flex-col items-center gap-4">
-            <motion.div animate={{ scale: isRunning ? [0.98, 1.02, 0.98] : 1 }} transition={{ duration: 1.2, repeat: isRunning ? Infinity : 0 }} className="relative w-36 h-36 rounded-full border-4 border-orange-500/40 flex items-center justify-center bg-gradient-to-br from-orange-500/10 to-transparent shadow-lg shadow-orange-500/20">
+            <motion.div animate={{ scale: isRunning ? [0.98, 1.02, 0.98] : 1 }} transition={{ duration: 1.2, repeat: isRunning ? Infinity : 0 }} className="relative w-36 h-36 rounded-full border-4 border-cyan-500/40 flex items-center justify-center bg-gradient-to-br from-cyan-500/10 to-transparent shadow-lg shadow-cyan-500/20">
               <div className="text-center">
                 <span className="text-6xl font-black text-emerald-400 font-mono">{String(Math.floor(remainingTime / 60)).padStart(1, '0')}:{String(remainingTime % 60).padStart(2, '0')}</span>
                 <p className="text-xs text-slate-500 mt-2 tracking-widest font-bold">{isRunning ? 'AKTIV' : 'BEREIT'}</p>
               </div>
               <svg className="absolute inset-0 w-full h-full">
                 <circle cx="50%" cy="50%" r="72" fill="none" stroke="currentColor" strokeWidth="2" className="text-slate-800" />
-                <motion.circle cx="50%" cy="50%" r="72" fill="none" stroke="currentColor" strokeWidth="3" className="text-emerald-500" strokeDasharray={2 * Math.PI * 72} strokeDashoffset={2 * Math.PI * 72 * (1 - progress / 100)} strokeLinecap="round" style={{ transformOrigin: '50% 50%', transform: 'rotate(-90deg)' }} />
+                <motion.circle cx="50%" cy="50%" r="72" fill="none" stroke="currentColor" strokeWidth="3" className="text-cyan-500" strokeDasharray={2 * Math.PI * 72} strokeDashoffset={2 * Math.PI * 72 * (1 - progress / 100)} strokeLinecap="round" style={{ transformOrigin: '50% 50%', transform: 'rotate(-90deg)' }} />
               </svg>
             </motion.div>
             <div className="flex gap-2 w-full">
               {!isRunning ? (
-                <Button onClick={handleStartTimer} className="flex-1 h-12 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white font-bold rounded-lg text-sm flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/40 active:scale-95 transition-transform">
+                <Button onClick={handleStartTimer} className="flex-1 h-12 bg-gradient-to-r from-cyan-500 to-cyan-600 hover:from-cyan-600 hover:to-cyan-700 text-white font-bold rounded-lg text-sm flex items-center justify-center gap-2 shadow-lg shadow-cyan-500/40 active:scale-95 transition-transform">
                   <Play className="w-4 h-4" />
                   Starten
                 </Button>

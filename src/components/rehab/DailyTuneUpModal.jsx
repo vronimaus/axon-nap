@@ -149,9 +149,9 @@ export default function DailyTuneUpModal({
         className="fixed inset-0 z-[9999] bg-slate-950 overflow-y-auto flex flex-col"
       >
         {/* Header */}
-        <div className="flex items-center justify-between px-5 py-4 bg-gradient-to-b from-slate-950 via-slate-950 to-transparent border-b border-emerald-500/20">
+        <div className="flex items-center justify-between px-5 py-4 bg-gradient-to-b from-slate-950 via-slate-950 to-transparent border-b border-cyan-500/20">
           <div>
-            <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-emerald-500">
+            <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-cyan-500">
               {SCREENS[currentScreen].label}
             </span>
             <h2 className="text-xl font-bold text-white tracking-tight">
