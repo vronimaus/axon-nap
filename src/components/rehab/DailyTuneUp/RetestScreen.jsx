@@ -28,13 +28,13 @@ export default function RetestScreen({ onComplete, screenId = 2, threatBefore = 
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
-      className="space-y-5 max-w-sm mx-auto w-full"
+      className="w-full max-w-sm mx-auto px-4 space-y-6"
     >
       {/* Description */}
       <motion.div 
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-gradient-to-br from-purple-500/10 to-transparent border border-purple-500/20 rounded-xl p-4"
+        className="rounded-2xl border border-purple-500/30 bg-gradient-to-br from-purple-500/15 to-transparent p-5"
       >
         <p className="text-slate-200 text-sm leading-relaxed font-medium">
           Wie fühlst du dich <span className="text-purple-400 font-bold">jetzt</span>?
@@ -42,12 +42,12 @@ export default function RetestScreen({ onComplete, screenId = 2, threatBefore = 
       </motion.div>
 
       {/* Comparison - Large Impact */}
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-2 gap-4">
         {/* Before */}
         <motion.div
           initial={{ scale: 0.9, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
-          className="rounded-xl border-2 border-red-500/40 bg-gradient-to-br from-red-500/15 to-red-500/5 p-4 text-center"
+          className="rounded-2xl border-2 border-red-500/40 bg-gradient-to-br from-red-500/15 to-red-500/5 p-5 text-center"
         >
           <p className="text-[10px] font-bold text-red-400 uppercase tracking-widest mb-2">
             Vorher
@@ -66,7 +66,7 @@ export default function RetestScreen({ onComplete, screenId = 2, threatBefore = 
           initial={{ scale: 0.9, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           transition={{ delay: 0.15 }}
-          className="rounded-xl border-2 border-cyan-400/50 bg-gradient-to-br from-cyan-500/15 to-cyan-500/5 p-4 text-center shadow-lg shadow-cyan-500/20"
+          className="rounded-2xl border-2 border-cyan-400/50 bg-gradient-to-br from-cyan-500/15 to-cyan-500/5 p-5 text-center shadow-lg shadow-cyan-500/30"
         >
           <p className="text-[10px] font-bold text-cyan-400 uppercase tracking-widest mb-2">
             Nachher
@@ -86,7 +86,7 @@ export default function RetestScreen({ onComplete, screenId = 2, threatBefore = 
         <motion.div
           initial={{ opacity: 0, y: 20, scale: 0.9 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
-          className="rounded-xl bg-gradient-to-br from-emerald-500/20 to-emerald-500/5 border-2 border-emerald-400/50 p-4 shadow-lg shadow-emerald-500/25 text-center"
+          className="rounded-2xl bg-gradient-to-br from-emerald-500/20 to-emerald-500/5 border-2 border-emerald-400/50 p-5 shadow-lg shadow-emerald-500/30 text-center"
         >
           <div className="flex items-center justify-center gap-2 mb-2">
             <motion.span
@@ -133,7 +133,7 @@ export default function RetestScreen({ onComplete, screenId = 2, threatBefore = 
       >
         <Button
           onClick={handleSubmit}
-          className="w-full bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-slate-900 font-bold py-3 rounded-xl text-sm flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/30"
+          className="w-full h-14 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white font-bold rounded-xl text-sm flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/40 active:scale-95 transition-transform"
         >
           <Sparkles className="w-4 h-4" />
           Weiter →

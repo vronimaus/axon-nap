@@ -58,13 +58,13 @@ export default function NeuroDrillScreen({ onComplete, screenId = 1 }) {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
-      className="space-y-5 max-w-sm mx-auto w-full"
+      className="w-full max-w-sm mx-auto px-4 space-y-6"
     >
       {/* Description */}
       <motion.div 
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-gradient-to-br from-cyan-500/10 to-transparent border border-cyan-500/20 rounded-xl p-4"
+        className="rounded-2xl border border-cyan-500/30 bg-gradient-to-br from-cyan-500/15 to-transparent p-5"
       >
         <p className="text-slate-200 text-sm leading-relaxed font-medium">
           <span className="text-cyan-400 font-bold">Neuro-Drills</span> für dein ZNS
@@ -90,7 +90,7 @@ export default function NeuroDrillScreen({ onComplete, screenId = 1 }) {
       <motion.div 
         initial={{ scale: 0.95, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
-        className="rounded-xl border border-cyan-500/40 bg-gradient-to-br from-cyan-500/15 to-cyan-500/5 p-5"
+        className="rounded-2xl border border-cyan-500/40 bg-gradient-to-br from-cyan-500/15 to-cyan-500/5 p-5"
       >
         <p className="text-[10px] font-bold text-cyan-400 uppercase tracking-widest mb-2">
           Drill {drillStep + 1} / {drillSequence.length}
@@ -107,10 +107,10 @@ export default function NeuroDrillScreen({ onComplete, screenId = 1 }) {
       <button
         onClick={handlePlayAudio}
         disabled={isTTSLoading}
-        className={`w-full flex items-center justify-center gap-3 py-6 rounded-2xl font-black text-base transition-all active:scale-[0.98] ${
+        className={`w-full h-14 flex items-center justify-center gap-3 rounded-2xl font-black text-sm transition-all active:scale-95 ${
           isPlaying
             ? 'bg-cyan-500/20 border-2 border-cyan-400 text-cyan-300'
-            : 'bg-cyan-500 hover:bg-cyan-400 text-slate-900 shadow-lg shadow-cyan-500/30'
+            : 'bg-cyan-500 hover:bg-cyan-600 text-white shadow-lg shadow-cyan-500/40'
         }`}
       >
         {isTTSLoading
@@ -140,7 +140,7 @@ export default function NeuroDrillScreen({ onComplete, screenId = 1 }) {
       {!drillCompleted ? (
         <Button
           onClick={handleStepComplete}
-          className="w-full bg-gradient-to-r from-cyan-500 to-cyan-600 hover:from-cyan-600 hover:to-cyan-700 text-slate-900 font-bold py-3 rounded-xl text-sm shadow-lg shadow-cyan-500/30"
+          className="w-full h-14 bg-gradient-to-r from-cyan-500 to-cyan-600 hover:from-cyan-600 hover:to-cyan-700 text-white font-bold rounded-xl text-sm shadow-lg shadow-cyan-500/40 active:scale-95 transition-transform"
         >
           {drillStep < drillSequence.length - 1 ? 'Nächster →' : 'Fertig'}
         </Button>
@@ -151,7 +151,7 @@ export default function NeuroDrillScreen({ onComplete, screenId = 1 }) {
         >
           <Button
             onClick={handleComplete}
-            className="w-full bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-slate-900 font-bold py-3 rounded-xl text-sm flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/30"
+            className="w-full h-14 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white font-bold rounded-xl text-sm flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/40 active:scale-95 transition-transform"
           >
             <Check className="w-4 h-4" />
             Weiter →

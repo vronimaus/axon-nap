@@ -49,7 +49,7 @@ export default function IntegrationScreen({
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
-      className="space-y-5 max-w-sm mx-auto w-full"
+      className="w-full max-w-sm mx-auto px-4 space-y-6"
     >
       {/* Highlight: Improvement */}
       {improvement > 0 && (
@@ -61,7 +61,7 @@ export default function IntegrationScreen({
             duration: 1.8,
             repeat: Infinity,
           }}
-          className="rounded-xl bg-gradient-to-br from-emerald-500/20 to-emerald-500/5 border-2 border-emerald-500/60 p-5 text-center shadow-lg shadow-emerald-500/25"
+          className="rounded-2xl bg-gradient-to-br from-emerald-500/20 to-emerald-500/5 border-2 border-emerald-500/60 p-5 text-center shadow-lg shadow-emerald-500/30"
         >
           <p className="text-xs text-emerald-300 mb-2 uppercase tracking-widest font-bold">
             Erfolg
@@ -76,7 +76,7 @@ export default function IntegrationScreen({
       <motion.div 
         initial={{ scale: 0.95, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
-        className="rounded-xl border border-purple-500/40 bg-gradient-to-br from-purple-500/15 to-purple-500/5 p-5"
+        className="rounded-2xl border border-purple-500/40 bg-gradient-to-br from-purple-500/15 to-purple-500/5 p-5"
       >
         <p className="text-[10px] font-bold text-purple-400 uppercase tracking-widest mb-2">
           Finale Integration
@@ -99,10 +99,10 @@ export default function IntegrationScreen({
       <button
         onClick={handlePlayAudio}
         disabled={isTTSLoading}
-        className={`w-full flex items-center justify-center gap-2 py-4 rounded-xl font-bold text-sm transition-all active:scale-[0.96] ${
+        className={`w-full h-14 flex items-center justify-center gap-2 rounded-xl font-bold text-sm transition-all active:scale-95 ${
           isPlaying
             ? 'bg-purple-500/20 border-2 border-purple-400 text-purple-300'
-            : 'bg-purple-500 hover:bg-purple-600 text-white shadow-lg shadow-purple-500/30'
+            : 'bg-purple-500 hover:bg-purple-600 text-white shadow-lg shadow-purple-500/40'
         }`}
       >
         {isTTSLoading
@@ -117,7 +117,7 @@ export default function IntegrationScreen({
       {!exerciseCompleted ? (
         <Button
           onClick={handleCompleteExercise}
-          className="w-full bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white font-bold py-3 rounded-xl text-sm shadow-lg shadow-purple-500/30"
+          className="w-full h-14 bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white font-bold rounded-xl text-sm shadow-lg shadow-purple-500/40 active:scale-95 transition-transform"
         >
           Fertig ✓
         </Button>
@@ -127,7 +127,7 @@ export default function IntegrationScreen({
           animate={{ opacity: 1, y: 0 }}
           className="space-y-3"
         >
-          <div className="rounded-xl bg-gradient-to-br from-emerald-500/20 to-emerald-500/5 border border-emerald-500/50 p-4 text-center">
+          <div className="rounded-2xl bg-gradient-to-br from-emerald-500/20 to-emerald-500/5 border border-emerald-500/50 p-5 text-center">
             <motion.div
               animate={{ scale: [0.8, 1, 0.8] }}
               transition={{ duration: 1.5, repeat: Infinity }}
@@ -142,7 +142,7 @@ export default function IntegrationScreen({
           <Button
             onClick={handleFinalSubmit}
             disabled={isSubmitting}
-            className="w-full bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-slate-900 font-bold py-3 rounded-xl text-sm shadow-lg shadow-emerald-500/30"
+            className="w-full h-14 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white font-bold rounded-xl text-sm shadow-lg shadow-emerald-500/40 active:scale-95 transition-transform"
           >
             {isSubmitting ? 'Speichert...' : 'Session abschließen 🎉'}
           </Button>

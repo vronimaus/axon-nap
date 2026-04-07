@@ -80,10 +80,10 @@ export default function MFRResetScreen({ onComplete, rehabPlan, screenId = 0 }) 
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
-      className="space-y-5 max-w-sm mx-auto w-full"
+      className="w-full max-w-sm mx-auto px-4 space-y-6"
     >
       {/* Step Indicator */}
-      <div className="flex gap-2 text-[10px] font-bold uppercase tracking-widest text-slate-500">
+      <div className="flex gap-2 text-[10px] font-bold uppercase tracking-widest text-slate-400">
         <span className={step === 'pretest' ? 'text-orange-400' : ''}>① Pretest</span>
         <span>•</span>
         <span className={step === 'compression' ? 'text-orange-400' : ''}>② Reset</span>
@@ -103,7 +103,7 @@ export default function MFRResetScreen({ onComplete, rehabPlan, screenId = 0 }) 
               initial={{ opacity: 0, x: -16 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -16 }}
-              className="space-y-4"
+              className="space-y-6"
             >
               {/* Large Icon Header */}
               <div className="flex justify-center mb-4">
@@ -113,14 +113,14 @@ export default function MFRResetScreen({ onComplete, rehabPlan, screenId = 0 }) 
               </div>
 
               {/* Main Title */}
-              <div className="text-center">
-                <h3 className="text-2xl font-black text-orange-400 mb-2">AUSGANGSMESSUNG</h3>
-                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Schritt 1 von 3</p>
+              <div className="text-center mb-2">
+                <h3 className="text-3xl font-black text-orange-400 mb-1 leading-tight">AUSGANGSMESSUNG</h3>
+                <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Schritt 1 von 3</p>
               </div>
 
-              <div className="rounded-xl border border-orange-500/30 bg-gradient-to-br from-orange-500/10 to-transparent p-4">
+              <div className="rounded-2xl border border-orange-500/30 bg-gradient-to-br from-orange-500/10 to-transparent p-5">
                 <p className="text-sm text-slate-200 leading-relaxed">
-                  <span className="text-orange-400 font-bold">Baseline-Messung:</span> Wir testen deine aktuelle Mobilität vor dem Reset, um die Verbesserung zu messen.
+                  <strong className="text-orange-400">Baseline-Messung:</strong> Wir testen deine aktuelle Mobilität vor dem Reset, um die Verbesserung zu messen.
                 </p>
               </div>
 
@@ -161,12 +161,12 @@ export default function MFRResetScreen({ onComplete, rehabPlan, screenId = 0 }) 
               initial={{ opacity: 0, x: 16 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: 16 }}
-              className="space-y-4"
+              className="space-y-6"
             >
               {/* Title */}
-              <div className="text-center">
-                <h3 className="text-2xl font-black text-emerald-400 mb-2">90-SEKUNDEN RESET</h3>
-                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Schritt 2 von 3</p>
+              <div className="text-center mb-2">
+                <h3 className="text-3xl font-black text-emerald-400 mb-1 leading-tight">90-SEKUNDEN RESET</h3>
+                <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Schritt 2 von 3</p>
               </div>
 
               {/* Target Node Display */}
@@ -198,9 +198,9 @@ export default function MFRResetScreen({ onComplete, rehabPlan, screenId = 0 }) 
               )}
 
               {/* Druck-Hinweis */}
-              <div className="bg-slate-800/60 border border-orange-500/20 rounded-xl px-4 py-3">
+              <div className="rounded-2xl border border-orange-500/20 bg-gradient-to-br from-orange-500/5 to-transparent p-4">
                 <p className="text-xs text-slate-300 leading-relaxed">
-                  🎯 Drücke mit dem <span className="text-emerald-400 font-semibold">Lacrosse-Ball</span> auf den Punkt — <span className="text-orange-300">mittlerer Druck</span>, kein Schmerz. Dann Timer starten und Druck halten.
+                  🎯 Drücke mit dem <span className="text-emerald-400 font-semibold">Lacrosse-Ball</span> auf den Punkt — <span className="text-orange-300 font-semibold">mittlerer Druck</span>, kein Schmerz. Timer starten.
                 </p>
               </div>
 
@@ -257,9 +257,9 @@ export default function MFRResetScreen({ onComplete, rehabPlan, screenId = 0 }) 
             <div className="flex gap-2 w-full">
               {!isRunning ? (
                 <Button
-                  onClick={handleStartTimer}
-                  className="flex-1 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-slate-900 font-bold py-2 rounded-lg text-sm flex items-center justify-center gap-2 shadow-lg shadow-orange-500/30"
-                >
+                      onClick={handleStartTimer}
+                      className="flex-1 h-14 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-bold rounded-xl text-sm flex items-center justify-center gap-2 shadow-lg shadow-orange-500/40 active:scale-95 transition-transform"
+                    >
                   <Play className="w-4 h-4" />
                   Starten
                 </Button>
@@ -292,7 +292,7 @@ export default function MFRResetScreen({ onComplete, rehabPlan, screenId = 0 }) 
             >
               <Button
                 onClick={() => setStep('info')}
-                className="w-full bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-slate-900 font-bold py-3 rounded-xl text-sm flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/30"
+                className="w-full h-14 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white font-bold rounded-xl text-sm flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/40 active:scale-95 transition-transform"
               >
                 <Check className="w-4 h-4" />
                 Weiter →
@@ -308,15 +308,15 @@ export default function MFRResetScreen({ onComplete, rehabPlan, screenId = 0 }) 
           initial={{ opacity: 0, x: 16 }}
           animate={{ opacity: 1, x: 0 }}
           exit={{ opacity: 0, x: 16 }}
-          className="space-y-4"
+          className="space-y-6"
           >
           {/* Title */}
-          <div className="text-center">
-            <h3 className="text-2xl font-black text-purple-400 mb-2">DIE WISSENSCHAFT</h3>
-            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Schritt 3 von 3</p>
+          <div className="text-center mb-2">
+            <h3 className="text-3xl font-black text-purple-400 mb-1 leading-tight">DIE WISSENSCHAFT</h3>
+            <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Schritt 3 von 3</p>
           </div>
 
-          <div className="rounded-xl border border-purple-500/30 bg-gradient-to-br from-purple-500/10 to-transparent p-4 space-y-3">
+          <div className="rounded-2xl border border-purple-500/30 bg-gradient-to-br from-purple-500/10 to-transparent p-5 space-y-4">
             <div>
               <p className="text-[10px] font-bold text-purple-400 uppercase tracking-widest mb-1">
                 🧠 MFR-Node: Faszialer Releases
@@ -347,7 +347,7 @@ export default function MFRResetScreen({ onComplete, rehabPlan, screenId = 0 }) 
 
           <Button
             onClick={handleComplete}
-            className="w-full bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-slate-900 font-bold py-3 rounded-xl text-sm flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/30"
+            className="w-full h-14 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white font-bold rounded-xl text-sm flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/40 active:scale-95 transition-transform"
           >
             <Check className="w-4 h-4" />
             Verstanden, weiter! →
