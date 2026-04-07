@@ -4,40 +4,35 @@ import { Button } from '@/components/ui/button';
 import { Loader2, Play, Check, Gauge, MapPin } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 
-export default function MFRResetScreen({ onComplete, rehabPlan, screenId = 0 }) {
-  const [mfrNode, setMfrNode] = useState(null);
+export default function MFRResetScreen({ onComplete, rehabPlan, nodeId = 'N1', screenId = 0 }) {
+  const [causalChain, setCausalChain] = useState(null);
   const [timeElapsed, setTimeElapsed] = useState(0);
   const [isRunning, setIsRunning] = useState(false);
-  const [isLoadingNode, setIsLoadingNode] = useState(true);
+  const [isLoadingData, setIsLoadingData] = useState(true);
   const [step, setStep] = useState('pretest'); // pretest → compression → info
   const [pretestValue, setPretestValue] = useState(null);
   const MFR_DURATION = 90; // seconds
 
-  // Load first MFR node from current phase
+  // Load TuneUpCausalChain by node_id
   useEffect(() => {
-    const loadMFRNode = async () => {
+    const loadCausalChain = async () => {
       try {
-        // Get first MFR exercise from current phase
-        const currentPhaseIdx = Math.max(0, (rehabPlan?.current_phase || 1) - 1);
-        const currentPhase = rehabPlan?.phases?.[currentPhaseIdx];
-        
-        if (currentPhase?.exercises) {
-          const mfrEx = currentPhase.exercises.find(ex => ex.category === 'mfr');
-          if (mfrEx?.exercise_id) {
-            const nodes = await base44.entities.MFRNode.filter({});
-            const node = nodes?.[0]; // Use first node as example
-            setMfrNode(node || { name_de: 'Stecco-Punkt', body_area: 'Schulter' });
-          }
+        const chains = await base44.entities.TuneUpCausalChain.filter({ node_id: nodeId });
+        if (chains?.length > 0) {
+          setCausalChain(chains[0]);
+        } else {
+          console.warn(`No causal chain found for node ${nodeId}`);
+          setCausalChain(null);
         }
-        setIsLoadingNode(false);
       } catch (error) {
-        console.error('Error loading MFR node:', error);
-        setMfrNode({ name_de: 'MFR-Node Entlastung', body_area: 'Schulter' });
-        setIsLoadingNode(false);
+        console.error('Error loading causal chain:', error);
+        setCausalChain(null);
+      } finally {
+        setIsLoadingData(false);
       }
     };
-    loadMFRNode();
-  }, [rehabPlan]);
+    loadCausalChain();
+  }, [nodeId]);
 
   // Timer logic
   useEffect(() => {
@@ -64,7 +59,7 @@ export default function MFRResetScreen({ onComplete, rehabPlan, screenId = 0 }) 
   };
 
   const handleComplete = () => {
-    onComplete(screenId, { mfrNodeId: mfrNode?.id, pretestValue, posttestValue: pretestValue - 1 });
+    onComplete(screenId, { mfrNodeId: nodeId, pretestValue, posttestValue: pretestValue - 1 });
   };
 
   const handlePretestComplete = (value) => {
@@ -91,13 +86,13 @@ export default function MFRResetScreen({ onComplete, rehabPlan, screenId = 0 }) 
         <span className={step === 'info' ? 'text-orange-400' : ''}>③ Wissenschaft</span>
       </div>
 
-      {isLoadingNode ? (
+      {isLoadingData || !causalChain ? (
         <div className="flex items-center justify-center py-8">
           <Loader2 className="w-8 h-8 text-emerald-400 animate-spin" />
         </div>
       ) : (
         <>
-          {/* PRETEST */}
+           {/* PRETEST */}
           {step === 'pretest' && (
             <motion.div
               initial={{ opacity: 0, x: -16 }}
@@ -125,9 +120,9 @@ export default function MFRResetScreen({ onComplete, rehabPlan, screenId = 0 }) 
               </div>
 
               <div className="rounded-2xl border border-orange-500/40 bg-gradient-to-br from-orange-500/15 to-orange-500/5 p-6 text-center">
-                <p className="text-xs text-orange-300 font-bold uppercase tracking-widest mb-2">Test-Punkt:</p>
-                <h4 className="text-lg font-bold text-white mb-1">{mfrNode?.name_de || 'MFR-Node Entlastung'}</h4>
-                {mfrNode?.body_area && <p className="text-xs text-slate-400 mb-4">{mfrNode.body_area}</p>}
+               <p className="text-xs text-orange-300 font-bold uppercase tracking-widest mb-2">Test-Punkt:</p>
+               <h4 className="text-lg font-bold text-white mb-1">{causalChain?.node_name_de || 'MFR-Node'}</h4>
+               {causalChain?.körperregion && <p className="text-xs text-slate-400 mb-4">{causalChain.körperregion}</p>}
 
                 <p className="text-xs text-slate-300 mb-6 font-semibold">
                   Wie ist deine aktuelle Beweglichkeit/Empfindung?
@@ -179,21 +174,19 @@ export default function MFRResetScreen({ onComplete, rehabPlan, screenId = 0 }) 
                   Zu bearbeitender Punkt
                 </p>
                 <h3 className="text-xl font-black text-white mb-1">
-                  {mfrNode?.name_de || 'MFR-Node Entlastung'}
+                  {causalChain?.node_name_de}
                 </h3>
-                {mfrNode?.exact_placement_de && (
-                  <p className="text-xs text-slate-400 mt-2">{mfrNode.exact_placement_de}</p>
-                )}
+                <p className="text-xs text-slate-400 mt-2">{causalChain?.stecco_cc}</p>
               </motion.div>
 
               {/* Platzierungsanleitung */}
-              {mfrNode?.user_instruction && (
+              {causalChain?.hardware_reset?.technik && (
                 <div className="bg-slate-800/70 border border-cyan-500/30 rounded-xl px-4 py-4">
                   <div className="flex items-center gap-2 mb-2">
                     <MapPin className="w-4 h-4 text-cyan-400 flex-shrink-0" />
-                    <p className="text-xs font-bold text-cyan-400 uppercase tracking-widest">So platzierst du den Ball</p>
+                    <p className="text-xs font-bold text-cyan-400 uppercase tracking-widest">Technik</p>
                   </div>
-                  <p className="text-sm text-slate-200 leading-relaxed">{mfrNode.user_instruction}</p>
+                  <p className="text-sm text-slate-200 leading-relaxed">{causalChain.hardware_reset.technik}</p>
                 </div>
               )}
 
@@ -319,19 +312,19 @@ export default function MFRResetScreen({ onComplete, rehabPlan, screenId = 0 }) 
           <div className="rounded-2xl border border-purple-500/30 bg-gradient-to-br from-purple-500/10 to-transparent p-5 space-y-4">
             <div>
               <p className="text-[10px] font-bold text-purple-400 uppercase tracking-widest mb-1">
-                🧠 MFR-Node: Faszialer Releases
+                🧠 WEIL (Biomechanische Ursache)
               </p>
               <p className="text-xs text-slate-300 leading-relaxed">
-                {mfrNode?.stecco_cc_function || 'Dieser Punkt koordiniert die Faszienketten und ermöglicht flüssigere Bewegungen.'}
+                {causalChain?.biomechanische_ursache}
               </p>
             </div>
 
             <div className="border-t border-slate-700 pt-3">
               <p className="text-[10px] font-bold text-emerald-400 uppercase tracking-widest mb-1">
-                ⚡ Mechanismus: Thixotropie & Ruffini
+                ⚡ Hardware Reset: Mechanismus
               </p>
               <p className="text-xs text-slate-300 leading-relaxed">
-                {mfrNode?.physio_neurological_impact || 'Die Kompression reduziert Faszienviskosität und aktiviert Ruffini-Rezeptoren für tiefe Entspannung.'}
+                {causalChain?.hardware_reset?.mechanismus}
               </p>
             </div>
 
