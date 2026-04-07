@@ -110,7 +110,7 @@ export default function MFRResetScreenDynamic({ onComplete, nodeId = 'N1', scree
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
-      className="w-full max-w-sm mx-auto px-4 space-y-6"
+      className="w-full max-w-sm mx-auto px-4 space-y-6 max-h-[80vh] overflow-y-auto"
     >
 
 
