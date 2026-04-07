@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Volume2, VolumeX, Loader2, Check } from 'lucide-react';
 import { useTTS } from '@/hooks/useTTS';
 
-export default function NeuroDrillScreen({ onComplete, screenId = 1 }) {
+export default function NeuroDrillScreen({ onComplete, screenId = 1, nodeId = 'N6' }) {
   const [drillStep, setDrillStep] = useState(0);
   const [drillCompleted, setDrillCompleted] = useState(false);
   const { isPlaying, isLoading: isTTSLoading, playText, stop } = useTTS();
@@ -48,7 +48,7 @@ export default function NeuroDrillScreen({ onComplete, screenId = 1 }) {
   };
 
   const handleComplete = () => {
-    onComplete(screenId, { neuroDrillsCompleted: true });
+    onComplete(screenId, { nodeId, neuroDrillsCompleted: true });
   };
 
   const currentDrill = drillSequence[drillStep];

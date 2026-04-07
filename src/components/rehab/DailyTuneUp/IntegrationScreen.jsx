@@ -9,6 +9,7 @@ export default function IntegrationScreen({
   onComplete,
   screenId = 3,
   isSubmitting,
+  nodeId = 'N6',
   improvement = 0
 }) {
   const [exerciseCompleted, setExerciseCompleted] = useState(false);
@@ -41,7 +42,7 @@ export default function IntegrationScreen({
   };
 
   const handleFinalSubmit = () => {
-    onComplete(screenId, { integrationCompleted: true });
+    onComplete(screenId, { nodeId, integrationCompleted: true });
   };
 
   return (

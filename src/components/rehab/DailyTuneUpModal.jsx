@@ -184,6 +184,7 @@ export default function DailyTuneUpModal({
             {currentScreen === 1 && (
               <NeuroDrillScreen
                 key="neuro"
+                nodeId={nodeId}
                 screenId={1}
                 onComplete={handleScreenComplete}
               />
@@ -199,6 +200,7 @@ export default function DailyTuneUpModal({
             {currentScreen === 3 && (
               <IntegrationScreen
                 key="integration"
+                nodeId={nodeId}
                 screenId={3}
                 onComplete={handleScreenComplete}
                 isSubmitting={isSubmitting}
