@@ -7,7 +7,7 @@ import NeuroDrillScreen from './DailyTuneUp/NeuroDrillScreen';
 import RetestScreen from './DailyTuneUp/RetestScreen';
 import IntegrationScreen from './DailyTuneUp/IntegrationScreen';
 import NeuralChargeBar from './DailyTuneUp/NeuralChargeBar';
-import { useTTS } from '@/hooks/useTTS';
+
 import { base44 } from '@/api/base44Client';
 
 const SCREENS = [
@@ -33,7 +33,7 @@ export default function DailyTuneUpModal({
   const [integrationCompleted, setIntegrationCompleted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const { isPlaying, playText, stop } = useTTS();
+  // TTS disabled
 
   // Calculate neural charge (0-100%)
   const neuralCharge = (() => {
@@ -50,8 +50,6 @@ export default function DailyTuneUpModal({
     if (screenId === 0) {
       setThreatLevelBefore(data.threatLevel);
       setCurrentScreen(1);
-      // Coach-Audio nur bei Screen 0 (Intro)
-      playText(`Okay, dein Ausgangswert ist ${data.threatLevel}. Jetzt machen wir einen MFR-Reset.`);
     } else if (screenId === 1) {
       setMFRNodeCompleted(true);
       setCurrentScreen(2);
