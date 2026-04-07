@@ -38,7 +38,7 @@ export default function RetestScreen({ onComplete, screenId = 2 }) {
         {/* Vorher */}
         <div className="rounded-2xl border-2 border-red-500/50 bg-red-500/10 p-5 text-center space-y-3">
           <p className="text-xs font-bold text-red-400 uppercase tracking-widest">Vorher</p>
-          <p className="text-xs text-red-300 leading-relaxed">Drehst du deinen Kopf nach links?</p>
+          <p className="text-xs text-red-300 leading-relaxed">So hast du dich gefühlt</p>
           <p className="text-5xl font-black text-red-400">{pretestValue}</p>
         </div>
 
