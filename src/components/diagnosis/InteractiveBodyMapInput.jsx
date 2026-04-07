@@ -48,14 +48,14 @@ export default function InteractiveBodyMapInput({ onSubmit }) {
     if (view === 'front') {
       if (normalizedY < 0.06) region = 'Kopf/Stirn';
       else if (normalizedY < 0.11) region = (normalizedX < 0.47 || normalizedX > 0.53) ? 'Ohr/Kiefergelenk' : 'Hals vorne';
-      else if (normalizedY < 0.20) region = (normalizedX < 0.40 || normalizedX > 0.60) ? 'Schulter vorne/Acromion' : 'obere Brust/Schlüsselbein';
-      else if (normalizedY < 0.30) region = (normalizedX < 0.30 || normalizedX > 0.70) ? 'Oberarm' : 'mittlere Brust';
-      else if (normalizedY < 0.37) region = (normalizedX < 0.40 || normalizedX > 0.60) ? 'Ellenbogen-Beuge' : 'Bauch oben';
+      else if (normalizedY < 0.18) region = (normalizedX < 0.40 || normalizedX > 0.60) ? 'Schulter vorne/Acromion' : 'obere Brust/Schlüsselbein';
+      else if (normalizedY < 0.28) region = (normalizedX < 0.30 || normalizedX > 0.70) ? 'Oberarm' : 'mittlere Brust';
+      else if (normalizedY < 0.35) region = (normalizedX < 0.40 || normalizedX > 0.60) ? 'Ellenbogen-Beuge' : 'Bauch oben';
       else if (normalizedY < 0.42) region = 'Bauch Mitte/Bauchnabel';
       else if (normalizedY < 0.50) region = (normalizedX < 0.35 || normalizedX > 0.65) ? 'Unterarm/Handgelenk' : 'Unterbauch/Becken';
       else if (normalizedY < 0.56) region = 'Becken/Hüfte';
       else if (normalizedY < 0.68) region = 'Oberschenkel vorne';
-      else if (normalizedY < 0.76) region = 'Knie vorne';
+      else if (normalizedY < 0.78) region = 'Knie vorne';
       else if (normalizedY < 0.88) region = 'Unterschenkel/Schienbein';
       else region = 'Fuß/Knöchel vorne';
     } else {
