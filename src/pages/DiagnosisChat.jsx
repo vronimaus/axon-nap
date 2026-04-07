@@ -16,6 +16,13 @@ import { ArrowRight, AlertCircle } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 
 // Steps: body_map → sfma → tune_up | red_flag | generating → done | error
+
+// Helper: Clean region from prefix
+const cleanRegion = (region) => {
+  if (!region) return 'unbekannte Region';
+  return region.replace(/^Schmerzen im Bereich:\s*/, '').trim();
+};
+
 export default function DiagnosisChat() {
   const [searchParams] = useSearchParams();
   const mapDataParam = searchParams.get('mapData');
@@ -116,7 +123,7 @@ export default function DiagnosisChat() {
 
     try {
       const diagSession = await base44.entities.DiagnosisSession.create({
-        symptom_location: painMap?.region || 'unbekannte Region',
+        symptom_location: cleanRegion(painMap?.region),
         symptom_description: '',
         tested_chains: [],
         hardware_results: {},
@@ -128,8 +135,8 @@ export default function DiagnosisChat() {
 
       const response = await base44.functions.invoke('generateRehabPlan', {
         diagnosis_session_id: diagSession.id,
-        problem_summary: `Schmerzen im Bereich: ${painMap?.region || 'unbekannte Region'}`,
-        region: painMap?.region || 'unbekannte Region',
+        problem_summary: cleanRegion(painMap?.region),
+        region: cleanRegion(painMap?.region),
         pain_intensity: sfmaDecision?.nrs || 5,
         affected_chains: '',
         feedback_summary: 'Tune-Up hat keine ausreichende Verbesserung gebracht.'
