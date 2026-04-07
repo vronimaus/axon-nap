@@ -53,14 +53,21 @@ export default function RetestScreen({ onComplete, screenId = 2 }) {
               <p className="text-5xl font-black text-cyan-400">{retestValue}</p>
             ) : (
               <div className="space-y-2 mt-2">
-                {[1, 2, 3, 4, 5].map(val => (
+                {[
+                  { val: 1, label: 'Sehr steif' },
+                  { val: 2, label: 'Steif' },
+                  { val: 3, label: 'Normal' },
+                  { val: 4, label: 'Beweglich' },
+                  { val: 5, label: 'Sehr beweglich' }
+                ].map(item => (
                   <motion.button
-                    key={val}
+                    key={item.val}
                     whileTap={{ scale: 0.95 }}
-                    onClick={() => setRetestValue(val)}
+                    onClick={() => setRetestValue(item.val)}
                     className="w-full py-2 rounded-lg bg-cyan-500/20 text-cyan-300 hover:bg-cyan-500/40 transition-all text-sm font-semibold"
                   >
-                    {val}
+                    <div>{item.val}</div>
+                    <div className="text-xs text-cyan-400/70 mt-0.5">{item.label}</div>
                   </motion.button>
                 ))}
               </div>
