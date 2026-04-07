@@ -160,15 +160,15 @@ export default function MFRResetScreenDynamic({ onComplete, nodeId = 'N1', scree
               <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3">Wie ist deine aktuelle Beweglichkeit?</p>
               <div className="space-y-2">
                 {[
-                  { val: 1, label: 'Sehr limitiert', sub: 'Kaum Bewegung möglich', icon: AlertCircle, color: 'from-red-500/20 to-transparent border-red-500/30 text-red-400' },
-                  { val: 3, label: 'Geht so', sub: 'Eingeschränkt, aber machbar', icon: ChevronRight, color: 'from-orange-500/20 to-transparent border-orange-500/30 text-orange-400' },
-                  { val: 5, label: 'Ganz leicht', sub: 'Volle Beweglichkeit', icon: CheckCircle, color: 'from-emerald-500/20 to-transparent border-emerald-500/30 text-emerald-400' },
-                ].map(({ val, label, sub, icon: Icon, color }) => (
-                  <button
-                    key={val}
-                    onClick={() => handlePretestComplete(val)}
-                    className={`w-full py-3 px-4 rounded-lg border bg-gradient-to-r ${color} hover:opacity-80 active:scale-95 transition-all text-left flex items-center gap-3`}
-                  >
+                   { val: 1, label: 'Sehr limitiert', sub: 'Kaum Bewegung möglich', icon: AlertCircle },
+                   { val: 3, label: 'Geht so', sub: 'Eingeschränkt, aber machbar', icon: ChevronRight },
+                   { val: 5, label: 'Ganz leicht', sub: 'Volle Beweglichkeit', icon: CheckCircle },
+                 ].map(({ val, label, sub, icon: Icon }) => (
+                   <button
+                     key={val}
+                     onClick={() => handlePretestComplete(val)}
+                     className="w-full py-3 px-4 rounded-lg border bg-gradient-to-r from-blue-500/10 to-transparent border-blue-500/20 text-slate-300 hover:from-cyan-500/20 hover:to-transparent hover:border-cyan-500/40 hover:text-cyan-400 active:scale-95 transition-all text-left flex items-center gap-3"
+                   >
                     <Icon className="w-4 h-4 flex-shrink-0" />
                     <div>
                       <p className="font-semibold text-sm">{label}</p>

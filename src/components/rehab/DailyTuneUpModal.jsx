@@ -5,7 +5,7 @@ import MFRResetScreenDynamic from './DailyTuneUp/MFRResetScreenDynamic';
 import NeuroDrillScreen from './DailyTuneUp/NeuroDrillScreen';
 import RetestScreen from './DailyTuneUp/RetestScreen';
 import IntegrationScreen from './DailyTuneUp/IntegrationScreen';
-import NeuralChargeBar from './DailyTuneUp/NeuralChargeBar';
+import NeuralChargeBarCompact from './DailyTuneUp/NeuralChargeBarCompact';
 
 import { base44 } from '@/api/base44Client';
 
@@ -170,11 +170,6 @@ export default function DailyTuneUpModal({
           </button>
         </div>
 
-        {/* Neural Charge Bar */}
-        <div className="px-5 py-4">
-          <NeuralChargeBar charge={neuralCharge} />
-        </div>
-
         {/* Screen Content */}
         <div className="flex-1 flex flex-col items-center justify-center px-5 py-6 overflow-y-auto">
           <AnimatePresence mode="wait">
@@ -210,6 +205,9 @@ export default function DailyTuneUpModal({
             )}
           </AnimatePresence>
         </div>
+
+        {/* Compact Neural Charge Bar (fixed bottom-right) */}
+        <NeuralChargeBarCompact charge={neuralCharge} />
       </motion.div>
     </>
   );
