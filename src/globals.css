@@ -129,27 +129,11 @@ input, textarea {
   }
 }
 
-/* Radix Slider - AXON Cyan Theme */
+/* Radix Slider - Standard styling (no aggressive overrides) */
 [role="slider"] {
-  background: #06b6d4 !important;
-  width: 22px !important;
-  height: 22px !important;
-  border: 2px solid rgba(255, 255, 255, 0.3) !important;
-  box-shadow: 0 2px 8px rgba(6, 182, 212, 0.6) !important;
-  border-radius: 50% !important;
-}
-
-/* Slider track - unfilled part */
-[role="slider"]::-webkit-slider-runnable-track {
-  background: #1e293b !important;
-  height: 8px;
-  border-radius: 9999px;
-}
-
-[role="slider"]::-moz-range-track {
-  background: #1e293b !important;
-  height: 8px;
-  border-radius: 9999px;
+  appearance: none;
+  background: transparent;
+  cursor: pointer;
 }
 
 @keyframes confetti-fall {
