@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
-import { Zap, Thermometer, AlertTriangle } from 'lucide-react';
+import { AlertTriangle } from 'lucide-react';
 
-// Red flag symptoms that override NRS and trigger red flag regardless
 const RED_FLAG_SYMPTOMS = [
   { id: 'numbness', label: 'Taubheit oder Kribbeln', icon: '⚡' },
   { id: 'radiation', label: 'Ausstrahlung in Arm oder Bein', icon: '↗' },
@@ -13,51 +12,67 @@ const RED_FLAG_SYMPTOMS = [
   { id: 'night', label: 'Schmerz nachts schlimmer als tagsüber', icon: '🌙' },
 ];
 
+// Unified scale: 1-3 = Steifigkeit, 4-6 = leichter Schmerz, 7-10 = starker Schmerz
+function getScaleInfo(value) {
+  if (value <= 3) return {
+    label: 'Steifigkeit / Unbehagen',
+    sub: 'Eingeschränkt, schwer, eingerostet — kein echter Schmerz',
+    color: '#06b6d4',
+    type: 'stiffness',
+    emoji: '🔵'
+  };
+  if (value <= 6) return {
+    label: 'Leichter bis moderater Schmerz',
+    sub: 'Spürbar unangenehm, aber managebar',
+    color: '#f59e0b',
+    type: 'pain_mild',
+    emoji: '🟡'
+  };
+  return {
+    label: 'Starker Schmerz',
+    sub: 'Deutlich beeinträchtigend — wir prüfen kurz die Sicherheit',
+    color: '#ef4444',
+    type: 'pain_strong',
+    emoji: '🔴'
+  };
+}
+
 export default function SFMAQuickCheck({ region, onDecision }) {
-  const [step, setStep] = useState('type'); // 'type' | 'nrs' | 'redflags'
-  const [painType, setPainType] = useState(null); // 'pain' | 'stiffness'
-  const [nrs, setNrs] = useState(5);
+  const [step, setStep] = useState('scale'); // 'scale' | 'redflags'
+  const [value, setValue] = useState(3);
   const [flagAnswers, setFlagAnswers] = useState({});
 
+  const info = getScaleInfo(value);
   const hasAnyRedFlag = Object.values(flagAnswers).some(v => v === true);
+  const allFlagsAnswered = Object.keys(flagAnswers).length === RED_FLAG_SYMPTOMS.length;
 
-  const handleTypeSelect = (type) => {
-    setPainType(type);
-    if (type === 'stiffness') {
-      // Steifigkeit → direkt Tune-Up, kein weiterer Check nötig
-      onDecision({ type: 'tune_up', painType: 'stiffness', nrs: 0, region });
-    } else {
-      setStep('nrs');
-    }
-  };
-
-  const handleNrsConfirm = () => {
-    if (nrs >= 7) {
+  const handleConfirm = () => {
+    if (value >= 7) {
       setStep('redflags');
     } else {
-      // < 7 → Tune-Up
-      onDecision({ type: 'tune_up', painType: 'pain', nrs, region });
+      onDecision({
+        type: 'tune_up',
+        symptomType: info.type === 'stiffness' ? 'steifigkeit' : 'schmerz',
+        nrs: value,
+        region
+      });
     }
   };
 
-  const handleFlagAnswer = (id, value) => {
-    setFlagAnswers(prev => ({ ...prev, [id]: value }));
+  const handleFlagAnswer = (id, val) => {
+    setFlagAnswers(prev => ({ ...prev, [id]: val }));
   };
 
   const handleRedFlagConfirm = () => {
     onDecision({
-      type: 'red_flag',
-      painType: 'pain',
-      nrs,
+      type: hasAnyRedFlag ? 'red_flag' : 'tune_up',
+      symptomType: 'schmerz',
+      nrs: value,
       region,
-      flags: Object.entries(flagAnswers)
-        .filter(([, v]) => v === true)
-        .map(([k]) => k),
+      flags: Object.entries(flagAnswers).filter(([, v]) => v === true).map(([k]) => k),
       allFlags: flagAnswers
     });
   };
-
-  const allFlagsAnswered = Object.keys(flagAnswers).length === RED_FLAG_SYMPTOMS.length;
 
   return (
     <motion.div
@@ -67,10 +82,10 @@ export default function SFMAQuickCheck({ region, onDecision }) {
     >
       <AnimatePresence mode="wait">
 
-        {/* STEP 1: Schmerztyp */}
-        {step === 'type' && (
+        {/* EINZIGER SCREEN: Unified Skala */}
+        {step === 'scale' && (
           <motion.div
-            key="type"
+            key="scale"
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -20 }}
@@ -78,101 +93,59 @@ export default function SFMAQuickCheck({ region, onDecision }) {
           >
             <div className="text-center">
               <p className="text-xs font-bold uppercase tracking-widest text-cyan-400 mb-2">Schnell-Check · {region}</p>
-              <h2 className="text-2xl font-bold text-white mb-2">Was spürst du?</h2>
-              <p className="text-slate-400 text-sm">Sei ehrlich — das bestimmt deinen optimalen Weg</p>
+              <h2 className="text-2xl font-bold text-white mb-2">Wie fühlt sich das an?</h2>
+              <p className="text-slate-400 text-sm">Von Steifigkeit bis Schmerz — wähle deinen aktuellen Zustand</p>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
-              <button
-                onClick={() => handleTypeSelect('pain')}
-                className="group glass rounded-2xl border border-red-500/30 p-6 hover:border-red-500/60 active:scale-95 transition-all text-center"
-              >
-                <div className="text-4xl mb-3">🔴</div>
-                <p className="text-white font-bold text-lg mb-1">Schmerz</p>
-                <p className="text-slate-400 text-xs leading-relaxed">Stechend, brennend oder dumpf — eindeutig Schmerz</p>
-              </button>
-
-              <button
-                onClick={() => handleTypeSelect('stiffness')}
-                className="group glass rounded-2xl border border-blue-500/30 p-6 hover:border-blue-500/60 active:scale-95 transition-all text-center"
-              >
-                <div className="text-4xl mb-3">🔵</div>
-                <p className="text-white font-bold text-lg mb-1">Steifigkeit</p>
-                <p className="text-slate-400 text-xs leading-relaxed">Schwer, eingerostet, eingeschränkte Bewegung</p>
-              </button>
-            </div>
-
-            <p className="text-center text-xs text-slate-500">
-              Bei Steifigkeit starten wir sofort mit dem Reset
-            </p>
-          </motion.div>
-        )}
-
-        {/* STEP 2: NRS Slider */}
-        {step === 'nrs' && (
-          <motion.div
-            key="nrs"
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -20 }}
-            className="space-y-8"
-          >
-            <div className="text-center">
-              <p className="text-xs font-bold uppercase tracking-widest text-cyan-400 mb-2">Schmerzintensität</p>
-              <h2 className="text-2xl font-bold text-white mb-2">Wie stark ist der Schmerz?</h2>
-              <p className="text-slate-400 text-sm">Jetzt gerade, in diesem Moment</p>
-            </div>
-
-            {/* NRS Visual */}
+            {/* Big Value Display */}
             <div className="glass rounded-2xl border border-slate-700 p-6 text-center">
-              <div className="text-8xl font-black mb-2" style={{
-                color: nrs <= 3 ? '#22c55e' : nrs <= 6 ? '#f59e0b' : '#ef4444'
-              }}>
-                {nrs}
+              <div className="text-7xl font-black mb-1 transition-all duration-200" style={{ color: info.color }}>
+                {info.emoji}
               </div>
-              <p className="text-slate-400 text-sm mb-6">
-                {nrs <= 3 ? 'Mild — gut managebar' :
-                  nrs <= 6 ? 'Moderat — unangenehm' :
-                  'Stark — beeinträchtigt dich'}
-              </p>
+              <p className="text-xl font-bold text-white mb-1">{info.label}</p>
+              <p className="text-slate-400 text-sm mb-6">{info.sub}</p>
 
               {/* Slider */}
               <input
                 type="range"
                 min={1}
                 max={10}
-                value={nrs}
-                onChange={e => setNrs(Number(e.target.value))}
+                value={value}
+                onChange={e => setValue(Number(e.target.value))}
                 className="w-full h-3 rounded-full appearance-none cursor-pointer"
                 style={{
-                  background: `linear-gradient(to right, #22c55e 0%, #f59e0b 50%, #ef4444 100%)`,
-                  accentColor: nrs <= 3 ? '#22c55e' : nrs <= 6 ? '#f59e0b' : '#ef4444'
+                  background: `linear-gradient(to right, #06b6d4 0%, #f59e0b 50%, #ef4444 100%)`,
+                  accentColor: info.color
                 }}
               />
               <div className="flex justify-between text-xs text-slate-500 mt-2">
-                <span>1 — kaum</span>
+                <span>1 — nur steif</span>
+                <span className="text-slate-600">Stufe {value}</span>
                 <span>10 — unerträglich</span>
+              </div>
+
+              {/* Scale legend */}
+              <div className="flex gap-2 mt-5 text-[10px]">
+                <div className="flex-1 py-1.5 px-2 rounded-lg bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 font-bold">1–3 Steifigkeit</div>
+                <div className="flex-1 py-1.5 px-2 rounded-lg bg-amber-500/10 border border-amber-500/20 text-amber-400 font-bold">4–6 Schmerz mild</div>
+                <div className="flex-1 py-1.5 px-2 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 font-bold">7–10 Schmerz stark</div>
               </div>
             </div>
 
             <Button
-              onClick={handleNrsConfirm}
-              className={`w-full h-14 font-bold text-base ${
-                nrs >= 7
+              onClick={handleConfirm}
+              className={`w-full h-14 font-bold text-base transition-all ${
+                value >= 7
                   ? 'bg-red-500/20 border border-red-500/40 text-red-400 hover:bg-red-500/30'
                   : 'bg-gradient-to-r from-cyan-500 to-emerald-500 text-white'
               }`}
             >
-              {nrs >= 7 ? '⚠️ Weiter zur Sicherheitsprüfung' : '✓ Tune-Up starten →'}
+              {value >= 7 ? '⚠️ Weiter zur Sicherheitsprüfung' : '✓ Tune-Up starten →'}
             </Button>
-
-            <button onClick={() => setStep('type')} className="w-full text-xs text-slate-500 hover:text-slate-400 transition-colors">
-              ← Zurück
-            </button>
           </motion.div>
         )}
 
-        {/* STEP 3: Red Flag Symptom-Check (nur bei NRS ≥ 7) */}
+        {/* Red Flag Check (nur bei Wert ≥ 7) */}
         {step === 'redflags' && (
           <motion.div
             key="redflags"
@@ -184,10 +157,10 @@ export default function SFMAQuickCheck({ region, onDecision }) {
             <div className="glass rounded-2xl border border-amber-500/30 p-4 flex items-start gap-3">
               <AlertTriangle className="w-5 h-5 text-amber-400 flex-shrink-0 mt-0.5" />
               <div>
-                <p className="text-amber-400 font-bold text-sm mb-1">Schmerz NRS {nrs}/10 erkannt</p>
+                <p className="text-amber-400 font-bold text-sm mb-1">Intensität {value}/10 erkannt</p>
                 <p className="text-slate-300 text-xs leading-relaxed">
-                  Bei höheren Schmerzwerten prüfen wir kurz ob weitere Symptome vorliegen, 
-                  bevor wir den besten Weg für dich bestimmen.
+                  Bei stärkerem Schmerz prüfen wir kurz, ob weitere Symptome vorliegen —
+                  damit wir den sichersten Weg für dich wählen.
                 </p>
               </div>
             </div>
@@ -240,7 +213,7 @@ export default function SFMAQuickCheck({ region, onDecision }) {
               </motion.div>
             )}
 
-            <button onClick={() => setStep('nrs')} className="w-full text-xs text-slate-500 hover:text-slate-400 transition-colors">
+            <button onClick={() => setStep('scale')} className="w-full text-xs text-slate-500 hover:text-slate-400 transition-colors">
               ← Zurück
             </button>
           </motion.div>

@@ -197,7 +197,7 @@ export default function DiagnosisChat() {
         <SFMAResultScreen
           region={painMap?.region || 'unbekannte Region'}
           type={sfmaDecision?.symptomType || 'schmerz'}
-          nrs={sfmaDecision?.nrs || 5}
+          nrs={sfmaDecision?.nrs || 0}
           isRedFlag={sfmaDecision?.type === 'red_flag'}
           onContinue={handleResultContinue}
         />
