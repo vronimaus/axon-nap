@@ -49,7 +49,9 @@ export default function DailyTuneUpModal({
   queryClient,
   region = 'Lenden / Unterer Rücken', // Region from DiagnosisChat
 }) {
+  console.log('🔍 DailyTuneUpModal region prop:', region);
   const nodeId = REGION_TO_NODE_ID[region] || 'N6'; // Default zu N6 (Lendenwirbelsäule)
+  console.log('🔍 Mapped nodeId:', nodeId);
   const [currentScreen, setCurrentScreen] = useState(0);
   const [mfrNodeCompleted, setMFRNodeCompleted] = useState(false);
   const [neuroDrillCompleted, setNeuroDrillCompleted] = useState(false);
