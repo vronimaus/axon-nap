@@ -7,8 +7,9 @@ import Confetti from 'canvas-confetti';
 
 export default function IntegrationScreen({
   onComplete,
+  screenId = 3,
   isSubmitting,
-  improvement
+  improvement = 0
 }) {
   const [exerciseCompleted, setExerciseCompleted] = useState(false);
   const { isPlaying, isLoading: isTTSLoading, playText, stop } = useTTS();
@@ -40,7 +41,7 @@ export default function IntegrationScreen({
   };
 
   const handleFinalSubmit = () => {
-    onComplete(4, { integrationCompleted: true });
+    onComplete(screenId, { integrationCompleted: true });
   };
 
   return (

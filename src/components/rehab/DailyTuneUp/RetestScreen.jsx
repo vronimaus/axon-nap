@@ -12,7 +12,7 @@ const THREAT_LABELS = {
   5: { label: 'Blockiert', color: 'text-red-500' }
 };
 
-export default function RetestScreen({ onComplete, threatBefore }) {
+export default function RetestScreen({ onComplete, screenId = 2, threatBefore = 3 }) {
   const [threatAfter, setThreatAfter] = useState(threatBefore - 1);
 
   const improvement = threatBefore - threatAfter;
@@ -20,7 +20,7 @@ export default function RetestScreen({ onComplete, threatBefore }) {
   const afterLabel = THREAT_LABELS[Math.round(threatAfter)] || THREAT_LABELS[3];
 
   const handleSubmit = () => {
-    onComplete(3, { threatLevel: Math.round(threatAfter) });
+    onComplete(screenId, { threatLevel: Math.round(threatAfter) });
   };
 
   return (

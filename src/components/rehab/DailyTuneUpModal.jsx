@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X } from 'lucide-react';
-import ThreatLevelScreen from './DailyTuneUp/ThreatLevelScreen';
 import MFRResetScreen from './DailyTuneUp/MFRResetScreen';
 import NeuroDrillScreen from './DailyTuneUp/NeuroDrillScreen';
 import RetestScreen from './DailyTuneUp/RetestScreen';
@@ -11,11 +10,10 @@ import NeuralChargeBar from './DailyTuneUp/NeuralChargeBar';
 import { base44 } from '@/api/base44Client';
 
 const SCREENS = [
-  { id: 0, label: 'Baseline Test', title: 'Dein Threat Level' },
-  { id: 1, label: 'MFR Reset', title: 'Hardware-Reset' },
-  { id: 2, label: 'Neuro Drill', title: 'Software-Update' },
-  { id: 3, label: 'Retest', title: 'Vergleich' },
-  { id: 4, label: 'Integration', title: 'Easy Strength' }
+  { id: 0, label: 'MFR Reset', title: 'Hardware-Reset' },
+  { id: 1, label: 'Neuro Drill', title: 'Software-Update' },
+  { id: 2, label: 'Retest', title: 'Vergleich' },
+  { id: 3, label: 'Integration', title: 'Easy Strength' }
 ];
 
 export default function DailyTuneUpModal({
@@ -26,10 +24,9 @@ export default function DailyTuneUpModal({
   queryClient,
 }) {
   const [currentScreen, setCurrentScreen] = useState(0);
-  const [threatLevelBefore, setThreatLevelBefore] = useState(null);
-  const [threatLevelAfter, setThreatLevelAfter] = useState(null);
   const [mfrNodeCompleted, setMFRNodeCompleted] = useState(false);
   const [neuroDrillCompleted, setNeuroDrillCompleted] = useState(false);
+  const [retestCompleted, setRetestCompleted] = useState(false);
   const [integrationCompleted, setIntegrationCompleted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -38,48 +35,43 @@ export default function DailyTuneUpModal({
   // Calculate neural charge (0-100%)
   const neuralCharge = (() => {
     let charge = 0;
-    if (threatLevelBefore !== null) charge += 20;
-    if (mfrNodeCompleted) charge += 20;
-    if (neuroDrillCompleted) charge += 20;
-    if (threatLevelAfter !== null) charge += 20;
-    if (integrationCompleted) charge += 20;
+    if (mfrNodeCompleted) charge += 25;
+    if (neuroDrillCompleted) charge += 25;
+    if (retestCompleted) charge += 25;
+    if (integrationCompleted) charge += 25;
     return charge;
   })();
 
   const handleScreenComplete = async (screenId, data) => {
     if (screenId === 0) {
-      setThreatLevelBefore(data.threatLevel);
+      setMFRNodeCompleted(true);
       setCurrentScreen(1);
     } else if (screenId === 1) {
-      setMFRNodeCompleted(true);
+      setNeuroDrillCompleted(true);
       setCurrentScreen(2);
       // Silent transition
     } else if (screenId === 2) {
-      setNeuroDrillCompleted(true);
+      setRetestCompleted(true);
       setCurrentScreen(3);
       // Silent transition
     } else if (screenId === 3) {
-      setThreatLevelAfter(data.threatLevel);
-      setCurrentScreen(4);
-      // Silent transition
-    } else if (screenId === 4) {
       setIntegrationCompleted(true);
-      await submitSession(threatLevelBefore, threatLevelAfter ?? data?.threatLevel);
+      await submitSession(data);
     }
   };
 
-  const submitSession = async (before, after) => {
+  const submitSession = async (sessionData) => {
     setIsSubmitting(true);
-    const improvement = (before ?? 0) - (after ?? 0);
     try {
       if (rehabPlan?.id && user?.email) {
         const today = new Date().toISOString().split('T')[0];
         const feedback = {
           date: today,
           session_type: 'daily_tune_up',
-          threat_level_before: before,
-          threat_level_after: after,
-          improvement,
+          mfr_completed: true,
+          neuro_completed: true,
+          retest_completed: true,
+          integration_completed: true,
           neural_charge: 100,
           notes: 'Daily Tune-Up session completed'
         };
@@ -90,21 +82,19 @@ export default function DailyTuneUpModal({
 
       base44.analytics.track({
         eventName: 'daily_tune_up_completed',
-        properties: { improvement, user_email: user?.email }
+        properties: { user_email: user?.email }
       });
 
       if (queryClient) {
         queryClient.invalidateQueries({ queryKey: ['rehabPlan'] });
       }
 
-      // Smart outcome: improvement ≥ 2 → flow, else → rehab plan
-      const noImprovement = improvement < 2;
       setTimeout(() => {
-        onClose({ noImprovement });
+        onClose({ success: true });
       }, 2000);
     } catch (error) {
       console.error('Session submission error:', error);
-      setTimeout(() => onClose({ noImprovement: false }), 1000);
+      setTimeout(() => onClose({ success: false }), 1000);
     } finally {
       setIsSubmitting(false);
     }
@@ -162,39 +152,33 @@ export default function DailyTuneUpModal({
         <div className="flex-1 flex flex-col items-center justify-center px-5 py-6 overflow-y-auto">
           <AnimatePresence mode="wait">
             {currentScreen === 0 && (
-              <ThreatLevelScreen
-                key="threat-before"
-                onComplete={handleScreenComplete}
-                isFirst={true}
-                threat={threatLevelBefore}
-              />
-            )}
-            {currentScreen === 1 && (
               <MFRResetScreen
                 key="mfr"
+                screenId={0}
                 onComplete={handleScreenComplete}
                 rehabPlan={rehabPlan}
               />
             )}
-            {currentScreen === 2 && (
+            {currentScreen === 1 && (
               <NeuroDrillScreen
                 key="neuro"
+                screenId={1}
+                onComplete={handleScreenComplete}
+              />
+            )}
+            {currentScreen === 2 && (
+              <RetestScreen
+                key="retest"
+                screenId={2}
                 onComplete={handleScreenComplete}
               />
             )}
             {currentScreen === 3 && (
-              <RetestScreen
-                key="threat-after"
-                onComplete={handleScreenComplete}
-                threatBefore={threatLevelBefore}
-              />
-            )}
-            {currentScreen === 4 && (
               <IntegrationScreen
                 key="integration"
+                screenId={3}
                 onComplete={handleScreenComplete}
                 isSubmitting={isSubmitting}
-                improvement={threatLevelAfter ? threatLevelBefore - threatLevelAfter : 0}
               />
             )}
           </AnimatePresence>

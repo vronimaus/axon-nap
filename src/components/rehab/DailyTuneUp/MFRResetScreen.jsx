@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Loader2, Play, Check, Gauge, MapPin } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 
-export default function MFRResetScreen({ onComplete, rehabPlan }) {
+export default function MFRResetScreen({ onComplete, rehabPlan, screenId = 0 }) {
   const [mfrNode, setMfrNode] = useState(null);
   const [timeElapsed, setTimeElapsed] = useState(0);
   const [isRunning, setIsRunning] = useState(false);
@@ -32,7 +32,7 @@ export default function MFRResetScreen({ onComplete, rehabPlan }) {
         setIsLoadingNode(false);
       } catch (error) {
         console.error('Error loading MFR node:', error);
-        setMfrNode({ name_de: 'Stecco-Punkt', body_area: 'Schulter' });
+        setMfrNode({ name_de: 'MFR-Node Entlastung', body_area: 'Schulter' });
         setIsLoadingNode(false);
       }
     };
@@ -64,7 +64,7 @@ export default function MFRResetScreen({ onComplete, rehabPlan }) {
   };
 
   const handleComplete = () => {
-    onComplete(1, { mfrNodeId: mfrNode?.id, pretestValue, posttestValue: pretestValue - 1 });
+    onComplete(screenId, { mfrNodeId: mfrNode?.id, pretestValue, posttestValue: pretestValue - 1 });
   };
 
   const handlePretestComplete = (value) => {
@@ -126,7 +126,7 @@ export default function MFRResetScreen({ onComplete, rehabPlan }) {
 
               <div className="rounded-2xl border border-orange-500/40 bg-gradient-to-br from-orange-500/15 to-orange-500/5 p-6 text-center">
                 <p className="text-xs text-orange-300 font-bold uppercase tracking-widest mb-2">Test-Punkt:</p>
-                <h4 className="text-lg font-bold text-white mb-1">{mfrNode?.name_de || 'Stecco-Punkt'}</h4>
+                <h4 className="text-lg font-bold text-white mb-1">{mfrNode?.name_de || 'MFR-Node Entlastung'}</h4>
                 {mfrNode?.body_area && <p className="text-xs text-slate-400 mb-4">{mfrNode.body_area}</p>}
 
                 <p className="text-xs text-slate-300 mb-6 font-semibold">
@@ -179,7 +179,7 @@ export default function MFRResetScreen({ onComplete, rehabPlan }) {
                   Zu bearbeitender Punkt
                 </p>
                 <h3 className="text-xl font-black text-white mb-1">
-                  {mfrNode?.name_de || 'Stecco-Punkt'}
+                  {mfrNode?.name_de || 'MFR-Node Entlastung'}
                 </h3>
                 {mfrNode?.exact_placement_de && (
                   <p className="text-xs text-slate-400 mt-2">{mfrNode.exact_placement_de}</p>
@@ -319,7 +319,7 @@ export default function MFRResetScreen({ onComplete, rehabPlan }) {
           <div className="rounded-xl border border-purple-500/30 bg-gradient-to-br from-purple-500/10 to-transparent p-4 space-y-3">
             <div>
               <p className="text-[10px] font-bold text-purple-400 uppercase tracking-widest mb-1">
-                🧠 Stecco: Center of Coordination
+                🧠 MFR-Node: Faszialer Releases
               </p>
               <p className="text-xs text-slate-300 leading-relaxed">
                 {mfrNode?.stecco_cc_function || 'Dieser Punkt koordiniert die Faszienketten und ermöglicht flüssigere Bewegungen.'}
