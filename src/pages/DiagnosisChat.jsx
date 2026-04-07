@@ -198,7 +198,9 @@ export default function DiagnosisChat() {
           region={painMap?.region || 'unbekannte Region'}
           type={sfmaDecision?.symptomType || 'schmerz'}
           nrs={sfmaDecision?.nrs || 0}
-          stiffness_level={sfmaDecision?.stiffness_level || null}
+          movement_level={sfmaDecision?.movement_level || null}
+          pain_rest={sfmaDecision?.pain_rest ?? 0}
+          pain_move={sfmaDecision?.pain_move ?? 0}
           isRedFlag={sfmaDecision?.type === 'red_flag'}
           onContinue={handleResultContinue}
         />
