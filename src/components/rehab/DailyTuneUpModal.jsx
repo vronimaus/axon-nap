@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X } from 'lucide-react';
-import MFRResetScreen from './DailyTuneUp/MFRResetScreen';
+import MFRResetScreenDynamic from './DailyTuneUp/MFRResetScreenDynamic';
 import NeuroDrillScreen from './DailyTuneUp/NeuroDrillScreen';
 import RetestScreen from './DailyTuneUp/RetestScreen';
 import IntegrationScreen from './DailyTuneUp/IntegrationScreen';
 import NeuralChargeBar from './DailyTuneUp/NeuralChargeBar';
+import RegionSelector from './DailyTuneUp/RegionSelector';
 
 import { base44 } from '@/api/base44Client';
 
@@ -24,6 +25,7 @@ export default function DailyTuneUpModal({
   queryClient,
 }) {
   const [currentScreen, setCurrentScreen] = useState(0);
+  const [selectedNodeId, setSelectedNodeId] = useState(null);
   const [mfrNodeCompleted, setMFRNodeCompleted] = useState(false);
   const [neuroDrillCompleted, setNeuroDrillCompleted] = useState(false);
   const [retestCompleted, setRetestCompleted] = useState(false);
@@ -151,12 +153,18 @@ export default function DailyTuneUpModal({
         {/* Screen Content */}
         <div className="flex-1 flex flex-col items-center justify-center px-5 py-6 overflow-y-auto">
           <AnimatePresence mode="wait">
-            {currentScreen === 0 && (
-              <MFRResetScreen
+            {!selectedNodeId && (
+              <RegionSelector
+                key="region"
+                onRegionSelected={(nodeId) => setSelectedNodeId(nodeId)}
+              />
+            )}
+            {selectedNodeId && currentScreen === 0 && (
+              <MFRResetScreenDynamic
                 key="mfr"
+                nodeId={selectedNodeId}
                 screenId={0}
                 onComplete={handleScreenComplete}
-                rehabPlan={rehabPlan}
               />
             )}
             {currentScreen === 1 && (
