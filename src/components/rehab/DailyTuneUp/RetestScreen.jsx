@@ -36,14 +36,18 @@ export default function RetestScreen({ onComplete, screenId = 2 }) {
       {/* Before/After Comparison */}
       <div className="grid grid-cols-2 gap-4">
         {/* Vorher */}
-        <div className="rounded-2xl border-2 border-red-500/50 bg-red-500/10 p-6 text-center">
-          <p className="text-xs font-bold text-red-400 uppercase tracking-widest mb-3">Vorher</p>
+        <div className="rounded-2xl border-2 border-red-500/50 bg-red-500/10 p-5 text-center space-y-3">
+          <p className="text-xs font-bold text-red-400 uppercase tracking-widest">Vorher</p>
+          <p className="text-xs text-red-300 leading-relaxed">Drehst du deinen Kopf nach links?</p>
           <p className="text-5xl font-black text-red-400">{pretestValue}</p>
         </div>
 
         {/* Nachher */}
-        <div className="rounded-2xl border-2 border-cyan-500/50 bg-cyan-500/10 p-6 text-center">
-          <p className="text-xs font-bold text-cyan-400 uppercase tracking-widest mb-3">Nachher</p>
+        <div className="rounded-2xl border-2 border-cyan-500/50 bg-cyan-500/10 p-5 text-center space-y-3">
+          <div>
+            <p className="text-xs font-bold text-cyan-400 uppercase tracking-widest mb-2">Nachher</p>
+            <p className="text-xs text-cyan-300 leading-relaxed">Wie beweglich bist du jetzt?</p>
+          </div>
           <div>
             {retestValue !== null ? (
               <p className="text-5xl font-black text-cyan-400">{retestValue}</p>
