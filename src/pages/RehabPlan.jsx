@@ -92,9 +92,14 @@ export default function RehabPlan() {
               try {
                 const sessions = await base44.entities.DiagnosisSession.filter({ id: plan.diagnosis_session_id });
                 if (sessions.length > 0 && sessions[0].symptom_location) {
+                  console.log('✅ DiagnosisSession region:', sessions[0].symptom_location);
                   setDiagnosisRegion(sessions[0].symptom_location);
                 }
-              } catch (_e) { /* ignore */ }
+              } catch (e) {
+                console.warn('⚠️ DiagnosisSession load failed:', e);
+              }
+            } else {
+              console.warn('⚠️ No diagnosis_session_id in plan');
             }
             return plan;
           }
