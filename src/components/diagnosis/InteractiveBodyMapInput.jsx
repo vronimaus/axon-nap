@@ -129,6 +129,13 @@ export default function InteractiveBodyMapInput({ onSubmit }) {
     
     const detectedRegion = detectRegionFromCoordinates(markers, view, 400, 600);
     
+    // DEBUG: Log die tatsächlichen Werte
+    if (markers[0]) {
+      const normalizedY = markers[0].y / 600;
+      const normalizedX = markers[0].x / 400;
+      console.log(`[DEBUG] Y: ${markers[0].y} (norm: ${normalizedY.toFixed(3)}), X: ${markers[0].x} (norm: ${normalizedX.toFixed(3)}) → ${detectedRegion}`);
+    }
+    
     const mapData = {
       view,
       markers,
