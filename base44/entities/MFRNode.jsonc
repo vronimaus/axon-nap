@@ -39,6 +39,10 @@
       "type": "string",
       "description": "Exakte anatomische Platzierung (Landmarke) - pr\u00e4zisiert f\u00fcr Stecco-Punkt"
     },
+    "pretest_instruction": {
+      "type": "string",
+      "description": "Qualitative Pretest-Anweisung mit Ja/Nein/Teilweise-Checkpoints (z.B. 'Kannst du \u00fcber deine Schulter hinwegsschauen oder nur zur Seite?')"
+    },
     "user_instruction": {
       "type": "string",
       "description": "Schritt-f\u00fcr-Schritt Anleitung f\u00fcr den User beim Start des Timers"

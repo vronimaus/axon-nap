@@ -13,25 +13,31 @@ export default function MFRResetScreen({ onComplete, rehabPlan, nodeId = 'N1', s
   const [pretestValue, setPretestValue] = useState(null);
   const MFR_DURATION = 90; // seconds
 
-  // Load TuneUpCausalChain by node_id
+  // Load MFRNode and TuneUpCausalChain
   useEffect(() => {
-    const loadCausalChain = async () => {
+    const loadData = async () => {
       try {
-        const chains = await base44.entities.TuneUpCausalChain.filter({ node_id: nodeId });
-        if (chains?.length > 0) {
-          setCausalChain(chains[0]);
-        } else {
-          console.warn(`No causal chain found for node ${nodeId}`);
-          setCausalChain(null);
-        }
+        const [nodes, chains] = await Promise.all([
+          base44.entities.MFRNode.filter({ node_id: nodeId }),
+          base44.entities.TuneUpCausalChain.filter({ node_id: nodeId })
+        ]);
+        
+        const mfrNode = nodes?.length > 0 ? nodes[0] : null;
+        const chain = chains?.length > 0 ? chains[0] : null;
+        
+        // Merge node data (pretest_instruction) with chain data
+        setCausalChain({
+          ...chain,
+          pretest_instruction: mfrNode?.pretest_instruction || ''
+        });
       } catch (error) {
-        console.error('Error loading causal chain:', error);
+        console.error('Error loading data:', error);
         setCausalChain(null);
       } finally {
         setIsLoadingData(false);
       }
     };
-    loadCausalChain();
+    loadData();
   }, [nodeId]);
 
   // Timer logic
@@ -124,14 +130,14 @@ export default function MFRResetScreen({ onComplete, rehabPlan, nodeId = 'N1', s
                <h4 className="text-lg font-bold text-white mb-1">{causalChain?.node_name_de || 'MFR-Node'}</h4>
                {causalChain?.körperregion && <p className="text-xs text-slate-400 mb-4">{causalChain.körperregion}</p>}
 
-                <p className="text-xs text-slate-300 mb-6 font-semibold">
-                  Wie ist deine aktuelle Beweglichkeit/Empfindung?
+                <p className="text-xs text-slate-300 mb-4 font-semibold leading-relaxed">
+                  {causalChain?.pretest_instruction || 'Teste deine aktuelle Mobilität'}
                 </p>
-                <div className="space-y-3 mt-2">
+                <div className="space-y-3 mt-4">
                   {[
-                    { val: 1, label: 'Sehr limitiert', icon: '⚠️', sub: 'Kaum Bewegung möglich', color: 'border-red-500/40 hover:bg-red-500/15 text-red-400' },
-                    { val: 3, label: 'Geht so', icon: '📐', sub: 'Eingeschränkt, aber machbar', color: 'border-orange-500/40 hover:bg-orange-500/15 text-orange-400' },
-                    { val: 5, label: 'Ganz leicht', icon: '✅', sub: 'Volle Beweglichkeit', color: 'border-emerald-500/40 hover:bg-emerald-500/15 text-emerald-400' },
+                    { val: 1, label: 'Nein / Gar nicht', icon: '❌', sub: 'Keine Bewegung möglich', color: 'border-red-500/40 hover:bg-red-500/15 text-red-400' },
+                    { val: 3, label: 'Teilweise', icon: '⚠️', sub: 'Begrenzte Bewegung', color: 'border-orange-500/40 hover:bg-orange-500/15 text-orange-400' },
+                    { val: 5, label: 'Ja / Vollständig', icon: '✅', sub: 'Volle Beweglichkeit', color: 'border-emerald-500/40 hover:bg-emerald-500/15 text-emerald-400' },
                   ].map(({ val, label, icon, sub, color }) => (
                     <button
                       key={val}
