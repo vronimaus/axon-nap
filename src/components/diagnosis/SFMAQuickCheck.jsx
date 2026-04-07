@@ -39,8 +39,8 @@ function valueColor(v, max = 8) {
   return '#ef4444';
 }
 
-const PAIN_SLIDER_BG = 'linear-gradient(to right, #94a3b8 0%, #22c55e 15%, #f59e0b 55%, #ef4444 100%)';
-const MOVE_SLIDER_BG = 'linear-gradient(to right, #22c55e 0%, #f59e0b 50%, #ef4444 100%)';
+const PAIN_SLIDER_BG = 'linear-gradient(to right, #22c55e 0%, #f59e0b 55%, #ef4444 100%)';
+const MOVE_SLIDER_BG = 'linear-gradient(to right, #22c55e 0%, #f59e0b 55%, #ef4444 100%)';
 
 export default function SFMAQuickCheck({ region, onDecision }) {
   const [step, setStep] = useState('assess'); // 'assess' | 'redflags'
@@ -120,12 +120,9 @@ export default function SFMAQuickCheck({ region, onDecision }) {
                     className="w-full h-3 rounded-full appearance-none cursor-pointer"
                     style={{ background: MOVE_SLIDER_BG }}
                   />
-                  <div className="flex items-center gap-2 pt-1">
-                    <span className="text-2xl">{mv.emoji}</span>
-                    <div>
-                      <p className="text-lg font-bold text-white">{mv.label}</p>
-                      <p className="text-sm text-slate-400">{mv.sub}</p>
-                    </div>
+                  <div className="pt-1">
+                    <p className="text-lg font-bold text-white">{mv.label}</p>
+                    <p className="text-sm text-slate-400">{mv.sub}</p>
                   </div>
                 </div>
               );
