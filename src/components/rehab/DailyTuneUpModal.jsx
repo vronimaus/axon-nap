@@ -16,14 +16,40 @@ const SCREENS = [
   { id: 3, label: 'Integration', title: 'Easy Strength' }
 ];
 
+// Map region names to Node IDs
+const REGION_TO_NODE_ID = {
+  'Hinterkopf': 'N1',
+  'Kopf & Kiefer': 'N1',
+  'Nacken seitlich': 'N2',
+  'Nacken/obere Halswirbelsäule': 'N2',
+  'Hals & Nacken': 'N2',
+  'Schulter hinten/Acromion': 'N3',
+  'oberer Rücken/Nacken': 'N3',
+  'obere Brust/Schlüsselbein': 'N3',
+  'Brust & Schulter': 'N3',
+  'Schulterblatt': 'N4',
+  'oberer Rücken': 'N4',
+  'mittlerer Rücken': 'N5',
+  'unterer Rücken/Lendenwirbelsäule': 'N6',
+  'Lenden / Unterer Rücken': 'N6',
+  'Becken & Hüfte': 'N7',
+  'Becken/Hüfte': 'N7',
+  'Hüfte & Oberschenkel': 'N8',
+  'Oberschenkel hinten': 'N9',
+  'Kniekehle': 'N10',
+  'Wade': 'N11',
+  'Ferse/Achillessehne': 'N12',
+};
+
 export default function DailyTuneUpModal({
   isOpen,
   onClose,
   rehabPlan,
   user,
   queryClient,
-  nodeId = 'N4', // Default zu Lendenwirbelsäule, aber über Props übergebar
+  region = 'Lenden / Unterer Rücken', // Region from DiagnosisChat
 }) {
+  const nodeId = REGION_TO_NODE_ID[region] || 'N6'; // Default zu N6 (Lendenwirbelsäule)
   const [currentScreen, setCurrentScreen] = useState(0);
   const [mfrNodeCompleted, setMFRNodeCompleted] = useState(false);
   const [neuroDrillCompleted, setNeuroDrillCompleted] = useState(false);
