@@ -109,7 +109,7 @@ export default function MFRResetScreenDynamic({ onComplete, nodeId = 'N1', scree
             <div className="border-t border-orange-500/20 pt-4">
               <p className="text-xs text-orange-300 font-bold uppercase tracking-widest mb-2">📋 So testest du:</p>
               <p className="text-xs text-slate-200 leading-relaxed">
-                {causalChain?.hardware_reset?.technik || 'Führe eine langsame Bewegung durch und spüre die aktuelle Einschränkung.'}
+                {causalChain?.hardware_reset?.pretest_instruction || 'Führe eine langsame Bewegung durch und spüre die aktuelle Einschränkung.'}
               </p>
             </div>
 

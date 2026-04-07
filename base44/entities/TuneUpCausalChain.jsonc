@@ -33,9 +33,13 @@
     "hardware_reset": {
       "type": "object",
       "properties": {
+        "pretest_instruction": {
+          "type": "string",
+          "description": "Konkrete Bewegungs-Anleitung zum Testen der aktuellen Einschr\u00e4nkung (z.B. 'Mache langsame Twists nach links und rechts')"
+        },
         "technik": {
           "type": "string",
-          "description": "MFR-Technik und Platzierung"
+          "description": "MFR-Technik und Platzierung (z.B. 'Lacrosse-Ball 2-3 cm seitlich der Wirbels\u00e4ule')"
         },
         "mechanismus": {
           "type": "string",
