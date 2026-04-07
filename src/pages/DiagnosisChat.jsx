@@ -163,8 +163,8 @@ export default function DiagnosisChat() {
   if (step === 'sfma') {
     return (
       <FocusScreenContainer
-        title="Kurz-Check"
-        instruction={`Schmerzbereich: ${painMap?.region || '—'}`}
+        title=""
+        instruction=""
         showBackButton={false}
       >
         <SFMAQuickCheck

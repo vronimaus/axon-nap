@@ -103,9 +103,9 @@ export default function SFMAQuickCheck({ region, onDecision }) {
             exit={{ opacity: 0, x: -20 }}
             className="space-y-4"
           >
-            <div className="text-center space-y-1">
-              <p className="text-sm text-slate-400">Problemzone: <span className="text-cyan-400 font-semibold">{region}</span></p>
-              <h2 className="text-lg font-bold text-white">Bewerte deine Einschränkung</h2>
+            <div className="text-center space-y-2">
+              <p className="text-base text-slate-400">Problemzone: <span className="text-cyan-400 font-bold text-xl">{region}</span></p>
+              <h2 className="text-2xl font-bold text-white">Bewerte deine Einschränkung</h2>
             </div>
 
             {/* ① Bewegungsqualität */}
