@@ -60,8 +60,12 @@ export default function InteractiveBodyMapInput({ onSubmit }) {
       else region = 'Fuß/Knöchel vorne';
     } else {
       if (normalizedY < 0.06) region = 'Hinterkopf';
-      else if (normalizedY < 0.10) region = (normalizedX < 0.40 || normalizedX > 0.60) ? 'Nacken seitlich' : 'Nacken/obere Halswirbelsäule';
-      else if (normalizedY < 0.20) region = (normalizedX < 0.40 || normalizedX > 0.60) ? 'Schulter hinten/Acromion' : 'oberer Rücken/Nacken';
+      else if (normalizedY < 0.12) {
+        // Nacken-Zone: seitlich vs. zentral unterscheiden
+        if (normalizedX < 0.35 || normalizedX > 0.65) region = 'Nacken seitlich';
+        else region = 'Nacken/obere Halswirbelsäule';
+      }
+      else if (normalizedY < 0.22) region = (normalizedX < 0.40 || normalizedX > 0.60) ? 'Schulter hinten/Acromion' : 'oberer Rücken/Nacken';
       else if (normalizedY < 0.32) region = (normalizedX < 0.30 || normalizedX > 0.70) ? 'Schulterblatt' : 'oberer Rücken';
       else if (normalizedY < 0.38) region = (normalizedX < 0.40 || normalizedX > 0.60) ? 'Ellenbogen' : 'mittlerer Rücken';
       else if (normalizedY < 0.45) region = 'unterer Rücken/Lendenwirbelsäule';
