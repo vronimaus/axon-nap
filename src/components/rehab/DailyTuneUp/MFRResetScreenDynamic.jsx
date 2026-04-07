@@ -136,8 +136,7 @@ export default function MFRResetScreenDynamic({ onComplete, nodeId = 'N1', scree
             <div className="flex items-start gap-3">
               <AlertCircle className="w-5 h-5 text-cyan-400 flex-shrink-0 mt-0.5" />
               <div>
-                <h3 className="text-lg font-bold text-white mb-1">Mobility-Check</h3>
-                <p className="text-xs text-slate-400">Deine aktuelle Mobilität</p>
+                <h3 className="text-lg font-bold text-white mb-1">Beweglichkeitstest</h3>
               </div>
             </div>
           </div>
