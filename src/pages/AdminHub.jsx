@@ -12,6 +12,7 @@ import EnrichmentLogTab from '../components/admin/EnrichmentLogTab';
 import InviteCodesTab from '../components/admin/InviteCodesTab';
 import MarketingTab from '../components/admin/MarketingTab';
 import ContentKanban from '../components/admin/ContentKanban';
+import MFRNodeTab from '../components/admin/MFRNodeTab';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
 // Prefix-Definitionen
@@ -518,6 +519,10 @@ export default function AdminHub() {
                 <KeyRound className="w-3.5 h-3.5 shrink-0" />
                 <span>Codes</span>
               </TabsTrigger>
+              <TabsTrigger value="mfrnodes" className="flex items-center gap-1.5 whitespace-nowrap px-3 py-2 text-xs sm:text-sm">
+                <span>🎯</span>
+                <span>MFR Nodes</span>
+              </TabsTrigger>
             </TabsList>
           </div>
 
@@ -659,6 +664,11 @@ export default function AdminHub() {
           {/* Invite Codes Tab */}
           <TabsContent value="invites" className="mt-0">
             <InviteCodesTab />
+          </TabsContent>
+
+          {/* MFR Nodes Tab */}
+          <TabsContent value="mfrnodes" className="mt-0">
+            <MFRNodeTab />
           </TabsContent>
         </Tabs>
       </div>
