@@ -81,6 +81,13 @@ export default function MFRResetScreenDynamic({ onComplete, nodeId = 'N1', scree
     return () => clearInterval(interval);
   }, [isRunning]);
 
+  // Auto-advance to INFO when timer hits 0
+  useEffect(() => {
+    if (timeElapsed >= MFR_DURATION && step === 'compression') {
+      setTimeout(() => setStep('info'), 500);
+    }
+  }, [timeElapsed, step]);
+
   const handleStartTimer = () => setIsRunning(true);
   const handleReset = () => {
     setTimeElapsed(0);
@@ -226,18 +233,7 @@ export default function MFRResetScreenDynamic({ onComplete, nodeId = 'N1', scree
               )}
             </div>
           </div>
-          {timeElapsed >= MFR_DURATION && step === 'compression' && (
-            <motion.div 
-              initial={{ opacity: 0, y: 10 }} 
-              animate={{ opacity: 1, y: 0 }}
-              onAnimationComplete={() => setTimeout(() => setStep('info'), 1000)}
-            >
-              <Button disabled className="w-full h-12 bg-gradient-to-r from-cyan-500 to-purple-600 text-white font-bold rounded-lg text-sm flex items-center justify-center gap-2 shadow-lg shadow-cyan-500/40">
-                <Check className="w-4 h-4" />
-                Fertig! Weiter zum Post-Test...
-              </Button>
-            </motion.div>
-          )}
+
         </motion.div>
       )}
 
