@@ -37,14 +37,13 @@ function getCause(symptomType, region) {
 }
 
 const MOVEMENT_LABELS = { 1: 'Frei', 2: 'Zäh', 3: 'Eingeschränkt', 4: 'Blockiert' };
-const MOVEMENT_COLORS = { 1: 'text-emerald-400', 2: 'text-yellow-400', 3: 'text-orange-400', 4: 'text-red-400' };
 
-function PainBadge({ label, value }) {
-  const color = value === 0 ? 'text-slate-400' : value <= 2 ? 'text-emerald-400' : value <= 4 ? 'text-amber-400' : 'text-red-400';
+function MetricBox({ label, value, max }) {
   return (
-    <div className="bg-slate-900/80 border border-slate-700 rounded-xl p-4 text-center">
-      <p className="text-[9px] text-slate-500 uppercase tracking-widest font-bold mb-2">{label}</p>
-      <p className={`text-2xl font-black ${color}`}>{value}<span className="text-xs font-normal text-slate-500">/8</span></p>
+    <div className="bg-slate-800/40 border border-cyan-500/30 rounded-xl p-4 text-center">
+      <p className="text-[9px] text-slate-400 uppercase tracking-widest font-bold mb-3">{label}</p>
+      <p className="text-3xl font-black text-white">{value}<span className="text-xs font-normal text-slate-400">/{max}</span></p>
+      {label === 'Bewegung' && <p className="text-[10px] text-slate-400 mt-2">{MOVEMENT_LABELS[value] || '—'}</p>}
     </div>
   );
 }
@@ -64,55 +63,34 @@ export default function SFMAResultScreen({ region, type, nrs, movement_level, pa
       animate={{ opacity: 1, y: 0 }}
       className="w-full max-w-md mx-auto space-y-4"
     >
-      <div className="rounded-2xl border border-cyan-500/30 bg-slate-900/80 overflow-hidden">
-        <div className="bg-slate-900 border-b border-slate-800 px-4 py-3 flex items-center gap-2">
-          <div className="w-1.5 h-1.5 rounded-full bg-cyan-400 shadow-[0_0_6px_rgba(6,182,212,0.8)]" />
-          <p className="text-[10px] font-bold tracking-widest uppercase text-white">AXON Analyse</p>
-          <span className="ml-auto text-[9px] font-mono text-cyan-400 tracking-widest uppercase">{region}</span>
+      <div className="rounded-2xl border border-cyan-500/40 bg-slate-900/50 overflow-hidden">
+        <div className="border-b border-cyan-500/30 px-5 py-4 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <div className="w-2 h-2 rounded-full bg-cyan-400" />
+            <p className="text-[10px] font-bold tracking-widest uppercase text-white">AXON Analyse</p>
+          </div>
+          <span className="text-[9px] font-mono text-cyan-400 tracking-widest uppercase">{region}</span>
         </div>
 
         <div className="p-5 space-y-4">
 
           {/* Bewegung + Schmerz-Werte */}
           <div className="grid grid-cols-3 gap-3">
-            {/* Bewegungsqualität */}
-            <div className="bg-slate-900/80 border border-slate-700 rounded-xl p-4 text-center">
-              <p className="text-[9px] text-slate-500 uppercase tracking-widest font-bold mb-2">Bewegung</p>
-              <p className={`text-2xl font-black ${MOVEMENT_COLORS[movement_level] || 'text-slate-400'}`}>
-                {movement_level}/4
-              </p>
-              <p className="text-[10px] text-slate-400 mt-1 font-medium">{MOVEMENT_LABELS[movement_level] || '—'}</p>
-            </div>
-            <PainBadge label="Ruhe" value={pain_rest ?? 0} />
-            <PainBadge label="Belastung" value={pain_move ?? 0} />
+            <MetricBox label="Bewegung" value={movement_level} max={4} />
+            <MetricBox label="Ruhe" value={pain_rest ?? 0} max={8} />
+            <MetricBox label="Belastung" value={pain_move ?? 0} max={8} />
           </div>
 
-          {/* Schmerzmuster-Hinweis */}
-          {onlyOnMove && (
-            <div className="bg-blue-500/10 rounded-xl p-3 border border-blue-500/30">
-              <p className="text-xs text-blue-300 leading-relaxed">
-                <span className="font-bold">Belastungsschmerz:</span> In Ruhe kein Schmerz — er entsteht erst bei Bewegung. Das deutet auf ein mechanisches Problem, kein entzündliches.
-              </p>
-            </div>
-          )}
-          {worseOnMove && !onlyOnMove && (
-            <div className="bg-amber-500/10 rounded-xl p-3 border border-amber-500/30">
-              <p className="text-xs text-amber-300 leading-relaxed">
-                <span className="font-bold">Bewegungsverstärkung:</span> Schmerz steigt bei Belastung. Das Gewebe reagiert auf mechanischen Druck — ein klares Signal für den MFR-Reset.
-              </p>
-            </div>
-          )}
-
-          {/* Ursache - mit goldenem Border für Kontext */}
-          <div className="bg-amber-500/5 rounded-xl p-4 border border-amber-500/40">
-            <p className="text-[9px] text-amber-400 uppercase tracking-widest font-bold mb-2">⚙️ Was dahinter steckt</p>
-            <p className="text-sm text-amber-50 leading-relaxed font-medium">{cause}</p>
+          {/* Ursache - monochrom Cyan */}
+          <div className="bg-slate-800/30 rounded-xl p-4 border border-cyan-500/30">
+            <p className="text-[9px] text-cyan-400 uppercase tracking-widest font-bold mb-3">Was dahinter steckt</p>
+            <p className="text-sm text-slate-200 leading-relaxed">{cause}</p>
           </div>
 
           {isRedFlag && (
-            <div className="bg-red-500/10 rounded-xl p-3 border border-red-500/30 flex items-start gap-2">
-              <AlertTriangle className="w-4 h-4 text-red-400 flex-shrink-0 mt-0.5" />
-              <p className="text-xs text-red-300 leading-relaxed">
+            <div className="bg-slate-800/30 rounded-xl p-3 border border-cyan-500/30 flex items-start gap-2">
+              <AlertTriangle className="w-4 h-4 text-cyan-400 flex-shrink-0 mt-0.5" />
+              <p className="text-xs text-slate-300 leading-relaxed">
                 Aufgrund deiner Angaben zeigen wir dir zunächst ein Sicherheitsprotokoll.
               </p>
             </div>
@@ -122,7 +100,7 @@ export default function SFMAResultScreen({ region, type, nrs, movement_level, pa
 
       <Button
         onClick={onContinue}
-        className="w-full h-12 bg-gradient-to-r from-cyan-500 to-cyan-600 hover:from-cyan-600 hover:to-cyan-700 text-slate-950 font-bold tracking-wide"
+        className="w-full h-12 bg-cyan-500/20 hover:bg-cyan-500/30 border border-cyan-500/40 text-cyan-400 font-bold tracking-wide"
       >
         {isRedFlag ? 'Sicherheitsprotokoll ansehen' : 'Zum Tune-Up'}
         <ArrowRight className="w-4 h-4 ml-2" />

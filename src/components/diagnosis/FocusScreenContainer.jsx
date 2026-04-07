@@ -36,35 +36,11 @@ export default function FocusScreenContainer({
 
       {/* Content */}
       <div className="flex-1 flex flex-col items-center px-4 py-8 pb-24">
-        {/* Title */}
-        {title && (
-          <motion.h1
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="text-2xl sm:text-3xl font-bold text-white text-center mb-4 tracking-tight"
-          >
-            {title}
-          </motion.h1>
-        )}
-
-        {/* Instruction */}
-        {instruction && (
-          <motion.p
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="text-lg sm:text-xl text-slate-300 text-center mb-8 max-w-2xl"
-          >
-            {instruction}
-          </motion.p>
-        )}
-
         {/* Dynamic Content */}
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.3 }}
+          transition={{ delay: 0.1 }}
           className="w-full max-w-4xl"
         >
           {children}
