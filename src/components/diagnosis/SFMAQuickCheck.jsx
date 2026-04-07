@@ -113,24 +113,19 @@ export default function SFMAQuickCheck({ region, onDecision }) {
               const mv = MOVEMENT_LEVELS[movementLevel - 1];
               return (
                 <div className="glass rounded-2xl border border-slate-700 p-4 space-y-3">
-                  <div className="flex items-center justify-between">
-                    <p className="text-xs font-bold uppercase tracking-widest text-slate-400">① Bewegungsqualität</p>
-                    <div className="flex items-center gap-2">
-                      <span className="text-xl">{mv.emoji}</span>
-                      <div className="text-right">
-                        <p className="text-sm font-bold text-white">{mv.label}</p>
-                        <p className="text-xs text-slate-400">{mv.sub}</p>
-                      </div>
-                    </div>
-                  </div>
+                  <p className="text-xs font-bold uppercase tracking-widest text-slate-400">① Bewegungsqualität</p>
                   <input
                     type="range" min={1} max={4} step={1} value={movementLevel}
                     onChange={e => setMovementLevel(Number(e.target.value))}
                     className="w-full h-3 rounded-full appearance-none cursor-pointer"
                     style={{ background: MOVE_SLIDER_BG }}
                   />
-                  <div className="flex justify-between text-xs text-slate-500">
-                    <span>1 — Frei</span><span>4 — Blockiert</span>
+                  <div className="flex items-center gap-2 pt-1">
+                    <span className="text-2xl">{mv.emoji}</span>
+                    <div>
+                      <p className="text-lg font-bold text-white">{mv.label}</p>
+                      <p className="text-sm text-slate-400">{mv.sub}</p>
+                    </div>
                   </div>
                 </div>
               );
@@ -138,43 +133,33 @@ export default function SFMAQuickCheck({ region, onDecision }) {
 
             {/* ② Schmerzlevel im Ruhezustand */}
             <div className="glass rounded-2xl border border-slate-700 p-4 space-y-3">
-              <div className="flex items-center justify-between">
-                <p className="text-xs font-bold uppercase tracking-widest text-slate-400">② Schmerzlevel im Ruhezustand</p>
-                <div className="text-right">
-                  <span className="text-2xl font-black" style={{ color: valueColor(painRest) }}>{painRest}</span>
-                  <span className="text-slate-500 text-sm">/8</span>
-                  <p className="text-xs text-slate-400">{getPainLabel(painRest)}</p>
-                </div>
-              </div>
+              <p className="text-xs font-bold uppercase tracking-widest text-slate-400">② Schmerzlevel im Ruhezustand</p>
               <input
                 type="range" min={0} max={8} value={painRest}
                 onChange={e => setPainRest(Number(e.target.value))}
                 className="w-full h-3 rounded-full appearance-none cursor-pointer"
                 style={{ background: PAIN_SLIDER_BG }}
               />
-              <div className="flex justify-between text-xs text-slate-500">
-                <span>0 — Kein Schmerz</span><span>8 — Unerträglich</span>
+              <div className="pt-1">
+                <p className="text-lg font-bold" style={{ color: valueColor(painRest) }}>
+                  {painRest} — {getPainLabel(painRest)}
+                </p>
               </div>
             </div>
 
             {/* ③ Schmerzlevel bei Belastung */}
             <div className="glass rounded-2xl border border-slate-700 p-4 space-y-3">
-              <div className="flex items-center justify-between">
-                <p className="text-xs font-bold uppercase tracking-widest text-slate-400">③ Schmerzlevel bei Belastung</p>
-                <div className="text-right">
-                  <span className="text-2xl font-black" style={{ color: valueColor(painMove) }}>{painMove}</span>
-                  <span className="text-slate-500 text-sm">/8</span>
-                  <p className="text-xs text-slate-400">{getPainLabel(painMove)}</p>
-                </div>
-              </div>
+              <p className="text-xs font-bold uppercase tracking-widest text-slate-400">③ Schmerzlevel bei Belastung</p>
               <input
                 type="range" min={0} max={8} value={painMove}
                 onChange={e => setPainMove(Number(e.target.value))}
                 className="w-full h-3 rounded-full appearance-none cursor-pointer"
                 style={{ background: PAIN_SLIDER_BG }}
               />
-              <div className="flex justify-between text-xs text-slate-500">
-                <span>0 — Kein Schmerz</span><span>8 — Unerträglich</span>
+              <div className="pt-1">
+                <p className="text-lg font-bold" style={{ color: valueColor(painMove) }}>
+                  {painMove} — {getPainLabel(painMove)}
+                </p>
               </div>
             </div>
 
