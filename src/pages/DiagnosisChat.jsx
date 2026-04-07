@@ -110,11 +110,13 @@ export default function DiagnosisChat() {
     setStep('generating');
     setError(null);
 
+    const finalRegion = sfmaDecision?.region || painMap?.region;
+
     base44.analytics.track({
       eventName: 'diagnosis_started',
       properties: {
         pain_intensity: sfmaDecision?.nrs || 0,
-        region: painMap?.region,
+        region: finalRegion,
         source: 'sfma_flow'
       }
     });
@@ -123,7 +125,7 @@ export default function DiagnosisChat() {
 
     try {
       const diagSession = await base44.entities.DiagnosisSession.create({
-        symptom_location: cleanRegion(painMap?.region),
+        symptom_location: cleanRegion(finalRegion),
         symptom_description: '',
         tested_chains: [],
         hardware_results: {},
@@ -135,8 +137,8 @@ export default function DiagnosisChat() {
 
       const response = await base44.functions.invoke('generateRehabPlan', {
         diagnosis_session_id: diagSession.id,
-        problem_summary: cleanRegion(painMap?.region),
-        region: cleanRegion(painMap?.region),
+        problem_summary: cleanRegion(finalRegion),
+        region: cleanRegion(finalRegion),
         pain_intensity: sfmaDecision?.nrs || 5,
         affected_chains: '',
         feedback_summary: 'Tune-Up hat keine ausreichende Verbesserung gebracht.'
