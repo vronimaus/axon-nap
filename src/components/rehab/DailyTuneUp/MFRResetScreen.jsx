@@ -120,7 +120,7 @@ export default function MFRResetScreen({ onComplete, rehabPlan, screenId = 0 }) 
 
               <div className="rounded-xl border border-orange-500/30 bg-gradient-to-br from-orange-500/10 to-transparent p-4">
                 <p className="text-sm text-slate-200 leading-relaxed">
-                  <span className="text-orange-400 font-bold">Gary Gray Prinzip:</span> Wir testen deine aktuelle Mobilität vor dem Reset, um die Verbesserung zu messen.
+                  <span className="text-orange-400 font-bold">Baseline-Messung:</span> Wir testen deine aktuelle Mobilität vor dem Reset, um die Verbesserung zu messen.
                 </p>
               </div>
 
@@ -337,7 +337,7 @@ export default function MFRResetScreen({ onComplete, rehabPlan, screenId = 0 }) 
 
             <div className="border-t border-slate-700 pt-3">
               <p className="text-[10px] font-bold text-blue-400 uppercase tracking-widest mb-1">
-                🎯 Gary Gray: Bewegungsqualität
+                🎯 Neuro-Verankerung
               </p>
               <p className="text-xs text-slate-300 leading-relaxed">
                 Mobilität wird erst nutzbar durch neurales Lernen. Dein Pretest vs. Posttest zeigt echte Bewegungsverbesserung.

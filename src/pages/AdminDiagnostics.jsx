@@ -82,22 +82,25 @@ export default function AdminDiagnostics() {
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 py-6 space-y-6">
         {/* Info Banner */}
-        <motion.div
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="glass rounded-xl border border-amber-500/30 bg-gradient-to-r from-amber-500/10 to-transparent p-4"
-        >
-          <div className="flex items-start gap-3">
-            <Info className="w-5 h-5 text-amber-400 flex-shrink-0 mt-0.5" />
-            <div className="flex-1">
-              <h3 className="font-semibold text-amber-400 mb-1">Learning by Doing</h3>
-              <p className="text-sm text-slate-300">
-                Wähle eine Körperregion und nutze die Tests, um Instabilitäten zu erkennen. 
-                Die Stichpunkte helfen dir, worauf du achten musst - inkl. Lernnotizen für dein eigenes Verständnis.
-              </p>
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="glass rounded-xl border border-amber-500/30 bg-gradient-to-r from-amber-500/10 to-transparent p-4"
+          >
+            <div className="flex items-start gap-3">
+              <Info className="w-5 h-5 text-amber-400 flex-shrink-0 mt-0.5" />
+              <div className="flex-1">
+                <h3 className="font-semibold text-amber-400 mb-1">Learning by Doing</h3>
+                <p className="text-sm text-slate-300">
+                  Wähle eine Körperregion und nutze die Tests zur Bewegungsanalyse. 
+                  Die Beobachtungspunkte helfen dir, Bewegungsmuster zu erkennen - inkl. Lernnotizen.
+                </p>
+                <p className="text-xs text-amber-300 mt-2 font-semibold">
+                  ⚠️ Hinweis: Tests müssen tatsächliche Bewegungsmuster sein (nicht nur anatomische Punkte wie "Kopf & Kiefer")
+                </p>
+              </div>
             </div>
-          </div>
-        </motion.div>
+          </motion.div>
 
         {/* Region Selection */}
         <div>
