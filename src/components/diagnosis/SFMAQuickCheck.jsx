@@ -122,8 +122,8 @@ export default function SFMAQuickCheck({ region, onDecision }) {
                   <input
                     type="range" min={1} max={4} step={1} value={movementLevel}
                     onChange={e => setMovementLevel(Number(e.target.value))}
-                    className="w-full h-3 rounded-full appearance-none cursor-pointer"
-                    style={{ background: getCyanSliderBg(movementLevel - 1, 3), WebkitAppearance: 'none' }}
+                    className="w-full h-3 rounded-full cursor-pointer sfma-slider"
+                    style={{ background: getCyanSliderBg(movementLevel - 1, 3), WebkitAppearance: 'none', appearance: 'none' }}
                   />
                   <div className="pt-1">
                     <p className="text-lg font-bold text-white">{mv.label}</p>
@@ -142,8 +142,8 @@ export default function SFMAQuickCheck({ region, onDecision }) {
               <input
                 type="range" min={0} max={8} value={painRest}
                 onChange={e => setPainRest(Number(e.target.value))}
-                className="w-full h-3 rounded-full appearance-none cursor-pointer"
-                style={{ background: getCyanSliderBg(painRest, 8), WebkitAppearance: 'none' }}
+                className="w-full h-3 rounded-full cursor-pointer sfma-slider"
+                style={{ background: getCyanSliderBg(painRest, 8), WebkitAppearance: 'none', appearance: 'none' }}
               />
               <div className="pt-1">
                 <p className="text-lg font-bold" style={{ color: valueColor(painRest) }}>
@@ -161,8 +161,8 @@ export default function SFMAQuickCheck({ region, onDecision }) {
               <input
                 type="range" min={0} max={8} value={painMove}
                 onChange={e => setPainMove(Number(e.target.value))}
-                className="w-full h-3 rounded-full appearance-none cursor-pointer"
-                style={{ background: getCyanSliderBg(painMove, 8), WebkitAppearance: 'none' }}
+                className="w-full h-3 rounded-full cursor-pointer sfma-slider"
+                style={{ background: getCyanSliderBg(painMove, 8), WebkitAppearance: 'none', appearance: 'none' }}
               />
               <div className="pt-1">
                 <p className="text-lg font-bold" style={{ color: valueColor(painMove) }}>
