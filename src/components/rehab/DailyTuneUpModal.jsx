@@ -66,54 +66,47 @@ export default function DailyTuneUpModal({
       // Silent transition
     } else if (screenId === 4) {
       setIntegrationCompleted(true);
-      await submitSession();
+      await submitSession(threatLevelBefore, threatLevelAfter ?? data?.threatLevel);
     }
   };
 
-  const submitSession = async () => {
+  const submitSession = async (before, after) => {
     setIsSubmitting(true);
+    const improvement = (before ?? 0) - (after ?? 0);
     try {
-      if (!rehabPlan?.id || !user?.email) return;
+      if (rehabPlan?.id && user?.email) {
+        const today = new Date().toISOString().split('T')[0];
+        const feedback = {
+          date: today,
+          session_type: 'daily_tune_up',
+          threat_level_before: before,
+          threat_level_after: after,
+          improvement,
+          neural_charge: 100,
+          notes: 'Daily Tune-Up session completed'
+        };
+        const history = rehabPlan.feedback_history || [];
+        history.push(feedback);
+        await base44.entities.RehabPlan.update(rehabPlan.id, { feedback_history: history });
+      }
 
-      // Log session to feedback_history
-      const today = new Date().toISOString().split('T')[0];
-      const feedback = {
-        date: today,
-        session_type: 'daily_tune_up',
-        threat_level_before: threatLevelBefore,
-        threat_level_after: threatLevelAfter,
-        improvement: threatLevelBefore - threatLevelAfter,
-        neural_charge: 100,
-        notes: 'Daily Tune-Up session completed'
-      };
-
-      const history = rehabPlan.feedback_history || [];
-      history.push(feedback);
-
-      await base44.entities.RehabPlan.update(rehabPlan.id, {
-        feedback_history: history
-      });
-
-      // Track analytics
       base44.analytics.track({
         eventName: 'daily_tune_up_completed',
-        properties: {
-          improvement: threatLevelBefore - threatLevelAfter,
-          user_email: user.email
-        }
+        properties: { improvement, user_email: user?.email }
       });
 
       if (queryClient) {
         queryClient.invalidateQueries({ queryKey: ['rehabPlan'] });
       }
 
-      playText('🎉 Session abgeschlossen! Du hast einen großartigen Fortschritt gemacht!');
-      
+      // Smart outcome: improvement ≥ 2 → flow, else → rehab plan
+      const noImprovement = improvement < 2;
       setTimeout(() => {
-        onClose();
-      }, 3000);
+        onClose({ noImprovement });
+      }, 2000);
     } catch (error) {
       console.error('Session submission error:', error);
+      setTimeout(() => onClose({ noImprovement: false }), 1000);
     } finally {
       setIsSubmitting(false);
     }

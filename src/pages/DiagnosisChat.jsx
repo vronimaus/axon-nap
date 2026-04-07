@@ -5,25 +5,42 @@ import { createPageUrl } from '@/utils';
 import { motion } from 'framer-motion';
 import FocusScreenContainer from '../components/diagnosis/FocusScreenContainer';
 import InteractiveBodyMapInput from '../components/diagnosis/InteractiveBodyMapInput';
-import PainIntensitySlider from '../components/diagnosis/PainIntensitySlider';
 import DiagnosisLoadingAnimation from '../components/diagnosis/DiagnosisLoadingAnimation';
+import SFMAQuickCheck from '../components/diagnosis/SFMAQuickCheck';
+import RedFlagResultScreen from '../components/diagnosis/RedFlagResultScreen';
 import DemoPaywall from '../components/demo/DemoPaywall';
 import { useDemoTimer } from '../components/demo/useDemoTimer';
+import DailyTuneUpModal from '../components/rehab/DailyTuneUpModal';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, AlertCircle } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
 
-// Steps: body_map → intensity → generating → done | error
+// Steps: body_map → sfma → tune_up | red_flag | generating → done | error
 export default function DiagnosisChat() {
   const [searchParams] = useSearchParams();
   const mapDataParam = searchParams.get('mapData');
   const regionParam = searchParams.get('region');
+  const initialStep = searchParams.get('step'); // 'sfma' = come from body map
   const { isDemoExpired } = useDemoTimer();
 
-  const [step, setStep] = useState(mapDataParam && regionParam ? 'intensity' : 'body_map');
-  const [painMap, setPainMap] = useState(null);
-  const [error, setError] = useState(null);
+  const [step, setStep] = useState(() => {
+    if (mapDataParam && regionParam && initialStep === 'sfma') return 'sfma';
+    if (mapDataParam && regionParam) return 'intensity'; // legacy fallback
+    return 'body_map';
+  });
 
-  // If coming from dashboard body map, pre-load map data
+  const [painMap, setPainMap] = useState(null);
+  const [sfmaDecision, setSfmaDecision] = useState(null);
+  const [error, setError] = useState(null);
+  const [showTuneUp, setShowTuneUp] = useState(false);
+  const [user, setUser] = useState(null);
+  const [rehabPlan, setRehabPlan] = useState(null);
+
+  useEffect(() => {
+    base44.auth.me().then(u => setUser(u)).catch(() => {});
+  }, []);
+
+  // Pre-load map data from URL params
   useEffect(() => {
     if (mapDataParam && regionParam) {
       try {
@@ -35,36 +52,66 @@ export default function DiagnosisChat() {
     }
   }, [mapDataParam, regionParam]);
 
-  // Archive old active plans before creating a new one
+  // Load existing rehab plan for TuneUp modal
+  useEffect(() => {
+    if (!user?.email) return;
+    base44.entities.RehabPlan.filter({ user_email: user.email, status: 'active' })
+      .then(plans => { if (plans.length > 0) setRehabPlan(plans[0]); })
+      .catch(() => {});
+  }, [user]);
+
   const archiveOldPlans = async () => {
     try {
-      const user = await base44.auth.me();
       if (!user?.email) return;
       const activePlans = await base44.entities.RehabPlan.filter({ user_email: user.email, status: 'active' });
       await Promise.all(activePlans.map(p => base44.entities.RehabPlan.update(p.id, { status: 'completed' })));
-    } catch (_e) {
-      // non-blocking
-    }
+    } catch (_e) {}
   };
 
   const handleBodyMapSubmit = (mapData) => {
     setPainMap({ ...mapData, region: mapData.region || 'unbekannte Region' });
-    setStep('intensity');
+    setStep('sfma');
   };
 
-  const handleIntensitySubmit = async (intensity) => {
+  // SFMA Quick Check decision handler
+  const handleSFMADecision = (decision) => {
+    setSfmaDecision(decision);
+    if (decision.type === 'red_flag') {
+      setStep('red_flag');
+    } else {
+      // tune_up → open TuneUp modal
+      setShowTuneUp(true);
+    }
+  };
+
+  // After TuneUp: user can continue to plan generation or go to flow
+  const handleTuneUpClose = (outcome) => {
+    setShowTuneUp(false);
+    if (outcome?.noImprovement) {
+      // No improvement → generate rehab plan
+      handleGeneratePlan();
+    } else {
+      // Improvement → go to flow routines
+      window.location.href = createPageUrl('FlowRoutines');
+    }
+  };
+
+  const handleGeneratePlan = async () => {
     setStep('generating');
     setError(null);
 
     base44.analytics.track({
       eventName: 'diagnosis_started',
-      properties: { pain_intensity: intensity, region: painMap?.region }
+      properties: {
+        pain_intensity: sfmaDecision?.nrs || 0,
+        region: painMap?.region,
+        source: 'sfma_flow'
+      }
     });
 
     await archiveOldPlans();
 
     try {
-      // Create DiagnosisSession first
       const diagSession = await base44.entities.DiagnosisSession.create({
         symptom_location: painMap?.region || 'unbekannte Region',
         symptom_description: '',
@@ -76,20 +123,14 @@ export default function DiagnosisChat() {
         completed: false
       });
 
-      const payload = {
+      const response = await base44.functions.invoke('generateRehabPlan', {
         diagnosis_session_id: diagSession.id,
         problem_summary: `Schmerzen im Bereich: ${painMap?.region || 'unbekannte Region'}`,
         region: painMap?.region || 'unbekannte Region',
-        pain_intensity: intensity,
+        pain_intensity: sfmaDecision?.nrs || 5,
         affected_chains: '',
-        feedback_summary: ''
-      };
-      
-      console.log('Calling generateRehabPlan with payload:', JSON.stringify(payload));
-      
-      const response = await base44.functions.invoke('generateRehabPlan', payload);
-
-      console.log('generateRehabPlan response:', response);
+        feedback_summary: 'Tune-Up hat keine ausreichende Verbesserung gebracht.'
+      });
 
       if (response.data?.plan_id || response.data?.success) {
         setStep('done');
@@ -97,7 +138,6 @@ export default function DiagnosisChat() {
         throw new Error(response.data?.error || 'Plan konnte nicht erstellt werden');
       }
     } catch (err) {
-      console.error('generateRehabPlan failed:', err.response?.data || err.message || err);
       setError(err.response?.data?.error || err.message || 'Unbekannter Fehler');
       setStep('error');
     }
@@ -105,6 +145,7 @@ export default function DiagnosisChat() {
 
   if (isDemoExpired) return <DemoPaywall />;
 
+  // ── BODY MAP ────────────────────────────────────────────────────────────────
   if (step === 'body_map') {
     return (
       <FocusScreenContainer
@@ -117,18 +158,52 @@ export default function DiagnosisChat() {
     );
   }
 
-  if (step === 'intensity') {
+  // ── SFMA QUICK CHECK ────────────────────────────────────────────────────────
+  if (step === 'sfma') {
     return (
       <FocusScreenContainer
-        title="Wie stark ist der Schmerz?"
-        instruction="Wähle die Intensität auf einer Skala von 1–10"
+        title="Kurz-Check"
+        instruction={`Schmerzbereich: ${painMap?.region || '—'}`}
         showBackButton={false}
       >
-        <PainIntensitySlider onSubmit={handleIntensitySubmit} />
+        <SFMAQuickCheck
+          region={painMap?.region || 'unbekannte Region'}
+          onDecision={handleSFMADecision}
+        />
+
+        {/* TuneUp Modal opens on top */}
+        {showTuneUp && (
+          <DailyTuneUpModal
+            isOpen={showTuneUp}
+            onClose={handleTuneUpClose}
+            rehabPlan={rehabPlan}
+            user={user}
+            region={painMap?.region}
+          />
+        )}
       </FocusScreenContainer>
     );
   }
 
+  // ── RED FLAG RESULT ─────────────────────────────────────────────────────────
+  if (step === 'red_flag') {
+    return (
+      <FocusScreenContainer
+        title="Sicherheitsprotokoll"
+        instruction="Wir haben wichtige Muster erkannt"
+        showBackButton={false}
+      >
+        <RedFlagResultScreen
+          region={painMap?.region || 'unbekannte Region'}
+          nrs={sfmaDecision?.nrs || 7}
+          flags={sfmaDecision?.flags || []}
+          onGoToDiagnosis={handleGeneratePlan}
+        />
+      </FocusScreenContainer>
+    );
+  }
+
+  // ── GENERATING ──────────────────────────────────────────────────────────────
   if (step === 'generating') {
     return (
       <FocusScreenContainer
@@ -141,6 +216,7 @@ export default function DiagnosisChat() {
     );
   }
 
+  // ── ERROR ───────────────────────────────────────────────────────────────────
   if (step === 'error') {
     return (
       <FocusScreenContainer
@@ -158,7 +234,7 @@ export default function DiagnosisChat() {
             <p className="text-slate-300 text-sm">{error}</p>
           </div>
           <Button
-            onClick={() => setStep('body_map')}
+            onClick={() => setStep('sfma')}
             className="w-full h-12 bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-600 hover:to-purple-700 text-white font-semibold"
           >
             Erneut versuchen
@@ -168,6 +244,7 @@ export default function DiagnosisChat() {
     );
   }
 
+  // ── DONE ────────────────────────────────────────────────────────────────────
   if (step === 'done') {
     return (
       <FocusScreenContainer
