@@ -104,7 +104,6 @@ export default function SFMAQuickCheck({ region, onDecision }) {
             className="space-y-4"
           >
             <div className="text-center">
-              <p className="text-xs font-bold uppercase tracking-widest text-cyan-400 mb-1">Schnell-Check · {region}</p>
               <h2 className="text-xl font-bold text-white">Wie geht es dir gerade?</h2>
             </div>
 
