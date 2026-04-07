@@ -11,6 +11,7 @@ import RedFlagResultScreen from '../components/diagnosis/RedFlagResultScreen';
 import DemoPaywall from '../components/demo/DemoPaywall';
 import { useDemoTimer } from '../components/demo/useDemoTimer';
 import DailyTuneUpModal from '../components/rehab/DailyTuneUpModal';
+import SFMAResultScreen from '../components/diagnosis/SFMAResultScreen';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, AlertCircle } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
@@ -76,10 +77,13 @@ export default function DiagnosisChat() {
   // SFMA Quick Check decision handler
   const handleSFMADecision = (decision) => {
     setSfmaDecision(decision);
-    if (decision.type === 'red_flag') {
+    setStep('sfma_result'); // always show result screen first
+  };
+
+  const handleResultContinue = () => {
+    if (sfmaDecision?.type === 'red_flag') {
       setStep('red_flag');
     } else {
-      // tune_up → open TuneUp modal
       setShowTuneUp(true);
     }
   };
@@ -172,6 +176,34 @@ export default function DiagnosisChat() {
         />
 
         {/* TuneUp Modal opens on top */}
+        {showTuneUp && (
+          <DailyTuneUpModal
+            isOpen={showTuneUp}
+            onClose={handleTuneUpClose}
+            rehabPlan={rehabPlan}
+            user={user}
+            region={painMap?.region}
+          />
+        )}
+      </FocusScreenContainer>
+    );
+  }
+
+  // ── SFMA RESULT SCREEN ──────────────────────────────────────────────────────
+  if (step === 'sfma_result') {
+    return (
+      <FocusScreenContainer
+        title="Deine Analyse"
+        instruction={`Schmerzbereich: ${painMap?.region || '—'}`}
+        showBackButton={false}
+      >
+        <SFMAResultScreen
+          region={painMap?.region || 'unbekannte Region'}
+          type={sfmaDecision?.symptomType || 'schmerz'}
+          nrs={sfmaDecision?.nrs || 5}
+          isRedFlag={sfmaDecision?.type === 'red_flag'}
+          onContinue={handleResultContinue}
+        />
         {showTuneUp && (
           <DailyTuneUpModal
             isOpen={showTuneUp}
