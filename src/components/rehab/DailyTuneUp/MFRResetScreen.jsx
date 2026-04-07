@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
-import { Loader2, Play, Check, Gauge } from 'lucide-react';
-import { useTTS } from '@/hooks/useTTS';
+import { Loader2, Play, Check, Gauge, MapPin } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 
 export default function MFRResetScreen({ onComplete, rehabPlan }) {
@@ -12,8 +11,6 @@ export default function MFRResetScreen({ onComplete, rehabPlan }) {
   const [isLoadingNode, setIsLoadingNode] = useState(true);
   const [step, setStep] = useState('pretest'); // pretest → compression → info
   const [pretestValue, setPretestValue] = useState(null);
-  const { isPlaying, playText } = useTTS();
-
   const MFR_DURATION = 90; // seconds
 
   // Load first MFR node from current phase
@@ -49,18 +46,16 @@ export default function MFRResetScreen({ onComplete, rehabPlan }) {
       setTimeElapsed(prev => {
         if (prev >= MFR_DURATION) {
           setIsRunning(false);
-          playText('Zeit abgelaufen. Sehr gut gemacht!');
           return MFR_DURATION;
         }
         return prev + 1;
       });
     }, 1000);
     return () => clearInterval(interval);
-  }, [isRunning, playText]);
+  }, [isRunning]);
 
   const handleStartTimer = () => {
     setIsRunning(true);
-    playText(`Starte einen 90-Sekunden-Timer für ${mfrNode?.name_de || 'deinen Stecco-Punkt'}. Lass dich auf die Empfindung ein.`);
   };
 
   const handleReset = () => {
@@ -75,7 +70,6 @@ export default function MFRResetScreen({ onComplete, rehabPlan }) {
   const handlePretestComplete = (value) => {
     setPretestValue(value);
     setStep('compression');
-    playText(`Ausgangswert: ${value}. Jetzt starten wir den 90-Sekunden Hardware-Reset mit ${mfrNode?.name_de || 'deinem Stecco-Punkt'}.`);
   };
 
   const remainingTime = Math.max(0, MFR_DURATION - timeElapsed);
@@ -192,10 +186,21 @@ export default function MFRResetScreen({ onComplete, rehabPlan }) {
                 )}
               </motion.div>
 
-              {/* Instruktions-Hinweis */}
-              <div className="bg-slate-800/60 border border-slate-700/50 rounded-xl px-4 py-3 text-center">
+              {/* Platzierungsanleitung */}
+              {mfrNode?.user_instruction && (
+                <div className="bg-slate-800/70 border border-cyan-500/30 rounded-xl px-4 py-4">
+                  <div className="flex items-center gap-2 mb-2">
+                    <MapPin className="w-4 h-4 text-cyan-400 flex-shrink-0" />
+                    <p className="text-xs font-bold text-cyan-400 uppercase tracking-widest">So platzierst du den Ball</p>
+                  </div>
+                  <p className="text-sm text-slate-200 leading-relaxed">{mfrNode.user_instruction}</p>
+                </div>
+              )}
+
+              {/* Druck-Hinweis */}
+              <div className="bg-slate-800/60 border border-orange-500/20 rounded-xl px-4 py-3">
                 <p className="text-xs text-slate-300 leading-relaxed">
-                  🎯 Drücke mit dem <span className="text-emerald-400 font-semibold">Lacrosse-Ball</span> auf den Punkt — starte dann den Timer und halte den Druck.
+                  🎯 Drücke mit dem <span className="text-emerald-400 font-semibold">Lacrosse-Ball</span> auf den Punkt — <span className="text-orange-300">mittlerer Druck</span>, kein Schmerz. Dann Timer starten und Druck halten.
                 </p>
               </div>
 
