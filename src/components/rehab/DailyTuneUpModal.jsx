@@ -191,6 +191,7 @@ export default function DailyTuneUpModal({
             {currentScreen === 2 && (
               <RetestScreen
                 key="retest"
+                nodeId={nodeId}
                 screenId={2}
                 onComplete={handleScreenComplete}
               />

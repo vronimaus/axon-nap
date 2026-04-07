@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Zap, ChevronRight } from 'lucide-react';
 
-export default function RetestScreen({ onComplete, screenId = 2 }) {
+export default function RetestScreen({ onComplete, screenId = 2, nodeId = 'N6' }) {
   const [retestValue, setRetestValue] = useState(null);
   const [fineTuning, setFineTuning] = useState(0);
   const pretestValue = 3;
@@ -18,7 +18,7 @@ export default function RetestScreen({ onComplete, screenId = 2 }) {
   };
 
   const handleComplete = () => {
-    onComplete(screenId, { pretestValue, retestValue, improvement, fineTuning });
+    onComplete(screenId, { nodeId, pretestValue, retestValue, improvement, fineTuning });
   };
 
   return (
