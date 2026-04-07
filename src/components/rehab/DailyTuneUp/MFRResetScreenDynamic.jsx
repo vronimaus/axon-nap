@@ -14,13 +14,52 @@ export default function MFRResetScreenDynamic({ onComplete, nodeId = 'N1', scree
   const MFR_DURATION = 90;
 
   useEffect(() => {
+    const testPretest = {
+      N1: 'Drehe deinen Kopf langsam nach links. Kannst du über deine Schulter hinwegsschauen? Oder schaust du nur zur Seite?',
+      N2: 'Neige deinen Kopf zur rechten Schulter. Spürst du einen starken Zug an der linken Halsseite? Oder ist die Bewegung schmerzfrei?',
+      N3: 'Strecke beide Arme nach oben über den Kopf. Öffnet sich dein Brustkorb frei? Oder blockiert Schmerz sofort die Bewegung?',
+      N4: 'Beuge dich langsam nach vorne. Kannst du deine Zehen berühren? Oder bleibst du bei der Mitte der Schienbeine stecken?',
+      N5: 'Stehe auf einem Bein und kippe dein Becken nach oben und unten. Ist die Bewegung flüssig und kontrolliert?',
+      N6: 'Hebe beide Arme zur Seite bis über den Kopf. Erreichen deine Arme problemlos die Höhe? Oder bleiben sie unter Schulterhöhe stecken?',
+      N7: 'Strecke deinen Arm aus und öffne deine Hand so weit wie möglich. Spreizen deine Finger leicht auseinander?',
+      N8: 'Spreize deine Finger maximal auseinander und halte diese Spannung. Hältst du die Spannung leicht? Oder ermüdet deine Hand schnell?',
+      N9: 'Stehe auf einem Bein und hebe das andere Knie seitlich. Kommt dein Knie leicht bis Hüfthöhe?',
+      N10: 'Mache eine tiefe Kniebeuge. Kommst du tief nach unten? Oder stoppt dich dein Knie schon in der halben Bewegung?',
+      N11: 'Stehe auf einem Bein und gehe auf Zehenspitzen. Schaffst du mehrere Schritte auf den Zehen?',
+      N12: 'Stehe auf einem Bein und spreize deine Zehen so weit wie möglich. Spreizt dein Fuß gut?'
+    };
+
     const loadCausalChain = async () => {
       try {
         const chains = await base44.entities.TuneUpCausalChain.filter({ node_id: nodeId });
-        setCausalChain(chains?.[0] || null);
+        const chain = chains?.[0];
+        if (chain) {
+          // Merge with pretest instruction from MFRNode
+          setCausalChain({
+            ...chain,
+            hardware_reset: {
+              ...chain.hardware_reset,
+              pretest_instruction: chain.hardware_reset?.pretest_instruction || testPretest[nodeId] || ''
+            }
+          });
+        } else {
+          // Fallback to test data if no chain found
+          setCausalChain({
+            node_name_de: `Node ${nodeId}`,
+            hardware_reset: {
+              pretest_instruction: testPretest[nodeId] || 'Teste deine aktuelle Mobilität'
+            }
+          });
+        }
       } catch (error) {
-        console.error('Error loading causal chain:', error);
-        setCausalChain(null);
+        console.warn('Error loading causal chain:', error.message);
+        // Fallback to test data on error
+        setCausalChain({
+          node_name_de: `Node ${nodeId}`,
+          hardware_reset: {
+            pretest_instruction: testPretest[nodeId] || 'Teste deine aktuelle Mobilität'
+          }
+        });
       } finally {
         setIsLoadingData(false);
       }
