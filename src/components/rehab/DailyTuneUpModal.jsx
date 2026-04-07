@@ -6,7 +6,6 @@ import NeuroDrillScreen from './DailyTuneUp/NeuroDrillScreen';
 import RetestScreen from './DailyTuneUp/RetestScreen';
 import IntegrationScreen from './DailyTuneUp/IntegrationScreen';
 import NeuralChargeBar from './DailyTuneUp/NeuralChargeBar';
-import RegionSelector from './DailyTuneUp/RegionSelector';
 
 import { base44 } from '@/api/base44Client';
 
@@ -23,9 +22,9 @@ export default function DailyTuneUpModal({
   rehabPlan,
   user,
   queryClient,
+  nodeId = 'N4', // Default zu Lendenwirbelsäule, aber über Props übergebar
 }) {
   const [currentScreen, setCurrentScreen] = useState(0);
-  const [selectedNodeId, setSelectedNodeId] = useState(null);
   const [mfrNodeCompleted, setMFRNodeCompleted] = useState(false);
   const [neuroDrillCompleted, setNeuroDrillCompleted] = useState(false);
   const [retestCompleted, setRetestCompleted] = useState(false);
@@ -153,16 +152,10 @@ export default function DailyTuneUpModal({
         {/* Screen Content */}
         <div className="flex-1 flex flex-col items-center justify-center px-5 py-6 overflow-y-auto">
           <AnimatePresence mode="wait">
-            {!selectedNodeId && (
-              <RegionSelector
-                key="region"
-                onRegionSelected={(nodeId) => setSelectedNodeId(nodeId)}
-              />
-            )}
-            {selectedNodeId && currentScreen === 0 && (
+            {currentScreen === 0 && (
               <MFRResetScreenDynamic
                 key="mfr"
-                nodeId={selectedNodeId}
+                nodeId={nodeId}
                 screenId={0}
                 onComplete={handleScreenComplete}
               />
