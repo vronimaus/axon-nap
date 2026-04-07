@@ -110,6 +110,9 @@ export default function Layout({ children, currentPageName }) {
 
   const PUBLIC_PAGES = ['Landing', 'Success', 'Checkout', 'Login', 'Imprint', 'Privacy', 'Terms', 'KnowledgeHub', 'KnowledgeHubArticle', 'FAQ', 'Glossary', 'Wissen', 'WissenArtikel', 'Faq', 'Glossar'];
 
+  // Detect if running inside the Base44 builder preview iframe
+  const isBuilderPreview = typeof window !== 'undefined' && window.self !== window.top;
+
   useEffect(() => {
     if (trialLoading) return;
 
@@ -117,6 +120,11 @@ export default function Layout({ children, currentPageName }) {
       setIsChecking(true);
       try {
         if (!user) {
+          // In builder preview: don't redirect, just show the page
+          if (isBuilderPreview) {
+            setIsChecking(false);
+            return;
+          }
           // Nicht eingeloggt: nur auf Landing & Public Pages erlaubt
           if (!PUBLIC_PAGES.includes(currentPageName)) {
             window.location.href = createPageUrl('Landing');
@@ -217,7 +225,7 @@ export default function Layout({ children, currentPageName }) {
         }
 
         // Ohne Zahlung und ohne aktive Trial -> zurück zum Landing
-        if (!hasAccess && !PUBLIC_PAGES.includes(currentPageName) && currentPageName !== 'HowToUse') {
+        if (!hasAccess && !PUBLIC_PAGES.includes(currentPageName) && currentPageName !== 'HowToUse' && !isBuilderPreview) {
           window.location.href = createPageUrl('Landing');
           return;
         }
