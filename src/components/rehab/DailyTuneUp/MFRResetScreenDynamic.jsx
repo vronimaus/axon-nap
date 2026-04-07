@@ -112,34 +112,7 @@ export default function MFRResetScreenDynamic({ onComplete, nodeId = 'N1', scree
       exit={{ opacity: 0, y: -20 }}
       className="w-full max-w-sm mx-auto px-4 space-y-6"
     >
-      {/* Progress Circle + Step Indicator */}
-      <div className="flex items-center justify-between px-4 py-3 rounded-xl bg-slate-900/60 border border-cyan-500/20">
-        {/* Compact Circle Progress */}
-        <div className="relative w-12 h-12 flex items-center justify-center flex-shrink-0 mr-3">
-          <svg className="w-full h-full -rotate-90">
-            <circle cx="50%" cy="50%" r="20" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-slate-700" />
-            <motion.circle cx="50%" cy="50%" r="20" fill="none" stroke="currentColor" strokeWidth="2" className="text-cyan-500" strokeDasharray={2 * Math.PI * 20} strokeDashoffset={2 * Math.PI * 20 * (1 - progress / 100)} strokeLinecap="round" />
-          </svg>
-          <span className="absolute text-[10px] font-bold text-slate-300">{Math.round(progress)}%</span>
-        </div>
 
-        {/* Steps */}
-        <div className="flex-1">
-        {['pretest', 'compression', 'info'].map((s, idx) => (
-          <div key={s} className="flex items-center flex-1">
-            <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs transition-all ${
-              step === s ? 'bg-gradient-to-r from-cyan-500 to-purple-600 text-white' : 
-              ['pretest', 'compression'].indexOf(s) < ['pretest', 'compression', 'info'].indexOf(step) 
-                ? 'bg-cyan-500/20 text-cyan-400' 
-                : 'bg-slate-700 text-slate-500'
-            }`}>
-              {idx + 1}
-            </div>
-            {idx < 2 && <div className={`flex-1 h-0.5 mx-2 ${step === 'info' || ['pretest', 'compression', 'info'].indexOf(s) < ['pretest', 'compression', 'info'].indexOf(step) ? 'bg-cyan-500/40' : 'bg-slate-700'}`} />}
-          </div>
-        ))}
-        </div>
-      </div>
 
       {/* PRETEST */}
       {step === 'pretest' && (
