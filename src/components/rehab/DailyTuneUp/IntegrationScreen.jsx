@@ -83,9 +83,15 @@ export default function IntegrationScreen({
         <h3 className="text-lg font-black text-white mb-2">
           {integration.name}
         </h3>
-        <p className="text-slate-300 text-xs leading-relaxed mb-3">
+        <p className="text-slate-300 text-xs leading-relaxed mb-4">
           {integration.instruction}
         </p>
+
+        {/* Warum – immer sichtbar */}
+        <div className="border-t border-purple-500/20 pt-3">
+          <p className="text-[10px] font-bold text-purple-300 uppercase tracking-widest mb-1">🧠 Warum das funktioniert</p>
+          <p className="text-slate-400 text-xs leading-relaxed">{integration.why}</p>
+        </div>
       </motion.div>
 
       {/* Audio Button */}
