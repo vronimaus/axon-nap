@@ -103,8 +103,9 @@ export default function SFMAQuickCheck({ region, onDecision }) {
             exit={{ opacity: 0, x: -20 }}
             className="space-y-4"
           >
-            <div className="text-center">
-              <h2 className="text-xl font-bold text-white">Wie geht es dir gerade?</h2>
+            <div className="text-center space-y-1">
+              <p className="text-sm text-slate-400">Problemzone: <span className="text-cyan-400 font-semibold">{region}</span></p>
+              <h2 className="text-lg font-bold text-white">Bewerte deine Einschränkung</h2>
             </div>
 
             {/* ① Bewegungsqualität */}
@@ -112,7 +113,7 @@ export default function SFMAQuickCheck({ region, onDecision }) {
               const mv = MOVEMENT_LEVELS[movementLevel - 1];
               return (
                 <div className="glass rounded-2xl border border-slate-700 p-4 space-y-3">
-                  <p className="text-sm font-bold uppercase tracking-widest text-white">① Bewegungsqualität</p>
+                  <p className="text-sm font-bold text-white">① Bewegungsqualität</p>
                   <input
                     type="range" min={1} max={4} step={1} value={movementLevel}
                     onChange={e => setMovementLevel(Number(e.target.value))}
@@ -129,7 +130,7 @@ export default function SFMAQuickCheck({ region, onDecision }) {
 
             {/* ② Schmerzlevel im Ruhezustand */}
             <div className="glass rounded-2xl border border-slate-700 p-4 space-y-3">
-              <p className="text-sm font-bold uppercase tracking-widest text-white">② Schmerzlevel im Ruhezustand</p>
+              <p className="text-sm font-bold text-white">② Schmerzlevel in Ruhe</p>
               <input
                 type="range" min={0} max={8} value={painRest}
                 onChange={e => setPainRest(Number(e.target.value))}
@@ -145,7 +146,7 @@ export default function SFMAQuickCheck({ region, onDecision }) {
 
             {/* ③ Schmerzlevel bei Belastung */}
             <div className="glass rounded-2xl border border-slate-700 p-4 space-y-3">
-              <p className="text-sm font-bold uppercase tracking-widest text-white">③ Schmerzlevel bei Belastung</p>
+              <p className="text-sm font-bold text-white">③ Schmerzlevel bei Belastung</p>
               <input
                 type="range" min={0} max={8} value={painMove}
                 onChange={e => setPainMove(Number(e.target.value))}
