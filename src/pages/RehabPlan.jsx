@@ -75,8 +75,6 @@ export default function RehabPlan() {
     checkAuth();
   }, []);
 
-  const [diagnosisRegion, setDiagnosisRegion] = useState(null);
-
   const { data: rehabPlan } = useQuery({
     queryKey: ['rehabPlan', user?.email],
     queryFn: async () => {
@@ -87,22 +85,6 @@ export default function RehabPlan() {
         const plans = await base44.entities.RehabPlan.filter(filter, '-plan_generated_date', 5);
         for (const plan of plans) {
           if (plan.phases && Array.isArray(plan.phases) && plan.phases.length > 0) {
-            // Extract region from problem_summary or diagnosis_session
-            const regionFromPlan = plan.problem_summary;
-            if (regionFromPlan) {
-              console.log('✅ Region from rehabPlan.problem_summary:', regionFromPlan);
-              setDiagnosisRegion(regionFromPlan);
-            } else if (plan.diagnosis_session_id) {
-              try {
-                const sessions = await base44.entities.DiagnosisSession.filter({ id: plan.diagnosis_session_id });
-                if (sessions.length > 0 && sessions[0].symptom_location) {
-                  console.log('✅ DiagnosisSession region:', sessions[0].symptom_location);
-                  setDiagnosisRegion(sessions[0].symptom_location);
-                }
-              } catch (e) {
-                console.warn('⚠️ DiagnosisSession load failed:', e);
-              }
-            }
             return plan;
           }
           // Auto-archive broken plans (no phases)
@@ -285,7 +267,7 @@ export default function RehabPlan() {
         rehabPlan={rehabPlan}
         user={user}
         queryClient={queryClient}
-        region={diagnosisRegion || 'Lenden / Unterer Rücken'}
+        region={rehabPlan?.problem_summary || 'Lenden / Unterer Rücken'}
       />
 
       {/* Rehab Intro Modal */}
