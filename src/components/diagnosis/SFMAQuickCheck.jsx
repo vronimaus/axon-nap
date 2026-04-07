@@ -148,7 +148,7 @@ export default function SFMAQuickCheck({ region, onDecision }) {
                 className="w-full"
               />
               <div className="pt-1">
-                <p className="text-lg font-bold" style={{ color: valueColor(painRest) }}>
+                <p className="text-lg font-bold text-white">
                   {painRest} — {getPainLabel(painRest)}
                 </p>
               </div>
@@ -169,7 +169,7 @@ export default function SFMAQuickCheck({ region, onDecision }) {
                 className="w-full"
               />
               <div className="pt-1">
-                <p className="text-lg font-bold" style={{ color: valueColor(painMove) }}>
+                <p className="text-lg font-bold text-white">
                   {painMove} — {getPainLabel(painMove)}
                 </p>
               </div>
