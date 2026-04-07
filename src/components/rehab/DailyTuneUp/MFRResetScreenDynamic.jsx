@@ -204,7 +204,7 @@ export default function MFRResetScreenDynamic({ onComplete, nodeId = 'N1', scree
           <div className="flex flex-col items-center gap-4">
             <motion.div animate={{ scale: isRunning ? [0.98, 1.02, 0.98] : 1 }} transition={{ duration: 1.2, repeat: isRunning ? Infinity : 0 }} className="relative w-36 h-36 rounded-full border-4 border-cyan-500/40 flex items-center justify-center bg-gradient-to-br from-cyan-500/10 to-transparent shadow-lg shadow-cyan-500/20">
               <div className="text-center">
-                <span className="text-6xl font-black text-emerald-400 font-mono">{String(Math.floor(remainingTime / 60)).padStart(1, '0')}:{String(remainingTime % 60).padStart(2, '0')}</span>
+                <span className="text-4xl font-black text-cyan-400 font-mono">{String(Math.floor(remainingTime / 60)).padStart(1, '0')}:{String(remainingTime % 60).padStart(2, '0')}</span>
                 <p className="text-xs text-slate-500 mt-2 tracking-widest font-bold">{isRunning ? 'AKTIV' : 'BEREIT'}</p>
               </div>
               <svg className="absolute inset-0 w-full h-full">
