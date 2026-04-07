@@ -54,8 +54,8 @@ export default function RetestScreen({ onComplete, screenId = 2 }) {
             ) : (
               <div className="space-y-2 mt-2">
                 {[
-                  { val: 1, label: 'Sehr steif' },
-                  { val: 2, label: 'Steif' },
+                  { val: 1, label: 'Sehr eingeschränkt' },
+                  { val: 2, label: 'Eingeschränkt' },
                   { val: 3, label: 'Normal' },
                   { val: 4, label: 'Beweglich' },
                   { val: 5, label: 'Sehr beweglich' }
