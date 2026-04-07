@@ -39,10 +39,7 @@ function valueColor(v, max = 8) {
   return '#ef4444';
 }
 
-function getCyanSliderBg(value, max) {
-  const pct = (value / max) * 100;
-  return `linear-gradient(to right, #06b6d4 0%, #06b6d4 ${pct}%, #1e293b ${pct}%, #1e293b 100%)`;
-}
+
 
 export default function SFMAQuickCheck({ region, onDecision }) {
   const [step, setStep] = useState('assess'); // 'assess' | 'redflags'
@@ -113,6 +110,7 @@ export default function SFMAQuickCheck({ region, onDecision }) {
             {/* ① Bewegungsqualität */}
             {(() => {
               const mv = MOVEMENT_LEVELS[movementLevel - 1];
+              const pct = ((movementLevel - 1) / 3) * 100;
               return (
                 <div className="glass rounded-2xl border border-slate-700 p-4 space-y-3">
                   <div className="flex items-center justify-between">
@@ -122,8 +120,12 @@ export default function SFMAQuickCheck({ region, onDecision }) {
                   <input
                     type="range" min={1} max={4} step={1} value={movementLevel}
                     onChange={e => setMovementLevel(Number(e.target.value))}
-                    className="w-full h-3 rounded-full cursor-pointer sfma-slider"
-                    style={{ background: getCyanSliderBg(movementLevel - 1, 3), WebkitAppearance: 'none', appearance: 'none' }}
+                    className="w-full h-3 rounded-full cursor-pointer sfma-slider-two-tone"
+                    style={{
+                      background: `linear-gradient(to right, #06b6d4 0%, #06b6d4 ${pct}%, #1e293b ${pct}%, #1e293b 100%)`,
+                      WebkitAppearance: 'none',
+                      appearance: 'none'
+                    }}
                   />
                   <div className="pt-1">
                     <p className="text-lg font-bold text-white">{mv.label}</p>
@@ -142,8 +144,12 @@ export default function SFMAQuickCheck({ region, onDecision }) {
               <input
                 type="range" min={0} max={8} value={painRest}
                 onChange={e => setPainRest(Number(e.target.value))}
-                className="w-full h-3 rounded-full cursor-pointer sfma-slider"
-                style={{ background: getCyanSliderBg(painRest, 8), WebkitAppearance: 'none', appearance: 'none' }}
+                className="w-full h-3 rounded-full cursor-pointer sfma-slider-two-tone"
+                style={{
+                  background: `linear-gradient(to right, #06b6d4 0%, #06b6d4 ${(painRest / 8) * 100}%, #1e293b ${(painRest / 8) * 100}%, #1e293b 100%)`,
+                  WebkitAppearance: 'none',
+                  appearance: 'none'
+                }}
               />
               <div className="pt-1">
                 <p className="text-lg font-bold" style={{ color: valueColor(painRest) }}>
@@ -161,8 +167,12 @@ export default function SFMAQuickCheck({ region, onDecision }) {
               <input
                 type="range" min={0} max={8} value={painMove}
                 onChange={e => setPainMove(Number(e.target.value))}
-                className="w-full h-3 rounded-full cursor-pointer sfma-slider"
-                style={{ background: getCyanSliderBg(painMove, 8), WebkitAppearance: 'none', appearance: 'none' }}
+                className="w-full h-3 rounded-full cursor-pointer sfma-slider-two-tone"
+                style={{
+                  background: `linear-gradient(to right, #06b6d4 0%, #06b6d4 ${(painMove / 8) * 100}%, #1e293b ${(painMove / 8) * 100}%, #1e293b 100%)`,
+                  WebkitAppearance: 'none',
+                  appearance: 'none'
+                }}
               />
               <div className="pt-1">
                 <p className="text-lg font-bold" style={{ color: valueColor(painMove) }}>

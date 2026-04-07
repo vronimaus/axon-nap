@@ -151,7 +151,7 @@ input[type="range"].sfma-slider::-webkit-slider-thumb {
   margin-top: -5px;
 }
 input[type="range"]::-webkit-slider-runnable-track,
-input[type="range"].sfma-slider::-webkit-slider-runnable-track {
+input[type="range"].sfma-slider-two-tone::-webkit-slider-runnable-track {
   height: 12px;
   border-radius: 9999px;
 }
@@ -168,13 +168,13 @@ input[type="range"].sfma-slider::-moz-range-thumb {
   cursor: pointer;
 }
 input[type="range"]::-moz-range-track,
-input[type="range"].sfma-slider::-moz-range-track {
+input[type="range"].sfma-slider-two-tone::-moz-range-track {
   height: 12px;
   border-radius: 9999px;
 }
 
-/* Extra nuclear override for stubborn browsers */
-.sfma-slider::-webkit-slider-thumb {
+/* Extra nuclear override for two-tone sliders */
+.sfma-slider-two-tone::-webkit-slider-thumb {
   -webkit-appearance: none !important;
   background: #06b6d4 !important;
   background-color: #06b6d4 !important;
@@ -185,7 +185,7 @@ input[type="range"].sfma-slider::-moz-range-track {
   box-shadow: 0 2px 8px rgba(6,182,212,0.6) !important;
   cursor: pointer !important;
 }
-.sfma-slider::-moz-range-thumb {
+.sfma-slider-two-tone::-moz-range-thumb {
   -moz-appearance: none !important;
   background: #06b6d4 !important;
   background-color: #06b6d4 !important;
