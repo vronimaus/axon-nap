@@ -43,9 +43,24 @@ export default function MFRResetScreenDynamic({ onComplete, nodeId = 'N1', scree
             }
           });
         } else {
-          // Fallback to test data if no chain found
+          // Fallback: Use testPretest data with nodeId (NOT from db)
+          const nodeName = {
+            N1: 'Kopf & Kiefer',
+            N2: 'Nacken/HWS',
+            N3: 'Obere Brust/Schulter',
+            N4: 'Schulterblatt',
+            N5: 'Mittlerer Rücken',
+            N6: 'Lenden/LWS',
+            N7: 'Becken & Hüfte',
+            N8: 'Hüfte & Oberschenkel',
+            N9: 'Oberschenkel hinten',
+            N10: 'Kniekehle',
+            N11: 'Wade',
+            N12: 'Ferse/Achillessehne'
+          };
           setCausalChain({
-            node_name_de: `Node ${nodeId}`,
+            node_id: nodeId,
+            node_name_de: nodeName[nodeId] || `Node ${nodeId}`,
             hardware_reset: {
               pretest_instruction: testPretest[nodeId] || 'Teste deine aktuelle Mobilität'
             }
@@ -53,9 +68,24 @@ export default function MFRResetScreenDynamic({ onComplete, nodeId = 'N1', scree
         }
       } catch (error) {
         console.warn('Error loading causal chain:', error.message);
-        // Fallback to test data on error
+        // Fallback: Use testPretest data with nodeId (NOT from db)
+        const nodeName = {
+          N1: 'Kopf & Kiefer',
+          N2: 'Nacken/HWS',
+          N3: 'Obere Brust/Schulter',
+          N4: 'Schulterblatt',
+          N5: 'Mittlerer Rücken',
+          N6: 'Lenden/LWS',
+          N7: 'Becken & Hüfte',
+          N8: 'Hüfte & Oberschenkel',
+          N9: 'Oberschenkel hinten',
+          N10: 'Kniekehle',
+          N11: 'Wade',
+          N12: 'Ferse/Achillessehne'
+        };
         setCausalChain({
-          node_name_de: `Node ${nodeId}`,
+          node_id: nodeId,
+          node_name_de: nodeName[nodeId] || `Node ${nodeId}`,
           hardware_reset: {
             pretest_instruction: testPretest[nodeId] || 'Teste deine aktuelle Mobilität'
           }
