@@ -32,12 +32,21 @@ export default function ThreatLevelScreen({ onComplete, isFirst, threat }) {
       <motion.div 
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-slate-800/40 border border-cyan-500/30 rounded-xl p-4 space-y-2"
+        className="bg-slate-800/40 border border-cyan-500/30 rounded-xl p-4 space-y-3"
       >
-        <p className="text-xs text-cyan-400 uppercase tracking-widest font-bold">Vor dem Reset</p>
-        <p className="text-slate-200 text-sm leading-relaxed">
-          Stufe deinen aktuellen nervösen System-Status ein. Das ist deine Ausgangslage — danach machen wir den Reset und sehen gleich, wie sehr sich dein Körper verbessert.
-        </p>
+        <div className="space-y-2">
+          <p className="text-xs text-cyan-400 uppercase tracking-widest font-bold">Nervöser System-Status</p>
+          <p className="text-slate-200 text-sm leading-relaxed">
+            Das ist <span className="text-cyan-400 font-semibold">nicht</span> dein Schmerz-Level — das ist dein <span className="text-cyan-400 font-semibold">nervöser Systemzustand</span>. Wie angespannt oder entspannt ist dein Körper insgesamt?
+          </p>
+        </div>
+        <div className="border-t border-cyan-500/20 pt-3">
+          <p className="text-[11px] text-slate-400 leading-relaxed">
+            <span className="text-cyan-300 font-semibold">1–2:</span> Flüssig & gelöst | 
+            <span className="text-cyan-300 font-semibold"> 3:</span> Neutral | 
+            <span className="text-cyan-300 font-semibold"> 4–5:</span> Angespannt oder blockiert
+          </p>
+        </div>
       </motion.div>
 
       {/* Visual Display */}
