@@ -267,6 +267,7 @@ export default function RehabPlan() {
         rehabPlan={rehabPlan}
         user={user}
         queryClient={queryClient}
+        region={rehabPlan?.problem_summary || 'Lenden / Unterer Rücken'}
       />
 
       {/* Rehab Intro Modal */}
