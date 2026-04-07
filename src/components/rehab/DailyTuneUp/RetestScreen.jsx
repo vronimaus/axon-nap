@@ -8,7 +8,7 @@ export default function RetestScreen({ onComplete, screenId = 2 }) {
   const [fineTuning, setFineTuning] = useState(0);
   const pretestValue = 3;
 
-  const improvement = pretestValue - (retestValue || 0);
+  const improvement = (retestValue || 0) - pretestValue;
 
   const getImprovementMessage = () => {
     if (improvement > 2) return 'Große Verbesserung';
@@ -81,13 +81,13 @@ export default function RetestScreen({ onComplete, screenId = 2 }) {
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="rounded-2xl border-2 border-emerald-500/50 bg-emerald-500/10 p-6 text-center"
+          className="rounded-2xl border-2 border-slate-600/50 bg-slate-800/50 p-6 text-center"
         >
           <div className="flex items-center justify-center gap-2 mb-2">
-            <Zap className="w-5 h-5 text-emerald-400" />
-            <p className="text-3xl font-black text-emerald-400">{improvement > 0 ? '+' : ''}{improvement}</p>
+            <Zap className="w-5 h-5 text-slate-400" />
+            <p className="text-3xl font-black text-slate-300">{improvement > 0 ? '+' : ''}{improvement}</p>
           </div>
-          <p className="text-sm text-emerald-300 font-semibold">{getImprovementMessage()}</p>
+          <p className="text-sm text-slate-400 font-semibold">{getImprovementMessage()}</p>
         </motion.div>
       )}
 
