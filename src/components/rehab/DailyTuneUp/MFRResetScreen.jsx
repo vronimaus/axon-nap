@@ -131,8 +131,8 @@ export default function MFRResetScreen({ onComplete, rehabPlan, nodeId = 'N1', s
 
               {/* Main Title */}
               <div className="text-center mb-2">
-                <h3 className="text-3xl font-black text-orange-400 mb-1 leading-tight">MOBILITY-CHECK</h3>
-                <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Deine aktuelle Mobilität</p>
+                <h3 className="text-3xl font-black text-orange-400 mb-1 leading-tight">AUSGANGSMESSUNG</h3>
+                <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Schritt 1 von 3</p>
               </div>
 
               <div className="rounded-2xl border border-orange-500/30 bg-gradient-to-br from-orange-500/10 to-transparent p-5">
