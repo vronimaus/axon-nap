@@ -138,18 +138,22 @@ export default function MFRResetScreen({ onComplete, rehabPlan }) {
                 <p className="text-xs text-slate-300 mb-6 font-semibold">
                   Wie ist deine aktuelle Beweglichkeit/Empfindung?
                 </p>
-                <div className="space-y-2">
-                  {[1, 2, 3, 4, 5].map((val) => (
+                <div className="space-y-3 mt-2">
+                  {[
+                    { val: 1, label: 'Sehr limitiert', icon: '⚠️', sub: 'Kaum Bewegung möglich', color: 'border-red-500/40 hover:bg-red-500/15 text-red-400' },
+                    { val: 3, label: 'Geht so', icon: '📐', sub: 'Eingeschränkt, aber machbar', color: 'border-orange-500/40 hover:bg-orange-500/15 text-orange-400' },
+                    { val: 5, label: 'Ganz leicht', icon: '✅', sub: 'Volle Beweglichkeit', color: 'border-emerald-500/40 hover:bg-emerald-500/15 text-emerald-400' },
+                  ].map(({ val, label, icon, sub, color }) => (
                     <button
                       key={val}
                       onClick={() => handlePretestComplete(val)}
-                      className="w-full py-3 rounded-lg border border-orange-500/30 hover:bg-orange-500/20 active:bg-orange-500/30 transition-colors text-sm font-semibold text-orange-400"
+                      className={`w-full py-4 px-4 rounded-xl border ${color} bg-slate-800/40 active:scale-[0.97] transition-all text-left flex items-center gap-3`}
                     >
-                      {val === 1 && '① Sehr steif/blockiert'}
-                      {val === 2 && '② Steif'}
-                      {val === 3 && '③ Neutral'}
-                      {val === 4 && '④ Locker'}
-                      {val === 5 && '⑤ Sehr locker'}
+                      <span className="text-2xl">{icon}</span>
+                      <div>
+                        <p className="font-bold text-white text-sm">{label}</p>
+                        <p className="text-[11px] text-slate-400 mt-0.5">{sub}</p>
+                      </div>
                     </button>
                   ))}
                 </div>
