@@ -13,8 +13,23 @@ export default function MFRResetScreen({ onComplete, rehabPlan, nodeId = 'N1', s
   const [pretestValue, setPretestValue] = useState(null);
   const MFR_DURATION = 90; // seconds
 
-  // Load MFRNode and TuneUpCausalChain
+  // Load MFRNode and TuneUpCausalChain with fallback test data
   useEffect(() => {
+    const testData = {
+      N1: { node_name_de: 'Kopf & Kiefer', pretest_instruction: 'Drehe deinen Kopf langsam nach links. Kannst du über deine Schulter hinwegsschauen? Oder schaust du nur zur Seite? Wiederhole nach rechts und vergleiche beide Seiten.' },
+      N2: { node_name_de: 'Hals & Nacken', pretest_instruction: 'Neige deinen Kopf zur rechten Schulter. Spürst du einen starken Zug an der linken Halsseite? Oder ist die Bewegung schmerzfrei?' },
+      N3: { node_name_de: 'Brust & Schulter', pretest_instruction: 'Strecke beide Arme nach oben über den Kopf. Öffnet sich dein Brustkorb frei? Oder blockiert Schmerz sofort die Bewegung?' },
+      N4: { node_name_de: 'Lenden / Unterer Rücken', pretest_instruction: 'Beuge dich langsam nach vorne. Kannst du deine Zehen berühren? Oder bleibst du bei der Mitte der Schienbeine stecken?' },
+      N5: { node_name_de: 'Becken & Hüfte', pretest_instruction: 'Stehe auf einem Bein und kippe dein Becken nach oben und unten. Ist die Bewegung flüssig und kontrolliert? Oder wirkt dein Becken steif und limitiert?' },
+      N6: { node_name_de: 'Schulter & Arm', pretest_instruction: 'Hebe beide Arme zur Seite bis über den Kopf. Erreichen deine Arme problemlos die Höhe? Oder bleiben sie unter Schulterhöhe stecken?' },
+      N7: { node_name_de: 'Unterarm & Hand', pretest_instruction: 'Strecke deinen Arm aus und öffne deine Hand so weit wie möglich. Spreizen deine Finger leicht auseinander? Oder bleiben sie zusammen?' },
+      N8: { node_name_de: 'Hand & Finger', pretest_instruction: 'Spreize deine Finger maximal auseinander und halte diese Spannung. Hältst du die Spannung leicht? Oder ermüdet deine Hand schnell?' },
+      N9: { node_name_de: 'Hüfte & Oberschenkel', pretest_instruction: 'Stehe auf einem Bein und hebe das andere Knie seitlich. Kommt dein Knie leicht bis Hüfthöhe? Oder bleibt es viel tiefer?' },
+      N10: { node_name_de: 'Knie', pretest_instruction: 'Mache eine tiefe Kniebeuge. Kommst du tief nach unten? Oder stoppt dich dein Knie schon in der halben Bewegung?' },
+      N11: { node_name_de: 'Waden & Unterschenkel', pretest_instruction: 'Stehe auf einem Bein und gehe auf Zehenspitzen. Schaffst du mehrere Schritte auf den Zehen? Oder wird deine Wade sofort hart und müde?' },
+      N12: { node_name_de: 'Fuß & Zehen', pretest_instruction: 'Stehe auf einem Bein und spreize deine Zehen so weit wie möglich. Spreizt dein Fuß gut? Oder bleiben deine Zehen relativ zusammen?' }
+    };
+
     const loadData = async () => {
       try {
         const [nodes, chains] = await Promise.all([
@@ -25,18 +40,15 @@ export default function MFRResetScreen({ onComplete, rehabPlan, nodeId = 'N1', s
         const mfrNode = nodes?.length > 0 ? nodes[0] : null;
         const chain = chains?.length > 0 ? chains[0] : null;
         
-        console.log('MFRResetScreen - Loaded data:', { nodeId, mfrNode, chain });
-        
-        // Merge node data (pretest_instruction) with chain data
         const merged = {
           ...chain,
-          pretest_instruction: mfrNode?.pretest_instruction || ''
+          pretest_instruction: mfrNode?.pretest_instruction || testData[nodeId]?.pretest_instruction || ''
         };
-        console.log('MFRResetScreen - Merged causalChain:', merged);
         setCausalChain(merged);
       } catch (error) {
-        console.error('Error loading data:', error);
-        setCausalChain(null);
+        console.warn('API load failed, using test data:', error.message);
+        // Fallback to test data
+        setCausalChain(testData[nodeId] || { pretest_instruction: 'Teste deine aktuelle Mobilität' });
       } finally {
         setIsLoadingData(false);
       }
