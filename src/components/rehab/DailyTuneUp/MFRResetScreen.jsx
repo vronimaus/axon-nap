@@ -25,11 +25,15 @@ export default function MFRResetScreen({ onComplete, rehabPlan, nodeId = 'N1', s
         const mfrNode = nodes?.length > 0 ? nodes[0] : null;
         const chain = chains?.length > 0 ? chains[0] : null;
         
+        console.log('MFRResetScreen - Loaded data:', { nodeId, mfrNode, chain });
+        
         // Merge node data (pretest_instruction) with chain data
-        setCausalChain({
+        const merged = {
           ...chain,
           pretest_instruction: mfrNode?.pretest_instruction || ''
-        });
+        };
+        console.log('MFRResetScreen - Merged causalChain:', merged);
+        setCausalChain(merged);
       } catch (error) {
         console.error('Error loading data:', error);
         setCausalChain(null);
