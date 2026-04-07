@@ -192,6 +192,13 @@ export default function MFRResetScreen({ onComplete, rehabPlan }) {
                 )}
               </motion.div>
 
+              {/* Instruktions-Hinweis */}
+              <div className="bg-slate-800/60 border border-slate-700/50 rounded-xl px-4 py-3 text-center">
+                <p className="text-xs text-slate-300 leading-relaxed">
+                  🎯 Drücke mit dem <span className="text-emerald-400 font-semibold">Lacrosse-Ball</span> auf den Punkt — starte dann den Timer und halte den Druck.
+                </p>
+              </div>
+
           {/* Timer Display */}
           <div className="flex flex-col items-center gap-4">
             {/* Big Timer */}

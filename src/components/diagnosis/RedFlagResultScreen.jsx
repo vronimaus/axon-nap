@@ -98,6 +98,14 @@ der Nutzerangaben.`;
       animate={{ opacity: 1, y: 0 }}
       className="w-full max-w-md mx-auto space-y-5 pb-10"
     >
+      {/* BLOCK 0: Direkter Kontext-Hinweis — sofort sichtbar ohne Klick */}
+      <div className="bg-amber-500/10 border border-amber-500/30 rounded-2xl px-5 py-4 flex items-start gap-3">
+        <span className="text-2xl flex-shrink-0">⏸</span>
+        <p className="text-sm text-amber-200 leading-relaxed">
+          Deine Angaben zeigen ein Muster, bei dem wir kurz stoppen. <span className="font-semibold text-white">Nicht weil etwas schlimm ist</span> — sondern damit du sicher und effektiv trainieren kannst.
+        </p>
+      </div>
+
       {/* BLOCK 1: Warum wir das empfehlen */}
       <div className="glass rounded-2xl border border-amber-500/30 p-5">
         <div className="flex items-start gap-3 mb-4">
@@ -105,7 +113,7 @@ der Nutzerangaben.`;
             <AlertTriangle className="w-5 h-5 text-amber-400" />
           </div>
           <div>
-            <p className="text-xs font-bold uppercase tracking-widest text-amber-400 mb-1">Warum wir das empfehlen</p>
+            <p className="text-xs font-bold uppercase tracking-widest text-amber-400 mb-1">Warum dieser Stopp?</p>
             <h3 className="text-lg font-bold text-white">Professionelle Abklärung sinnvoll</h3>
           </div>
         </div>
@@ -227,15 +235,14 @@ der Nutzerangaben.`;
       {/* CTA: Trotzdem zum Reha-Plan? */}
       <div className="glass rounded-xl border border-slate-700 p-4 text-center">
         <p className="text-slate-400 text-xs mb-3">
-          Wenn du bereits beim Arzt warst und keine gefährliche Ursache gefunden wurde, 
-          können wir trotzdem einen sanften Reha-Plan für dich erstellen.
+          Bereits beim Arzt gewesen und grünes Licht bekommen? Dann können wir mit einem sanften Reha-Plan starten — deine Daten bleiben erhalten.
         </p>
         <Button
           onClick={onGoToDiagnosis}
           variant="outline"
-          className="w-full border-slate-600 text-slate-300 hover:bg-slate-800 text-sm"
+          className="w-full border-cyan-500/40 text-cyan-400 hover:bg-cyan-500/10 text-sm font-semibold"
         >
-          Trotzdem Reha-Plan erstellen →
+          Ja, ich war beim Arzt — Reha-Plan starten →
         </Button>
       </div>
 
