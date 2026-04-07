@@ -148,18 +148,19 @@ export default function MFRResetScreenDynamic({ onComplete, nodeId = 'N1', scree
                    { val: 3, label: 'Geht so', sub: 'Eingeschränkt, aber machbar', icon: ChevronRight },
                    { val: 5, label: 'Ganz leicht', sub: 'Volle Beweglichkeit', icon: CheckCircle },
                  ].map(({ val, label, sub, icon: Icon }) => (
-                   <button
-                     key={val}
-                     onClick={() => handlePretestComplete(val)}
-                     className="w-full py-3 px-4 rounded-lg border bg-gradient-to-r from-blue-500/10 to-transparent border-blue-500/20 text-slate-300 hover:from-cyan-500/20 hover:to-transparent hover:border-cyan-500/40 hover:text-cyan-400 active:scale-95 transition-all text-left flex items-center gap-3"
-                   >
-                    <Icon className="w-4 h-4 flex-shrink-0" />
-                    <div>
-                      <p className="font-semibold text-sm">{label}</p>
-                      <p className="text-xs text-slate-400 mt-0.5">{sub}</p>
-                    </div>
-                  </button>
-                ))}
+                    <motion.button
+                      key={val}
+                      onClick={() => handlePretestComplete(val)}
+                      whileTap={{ scale: 0.98 }}
+                      className="w-full py-3 px-4 rounded-lg border bg-gradient-to-r from-blue-500/10 to-transparent border-blue-500/20 text-slate-300 hover:from-cyan-500/20 hover:to-transparent hover:border-cyan-500/40 hover:text-cyan-400 active:scale-95 transition-all text-left flex items-center gap-3"
+                    >
+                     <Icon className="w-4 h-4 flex-shrink-0" />
+                     <div>
+                       <p className="font-semibold text-sm">{label}</p>
+                       <p className="text-xs text-slate-400 mt-0.5">{sub}</p>
+                     </div>
+                   </motion.button>
+                 ))}
               </div>
             </div>
           </div>
