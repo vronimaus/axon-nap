@@ -112,12 +112,12 @@ export default function SFMAQuickCheck({ region, onDecision }) {
               const mv = MOVEMENT_LEVELS[movementLevel - 1];
               return (
                 <div className="glass rounded-2xl border border-slate-700 p-4 space-y-3">
-                  <p className="text-xs font-bold uppercase tracking-widest text-slate-400">① Bewegungsqualität</p>
+                  <p className="text-sm font-bold uppercase tracking-widest text-white">① Bewegungsqualität</p>
                   <input
                     type="range" min={1} max={4} step={1} value={movementLevel}
                     onChange={e => setMovementLevel(Number(e.target.value))}
                     className="w-full h-3 rounded-full appearance-none cursor-pointer"
-                    style={{ background: MOVE_SLIDER_BG }}
+                    style={{ background: MOVE_SLIDER_BG, WebkitAppearance: 'none' }}
                   />
                   <div className="pt-1">
                     <p className="text-lg font-bold text-white">{mv.label}</p>
@@ -129,12 +129,12 @@ export default function SFMAQuickCheck({ region, onDecision }) {
 
             {/* ② Schmerzlevel im Ruhezustand */}
             <div className="glass rounded-2xl border border-slate-700 p-4 space-y-3">
-              <p className="text-xs font-bold uppercase tracking-widest text-slate-400">② Schmerzlevel im Ruhezustand</p>
+              <p className="text-sm font-bold uppercase tracking-widest text-white">② Schmerzlevel im Ruhezustand</p>
               <input
                 type="range" min={0} max={8} value={painRest}
                 onChange={e => setPainRest(Number(e.target.value))}
                 className="w-full h-3 rounded-full appearance-none cursor-pointer"
-                style={{ background: PAIN_SLIDER_BG }}
+                style={{ background: PAIN_SLIDER_BG, WebkitAppearance: 'none' }}
               />
               <div className="pt-1">
                 <p className="text-lg font-bold" style={{ color: valueColor(painRest) }}>
@@ -145,12 +145,12 @@ export default function SFMAQuickCheck({ region, onDecision }) {
 
             {/* ③ Schmerzlevel bei Belastung */}
             <div className="glass rounded-2xl border border-slate-700 p-4 space-y-3">
-              <p className="text-xs font-bold uppercase tracking-widest text-slate-400">③ Schmerzlevel bei Belastung</p>
+              <p className="text-sm font-bold uppercase tracking-widest text-white">③ Schmerzlevel bei Belastung</p>
               <input
                 type="range" min={0} max={8} value={painMove}
                 onChange={e => setPainMove(Number(e.target.value))}
                 className="w-full h-3 rounded-full appearance-none cursor-pointer"
-                style={{ background: PAIN_SLIDER_BG }}
+                style={{ background: PAIN_SLIDER_BG, WebkitAppearance: 'none' }}
               />
               <div className="pt-1">
                 <p className="text-lg font-bold" style={{ color: valueColor(painMove) }}>
