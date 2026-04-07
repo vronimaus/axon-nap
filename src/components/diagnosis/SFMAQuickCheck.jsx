@@ -39,8 +39,10 @@ function valueColor(v, max = 8) {
   return '#ef4444';
 }
 
-const PAIN_SLIDER_BG = 'linear-gradient(to right, #22c55e 0%, #f59e0b 55%, #ef4444 100%)';
-const MOVE_SLIDER_BG = 'linear-gradient(to right, #22c55e 0%, #f59e0b 55%, #ef4444 100%)';
+function getCyanSliderBg(value, max) {
+  const pct = (value / max) * 100;
+  return `linear-gradient(to right, #06b6d4 0%, #06b6d4 ${pct}%, #1e293b ${pct}%, #1e293b 100%)`;
+}
 
 export default function SFMAQuickCheck({ region, onDecision }) {
   const [step, setStep] = useState('assess'); // 'assess' | 'redflags'
@@ -113,12 +115,15 @@ export default function SFMAQuickCheck({ region, onDecision }) {
               const mv = MOVEMENT_LEVELS[movementLevel - 1];
               return (
                 <div className="glass rounded-2xl border border-slate-700 p-4 space-y-3">
-                  <p className="text-sm font-bold text-white">① Bewegungsqualität</p>
+                  <div className="flex items-center justify-between">
+                    <p className="text-sm font-bold text-white">① Bewegungsqualität</p>
+                    <span className="text-xs text-slate-400">Level {movementLevel}</span>
+                  </div>
                   <input
                     type="range" min={1} max={4} step={1} value={movementLevel}
                     onChange={e => setMovementLevel(Number(e.target.value))}
                     className="w-full h-3 rounded-full appearance-none cursor-pointer"
-                    style={{ background: MOVE_SLIDER_BG, WebkitAppearance: 'none' }}
+                    style={{ background: getCyanSliderBg(movementLevel - 1, 3), WebkitAppearance: 'none' }}
                   />
                   <div className="pt-1">
                     <p className="text-lg font-bold text-white">{mv.label}</p>
@@ -128,14 +133,17 @@ export default function SFMAQuickCheck({ region, onDecision }) {
               );
             })()}
 
-            {/* ② Schmerzlevel im Ruhezustand */}
+            {/* ② Schmerzlevel in Ruhe */}
             <div className="glass rounded-2xl border border-slate-700 p-4 space-y-3">
-              <p className="text-sm font-bold text-white">② Schmerzlevel in Ruhe</p>
+              <div className="flex items-center justify-between">
+                <p className="text-sm font-bold text-white">② Schmerzlevel in Ruhe</p>
+                <span className="text-xs text-slate-400">Level {painRest}</span>
+              </div>
               <input
                 type="range" min={0} max={8} value={painRest}
                 onChange={e => setPainRest(Number(e.target.value))}
                 className="w-full h-3 rounded-full appearance-none cursor-pointer"
-                style={{ background: PAIN_SLIDER_BG, WebkitAppearance: 'none' }}
+                style={{ background: getCyanSliderBg(painRest, 8), WebkitAppearance: 'none' }}
               />
               <div className="pt-1">
                 <p className="text-lg font-bold" style={{ color: valueColor(painRest) }}>
@@ -146,12 +154,15 @@ export default function SFMAQuickCheck({ region, onDecision }) {
 
             {/* ③ Schmerzlevel bei Belastung */}
             <div className="glass rounded-2xl border border-slate-700 p-4 space-y-3">
-              <p className="text-sm font-bold text-white">③ Schmerzlevel bei Belastung</p>
+              <div className="flex items-center justify-between">
+                <p className="text-sm font-bold text-white">③ Schmerzlevel bei Belastung</p>
+                <span className="text-xs text-slate-400">Level {painMove}</span>
+              </div>
               <input
                 type="range" min={0} max={8} value={painMove}
                 onChange={e => setPainMove(Number(e.target.value))}
                 className="w-full h-3 rounded-full appearance-none cursor-pointer"
-                style={{ background: PAIN_SLIDER_BG, WebkitAppearance: 'none' }}
+                style={{ background: getCyanSliderBg(painMove, 8), WebkitAppearance: 'none' }}
               />
               <div className="pt-1">
                 <p className="text-lg font-bold" style={{ color: valueColor(painMove) }}>
