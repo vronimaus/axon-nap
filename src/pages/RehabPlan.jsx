@@ -87,8 +87,12 @@ export default function RehabPlan() {
         const plans = await base44.entities.RehabPlan.filter(filter, '-plan_generated_date', 5);
         for (const plan of plans) {
           if (plan.phases && Array.isArray(plan.phases) && plan.phases.length > 0) {
-            // Load diagnosis session to get the original region
-            if (plan.diagnosis_session_id) {
+            // Extract region from problem_summary or diagnosis_session
+            const regionFromPlan = plan.problem_summary;
+            if (regionFromPlan) {
+              console.log('✅ Region from rehabPlan.problem_summary:', regionFromPlan);
+              setDiagnosisRegion(regionFromPlan);
+            } else if (plan.diagnosis_session_id) {
               try {
                 const sessions = await base44.entities.DiagnosisSession.filter({ id: plan.diagnosis_session_id });
                 if (sessions.length > 0 && sessions[0].symptom_location) {
@@ -98,8 +102,6 @@ export default function RehabPlan() {
               } catch (e) {
                 console.warn('⚠️ DiagnosisSession load failed:', e);
               }
-            } else {
-              console.warn('⚠️ No diagnosis_session_id in plan');
             }
             return plan;
           }
