@@ -1,0 +1,152 @@
+{
+  "name": "TuneUpCausalChain",
+  "type": "object",
+  "properties": {
+    "node_id": {
+      "type": "string",
+      "description": "MFR-Node ID (N1-N12)"
+    },
+    "node_name_de": {
+      "type": "string",
+      "description": "Deutsche Bezeichnung des Nodes (z.B. 'Kopf & Kiefer')"
+    },
+    "k\u00f6rperregion": {
+      "type": "string",
+      "description": "Betroffene K\u00f6rperregion"
+    },
+    "stecco_cc": {
+      "type": "string",
+      "description": "Center of Coordination Name (z.B. 'Caput (CP)')"
+    },
+    "target_chain": {
+      "type": "string",
+      "description": "Zielkette (z.B. 'Hintere Kette')"
+    },
+    "symptom": {
+      "type": "string",
+      "description": "Was der User f\u00fchlt, wenn dieser Node eingeschr\u00e4nkt ist"
+    },
+    "biomechanische_ursache": {
+      "type": "string",
+      "description": "WEIL: Die biomechanische Ursache nach Stecco + Gray"
+    },
+    "hardware_reset": {
+      "type": "object",
+      "properties": {
+        "technik": {
+          "type": "string",
+          "description": "MFR-Technik und Platzierung"
+        },
+        "mechanismus": {
+          "type": "string",
+          "description": "Physiologischer Mechanismus (z.B. Thixotropie, Rezeptoren)"
+        },
+        "biologischer_zweck": {
+          "type": "string",
+          "description": "Biologischer Zweck der Intervention"
+        },
+        "erwartetes_ergebnis": {
+          "type": "string",
+          "description": "Was der User direkt nach MFR sp\u00fcrt"
+        }
+      },
+      "required": [
+        "technik",
+        "mechanismus"
+      ]
+    },
+    "software_update": {
+      "type": "object",
+      "properties": {
+        "\u00fcbung": {
+          "type": "string",
+          "description": "Name des Neuro-Drills"
+        },
+        "ausf\u00fchrung": {
+          "type": "string",
+          "description": "Schritt-f\u00fcr-Schritt Anleitung"
+        },
+        "neurologisches_ziel": {
+          "type": "string",
+          "description": "Was das Nervensystem lernt"
+        },
+        "warum": {
+          "type": "string",
+          "description": "Neurologische Begr\u00fcndung des Drills"
+        }
+      },
+      "required": [
+        "\u00fcbung",
+        "ausf\u00fchrung"
+      ]
+    },
+    "integration": {
+      "type": "object",
+      "properties": {
+        "prim\u00e4r_bewegung": {
+          "type": "string",
+          "description": "Gary Gray 3DMAPS Integration-Bewegung"
+        },
+        "wiederholungen": {
+          "type": "string",
+          "description": "Empfohlene Reps und Tempo"
+        },
+        "tweak_1": {
+          "type": "string",
+          "description": "Erste Modifikation bei noch vorhandenem Schmerz"
+        },
+        "tweak_2": {
+          "type": "string",
+          "description": "Zweite Modifikation / Regression"
+        }
+      },
+      "required": [
+        "prim\u00e4r_bewegung"
+      ]
+    },
+    "finales_outcome": {
+      "type": "object",
+      "properties": {
+        "messung": {
+          "type": "string",
+          "description": "Konkrete, messbare Verbesserung (z.B. '+15\u00b0 Rotation')"
+        },
+        "neurales_lernen": {
+          "type": "string",
+          "description": "Was das ZNS neu myelinisiert hat"
+        },
+        "langzeit_benefit": {
+          "type": "string",
+          "description": "Langfristige Vorteile und Pr\u00e4vention"
+        }
+      },
+      "required": [
+        "messung"
+      ]
+    }
+  },
+  "required": [
+    "node_id",
+    "node_name_de",
+    "symptom",
+    "biomechanische_ursache"
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": {},
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}
