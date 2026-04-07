@@ -8,8 +8,7 @@ import InteractiveBodyMapInput from '../components/diagnosis/InteractiveBodyMapI
 import DiagnosisLoadingAnimation from '../components/diagnosis/DiagnosisLoadingAnimation';
 import SFMAQuickCheck from '../components/diagnosis/SFMAQuickCheck';
 import RedFlagResultScreen from '../components/diagnosis/RedFlagResultScreen';
-import DemoPaywall from '../components/demo/DemoPaywall';
-import { useDemoTimer } from '../components/demo/useDemoTimer';
+
 import DailyTuneUpModal from '../components/rehab/DailyTuneUpModal';
 import SFMAResultScreen from '../components/diagnosis/SFMAResultScreen';
 import { Button } from '@/components/ui/button';
@@ -22,7 +21,7 @@ export default function DiagnosisChat() {
   const mapDataParam = searchParams.get('mapData');
   const regionParam = searchParams.get('region');
   const initialStep = searchParams.get('step'); // 'sfma' = come from body map
-  const { isDemoExpired } = useDemoTimer();
+
 
   const [step, setStep] = useState(() => {
     if (mapDataParam && regionParam && initialStep === 'sfma') return 'sfma';
@@ -146,8 +145,6 @@ export default function DiagnosisChat() {
       setStep('error');
     }
   };
-
-  if (isDemoExpired) return <DemoPaywall />;
 
   // ── BODY MAP ────────────────────────────────────────────────────────────────
   if (step === 'body_map') {
