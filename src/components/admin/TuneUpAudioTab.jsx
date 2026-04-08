@@ -31,24 +31,47 @@ const STECCO_MAPPING = {
 };
 
 // For each node we pre-generate 2 audio tracks:
-// 1. neuro_drill  → software_update.ausführung
-// 2. integration  → integration.wiederholungen + tweak_1 + tweak_2
+// 1. neuro_drill  → software_update as friendly trainer instructions
+// 2. integration  → integration as motivating strength cues
 function buildAudioTexts(chain) {
   const sw = chain.software_update ?? {};
   const intg = chain.integration ?? {};
 
-  const neuroDrillText = [
-    sw['übung'] || sw.übung || '',
-    sw['ausführung'] || sw.ausführung || '',
-    sw['warum'] || sw.warum || ''
-  ].filter(Boolean).join('. ');
+  // Neuro-Drill: Trainer-style instructions
+  const übung = sw['übung'] || sw.übung || '';
+  const ausführung = sw['ausführung'] || sw.ausführung || '';
+  const warum = sw['warum'] || sw.warum || '';
+  
+  let neuroDrillText = '';
+  if (übung) {
+    neuroDrillText = `Super, machen wir jetzt "${übung}". `;
+  }
+  if (ausführung) {
+    neuroDrillText += `Hier ist wie: ${ausführung}. `;
+  }
+  if (warum) {
+    neuroDrillText += `Darum funktioniert das so gut: ${warum}`;
+  }
 
-  const integrationText = [
-    intg['primär_bewegung'] || intg.primär_bewegung || '',
-    intg['wiederholungen'] || intg.wiederholungen || '',
-    intg['tweak_1'] || intg.tweak_1 || '',
-    intg['tweak_2'] || intg.tweak_2 || ''
-  ].filter(Boolean).join('. ');
+  // Integration: Positive, motivating strength cues
+  const bewegung = intg['primär_bewegung'] || intg.primär_bewegung || '';
+  const wiederholungen = intg['wiederholungen'] || intg.wiederholungen || '';
+  const tweak1 = intg['tweak_1'] || intg.tweak_1 || '';
+  const tweak2 = intg['tweak_2'] || intg.tweak_2 || '';
+
+  let integrationText = '';
+  if (bewegung) {
+    integrationText = `Alles klar, wir verankern das jetzt. Die Übung heißt: ${bewegung}. `;
+  }
+  if (wiederholungen) {
+    integrationText += `Lass mich dir zeigen wie: ${wiederholungen}. `;
+  }
+  if (tweak1) {
+    integrationText += `Falls es noch unangenehm ist, probier das: ${tweak1}. `;
+  }
+  if (tweak2) {
+    integrationText += `Oder wenn du mehr Unterstützung brauchst: ${tweak2}`;
+  }
 
   return { neuroDrillText, integrationText };
 }
