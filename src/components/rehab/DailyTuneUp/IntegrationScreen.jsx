@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Volume2, VolumeX, Loader2, CheckCircle2 } from 'lucide-react';
 import { useTTS } from '@/hooks/useTTS';
 import Confetti from 'canvas-confetti';
+import { base44 } from '@/api/base44Client';
 
 export default function IntegrationScreen({
   onComplete,
@@ -13,19 +14,38 @@ export default function IntegrationScreen({
   improvement = 0
 }) {
   const [exerciseCompleted, setExerciseCompleted] = useState(false);
+  const [integration, setIntegration] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
   const { isPlaying, isLoading: isTTSLoading, playText, stop } = useTTS();
 
-  const integration = {
-    name: 'Bird-Dog Hold',
-    instruction: 'Gehe in Vierfüßlerstand. Strecke gleichzeitig den rechten Arm und das linke Bein. Halte 3 Sekunden. Nutze die Mobilität, die du gerade freigegeben hast. 5 Wiederholungen pro Seite, langsam und konzentriert.',
-    why: 'Das ist die neuronale Verankerung. Dein Gehirn myelinisiert die neuen Bewegungsmuster, wenn du sie sofort nach dem MFR und Neuro-Training nutzt. Das führt zu dauerhaften Verbesserungen.'
-  };
+  useEffect(() => {
+    const fetchIntegration = async () => {
+      setIsLoading(true);
+      try {
+        const results = await base44.entities.TuneUpCausalChain.filter({ node_id: nodeId });
+        if (results.length > 0) {
+          const r = results[0];
+          const intg = r.data?.integration ?? r.integration ?? null;
+          if (intg) {
+            setIntegration({
+              name: intg['primär_bewegung'] || intg.primär_bewegung || '',
+              instruction: [intg['wiederholungen'], intg['tweak_1'], intg['tweak_2']].filter(Boolean).join(' — '),
+              why: 'Das ist die neuronale Verankerung. Dein Gehirn myelinisiert die neuen Bewegungsmuster, wenn du sie sofort nach dem MFR und Neuro-Training nutzt.'
+            });
+          }
+        }
+      } catch (e) {
+        console.error('IntegrationScreen fetch error:', e);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchIntegration();
+  }, [nodeId]);
 
   const handlePlayAudio = () => {
-    if (isPlaying) {
-      stop();
-      return;
-    }
+    if (isPlaying) { stop(); return; }
+    if (!integration) return;
     const text = `${integration.name}. ${integration.instruction}. ${integration.why}`;
     playText(text);
   };
@@ -44,6 +64,22 @@ export default function IntegrationScreen({
   const handleFinalSubmit = () => {
     onComplete(screenId, { nodeId, integrationCompleted: true });
   };
+
+  if (isLoading) {
+    return (
+      <div className="w-full max-w-sm mx-auto flex items-center justify-center py-20">
+        <Loader2 className="w-8 h-8 animate-spin text-purple-400" />
+      </div>
+    );
+  }
+
+  if (!integration) {
+    return (
+      <div className="w-full max-w-sm mx-auto text-center text-slate-400 py-10">
+        Keine Integrations-Daten für diesen Node gefunden.
+      </div>
+    );
+  }
 
   return (
     <motion.div
