@@ -3,7 +3,7 @@ import { base44 } from '@/api/base44Client';
 import { Upload, CheckCircle2, Loader2, Volume2, Copy, Check } from 'lucide-react';
 import { toast } from 'sonner';
 
-const NODE_IDS = ['N1','N2','N3','N4','N5','N6','N7','N8','N9','N10','N11','N12'];
+const NODE_IDS = ['CP-A', 'CP-P', 'CL-A', 'CL-P', 'TH-A', 'TH-P', 'LU-A', 'LU-P', 'PV-A', 'PV-P', 'SC-A', 'SC-P', 'HU-A', 'CU-A', 'CX-A', 'CX-P', 'GE-A', 'GE-P', 'TA-A', 'TA-P', 'PE-A'];
 
 // For each node we pre-generate 2 audio tracks:
 // 1. neuro_drill  → software_update.ausführung
@@ -202,12 +202,12 @@ export default function TuneUpAudioTab() {
   return (
     <div className="space-y-4">
       <div className="glass rounded-2xl border border-purple-500/30 p-6">
-        <h2 className="text-xl font-bold text-purple-400 mb-1">🎙️ TuneUp Audio Manager</h2>
+        <h2 className="text-xl font-bold text-purple-400 mb-1">🎙️ TuneUp Audio Manager (Stecco)</h2>
         <p className="text-sm text-slate-400 mb-1">
-          Alle Texte für N1–N12 (Neuro-Drill + Integration). Grüner Punkt = Audio vorhanden.
+          Alle Texte für CP, CL, TH, LU, PV, SC, HU, CU, CX, GE, TA, PE (Neuro-Drill + Integration). Grüner Punkt = Audio vorhanden.
         </p>
         <p className="text-xs text-slate-500">
-          Aufnahme extern erstellen, dann per Upload-Button direkt dem Text zuordnen. Unterstützte Formate: WAV, MP3.
+          A = Anterior, P = Posterior. Aufnahme extern erstellen, dann per Upload-Button direkt dem Text zuordnen. Unterstützte Formate: WAV, MP3.
         </p>
       </div>
 
@@ -218,7 +218,7 @@ export default function TuneUpAudioTab() {
             return (
               <div key={nodeId} className="glass rounded-2xl border border-slate-700/40 p-4 opacity-50">
                 <p className="text-xs font-bold text-slate-500 uppercase tracking-widest">{nodeId}</p>
-                <p className="text-xs text-slate-600 mt-1">Kein Eintrag in TuneUpCausalChain</p>
+                <p className="text-xs text-slate-600 mt-1">Kein Eintrag in TuneUpCausalChain (noch zu erstellen)</p>
               </div>
             );
           }

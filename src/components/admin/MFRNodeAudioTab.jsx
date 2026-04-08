@@ -3,7 +3,7 @@ import { base44 } from '@/api/base44Client';
 import { Upload, CheckCircle2, Loader2, Volume2, Copy, Check } from 'lucide-react';
 import { toast } from 'sonner';
 
-const NODE_IDS = ['N1', 'N2', 'N3', 'N4', 'N5', 'N6', 'N7', 'N8', 'N9', 'N10', 'N11', 'N12'];
+const NODE_IDS = ['CP-A', 'CP-P', 'CL-A', 'CL-P', 'TH-A', 'TH-P', 'LU-A', 'LU-P', 'PV-A', 'PV-P', 'SC-A', 'SC-P', 'HU-A', 'CU-A', 'CX-A', 'CX-P', 'GE-A', 'GE-P', 'TA-A', 'TA-P', 'PE-A'];
 
 async function hashText(text) {
   const encoder = new TextEncoder();
@@ -190,12 +190,12 @@ export default function MFRNodeAudioTab() {
   return (
     <div className="space-y-4">
       <div className="glass rounded-2xl border border-cyan-500/30 p-6">
-        <h2 className="text-xl font-bold text-cyan-400 mb-1">🎙️ MFR Node Audio Manager</h2>
+        <h2 className="text-xl font-bold text-cyan-400 mb-1">🎙️ MFR Node Audio Manager (Stecco)</h2>
         <p className="text-sm text-slate-400 mb-1">
-          Alle `user_instruction` Texte für N1–N12 (MFR Nodes). Grüner Punkt = Audio vorhanden.
+          Alle `user_instruction` Texte für CP, CL, TH, LU, PV, SC, HU, CU, CX, GE, TA, PE (nach Stecco 14-Segment-System). Grüner Punkt = Audio vorhanden.
         </p>
         <p className="text-xs text-slate-500">
-          Neben dem Text: Upload-Button für Audio, Wiedergabe-Button (wenn vorhanden), Copy-Button.
+          A = Anterior, P = Posterior. Neben dem Text: Upload-Button für Audio, Wiedergabe-Button (wenn vorhanden), Copy-Button.
         </p>
       </div>
 
