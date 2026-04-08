@@ -37,7 +37,7 @@ function buildAudioTexts(chain) {
   const sw = chain.software_update ?? {};
   const intg = chain.integration ?? {};
 
-  // Neuro-Drill: Clear instructions
+  // Neuro-Drill: Detailed audio instructions
   const übung = sw['übung'] || sw.übung || '';
   const ausführung = sw['ausführung'] || sw.ausführung || '';
   const warum = sw['warum'] || sw.warum || '';
@@ -47,13 +47,13 @@ function buildAudioTexts(chain) {
     neuroDrillText = `Übung: "${übung}". `;
   }
   if (ausführung) {
-    neuroDrillText += `Ausführung: ${ausführung}. `;
+    neuroDrillText += `${ausführung}. `;
   }
   if (warum) {
     neuroDrillText += `Mechanismus: ${warum}`;
   }
 
-  // Integration: Strength and progression cues
+  // Integration: Detailed execution and modifications
   const bewegung = intg['primär_bewegung'] || intg.primär_bewegung || '';
   const wiederholungen = intg['wiederholungen'] || intg.wiederholungen || '';
   const tweak1 = intg['tweak_1'] || intg.tweak_1 || '';
