@@ -16,45 +16,44 @@ const SCREENS = [
   { id: 3, label: 'Integration', title: 'Easy Strength' }
 ];
 
-// Map region names to Node IDs
+// Map region names (from InteractiveBodyMapInput) to Node IDs
+// Includes view-specific distinctions (front vs back)
 const REGION_TO_NODE_ID = {
-  'Hinterkopf': 'N1',
-  'Kopf & Kiefer': 'N1',
+  // Front-View Regionen
   'Kopf/Stirn': 'N1',
   'Ohr/Kiefergelenk': 'N1',
-  'Nacken seitlich': 'N2',
-  'Nacken/obere Halswirbelsäule': 'N2',
   'Hals vorne': 'N2',
-  'Hals & Nacken': 'N2',
-  'oberer Rücken/Nacken': 'N3',
+  'Schulter vorne/Acromion': 'N6',
   'obere Brust/Schlüsselbein': 'N3',
-  'Brust & Schulter': 'N3',
-  'Schulterblatt': 'N4',
-  'oberer Rücken': 'N4',
-  'Ellenbogen-Beuge': 'N4',
-  'Ellenbogen': 'N4',
-  'Unterarm/Handgelenk': 'N4',
-  'mittlerer Rücken': 'N5',
+  'Oberarm': 'N6',
+  'mittlere Brust': 'N3',
+  'Ellenbogen-Beuge': 'N6',
   'Bauch oben': 'N5',
   'Bauch Mitte/Bauchnabel': 'N5',
-  'Schulter hinten/Acromion': 'N6',
-  'Schulter vorne/Acromion': 'N6',
-  'Oberarm': 'N6',
-  'unterer Rücken/Lendenwirbelsäule': 'N4',
-  'Lenden / Unterer Rücken': 'N4',
+  'Unterarm/Handgelenk': 'N4',
   'Unterbauch/Becken': 'N7',
-  'Becken & Hüfte': 'N7',
   'Becken/Hüfte': 'N7',
-  'Gesäß': 'N7',
-  'Hüfte & Oberschenkel': 'N8',
   'Oberschenkel vorne': 'N8',
+  'Knie vorne': 'N10',
+  'Unterschenkel/Schienbein': 'N11',
+  'Fuß/Knöchel vorne': 'N12',
+
+  // Back-View Regionen
+  'Hinterkopf': 'N1',
+  'Nacken seitlich': 'N2',
+  'Nacken/obere Halswirbelsäule': 'N2',
+  'Schulter hinten/Acromion': 'N6',
+  'oberer Rücken/Nacken': 'N3',
+  'Schulterblatt': 'N4',
+  'oberer Rücken': 'N3',
+  'Ellenbogen': 'N4',
+  'mittlerer Rücken': 'N5',
+  'unterer Rücken/Lendenwirbelsäule': 'N6',
+  'Gesäß': 'N7',
   'Oberschenkel hinten': 'N9',
   'Kniekehle': 'N10',
-  'Knie vorne': 'N10',
   'Wade': 'N11',
-  'Unterschenkel/Schienbein': 'N11',
   'Ferse/Achillessehne': 'N12',
-  'Fuß/Knöchel vorne': 'N12',
 };
 
 export default function DailyTuneUpModal({
