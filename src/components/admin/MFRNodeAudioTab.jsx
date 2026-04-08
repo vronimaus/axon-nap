@@ -368,7 +368,8 @@ export default function MFRNodeAudioTab() {
                       node_id: nodeId,
                       name_de: nodeId,
                       user_instruction: newText,
-                      position: 'front'
+                      position: 'front',
+                      target_chain: nodeId
                     });
                   }
                   setNodes(prev => ({
