@@ -37,41 +37,31 @@ function buildAudioTexts(chain) {
   const sw = chain.software_update ?? {};
   const intg = chain.integration ?? {};
 
-  // Neuro-Drill: Detailed audio instructions
+  // Neuro-Drill: Fluent audio instructions for natural speech
   const übung = sw['übung'] || sw.übung || '';
   const ausführung = sw['ausführung'] || sw.ausführung || '';
   const warum = sw['warum'] || sw.warum || '';
   
   let neuroDrillText = '';
-  if (übung) {
-    neuroDrillText = `Übung: "${übung}". `;
-  }
-  if (ausführung) {
-    neuroDrillText += `${ausführung}. `;
-  }
-  if (warum) {
-    neuroDrillText += `Mechanismus: ${warum}`;
+  if (übung && ausführung && warum) {
+    neuroDrillText = `${übung}. ${ausführung}. ${warum}`;
+  } else if (übung && ausführung) {
+    neuroDrillText = `${übung}. ${ausführung}`;
+  } else if (ausführung && warum) {
+    neuroDrillText = `${ausführung}. ${warum}`;
+  } else {
+    neuroDrillText = [übung, ausführung, warum].filter(Boolean).join('. ');
   }
 
-  // Integration: Detailed execution and modifications
+  // Integration: Fluent execution and modifications for natural speech
   const bewegung = intg['primär_bewegung'] || intg.primär_bewegung || '';
   const wiederholungen = intg['wiederholungen'] || intg.wiederholungen || '';
   const tweak1 = intg['tweak_1'] || intg.tweak_1 || '';
   const tweak2 = intg['tweak_2'] || intg.tweak_2 || '';
 
   let integrationText = '';
-  if (bewegung) {
-    integrationText = `Integration: ${bewegung}. `;
-  }
-  if (wiederholungen) {
-    integrationText += `Ausführung: ${wiederholungen}. `;
-  }
-  if (tweak1) {
-    integrationText += `Modifikation 1: ${tweak1}. `;
-  }
-  if (tweak2) {
-    integrationText += `Modifikation 2: ${tweak2}`;
-  }
+  const parts = [bewegung, wiederholungen, tweak1, tweak2].filter(Boolean);
+  integrationText = parts.join('. ');
 
   return { neuroDrillText, integrationText };
 }
