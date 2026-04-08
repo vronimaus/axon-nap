@@ -14,6 +14,7 @@ import MarketingTab from '../components/admin/MarketingTab';
 import ContentKanban from '../components/admin/ContentKanban';
 import MFRNodeTab from '../components/admin/MFRNodeTab';
 import TuneUpAudioTab from '../components/admin/TuneUpAudioTab';
+import MFRNodeAudioTab from '../components/admin/MFRNodeAudioTab';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
 // Prefix-Definitionen
@@ -528,6 +529,10 @@ export default function AdminHub() {
                 <Mic className="w-3.5 h-3.5 shrink-0" />
                 <span>TuneUp Audio</span>
               </TabsTrigger>
+              <TabsTrigger value="mfr-audio" className="flex items-center gap-1.5 whitespace-nowrap px-3 py-2 text-xs sm:text-sm">
+                <Mic className="w-3.5 h-3.5 shrink-0" />
+                <span>MFR Audio</span>
+              </TabsTrigger>
             </TabsList>
           </div>
 
@@ -680,7 +685,12 @@ export default function AdminHub() {
           <TabsContent value="tuneup-audio" className="mt-0">
             <TuneUpAudioTab />
           </TabsContent>
-        </Tabs>
+
+          {/* MFR Node Audio Tab */}
+          <TabsContent value="mfr-audio" className="mt-0">
+            <MFRNodeAudioTab />
+          </TabsContent>
+          </Tabs>
       </div>
     </div>
   );
