@@ -2,14 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Volume2, VolumeX, Loader2, Check } from 'lucide-react';
-import { useTTS } from '@/hooks/useTTS';
+import { useCachedAudio } from '@/hooks/useCachedAudio';
 import { base44 } from '@/api/base44Client';
 
 export default function NeuroDrillScreen({ onComplete, screenId = 1, nodeId = 'N6' }) {
   const [drillData, setDrillData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [drillCompleted, setDrillCompleted] = useState(false);
-  const { isPlaying, isLoading: isTTSLoading, playText, stop } = useTTS();
+  const { isPlaying, isLoading: isTTSLoading, playText, stop } = useCachedAudio();
 
   useEffect(() => {
     const fetchDrill = async () => {

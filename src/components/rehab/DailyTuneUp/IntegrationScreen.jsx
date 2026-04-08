@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Volume2, VolumeX, Loader2, CheckCircle2 } from 'lucide-react';
-import { useTTS } from '@/hooks/useTTS';
+import { useCachedAudio } from '@/hooks/useCachedAudio';
 import Confetti from 'canvas-confetti';
 import { base44 } from '@/api/base44Client';
 
@@ -16,7 +16,7 @@ export default function IntegrationScreen({
   const [exerciseCompleted, setExerciseCompleted] = useState(false);
   const [integration, setIntegration] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-  const { isPlaying, isLoading: isTTSLoading, playText, stop } = useTTS();
+  const { isPlaying, isLoading: isTTSLoading, playText, stop } = useCachedAudio();
 
   useEffect(() => {
     const fetchIntegration = async () => {
