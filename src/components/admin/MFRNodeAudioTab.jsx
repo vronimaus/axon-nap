@@ -279,6 +279,7 @@ export default function MFRNodeAudioTab() {
           const nodeId = r.node_id || r.data?.node_id;
           if (nodeId) {
             map[nodeId] = {
+              id: r.id,
               name: r.data?.name_de || r.name_de || nodeId,
               instruction: r.data?.user_instruction || r.user_instruction || ''
             };
@@ -358,9 +359,9 @@ export default function MFRNodeAudioTab() {
                 instructionText={nodeData?.instruction || ''}
                 onTextUpdate={async (newText) => {
                   // Create or update node
-                  let node = nodes[nodeId];
-                  if (node) {
-                    await base44.entities.MFRNode.update(nodeId, { user_instruction: newText });
+                  const node = nodes[nodeId];
+                  if (node?.id) {
+                    await base44.entities.MFRNode.update(node.id, { user_instruction: newText });
                   } else {
                     // Create new node if doesn't exist
                     await base44.entities.MFRNode.create({
@@ -372,7 +373,7 @@ export default function MFRNodeAudioTab() {
                   }
                   setNodes(prev => ({
                     ...prev,
-                    [nodeId]: { name: prev[nodeId]?.name || nodeId, instruction: newText }
+                    [nodeId]: { ...prev[nodeId], instruction: newText }
                   }));
                 }}
               />
