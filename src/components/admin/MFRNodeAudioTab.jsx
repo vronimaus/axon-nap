@@ -3,7 +3,32 @@ import { base44 } from '@/api/base44Client';
 import { Upload, CheckCircle2, Loader2, Volume2, Copy, Check, Edit, X } from 'lucide-react';
 import { toast } from 'sonner';
 
-const NODE_IDS = ['N1', 'N2', 'N3', 'N4', 'N5', 'N6', 'N7', 'N8', 'N9', 'N10', 'N11', 'N12', 'CP-A', 'CP-P', 'CL-A', 'CL-P', 'TH-A', 'TH-P', 'LU-A', 'LU-P', 'PV-A', 'PV-P', 'SC-A', 'SC-P', 'HU-A', 'CU-A', 'CX-A', 'CX-P', 'GE-A', 'GE-P', 'TA-A', 'TA-P', 'PE-A'];
+const NODE_IDS = ['CP-A', 'CP-P', 'CL-A', 'CL-P', 'TH-A', 'TH-P', 'LU-A', 'LU-P', 'PV-A', 'PV-P', 'SC-A', 'SC-P', 'HU-A', 'CU-A', 'CX-A', 'CX-P', 'GE-A', 'GE-P', 'TA-A', 'TA-P', 'PE-A'];
+
+// Mapping: welche alten N1–N12 entsprechen welchen neuen Stecco-Nodes
+const STECCO_MAPPING = {
+  'CP-A': 'N1',  // Kopf (Anterior)
+  'CP-P': 'N2',  // Kopf (Posterior)
+  'CL-A': 'N3',  // Hals (Anterior)
+  'CL-P': 'N4',  // Hals (Posterior)
+  'TH-A': 'N5',  // Thorax (Anterior)
+  'TH-P': 'N6',  // Thorax (Posterior)
+  'LU-A': 'N7',  // Lende (Anterior)
+  'LU-P': 'N8',  // Lende (Posterior)
+  'PV-A': 'N9',  // Becken (Anterior)
+  'PV-P': 'N10', // Becken (Posterior)
+  'SC-A': 'N11', // Schulter (Anterior)
+  'SC-P': 'N11', // Schulter (Posterior) — teilt sich N11
+  'HU-A': 'N12', // Oberarm (Anterior) — passt zu N12
+  'CU-A': null,  // Ellenbogen (Anterior) — NEU
+  'CX-A': null,  // Hüfte (Anterior) — NEU
+  'CX-P': null,  // Hüfte (Posterior) — NEU
+  'GE-A': null,  // Knie (Anterior) — NEU
+  'GE-P': null,  // Knie (Posterior) — NEU
+  'TA-A': null,  // Sprunggelenk (Anterior) — NEU
+  'TA-P': null,  // Sprunggelenk (Posterior) — NEU
+  'PE-A': null,  // Fuß (Anterior) — NEU
+};
 
 async function hashText(text) {
   const encoder = new TextEncoder();
@@ -227,6 +252,14 @@ export default function MFRNodeAudioTab() {
             };
           }
         }
+        
+        // Stecco-Nodes erben Texte von ihren Base-Nodes (N1–N12)
+        for (const [steccoId, baseId] of Object.entries(STECCO_MAPPING)) {
+          if (baseId && !map[steccoId] && map[baseId]) {
+            map[steccoId] = { ...map[baseId] };
+          }
+        }
+        
         setNodes(map);
       } catch (err) {
         toast.error('Fehler beim Laden: ' + err.message);
@@ -260,31 +293,40 @@ export default function MFRNodeAudioTab() {
       <div className="glass rounded-2xl border border-slate-700/50 p-4">
         {NODE_IDS.map(nodeId => {
           const nodeData = nodes[nodeId];
-          if (!nodeData) {
-            return (
-              <div key={nodeId} className="py-3 border-b border-slate-800/60 last:border-0 opacity-50">
-                <p className="text-xs font-bold text-slate-500 uppercase tracking-widest">{nodeId}</p>
-                <p className="text-xs text-slate-600 mt-1">Kein Eintrag in MFRNode</p>
-              </div>
-            );
-          }
+          const baseNodeId = STECCO_MAPPING[nodeId];
+          
           return (
-            <AudioRow
-              key={nodeId}
-              nodeId={nodeId}
-              nodeName={nodeData.name}
-              instructionText={nodeData.instruction}
-              onTextUpdate={async (newText) => {
-                const node = nodes[nodeId];
-                if (node) {
-                  await base44.entities.MFRNode.update(nodeId, { user_instruction: newText });
-                  setNodes(prev => ({
-                    ...prev,
-                    [nodeId]: { ...node, instruction: newText }
-                  }));
-                }
-              }}
-            />
+            <div key={nodeId} className="border-b border-slate-800/60 last:border-0">
+              {/* Header mit Base-Node Info */}
+              {baseNodeId && (
+                <div className="py-1.5 px-2 bg-slate-800/30 text-[9px] text-slate-500 uppercase tracking-widest">
+                  ← Geerbt von {baseNodeId}
+                </div>
+              )}
+              {!nodeData ? (
+                <div className="py-3 px-2 opacity-60">
+                  <p className="text-xs font-bold text-slate-500 uppercase tracking-widest">{nodeId}</p>
+                  <p className="text-xs text-slate-600 mt-1">Text editierbar</p>
+                </div>
+              ) : (
+                <AudioRow
+                  key={`${nodeId}-row`}
+                  nodeId={nodeId}
+                  nodeName={nodeData.name || nodeId}
+                  instructionText={nodeData.instruction}
+                  onTextUpdate={async (newText) => {
+                    const node = nodes[nodeId];
+                    if (node) {
+                      await base44.entities.MFRNode.update(nodeId, { user_instruction: newText });
+                      setNodes(prev => ({
+                        ...prev,
+                        [nodeId]: { ...node, instruction: newText }
+                      }));
+                    }
+                  }}
+                />
+              )}
+            </div>
           );
         })}
       </div>
