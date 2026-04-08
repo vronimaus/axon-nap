@@ -173,8 +173,8 @@ function AudioRow({ nodeId, nodeName, instructionText, onTextUpdate }) {
           <textarea
             value={editText}
             onChange={(e) => setEditText(e.target.value)}
-            className="w-full text-xs bg-slate-800 text-slate-200 border border-cyan-500/30 rounded-lg p-2 resize-none focus:outline-none focus:border-cyan-400"
-            rows="3"
+            className="w-full text-xs bg-slate-800 text-slate-200 border border-cyan-500/30 rounded-lg p-2 resize-vertical focus:outline-none focus:border-cyan-400"
+            rows="8"
           />
         ) : (
           <p className="text-xs text-slate-300 leading-relaxed line-clamp-3">{instructionText || '—'}</p>
