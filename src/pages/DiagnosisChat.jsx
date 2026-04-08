@@ -189,6 +189,7 @@ export default function DiagnosisChat() {
             rehabPlan={rehabPlan}
             user={user}
             region={painMap?.region}
+            sfmaValues={sfmaDecision}
           />
         )}
       </FocusScreenContainer>
@@ -220,6 +221,7 @@ export default function DiagnosisChat() {
             rehabPlan={rehabPlan}
             user={user}
             region={painMap?.region}
+            sfmaValues={sfmaDecision}
           />
         )}
       </FocusScreenContainer>

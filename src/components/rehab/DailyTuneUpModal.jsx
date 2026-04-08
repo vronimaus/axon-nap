@@ -63,7 +63,8 @@ export default function DailyTuneUpModal({
   rehabPlan,
   user,
   queryClient,
-  region = 'Lenden / Unterer Rücken', // Region from DiagnosisChat
+  region = 'Lenden / Unterer Rücken',
+  sfmaValues = null, // { movement_level, pain_rest, pain_move } from SFMAQuickCheck
 }) {
   console.log('🔍 DailyTuneUpModal region prop:', region);
   const nodeId = REGION_TO_NODE_ID[region] || 'N6'; // Default zu N6 (Lendenwirbelsäule)
@@ -214,7 +215,7 @@ export default function DailyTuneUpModal({
                 key="retest"
                 nodeId={nodeId}
                 screenId={2}
-                pretestValue={mfrPretestValue}
+                sfmaValues={sfmaValues}
                 onComplete={handleScreenComplete}
               />
             )}
