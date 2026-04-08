@@ -34,9 +34,16 @@ function ExerciseAudioRow({ exercise }) {
         setCached(false);
         return;
       }
-      const hash = await hashText(textToCache);
-      const results = await base44.entities.TTSCache.filter({ text_hash: hash });
-      setCached(results.length > 0 ? results[0].file_uri : false);
+      try {
+        // Small delay to prevent rate limiting with many parallel requests
+        await new Promise(r => setTimeout(r, 50));
+        const hash = await hashText(textToCache);
+        const results = await base44.entities.TTSCache.filter({ text_hash: hash });
+        setCached(results.length > 0 ? results[0].file_uri : false);
+      } catch (e) {
+        // Silently fail on rate limit or other errors
+        setCached(false);
+      }
     };
     checkCache();
   }, [textToCache]);
