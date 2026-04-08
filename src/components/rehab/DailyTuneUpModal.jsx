@@ -6,6 +6,7 @@ import NeuroDrillScreen from './DailyTuneUp/NeuroDrillScreen';
 import RetestScreen from './DailyTuneUp/RetestScreen';
 import IntegrationScreen from './DailyTuneUp/IntegrationScreen';
 import NeuralChargeBarCompact from './DailyTuneUp/NeuralChargeBarCompact';
+import { buildInterventionFlow } from '@/lib/neuralPermissionEvaluation';
 
 import { base44 } from '@/api/base44Client';
 
@@ -93,8 +94,27 @@ export default function DailyTuneUpModal({
   const [integrationCompleted, setIntegrationCompleted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [mfrPretestValue, setMfrPretestValue] = useState(null);
+  const [tuneUpData, setTuneUpData] = useState(null);
+  const [neuralPermission, setNeuralPermission] = useState(null);
+  const [interventionFlow, setInterventionFlow] = useState(null);
 
   // TTS disabled
+
+  // Load TuneUp causal chain data
+  const loadTuneUpData = async () => {
+    try {
+      const results = await base44.entities.TuneUpCausalChain.filter({ node_id: nodeId });
+      if (results.length > 0) {
+        setTuneUpData(results[0]);
+      }
+    } catch (err) {
+      console.error('Error loading TuneUp data:', err);
+    }
+  };
+
+  React.useEffect(() => {
+    loadTuneUpData();
+  }, [nodeId]);
 
   // Calculate neural charge (0-100%)
   const neuralCharge = (() => {
@@ -117,11 +137,39 @@ export default function DailyTuneUpModal({
       // Silent transition
     } else if (screenId === 2) {
       setRetestCompleted(true);
-      setCurrentScreen(3);
-      // Silent transition
+      // Evaluate Neural Permission
+      if (data?.neuralPermissionEvaluation) {
+        setNeuralPermission(data.neuralPermissionEvaluation);
+        const flow = buildInterventionFlow(data.neuralPermissionEvaluation, tuneUpData);
+        setInterventionFlow(flow);
+        
+        // Route based on permission
+        if (data.neuralPermissionEvaluation.permissionGranted) {
+          setCurrentScreen(3); // Integration
+        } else {
+          // Trigger intervention instead of integration
+          handleIntervention(flow);
+        }
+      } else {
+        setCurrentScreen(3); // Fallback
+      }
     } else if (screenId === 3) {
       setIntegrationCompleted(true);
       await submitSession(data);
+    }
+  };
+
+  const handleIntervention = (flow) => {
+    // Route to intervention screen based on recommendedAction
+    if (flow.nextScreen === 'PARASYMPATHETIC_DRILL') {
+      // Show parasympathetic drill screen
+      setCurrentScreen(4); // Will be added as new screen
+    } else if (flow.nextScreen === 'SENSORY_PRIMING') {
+      // Show sensory priming screen
+      setCurrentScreen(5);
+    } else if (flow.nextScreen === 'TWEAKOLOGY_POSITION_REGRESSION') {
+      // Show tweaked integration screen
+      setCurrentScreen(3);
     }
   };
 
@@ -133,21 +181,38 @@ export default function DailyTuneUpModal({
         const feedback = {
           date: today,
           session_type: 'daily_tune_up',
-          mfr_completed: true,
-          neuro_completed: true,
-          retest_completed: true,
-          integration_completed: true,
-          neural_charge: 100,
+          mfr_completed: mfrNodeCompleted,
+          neuro_completed: neuroDrillCompleted,
+          retest_completed: retestCompleted,
+          integration_completed: integrationCompleted,
+          neural_charge: neuralCharge,
+          neural_permission_granted: neuralPermission?.permissionGranted || true,
+          neural_permission_reason: neuralPermission?.reason || 'CLEAR',
+          intervention_applied: interventionFlow ? interventionFlow.nextScreen : null,
           notes: 'Daily Tune-Up session completed'
         };
         const history = rehabPlan.feedback_history || [];
         history.push(feedback);
-        await base44.entities.RehabPlan.update(rehabPlan.id, { feedback_history: history });
+        
+        // Track guarding failures if permission was denied
+        if (!neuralPermission?.permissionGranted) {
+          const failures = (rehabPlan.neural_permission_failures || 0) + 1;
+          await base44.entities.RehabPlan.update(rehabPlan.id, { 
+            feedback_history: history,
+            neural_permission_failures: failures
+          });
+        } else {
+          await base44.entities.RehabPlan.update(rehabPlan.id, { feedback_history: history });
+        }
       }
 
       base44.analytics.track({
         eventName: 'daily_tune_up_completed',
-        properties: { user_email: user?.email }
+        properties: { 
+          user_email: user?.email,
+          neural_permission_granted: neuralPermission?.permissionGranted || true,
+          intervention: interventionFlow?.nextScreen || 'NONE'
+        }
       });
 
       if (queryClient) {
@@ -236,7 +301,7 @@ export default function DailyTuneUpModal({
                 onComplete={handleScreenComplete}
               />
             )}
-            {currentScreen === 3 && (
+            {currentScreen === 3 && !interventionFlow && (
               <IntegrationScreen
                 key="integration"
                 nodeId={nodeId}
@@ -245,6 +310,26 @@ export default function DailyTuneUpModal({
                 isSubmitting={isSubmitting}
               />
             )}
+            {currentScreen === 3 && interventionFlow && (
+              <motion.div
+                initial={{ opacity: 0, x: 16 }}
+                animate={{ opacity: 1, x: 0 }}
+                className="w-full max-w-sm mx-auto px-4 space-y-5 text-center"
+              >
+                <div className="glass rounded-2xl border border-yellow-500/30 p-6">
+                  <p className="text-lg font-black text-yellow-300 mb-3">{interventionFlow.message}</p>
+                  <p className="text-sm text-slate-300 mb-4">{interventionFlow.instruction}</p>
+                  <motion.button
+                    onClick={() => setInterventionFlow(null)}
+                    whileTap={{ scale: 0.95 }}
+                    className="px-6 py-3 rounded-xl bg-cyan-500/20 text-cyan-400 hover:bg-cyan-500/30 font-bold"
+                  >
+                    ✓ Verstanden
+                  </motion.button>
+                </div>
+              </motion.div>
+            )}
+
           </AnimatePresence>
         </div>
 

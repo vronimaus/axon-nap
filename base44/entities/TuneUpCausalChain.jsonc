@@ -127,6 +127,22 @@
       "required": [
         "messung"
       ]
+    },
+    "tweak_plane_change": {
+      "type": "string",
+      "description": "Alternative Ausf\u00fchrungsebene bei fehlender Neural Permission (z.B. 'Seitlicher Ausfallschritt statt vorw\u00e4rts')"
+    },
+    "tweak_position_regression": {
+      "type": "string",
+      "description": "Alternative Ausgangsstellung mit Schwerkraft-Reduktion (z.B. 'Ausf\u00fchrung im Halbkniestand statt Stehend')"
+    },
+    "sensory_priming_action": {
+      "type": "string",
+      "description": "Spezifische Tapping- oder Vibrationsanweisung f\u00fcr die Faszie zur Sch\u00e4rfung der propriozeptiven Landkarte"
+    },
+    "parasympathetic_vagus_drill": {
+      "type": "string",
+      "description": "Spezifischer Vagus-Nerv-Drill (z.B. 'Summen mit Zwerchfellatmung') f\u00fcr parasympathische Notfall-Intervention"
     }
   },
   "required": [

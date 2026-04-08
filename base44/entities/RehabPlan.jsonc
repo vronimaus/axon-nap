@@ -296,6 +296,29 @@
       ],
       "default": "none",
       "description": "Welcher Decision-Tree-Modus wurde aktiviert?"
+    },
+    "neural_permission_failures": {
+      "type": "integer",
+      "default": 0,
+      "description": "Anzahl der fehlgeschlagenen Neural Permission Checks (Neurological Guarding Events)"
+    },
+    "active_tweaks": {
+      "type": "object",
+      "description": "Aktuell aktive Regressionen/Tweaks (z.B. Position-Regression, Ebenen-Wechsel) f\u00fcr zuk\u00fcnftige Sessions"
+    },
+    "last_neural_permission_check": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Zeitstempel des letzten Neural Permission Checks"
+    },
+    "neural_permission_trend": {
+      "type": "string",
+      "enum": [
+        "improving",
+        "stable",
+        "declining"
+      ],
+      "description": "Trend der Neural Permission \u00fcber die letzten Sessions"
     }
   },
   "required": [
