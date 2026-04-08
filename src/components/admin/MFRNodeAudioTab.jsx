@@ -303,29 +303,31 @@ export default function MFRNodeAudioTab() {
                   ← Geerbt von {baseNodeId}
                 </div>
               )}
-              {!nodeData ? (
-                <div className="py-3 px-2 opacity-60">
-                  <p className="text-xs font-bold text-slate-500 uppercase tracking-widest">{nodeId}</p>
-                  <p className="text-xs text-slate-600 mt-1">Text editierbar</p>
-                </div>
-              ) : (
-                <AudioRow
-                  key={`${nodeId}-row`}
-                  nodeId={nodeId}
-                  nodeName={nodeData.name || nodeId}
-                  instructionText={nodeData.instruction}
-                  onTextUpdate={async (newText) => {
-                    const node = nodes[nodeId];
-                    if (node) {
-                      await base44.entities.MFRNode.update(nodeId, { user_instruction: newText });
-                      setNodes(prev => ({
-                        ...prev,
-                        [nodeId]: { ...node, instruction: newText }
-                      }));
-                    }
-                  }}
-                />
-              )}
+              <AudioRow
+                key={`${nodeId}-row`}
+                nodeId={nodeId}
+                nodeName={nodeData?.name || nodeId}
+                instructionText={nodeData?.instruction || ''}
+                onTextUpdate={async (newText) => {
+                  // Create or update node
+                  let node = nodes[nodeId];
+                  if (node) {
+                    await base44.entities.MFRNode.update(nodeId, { user_instruction: newText });
+                  } else {
+                    // Create new node if doesn't exist
+                    await base44.entities.MFRNode.create({
+                      node_id: nodeId,
+                      name_de: nodeId,
+                      user_instruction: newText,
+                      position: 'front'
+                    });
+                  }
+                  setNodes(prev => ({
+                    ...prev,
+                    [nodeId]: { name: prev[nodeId]?.name || nodeId, instruction: newText }
+                  }));
+                }}
+              />
             </div>
           );
         })}
