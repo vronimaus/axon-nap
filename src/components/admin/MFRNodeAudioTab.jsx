@@ -280,14 +280,30 @@ export default function MFRNodeAudioTab() {
 
   return (
     <div className="space-y-4">
-      <div className="glass rounded-2xl border border-cyan-500/30 p-6">
-        <h2 className="text-xl font-bold text-cyan-400 mb-1">🎙️ MFR Node Audio Manager (Stecco)</h2>
-        <p className="text-sm text-slate-400 mb-1">
-          Alle `user_instruction` Texte für CP, CL, TH, LU, PV, SC, HU, CU, CX, GE, TA, PE (nach Stecco 14-Segment-System). Grüner Punkt = Audio vorhanden.
-        </p>
-        <p className="text-xs text-slate-500">
-          A = Anterior, P = Posterior. Neben dem Text: Upload-Button für Audio, Wiedergabe-Button (wenn vorhanden), Copy-Button.
-        </p>
+      <div className="glass rounded-2xl border border-cyan-500/30 p-6 flex items-start justify-between gap-4">
+        <div className="flex-1">
+          <h2 className="text-xl font-bold text-cyan-400 mb-1">🎙️ MFR Node Audio Manager (Stecco)</h2>
+          <p className="text-sm text-slate-400 mb-1">
+            Alle `user_instruction` Texte für CP, CL, TH, LU, PV, SC, HU, CU, CX, GE, TA, PE (nach Stecco 14-Segment-System). Grüner Punkt = Audio vorhanden.
+          </p>
+          <p className="text-xs text-slate-500">
+            A = Anterior, P = Posterior. Neben dem Text: Upload-Button für Audio, Wiedergabe-Button (wenn vorhanden), Copy-Button.
+          </p>
+        </div>
+        <button
+          onClick={async () => {
+            try {
+              const res = await base44.functions.invoke('generateMFRNodeInstructions', {});
+              toast.success(`${res.data.updated} Texte generiert`);
+              window.location.reload();
+            } catch (err) {
+              toast.error('Generierung fehlgeschlagen: ' + err.message);
+            }
+          }}
+          className="px-4 py-2 rounded-lg bg-cyan-500/20 text-cyan-400 hover:bg-cyan-500/30 transition-all text-sm font-medium whitespace-nowrap flex-shrink-0"
+        >
+          📝 Fehlende generieren
+        </button>
       </div>
 
       <div className="glass rounded-2xl border border-slate-700/50 p-4">
