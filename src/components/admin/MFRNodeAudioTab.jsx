@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { base44 } from '@/api/base44Client';
-import { Upload, CheckCircle2, Loader2, Volume2, Copy, Check } from 'lucide-react';
+import { Upload, CheckCircle2, Loader2, Volume2, Copy, Check, Edit, X } from 'lucide-react';
 import { toast } from 'sonner';
 
 const NODE_IDS = ['N1', 'N2', 'N3', 'N4', 'N5', 'N6', 'N7', 'N8', 'N9', 'N10', 'N11', 'N12', 'CP-A', 'CP-P', 'CL-A', 'CL-P', 'TH-A', 'TH-P', 'LU-A', 'LU-P', 'PV-A', 'PV-P', 'SC-A', 'SC-P', 'HU-A', 'CU-A', 'CX-A', 'CX-P', 'GE-A', 'GE-P', 'TA-A', 'TA-P', 'PE-A'];
@@ -13,11 +13,14 @@ async function hashText(text) {
   return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
 }
 
-function AudioRow({ nodeId, nodeName, instructionText }) {
+function AudioRow({ nodeId, nodeName, instructionText, onTextUpdate }) {
   const [cached, setCached] = useState(null);
   const [uploading, setUploading] = useState(false);
   const [playing, setPlaying] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [editing, setEditing] = useState(false);
+  const [editText, setEditText] = useState(instructionText);
+  const [saving, setSaving] = useState(false);
   const audioRef = useRef(null);
   const inputRef = useRef(null);
 
@@ -26,6 +29,20 @@ function AudioRow({ nodeId, nodeName, instructionText }) {
     navigator.clipboard.writeText(instructionText.trim());
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
+  };
+
+  const handleSave = async () => {
+    if (!editText.trim()) return;
+    setSaving(true);
+    try {
+      await onTextUpdate(editText.trim());
+      setEditing(false);
+      toast.success(`Text für ${nodeId} gespeichert`);
+    } catch (err) {
+      toast.error('Speichern fehlgeschlagen: ' + err.message);
+    } finally {
+      setSaving(false);
+    }
   };
 
   useEffect(() => {
@@ -105,47 +122,88 @@ function AudioRow({ nodeId, nodeName, instructionText }) {
       {/* Text Column */}
       <div className="flex-1 min-w-0">
         <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-1">{nodeId} – {nodeName}</p>
-        <p className="text-xs text-slate-300 leading-relaxed line-clamp-3">{instructionText || '—'}</p>
+        {editing ? (
+          <textarea
+            value={editText}
+            onChange={(e) => setEditText(e.target.value)}
+            className="w-full text-xs bg-slate-800 text-slate-200 border border-cyan-500/30 rounded-lg p-2 resize-none focus:outline-none focus:border-cyan-400"
+            rows="3"
+          />
+        ) : (
+          <p className="text-xs text-slate-300 leading-relaxed line-clamp-3">{instructionText || '—'}</p>
+        )}
       </div>
 
       {/* Action Buttons */}
       <div className="flex flex-col gap-1.5 flex-shrink-0">
-        {cached && (
-          <button
-            onClick={handlePlay}
-            className={`p-2 rounded-lg transition-all ${
-              playing ? 'bg-cyan-500/20 text-cyan-400' : 'bg-slate-800 text-slate-400 hover:text-cyan-400'
-            }`}
-            title="Abspielen"
-          >
-            <Volume2 className="w-3.5 h-3.5" />
-          </button>
+        {editing ? (
+          <>
+            <button
+              onClick={handleSave}
+              disabled={saving || !editText.trim()}
+              className="p-2 rounded-lg bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500/30 transition-all disabled:opacity-40"
+              title="Speichern"
+            >
+              {saving ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Check className="w-3.5 h-3.5" />}
+            </button>
+            <button
+              onClick={() => {
+                setEditing(false);
+                setEditText(instructionText);
+              }}
+              className="p-2 rounded-lg bg-slate-800 text-slate-400 hover:text-red-400 transition-all"
+              title="Abbrechen"
+            >
+              <X className="w-3.5 h-3.5" />
+            </button>
+          </>
+        ) : (
+          <>
+            {cached && (
+              <button
+                onClick={handlePlay}
+                className={`p-2 rounded-lg transition-all ${
+                  playing ? 'bg-cyan-500/20 text-cyan-400' : 'bg-slate-800 text-slate-400 hover:text-cyan-400'
+                }`}
+                title="Abspielen"
+              >
+                <Volume2 className="w-3.5 h-3.5" />
+              </button>
+            )}
+            <button
+              onClick={() => inputRef.current?.click()}
+              disabled={uploading || !instructionText?.trim()}
+              className="p-2 rounded-lg bg-slate-800 text-slate-400 hover:text-purple-400 hover:bg-purple-500/10 transition-all disabled:opacity-40"
+              title="Audio hochladen (.wav / .mp3)"
+            >
+              {uploading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Upload className="w-3.5 h-3.5" />}
+            </button>
+            <button
+              onClick={handleCopy}
+              disabled={!instructionText?.trim()}
+              className={`p-2 rounded-lg transition-all disabled:opacity-40 ${
+                copied ? 'bg-emerald-500/20 text-emerald-400' : 'bg-slate-800 text-slate-400 hover:text-cyan-400 hover:bg-cyan-500/10'
+              }`}
+              title="Text kopieren"
+            >
+              {copied ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
+            </button>
+            <button
+              onClick={() => setEditing(true)}
+              className="p-2 rounded-lg bg-slate-800 text-slate-400 hover:text-blue-400 hover:bg-blue-500/10 transition-all"
+              title="Text bearbeiten"
+            >
+              <Edit className="w-3.5 h-3.5" />
+            </button>
+            <input
+              ref={inputRef}
+              type="file"
+              accept="audio/*"
+              className="hidden"
+              onChange={handleUpload}
+            />
+          </>
         )}
-        <button
-          onClick={() => inputRef.current?.click()}
-          disabled={uploading || !instructionText?.trim()}
-          className="p-2 rounded-lg bg-slate-800 text-slate-400 hover:text-purple-400 hover:bg-purple-500/10 transition-all disabled:opacity-40"
-          title="Audio hochladen (.wav / .mp3)"
-        >
-          {uploading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Upload className="w-3.5 h-3.5" />}
-        </button>
-        <button
-          onClick={handleCopy}
-          disabled={!instructionText?.trim()}
-          className={`p-2 rounded-lg transition-all disabled:opacity-40 ${
-            copied ? 'bg-emerald-500/20 text-emerald-400' : 'bg-slate-800 text-slate-400 hover:text-cyan-400 hover:bg-cyan-500/10'
-          }`}
-          title="Text kopieren"
-        >
-          {copied ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
-        </button>
-        <input
-          ref={inputRef}
-          type="file"
-          accept="audio/*"
-          className="hidden"
-          onChange={handleUpload}
-        />
       </div>
     </div>
   );
@@ -216,6 +274,16 @@ export default function MFRNodeAudioTab() {
               nodeId={nodeId}
               nodeName={nodeData.name}
               instructionText={nodeData.instruction}
+              onTextUpdate={async (newText) => {
+                const node = nodes[nodeId];
+                if (node) {
+                  await base44.entities.MFRNode.update(nodeId, { user_instruction: newText });
+                  setNodes(prev => ({
+                    ...prev,
+                    [nodeId]: { ...node, instruction: newText }
+                  }));
+                }
+              }}
             />
           );
         })}
