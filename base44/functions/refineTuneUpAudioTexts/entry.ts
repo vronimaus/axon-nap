@@ -37,42 +37,51 @@ Symptom: ${chain.symptom || ''}
 Biomechanische Ursache: ${chain.biomechanische_ursache || ''}
 `;
 
-        const prompt = `Du bist ein erfahrener neuro-athletischer Trainer und Bewegungs-Coach. Verfeinere die folgenden Anleitung-Texte für Audio-Ausgabe (TTS).
+        const prompt = `Du bist ein erfahrener Trainer, der Athleten verbal anleitet. Schreibe natürliche, fließende Anleitung-Texte FÜR AUDIO-AUSGABE (TTS). Die Texte werden laut vorgelesen.
 
-WICHTIG:
-- Texte müssen natürlich klingen wenn laut vorgelesen (fließend, kein "Listenformat")
-- Keine Präfixe wie "Übung:", "Ausführung:", "Integration:" verwenden
-- Technische Begriffe minimieren oder verständlich erklären
-- Du-Form durchgehend
-- Kurz und prägnant, aber vollständig
+REGELN FÜR AUDIO-TEXTE:
+- FLIESSEND UND GESPRÄCHIG schreiben wie ein echter Trainer der spricht
+- KEINE LISTEN, KEINE AUFZÄHLUNGEN
+- Sätze verbinden mit "dann", "während", "sobald" etc.
+- Du-Form durchgehend, direkt und motivierend
+- Technische Begriffe VERMEIDEN oder kurz erklären in Klammern
+- Kurz und prägnant (max 2-3 Sätze pro Feld)
+- Keine Präfixe/Labels verwenden
+- IMPERATIV/IMPERATIVE FORM: "Mach das...", "Dreh...", "Atme..." statt "Das ist..."
 
 KONTEXT:
 ${context}
 
-AKTUELLE TEXTE:
-${chain.software_update ? `
-Neuro-Drill:
-- Übung: ${chain.software_update.übung || ''}
-- Ausführung: ${chain.software_update.ausführung || ''}
-- Warum: ${chain.software_update.warum || ''}
-` : ''}
+AKTUELLE TEXTE ZUM VERFEINERN:
+Software-Update (Neuro-Drill):
+Übung: ${chain.software_update?.übung || '-'}
+Ausführung: ${chain.software_update?.ausführung || '-'}
+Warum: ${chain.software_update?.warum || '-'}
 
-${chain.integration ? `
 Integration:
-- Primäre Bewegung: ${chain.integration.primär_bewegung || ''}
-- Wiederholungen: ${chain.integration.wiederholungen || ''}
-- Tweak 1: ${chain.integration.tweak_1 || ''}
-- Tweak 2: ${chain.integration.tweak_2 || ''}
-` : ''}
+Primäre Bewegung: ${chain.integration?.primär_bewegung || '-'}
+Wiederholungen: ${chain.integration?.wiederholungen || '-'}
+Tweaks: ${chain.integration?.tweak_1 || '-'} / ${chain.integration?.tweak_2 || '-'}
 
-${chain.hardware_reset ? `
-MFR Reset:
-- Pretest: ${chain.hardware_reset.pretest_instruction || ''}
-- Technik: ${chain.hardware_reset.technik || ''}
-- Mechanismus: ${chain.hardware_reset.mechanismus || ''}
-` : ''}
+Hardware-Reset:
+Pretest: ${chain.hardware_reset?.pretest_instruction || '-'}
+Technik: ${chain.hardware_reset?.technik || '-'}
+Mechanismus: ${chain.hardware_reset?.mechanismus || '-'}
 
-AUFGABE: Verfeinere ALLE vorhandenen Felder für bessere Audio-Qualität. Antworte AUSSCHLIESSLICH mit diesem JSON-Format:
+AUFGABE: Schreibe DETAILLIERTE, STEP-BY-STEP Audio-Anleitungen. Ein guter Trainer erklärt:
+
+1. POSITION/SETUP: "Stell dich hin...", "Nimm die Kurzhanteln...", "Dein Fuß sollte..."
+2. BEWEGUNGSABLAUF: "Dann hebst du...", "Während du das machst...", "Senke jetzt..."
+3. WIEDERHOLUNGEN/TEMPO: Konkrete Zahlen ("zehn Wiederholungen", "langsam")
+4. FOKUS-CUES: "Achte darauf dass...", "Spür wie...", "Dein ... sollte..."
+5. HÄUFIGE FEHLER: "Wenn du merkst...", "Vermeide dass..."
+
+Beispiel-Style:
+"Mach eine Wall Slide in der 90/90-Position. Stell dich mit dem Rücken zur Wand, deine Ellenbogen gebeugt, deine Hände neben deinem Kopf. Dann schieb deine Hände langsam nach oben, halten deine Ellenbogen leicht gebeugt. Zehn Wiederholungen langsam und kontrolliert. Wenn deine Schultern zu viel machen, drück leicht gegen die Wand für mehr Stabilität."
+
+Die Texte MÜSSEN so detailliert sein, dass jemand, der die Übung nicht kennt, sie trotzdem ausführen kann.
+
+Antworte AUSSCHLIESSLICH mit diesem JSON-Format:
 
 {
   "software_update": {
