@@ -17,61 +17,61 @@ const SCREENS = [
 ];
 
 // Map region names (from InteractiveBodyMapInput) to Node IDs
-// Based on MFRNode definitions
+// Based on Stecco 14-Segment System: CP, CL, TH, LU, PV, SC, HU, CU, CA, DI, CX, GE, TA, PE
 const REGION_TO_NODE_ID = {
-  // N1 - Kopf & Kiefer
-  'Kopf/Stirn': 'N1',
-  'Ohr/Kiefergelenk': 'N1',
-  'Hinterkopf': 'N1',
+  // CP - Kopf (Caput)
+  'Kopf/Stirn': 'CP-A',
+  'Ohr/Kiefergelenk': 'CP-A',
+  'Hinterkopf': 'CP-P',
 
-  // N2 - Hals & Nacken
-  'Hals vorne': 'N2',
-  'Nacken seitlich': 'N2',
-  'Nacken/obere Halswirbelsäule': 'N2',
+  // CL - Hals (Collum)
+  'Hals vorne': 'CL-A',
+  'Nacken seitlich': 'CL-P',
+  'Nacken/obere Halswirbelsäule': 'CL-P',
 
-  // N3 - Brustkorb & BWS
-  'obere Brust/Schlüsselbein': 'N3',
-  'mittlere Brust': 'N3',
-  'oberer Rücken/Nacken': 'N3',
-  'oberer Rücken': 'N3',
-  'mittlerer Rücken': 'N5',
+  // TH - Brustkorb (Thorax)
+  'obere Brust/Schlüsselbein': 'TH-A',
+  'mittlere Brust': 'TH-A',
+  'oberer Rücken/Nacken': 'TH-P',
+  'oberer Rücken': 'TH-P',
+  'mittlerer Rücken': 'TH-P',
 
-  // N4 - Lenden / Unterer Rücken
-  'unterer Rücken/Lendenwirbelsäule': 'N4',
+  // LU - Lende (Lumbar)
+  'unterer Rücken/Lendenwirbelsäule': 'LU-P',
+  'Bauch oben': 'LU-A',
+  'Bauch Mitte/Bauchnabel': 'LU-A',
 
-  // N5 - Becken (Kreuzbein)
-  'Bauch oben': 'N5',
-  'Bauch Mitte/Bauchnabel': 'N5',
+  // PV - Becken (Pelvis)
+  'Unterbauch/Becken': 'PV-A',
+  'Becken/Hüfte': 'PV-A',
+  'Gesäß': 'PV-P',
 
-  // N6 - Schulter (Schulterblatt / Oberarm)
-  'Schulter vorne/Acromion': 'N6',
-  'Schulter hinten/Acromion': 'N6',
-  'Schulterblatt': 'N6',
-  'Oberarm': 'N6',
-  'Ellenbogen-Beuge': 'N6',
+  // SC - Schulter (Scapula)
+  'Schulter vorne/Acromion': 'SC-A',
+  'Schulter hinten/Acromion': 'SC-P',
+  'Schulterblatt': 'SC-P',
 
-  // N7 - Hüfte & Becken (vorne)
-  'Unterbauch/Becken': 'N7',
-  'Becken/Hüfte': 'N7',
-  'Gesäß': 'N7',
+  // HU - Oberarm (Humerus)
+  'Oberarm': 'HU-A',
 
-  // N8 - Oberschenkel vorne
-  'Oberschenkel vorne': 'N8',
+  // CU - Ellenbogen (Cubitus)
+  'Ellenbogen-Beuge': 'CU-A',
 
-  // N9 - Oberschenkel hinten
-  'Oberschenkel hinten': 'N9',
+  // CX - Hüfte (Coxa)
+  'Vorderer Hüftbeuger': 'CX-A',
+  'Hinterer Hüftbereich': 'CX-P',
 
-  // N10 - Knie
-  'Knie vorne': 'N10',
-  'Kniekehle': 'N10',
+  // GE - Knie (Genu)
+  'Knie vorne': 'GE-A',
+  'Kniekehle': 'GE-P',
 
-  // N11 - Wade
-  'Unterschenkel/Schienbein': 'N11',
-  'Wade': 'N11',
+  // TA - Sprunggelenk (Talus)
+  'Unterschenkel/Schienbein': 'TA-A',
+  'Wade': 'TA-P',
+  'Ferse/Achillessehne': 'TA-P',
 
-  // N12 - Fuß/Knöchel
-  'Fuß/Knöchel vorne': 'N12',
-  'Ferse/Achillessehne': 'N12',
+  // PE - Fuß (Pes)
+  'Fuß/Knöchel vorne': 'PE-A',
 };
 
 export default function DailyTuneUpModal({
