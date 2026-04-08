@@ -9,6 +9,9 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Forbidden' }, { status: 403 });
     }
 
+    const body = await req.json();
+    const targetNodeId = body.node_id; // Optional: generiert nur einen Node wenn spezifiziert
+
     // Load all MFRNodes
     const allNodes = await base44.asServiceRole.entities.MFRNode.list();
     
@@ -16,7 +19,11 @@ Deno.serve(async (req) => {
     const newNodes = ['CU-A', 'CX-A', 'CX-P', 'GE-A', 'GE-P', 'TA-A', 'TA-P', 'PE-A'];
     const nodesToProcess = allNodes.filter(n => {
       const nodeId = n.node_id || n.data?.node_id;
-      return newNodes.includes(nodeId) && !n.user_instruction && !n.data?.user_instruction;
+      const hasInstruction = n.user_instruction || n.data?.user_instruction;
+      if (targetNodeId) {
+        return nodeId === targetNodeId && !hasInstruction;
+      }
+      return newNodes.includes(nodeId) && !hasInstruction;
     });
 
     if (!nodesToProcess.length) {

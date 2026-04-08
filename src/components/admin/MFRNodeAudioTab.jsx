@@ -46,6 +46,7 @@ function AudioRow({ nodeId, nodeName, instructionText, onTextUpdate }) {
   const [editing, setEditing] = useState(false);
   const [editText, setEditText] = useState(instructionText);
   const [saving, setSaving] = useState(false);
+  const [generating, setGenerating] = useState(false);
   const audioRef = useRef(null);
   const inputRef = useRef(null);
 
@@ -131,6 +132,23 @@ function AudioRow({ nodeId, nodeName, instructionText, onTextUpdate }) {
     }
   };
 
+  const handleGenerate = async () => {
+    if (instructionText?.trim()) return; // Nur generieren wenn leer
+    setGenerating(true);
+    try {
+      const res = await base44.functions.invoke('generateMFRNodeInstructions', { node_id: nodeId });
+      if (res.data.updated > 0) {
+        toast.success(`Text für ${nodeId} generiert`);
+        // Reload to get new text
+        window.location.reload();
+      }
+    } catch (err) {
+      toast.error('Generierung fehlgeschlagen: ' + err.message);
+    } finally {
+      setGenerating(false);
+    }
+  };
+
   return (
     <div className="flex items-start gap-3 py-4 border-b border-slate-800/60 last:border-0">
       {/* Status dot */}
@@ -184,6 +202,16 @@ function AudioRow({ nodeId, nodeName, instructionText, onTextUpdate }) {
           </>
         ) : (
           <>
+            {!instructionText?.trim() && (
+              <button
+                onClick={handleGenerate}
+                disabled={generating}
+                className="p-2 rounded-lg bg-blue-500/20 text-blue-400 hover:bg-blue-500/30 transition-all disabled:opacity-40"
+                title="Text generieren"
+              >
+                {generating ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <span className="text-sm font-bold">✨</span>}
+              </button>
+            )}
             {cached && (
               <button
                 onClick={handlePlay}
