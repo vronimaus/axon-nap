@@ -74,6 +74,7 @@ export default function DailyTuneUpModal({
   const [retestCompleted, setRetestCompleted] = useState(false);
   const [integrationCompleted, setIntegrationCompleted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [mfrPretestValue, setMfrPretestValue] = useState(null);
 
   // TTS disabled
 
@@ -90,6 +91,7 @@ export default function DailyTuneUpModal({
   const handleScreenComplete = async (screenId, data) => {
     if (screenId === 0) {
       setMFRNodeCompleted(true);
+      if (data?.pretestValue != null) setMfrPretestValue(data.pretestValue);
       setCurrentScreen(1);
     } else if (screenId === 1) {
       setNeuroDrillCompleted(true);
@@ -212,6 +214,7 @@ export default function DailyTuneUpModal({
                 key="retest"
                 nodeId={nodeId}
                 screenId={2}
+                pretestValue={mfrPretestValue}
                 onComplete={handleScreenComplete}
               />
             )}

@@ -3,10 +3,9 @@ import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Zap, ChevronRight } from 'lucide-react';
 
-export default function RetestScreen({ onComplete, screenId = 2, nodeId = 'N6' }) {
+export default function RetestScreen({ onComplete, screenId = 2, nodeId = 'N6', pretestValue = null }) {
   const [retestValue, setRetestValue] = useState(null);
   const [fineTuning, setFineTuning] = useState(0);
-  const pretestValue = 3;
 
   const improvement = (retestValue || 0) - pretestValue;
 
@@ -38,8 +37,12 @@ export default function RetestScreen({ onComplete, screenId = 2, nodeId = 'N6' }
         {/* Vorher */}
         <div className="rounded-2xl border-2 border-red-500/50 bg-red-500/10 p-5 text-center space-y-3">
           <p className="text-xs font-bold text-red-400 uppercase tracking-widest">Vorher</p>
-          <p className="text-xs text-red-300 leading-relaxed">So hast du dich gefühlt</p>
-          <p className="text-5xl font-black text-red-400">{pretestValue}</p>
+          <p className="text-xs text-red-300 leading-relaxed">Beweglichkeit beim Start</p>
+          {pretestValue !== null ? (
+            <p className="text-5xl font-black text-red-400">{pretestValue}</p>
+          ) : (
+            <p className="text-sm text-red-400/60 italic mt-2">Nicht gemessen</p>
+          )}
         </div>
 
         {/* Nachher */}
