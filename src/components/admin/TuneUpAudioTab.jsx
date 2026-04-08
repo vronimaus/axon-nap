@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { base44 } from '@/api/base44Client';
-import { Upload, CheckCircle2, Loader2, Volume2 } from 'lucide-react';
+import { Upload, CheckCircle2, Loader2, Volume2, Copy, Check } from 'lucide-react';
 import { toast } from 'sonner';
 
 const NODE_IDS = ['N1','N2','N3','N4','N5','N6','N7','N8','N9','N10','N11','N12'];
@@ -40,8 +40,16 @@ function AudioRow({ label, text, nodeId, trackKey }) {
   const [cached, setCached] = useState(null); // null=loading, false=missing, string=uri
   const [uploading, setUploading] = useState(false);
   const [playing, setPlaying] = useState(false);
+  const [copied, setCopied] = useState(false);
   const audioRef = useRef(null);
   const inputRef = useRef(null);
+
+  const handleCopy = () => {
+    if (!text.trim()) return;
+    navigator.clipboard.writeText(text.trim());
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
 
   useEffect(() => {
     const checkCache = async () => {
@@ -117,11 +125,11 @@ function AudioRow({ label, text, nodeId, trackKey }) {
       {/* Text */}
       <div className="flex-1 min-w-0">
         <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-0.5">{label}</p>
-        <p className="text-xs text-slate-300 leading-relaxed line-clamp-3">{text || '—'}</p>
+        <p className="text-xs text-slate-300 leading-relaxed">{text || '—'}</p>
       </div>
 
       {/* Actions */}
-      <div className="flex gap-2 flex-shrink-0">
+      <div className="flex flex-col gap-1.5 flex-shrink-0">
         {cached && (
           <button
             onClick={handlePlay}
@@ -138,6 +146,14 @@ function AudioRow({ label, text, nodeId, trackKey }) {
           title="Audio hochladen (.wav / .mp3)"
         >
           {uploading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Upload className="w-3.5 h-3.5" />}
+        </button>
+        <button
+          onClick={handleCopy}
+          disabled={!text.trim()}
+          className={`p-2 rounded-lg transition-all disabled:opacity-40 ${copied ? 'bg-emerald-500/20 text-emerald-400' : 'bg-slate-800 text-slate-400 hover:text-cyan-400 hover:bg-cyan-500/10'}`}
+          title="Text kopieren"
+        >
+          {copied ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
         </button>
         <input
           ref={inputRef}
