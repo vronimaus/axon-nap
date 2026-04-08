@@ -220,11 +220,16 @@ export default function TuneUpAudioTab() {
           if (nodeId) map[nodeId] = data;
         }
         
-        // Stecco-Nodes erben Texte/Audios von ihren Base-Nodes
-        for (const [steccoId, baseId] of Object.entries(STECCO_MAPPING)) {
-          if (baseId && !map[steccoId] && map[baseId]) {
-            map[steccoId] = { ...map[baseId] };
+        // Stecco-Nodes erben Texte/Audios von ihren Legacy-Nodes (nur wenn Stecco-Node fehlt)
+        for (const [steccoId, legacyId] of Object.entries(STECCO_MAPPING)) {
+          if (!map[steccoId] && legacyId && map[legacyId]) {
+            map[steccoId] = { ...map[legacyId], node_id: steccoId, node_name_de: steccoId };
           }
+        }
+        
+        // Lösche alle Legacy-N-Nodes aus der Map, damit nur Stecco angezeigt wird
+        for (const legacyId of ['N1','N2','N3','N4','N5','N6','N7','N8','N9','N10','N11','N12']) {
+          delete map[legacyId];
         }
         
         setChains(map);
