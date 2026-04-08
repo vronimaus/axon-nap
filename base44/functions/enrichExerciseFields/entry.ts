@@ -74,7 +74,7 @@ Deno.serve(async (req) => {
     const context = existingLines.join('\n');
 
     const fieldDescriptions = {
-      description: '"description": Direkte Ansprache (Du-Form), z.B. "Stell dich aufrecht hin." Klar, präzise, in 3-5 Schritten. Auf Deutsch.',
+      description: '"description": Schritt-für-Schritt-Anleitung in fließendem Text (als wäre es eine Trainer-Ansprache). Du-Form. Beschreibe: (1) Startposition & Körperhaltung, (2) Bewegungsablauf mit Timing & Fokuspunkten, (3) häufige Fehler vermeiden. Klingt natürlich wenn gesprochen, nicht listig oder roboterhaft.',
       benefits: '"benefits": Konkrete, spürbare Vorteile für den User in 2-3 Sätzen. Alltagsrelevant & motivierend formuliert (Du-Form).',
       goal_explanation: '"goal_explanation": Warum ist diese Übung wichtig? 2-3 Sätze, wissenschaftlich aber verständlich (Du-Form).',
       axon_moment: '"axon_moment": EIN prägnanter Satz was der User jetzt in seinem Körper/Gehirn spüren soll. Beginnt mit "Du spürst..." oder "Dein Gehirn...". Max. 1-2 Sätze.',
@@ -92,6 +92,12 @@ Deno.serve(async (req) => {
     const prompt = `Du bist Experte für Neuro-Athletic Training, myofasziale Therapie und Bewegungsrehabilitation (Stecco, McGill, Myers, Pavel, Starrett).
 
 AUFGABE: Befülle die fehlenden Felder für diese Übung auf Deutsch. Antworte AUSSCHLIESSLICH mit einem JSON-Objekt.
+
+WICHTIG FÜR DESCRIPTION & BREATHING_INSTRUCTION:
+- Schreibe wie ein Trainer, der den Nutzer live anleitet.
+- Fließender Text, nicht listig oder gehackt.
+- Natürlich klingende Anleitung, als würde sie laut vorgelesen.
+- Technische Begriffe sparsam, verständlich erklären.
 
 ÜBUNGS-KONTEXT:
 ${context}
