@@ -1,57 +1,64 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Volume2, VolumeX, Loader2, Check } from 'lucide-react';
 import { useTTS } from '@/hooks/useTTS';
+import { base44 } from '@/api/base44Client';
 
 export default function NeuroDrillScreen({ onComplete, screenId = 1, nodeId = 'N6' }) {
-  const [drillStep, setDrillStep] = useState(0);
+  const [drillData, setDrillData] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
   const [drillCompleted, setDrillCompleted] = useState(false);
   const { isPlaying, isLoading: isTTSLoading, playText, stop } = useTTS();
 
-  const drillSequence = [
-    {
-      name: 'Horizontale Sakkaden',
-      instruction: 'Fixiere einen Punkt 2 Meter vor dir auf Augenhöhe. Bewege deine Augen langsam nach links und rechts, ohne den Kopf zu bewegen. 10 Wiederholungen.',
-      duration: '~2 Min'
-    },
-    {
-      name: 'Vertikale Sakkaden',
-      instruction: 'Gleiche Position. Bewege deine Augen jetzt nach oben und unten. Langsam und kontrolliert. 10 Wiederholungen.',
-      duration: '~2 Min'
-    },
-    {
-      name: 'Diagonale Sakkaden',
-      instruction: 'Kombiniere horizontale und vertikale Bewegungen in diagonalen Mustern. 8 Wiederholungen pro Richtung.',
-      duration: '~2 Min'
-    }
-  ];
+  useEffect(() => {
+    const fetchDrill = async () => {
+      setIsLoading(true);
+      try {
+        const results = await base44.entities.TuneUpCausalChain.filter({ node_id: nodeId });
+        if (results.length > 0) {
+          setDrillData(results[0].data?.software_update || results[0].software_update || results[0]);
+        }
+      } catch (e) {
+        console.error('NeuroDrillScreen fetch error:', e);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchDrill();
+  }, [nodeId]);
 
   const handlePlayAudio = () => {
-    if (isPlaying) {
-      stop();
-      return;
-    }
-    const drill = drillSequence[drillStep];
-    const text = `${drill.name}. ${drill.instruction}. Lass dich Zeit und spüre, wie dein Nervensystem sich neu ausrichtet.`;
+    if (isPlaying) { stop(); return; }
+    if (!drillData) return;
+    const text = `${drillData['übung']}. ${drillData['ausführung']}. ${drillData['warum'] || ''}`;
     playText(text);
-  };
-
-  const handleStepComplete = () => {
-    if (drillStep < drillSequence.length - 1) {
-      setDrillStep(drillStep + 1);
-      playText(`Ausgezeichnet. ${drillSequence[drillStep + 1].name}. Bereit?`);
-    } else {
-      setDrillCompleted(true);
-      playText('Alle Neuro-Drills abgeschlossen. Sehr gut gemacht!');
-    }
   };
 
   const handleComplete = () => {
     onComplete(screenId, { nodeId, neuroDrillsCompleted: true });
   };
 
-  const currentDrill = drillSequence[drillStep];
+  if (isLoading) {
+    return (
+      <div className="w-full max-w-sm mx-auto flex items-center justify-center py-20">
+        <Loader2 className="w-8 h-8 animate-spin text-cyan-400" />
+      </div>
+    );
+  }
+
+  if (!drillData) {
+    return (
+      <div className="w-full max-w-sm mx-auto text-center text-slate-400 py-10">
+        Keine Daten für diesen Node gefunden.
+      </div>
+    );
+  }
+
+  const drillName = drillData['übung'] || drillData.übung || '';
+  const drillInstruction = drillData['ausführung'] || drillData.ausführung || '';
+  const drillWhy = drillData['warum'] || drillData.warum || '';
+  const drillGoal = drillData['neurologisches_ziel'] || drillData.neurologisches_ziel || '';
 
   return (
     <motion.div
@@ -60,47 +67,40 @@ export default function NeuroDrillScreen({ onComplete, screenId = 1, nodeId = 'N
       exit={{ opacity: 0, y: -20 }}
       className="w-full max-w-sm mx-auto px-4 space-y-6"
     >
-      {/* Description */}
-      <motion.div 
+      {/* Header */}
+      <motion.div
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
         className="rounded-2xl border border-cyan-500/30 bg-gradient-to-br from-cyan-500/15 to-transparent p-5"
       >
         <p className="text-slate-200 text-sm leading-relaxed font-medium">
-          <span className="text-cyan-400 font-bold">Neuro-Drills</span> für dein ZNS
+          <span className="text-cyan-400 font-bold">Neuro-Drill</span> für Node {nodeId}
         </p>
       </motion.div>
 
-      {/* Progress */}
-      <div className="flex items-center gap-1.5">
-        {drillSequence.map((_, idx) => (
-          <motion.div
-            key={idx}
-            initial={{ scaleX: 0 }}
-            animate={{ scaleX: 1 }}
-            className={`h-1 flex-1 rounded-full transition-colors ${
-              idx <= drillStep ? 'bg-cyan-500 shadow-lg shadow-cyan-500/40' : 'bg-slate-800'
-            }`}
-            style={{ transformOrigin: 'left' }}
-          />
-        ))}
-      </div>
-
-      {/* Current Drill */}
-      <motion.div 
+      {/* Drill Card */}
+      <motion.div
         initial={{ scale: 0.95, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
-        className="rounded-2xl border border-cyan-500/40 bg-gradient-to-br from-cyan-500/15 to-cyan-500/5 p-5"
+        className="rounded-2xl border border-cyan-500/40 bg-gradient-to-br from-cyan-500/15 to-cyan-500/5 p-5 space-y-3"
       >
-        <p className="text-[10px] font-bold text-cyan-400 uppercase tracking-widest mb-2">
-          Drill {drillStep + 1} / {drillSequence.length}
-        </p>
-        <h3 className="text-lg font-black text-white mb-2">
-          {currentDrill.name}
-        </h3>
-        <p className="text-slate-300 text-xs leading-relaxed">
-          {currentDrill.instruction}
-        </p>
+        <p className="text-[10px] font-bold text-cyan-400 uppercase tracking-widest">Software-Update</p>
+        <h3 className="text-lg font-black text-white">{drillName}</h3>
+        <p className="text-slate-300 text-xs leading-relaxed">{drillInstruction}</p>
+
+        {drillGoal && (
+          <div className="pt-2 border-t border-cyan-500/20">
+            <p className="text-[10px] font-bold text-purple-400 uppercase tracking-widest mb-1">Neurologisches Ziel</p>
+            <p className="text-slate-400 text-xs leading-relaxed">{drillGoal}</p>
+          </div>
+        )}
+
+        {drillWhy && (
+          <div className="pt-2 border-t border-cyan-500/20">
+            <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">Warum das hilft</p>
+            <p className="text-slate-500 text-xs leading-relaxed">{drillWhy}</p>
+          </div>
+        )}
       </motion.div>
 
       {/* Audio Button */}
@@ -121,7 +121,6 @@ export default function NeuroDrillScreen({ onComplete, screenId = 1, nodeId = 'N
         }
       </button>
 
-      {/* Playing indicator */}
       {isPlaying && (
         <div className="flex items-center justify-center gap-1">
           {[1, 2, 3, 4, 5].map(i => (
@@ -136,19 +135,19 @@ export default function NeuroDrillScreen({ onComplete, screenId = 1, nodeId = 'N
         </div>
       )}
 
-      {/* Completion Button */}
+      {/* Complete Button */}
       {!drillCompleted ? (
         <Button
-          onClick={handleStepComplete}
+          onClick={() => {
+            setDrillCompleted(true);
+            playText('Ausgezeichnet. Neuro-Drill abgeschlossen!');
+          }}
           className="w-full h-14 bg-gradient-to-r from-cyan-500 to-cyan-600 hover:from-cyan-600 hover:to-cyan-700 text-white font-bold rounded-xl text-sm shadow-lg shadow-cyan-500/40 active:scale-95 transition-transform"
         >
-          {drillStep < drillSequence.length - 1 ? 'Nächster →' : 'Fertig'}
+          Fertig ✓
         </Button>
       ) : (
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-        >
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
           <Button
             onClick={handleComplete}
             className="w-full h-14 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white font-bold rounded-xl text-sm flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/40 active:scale-95 transition-transform"
