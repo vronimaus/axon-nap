@@ -88,14 +88,19 @@ export default function RetestScreen({ onComplete, screenId = 2, nodeId = 'N6', 
       className="w-full max-w-sm mx-auto px-4 space-y-5 max-h-[80vh] overflow-y-auto"
     >
       {/* Header */}
-      <div className="rounded-2xl border border-purple-500/30 bg-gradient-to-br from-purple-500/10 to-transparent p-5 text-center">
-        <h3 className="text-lg font-bold text-white">Wie fühlst du dich jetzt?</h3>
+      <motion.div
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="rounded-2xl border border-purple-500/30 bg-gradient-to-br from-purple-500/15 to-transparent p-5 text-center"
+      >
+        <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-purple-400 mb-1">Vergleich</p>
+        <h3 className="text-xl font-black text-white">Wie fühlst du dich jetzt?</h3>
         {!allDone && (
           <p className="text-xs text-slate-400 mt-1">{step + 1} / {METRICS.length} — {currentMetric.label}</p>
         )}
-      </div>
+      </motion.div>
 
-      {/* 3 Metriken Übersicht */}
+      {/* 3 Metriken */}
       <div className="space-y-3">
         {METRICS.map((metric, idx) => {
           const beforeVal = getBeforeValue(sfmaValues, metric.key);
@@ -105,46 +110,55 @@ export default function RetestScreen({ onComplete, screenId = 2, nodeId = 'N6', 
           const isDone = afterVal !== null;
 
           return (
-            <div
+            <motion.div
               key={metric.key}
-              className={`rounded-xl border p-4 transition-all ${
+              layout
+              className={`glass rounded-2xl border p-4 transition-all ${
                 isActive
-                  ? 'border-cyan-500/60 bg-cyan-500/10'
+                  ? 'border-cyan-500/50 shadow-[0_0_20px_rgba(6,182,212,0.15)]'
                   : isDone
-                  ? 'border-emerald-500/30 bg-emerald-500/5'
-                  : 'border-slate-700/40 bg-slate-900/40 opacity-50'
+                  ? 'border-emerald-500/30'
+                  : 'border-slate-700/30 opacity-40'
               }`}
             >
-              <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3">{metric.label}</p>
+              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-3">{metric.label}</p>
 
-              <div className="grid grid-cols-2 gap-3">
-                {/* Vorher */}
-                <div className="rounded-xl border border-red-500/40 bg-red-500/10 p-3 text-center">
+              {/* Vorher / Nachher */}
+              <div className="grid grid-cols-2 gap-2">
+                <div className="rounded-xl border border-red-500/30 bg-red-500/10 p-3 text-center">
                   <p className="text-[10px] font-bold text-red-400 uppercase tracking-widest mb-1">Vorher</p>
                   {beforeVal !== null ? (
                     <p className="text-3xl font-black text-red-400">{beforeVal}</p>
                   ) : (
-                    <p className="text-xs text-red-400/50 italic">—</p>
+                    <p className="text-lg text-red-400/40">—</p>
                   )}
                 </div>
-
-                {/* Nachher */}
-                <div className="rounded-xl border border-cyan-500/40 bg-cyan-500/10 p-3 text-center">
-                  <p className="text-[10px] font-bold text-cyan-400 uppercase tracking-widest mb-1">Nachher</p>
+                <div className={`rounded-xl border p-3 text-center transition-all ${
+                  isDone
+                    ? 'border-emerald-500/50 bg-emerald-500/15 shadow-[0_0_12px_rgba(52,211,153,0.2)]'
+                    : 'border-cyan-500/30 bg-cyan-500/10'
+                }`}>
+                  <p className={`text-[10px] font-bold uppercase tracking-widest mb-1 ${isDone ? 'text-emerald-400' : 'text-cyan-400'}`}>Nachher</p>
                   {afterVal !== null ? (
-                    <p className="text-3xl font-black text-cyan-400">{afterVal}</p>
+                    <p className={`text-3xl font-black ${isDone ? 'text-emerald-400' : 'text-cyan-400'}`}>{afterVal}</p>
                   ) : (
-                    <p className="text-xs text-cyan-400/50 italic">—</p>
+                    <p className="text-lg text-cyan-400/40">—</p>
                   )}
                 </div>
               </div>
 
-              {/* Delta */}
+              {/* Delta Badge */}
               {imp && (
-                <p className={`text-xs font-bold text-center mt-2 ${imp.color}`}>{imp.label}</p>
+                <div className={`mt-2 text-center text-xs font-black px-3 py-1 rounded-full inline-block w-full ${
+                  imp.color === 'text-emerald-400' ? 'bg-emerald-500/10 text-emerald-400' :
+                  imp.color === 'text-red-400' ? 'bg-red-500/10 text-red-400' :
+                  'bg-slate-800 text-slate-400'
+                }`}>
+                  {imp.label}
+                </div>
               )}
 
-              {/* Buttons für aktive Metrik */}
+              {/* Auswahl-Buttons für aktive Metrik */}
               {isActive && (
                 <AnimatePresence>
                   <motion.div
@@ -155,31 +169,31 @@ export default function RetestScreen({ onComplete, screenId = 2, nodeId = 'N6', 
                     {metric.options.map(opt => (
                       <motion.button
                         key={opt.val}
-                        whileTap={{ scale: 0.95 }}
+                        whileTap={{ scale: 0.94 }}
                         onClick={() => handleSelect(opt.val)}
-                        className="py-2 px-3 rounded-lg bg-slate-800 border border-slate-600 text-slate-200 hover:border-cyan-500/60 hover:bg-cyan-500/15 transition-all text-sm font-bold"
+                        className="py-2.5 px-3 rounded-xl glass border border-slate-600/60 text-slate-200 hover:border-cyan-500/60 hover:bg-cyan-500/15 hover:shadow-[0_0_10px_rgba(6,182,212,0.2)] transition-all text-sm font-bold"
                       >
-                        <div>{opt.val}</div>
-                        <div className="text-[10px] text-slate-400 mt-0.5">{opt.label}</div>
+                        <div className="text-lg font-black">{opt.val}</div>
+                        <div className="text-[10px] text-slate-400 mt-0.5 leading-tight">{opt.label}</div>
                       </motion.button>
                     ))}
                   </motion.div>
                 </AnimatePresence>
               )}
-            </div>
+            </motion.div>
           );
         })}
       </div>
 
-      {/* Gesamt-Delta + Weiter */}
+      {/* Weiter Button */}
       {allDone && (
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-4">
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
           <Button
             onClick={handleComplete}
-            className="w-full h-12 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white font-bold rounded-xl text-sm flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/40 active:scale-95 transition-transform"
+            className="w-full h-14 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white font-black rounded-2xl text-sm flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/40 active:scale-95 transition-transform"
           >
             <span>Weiter</span>
-            <ChevronRight className="w-4 h-4" />
+            <ChevronRight className="w-5 h-5" />
           </Button>
         </motion.div>
       )}

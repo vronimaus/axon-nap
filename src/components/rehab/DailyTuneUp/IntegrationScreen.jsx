@@ -93,48 +93,44 @@ export default function IntegrationScreen({
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
-      className="w-full max-w-sm mx-auto px-4 space-y-6"
+      className="w-full max-w-sm mx-auto px-4 space-y-5"
     >
-      {/* Highlight: Improvement */}
+      {/* Header */}
+      <motion.div
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="rounded-2xl border border-purple-500/30 bg-gradient-to-br from-purple-500/15 to-transparent p-5"
+      >
+        <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-purple-400">Easy Strength</p>
+        <h3 className="text-xl font-black text-white mt-0.5">Finale Integration</h3>
+        <p className="text-xs text-slate-400 mt-1">Verankere die neue Bewegungsfreiheit neurologisch</p>
+        <p className="text-[10px] text-slate-600 mt-1 font-mono">{integration.technicalName}</p>
+      </motion.div>
+
+      {/* Improvement Badge */}
       {improvement > 0 && (
         <motion.div
-          animate={{
-            scale: [0.98, 1.02, 0.98],
-          }}
-          transition={{
-            duration: 1.8,
-            repeat: Infinity,
-          }}
-          className="rounded-2xl bg-gradient-to-br from-emerald-500/20 to-emerald-500/5 border-2 border-emerald-500/60 p-5 text-center shadow-lg shadow-emerald-500/30"
+          animate={{ scale: [0.98, 1.02, 0.98] }}
+          transition={{ duration: 1.8, repeat: Infinity }}
+          className="glass rounded-2xl border-2 border-emerald-500/60 p-4 text-center shadow-[0_0_20px_rgba(52,211,153,0.25)]"
         >
-          <p className="text-xs text-emerald-300 mb-2 uppercase tracking-widest font-bold">
-            Erfolg
-          </p>
-          <h2 className="text-3xl font-black text-emerald-400">
-            -{improvement} Punkte
-          </h2>
+          <p className="text-[10px] text-emerald-300 uppercase tracking-widest font-bold mb-1">Verbesserung</p>
+          <p className="text-3xl font-black text-emerald-400">-{improvement} Punkte</p>
         </motion.div>
       )}
 
-      {/* Integration Exercise */}
+      {/* Exercise Card */}
       <motion.div
         initial={{ scale: 0.95, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
-        className="rounded-2xl border border-purple-500/40 bg-gradient-to-br from-purple-500/15 to-purple-500/5 p-5 space-y-4"
+        className="glass rounded-2xl border border-purple-500/40 p-5 space-y-4 shadow-[0_0_20px_rgba(139,92,246,0.1)]"
       >
-        <div>
-          <p className="text-[10px] font-bold text-purple-400 uppercase tracking-widest mb-1">Finale Integration</p>
-          <h3 className="text-base font-black text-white leading-snug">Integrationsübung</h3>
-          {/* Technical name as subtle reference */}
-          <p className="text-[10px] text-slate-600 mt-0.5 font-mono">{integration.technicalName}</p>
-        </div>
-
-        {/* Reps */}
+        {/* Ausführung */}
         {integration.reps && (
-          <div className="flex items-start gap-3 bg-purple-500/10 rounded-xl p-3">
-            <span className="text-lg">🎯</span>
+          <div className="rounded-xl bg-purple-500/10 border border-purple-500/20 p-4 flex items-start gap-3">
+            <span className="text-xl mt-0.5">🎯</span>
             <div>
-              <p className="text-[10px] font-bold text-purple-300 uppercase tracking-widest mb-0.5">Ausführung</p>
+              <p className="text-[10px] font-bold text-purple-300 uppercase tracking-widest mb-1">Ausführung</p>
               <p className="text-slate-200 text-sm leading-relaxed">{integration.reps}</p>
             </div>
           </div>
@@ -145,15 +141,15 @@ export default function IntegrationScreen({
           <div className="space-y-2">
             <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Wenn es noch schwer fällt</p>
             {integration.tweak1 && (
-              <div className="flex items-start gap-2 text-xs text-slate-400 leading-relaxed">
-                <span className="text-purple-400 font-bold mt-0.5">→</span>
-                <span>{integration.tweak1}</span>
+              <div className="flex items-start gap-2 rounded-lg bg-slate-800/50 px-3 py-2">
+                <span className="text-purple-400 font-bold text-sm mt-0.5">→</span>
+                <span className="text-xs text-slate-300 leading-relaxed">{integration.tweak1}</span>
               </div>
             )}
             {integration.tweak2 && (
-              <div className="flex items-start gap-2 text-xs text-slate-400 leading-relaxed">
-                <span className="text-purple-400 font-bold mt-0.5">→</span>
-                <span>{integration.tweak2}</span>
+              <div className="flex items-start gap-2 rounded-lg bg-slate-800/50 px-3 py-2">
+                <span className="text-purple-400 font-bold text-sm mt-0.5">→</span>
+                <span className="text-xs text-slate-300 leading-relaxed">{integration.tweak2}</span>
               </div>
             )}
           </div>
@@ -172,50 +168,41 @@ export default function IntegrationScreen({
       <button
         onClick={handlePlayAudio}
         disabled={isTTSLoading}
-        className={`w-full h-14 flex items-center justify-center gap-2 rounded-xl font-bold text-sm transition-all active:scale-95 ${
+        className={`w-full h-14 flex items-center justify-center gap-3 rounded-2xl font-black text-sm transition-all active:scale-95 ${
           isPlaying
             ? 'bg-purple-500/20 border-2 border-purple-400 text-purple-300'
             : 'bg-purple-500 hover:bg-purple-600 text-white shadow-lg shadow-purple-500/40'
         }`}
       >
         {isTTSLoading
-          ? <><Loader2 className="w-5 h-5 animate-spin" /> Laden…</>
+          ? <><Loader2 className="w-5 h-5 animate-spin" /> Lädt…</>
           : isPlaying
-          ? <><VolumeX className="w-5 h-5" /> Stop</>
-          : <><Volume2 className="w-5 h-5" /> Audio</>
+          ? <><VolumeX className="w-5 h-5" /> Stoppen</>
+          : <><Volume2 className="w-5 h-5" /> Audio-Anleitung</>
         }
       </button>
 
-      {/* Completion Button */}
+      {/* Fertig / Abschließen */}
       {!exerciseCompleted ? (
         <Button
           onClick={handleCompleteExercise}
-          className="w-full h-14 bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white font-bold rounded-xl text-sm shadow-lg shadow-purple-500/40 active:scale-95 transition-transform"
+          className="w-full h-14 bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white font-black rounded-2xl text-sm shadow-lg shadow-purple-500/40 active:scale-95 transition-transform"
         >
           Fertig ✓
         </Button>
       ) : (
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="space-y-3"
-        >
-          <div className="rounded-2xl bg-gradient-to-br from-emerald-500/20 to-emerald-500/5 border border-emerald-500/50 p-5 text-center">
-            <motion.div
-              animate={{ scale: [0.8, 1, 0.8] }}
-              transition={{ duration: 1.5, repeat: Infinity }}
-            >
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-3">
+          <div className="glass rounded-2xl border border-emerald-500/50 p-5 text-center shadow-[0_0_20px_rgba(52,211,153,0.2)]">
+            <motion.div animate={{ scale: [0.85, 1, 0.85] }} transition={{ duration: 1.5, repeat: Infinity }}>
               <CheckCircle2 className="w-10 h-10 text-emerald-400 mx-auto mb-2" />
             </motion.div>
-            <p className="text-sm font-black text-emerald-400 mb-1">
-              Permission Granted! ✓
-            </p>
+            <p className="text-sm font-black text-emerald-400">Permission Granted! ✓</p>
+            <p className="text-xs text-slate-400 mt-1">Neues Bewegungsmuster verankert</p>
           </div>
-
           <Button
             onClick={handleFinalSubmit}
             disabled={isSubmitting}
-            className="w-full h-14 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white font-bold rounded-xl text-sm shadow-lg shadow-emerald-500/40 active:scale-95 transition-transform"
+            className="w-full h-14 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white font-black rounded-2xl text-sm shadow-lg shadow-emerald-500/40 active:scale-95 transition-transform"
           >
             {isSubmitting ? 'Speichert...' : 'Session abschließen 🎉'}
           </Button>
