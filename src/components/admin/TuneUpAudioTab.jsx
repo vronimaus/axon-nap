@@ -5,6 +5,31 @@ import { toast } from 'sonner';
 
 const NODE_IDS = ['N1','N2','N3','N4','N5','N6','N7','N8','N9','N10','N11','N12', 'CP-A', 'CP-P', 'CL-A', 'CL-P', 'TH-A', 'TH-P', 'LU-A', 'LU-P', 'PV-A', 'PV-P', 'SC-A', 'SC-P', 'HU-A', 'CU-A', 'CX-A', 'CX-P', 'GE-A', 'GE-P', 'TA-A', 'TA-P', 'PE-A'];
 
+// Mapping: welche alten N1–N12 entsprechen welchen neuen Stecco-Nodes
+const STECCO_MAPPING = {
+  'CP-A': 'N1',  // Kopf (Anterior)
+  'CP-P': 'N2',  // Kopf (Posterior)
+  'CL-A': 'N3',  // Hals (Anterior)
+  'CL-P': 'N4',  // Hals (Posterior)
+  'TH-A': 'N5',  // Thorax (Anterior)
+  'TH-P': 'N6',  // Thorax (Posterior)
+  'LU-A': 'N7',  // Lende (Anterior)
+  'LU-P': 'N8',  // Lende (Posterior)
+  'PV-A': 'N9',  // Becken (Anterior)
+  'PV-P': 'N10', // Becken (Posterior)
+  'SC-A': 'N11', // Schulter (Anterior)
+  'SC-P': 'N11', // Schulter (Posterior) — teilt sich N11
+  'HU-A': 'N12', // Oberarm (Anterior) — passt zu N12
+  'CU-A': null,  // Ellenbogen (Anterior) — NEU
+  'CX-A': null,  // Hüfte (Anterior) — NEU
+  'CX-P': null,  // Hüfte (Posterior) — NEU
+  'GE-A': null,  // Knie (Anterior) — NEU
+  'GE-P': null,  // Knie (Posterior) — NEU
+  'TA-A': null,  // Sprunggelenk (Anterior) — NEU
+  'TA-P': null,  // Sprunggelenk (Posterior) — NEU
+  'PE-A': null,  // Fuß (Anterior) — NEU
+};
+
 // For each node we pre-generate 2 audio tracks:
 // 1. neuro_drill  → software_update.ausführung
 // 2. integration  → integration.wiederholungen + tweak_1 + tweak_2
@@ -215,13 +240,18 @@ export default function TuneUpAudioTab() {
         {NODE_IDS.map(nodeId => {
           const chain = chains[nodeId];
           if (!chain) {
+            const baseNodeId = STECCO_MAPPING[nodeId];
+            const status = baseNodeId ? `basiert auf ${baseNodeId}` : 'NEU — keine Basis';
             return (
-              <div key={nodeId} className="glass rounded-2xl border border-slate-700/40 p-4 opacity-50">
-                <p className="text-xs font-bold text-slate-500 uppercase tracking-widest">{nodeId}</p>
-                <p className="text-xs text-slate-600 mt-1">Kein Eintrag in TuneUpCausalChain (noch zu erstellen)</p>
-              </div>
-            );
-          }
+               <div key={nodeId} className="glass rounded-2xl border border-slate-700/40 p-4 opacity-50">
+                 <p className="text-xs font-bold text-slate-500 uppercase tracking-widest">{nodeId}</p>
+                 <p className="text-xs text-slate-600 mt-1">Kein Eintrag in TuneUpCausalChain</p>
+                 <p className={`text-xs mt-1 font-semibold ${baseNodeId ? 'text-cyan-400' : 'text-yellow-400'}`}>
+                   {status}
+                 </p>
+               </div>
+             );
+            }
           const { neuroDrillText, integrationText } = buildAudioTexts(chain);
           const nodeName = chain.node_name_de || chain['node_name_de'] || nodeId;
 
