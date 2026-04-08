@@ -177,7 +177,7 @@ function AudioRow({ nodeId, nodeName, instructionText, onTextUpdate }) {
             rows="8"
           />
         ) : (
-          <p className="text-xs text-slate-300 leading-relaxed line-clamp-3">{instructionText || '—'}</p>
+          <p className="text-xs text-slate-300 leading-relaxed whitespace-pre-wrap">{instructionText || '—'}</p>
         )}
       </div>
 
