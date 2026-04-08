@@ -59,7 +59,6 @@ export default function IntegrationScreen({
 
   const handleCompleteExercise = () => {
     setExerciseCompleted(true);
-    playText('Fantastisch! Dein Nervensystem hat die neue Freiheit verankert. Die Verbesserung ist stabil.');
     // Trigger confetti
     Confetti({
       particleCount: 100,

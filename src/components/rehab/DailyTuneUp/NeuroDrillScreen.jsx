@@ -143,7 +143,6 @@ export default function NeuroDrillScreen({ onComplete, screenId = 1, nodeId = 'N
         <Button
           onClick={() => {
             setDrillCompleted(true);
-            playText('Ausgezeichnet. Neuro-Drill abgeschlossen!');
           }}
           className="w-full h-14 bg-gradient-to-r from-cyan-500 to-cyan-600 hover:from-cyan-600 hover:to-cyan-700 text-white font-bold rounded-xl text-sm shadow-lg shadow-cyan-500/40 active:scale-95 transition-transform"
         >
