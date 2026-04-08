@@ -4,7 +4,7 @@ import { createPageUrl } from '@/utils';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { AlertCircle, Zap, BookOpen, Palette, ArrowLeft, Image, Trash2, Filter, ChevronUp, ChevronDown, GitMerge, Edit, SearchCheck, KeyRound, Megaphone, Kanban } from 'lucide-react';
+import { AlertCircle, Zap, BookOpen, Palette, ArrowLeft, Image, Trash2, Filter, ChevronUp, ChevronDown, GitMerge, Edit, SearchCheck, KeyRound, Megaphone, Kanban, Mic } from 'lucide-react';
 import ExerciseMappingTab from '../components/admin/ExerciseMappingTab';
 import ExerciseAuditTab from '../components/admin/ExerciseAuditTab';
 import ExerciseEditorTab from '../components/admin/ExerciseEditorTab';
@@ -13,6 +13,7 @@ import InviteCodesTab from '../components/admin/InviteCodesTab';
 import MarketingTab from '../components/admin/MarketingTab';
 import ContentKanban from '../components/admin/ContentKanban';
 import MFRNodeTab from '../components/admin/MFRNodeTab';
+import TuneUpAudioTab from '../components/admin/TuneUpAudioTab';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
 // Prefix-Definitionen
@@ -523,6 +524,10 @@ export default function AdminHub() {
                 <span>🎯</span>
                 <span>MFR Nodes</span>
               </TabsTrigger>
+              <TabsTrigger value="tuneup-audio" className="flex items-center gap-1.5 whitespace-nowrap px-3 py-2 text-xs sm:text-sm">
+                <Mic className="w-3.5 h-3.5 shrink-0" />
+                <span>TuneUp Audio</span>
+              </TabsTrigger>
             </TabsList>
           </div>
 
@@ -669,6 +674,11 @@ export default function AdminHub() {
           {/* MFR Nodes Tab */}
           <TabsContent value="mfrnodes" className="mt-0">
             <MFRNodeTab />
+          </TabsContent>
+
+          {/* TuneUp Audio Tab */}
+          <TabsContent value="tuneup-audio" className="mt-0">
+            <TuneUpAudioTab />
           </TabsContent>
         </Tabs>
       </div>
