@@ -17,7 +17,10 @@ export default function NeuroDrillScreen({ onComplete, screenId = 1, nodeId = 'N
       try {
         const results = await base44.entities.TuneUpCausalChain.filter({ node_id: nodeId });
         if (results.length > 0) {
-          setDrillData(results[0].data?.software_update || results[0].software_update || results[0]);
+          const r = results[0];
+          // SDK wraps entity fields under .data — software_update lives at r.data.software_update
+          const sw = r.data?.software_update ?? r.software_update ?? null;
+          setDrillData(sw);
         }
       } catch (e) {
         console.error('NeuroDrillScreen fetch error:', e);
