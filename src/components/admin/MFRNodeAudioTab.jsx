@@ -137,12 +137,16 @@ function AudioRow({ nodeId, nodeName, instructionText, onTextUpdate }) {
     setGenerating(true);
     try {
       const res = await base44.functions.invoke('generateMFRNodeInstructions', { node_id: nodeId });
-      if (res.data.updated > 0) {
+      console.log('Generate response:', res);
+      if (res.data?.updated > 0) {
         toast.success(`Text für ${nodeId} generiert`);
         // Reload to get new text
-        window.location.reload();
+        setTimeout(() => window.location.reload(), 500);
+      } else {
+        toast.info('Kein Text generiert');
       }
     } catch (err) {
+      console.error('Generate error:', err);
       toast.error('Generierung fehlgeschlagen: ' + err.message);
     } finally {
       setGenerating(false);

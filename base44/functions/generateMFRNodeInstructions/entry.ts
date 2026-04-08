@@ -9,8 +9,14 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Forbidden' }, { status: 403 });
     }
 
-    const body = await req.json();
-    const targetNodeId = body.node_id; // Optional: generiert nur einen Node wenn spezifiziert
+    let targetNodeId = null;
+    try {
+      const body = await req.json();
+      targetNodeId = body.node_id; // Optional: generiert nur einen Node wenn spezifiziert
+    } catch (e) {
+      // No JSON body, that's ok
+      console.log('No JSON body provided');
+    }
 
     // Load all MFRNodes
     const allNodes = await base44.asServiceRole.entities.MFRNode.list();
