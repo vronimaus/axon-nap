@@ -206,6 +206,14 @@ export default function TuneUpAudioTab() {
           const data = r.data ?? r;
           if (nodeId) map[nodeId] = data;
         }
+        
+        // Stecco-Nodes erben Texte/Audios von ihren Base-Nodes
+        for (const [steccoId, baseId] of Object.entries(STECCO_MAPPING)) {
+          if (baseId && !map[steccoId] && map[baseId]) {
+            map[steccoId] = { ...map[baseId] };
+          }
+        }
+        
         setChains(map);
       } catch (err) {
         toast.error('Fehler beim Laden: ' + err.message);
@@ -240,18 +248,8 @@ export default function TuneUpAudioTab() {
         {NODE_IDS.map(nodeId => {
           const chain = chains[nodeId];
           if (!chain) {
-            const baseNodeId = STECCO_MAPPING[nodeId];
-            const status = baseNodeId ? `basiert auf ${baseNodeId}` : 'NEU — keine Basis';
-            return (
-               <div key={nodeId} className="glass rounded-2xl border border-slate-700/40 p-4 opacity-50">
-                 <p className="text-xs font-bold text-slate-500 uppercase tracking-widest">{nodeId}</p>
-                 <p className="text-xs text-slate-600 mt-1">Kein Eintrag in TuneUpCausalChain</p>
-                 <p className={`text-xs mt-1 font-semibold ${baseNodeId ? 'text-cyan-400' : 'text-yellow-400'}`}>
-                   {status}
-                 </p>
-               </div>
-             );
-            }
+            return null;
+          }
           const { neuroDrillText, integrationText } = buildAudioTexts(chain);
           const nodeName = chain.node_name_de || chain['node_name_de'] || nodeId;
 
