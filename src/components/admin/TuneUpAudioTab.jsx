@@ -3,7 +3,7 @@ import { base44 } from '@/api/base44Client';
 import { Upload, CheckCircle2, Loader2, Volume2, Copy, Check } from 'lucide-react';
 import { toast } from 'sonner';
 
-const NODE_IDS = ['N1','N2','N3','N4','N5','N6','N7','N8','N9','N10','N11','N12', 'CP-A', 'CP-P', 'CL-A', 'CL-P', 'TH-A', 'TH-P', 'LU-A', 'LU-P', 'PV-A', 'PV-P', 'SC-A', 'SC-P', 'HU-A', 'CU-A', 'CX-A', 'CX-P', 'GE-A', 'GE-P', 'TA-A', 'TA-P', 'PE-A'];
+const NODE_IDS = ['CP-A', 'CP-P', 'CL-A', 'CL-P', 'TH-A', 'TH-P', 'LU-A', 'LU-P', 'PV-A', 'PV-P', 'SC-A', 'SC-P', 'HU-A', 'CU-A', 'CU-P', 'CX-A', 'CX-P', 'GE-A', 'GE-P', 'TA-A', 'TA-P', 'PE-A'];
 
 // Mapping: welche alten N1–N12 entsprechen welchen neuen Stecco-Nodes
 const STECCO_MAPPING = {
@@ -21,6 +21,7 @@ const STECCO_MAPPING = {
   'SC-P': 'N11', // Schulter (Posterior) — teilt sich N11
   'HU-A': 'N12', // Oberarm (Anterior) — passt zu N12
   'CU-A': null,  // Ellenbogen (Anterior) — NEU
+  'CU-P': null,  // Ellenbogen (Posterior) — NEU
   'CX-A': null,  // Hüfte (Anterior) — NEU
   'CX-P': null,  // Hüfte (Posterior) — NEU
   'GE-A': null,  // Knie (Anterior) — NEU
