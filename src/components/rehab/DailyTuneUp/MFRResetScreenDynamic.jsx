@@ -20,7 +20,7 @@ export default function MFRResetScreenDynamic({ onComplete, nodeId = 'N1', scree
       N3: 'Strecke beide Arme nach oben über den Kopf. Öffnet sich dein Brustkorb frei? Oder blockiert Schmerz sofort die Bewegung?',
       N4: 'Beuge dich langsam nach vorne. Kannst du deine Zehen berühren? Oder bleibst du bei der Mitte der Schienbeine stecken?',
       N5: 'Stehe auf einem Bein und kippe dein Becken nach oben und unten. Ist die Bewegung flüssig und kontrolliert?',
-      N6: 'Hebe beide Arme zur Seite bis über den Kopf. Erreichen deine Arme problemlos die Höhe? Oder bleiben sie unter Schulterhöhe stecken?',
+      N6: 'Hebe langsam beide Arme seitlich zur Seite bis über den Kopf. Erreichen deine Arme problemlos die Höhe über dem Kopf? Oder tut es schon vorher weh oder du schaffst es nicht?',
       N7: 'Strecke deinen Arm aus und öffne deine Hand so weit wie möglich. Spreizen deine Finger leicht auseinander?',
       N8: 'Spreize deine Finger maximal auseinander und halte diese Spannung. Hältst du die Spannung leicht? Oder ermüdet deine Hand schnell?',
       N9: 'Stehe auf einem Bein und hebe das andere Knie seitlich. Kommt dein Knie leicht bis Hüfthöhe?',
