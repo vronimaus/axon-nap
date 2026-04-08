@@ -108,14 +108,6 @@
       "type": "string",
       "description": "Pavel's Strength Protocol f\u00fcr diese \u00dcbung"
     },
-    "image_url": {
-      "type": "string",
-      "description": "URL zum \u00dcbungsbild (Standard)"
-    },
-    "gif_url": {
-      "type": "string",
-      "description": "URL zum animierten GIF"
-    },
     "goal_explanation": {
       "type": "string",
       "description": "Erkl\u00e4rung, warum diese \u00dcbung wichtig f\u00fcr die Rehabilitation ist und worauf sie abzielt"
@@ -141,34 +133,6 @@
       "minimum": 1,
       "maximum": 10,
       "description": "Minimaler Energie/Batterie-Wert (1-10) f\u00fcr diese \u00dcbung"
-    },
-    "neuro_impact_type": {
-      "type": "array",
-      "items": {
-        "type": "string",
-        "enum": [
-          "calming",
-          "activating",
-          "visual_tracking",
-          "vestibular_stim",
-          "balance"
-        ]
-      },
-      "description": "Neurologischer Effekt der \u00dcbung"
-    },
-    "mechanical_impact_type": {
-      "type": "array",
-      "items": {
-        "type": "string",
-        "enum": [
-          "mfr",
-          "mobility",
-          "stability",
-          "strength",
-          "explosive"
-        ]
-      },
-      "description": "Mechanischer Effekt der \u00dcbung"
     },
     "modification_suggestions_yellow": {
       "type": "string",
