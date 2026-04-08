@@ -197,7 +197,7 @@ function AudioRow({ nodeId, nodeName, instructionText, onTextUpdate }) {
             )}
             <button
               onClick={() => inputRef.current?.click()}
-              disabled={uploading || !instructionText?.trim()}
+              disabled={uploading}
               className="p-2 rounded-lg bg-slate-800 text-slate-400 hover:text-purple-400 hover:bg-purple-500/10 transition-all disabled:opacity-40"
               title="Audio hochladen (.wav / .mp3)"
             >
