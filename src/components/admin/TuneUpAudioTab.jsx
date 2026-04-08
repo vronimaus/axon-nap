@@ -37,23 +37,23 @@ function buildAudioTexts(chain) {
   const sw = chain.software_update ?? {};
   const intg = chain.integration ?? {};
 
-  // Neuro-Drill: Trainer-style instructions
+  // Neuro-Drill: Clear instructions
   const übung = sw['übung'] || sw.übung || '';
   const ausführung = sw['ausführung'] || sw.ausführung || '';
   const warum = sw['warum'] || sw.warum || '';
   
   let neuroDrillText = '';
   if (übung) {
-    neuroDrillText = `Super, machen wir jetzt "${übung}". `;
+    neuroDrillText = `Übung: "${übung}". `;
   }
   if (ausführung) {
-    neuroDrillText += `Hier ist wie: ${ausführung}. `;
+    neuroDrillText += `Ausführung: ${ausführung}. `;
   }
   if (warum) {
-    neuroDrillText += `Darum funktioniert das so gut: ${warum}`;
+    neuroDrillText += `Mechanismus: ${warum}`;
   }
 
-  // Integration: Positive, motivating strength cues
+  // Integration: Strength and progression cues
   const bewegung = intg['primär_bewegung'] || intg.primär_bewegung || '';
   const wiederholungen = intg['wiederholungen'] || intg.wiederholungen || '';
   const tweak1 = intg['tweak_1'] || intg.tweak_1 || '';
@@ -61,16 +61,16 @@ function buildAudioTexts(chain) {
 
   let integrationText = '';
   if (bewegung) {
-    integrationText = `Alles klar, wir verankern das jetzt. Die Übung heißt: ${bewegung}. `;
+    integrationText = `Integration: ${bewegung}. `;
   }
   if (wiederholungen) {
-    integrationText += `Lass mich dir zeigen wie: ${wiederholungen}. `;
+    integrationText += `Ausführung: ${wiederholungen}. `;
   }
   if (tweak1) {
-    integrationText += `Falls es noch unangenehm ist, probier das: ${tweak1}. `;
+    integrationText += `Modifikation 1: ${tweak1}. `;
   }
   if (tweak2) {
-    integrationText += `Oder wenn du mehr Unterstützung brauchst: ${tweak2}`;
+    integrationText += `Modifikation 2: ${tweak2}`;
   }
 
   return { neuroDrillText, integrationText };
