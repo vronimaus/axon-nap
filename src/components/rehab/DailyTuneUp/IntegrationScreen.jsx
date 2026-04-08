@@ -28,9 +28,10 @@ export default function IntegrationScreen({
           const intg = r.data?.integration ?? r.integration ?? null;
           if (intg) {
             setIntegration({
-              name: intg['primär_bewegung'] || intg.primär_bewegung || '',
-              instruction: [intg['wiederholungen'], intg['tweak_1'], intg['tweak_2']].filter(Boolean).join(' — '),
-              why: 'Das ist die neuronale Verankerung. Dein Gehirn myelinisiert die neuen Bewegungsmuster, wenn du sie sofort nach dem MFR und Neuro-Training nutzt.'
+              technicalName: intg['primär_bewegung'] || intg.primär_bewegung || '',
+              reps: intg['wiederholungen'] || intg.wiederholungen || '',
+              tweak1: intg['tweak_1'] || intg.tweak_1 || '',
+              tweak2: intg['tweak_2'] || intg.tweak_2 || '',
             });
           }
         }
@@ -46,7 +47,13 @@ export default function IntegrationScreen({
   const handlePlayAudio = () => {
     if (isPlaying) { stop(); return; }
     if (!integration) return;
-    const text = `${integration.name}. ${integration.instruction}. ${integration.why}`;
+    const text = [
+      'Deine Integrationsübung.',
+      integration.reps,
+      integration.tweak1,
+      integration.tweak2,
+      'Das ist die neuronale Verankerung. Dein Gehirn myelinisiert die neuen Bewegungsmuster, wenn du sie sofort nach dem MFR und Neuro-Training nutzt.'
+    ].filter(Boolean).join(' ');
     playText(text);
   };
 
@@ -110,25 +117,54 @@ export default function IntegrationScreen({
       )}
 
       {/* Integration Exercise */}
-      <motion.div 
+      <motion.div
         initial={{ scale: 0.95, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
-        className="rounded-2xl border border-purple-500/40 bg-gradient-to-br from-purple-500/15 to-purple-500/5 p-5"
+        className="rounded-2xl border border-purple-500/40 bg-gradient-to-br from-purple-500/15 to-purple-500/5 p-5 space-y-4"
       >
-        <p className="text-[10px] font-bold text-purple-400 uppercase tracking-widest mb-2">
-          Finale Integration
-        </p>
-        <h3 className="text-lg font-black text-white mb-2">
-          {integration.name}
-        </h3>
-        <p className="text-slate-300 text-xs leading-relaxed mb-4">
-          {integration.instruction}
-        </p>
+        <div>
+          <p className="text-[10px] font-bold text-purple-400 uppercase tracking-widest mb-1">Finale Integration</p>
+          <h3 className="text-base font-black text-white leading-snug">Integrationsübung</h3>
+          {/* Technical name as subtle reference */}
+          <p className="text-[10px] text-slate-600 mt-0.5 font-mono">{integration.technicalName}</p>
+        </div>
 
-        {/* Warum – immer sichtbar */}
+        {/* Reps */}
+        {integration.reps && (
+          <div className="flex items-start gap-3 bg-purple-500/10 rounded-xl p-3">
+            <span className="text-lg">🎯</span>
+            <div>
+              <p className="text-[10px] font-bold text-purple-300 uppercase tracking-widest mb-0.5">Ausführung</p>
+              <p className="text-slate-200 text-sm leading-relaxed">{integration.reps}</p>
+            </div>
+          </div>
+        )}
+
+        {/* Tweaks */}
+        {(integration.tweak1 || integration.tweak2) && (
+          <div className="space-y-2">
+            <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Wenn es noch schwer fällt</p>
+            {integration.tweak1 && (
+              <div className="flex items-start gap-2 text-xs text-slate-400 leading-relaxed">
+                <span className="text-purple-400 font-bold mt-0.5">→</span>
+                <span>{integration.tweak1}</span>
+              </div>
+            )}
+            {integration.tweak2 && (
+              <div className="flex items-start gap-2 text-xs text-slate-400 leading-relaxed">
+                <span className="text-purple-400 font-bold mt-0.5">→</span>
+                <span>{integration.tweak2}</span>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Warum */}
         <div className="border-t border-purple-500/20 pt-3">
           <p className="text-[10px] font-bold text-purple-300 uppercase tracking-widest mb-1">🧠 Warum das funktioniert</p>
-          <p className="text-slate-400 text-xs leading-relaxed">{integration.why}</p>
+          <p className="text-slate-400 text-xs leading-relaxed">
+            Das ist die neuronale Verankerung. Dein Gehirn myelinisiert die neuen Bewegungsmuster, wenn du sie sofort nach dem MFR und Neuro-Training nutzt.
+          </p>
         </div>
       </motion.div>
 
