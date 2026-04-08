@@ -77,13 +77,25 @@ function AudioRow({ label, text, nodeId, trackKey }) {
   };
 
   useEffect(() => {
+    let isMounted = true;
     const checkCache = async () => {
-      if (!text.trim()) { setCached(false); return; }
-      const hash = await hashText(text.trim());
-      const results = await base44.entities.TTSCache.filter({ text_hash: hash });
-      setCached(results.length > 0 ? results[0].file_uri : false);
+      if (!text.trim()) { 
+        if (isMounted) setCached(false); 
+        return; 
+      }
+      try {
+        const hash = await hashText(text.trim());
+        const results = await base44.entities.TTSCache.filter({ text_hash: hash });
+        if (isMounted) setCached(results.length > 0 ? results[0].file_uri : false);
+      } catch (err) {
+        if (isMounted && err.message?.includes('Rate limit')) {
+          // Retry nach 2s bei Rate Limit
+          setTimeout(checkCache, 2000);
+        }
+      }
     };
     checkCache();
+    return () => { isMounted = false; };
   }, [text]);
 
   const handleUpload = async (e) => {
