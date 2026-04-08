@@ -38,8 +38,6 @@ const REGION_TO_NODE_ID = {
 
   // N4 - Lenden / Unterer Rücken
   'unterer Rücken/Lendenwirbelsäule': 'N4',
-  'Unterarm/Handgelenk': 'N4',
-  'Ellenbogen': 'N4',
 
   // N5 - Becken (Kreuzbein)
   'Bauch oben': 'N5',
