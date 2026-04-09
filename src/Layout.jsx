@@ -12,13 +12,13 @@ import OfflineDetector from './components/OfflineDetector';
 import { HelmetProvider } from 'react-helmet-async';
 import { useQueryClient } from '@tanstack/react-query';
 
-const ROOT_TABS = ['Dashboard', 'TrainingPlan', 'RehabPlan', 'Flow'];
+const ROOT_TABS = ['Dashboard', 'FitnessSnacks', 'RehabPlan', 'Flow'];
 const PAGES_WITHOUT_NAV = ['Landing', 'Success', 'Checkout', 'Login'];
 
 // Map each tab to its "owned" pages so the tab stays highlighted
 const TAB_OWNERSHIP = {
   Dashboard: ['Dashboard', 'DiagnosisChat', 'DiagnosisWizard', 'Discovery', 'Profile', 'HowToUse', 'AdminHub', 'AdminDiagnostics', 'DevNotes'],
-  TrainingPlan: ['TrainingPlan', 'Performance'],
+    FitnessSnacks: ['FitnessSnacks'],
   RehabPlan: ['RehabPlan'],
   Flow: ['Flow', 'FlowRoutines'],
 };
@@ -69,7 +69,7 @@ export default function Layout({ children, currentPageName }) {
   
   const navItems = [
     { name: 'Command', icon: LayoutDashboard, page: 'Dashboard', color: 'cyan' },
-    { name: 'Training', icon: Target, page: 'TrainingPlan', color: 'blue' },
+    { name: 'Snacks', icon: Zap, page: 'FitnessSnacks', color: 'orange' },
     { name: 'Rehab', icon: Activity, page: 'RehabPlan', color: 'emerald' },
     { name: 'Flow', icon: Zap, page: 'Flow', color: 'purple' }
   ];
@@ -77,6 +77,7 @@ export default function Layout({ children, currentPageName }) {
   const getColorClasses = (color) => {
     const colors = {
       cyan: 'text-cyan-400 bg-cyan-500/10 hover:bg-cyan-500/20',
+      orange: 'text-orange-400 bg-orange-500/10 hover:bg-orange-500/20',
       blue: 'text-blue-400 bg-blue-500/10 hover:bg-blue-500/20',
       emerald: 'text-emerald-400 bg-emerald-500/10 hover:bg-emerald-500/20',
       purple: 'text-purple-400 bg-purple-500/10 hover:bg-purple-500/20'

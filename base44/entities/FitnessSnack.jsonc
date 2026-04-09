@@ -1,0 +1,139 @@
+{
+  "name": "FitnessSnack",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Name des Fitness Snacks (z.B. '4x4 HIIT Sprint', 'Cold Plunge 2 Min')"
+    },
+    "subtitle": {
+      "type": "string",
+      "description": "Kurzer motivierender Untertitel"
+    },
+    "description": {
+      "type": "string",
+      "description": "Was der User konkret tut"
+    },
+    "instructions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Schritt-f\u00fcr-Schritt Anleitung"
+    },
+    "duration_minutes": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 10,
+      "description": "Dauer in Minuten (1-10)"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "hiit",
+        "zone2",
+        "sprint",
+        "cold_exposure",
+        "heat",
+        "breathwork",
+        "strength_snack",
+        "mobility_snack"
+      ],
+      "description": "Art des Snacks"
+    },
+    "hormesis_type": {
+      "type": "string",
+      "enum": [
+        "thermal",
+        "hypoxic",
+        "mechanical",
+        "metabolic",
+        "oxidative"
+      ],
+      "description": "Art des Hormesis-Reizes nach Dr. Rhonda Patrick"
+    },
+    "intensity": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high"
+      ],
+      "default": "medium"
+    },
+    "longevity_benefit": {
+      "type": "string",
+      "description": "Langzeitvorteil (z.B. 'VO2max +', 'Mitochondrien-Dichte \u2191', 'NRF2-Aktivierung')"
+    },
+    "rhonda_patrick_principle": {
+      "type": "string",
+      "description": "Wissenschaftliche Begr\u00fcndung nach Dr. Rhonda Patrick"
+    },
+    "icon": {
+      "type": "string",
+      "description": "Emoji Icon"
+    },
+    "color_class": {
+      "type": "string",
+      "description": "Tailwind Farb-Klasse f\u00fcr UI (z.B. 'cyan', 'orange', 'blue')"
+    },
+    "suitable_for_age_min": {
+      "type": "integer",
+      "default": 16,
+      "description": "Mindestalter f\u00fcr diesen Snack"
+    },
+    "suitable_for_age_max": {
+      "type": "integer",
+      "default": 99,
+      "description": "Maximalalter f\u00fcr diesen Snack"
+    },
+    "suitable_for_gender": {
+      "type": "string",
+      "enum": [
+        "all",
+        "male",
+        "female"
+      ],
+      "default": "all",
+      "description": "Geschlechts-Eignung"
+    },
+    "min_readiness_status": {
+      "type": "string",
+      "enum": [
+        "green",
+        "yellow",
+        "any"
+      ],
+      "default": "any",
+      "description": "Mindest-Readiness-Status f\u00fcr diesen Snack"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "name",
+    "duration_minutes",
+    "type",
+    "hormesis_type"
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": {},
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

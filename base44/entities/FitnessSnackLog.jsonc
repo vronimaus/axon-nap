@@ -1,0 +1,61 @@
+{
+  "name": "FitnessSnackLog",
+  "type": "object",
+  "properties": {
+    "user_email": {
+      "type": "string",
+      "description": "Email des Users"
+    },
+    "snack_id": {
+      "type": "string",
+      "description": "Referenz zur FitnessSnack Entity"
+    },
+    "snack_name": {
+      "type": "string",
+      "description": "Name des Snacks (denormalisiert)"
+    },
+    "snack_type": {
+      "type": "string",
+      "description": "Typ des Snacks"
+    },
+    "hormesis_type": {
+      "type": "string",
+      "description": "Hormesis-Typ"
+    },
+    "duration_minutes": {
+      "type": "integer",
+      "description": "Dauer in Minuten"
+    },
+    "completed_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Datum der Durchf\u00fchrung"
+    },
+    "feeling_after": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 5,
+      "description": "Gef\u00fchl danach (1-5 Sterne)"
+    }
+  },
+  "required": [
+    "user_email",
+    "snack_id",
+    "snack_name",
+    "completed_date"
+  ],
+  "rls": {
+    "create": {
+      "data.user_email": "{{user.email}}"
+    },
+    "read": {
+      "data.user_email": "{{user.email}}"
+    },
+    "update": {
+      "data.user_email": "{{user.email}}"
+    },
+    "delete": {
+      "data.user_email": "{{user.email}}"
+    }
+  }
+}
