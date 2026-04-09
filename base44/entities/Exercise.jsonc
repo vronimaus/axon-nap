@@ -24,19 +24,18 @@
     "category": {
       "type": "string",
       "enum": [
-        "pull",
         "push",
+        "pull",
         "squat",
         "hinge",
-        "carry",
         "core",
-        "mobility",
-        "plank",
-        "row",
-        "dip",
+        "carry",
+        "neuro",
+        "mfr",
+        "breath",
         "other"
       ],
-      "description": "\u00dcbungs-Kategorie"
+      "description": "\u00dcbungs-Kategorie \u2014 6 Dan-John-Bewegungsmuster + neuro/mfr/breath"
     },
     "description": {
       "type": "string",

@@ -167,11 +167,9 @@ const BIG5_MAP = {
   squat:    { label: 'Squat',   color: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/30' },
   carry:    { label: 'Carry',   color: 'text-purple-400 bg-purple-500/10 border-purple-500/30' },
   core:     { label: 'Core',    color: 'text-cyan-400 bg-cyan-500/10 border-cyan-500/30' },
-  mobility: { label: 'Mobility',color: 'text-teal-400 bg-teal-500/10 border-teal-500/30' },
   neuro:    { label: 'Neuro',   color: 'text-pink-400 bg-pink-500/10 border-pink-500/30' },
   mfr:      { label: 'MFR',     color: 'text-red-400 bg-red-500/10 border-red-500/30' },
   breath:   { label: 'Breath',  color: 'text-violet-400 bg-violet-500/10 border-violet-500/30' },
-  other:    { label: 'Sonstig', color: 'text-slate-400 bg-slate-700/30 border-slate-600' },
 };
 
 function getGroup(ex) {
@@ -179,7 +177,7 @@ function getGroup(ex) {
   const id = (ex.exercise_id || '').toUpperCase();
   const name = (ex.name || '').toLowerCase();
 
-  // Name-based keywords take HIGHEST priority — override ID prefix and category
+  // Name-based keywords take HIGHEST priority
   const breathKeywords = ['breath', 'atmung', 'atem', 'zwerchfell', 'diaphragm', 'pranayama', 'box breath', 'wim hof', 'co2', 'hyperventil', 'nasen', 'ausatm', 'einatm'];
   const neuroKeywords = ['sakkaden', 'vestibular', 'gaze', 'blick', 'vagus', 'propriozept', 'z-health', 'fixation', 'augen drill', 'visual drill'];
   if (breathKeywords.some(k => name.includes(k))) return 'breath';
@@ -189,7 +187,8 @@ function getGroup(ex) {
   if (id.startsWith('NR_') || cat === 'neuro') return 'neuro';
   if (id.startsWith('MFR_') || cat === 'mfr') return 'mfr';
   if (id.startsWith('BR_') || cat === 'breath' || cat === 'breathwork') return 'breath';
-  if (id.startsWith('MB_') || cat === 'mobility' || cat === 'mobilisation') return 'mobility';
+
+  // Direct category match for the 6 patterns
   if (cat === 'pull' || cat === 'row') return 'pull';
   if (cat === 'push' || cat === 'dip') return 'push';
   if (cat === 'hinge') return 'hinge';
@@ -197,14 +196,13 @@ function getGroup(ex) {
   if (cat === 'carry') return 'carry';
   if (cat === 'core' || cat === 'plank') return 'core';
 
-  // Remaining keyword fallback for category "other"
+  // Keyword fallback for any remaining uncategorized
   const pullKeywords = ['pull', 'chin', 'row', 'pullup', 'klimmzug', 'rudern', 'lat'];
-  const pushKeywords = ['push', 'press', 'dip', 'liegest', 'chest', 'overhead', 'schulter'];
-  const hingeKeywords = ['deadlift', 'swing', 'hinge', 'rdl', 'kreuzheben', 'good morning', 'hip thrust'];
-  const squatKeywords = ['squat', 'lunge', 'ausfallschritt', 'kniebeuge', 'split squat', 'pistol', 'step up'];
+  const pushKeywords = ['push', 'press', 'dip', 'liegest', 'chest', 'overhead', 'schulter', 'circles', 'wall circle'];
+  const hingeKeywords = ['deadlift', 'swing', 'hinge', 'rdl', 'kreuzheben', 'good morning', 'hip thrust', 'glute', 'hip car', 'hip circle', 'wade', 'calf'];
+  const squatKeywords = ['squat', 'lunge', 'ausfallschritt', 'kniebeuge', 'split squat', 'pistol', 'step up', 'tibialis', 'knie'];
   const carryKeywords = ['carry', 'farmer', 'walk', 'suitcase', 'tragen'];
-  const coreKeywords = ['plank', 'crunch', 'hollow', 'bird dog', 'dead bug', 'core', 'ab ', 'rumpf', 'bauch', 'mcgill'];
-  const mobilityKeywords = ['stretch', 'dehnung', 'mobility', 'car', 'foam', 'release', 'rollout'];
+  const coreKeywords = ['plank', 'crunch', 'hollow', 'bird dog', 'dead bug', 'core', 'ab ', 'rumpf', 'bauch', 'mcgill', 'spinal', 'rotation', 'wave'];
 
   if (pullKeywords.some(k => name.includes(k))) return 'pull';
   if (pushKeywords.some(k => name.includes(k))) return 'push';
@@ -212,9 +210,9 @@ function getGroup(ex) {
   if (squatKeywords.some(k => name.includes(k))) return 'squat';
   if (carryKeywords.some(k => name.includes(k))) return 'carry';
   if (coreKeywords.some(k => name.includes(k))) return 'core';
-  if (mobilityKeywords.some(k => name.includes(k))) return 'mobility';
 
-  return 'other';
+  // Fallback: show in core (visible, not lost)
+  return 'core';
 }
 
 // ── Inventory Section ──────────────────────────────────────────────────────────
