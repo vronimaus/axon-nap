@@ -191,21 +191,26 @@ function getGroup(ex) {
   if (cat === 'core' || cat === 'plank') return 'core';
 
   // Keyword fallback for exercises with category "other"
+  const breathKeywords = ['breath', 'atmung', 'atem', 'zwerchfell', 'diaphragm', 'pranayama', 'box breath', 'wim hof', 'co2', 'hyperventil', 'nasen', 'ausatm', 'einatm'];
   const pullKeywords = ['pull', 'chin', 'row', 'pullup', 'klimmzug', 'rudern', 'lat'];
   const pushKeywords = ['push', 'press', 'dip', 'liegest', 'chest', 'overhead', 'schulter'];
   const hingeKeywords = ['deadlift', 'swing', 'hinge', 'rdl', 'kreuzheben', 'good morning', 'hip thrust'];
   const squatKeywords = ['squat', 'lunge', 'ausfallschritt', 'kniebeuge', 'split squat', 'pistol', 'step up'];
   const carryKeywords = ['carry', 'farmer', 'walk', 'suitcase', 'tragen'];
   const coreKeywords = ['plank', 'crunch', 'hollow', 'bird dog', 'dead bug', 'core', 'ab ', 'rumpf', 'bauch', 'mcgill'];
-  const mobilityKeywords = ['stretch', 'dehnung', 'mobility', 'car', 'rotation', 'flexion', 'extension', 'foam', 'release'];
+  const mobilityKeywords = ['stretch', 'dehnung', 'mobility', 'car', 'foam', 'release', 'rollout'];
+  const neuroKeywords = ['sakkaden', 'vestibular', 'gaze', 'blick', 'vagus', 'propriozept', 'z-health', 'fixation'];
 
+  // Breath check first — overrides generic prefixes like BW_
+  if (breathKeywords.some(k => name.includes(k) || id.toLowerCase().includes(k))) return 'breath';
+  if (neuroKeywords.some(k => name.includes(k) || id.toLowerCase().includes(k))) return 'neuro';
+  if (mobilityKeywords.some(k => name.includes(k) || id.toLowerCase().includes(k))) return 'mobility';
   if (pullKeywords.some(k => name.includes(k) || id.toLowerCase().includes(k))) return 'pull';
   if (pushKeywords.some(k => name.includes(k) || id.toLowerCase().includes(k))) return 'push';
   if (hingeKeywords.some(k => name.includes(k) || id.toLowerCase().includes(k))) return 'hinge';
   if (squatKeywords.some(k => name.includes(k) || id.toLowerCase().includes(k))) return 'squat';
   if (carryKeywords.some(k => name.includes(k) || id.toLowerCase().includes(k))) return 'carry';
   if (coreKeywords.some(k => name.includes(k) || id.toLowerCase().includes(k))) return 'core';
-  if (mobilityKeywords.some(k => name.includes(k) || id.toLowerCase().includes(k))) return 'mobility';
 
   return 'other';
 }
