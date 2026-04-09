@@ -4,18 +4,13 @@ import { createPageUrl } from '@/utils';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { AlertCircle, Zap, BookOpen, Palette, ArrowLeft, Image, Trash2, Filter, ChevronUp, ChevronDown, GitMerge, Edit, SearchCheck, KeyRound, Megaphone, Kanban, Mic } from 'lucide-react';
-import ExerciseMappingTab from '../components/admin/ExerciseMappingTab';
-import ExerciseAuditTab from '../components/admin/ExerciseAuditTab';
+import { AlertCircle, Zap, Dumbbell, Palette, ArrowLeft, KeyRound, Megaphone, Kanban, Mic } from 'lucide-react';
 import ExerciseEditorTab from '../components/admin/ExerciseEditorTab';
-import ExerciseAudioTab from '../components/admin/ExerciseAudioTab';
-import EnrichmentLogTab from '../components/admin/EnrichmentLogTab';
 import InviteCodesTab from '../components/admin/InviteCodesTab';
 import MarketingTab from '../components/admin/MarketingTab';
 import ContentKanban from '../components/admin/ContentKanban';
 import MFRNodeTab from '../components/admin/MFRNodeTab';
-import TuneUpAudioTab from '../components/admin/TuneUpAudioTab';
-import MFRNodeAudioTab from '../components/admin/MFRNodeAudioTab';
+import FitnessSnackAdminTab from '../components/admin/FitnessSnackAdminTab';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
 // Prefix-Definitionen
@@ -159,7 +154,7 @@ function RoadmapTab() {
 export default function AdminHub() {
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState('flow');
+  const [activeTab, setActiveTab] = useState('snacks');
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -240,25 +235,21 @@ export default function AdminHub() {
           {/* Mobile: horizontal scroll, Desktop: wrap */}
           <div className="overflow-x-auto pb-2 mb-6 -mx-1 px-1">
             <TabsList className="flex w-max gap-1 bg-slate-900 border border-cyan-500/20 p-1 rounded-xl">
+              <TabsTrigger value="snacks" className="flex items-center gap-1.5 whitespace-nowrap px-3 py-2 text-xs sm:text-sm">
+                <Zap className="w-3.5 h-3.5 shrink-0" />
+                <span>Snacks</span>
+              </TabsTrigger>
               <TabsTrigger value="flow" className="flex items-center gap-1.5 whitespace-nowrap px-3 py-2 text-xs sm:text-sm">
                 <Palette className="w-3.5 h-3.5 shrink-0" />
                 <span>Flow</span>
               </TabsTrigger>
               <TabsTrigger value="exercise-editor" className="flex items-center gap-1.5 whitespace-nowrap px-3 py-2 text-xs sm:text-sm">
-                <Edit className="w-3.5 h-3.5 shrink-0" />
-                <span>Editor</span>
+                <Dumbbell className="w-3.5 h-3.5 shrink-0" />
+                <span>Übungen</span>
               </TabsTrigger>
-              <TabsTrigger value="exercise-audio" className="flex items-center gap-1.5 whitespace-nowrap px-3 py-2 text-xs sm:text-sm">
-                <Mic className="w-3.5 h-3.5 shrink-0" />
-                <span>Exercise Audio</span>
-              </TabsTrigger>
-              <TabsTrigger value="diagnosis" className="flex items-center gap-1.5 whitespace-nowrap px-3 py-2 text-xs sm:text-sm">
-                <Zap className="w-3.5 h-3.5 shrink-0" />
-                <span>Diagnose</span>
-              </TabsTrigger>
-              <TabsTrigger value="tools" className="flex items-center gap-1.5 whitespace-nowrap px-3 py-2 text-xs sm:text-sm">
-                <BookOpen className="w-3.5 h-3.5 shrink-0" />
-                <span>Tools</span>
+              <TabsTrigger value="mfrnodes" className="flex items-center gap-1.5 whitespace-nowrap px-3 py-2 text-xs sm:text-sm">
+                <span>🎯</span>
+                <span>MFR Nodes</span>
               </TabsTrigger>
               <TabsTrigger value="marketing" className="flex items-center gap-1.5 whitespace-nowrap px-3 py-2 text-xs sm:text-sm">
                 <Megaphone className="w-3.5 h-3.5 shrink-0" />
@@ -268,56 +259,24 @@ export default function AdminHub() {
                 <Kanban className="w-3.5 h-3.5 shrink-0" />
                 <span>Kanban</span>
               </TabsTrigger>
-              <TabsTrigger value="mapping" className="flex items-center gap-1.5 whitespace-nowrap px-3 py-2 text-xs sm:text-sm">
-                <GitMerge className="w-3.5 h-3.5 shrink-0" />
-                <span>Mapping</span>
-              </TabsTrigger>
-              <TabsTrigger value="audit" className="flex items-center gap-1.5 whitespace-nowrap px-3 py-2 text-xs sm:text-sm">
-                <SearchCheck className="w-3.5 h-3.5 shrink-0" />
-                <span>Audit</span>
-              </TabsTrigger>
-              <TabsTrigger value="roadmap" className="flex items-center gap-1.5 whitespace-nowrap px-3 py-2 text-xs sm:text-sm">
-                <Zap className="w-3.5 h-3.5 shrink-0" />
-                <span>Roadmap</span>
-              </TabsTrigger>
-              <TabsTrigger value="logs" className="flex items-center gap-1.5 whitespace-nowrap px-3 py-2 text-xs sm:text-sm">
-                <BookOpen className="w-3.5 h-3.5 shrink-0" />
-                <span>Logs</span>
-              </TabsTrigger>
               <TabsTrigger value="invites" className="flex items-center gap-1.5 whitespace-nowrap px-3 py-2 text-xs sm:text-sm">
                 <KeyRound className="w-3.5 h-3.5 shrink-0" />
                 <span>Codes</span>
               </TabsTrigger>
-              <TabsTrigger value="mfrnodes" className="flex items-center gap-1.5 whitespace-nowrap px-3 py-2 text-xs sm:text-sm">
-                <span>🎯</span>
-                <span>MFR Nodes</span>
-              </TabsTrigger>
-              <TabsTrigger value="tuneup-audio" className="flex items-center gap-1.5 whitespace-nowrap px-3 py-2 text-xs sm:text-sm">
-                <Mic className="w-3.5 h-3.5 shrink-0" />
-                <span>TuneUp Audio</span>
-              </TabsTrigger>
-              <TabsTrigger value="mfr-audio" className="flex items-center gap-1.5 whitespace-nowrap px-3 py-2 text-xs sm:text-sm">
-                <Mic className="w-3.5 h-3.5 shrink-0" />
-                <span>MFR Audio</span>
-              </TabsTrigger>
             </TabsList>
           </div>
 
+          {/* Snacks Tab */}
+          <TabsContent value="snacks" className="mt-0">
+            <FitnessSnackAdminTab />
+          </TabsContent>
+
           {/* Flow Tab */}
           <TabsContent value="flow" className="mt-0">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              className="glass rounded-2xl border border-cyan-500/30 p-8"
-            >
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
+              className="glass rounded-2xl border border-cyan-500/30 p-8">
               <h2 className="text-2xl font-bold text-cyan-400 mb-4">Flow Content Management</h2>
-              <p className="text-slate-300 mb-6">
-                Verwalte FLOW Routinen und deren Inhalte.
-              </p>
-              <p className="text-slate-400 text-sm">
-                Weitere Flow-Management-Tools folgen in Kürze...
-              </p>
+              <p className="text-slate-400 text-sm">Weitere Flow-Management-Tools folgen in Kürze...</p>
             </motion.div>
           </TabsContent>
 
@@ -326,86 +285,9 @@ export default function AdminHub() {
             <ExerciseEditorTab />
           </TabsContent>
 
-          {/* Exercise Audio Tab */}
-          <TabsContent value="exercise-audio" className="mt-0">
-            <ExerciseAudioTab />
-          </TabsContent>
-
-          {/* Diagnosis Tab */}
-          <TabsContent value="diagnosis" className="mt-0">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              className="glass rounded-2xl border border-cyan-500/30 p-8"
-            >
-              <h2 className="text-2xl font-bold text-cyan-400 mb-4">Diagnose Tool</h2>
-              <p className="text-slate-300 mb-6">
-                Erweiterte Diagnose-Funktionen für detaillierte Ketten-Analysen und Plan-Erstellung.
-              </p>
-              <Button
-                onClick={() => window.location.href = createPageUrl('AdminDiagnostics')}
-                className="bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-600 hover:to-purple-700"
-              >
-                Zum Admin Diagnose Tool
-              </Button>
-            </motion.div>
-          </TabsContent>
-
-          {/* Tools Tab */}
-          <TabsContent value="tools" className="mt-0">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              className="space-y-6"
-            >
-              {/* AXON Wissensdatenbank */}
-              <div className="glass rounded-2xl border border-purple-500/30 p-8">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center">
-                    <span className="text-2xl">📚</span>
-                  </div>
-                  <div>
-                    <h2 className="text-2xl font-bold text-purple-400">AXON Knowledge Bot</h2>
-                    <p className="text-sm text-slate-400">Wissenschaftsbasierter KI-Coach</p>
-                  </div>
-                </div>
-                <p className="text-slate-300 mb-6">
-                  Füttere den AXON-Bot mit wissenschaftlichem Wissen. Paper hochladen, automatisch analysieren und für personalisierte Empfehlungen nutzen.
-                </p>
-                <div className="flex gap-3">
-                  <Button
-                    onClick={() => window.location.href = createPageUrl('KnowledgeUpload')}
-                    className="bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700"
-                  >
-                    📚 Wissensdatenbank
-                  </Button>
-                  <Button
-                    onClick={() => window.location.href = createPageUrl('AxonBotTest')}
-                    variant="outline"
-                    className="border-cyan-500/50 text-cyan-400 hover:bg-cyan-500/10"
-                  >
-                    🤖 Bot testen
-                  </Button>
-                </div>
-              </div>
-
-              {/* Kommende Tools */}
-              <div className="glass rounded-2xl border border-cyan-500/30 p-8">
-                <h2 className="text-2xl font-bold text-cyan-400 mb-4">Kommende Tools</h2>
-                <p className="text-slate-300 mb-6">
-                  Weitere Admin-Tools in Entwicklung:
-                </p>
-                <ul className="space-y-2 text-slate-300">
-                  <li>• Benutzer-Management & Coaching-Zuweisungen</li>
-                  <li>• Reporting & Analytics</li>
-                  <li>• Inhalts-Management (Bilder, Übungen, Routinen)</li>
-                  <li>• Marketing & Promotion-Tools</li>
-                  <li>• System-Monitoring & Logs</li>
-                </ul>
-              </div>
-            </motion.div>
+          {/* MFR Nodes Tab */}
+          <TabsContent value="mfrnodes" className="mt-0">
+            <MFRNodeTab />
           </TabsContent>
 
           {/* Marketing Tab */}
@@ -418,44 +300,9 @@ export default function AdminHub() {
             <ContentKanban />
           </TabsContent>
 
-          {/* Mapping Tab */}
-          <TabsContent value="mapping" className="mt-0">
-            <ExerciseMappingTab />
-          </TabsContent>
-
-          {/* Audit Tab */}
-          <TabsContent value="audit" className="mt-0">
-            <ExerciseAuditTab />
-          </TabsContent>
-
-          {/* Roadmap Tab */}
-          <TabsContent value="roadmap" className="mt-0">
-            <RoadmapTab />
-          </TabsContent>
-
-          {/* Logs Tab */}
-          <TabsContent value="logs" className="mt-0">
-            <EnrichmentLogTab />
-          </TabsContent>
-
           {/* Invite Codes Tab */}
           <TabsContent value="invites" className="mt-0">
             <InviteCodesTab />
-          </TabsContent>
-
-          {/* MFR Nodes Tab */}
-          <TabsContent value="mfrnodes" className="mt-0">
-            <MFRNodeTab />
-          </TabsContent>
-
-          {/* TuneUp Audio Tab */}
-          <TabsContent value="tuneup-audio" className="mt-0">
-            <TuneUpAudioTab />
-          </TabsContent>
-
-          {/* MFR Node Audio Tab */}
-          <TabsContent value="mfr-audio" className="mt-0">
-            <MFRNodeAudioTab />
           </TabsContent>
           </Tabs>
       </div>
