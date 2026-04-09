@@ -167,9 +167,6 @@ const BIG5_MAP = {
   squat:    { label: 'Squat',   color: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/30' },
   carry:    { label: 'Carry',   color: 'text-purple-400 bg-purple-500/10 border-purple-500/30' },
   core:     { label: 'Core',    color: 'text-cyan-400 bg-cyan-500/10 border-cyan-500/30' },
-  neuro:    { label: 'Neuro',   color: 'text-pink-400 bg-pink-500/10 border-pink-500/30' },
-  mfr:      { label: 'MFR',     color: 'text-red-400 bg-red-500/10 border-red-500/30' },
-  breath:   { label: 'Breath',  color: 'text-violet-400 bg-violet-500/10 border-violet-500/30' },
 };
 
 function getGroup(ex) {
