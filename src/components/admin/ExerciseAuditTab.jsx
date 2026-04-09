@@ -2,7 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { base44 } from '@/api/base44Client';
 import { useQuery } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
-import { AlertTriangle, CheckCircle, Loader2, Wand2, RefreshCw, ChevronDown, ChevronUp } from 'lucide-react';
+import { AlertTriangle, CheckCircle, Loader2, Wand2, RefreshCw, ChevronDown, ChevronUp, Trash2, Search } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 
@@ -158,6 +158,162 @@ function IssueGroupCard({ title, severity, issues, exercises, onFixDone, canBulk
   );
 }
 
+// ── Big 5 Pattern Mapping ─────────────────────────────────────────────────────
+
+const BIG5_MAP = {
+  pull:     { label: 'Pull',    color: 'text-blue-400 bg-blue-500/10 border-blue-500/30' },
+  push:     { label: 'Push',    color: 'text-orange-400 bg-orange-500/10 border-orange-500/30' },
+  hinge:    { label: 'Hinge',   color: 'text-yellow-400 bg-yellow-500/10 border-yellow-500/30' },
+  squat:    { label: 'Squat',   color: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/30' },
+  carry:    { label: 'Carry',   color: 'text-purple-400 bg-purple-500/10 border-purple-500/30' },
+  core:     { label: 'Core',    color: 'text-cyan-400 bg-cyan-500/10 border-cyan-500/30' },
+  mobility: { label: 'Mobility',color: 'text-teal-400 bg-teal-500/10 border-teal-500/30' },
+  neuro:    { label: 'Neuro',   color: 'text-pink-400 bg-pink-500/10 border-pink-500/30' },
+  mfr:      { label: 'MFR',     color: 'text-red-400 bg-red-500/10 border-red-500/30' },
+  breath:   { label: 'Breath',  color: 'text-violet-400 bg-violet-500/10 border-violet-500/30' },
+  other:    { label: 'Sonstig', color: 'text-slate-400 bg-slate-700/30 border-slate-600' },
+};
+
+function getGroup(ex) {
+  const cat = (ex.category || '').toLowerCase();
+  const id = (ex.exercise_id || '').toUpperCase();
+  if (id.startsWith('NR_') || cat === 'neuro') return 'neuro';
+  if (id.startsWith('MFR_') || cat === 'mfr') return 'mfr';
+  if (id.startsWith('BR_') || cat === 'breath' || cat === 'breathwork') return 'breath';
+  if (id.startsWith('MB_') || cat === 'mobility' || cat === 'mobilisation') return 'mobility';
+  if (cat === 'pull' || cat === 'row') return 'pull';
+  if (cat === 'push' || cat === 'dip') return 'push';
+  if (cat === 'hinge') return 'hinge';
+  if (cat === 'squat') return 'squat';
+  if (cat === 'carry') return 'carry';
+  if (cat === 'core' || cat === 'plank') return 'core';
+  return 'other';
+}
+
+// ── Inventory Section ──────────────────────────────────────────────────────────
+
+function InventorySection({ exercises, onDeleted }) {
+  const [search, setSearch] = useState('');
+  const [expandedGroup, setExpandedGroup] = useState(null);
+  const [deleting, setDeleting] = useState(null);
+  const [confirmId, setConfirmId] = useState(null);
+
+  const filtered = useMemo(() => {
+    const q = search.toLowerCase();
+    return q ? exercises.filter(e => (e.name || '').toLowerCase().includes(q) || (e.exercise_id || '').toLowerCase().includes(q)) : exercises;
+  }, [exercises, search]);
+
+  const grouped = useMemo(() => {
+    const g = {};
+    filtered.forEach(ex => {
+      const k = getGroup(ex);
+      if (!g[k]) g[k] = [];
+      g[k].push(ex);
+    });
+    return g;
+  }, [filtered]);
+
+  const handleDelete = async (ex) => {
+    setDeleting(ex.id);
+    await base44.entities.Exercise.delete(ex.id);
+    setDeleting(null);
+    setConfirmId(null);
+    onDeleted(ex.id);
+  };
+
+  const limit = 200;
+  const total = exercises.length;
+  const over = total > limit;
+
+  return (
+    <div className="space-y-4">
+      {/* Limit Tracker */}
+      <div className={`glass rounded-xl border p-4 ${over ? 'border-red-500/40' : 'border-emerald-500/30'}`}>
+        <div className="flex items-center justify-between mb-2">
+          <span className="text-sm font-bold text-white">Übungs-Inventar</span>
+          <span className={`text-sm font-black ${over ? 'text-red-400' : 'text-emerald-400'}`}>{total} / {limit}</span>
+        </div>
+        <div className="h-2 bg-slate-800 rounded-full overflow-hidden">
+          <div
+            className={`h-full rounded-full transition-all ${over ? 'bg-red-500' : total > 160 ? 'bg-yellow-500' : 'bg-emerald-500'}`}
+            style={{ width: `${Math.min((total / limit) * 100, 100)}%` }}
+          />
+        </div>
+        {over && <p className="text-xs text-red-400 mt-2">⚠️ {total - limit} Übungen über dem Limit — bitte bereinigen!</p>}
+        <p className="text-xs text-slate-500 mt-1">Behalte max. 200 Übungen. Nur Tweaks (leichter/schwerer) oder Progressionen rechtfertigen Varianten.</p>
+      </div>
+
+      {/* Search */}
+      <div className="relative">
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+        <input
+          value={search}
+          onChange={e => setSearch(e.target.value)}
+          placeholder="Name oder ID suchen..."
+          className="w-full pl-9 pr-4 py-2.5 bg-slate-800 border border-slate-700 rounded-xl text-sm text-white focus:outline-none focus:border-cyan-500/50"
+        />
+      </div>
+
+      {/* Groups */}
+      {Object.entries(BIG5_MAP).map(([key, cfg]) => {
+        const group = grouped[key] || [];
+        if (group.length === 0) return null;
+        const isOpen = expandedGroup === key;
+        return (
+          <div key={key} className={`rounded-xl border overflow-hidden ${cfg.color.split(' ').find(c => c.startsWith('border')) || 'border-slate-700'}`}>
+            <button
+              onClick={() => setExpandedGroup(isOpen ? null : key)}
+              className="w-full flex items-center justify-between px-4 py-3 bg-slate-900/50 hover:bg-slate-800/50 transition-colors"
+            >
+              <div className="flex items-center gap-2">
+                <span className={`text-xs font-black px-2 py-0.5 rounded-full border ${cfg.color}`}>{cfg.label}</span>
+                <span className="text-sm text-slate-300">{group.length} Übungen</span>
+              </div>
+              {isOpen ? <ChevronUp className="w-4 h-4 text-slate-500" /> : <ChevronDown className="w-4 h-4 text-slate-500" />}
+            </button>
+
+            {isOpen && (
+              <div className="divide-y divide-slate-800">
+                {group.map(ex => (
+                  <div key={ex.id} className="flex items-center gap-3 px-4 py-2.5 bg-slate-900/30 hover:bg-slate-800/30 transition-colors">
+                    <code className="text-[10px] text-slate-500 bg-slate-800 px-1.5 py-0.5 rounded font-mono flex-shrink-0 max-w-[100px] truncate">{ex.exercise_id || '—'}</code>
+                    <span className="text-sm text-slate-200 flex-1 truncate">{ex.name}</span>
+                    {ex.progression_level && ex.progression_level > 1 && (
+                      <span className="text-[10px] text-yellow-500 bg-yellow-500/10 px-1.5 py-0.5 rounded border border-yellow-500/20 flex-shrink-0">L{ex.progression_level}</span>
+                    )}
+                    {ex.next_progression_id && (
+                      <span className="text-[10px] text-blue-400 bg-blue-500/10 px-1.5 py-0.5 rounded border border-blue-500/20 flex-shrink-0">→ {ex.next_progression_id}</span>
+                    )}
+                    {confirmId === ex.id ? (
+                      <div className="flex gap-1 flex-shrink-0">
+                        <button
+                          onClick={() => handleDelete(ex)}
+                          disabled={deleting === ex.id}
+                          className="text-[10px] px-2 py-1 rounded bg-red-500 text-white font-bold"
+                        >
+                          {deleting === ex.id ? '...' : 'Löschen'}
+                        </button>
+                        <button onClick={() => setConfirmId(null)} className="text-[10px] px-2 py-1 rounded bg-slate-700 text-slate-300">Nein</button>
+                      </div>
+                    ) : (
+                      <button
+                        onClick={() => setConfirmId(ex.id)}
+                        className="p-1.5 rounded-lg text-slate-600 hover:text-red-400 hover:bg-red-500/10 transition-all flex-shrink-0"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
 // ── Main Component ─────────────────────────────────────────────────────────────
 
 export default function ExerciseAuditTab() {
@@ -165,12 +321,18 @@ export default function ExerciseAuditTab() {
   const [bulkFixing, setBulkFixing] = useState({});
   const [bulkProgress, setBulkProgress] = useState({});
 
+  const [localExercises, setLocalExercises] = useState(null);
   const { data: exercises = [], isLoading } = useQuery({
     queryKey: ['exercises-audit', refreshKey],
     queryFn: () => base44.entities.Exercise.list('-updated_date', 500),
   });
 
-  const issues = useMemo(() => findIssues(exercises), [exercises]);
+  const displayExercises = localExercises !== null ? localExercises : exercises;
+
+  // sync local copy when query reloads
+  React.useEffect(() => { if (exercises.length > 0) setLocalExercises(exercises); }, [exercises]);
+
+  const issues = useMemo(() => findIssues(displayExercises), [displayExercises]);
 
   const totalIssues = Object.values(issues).reduce((s, arr) => s + arr.length, 0);
 
@@ -255,6 +417,8 @@ Antworte NUR mit diesem JSON:
     setRefreshKey(k => k + 1);
   };
 
+  const [activeView, setActiveView] = useState('audit'); // 'audit' | 'inventory'
+
   if (isLoading) {
     return (
       <div className="glass rounded-2xl border border-cyan-500/30 p-8 flex items-center gap-3 text-slate-400">
@@ -271,7 +435,7 @@ Antworte NUR mit diesem JSON:
           <div>
             <h2 className="text-2xl font-bold text-cyan-400">🔍 Exercise Audit</h2>
             <p className="text-sm text-slate-400 mt-1">
-              {exercises.length} Exercises · <span className={totalIssues > 0 ? 'text-yellow-400' : 'text-green-400'}>{totalIssues} Probleme gefunden</span>
+              {displayExercises.length} Exercises · <span className={totalIssues > 0 ? 'text-yellow-400' : 'text-green-400'}>{totalIssues} Probleme gefunden</span>
             </p>
           </div>
           <Button variant="ghost" size="sm" onClick={() => setRefreshKey(k => k + 1)} className="text-slate-400 hover:text-cyan-400">
@@ -291,9 +455,34 @@ Antworte NUR mit diesem JSON:
             <span className="text-sm font-bold text-slate-400">⚪ {issues.missing_nodes.length + issues.missing_smart_tags.length} Niedrig</span>
           </div>
         </div>
+
+        {/* View Toggle */}
+        <div className="flex gap-2 mt-4">
+          <button
+            onClick={() => setActiveView('audit')}
+            className={`px-4 py-1.5 rounded-lg text-xs font-bold transition-all ${
+              activeView === 'audit' ? 'bg-cyan-500/20 text-cyan-400 border border-cyan-500/40' : 'bg-slate-800 text-slate-500 hover:text-slate-300'
+            }`}
+          >🔍 Audit</button>
+          <button
+            onClick={() => setActiveView('inventory')}
+            className={`px-4 py-1.5 rounded-lg text-xs font-bold transition-all ${
+              activeView === 'inventory' ? 'bg-orange-500/20 text-orange-400 border border-orange-500/40' : 'bg-slate-800 text-slate-500 hover:text-slate-300'
+            }`}
+          >📦 Inventar ({displayExercises.length}/200)</button>
+        </div>
       </div>
 
-      {totalIssues === 0 ? (
+      {/* Inventory View */}
+      {activeView === 'inventory' && (
+        <InventorySection
+          exercises={displayExercises}
+          onDeleted={(deletedId) => setLocalExercises(prev => prev.filter(e => e.id !== deletedId))}
+        />
+      )}
+
+      {/* Audit View */}
+      {activeView === 'audit' && (totalIssues === 0 ? (
         <div className="glass rounded-2xl border border-green-500/30 p-8 text-center">
           <CheckCircle className="w-10 h-10 text-green-400 mx-auto mb-3" />
           <p className="text-green-400 font-semibold">Alle Exercises sind sauber!</p>
@@ -304,21 +493,21 @@ Antworte NUR mit diesem JSON:
             title="Doppelte Exercise-IDs"
             severity="high"
             issues={issues.duplicate_id}
-            exercises={exercises}
+            exercises={displayExercises}
             canBulkFix={false}
           />
           <IssueGroupCard
             title="Ähnliche Namen (mögliche Duplikate)"
             severity="medium"
             issues={issues.similar_name}
-            exercises={exercises}
+            exercises={displayExercises}
             canBulkFix={false}
           />
           <IssueGroupCard
             title="Kategorie-Mismatch (ID-Prefix ≠ category)"
             severity="medium"
             issues={issues.category_mismatch}
-            exercises={exercises}
+            exercises={displayExercises}
             canBulkFix={issues.category_mismatch.length > 0}
             onBulkFix={bulkFixCategoryMismatch}
             bulkFixing={bulkFixing.category_mismatch}
@@ -328,7 +517,7 @@ Antworte NUR mit diesem JSON:
             title="Fehlende affected_nodes"
             severity="low"
             issues={issues.missing_nodes}
-            exercises={exercises}
+            exercises={displayExercises}
             canBulkFix={issues.missing_nodes.length > 0}
             onBulkFix={bulkFixMissingNodes}
             bulkFixing={bulkFixing.missing_nodes}
@@ -338,19 +527,19 @@ Antworte NUR mit diesem JSON:
             title="Leere Smart Tags"
             severity="low"
             issues={issues.missing_smart_tags}
-            exercises={exercises}
+            exercises={displayExercises}
             canBulkFix={issues.missing_smart_tags.length > 0}
             onBulkFix={bulkFixSmartTags}
             bulkFixing={bulkFixing.missing_smart_tags}
             bulkProgress={bulkProgress.missing_smart_tags}
           />
         </div>
-      )}
+      ))}
 
       {/* Note for manual fixes */}
-      {(issues.duplicate_id.length > 0 || issues.similar_name.length > 0) && (
+      {activeView === 'audit' && (issues.duplicate_id.length > 0 || issues.similar_name.length > 0) && (
         <div className="glass rounded-xl border border-slate-600 p-4 text-xs text-slate-400">
-          💡 <strong className="text-slate-300">Duplikate & ähnliche Namen</strong> müssen manuell im <strong className="text-cyan-400">Exercise Editor</strong> Tab bereinigt werden – klappe die Gruppe auf um die betroffenen IDs zu sehen.
+          💡 <strong className="text-slate-300">Duplikate & ähnliche Namen</strong> müssen manuell im <strong className="text-cyan-400">Exercise Editor</strong> Tab oder im <strong className="text-orange-400">Inventar</strong> bereinigt werden.
         </div>
       )}
     </motion.div>
