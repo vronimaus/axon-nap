@@ -4,8 +4,9 @@ import { createPageUrl } from '@/utils';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { AlertCircle, Zap, Dumbbell, Palette, ArrowLeft, KeyRound, Megaphone, Kanban, Mic } from 'lucide-react';
+import { AlertCircle, Zap, Dumbbell, Palette, ArrowLeft, KeyRound, Megaphone, Kanban, Mic, ShieldCheck } from 'lucide-react';
 import ExerciseEditorTab from '../components/admin/ExerciseEditorTab';
+import ExerciseAuditTab from '../components/admin/ExerciseAuditTab';
 import InviteCodesTab from '../components/admin/InviteCodesTab';
 import MarketingTab from '../components/admin/MarketingTab';
 import ContentKanban from '../components/admin/ContentKanban';
@@ -263,6 +264,10 @@ export default function AdminHub() {
                 <KeyRound className="w-3.5 h-3.5 shrink-0" />
                 <span>Codes</span>
               </TabsTrigger>
+              <TabsTrigger value="audit" className="flex items-center gap-1.5 whitespace-nowrap px-3 py-2 text-xs sm:text-sm">
+                <ShieldCheck className="w-3.5 h-3.5 shrink-0" />
+                <span>Audit</span>
+              </TabsTrigger>
             </TabsList>
           </div>
 
@@ -303,6 +308,11 @@ export default function AdminHub() {
           {/* Invite Codes Tab */}
           <TabsContent value="invites" className="mt-0">
             <InviteCodesTab />
+          </TabsContent>
+
+          {/* Audit Tab */}
+          <TabsContent value="audit" className="mt-0">
+            <ExerciseAuditTab />
           </TabsContent>
           </Tabs>
       </div>
