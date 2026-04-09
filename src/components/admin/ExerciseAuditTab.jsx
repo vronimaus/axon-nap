@@ -210,6 +210,15 @@ function InventorySection({ exercises, onDeleted }) {
       if (!g[k]) g[k] = [];
       g[k].push(ex);
     });
+    // Sort each group: first by parent_exercise name, then by progression_level
+    Object.keys(g).forEach(k => {
+      g[k].sort((a, b) => {
+        const parentA = (a.parent_exercise || a.name || '').toLowerCase();
+        const parentB = (b.parent_exercise || b.name || '').toLowerCase();
+        if (parentA !== parentB) return parentA.localeCompare(parentB);
+        return (a.progression_level || 1) - (b.progression_level || 1);
+      });
+    });
     return g;
   }, [filtered]);
 
