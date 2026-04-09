@@ -179,6 +179,13 @@ function getGroup(ex) {
   const id = (ex.exercise_id || '').toUpperCase();
   const name = (ex.name || '').toLowerCase();
 
+  // Name-based keywords take HIGHEST priority — override ID prefix and category
+  const breathKeywords = ['breath', 'atmung', 'atem', 'zwerchfell', 'diaphragm', 'pranayama', 'box breath', 'wim hof', 'co2', 'hyperventil', 'nasen', 'ausatm', 'einatm'];
+  const neuroKeywords = ['sakkaden', 'vestibular', 'gaze', 'blick', 'vagus', 'propriozept', 'z-health', 'fixation', 'augen drill', 'visual drill'];
+  if (breathKeywords.some(k => name.includes(k))) return 'breath';
+  if (neuroKeywords.some(k => name.includes(k))) return 'neuro';
+
+  // ID-prefix checks
   if (id.startsWith('NR_') || cat === 'neuro') return 'neuro';
   if (id.startsWith('MFR_') || cat === 'mfr') return 'mfr';
   if (id.startsWith('BR_') || cat === 'breath' || cat === 'breathwork') return 'breath';
@@ -190,8 +197,7 @@ function getGroup(ex) {
   if (cat === 'carry') return 'carry';
   if (cat === 'core' || cat === 'plank') return 'core';
 
-  // Keyword fallback for exercises with category "other"
-  const breathKeywords = ['breath', 'atmung', 'atem', 'zwerchfell', 'diaphragm', 'pranayama', 'box breath', 'wim hof', 'co2', 'hyperventil', 'nasen', 'ausatm', 'einatm'];
+  // Remaining keyword fallback for category "other"
   const pullKeywords = ['pull', 'chin', 'row', 'pullup', 'klimmzug', 'rudern', 'lat'];
   const pushKeywords = ['push', 'press', 'dip', 'liegest', 'chest', 'overhead', 'schulter'];
   const hingeKeywords = ['deadlift', 'swing', 'hinge', 'rdl', 'kreuzheben', 'good morning', 'hip thrust'];
@@ -199,18 +205,14 @@ function getGroup(ex) {
   const carryKeywords = ['carry', 'farmer', 'walk', 'suitcase', 'tragen'];
   const coreKeywords = ['plank', 'crunch', 'hollow', 'bird dog', 'dead bug', 'core', 'ab ', 'rumpf', 'bauch', 'mcgill'];
   const mobilityKeywords = ['stretch', 'dehnung', 'mobility', 'car', 'foam', 'release', 'rollout'];
-  const neuroKeywords = ['sakkaden', 'vestibular', 'gaze', 'blick', 'vagus', 'propriozept', 'z-health', 'fixation'];
 
-  // Breath check first — overrides generic prefixes like BW_
-  if (breathKeywords.some(k => name.includes(k) || id.toLowerCase().includes(k))) return 'breath';
-  if (neuroKeywords.some(k => name.includes(k) || id.toLowerCase().includes(k))) return 'neuro';
-  if (mobilityKeywords.some(k => name.includes(k) || id.toLowerCase().includes(k))) return 'mobility';
-  if (pullKeywords.some(k => name.includes(k) || id.toLowerCase().includes(k))) return 'pull';
-  if (pushKeywords.some(k => name.includes(k) || id.toLowerCase().includes(k))) return 'push';
-  if (hingeKeywords.some(k => name.includes(k) || id.toLowerCase().includes(k))) return 'hinge';
-  if (squatKeywords.some(k => name.includes(k) || id.toLowerCase().includes(k))) return 'squat';
-  if (carryKeywords.some(k => name.includes(k) || id.toLowerCase().includes(k))) return 'carry';
-  if (coreKeywords.some(k => name.includes(k) || id.toLowerCase().includes(k))) return 'core';
+  if (pullKeywords.some(k => name.includes(k))) return 'pull';
+  if (pushKeywords.some(k => name.includes(k))) return 'push';
+  if (hingeKeywords.some(k => name.includes(k))) return 'hinge';
+  if (squatKeywords.some(k => name.includes(k))) return 'squat';
+  if (carryKeywords.some(k => name.includes(k))) return 'carry';
+  if (coreKeywords.some(k => name.includes(k))) return 'core';
+  if (mobilityKeywords.some(k => name.includes(k))) return 'mobility';
 
   return 'other';
 }
