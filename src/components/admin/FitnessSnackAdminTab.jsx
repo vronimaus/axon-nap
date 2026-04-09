@@ -9,6 +9,18 @@ const HORMESIS_OPTIONS = ['thermal', 'hypoxic', 'mechanical', 'metabolic', 'oxid
 const INTENSITY_OPTIONS = ['low', 'medium', 'high'];
 const READINESS_GATE_OPTIONS = ['any', 'green', 'yellow', 'red'];
 const STEP_TYPES = ['exercise', 'rest', 'mfr_cooldown', 'breath_cooldown'];
+const EQUIPMENT_OPTIONS = [
+  { value: 'none',            label: '🚫 Kein Equipment (Bodyweight)' },
+  { value: 'mat',             label: '🧘 Matte' },
+  { value: 'kettlebell',      label: '🔔 Kettlebell' },
+  { value: 'resistance_band', label: '🟡 Widerstandsband' },
+  { value: 'pull_up_bar',     label: '🔝 Klimmzugstange' },
+  { value: 'dumbbells',       label: '💪 Kurzhanteln' },
+  { value: 'barbell',         label: '🏋️ Langhantel' },
+  { value: 'foam_roller',     label: '🔵 Foam Roller' },
+  { value: 'lacrosse_ball',   label: '⚫ Lacrosse Ball' },
+  { value: 'box',             label: '📦 Box / Plyo Box' },
+];
 const COLOR_OPTIONS = ['orange', 'cyan', 'red', 'emerald', 'purple', 'blue', 'yellow', 'teal'];
 
 const EMPTY_SNACK = {
@@ -20,6 +32,7 @@ const EMPTY_SNACK = {
   hormesis_type: 'metabolic',
   intensity: 'high',
   readiness_gate: 'green',
+  required_equipment: 'none',
   longevity_benefit: '',
   rhonda_patrick_principle: '',
   icon: '🔥',
@@ -192,8 +205,16 @@ function SnackForm({ initial, onSave, onCancel, saving }) {
             rows={2}
             className="w-full text-sm bg-slate-800 border border-slate-700 rounded-lg px-3 py-2.5 text-white focus:outline-none resize-none" />
         </div>
+        <div className="col-span-2">
+          <label className="text-[10px] text-slate-500 uppercase tracking-widest">Equipment</label>
+          <select value={data.required_equipment || 'none'} onChange={e => set('required_equipment', e.target.value)}
+            className="w-full text-sm bg-slate-800 border border-slate-700 rounded-lg px-3 py-2.5 text-white focus:outline-none">
+            {EQUIPMENT_OPTIONS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
+          </select>
+        </div>
         <div className="flex items-center gap-2 col-span-2">
-          <input type="checkbox" id="is_active" checked={data.is_active !== false} onChange={e => set('is_active', e.target.checked)}
+          <input type="checkbox" id="is_active"
+            checked={data.is_active !== false} onChange={e => set('is_active', e.target.checked)}
             className="w-4 h-4 rounded" />
           <label htmlFor="is_active" className="text-sm text-slate-300">Aktiv (in Snack-Auswahl sichtbar)</label>
         </div>

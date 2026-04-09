@@ -63,25 +63,39 @@
         "any"
       ],
       "default": "any",
-      "description": "Minimaler Readiness-Status, der diesen Snack freigibt. red = nur bei rot, any = immer"
+      "description": "Minimaler Readiness-Status, der diesen Snack freigibt."
+    },
+    "required_equipment": {
+      "type": "string",
+      "enum": [
+        "none",
+        "kettlebell",
+        "resistance_band",
+        "pull_up_bar",
+        "dumbbells",
+        "barbell",
+        "mat",
+        "foam_roller",
+        "lacrosse_ball",
+        "box"
+      ],
+      "default": "none",
+      "description": "Ben\u00f6tigtes Equipment f\u00fcr diesen Snack"
     },
     "sequence": {
       "type": "array",
-      "description": "Schritt-f\u00fcr-Schritt Ablauf: Hauptteil powert, Cool-Down optional am Ende",
+      "description": "Schritt-f\u00fcr-Schritt Ablauf",
       "items": {
         "type": "object",
         "properties": {
           "title": {
-            "type": "string",
-            "description": "Name des Schritts (z.B. 'Kettlebell Swings')"
+            "type": "string"
           },
           "instruction": {
-            "type": "string",
-            "description": "Konkrete Anleitung"
+            "type": "string"
           },
           "duration_seconds": {
-            "type": "integer",
-            "description": "Dauer in Sekunden"
+            "type": "integer"
           },
           "type": {
             "type": "string",
@@ -90,20 +104,16 @@
               "rest",
               "mfr_cooldown",
               "breath_cooldown"
-            ],
-            "description": "exercise = Hauptteil (powert), rest = Pause, mfr_cooldown / breath_cooldown = nur am Ende"
+            ]
           },
           "sets": {
-            "type": "integer",
-            "description": "Anzahl S\u00e4tze (optional)"
+            "type": "integer"
           },
           "reps": {
-            "type": "string",
-            "description": "Wiederholungen oder Beschreibung (z.B. '10' oder 'max')"
+            "type": "string"
           },
           "cue": {
-            "type": "string",
-            "description": "Coaching-Cue oder Fokus-Punkt"
+            "type": "string"
           }
         },
         "required": [
@@ -123,8 +133,7 @@
       "description": "Wissenschaftliche Begr\u00fcndung nach Dr. Rhonda Patrick"
     },
     "icon": {
-      "type": "string",
-      "description": "Emoji Icon"
+      "type": "string"
     },
     "color_class": {
       "type": "string",

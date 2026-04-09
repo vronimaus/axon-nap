@@ -23,6 +23,19 @@ const READINESS_CONFIG = {
   red:    { label: 'Red State',    sub: 'Parasympathischer Notausstieg', color: 'text-red-400', border: 'border-red-500/30', bg: 'bg-red-500/10', dot: 'bg-red-400' },
 };
 
+const EQUIPMENT_LABELS = {
+  none:            null,
+  mat:             { label: 'Matte', icon: '🧘' },
+  kettlebell:      { label: 'Kettlebell', icon: '🔔' },
+  resistance_band: { label: 'Widerstandsband', icon: '🟡' },
+  pull_up_bar:     { label: 'Klimmzugstange', icon: '🔝' },
+  dumbbells:       { label: 'Kurzhanteln', icon: '💪' },
+  barbell:         { label: 'Langhantel', icon: '🏋️' },
+  foam_roller:     { label: 'Foam Roller', icon: '🔵' },
+  lacrosse_ball:   { label: 'Lacrosse Ball', icon: '⚫' },
+  box:             { label: 'Box', icon: '📦' },
+};
+
 const STEP_TYPE_LABEL = {
   exercise:      { label: 'WORKOUT', color: 'text-orange-400' },
   rest:          { label: 'PAUSE',   color: 'text-slate-400' },
@@ -249,6 +262,15 @@ function SnackCard({ snack, isDoneToday, onStart }) {
             {isDoneToday && <CheckCircle2 className="w-5 h-5 text-emerald-400" />}
           </div>
         </div>
+
+        {/* Equipment Badge */}
+        {snack.required_equipment && snack.required_equipment !== 'none' && EQUIPMENT_LABELS[snack.required_equipment] && (
+          <div className="mt-2 flex items-center gap-1.5">
+            <span className="text-xs px-2 py-0.5 rounded-full bg-slate-700/70 border border-slate-600/50 text-slate-300 flex items-center gap-1">
+              {EQUIPMENT_LABELS[snack.required_equipment].icon} {EQUIPMENT_LABELS[snack.required_equipment].label}
+            </span>
+          </div>
+        )}
 
         {snack.longevity_benefit && (
           <div className="mt-3 flex items-center gap-2">
