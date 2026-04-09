@@ -37,6 +37,38 @@
       ],
       "description": "\u00dcbungs-Kategorie \u2014 6 Dan-John-Bewegungsmuster + neuro/mfr/breath"
     },
+    "laterality": {
+      "type": "string",
+      "enum": [
+        "bilateral",
+        "unilateral_left",
+        "unilateral_right",
+        "alternating",
+        "asymmetric"
+      ],
+      "default": "bilateral",
+      "description": "Symmetrie-Tag f\u00fcr Cross-Education-Algorithmus. bilateral=beide Seiten, unilateral_left/right=einseitig, alternating=wechselseitig (Bird Dog), asymmetric=asymmetrisch bilateral (Suitcase Carry)"
+    },
+    "movement_plane": {
+      "type": "string",
+      "enum": [
+        "sagittal",
+        "frontal",
+        "transverse",
+        "multi_planar"
+      ],
+      "description": "Bewegungsebene f\u00fcr 3DMAPS Tweakology Engine. sagittal=vor/zur\u00fcck, frontal=seitlich, transverse=rotierend, multi_planar=mehrere Ebenen (Turkish Get-Up)"
+    },
+    "stability_degree": {
+      "type": "string",
+      "enum": [
+        "high_stability",
+        "moderate_stability",
+        "low_stability",
+        "unstable"
+      ],
+      "description": "Stabilit\u00e4tsgrad f\u00fcr Sensory-Contrast-Snack. high_stability=Kettlebell bilateral auf festem Boden, moderate_stability=einbeinig oder asymmetrisch, low_stability=Schlingentrainer bilateral, unstable=Schlingentrainer einbeinig/unilateral"
+    },
     "description": {
       "type": "string",
       "description": "Schritt-f\u00fcr-Schritt Anleitung (Standard)"
@@ -90,7 +122,7 @@
       "items": {
         "type": "string"
       },
-      "description": "Liste der betroffenen MFR-Nodes (z.B. ['N4', 'N9', 'N10'])"
+      "description": "Liste der betroffenen Stecco-MFR-Nodes (z.B. ['GE-A', 'CX-P']). Nutzt die neuen Stecco-Node-IDs: CP-P, TH-A, TH-P, LU-A, LU-P, CX-A, CX-P, GE-A, GE-P, TA-A, TA-P, PE-A"
     },
     "mcgill_safety": {
       "type": "string",
@@ -185,7 +217,7 @@
       "items": {
         "type": "string"
       },
-      "description": "MFR-Node-IDs (z.B. ['N10']) die dieses Upgrade blockieren, wenn dort Schmerz gemeldet wurde"
+      "description": "Stecco-Node-IDs (z.B. ['GE-A', 'CX-P']) die dieses Upgrade blockieren, wenn dort Schmerz gemeldet wurde"
     },
     "required_equipment": {
       "type": "array",
