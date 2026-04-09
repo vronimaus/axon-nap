@@ -282,38 +282,62 @@ function InventorySection({ exercises, onDeleted }) {
             </button>
 
             {isOpen && (
-              <div className="divide-y divide-slate-800">
-                {group.map(ex => (
-                  <div key={ex.id} className="flex items-center gap-3 px-4 py-2.5 bg-slate-900/30 hover:bg-slate-800/30 transition-colors">
-                    <code className="text-[10px] text-slate-500 bg-slate-800 px-1.5 py-0.5 rounded font-mono flex-shrink-0 max-w-[100px] truncate">{ex.exercise_id || '—'}</code>
-                    <span className="text-sm text-slate-200 flex-1 truncate">{ex.name}</span>
-                    {ex.progression_level && ex.progression_level > 1 && (
-                      <span className="text-[10px] text-yellow-500 bg-yellow-500/10 px-1.5 py-0.5 rounded border border-yellow-500/20 flex-shrink-0">L{ex.progression_level}</span>
-                    )}
-                    {ex.next_progression_id && (
-                      <span className="text-[10px] text-blue-400 bg-blue-500/10 px-1.5 py-0.5 rounded border border-blue-500/20 flex-shrink-0">→ {ex.next_progression_id}</span>
-                    )}
-                    {confirmId === ex.id ? (
-                      <div className="flex gap-1 flex-shrink-0">
-                        <button
-                          onClick={() => handleDelete(ex)}
-                          disabled={deleting === ex.id}
-                          className="text-[10px] px-2 py-1 rounded bg-red-500 text-white font-bold"
-                        >
-                          {deleting === ex.id ? '...' : 'Löschen'}
-                        </button>
-                        <button onClick={() => setConfirmId(null)} className="text-[10px] px-2 py-1 rounded bg-slate-700 text-slate-300">Nein</button>
-                      </div>
-                    ) : (
-                      <button
-                        onClick={() => setConfirmId(ex.id)}
-                        className="p-1.5 rounded-lg text-slate-600 hover:text-red-400 hover:bg-red-500/10 transition-all flex-shrink-0"
-                      >
-                        <Trash2 className="w-3.5 h-3.5" />
-                      </button>
-                    )}
-                  </div>
-                ))}
+              <div className="divide-y divide-slate-800/50">
+                {(() => {
+                  const chains = {};
+                  group.forEach(ex => {
+                    const key = ex.parent_exercise || ex.name || ex.id;
+                    if (!chains[key]) chains[key] = [];
+                    chains[key].push(ex);
+                  });
+                  return Object.entries(chains).map(([chainKey, chainExercises]) => (
+                    <div key={chainKey} className="border-b border-slate-800 last:border-0">
+                      {chainExercises.length > 1 && (
+                        <div className="px-4 py-1 bg-slate-800/70 flex items-center gap-2">
+                          <span className="text-[10px] text-slate-400 uppercase tracking-widest font-bold">⛓ {chainKey}</span>
+                          <span className="text-[10px] text-slate-600">{chainExercises.length} Stufen</span>
+                        </div>
+                      )}
+                      {chainExercises.map((ex, idx) => (
+                        <div key={ex.id} className={`flex items-center gap-3 py-2.5 hover:bg-slate-800/30 transition-colors ${chainExercises.length > 1 ? 'pl-8 pr-4' : 'px-4'}`}>
+                          {chainExercises.length > 1 && (
+                            <span className="text-[10px] text-slate-600 flex-shrink-0">
+                              {idx === chainExercises.length - 1 ? '└' : '├'}
+                            </span>
+                          )}
+                          <code className="text-[10px] text-slate-500 bg-slate-800 px-1.5 py-0.5 rounded font-mono flex-shrink-0 max-w-[100px] truncate">{ex.exercise_id || '—'}</code>
+                          <span className="text-sm text-slate-200 flex-1 truncate">{ex.name}</span>
+                          {ex.progression_level && (
+                            <span className={`text-[10px] px-1.5 py-0.5 rounded border flex-shrink-0 font-bold ${
+                              ex.progression_level === 1 ? 'text-emerald-400 bg-emerald-500/10 border-emerald-500/30' :
+                              ex.progression_level === 2 ? 'text-cyan-400 bg-cyan-500/10 border-cyan-500/30' :
+                              ex.progression_level === 3 ? 'text-yellow-400 bg-yellow-500/10 border-yellow-500/30' :
+                              ex.progression_level === 4 ? 'text-orange-400 bg-orange-500/10 border-orange-500/30' :
+                              'text-red-400 bg-red-500/10 border-red-500/30'
+                            }`}>L{ex.progression_level}</span>
+                          )}
+                          {ex.next_progression_id && (
+                            <span className="text-[10px] text-blue-400 bg-blue-500/10 px-1.5 py-0.5 rounded border border-blue-500/20 flex-shrink-0">→ {ex.next_progression_id}</span>
+                          )}
+                          {confirmId === ex.id ? (
+                            <div className="flex gap-1 flex-shrink-0">
+                              <button onClick={() => handleDelete(ex)} disabled={deleting === ex.id}
+                                className="text-[10px] px-2 py-1 rounded bg-red-500 text-white font-bold">
+                                {deleting === ex.id ? '...' : 'Löschen'}
+                              </button>
+                              <button onClick={() => setConfirmId(null)} className="text-[10px] px-2 py-1 rounded bg-slate-700 text-slate-300">Nein</button>
+                            </div>
+                          ) : (
+                            <button onClick={() => setConfirmId(ex.id)}
+                              className="p-1.5 rounded-lg text-slate-600 hover:text-red-400 hover:bg-red-500/10 transition-all flex-shrink-0">
+                              <Trash2 className="w-3.5 h-3.5" />
+                            </button>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  ));
+                })()}
               </div>
             )}
           </div>
