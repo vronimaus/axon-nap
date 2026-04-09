@@ -177,6 +177,8 @@ const BIG5_MAP = {
 function getGroup(ex) {
   const cat = (ex.category || '').toLowerCase();
   const id = (ex.exercise_id || '').toUpperCase();
+  const name = (ex.name || '').toLowerCase();
+
   if (id.startsWith('NR_') || cat === 'neuro') return 'neuro';
   if (id.startsWith('MFR_') || cat === 'mfr') return 'mfr';
   if (id.startsWith('BR_') || cat === 'breath' || cat === 'breathwork') return 'breath';
@@ -187,6 +189,24 @@ function getGroup(ex) {
   if (cat === 'squat') return 'squat';
   if (cat === 'carry') return 'carry';
   if (cat === 'core' || cat === 'plank') return 'core';
+
+  // Keyword fallback for exercises with category "other"
+  const pullKeywords = ['pull', 'chin', 'row', 'pullup', 'klimmzug', 'rudern', 'lat'];
+  const pushKeywords = ['push', 'press', 'dip', 'liegest', 'chest', 'overhead', 'schulter'];
+  const hingeKeywords = ['deadlift', 'swing', 'hinge', 'rdl', 'kreuzheben', 'good morning', 'hip thrust'];
+  const squatKeywords = ['squat', 'lunge', 'ausfallschritt', 'kniebeuge', 'split squat', 'pistol', 'step up'];
+  const carryKeywords = ['carry', 'farmer', 'walk', 'suitcase', 'tragen'];
+  const coreKeywords = ['plank', 'crunch', 'hollow', 'bird dog', 'dead bug', 'core', 'ab ', 'rumpf', 'bauch', 'mcgill'];
+  const mobilityKeywords = ['stretch', 'dehnung', 'mobility', 'car', 'rotation', 'flexion', 'extension', 'foam', 'release'];
+
+  if (pullKeywords.some(k => name.includes(k) || id.toLowerCase().includes(k))) return 'pull';
+  if (pushKeywords.some(k => name.includes(k) || id.toLowerCase().includes(k))) return 'push';
+  if (hingeKeywords.some(k => name.includes(k) || id.toLowerCase().includes(k))) return 'hinge';
+  if (squatKeywords.some(k => name.includes(k) || id.toLowerCase().includes(k))) return 'squat';
+  if (carryKeywords.some(k => name.includes(k) || id.toLowerCase().includes(k))) return 'carry';
+  if (coreKeywords.some(k => name.includes(k) || id.toLowerCase().includes(k))) return 'core';
+  if (mobilityKeywords.some(k => name.includes(k) || id.toLowerCase().includes(k))) return 'mobility';
+
   return 'other';
 }
 
