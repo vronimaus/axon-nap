@@ -1,124 +1,235 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { base44 } from '@/api/base44Client';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Zap, Clock, CheckCircle2, Flame, Wind, Thermometer, Activity, ChevronRight, Star, TrendingUp } from 'lucide-react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { Zap, Clock, CheckCircle2, ChevronRight, TrendingUp, Play, X, SkipForward, AlertTriangle } from 'lucide-react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+
+// ─── Config ────────────────────────────────────────────────────────────────────
 
 const TYPE_CONFIG = {
-  hiit:           { label: 'HIIT',           icon: '🔥', color: 'orange' },
-  zone2:          { label: 'Zone 2',          icon: '🚴', color: 'blue' },
-  sprint:         { label: 'Sprint',          icon: '⚡', color: 'yellow' },
-  cold_exposure:  { label: 'Cold Exposure',   icon: '❄️', color: 'cyan' },
-  heat:           { label: 'Heat / Sauna',    icon: '🌡️', color: 'red' },
-  breathwork:     { label: 'Breathwork',      icon: '💨', color: 'purple' },
-  strength_snack: { label: 'Strength Snack',  icon: '💪', color: 'emerald' },
-  mobility_snack: { label: 'Mobility Snack',  icon: '🧘', color: 'teal' },
+  hiit:           { label: 'HIIT',          icon: '🔥', color: 'orange' },
+  zone2:          { label: 'Zone 2',         icon: '🚴', color: 'blue' },
+  sprint:         { label: 'Sprint',         icon: '⚡', color: 'yellow' },
+  cold_exposure:  { label: 'Cold Exposure',  icon: '❄️', color: 'cyan' },
+  heat:           { label: 'Heat / Sauna',   icon: '🌡️', color: 'red' },
+  breathwork:     { label: 'Breathwork',     icon: '💨', color: 'purple' },
+  strength_snack: { label: 'Strength',       icon: '💪', color: 'emerald' },
+  mobility_snack: { label: 'Mobility',       icon: '🧘', color: 'teal' },
 };
 
-const HORMESIS_LABELS = {
-  thermal:    'Thermischer Stress',
-  hypoxic:    'Hypoxischer Stress',
-  mechanical: 'Mechanischer Stress',
-  metabolic:  'Metabolischer Stress',
-  oxidative:  'Oxidativer Stress',
+const READINESS_CONFIG = {
+  green:  { label: 'Green State',  sub: 'System bereit für Hormesis', color: 'text-emerald-400', border: 'border-emerald-500/30', bg: 'bg-emerald-500/10', dot: 'bg-emerald-400' },
+  yellow: { label: 'Yellow State', sub: 'Neuronaler Reset & Mobilität', color: 'text-yellow-400', border: 'border-yellow-500/30', bg: 'bg-yellow-500/10', dot: 'bg-yellow-400' },
+  red:    { label: 'Red State',    sub: 'Parasympathischer Notausstieg', color: 'text-red-400', border: 'border-red-500/30', bg: 'bg-red-500/10', dot: 'bg-red-400' },
 };
 
-const COLOR_CLASSES = {
-  orange:  { border: 'border-orange-500/30', bg: 'bg-orange-500/10', text: 'text-orange-400', badge: 'bg-orange-500/20 text-orange-300' },
-  blue:    { border: 'border-blue-500/30',   bg: 'bg-blue-500/10',   text: 'text-blue-400',   badge: 'bg-blue-500/20 text-blue-300' },
-  yellow:  { border: 'border-yellow-500/30', bg: 'bg-yellow-500/10', text: 'text-yellow-400', badge: 'bg-yellow-500/20 text-yellow-300' },
-  cyan:    { border: 'border-cyan-500/30',   bg: 'bg-cyan-500/10',   text: 'text-cyan-400',   badge: 'bg-cyan-500/20 text-cyan-300' },
-  red:     { border: 'border-red-500/30',    bg: 'bg-red-500/10',    text: 'text-red-400',    badge: 'bg-red-500/20 text-red-300' },
-  purple:  { border: 'border-purple-500/30', bg: 'bg-purple-500/10', text: 'text-purple-400', badge: 'bg-purple-500/20 text-purple-300' },
-  emerald: { border: 'border-emerald-500/30',bg: 'bg-emerald-500/10',text: 'text-emerald-400',badge: 'bg-emerald-500/20 text-emerald-300' },
-  teal:    { border: 'border-teal-500/30',   bg: 'bg-teal-500/10',   text: 'text-teal-400',   badge: 'bg-teal-500/20 text-teal-300' },
+const STEP_TYPE_LABEL = {
+  exercise:      { label: 'WORKOUT', color: 'text-orange-400' },
+  rest:          { label: 'PAUSE',   color: 'text-slate-400' },
+  mfr_cooldown:  { label: 'COOL-DOWN · MFR', color: 'text-cyan-400' },
+  breath_cooldown: { label: 'COOL-DOWN · ATEM', color: 'text-purple-400' },
 };
 
-function getAgeFromBirthdate(dob) {
-  if (!dob) return null;
-  const today = new Date();
-  const birth = new Date(dob);
-  let age = today.getFullYear() - birth.getFullYear();
-  const m = today.getMonth() - birth.getMonth();
-  if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) age--;
-  return age;
-}
+const COLORS = {
+  orange:  { border: 'border-orange-500/30', bg: 'bg-orange-500/10', text: 'text-orange-400', badge: 'bg-orange-500/20 text-orange-300', btn: 'bg-orange-500 hover:bg-orange-600 text-white' },
+  blue:    { border: 'border-blue-500/30',   bg: 'bg-blue-500/10',   text: 'text-blue-400',   badge: 'bg-blue-500/20 text-blue-300',   btn: 'bg-blue-500 hover:bg-blue-600 text-white' },
+  yellow:  { border: 'border-yellow-500/30', bg: 'bg-yellow-500/10', text: 'text-yellow-400', badge: 'bg-yellow-500/20 text-yellow-300', btn: 'bg-yellow-500 hover:bg-yellow-600 text-black' },
+  cyan:    { border: 'border-cyan-500/30',   bg: 'bg-cyan-500/10',   text: 'text-cyan-400',   badge: 'bg-cyan-500/20 text-cyan-300',   btn: 'bg-cyan-500 hover:bg-cyan-600 text-black' },
+  red:     { border: 'border-red-500/30',    bg: 'bg-red-500/10',    text: 'text-red-400',    badge: 'bg-red-500/20 text-red-300',     btn: 'bg-red-500 hover:bg-red-600 text-white' },
+  purple:  { border: 'border-purple-500/30', bg: 'bg-purple-500/10', text: 'text-purple-400', badge: 'bg-purple-500/20 text-purple-300', btn: 'bg-purple-500 hover:bg-purple-600 text-white' },
+  emerald: { border: 'border-emerald-500/30',bg: 'bg-emerald-500/10',text: 'text-emerald-400',badge: 'bg-emerald-500/20 text-emerald-300', btn: 'bg-emerald-500 hover:bg-emerald-600 text-white' },
+  teal:    { border: 'border-teal-500/30',   bg: 'bg-teal-500/10',   text: 'text-teal-400',   badge: 'bg-teal-500/20 text-teal-300',   btn: 'bg-teal-500 hover:bg-teal-600 text-white' },
+};
 
-function filterSnacksForUser(snacks, profile) {
-  const age = profile ? getAgeFromBirthdate(profile.date_of_birth) : null;
-  const gender = profile?.biological_sex || 'diverse';
+// ─── Snack Player ──────────────────────────────────────────────────────────────
 
-  return snacks.filter(s => {
-    if (!s.is_active && s.is_active !== undefined) return false;
-    if (age !== null) {
-      const min = s.suitable_for_age_min ?? 16;
-      const max = s.suitable_for_age_max ?? 99;
-      if (age < min || age > max) return false;
-    }
-    if (s.suitable_for_gender && s.suitable_for_gender !== 'all') {
-      // map: male/female/diverse
-      if (s.suitable_for_gender === 'male' && gender === 'female') return false;
-      if (s.suitable_for_gender === 'female' && gender === 'male') return false;
-    }
-    return true;
-  });
-}
-
-function pickDailySnacks(snacks, count = 3) {
-  if (snacks.length === 0) return [];
-  // Seed by date so suggestions change daily but are consistent within a day
-  const today = new Date().toISOString().split('T')[0];
-  const seed = today.split('-').reduce((acc, v) => acc + parseInt(v), 0);
-  const shuffled = [...snacks].sort((a, b) => {
-    const ha = (a.id?.charCodeAt(0) || 0) + seed;
-    const hb = (b.id?.charCodeAt(0) || 0) + seed;
-    return ha - hb;
-  });
-  // Ensure variety: pick different types if possible
-  const picked = [];
-  const usedTypes = new Set();
-  for (const s of shuffled) {
-    if (picked.length >= count) break;
-    if (!usedTypes.has(s.type)) {
-      picked.push(s);
-      usedTypes.add(s.type);
-    }
-  }
-  // Fill up if needed
-  for (const s of shuffled) {
-    if (picked.length >= count) break;
-    if (!picked.includes(s)) picked.push(s);
-  }
-  return picked;
-}
-
-function SnackCard({ snack, isDoneToday, onComplete }) {
-  const [expanded, setExpanded] = useState(false);
+function SnackPlayer({ snack, onClose, onFinish }) {
+  const steps = snack.sequence || [];
+  const [stepIdx, setStepIdx] = useState(0);
+  const [timeLeft, setTimeLeft] = useState(steps[0]?.duration_seconds || 60);
+  const [running, setRunning] = useState(false);
+  const [done, setDone] = useState(false);
   const [feeling, setFeeling] = useState(null);
-  const [logging, setLogging] = useState(false);
-  const cfg = TYPE_CONFIG[snack.type] || TYPE_CONFIG.hiit;
-  const colors = COLOR_CLASSES[snack.color_class || cfg.color] || COLOR_CLASSES.cyan;
+  const intervalRef = useRef(null);
 
-  const handleDone = async () => {
-    if (!feeling) return;
-    setLogging(true);
-    await onComplete(snack, feeling);
-    setLogging(false);
-    setExpanded(false);
-    setFeeling(null);
+  const currentStep = steps[stepIdx];
+  const cfg = TYPE_CONFIG[snack.type] || TYPE_CONFIG.hiit;
+  const colors = COLORS[snack.color_class || cfg.color] || COLORS.orange;
+  const totalSteps = steps.length;
+
+  useEffect(() => {
+    if (running && timeLeft > 0) {
+      intervalRef.current = setInterval(() => setTimeLeft(t => t - 1), 1000);
+    } else if (running && timeLeft === 0) {
+      clearInterval(intervalRef.current);
+      advanceStep();
+    }
+    return () => clearInterval(intervalRef.current);
+  }, [running, timeLeft]);
+
+  const advanceStep = () => {
+    if (stepIdx < totalSteps - 1) {
+      const next = stepIdx + 1;
+      setStepIdx(next);
+      setTimeLeft(steps[next]?.duration_seconds || 60);
+      setRunning(true);
+    } else {
+      setRunning(false);
+      setDone(true);
+    }
   };
 
+  const skipStep = () => {
+    clearInterval(intervalRef.current);
+    advanceStep();
+  };
+
+  const toggleTimer = () => setRunning(r => !r);
+
+  const formatTime = (s) => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
+  const progress = currentStep ? ((currentStep.duration_seconds - timeLeft) / currentStep.duration_seconds) * 100 : 0;
+
+  const stepTypeInfo = currentStep ? STEP_TYPE_LABEL[currentStep.type] || STEP_TYPE_LABEL.exercise : null;
+  const isCooldown = currentStep?.type === 'mfr_cooldown' || currentStep?.type === 'breath_cooldown';
+
+  if (done) {
+    return (
+      <div className="fixed inset-0 z-50 bg-slate-950 flex flex-col items-center justify-center px-6 text-center">
+        <motion.div initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="space-y-6 max-w-sm w-full">
+          <div className="text-6xl">🏆</div>
+          <h2 className="text-2xl font-black text-white">Dose verabreicht!</h2>
+          <p className="text-slate-400 text-sm leading-relaxed">
+            Deine Mitochondrien haben soeben einen Wachstumssignal erhalten. Zelluläre Rendite gebucht.
+          </p>
+          {snack.longevity_benefit && (
+            <div className="glass rounded-xl border border-emerald-500/30 p-4">
+              <p className="text-xs text-slate-500 uppercase tracking-widest mb-1">Longevity Benefit</p>
+              <p className="text-emerald-400 font-bold">{snack.longevity_benefit}</p>
+            </div>
+          )}
+          <div>
+            <p className="text-xs text-slate-500 mb-3 uppercase tracking-widest">Wie war die Intensität?</p>
+            <div className="flex justify-center gap-3">
+              {[1,2,3,4,5].map(v => (
+                <button key={v} onClick={() => setFeeling(v)}
+                  className={`text-2xl transition-transform ${feeling >= v ? 'scale-110' : 'opacity-30 hover:opacity-60'}`}>
+                  ⭐
+                </button>
+              ))}
+            </div>
+          </div>
+          <button
+            onClick={() => onFinish(feeling)}
+            disabled={!feeling}
+            className={`w-full h-12 rounded-xl font-black text-sm transition-all ${feeling ? 'bg-emerald-500 hover:bg-emerald-600 text-white' : 'bg-slate-800 text-slate-600 cursor-not-allowed'}`}
+          >
+            ✓ Abschließen
+          </button>
+          <button onClick={onClose} className="text-sm text-slate-600 hover:text-slate-400">Schließen</button>
+        </motion.div>
+      </div>
+    );
+  }
+
   return (
-    <motion.div
-      layout
-      initial={{ opacity: 0, y: 16 }}
-      animate={{ opacity: 1, y: 0 }}
-      className={`rounded-2xl border glass ${colors.border} overflow-hidden`}
-    >
-      <button
-        onClick={() => !isDoneToday && setExpanded(!expanded)}
-        className="w-full p-5 text-left"
-      >
+    <div className="fixed inset-0 z-50 bg-slate-950 flex flex-col">
+      {/* Header */}
+      <div className="flex items-center justify-between px-5 py-4 border-b border-slate-800">
+        <div>
+          <p className={`text-[10px] font-bold uppercase tracking-widest ${stepTypeInfo?.color || 'text-slate-400'}`}>
+            {stepTypeInfo?.label} · {stepIdx + 1} / {totalSteps}
+          </p>
+          <h2 className="text-lg font-black text-white">{currentStep?.title}</h2>
+        </div>
+        <button onClick={onClose} className="p-2 rounded-xl bg-slate-800 text-slate-400 hover:text-white">
+          <X className="w-5 h-5" />
+        </button>
+      </div>
+
+      {/* Progress bar */}
+      <div className="h-1 bg-slate-800">
+        <motion.div
+          className={`h-full ${isCooldown ? 'bg-cyan-500' : 'bg-orange-500'}`}
+          style={{ width: `${progress}%` }}
+          transition={{ duration: 0.5 }}
+        />
+      </div>
+
+      {/* Step overview pills */}
+      <div className="flex gap-1.5 px-5 py-3 overflow-x-auto">
+        {steps.map((s, i) => (
+          <div key={i} className={`h-1.5 flex-1 rounded-full transition-all ${
+            i < stepIdx ? 'bg-emerald-500' : i === stepIdx ? (isCooldown ? 'bg-cyan-500' : 'bg-orange-500') : 'bg-slate-700'
+          }`} />
+        ))}
+      </div>
+
+      {/* Main content */}
+      <div className="flex-1 flex flex-col items-center justify-center px-6 text-center space-y-6">
+        <AnimatePresence mode="wait">
+          <motion.div key={stepIdx} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}
+            className="space-y-6 w-full max-w-sm">
+            {/* Timer */}
+            <div className={`w-36 h-36 mx-auto rounded-full flex items-center justify-center border-4 ${
+              isCooldown ? 'border-cyan-500/50 bg-cyan-500/10' : 'border-orange-500/50 bg-orange-500/10'
+            }`}>
+              <div>
+                <p className={`text-4xl font-black tabular-nums ${isCooldown ? 'text-cyan-400' : 'text-orange-400'}`}>
+                  {formatTime(timeLeft)}
+                </p>
+                {currentStep?.sets && currentStep?.reps && (
+                  <p className="text-xs text-slate-400 mt-1">{currentStep.sets}×{currentStep.reps}</p>
+                )}
+              </div>
+            </div>
+
+            {/* Instruction */}
+            <p className="text-base text-slate-200 leading-relaxed font-medium">{currentStep?.instruction}</p>
+
+            {/* Cue */}
+            {currentStep?.cue && (
+              <div className="glass rounded-xl border border-slate-700/50 px-4 py-3">
+                <p className="text-xs text-slate-500 uppercase tracking-widest mb-1">Coach-Cue</p>
+                <p className="text-sm text-slate-300 font-medium italic">"{currentStep.cue}"</p>
+              </div>
+            )}
+          </motion.div>
+        </AnimatePresence>
+      </div>
+
+      {/* Controls */}
+      <div className="px-6 pb-10 space-y-3">
+        <button onClick={toggleTimer}
+          className={`w-full h-14 rounded-2xl font-black text-base flex items-center justify-center gap-2 transition-all active:scale-95 ${
+            running
+              ? 'bg-slate-800 text-slate-300 border border-slate-700'
+              : (isCooldown ? 'bg-cyan-500 hover:bg-cyan-600 text-black' : 'bg-orange-500 hover:bg-orange-600 text-white')
+          }`}>
+          {running ? '⏸ Pause' : <><Play className="w-5 h-5" /> {stepIdx === 0 && timeLeft === steps[0]?.duration_seconds ? 'Snack starten' : 'Weiter'}</>}
+        </button>
+        {totalSteps > 1 && (
+          <button onClick={skipStep} className="w-full h-10 rounded-xl font-medium text-sm text-slate-500 flex items-center justify-center gap-1 hover:text-slate-300 transition-colors">
+            <SkipForward className="w-4 h-4" /> Schritt überspringen
+          </button>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// ─── Snack Card ─────────────────────────────────────────────────────────────────
+
+function SnackCard({ snack, isDoneToday, onStart }) {
+  const cfg = TYPE_CONFIG[snack.type] || TYPE_CONFIG.hiit;
+  const colors = COLORS[snack.color_class || cfg.color] || COLORS.orange;
+  const hasSequence = snack.sequence?.length > 0;
+  const mainSteps = snack.sequence?.filter(s => s.type === 'exercise' || s.type === 'rest') || [];
+  const cooldownSteps = snack.sequence?.filter(s => s.type === 'mfr_cooldown' || s.type === 'breath_cooldown') || [];
+
+  return (
+    <motion.div layout initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
+      className={`rounded-2xl border glass ${colors.border} overflow-hidden`}>
+      <div className="p-5">
         <div className="flex items-start gap-4">
           <div className={`text-3xl flex-shrink-0 w-12 h-12 flex items-center justify-center rounded-xl ${colors.bg}`}>
             {cfg.icon}
@@ -126,23 +237,16 @@ function SnackCard({ snack, isDoneToday, onComplete }) {
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 flex-wrap mb-1">
               <span className={`text-[10px] font-bold uppercase tracking-widest ${colors.text}`}>{cfg.label}</span>
-              <span className={`text-[10px] px-2 py-0.5 rounded-full font-medium ${colors.badge}`}>
-                {HORMESIS_LABELS[snack.hormesis_type] || snack.hormesis_type}
-              </span>
             </div>
             <h3 className="text-base font-black text-white leading-tight">{snack.name}</h3>
             {snack.subtitle && <p className="text-xs text-slate-400 mt-0.5">{snack.subtitle}</p>}
           </div>
           <div className="flex flex-col items-end gap-1 flex-shrink-0">
-            <div className="flex items-center gap-1 text-slate-400">
-              <Clock className="w-3.5 h-3.5" />
+            <div className="flex items-center gap-1">
+              <Clock className="w-3.5 h-3.5 text-slate-400" />
               <span className="text-sm font-bold text-white">{snack.duration_minutes} Min</span>
             </div>
-            {isDoneToday ? (
-              <CheckCircle2 className="w-5 h-5 text-emerald-400" />
-            ) : (
-              <ChevronRight className={`w-4 h-4 transition-transform ${expanded ? 'rotate-90' : ''} text-slate-500`} />
-            )}
+            {isDoneToday && <CheckCircle2 className="w-5 h-5 text-emerald-400" />}
           </div>
         </div>
 
@@ -152,123 +256,75 @@ function SnackCard({ snack, isDoneToday, onComplete }) {
             <p className="text-xs text-emerald-300 font-medium">{snack.longevity_benefit}</p>
           </div>
         )}
-      </button>
 
-      <AnimatePresence>
-        {expanded && !isDoneToday && (
-          <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: 'auto', opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            className="overflow-hidden"
-          >
-            <div className="px-5 pb-5 space-y-4 border-t border-slate-700/50 pt-4">
-              {snack.description && (
-                <p className="text-sm text-slate-300 leading-relaxed">{snack.description}</p>
-              )}
-
-              {snack.instructions?.length > 0 && (
-                <div className="space-y-2">
-                  <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500">Anleitung</p>
-                  {snack.instructions.map((step, i) => (
-                    <div key={i} className="flex gap-3 items-start">
-                      <span className={`text-xs font-black w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 ${colors.bg} ${colors.text}`}>
-                        {i + 1}
-                      </span>
-                      <p className="text-xs text-slate-300 leading-relaxed">{step}</p>
-                    </div>
-                  ))}
-                </div>
-              )}
-
-              {snack.rhonda_patrick_principle && (
-                <div className="rounded-xl bg-slate-800/50 border border-slate-700/50 p-3">
-                  <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-1">🔬 Wissenschaft</p>
-                  <p className="text-xs text-slate-400 leading-relaxed">{snack.rhonda_patrick_principle}</p>
-                </div>
-              )}
-
-              {/* Feeling Rating */}
-              <div>
-                <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-2">Wie war's?</p>
-                <div className="flex gap-2">
-                  {[1, 2, 3, 4, 5].map(v => (
-                    <button
-                      key={v}
-                      onClick={() => setFeeling(v)}
-                      className={`text-xl transition-transform ${feeling >= v ? 'scale-110' : 'opacity-30'}`}
-                    >
-                      ⭐
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              <motion.button
-                whileTap={{ scale: 0.96 }}
-                onClick={handleDone}
-                disabled={!feeling || logging}
-                className={`w-full h-12 rounded-xl font-black text-sm transition-all ${
-                  feeling
-                    ? `${colors.bg} ${colors.text} border ${colors.border} hover:opacity-90`
-                    : 'bg-slate-800 text-slate-600 cursor-not-allowed'
-                }`}
-              >
-                {logging ? '...' : '✓ Snack absolviert!'}
-              </motion.button>
-            </div>
-          </motion.div>
+        {/* Sequence preview */}
+        {hasSequence && (
+          <div className="mt-3 flex gap-1.5 flex-wrap">
+            {mainSteps.map((s, i) => (
+              <span key={i} className="text-[10px] px-2 py-0.5 rounded-full bg-orange-500/15 text-orange-300 font-medium border border-orange-500/20">
+                {s.title}
+              </span>
+            ))}
+            {cooldownSteps.map((s, i) => (
+              <span key={i} className="text-[10px] px-2 py-0.5 rounded-full bg-cyan-500/10 text-cyan-400 font-medium border border-cyan-500/20">
+                🧊 {s.title}
+              </span>
+            ))}
+          </div>
         )}
-      </AnimatePresence>
+      </div>
 
+      {!isDoneToday && (
+        <div className="px-5 pb-5">
+          <button onClick={() => onStart(snack)}
+            className={`w-full h-11 rounded-xl font-black text-sm flex items-center justify-center gap-2 transition-all active:scale-95 ${colors.btn}`}>
+            <Play className="w-4 h-4" /> Snack starten
+          </button>
+        </div>
+      )}
       {isDoneToday && (
         <div className="px-5 pb-4">
-          <p className="text-xs text-emerald-400 font-bold">✓ Heute erledigt</p>
+          <p className="text-xs text-emerald-400 font-bold">✓ Zelluläre Rendite gebucht</p>
         </div>
       )}
     </motion.div>
   );
 }
 
+// ─── Main Page ──────────────────────────────────────────────────────────────────
+
 export default function FitnessSnacks() {
   const queryClient = useQueryClient();
   const [user, setUser] = useState(null);
+  const [activeSnack, setActiveSnack] = useState(null);
 
-  useEffect(() => {
-    base44.auth.me().then(setUser).catch(() => {});
-  }, []);
+  useEffect(() => { base44.auth.me().then(setUser).catch(() => {}); }, []);
 
-  const { data: snacks = [] } = useQuery({
-    queryKey: ['fitnessSnacks'],
-    queryFn: () => base44.entities.FitnessSnack.list(),
-  });
-
-  const { data: profile } = useQuery({
-    queryKey: ['neuroProfile', user?.email],
-    queryFn: () => base44.entities.UserNeuroProfile.filter({ user_email: user.email }).then(r => r[0] || null),
+  const { data: snackData, isLoading } = useQuery({
+    queryKey: ['personalizedSnacks', user?.email],
+    queryFn: () => base44.functions.invoke('getPersonalizedSnacks', {}).then(r => r.data),
     enabled: !!user?.email,
+    refetchOnWindowFocus: false,
   });
 
   const today = new Date().toISOString().split('T')[0];
-
   const { data: todayLogs = [] } = useQuery({
     queryKey: ['snackLogs', user?.email, today],
     queryFn: () => base44.entities.FitnessSnackLog.filter({ user_email: user.email, completed_date: today }),
     enabled: !!user?.email,
   });
-
   const { data: allLogs = [] } = useQuery({
     queryKey: ['snackLogsAll', user?.email],
     queryFn: () => base44.entities.FitnessSnackLog.filter({ user_email: user.email }),
     enabled: !!user?.email,
   });
 
-  const filtered = filterSnacksForUser(snacks, profile);
-  const daily = pickDailySnacks(filtered, 3);
   const doneTodayIds = new Set(todayLogs.map(l => l.snack_id));
+  const readiness = snackData?.readiness_status || 'green';
+  const rdCfg = READINESS_CONFIG[readiness] || READINESS_CONFIG.green;
 
   const streakDays = (() => {
-    if (allLogs.length === 0) return 0;
+    if (!allLogs.length) return 0;
     const dates = [...new Set(allLogs.map(l => l.completed_date))].sort().reverse();
     let streak = 0;
     let check = new Date();
@@ -280,7 +336,7 @@ export default function FitnessSnacks() {
     return streak;
   })();
 
-  const handleComplete = async (snack, feeling) => {
+  const handleFinish = async (snack, feeling) => {
     if (!user?.email) return;
     await base44.entities.FitnessSnackLog.create({
       user_email: user.email,
@@ -290,84 +346,106 @@ export default function FitnessSnacks() {
       hormesis_type: snack.hormesis_type,
       duration_minutes: snack.duration_minutes,
       completed_date: today,
-      feeling_after: feeling,
+      feeling_after: feeling || 3,
     });
     queryClient.invalidateQueries({ queryKey: ['snackLogs'] });
     queryClient.invalidateQueries({ queryKey: ['snackLogsAll'] });
     base44.analytics.track({ eventName: 'fitness_snack_completed', properties: { snack_type: snack.type, duration: snack.duration_minutes } });
+    setActiveSnack(null);
   };
 
-  const age = profile ? getAgeFromBirthdate(profile.date_of_birth) : null;
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 pb-32">
-      <div className="max-w-lg mx-auto px-4 pt-6 space-y-6">
-
-        {/* Header */}
-        <div>
-          <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-orange-400 mb-1">neurometa</p>
-          <h1 className="text-3xl font-black text-white tracking-tight">Fitness Snacks</h1>
-          <p className="text-sm text-slate-400 mt-1">Kurze Hormesis-Reize für Longevity & Vitalität</p>
-        </div>
-
-        {/* Stats Row */}
-        <div className="grid grid-cols-3 gap-3">
-          <div className="glass rounded-2xl border border-orange-500/20 p-3 text-center">
-            <p className="text-2xl font-black text-orange-400">{streakDays}</p>
-            <p className="text-[10px] text-slate-400 uppercase tracking-wider">Streak Tage</p>
-          </div>
-          <div className="glass rounded-2xl border border-cyan-500/20 p-3 text-center">
-            <p className="text-2xl font-black text-cyan-400">{allLogs.length}</p>
-            <p className="text-[10px] text-slate-400 uppercase tracking-wider">Total Snacks</p>
-          </div>
-          <div className="glass rounded-2xl border border-emerald-500/20 p-3 text-center">
-            <p className="text-2xl font-black text-emerald-400">{doneTodayIds.size}</p>
-            <p className="text-[10px] text-slate-400 uppercase tracking-wider">Heute</p>
-          </div>
-        </div>
-
-        {/* Personalization badge */}
-        {(age || profile?.biological_sex) && (
-          <div className="flex items-center gap-2 px-3 py-2 rounded-xl bg-slate-800/50 border border-slate-700/50">
-            <span className="text-xs text-slate-400">
-              🎯 Personalisiert für
-              {age ? ` ${age} Jahre` : ''}
-              {profile?.biological_sex === 'male' ? ', männlich' : profile?.biological_sex === 'female' ? ', weiblich' : ''}
-            </span>
-          </div>
+    <>
+      {/* Snack Player overlay */}
+      <AnimatePresence>
+        {activeSnack && (
+          <SnackPlayer
+            snack={activeSnack}
+            onClose={() => setActiveSnack(null)}
+            onFinish={(feeling) => handleFinish(activeSnack, feeling)}
+          />
         )}
+      </AnimatePresence>
 
-        {/* Daily Snacks */}
-        <div>
-          <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-500 mb-3">Deine heutigen Snacks</p>
-          {daily.length === 0 ? (
-            <div className="glass rounded-2xl border border-slate-700/50 p-8 text-center">
-              <p className="text-slate-400 text-sm">Noch keine Fitness Snacks verfügbar.</p>
-              <p className="text-slate-500 text-xs mt-1">Admin kann Snacks im AdminHub hinzufügen.</p>
+      <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 pb-32">
+        <div className="max-w-lg mx-auto px-4 pt-6 space-y-5">
+
+          {/* Header */}
+          <div>
+            <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-orange-400 mb-1">neurometa · hormesis</p>
+            <h1 className="text-3xl font-black text-white tracking-tight">Fitness Snacks</h1>
+            <p className="text-sm text-slate-400 mt-1">1–10 Min. Hormetische Dosen für maximale Zelluläre Rendite</p>
+          </div>
+
+          {/* Readiness Gate */}
+          <div className={`glass rounded-2xl border ${rdCfg.border} p-4 flex items-center gap-4`}>
+            <div className={`w-3 h-3 rounded-full flex-shrink-0 ${rdCfg.dot} shadow-[0_0_12px_currentColor]`} />
+            <div className="flex-1">
+              <p className={`text-sm font-black ${rdCfg.color}`}>{rdCfg.label}</p>
+              <p className="text-xs text-slate-400">{rdCfg.sub}</p>
             </div>
-          ) : (
-            <div className="space-y-3">
-              {daily.map(snack => (
-                <SnackCard
-                  key={snack.id}
-                  snack={snack}
-                  isDoneToday={doneTodayIds.has(snack.id)}
-                  onComplete={handleComplete}
-                />
-              ))}
+            {!snackData?.has_readiness_today && (
+              <span className="text-[10px] text-slate-500 bg-slate-800 px-2 py-1 rounded-lg">kein Check heute</span>
+            )}
+          </div>
+
+          {/* Stats */}
+          <div className="grid grid-cols-3 gap-3">
+            <div className="glass rounded-2xl border border-orange-500/20 p-3 text-center">
+              <p className="text-2xl font-black text-orange-400">{streakDays}</p>
+              <p className="text-[10px] text-slate-400 uppercase tracking-wider">Streak</p>
             </div>
-          )}
-        </div>
+            <div className="glass rounded-2xl border border-cyan-500/20 p-3 text-center">
+              <p className="text-2xl font-black text-cyan-400">{allLogs.length}</p>
+              <p className="text-[10px] text-slate-400 uppercase tracking-wider">Total Dosen</p>
+            </div>
+            <div className="glass rounded-2xl border border-emerald-500/20 p-3 text-center">
+              <p className="text-2xl font-black text-emerald-400">{doneTodayIds.size}</p>
+              <p className="text-[10px] text-slate-400 uppercase tracking-wider">Heute</p>
+            </div>
+          </div>
 
-        {/* Science Note */}
-        <div className="glass rounded-2xl border border-slate-700/30 p-5">
-          <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-2">🔬 Warum Hormesis?</p>
-          <p className="text-xs text-slate-400 leading-relaxed">
-            Kurze, kontrollierte Stressreize – ob durch Kälte, Hitze, Hypoxie oder intensive Bewegung – aktivieren zelluläre Schutzprogramme (NRF2, AMPK, FOXO3). Das Ergebnis: mehr Mitochondrien, bessere VO2max, verlangsamtes Zellaltern. <span className="text-slate-300 font-medium">Dr. Rhonda Patrick nennt das „Conditioning the body for resilience."</span>
-          </p>
-        </div>
+          {/* Snacks */}
+          <div>
+            <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-500 mb-3">
+              Deine heutigen Hormetic Doses
+            </p>
 
+            {isLoading ? (
+              <div className="glass rounded-2xl border border-slate-700/50 p-12 flex items-center justify-center">
+                <div className="w-6 h-6 border-2 border-orange-500 border-t-transparent rounded-full animate-spin" />
+              </div>
+            ) : !snackData?.snacks?.length ? (
+              <div className="glass rounded-2xl border border-slate-700/50 p-8 text-center space-y-2">
+                <AlertTriangle className="w-8 h-8 text-slate-600 mx-auto" />
+                <p className="text-slate-400 text-sm">Noch keine Snacks im System.</p>
+                <p className="text-slate-500 text-xs">Admin kann Snacks im AdminHub anlegen.</p>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {snackData.snacks.map(snack => (
+                  <SnackCard
+                    key={snack.id}
+                    snack={snack}
+                    isDoneToday={doneTodayIds.has(snack.id)}
+                    onStart={setActiveSnack}
+                  />
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Science Note */}
+          <div className="glass rounded-2xl border border-slate-700/30 p-5">
+            <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-2">🔬 Warum Hormesis?</p>
+            <p className="text-xs text-slate-400 leading-relaxed">
+              Kurze, kontrollierte Stressoren – HIIT, Kälte, Hitze, Kraft – aktivieren NRF2, AMPK und FOXO3: zelluläre Langlebigkeitsprogramme. Dein Readiness-Status entscheidet, welche Dosis dein System heute verträgt.{' '}
+              <span className="text-slate-300 font-medium">Dr. Rhonda Patrick: "The dose makes the medicine."</span>
+            </p>
+          </div>
+
+        </div>
       </div>
-    </div>
+    </>
   );
 }
