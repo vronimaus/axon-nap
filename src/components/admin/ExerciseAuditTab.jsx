@@ -81,7 +81,7 @@ function findIssues(exercises) {
 
 // ── Issue Group Card ───────────────────────────────────────────────────────────
 
-function IssueGroupCard({ title, severity, issues, exercises, onFixDone, canBulkFix, onBulkFix, bulkFixing, bulkProgress }) {
+function IssueGroupCard({ title, severity, issues, exercises, onFixDone, canBulkFix, onBulkFix, bulkFixing, bulkProgress, bulkLabel }) {
   const [expanded, setExpanded] = useState(false);
 
   const severityStyle = {
@@ -118,7 +118,7 @@ function IssueGroupCard({ title, severity, issues, exercises, onFixDone, canBulk
               ) : (
                 <>
                   <Wand2 className="w-3 h-3 mr-1" />
-                  Alle {issues.length} fixen
+                  {bulkLabel || `Alle ${issues.length} fixen`}
                 </>
               )}
             </Button>
@@ -338,6 +338,52 @@ export default function ExerciseAuditTab() {
 
   // ── Bulk Fix Handlers ──────────────────────────────────────────────────────
 
+  const bulkDeleteDuplicateIds = async () => {
+    const list = issues.duplicate_id;
+    setBulkFixing(p => ({ ...p, duplicate_id: true }));
+    let done = 0;
+    for (const issue of list) {
+      // Keep the most recently updated, delete the rest
+      const group = displayExercises.filter(e => issue.ids.includes(e.id));
+      const sorted = [...group].sort((a, b) => new Date(b.updated_date) - new Date(a.updated_date));
+      for (let i = 1; i < sorted.length; i++) {
+        await base44.entities.Exercise.delete(sorted[i].id);
+        setLocalExercises(prev => prev.filter(e => e.id !== sorted[i].id));
+        done++;
+      }
+      setBulkProgress(p => ({ ...p, duplicate_id: `${done} gelöscht` }));
+    }
+    toast.success(`${done} Duplikate gelöscht`);
+    setBulkFixing(p => ({ ...p, duplicate_id: false }));
+    setRefreshKey(k => k + 1);
+  };
+
+  const bulkDeleteSimilarNames = async () => {
+    const list = issues.similar_name;
+    setBulkFixing(p => ({ ...p, similar_name: true }));
+    const deleted = new Set();
+    let done = 0;
+    for (const issue of list) {
+      const [idA, idB] = issue.ids;
+      if (deleted.has(idA) || deleted.has(idB)) continue;
+      const exA = displayExercises.find(e => e.id === idA);
+      const exB = displayExercises.find(e => e.id === idB);
+      if (!exA || !exB) continue;
+      // Delete the one with less data (fewer affected_nodes + no description)
+      const scoreA = (exA.affected_nodes?.length || 0) + (exA.description ? 2 : 0) + (exA.smart_tags ? 1 : 0);
+      const scoreB = (exB.affected_nodes?.length || 0) + (exB.description ? 2 : 0) + (exB.smart_tags ? 1 : 0);
+      const toDelete = scoreA >= scoreB ? exB : exA;
+      await base44.entities.Exercise.delete(toDelete.id);
+      setLocalExercises(prev => prev.filter(e => e.id !== toDelete.id));
+      deleted.add(toDelete.id);
+      done++;
+      setBulkProgress(p => ({ ...p, similar_name: `${done} gelöscht` }));
+    }
+    toast.success(`${done} ähnliche Duplikate gelöscht`);
+    setBulkFixing(p => ({ ...p, similar_name: false }));
+    setRefreshKey(k => k + 1);
+  };
+
   const bulkFixCategoryMismatch = async () => {
     const list = issues.category_mismatch;
     setBulkFixing(p => ({ ...p, category_mismatch: true }));
@@ -494,14 +540,22 @@ Antworte NUR mit diesem JSON:
             severity="high"
             issues={issues.duplicate_id}
             exercises={displayExercises}
-            canBulkFix={false}
+            canBulkFix={issues.duplicate_id.length > 0}
+            onBulkFix={bulkDeleteDuplicateIds}
+            bulkFixing={bulkFixing.duplicate_id}
+            bulkProgress={bulkProgress.duplicate_id}
+            bulkLabel="Duplikate löschen"
           />
           <IssueGroupCard
             title="Ähnliche Namen (mögliche Duplikate)"
             severity="medium"
             issues={issues.similar_name}
             exercises={displayExercises}
-            canBulkFix={false}
+            canBulkFix={issues.similar_name.length > 0}
+            onBulkFix={bulkDeleteSimilarNames}
+            bulkFixing={bulkFixing.similar_name}
+            bulkProgress={bulkProgress.similar_name}
+            bulkLabel="Schwächere löschen"
           />
           <IssueGroupCard
             title="Kategorie-Mismatch (ID-Prefix ≠ category)"
