@@ -297,7 +297,7 @@ export default function Dashboard() {
               </div>
             </motion.button>
 
-            {/* 3. REHAB */
+            {/* 3. REHAB */}
             <motion.button
               whileTap={{ scale: 0.98 }}
               onClick={() => handleDestinationClick('Rehab & Recovery', () => window.location.href = createPageUrl('DiagnosisChat'))}
