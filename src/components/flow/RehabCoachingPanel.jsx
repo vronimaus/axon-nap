@@ -242,7 +242,7 @@ export default function RehabCoachingPanel({
                   <li>✓ <span className="font-bold">Rule #2 (Bio-Feedback Override):</span> NRS entscheidet, nicht dein Ego</li>
                   <li>✓ <span className="font-bold">Rule #5 (3-Session Constancy):</span> Erst nach 3 guten Sessions progression</li>
                   <li>✓ <span className="font-bold">Rule #1 (3-Phase Structure):</span> Immer Primer → Engine → Reset</li>
-                  <li>✓ <span className="font-bold">Rule #6 (Safety Flare):</span> Schmerz > Ego. Immer.</li>
+                  <li>✓ <span className="font-bold">Rule #6 (Safety Flare):</span> Schmerz {">"}  Ego. Immer.</li>
                 </ul>
               </div>
             </motion.div>

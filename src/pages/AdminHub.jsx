@@ -4,7 +4,7 @@ import { createPageUrl } from '@/utils';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { AlertCircle, Zap, Dumbbell, Palette, ArrowLeft, KeyRound, Megaphone, Kanban, Mic, ShieldCheck } from 'lucide-react';
+import { AlertCircle, Zap, Dumbbell, Palette, ArrowLeft, KeyRound, Megaphone, Kanban, Mic, ShieldCheck, Trash2 } from 'lucide-react';
 import ExerciseEditorTab from '../components/admin/ExerciseEditorTab';
 import ExerciseAuditTab from '../components/admin/ExerciseAuditTab';
 import InviteCodesTab from '../components/admin/InviteCodesTab';
