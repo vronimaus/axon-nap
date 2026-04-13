@@ -381,7 +381,7 @@ export default function CommandCenter({ user, handleDestinationClick }) {
                 {(!todayReadiness || todayReadiness.readiness_score < 7) && (
                   <Tile onClick={() => window.location.href = createPageUrl('DiagnosisChat')}>
                     <Target className="w-4 h-4 text-zinc-600 mb-3" />
-                    <p className="text-sm font-semibold text-zinc-300 leading-tight">Körper entspannen</p>
+                    <p className="text-sm font-semibold text-zinc-300 leading-tight">Tune-Up</p>
                     <ChevronRight className="w-3 h-3 text-zinc-700 mt-2" />
                   </Tile>
                 )}
