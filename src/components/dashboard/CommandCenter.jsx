@@ -2,11 +2,11 @@ import React, { useState, useMemo, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import InteractiveBodyMapInput from '../diagnosis/InteractiveBodyMapInput';
 import ReadinessTrendChart from './ReadinessTrendChart';
-import { X } from 'lucide-react';
+import { X, Wrench, Brain, Zap } from 'lucide-react';
 import { createPageUrl } from '@/utils';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
-import { ChevronRight, Zap, Activity, BookOpen, Target, Watch } from 'lucide-react';
+import { ChevronRight, Activity, BookOpen } from 'lucide-react';
 
 // ── Readiness Ring ──────────────────────────────────────────────────────────────
 function ReadinessRing({ readiness }) {
@@ -28,7 +28,6 @@ function ReadinessRing({ readiness }) {
     { label: 'Körper',  value: readiness?.feeling_hardware },
     { label: 'Fokus',   value: readiness?.focus_software },
     { label: 'Energie', value: readiness?.energy_battery },
-    { label: 'Schlaf',  value: readiness?.sleep_quality },
   ];
 
   return (
@@ -71,70 +70,8 @@ function ReadinessRing({ readiness }) {
 }
 
 // ── Inline Readiness Widget ─────────────────────────────────────────────────────
-const SLIDER_SENTENCES = {
-  feeling_hardware: [
-    '',
-    'komplett blockiert',
-    'sehr steif und unbeweglich',
-    'ziemlich steif und schwer',
-    'etwas eingeschränkt',
-    'nicht ganz locker, aber ok',
-    'ganz ok, leichte Spannung',
-    'recht locker und beweglich',
-    'gut beweglich und geschmeidig',
-    'fast optimal, super Gefühl',
-    'total locker und frei',
-  ],
-  focus_software: [
-    '',
-    'geistig komplett weg',
-    'kaum präsent, zerstreut',
-    'sehr unkonzentriert',
-    'Fokus fällt schwer',
-    'Fokus kommt und geht',
-    'halbwegs klar, geht ok',
-    'gut konzentriert und dabei',
-    'fokussiert und klar',
-    'sehr klar und leistungsfähig',
-    'scharf fokussiert, auf den Punkt',
-  ],
-  energy_battery: [
-    '',
-    'komplett ausgepowert, leer',
-    'kaum Energie, ausgelaugt',
-    'sehr erschöpft und schwer',
-    'müde und träge',
-    'Energie ok, aber wenig',
-    'Energie geht so',
-    'gut geladen und bereit',
-    'kraftvoll und energiegeladen',
-    'sehr vital, echte Kraft',
-    'volle Kraft, Bäume ausreißen',
-  ],
-  sleep_quality: [
-    '',
-    'kaum geschlafen',
-    'nicht der Rede wert',
-    'sehr schlecht geschlafen',
-    'schlecht, nicht erholt',
-    'durchwachsen geschlafen',
-    'mittelmäßig, geht aber',
-    'ganz ok geschlafen',
-    'gut ausgeschlafen und erholt',
-    'sehr gut geschlafen, fit',
-    'ausgeschlafen, energiegeladen',
-  ],
-};
-
-const SLIDERS = [
-  { key: 'feeling_hardware', label: 'Beweglichkeit'   },
-  { key: 'focus_software',   label: 'Geistiger Fokus' },
-  { key: 'energy_battery',   label: 'Körperenergie'   },
-  { key: 'sleep_quality',    label: 'Schlaf'           },
-];
-
 function InlineReadinessWidget({ user, todayReadiness }) {
-  const [values, setValues] = useState({ feeling_hardware: 5, focus_software: 5, energy_battery: 5, sleep_quality: 5 });
+  const [values, setValues] = useState({ feeling_hardware: 5, focus_software: 5, energy_battery: 5 });
   const [expanded, setExpanded] = useState(false);
   const [saving, setSaving] = useState(false);
   const [forceShow, setForceShow] = useState(false);
@@ -152,6 +89,12 @@ function InlineReadinessWidget({ user, todayReadiness }) {
     </div>
   );
 
+  const getBarColor = (value) => {
+    if (value <= 4) return '#ef4444';
+    if (value <= 7) return '#f59e0b';
+    return '#10b981';
+  };
+
   const handleChange = (key, val) => {
     if (!expanded) setExpanded(true);
     setValues(v => ({ ...v, [key]: val }));
@@ -160,12 +103,14 @@ function InlineReadinessWidget({ user, todayReadiness }) {
   const handleSave = async () => {
     setSaving(true);
     const today = new Date().toISOString().split('T')[0];
-    const avg = (values.feeling_hardware + values.focus_software + values.energy_battery + values.sleep_quality) / 4;
-    const min = Math.min(values.feeling_hardware, values.focus_software, values.energy_battery, values.sleep_quality);
+    const avg = (values.feeling_hardware + values.focus_software + values.energy_battery) / 3;
+    const min = Math.min(values.feeling_hardware, values.focus_software, values.energy_battery);
     const status = avg < 4 || min <= 2 ? 'red' : avg < 6.5 || min <= 4 ? 'yellow' : 'green';
     await base44.entities.ReadinessCheck.create({
       user_email: user.email,
-      ...values,
+      feeling_hardware: values.feeling_hardware,
+      focus_software: values.focus_software,
+      energy_battery: values.energy_battery,
       readiness_status: status,
       readiness_score: Math.round(avg * 10) / 10,
       check_date: today,
@@ -176,51 +121,50 @@ function InlineReadinessWidget({ user, todayReadiness }) {
     setSaving(false);
   };
 
+  const metrics = [
+    { icon: Wrench, label: 'HARDWARE', sublabel: 'Körpergefühl', value: values.feeling_hardware, setter: (v) => handleChange('feeling_hardware', v), low: 'Steif', high: 'Geschmeidig' },
+    { icon: Brain, label: 'SOFTWARE', sublabel: 'Fokus', value: values.focus_software, setter: (v) => handleChange('focus_software', v), low: 'Müde', high: 'Hellwach' },
+    { icon: Zap, label: 'BATTERIE', sublabel: 'Energie', value: values.energy_battery, setter: (v) => handleChange('energy_battery', v), low: 'Leer', high: 'Voll' },
+  ];
+
   return (
-    <motion.div layout className="space-y-3 mt-1">
-      {!expanded && (
-        <p className="text-sm text-zinc-400">Schieber bewegen zum Starten</p>
-      )}
-      {SLIDERS.map(s => (
-        <div key={s.key} className="space-y-2">
+    <motion.div layout className="space-y-4 mt-2">
+      {!expanded && <p className="text-xs text-zinc-500 uppercase tracking-wider">3 Inputs erforderlich</p>}
+      {metrics.map(({ icon: Icon, label, sublabel, value, setter, low, high }) => (
+        <motion.div key={label} layout className="bg-zinc-800/40 rounded-lg border border-zinc-700/50 p-3">
+          <div className="flex items-center justify-between mb-2">
+            <div className="flex items-center gap-2">
+              <div className="w-6 h-6 rounded bg-zinc-700 flex items-center justify-center">
+                <Icon className="w-3 h-3 text-cyan-400" />
+              </div>
+              <div>
+                <p className="text-[9px] font-bold uppercase tracking-widest text-zinc-200">{label}</p>
+                <p className="text-[9px] text-zinc-500">{sublabel}</p>
+              </div>
+            </div>
+            <span className="text-lg font-bold text-white font-mono">{value}</span>
+          </div>
           <input
             type="range" min={1} max={10} step={1}
-            value={values[s.key]}
-            onChange={e => handleChange(s.key, Number(e.target.value))}
-            className="w-full h-1.5 rounded-full appearance-none bg-zinc-800 cursor-pointer"
-            style={{ accentColor: '#94a3b8' }}
+            value={value}
+            onChange={e => setter(Number(e.target.value))}
+            className="w-full h-1.5 rounded appearance-none bg-zinc-700 cursor-pointer"
+            style={{ accentColor: getBarColor(value) }}
           />
-          <div className="min-h-[1.5rem]">
-            <AnimatePresence mode="wait">
-              {expanded ? (
-                <motion.p
-                  key={values[s.key]}
-                  initial={{ opacity: 0, y: 4 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.18 }}
-                  className="text-sm text-white leading-snug"
-                >
-                  <span className="text-zinc-500">{s.label} —</span>{' '}
-                  <span>{SLIDER_SENTENCES[s.key][values[s.key]]}</span>
-                </motion.p>
-              ) : (
-                <motion.p key="label" className="text-xs text-zinc-600 uppercase tracking-wider">
-                  {s.label}
-                </motion.p>
-              )}
-            </AnimatePresence>
+          <div className="flex justify-between text-[9px] text-zinc-500 mt-1 font-mono">
+            <span>{low}</span>
+            <span>{high}</span>
           </div>
-        </div>
+        </motion.div>
       ))}
       <AnimatePresence>
         {expanded && (
           <motion.button
-            initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }}
             onClick={handleSave} disabled={saving}
-            className="w-full h-9 rounded-xl bg-white/[0.06] hover:bg-white/[0.1] text-white text-xs font-bold transition-all disabled:opacity-50"
+            className="w-full h-9 rounded-lg bg-cyan-500/20 hover:bg-cyan-500/30 border border-cyan-500/40 text-cyan-400 text-xs font-bold uppercase tracking-widest transition-all disabled:opacity-50"
           >
-            {saving ? 'Speichert…' : 'Speichern'}
+            {saving ? 'Speichert…' : '▶  System Kalibrieren'}
           </motion.button>
         )}
       </AnimatePresence>
