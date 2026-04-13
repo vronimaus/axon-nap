@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { createPageUrl } from '@/utils';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
@@ -134,9 +134,20 @@ function InlineReadinessWidget({ user, todayReadiness }) {
   const [values, setValues] = useState({ feeling_hardware: 5, focus_software: 5, energy_battery: 5, sleep_quality: 5 });
   const [expanded, setExpanded] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [forceShow, setForceShow] = useState(false);
   const queryClient = useQueryClient();
 
-  if (todayReadiness) return <ReadinessRing readiness={todayReadiness} />;
+  if (todayReadiness && !forceShow) return (
+    <div>
+      <ReadinessRing readiness={todayReadiness} />
+      <button
+        onClick={() => { setForceShow(true); setExpanded(false); }}
+        className="mt-3 w-full text-[10px] text-zinc-600 hover:text-zinc-400 uppercase tracking-widest transition-colors"
+      >
+        ↺ Check wiederholen
+      </button>
+    </div>
+  );
 
   const handleChange = (key, val) => {
     if (!expanded) setExpanded(true);
@@ -158,6 +169,7 @@ function InlineReadinessWidget({ user, todayReadiness }) {
     });
     sessionStorage.setItem('readiness_check_done', today);
     queryClient.invalidateQueries({ queryKey: ['readinessToday'] });
+    setForceShow(false);
     setSaving(false);
   };
 
@@ -286,6 +298,34 @@ export default function CommandCenter({ user, handleDestinationClick }) {
     queryFn: () => base44.entities.FitnessSnackLog.filter({ user_email: user.email }),
     enabled: !!user?.email,
   });
+
+  const { data: allChecks = [] } = useQuery({
+    queryKey: ['allReadinessChecks', user?.email],
+    queryFn: () => base44.entities.ReadinessCheck.filter({ user_email: user.email }, '-created_date', 60),
+    enabled: !!user?.email,
+    staleTime: 10 * 60 * 1000,
+  });
+
+  const troughPattern = useMemo(() => {
+    if (allChecks.length < 5) return null;
+    const buckets = {};
+    allChecks.forEach(c => {
+      if (!c.created_date) return;
+      const h = new Date(c.created_date).getHours();
+      if (!buckets[h]) buckets[h] = [];
+      buckets[h].push(c.readiness_score ?? 5);
+    });
+    let worstHour = null, worstAvg = 10;
+    Object.entries(buckets).forEach(([h, scores]) => {
+      if (scores.length < 3) return;
+      const avg = scores.reduce((a, b) => a + b, 0) / scores.length;
+      if (avg < 6.5 && avg < worstAvg) { worstAvg = avg; worstHour = Number(h); }
+    });
+    return worstHour !== null ? { hour: worstHour, avg: Math.round(worstAvg * 10) / 10 } : null;
+  }, [allChecks]);
+
+  const currentHour = new Date().getHours();
+  const isPreTrough = troughPattern && currentHour >= troughPattern.hour - 2 && currentHour < troughPattern.hour;
 
   const { data: knowledgeSnack } = useQuery({
     queryKey: ['knowledgeSnack'],
@@ -424,6 +464,33 @@ export default function CommandCenter({ user, handleDestinationClick }) {
             <ActivityDots logs={allLogs} />
           </div>
         </div>
+
+        {/* Energie-Muster Banner */}
+        {troughPattern && (
+          <div className={`bg-zinc-900/80 border rounded-2xl p-4 ${isPreTrough ? 'border-amber-500/30' : 'border-white/[0.06]'}`}>
+            <TileLabel>Energie-Muster erkannt</TileLabel>
+            <p className="text-sm text-zinc-300 mt-1">
+              Dein Tief liegt oft gegen{' '}
+              <span className="text-amber-400 font-bold">{troughPattern.hour}:00 Uhr</span>
+              {' '}(Ø {troughPattern.avg}/10)
+            </p>
+            {isPreTrough ? (
+              <p className="text-xs text-amber-400 mt-2 font-medium leading-relaxed">
+                → Jetzt präventiv handeln: Vagus Reset oder Quick Snack — bevor das Tief kommt.
+              </p>
+            ) : (
+              <p className="text-xs text-zinc-600 mt-1">AXON erkennt deine Rhythmen und wird dich rechtzeitig warnen.</p>
+            )}
+            {isPreTrough && (
+              <button
+                onClick={() => window.location.href = createPageUrl('FitnessSnacks')}
+                className="mt-3 text-[10px] font-bold uppercase tracking-widest text-amber-400 hover:text-amber-300 transition-colors"
+              >
+                Jetzt Quick Session starten →
+              </button>
+            )}
+          </div>
+        )}
 
         {user?.role === 'admin' && (
           <button
