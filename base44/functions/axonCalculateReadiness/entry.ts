@@ -1,4 +1,4 @@
-import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
+import { createClient } from 'npm:@base44/sdk@0.8.25';
 
 /**
  * axonCalculateReadiness - Backend-Funktion für NMS-Integration
@@ -19,15 +19,11 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
 
 Deno.serve(async (req) => {
   try {
-    const base44 = createClientFromRequest(req);
-
-    // Authentifizierung prüfen (muss von NMS mit Service-Role aufgerufen werden)
-    const user = await base44.auth.me();
-    if (!user) {
-      return Response.json({ 
-        error: 'Unauthorized - Diese Funktion muss von NMS mit Service-Role aufgerufen werden' 
-      }, { status: 401 });
-    }
+    // Service-Role Client für cross-app Kommunikation
+    const base44 = createClient({
+      serviceRoleKey: Deno.env.get("BASE44_SERVICE_ROLE_KEY"),
+      appId: Deno.env.get("BASE44_APP_ID")
+    });
 
     // Payload validieren
     const payload = await req.json();
