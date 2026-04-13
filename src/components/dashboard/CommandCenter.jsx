@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import InteractiveBodyMapInput from '../diagnosis/InteractiveBodyMapInput';
+import ReadinessTrendChart from './ReadinessTrendChart';
 import { X } from 'lucide-react';
 import { createPageUrl } from '@/utils';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
@@ -297,18 +298,6 @@ export default function CommandCenter({ user, handleDestinationClick }) {
     enabled: !!user?.email,
   });
 
-  const { data: routineLogs = [] } = useQuery({
-    queryKey: ['routineLogsWeek', user?.email],
-    queryFn: () => base44.entities.RoutineHistory.list('-created_date', 30),
-    enabled: !!user?.email,
-  });
-
-  const { data: snackLogs = [] } = useQuery({
-    queryKey: ['snackLogsWeek', user?.email],
-    queryFn: () => base44.entities.FitnessSnackLog.filter({ user_email: user.email }),
-    enabled: !!user?.email,
-  });
-
   const { data: allChecks = [] } = useQuery({
     queryKey: ['allReadinessChecks', user?.email],
     queryFn: () => base44.entities.ReadinessCheck.filter({ user_email: user.email }, '-created_date', 60),
@@ -346,11 +335,6 @@ export default function CommandCenter({ user, handleDestinationClick }) {
     },
     staleTime: 10 * 60 * 1000,
   });
-
-  const allLogs = [
-    ...routineLogs.map(l => ({ completed_date: l.created_date?.split('T')[0] })),
-    ...snackLogs,
-  ];
 
   const rehabPhase = activeRehabPlan?.phases?.[activeRehabPlan.current_phase - 1];
   const nextExercise = rehabPhase?.exercises?.find(e => !e.completed);
@@ -451,12 +435,11 @@ export default function CommandCenter({ user, handleDestinationClick }) {
                 <span className="text-[9px] font-bold uppercase tracking-widest text-zinc-700 border border-white/[0.04] px-2 py-1 rounded-full whitespace-nowrap">Bald verfügbar</span>
               </div>
 
-              {/* Row 5: 7-Day Activity */}
+              {/* Row 5: Readiness Trend */}
               <div className="bg-zinc-900/80 border border-white/[0.06] rounded-2xl p-4">
-                <TileLabel>Aktivität — letzte 7 Tage</TileLabel>
-                <div className="mt-3">
-                  <ActivityDots logs={allLogs} />
-                </div>
+                <TileLabel>Readiness-Trend — 7 Tage</TileLabel>
+                <p className="text-[10px] text-zinc-600 mb-2">Körper · Fokus · Energie</p>
+                <ReadinessTrendChart checks={allChecks} />
               </div>
 
               {/* Energie-Muster Banner */}
