@@ -286,6 +286,8 @@ function BiometricsTile({ user }) {
       height_cm: profile.height_cm || '',
       weight_kg: profile.weight_kg || '',
       hrv: profile.hrv_score || '',
+      vo2max: profile.vo2max || '',
+      resting_hr: profile.resting_hr || '',
       biological_sex: profile.biological_sex || '',
       date_of_birth: profile.date_of_birth || '',
     });
@@ -302,6 +304,8 @@ function BiometricsTile({ user }) {
       height_cm: form.height_cm ? Number(form.height_cm) : undefined,
       weight_kg: form.weight_kg ? Number(form.weight_kg) : undefined,
       hrv_score: form.hrv ? Number(form.hrv) : undefined,
+      vo2max: form.vo2max ? Number(form.vo2max) : undefined,
+      resting_hr: form.resting_hr ? Number(form.resting_hr) : undefined,
       biological_sex: form.biological_sex || undefined,
       date_of_birth: form.date_of_birth || undefined,
     };
@@ -313,10 +317,12 @@ function BiometricsTile({ user }) {
   };
 
   const metrics = [
-    { label: 'Größe',    value: form.height_cm ? `${form.height_cm} cm` : '–' },
-    { label: 'Gewicht',  value: form.weight_kg ? `${form.weight_kg} kg` : '–' },
-    { label: 'Alter',    value: age ? `${age} J` : '–' },
-    { label: 'HRV',      value: form.hrv ? `${form.hrv} ms` : '–' },
+    { label: 'Größe',      value: form.height_cm ? `${form.height_cm} cm` : '–' },
+    { label: 'Gewicht',    value: form.weight_kg ? `${form.weight_kg} kg` : '–' },
+    { label: 'Alter',      value: age ? `${age} J` : '–' },
+    { label: 'HRV',        value: form.hrv ? `${form.hrv} ms` : '–' },
+    { label: 'VO2Max',     value: form.vo2max ? `${form.vo2max}` : '–' },
+    { label: 'Ruhepuls',   value: form.resting_hr ? `${form.resting_hr} bpm` : '–' },
   ];
 
   return (
@@ -335,6 +341,8 @@ function BiometricsTile({ user }) {
             { key: 'weight_kg', label: 'Gewicht (kg)', type: 'number', placeholder: '80' },
             { key: 'date_of_birth', label: 'Geburtsdatum', type: 'date', placeholder: '' },
             { key: 'hrv', label: 'HRV (ms)', type: 'number', placeholder: '55' },
+            { key: 'vo2max', label: 'VO2Max (ml/kg/min)', type: 'number', placeholder: '45' },
+            { key: 'resting_hr', label: 'Ruhepuls (bpm)', type: 'number', placeholder: '60' },
           ].map(f => (
             <div key={f.key}>
               <label className="text-[10px] text-zinc-600 uppercase tracking-wider block mb-0.5">{f.label}</label>

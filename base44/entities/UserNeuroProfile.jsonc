@@ -28,6 +28,18 @@
       "type": "number",
       "description": "K\u00f6rpergewicht in kg"
     },
+    "hrv_score": {
+      "type": "number",
+      "description": "Herzfrequenzvariabilit\u00e4t Score in ms (optional, manuell vom User)"
+    },
+    "vo2max": {
+      "type": "number",
+      "description": "VO2Max Wert (ml/kg/min), manuell oder von Wearable"
+    },
+    "resting_hr": {
+      "type": "integer",
+      "description": "Ruhepuls in bpm, manuell oder von Wearable"
+    },
     "activity_level": {
       "type": "string",
       "enum": [
@@ -221,10 +233,6 @@
         ]
       },
       "description": "Trainings-Vorlieben"
-    },
-    "hrv_score": {
-      "type": "number",
-      "description": "Herzfrequenzvariabilit\u00e4t Score in ms (optional, manuell vom User)"
     },
     "strength_score": {
       "type": "number",
