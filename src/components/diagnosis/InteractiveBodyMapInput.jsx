@@ -149,25 +149,31 @@ export default function InteractiveBodyMapInput({ onSubmit }) {
   return (
     <div className="w-full space-y-6">
       {/* View Toggle */}
-      <div className="flex items-center justify-center gap-2 bg-slate-800/50 rounded-lg p-1">
-        <Button
+      <div className="flex items-center justify-center gap-1 bg-zinc-800/60 rounded-xl p-1">
+        <button
           onClick={() => setView('front')}
-          variant={view === 'front' ? 'default' : 'ghost'}
-          className={view === 'front' ? 'bg-red-500/30 text-red-400' : 'text-slate-400'}
+          className={`flex-1 px-4 py-2 rounded-lg text-sm font-semibold transition-all ${
+            view === 'front'
+              ? 'bg-red-600 text-white shadow'
+              : 'text-zinc-400 hover:text-zinc-200'
+          }`}
         >
           Vorderseite
-        </Button>
-        <Button
+        </button>
+        <button
           onClick={() => setView('back')}
-          variant={view === 'back' ? 'default' : 'ghost'}
-          className={view === 'back' ? 'bg-red-500/30 text-red-400' : 'text-slate-400'}
+          className={`flex-1 px-4 py-2 rounded-lg text-sm font-semibold transition-all ${
+            view === 'back'
+              ? 'bg-red-600 text-white shadow'
+              : 'text-zinc-400 hover:text-zinc-200'
+          }`}
         >
           Rückseite
-        </Button>
+        </button>
       </div>
 
       {/* Body Map - EXAKT wie im Dashboard */}
-      <div className="relative w-full max-w-md mx-auto bg-slate-900/50 rounded-2xl overflow-hidden">
+      <div className="relative w-full max-w-md mx-auto bg-zinc-900/60 rounded-2xl overflow-hidden">
         {imageError && (
           <div className="bg-red-500/20 border border-red-500/50 rounded-xl p-4 mb-4 text-red-400 text-center">
             Körperbild konnte nicht geladen werden
@@ -233,18 +239,17 @@ export default function InteractiveBodyMapInput({ onSubmit }) {
 
       {/* Action Buttons */}
       <div className="flex gap-3">
-        <Button
+        <button
           onClick={() => setMarkers([])}
-          variant="outline"
-          className="flex-1 border-slate-600 text-slate-400"
+          className="flex-1 flex items-center justify-center gap-2 h-10 rounded-xl border border-white/[0.08] bg-zinc-800/60 text-zinc-400 hover:text-zinc-200 text-sm font-medium transition-all"
         >
-          <RotateCcw className="w-4 h-4 mr-2" />
+          <RotateCcw className="w-4 h-4" />
           Zurücksetzen
-        </Button>
-        <Button
+        </button>
+        <button
           onClick={handleSubmit}
           disabled={markers.length === 0 || isSubmitting}
-          className="flex-1 bg-gradient-to-r from-red-500 to-pink-600 hover:from-red-600 hover:to-pink-700 text-white font-bold"
+          className="flex-1 flex items-center justify-center gap-2 h-10 rounded-xl bg-gradient-to-r from-red-600 to-pink-600 hover:from-red-700 hover:to-pink-700 text-white text-sm font-bold transition-all disabled:opacity-40 disabled:cursor-not-allowed"
         >
           {isSubmitting ? (
             <>
@@ -261,7 +266,7 @@ export default function InteractiveBodyMapInput({ onSubmit }) {
               <ArrowRight className="w-4 h-4 ml-2" />
             </>
           )}
-        </Button>
+        </button>
       </div>
     </div>
   );

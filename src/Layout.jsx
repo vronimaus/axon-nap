@@ -262,10 +262,10 @@ export default function Layout({ children, currentPageName }) {
   return (
     <HelmetProvider>
       <ErrorBoundary>
-        <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
+        <div className="min-h-screen bg-[#111111]">
         {/* Navigation - nur für eingeloggte User UND auf relevanten Pages */}
       {!isChecking && user && showNav && (
-        <nav className="sticky top-0 z-50 bg-slate-900 border-b border-cyan-500/20">
+        <nav className="sticky top-0 z-50 bg-[#111111] border-b border-white/[0.06]">
           <div className="max-w-6xl mx-auto px-4">
             <div className="flex items-center justify-between h-16">
               {/* Back button (non-root pages) or Logo (root pages) */}
@@ -309,8 +309,8 @@ export default function Layout({ children, currentPageName }) {
                               to={createPageUrl(item.page)}
                               className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all ${
                                 currentPageName === item.page
-                                  ? `${getColorClasses(item.color)} bg-opacity-20`
-                                  : 'text-slate-400 hover:text-slate-300 hover:bg-slate-800/50'
+                                  ? 'bg-zinc-800 text-white'
+                                  : 'text-zinc-500 hover:text-zinc-300 hover:bg-zinc-800/50'
                               }`}
                             >
                               <item.icon className={`w-4 h-4 ${colorMap[item.color]}`} />
@@ -326,15 +326,15 @@ export default function Layout({ children, currentPageName }) {
                   {user.role === 'admin' && (
                     <button
                       onClick={() => window.location.href = createPageUrl('AdminHub')}
-                      className="p-2 rounded-xl text-slate-400 hover:text-purple-400 hover:bg-slate-800/50 transition-all"
-                      title="Admin Hub"
+                      className="p-2 rounded-xl text-zinc-500 hover:text-zinc-200 hover:bg-zinc-800/50 transition-all"
+                        title="Admin Hub"
                     >
                       <Settings className="w-5 h-5" />
                     </button>
                   )}
                   <button
                     onClick={handleProfileClick}
-                    className="p-2 rounded-xl text-slate-400 hover:text-cyan-400 hover:bg-slate-800/50 transition-all"
+                    className="p-2 rounded-xl text-zinc-500 hover:text-zinc-200 hover:bg-zinc-800/50 transition-all"
                     title="Profil"
                   >
                     <User className="w-5 h-5" />
@@ -345,7 +345,7 @@ export default function Layout({ children, currentPageName }) {
                       sessionStorage.removeItem('readiness_check_done');
                       base44.auth.logout(createPageUrl('Landing'));
                     }}
-                    className="p-2 rounded-xl text-slate-400 hover:text-cyan-400 hover:bg-slate-800/50 transition-all"
+                    className="p-2 rounded-xl text-zinc-500 hover:text-zinc-200 hover:bg-zinc-800/50 transition-all"
                     title="Logout"
                   >
                     <LogOut className="w-5 h-5" />
@@ -393,7 +393,7 @@ export default function Layout({ children, currentPageName }) {
       {/* Mobile Bottom Navigation - nur für eingeloggte User UND auf relevanten Pages */}
           {!isChecking && user && showNav && (
             <>
-              <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-slate-900/95 backdrop-blur border-t border-cyan-500/20 safe-area-pb">
+              <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-[#111111]/95 backdrop-blur border-t border-white/[0.06] safe-area-pb">
                 <div className="flex justify-around items-center px-2 py-3">
                   {navItems.map((item) => {
                     const colorMap = { cyan: 'text-cyan-400', blue: 'text-blue-400', emerald: 'text-emerald-400', purple: 'text-purple-400' };
@@ -404,8 +404,8 @@ export default function Layout({ children, currentPageName }) {
                         title={item.name}
                         className={`flex items-center justify-center p-3 rounded-xl transition-all touch-target ${
                           activeTab === item.page
-                            ? `${getColorClasses(item.color)}`
-                            : 'text-slate-500 active:bg-slate-800/50'
+                            ? 'text-white bg-zinc-800'
+                            : 'text-zinc-600 active:bg-zinc-800/50'
                         }`}
                       >
                         <item.icon className={`w-6 h-6 ${colorMap[item.color]}`} />
@@ -418,27 +418,27 @@ export default function Layout({ children, currentPageName }) {
                     <button
                       onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                       title="Mehr"
-                      className="flex items-center justify-center p-3 rounded-xl transition-all text-slate-400 active:bg-slate-800/50"
+                      className="flex items-center justify-center p-3 rounded-xl transition-all text-zinc-500 active:bg-zinc-800/50"
                     >
                       {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
                     </button>
 
                     {mobileMenuOpen && (
-                      <div className="absolute bottom-full right-0 mb-2 rounded-xl border border-slate-600 overflow-hidden min-w-max bg-slate-800/95 backdrop-blur-md">
+                      <div className="absolute bottom-full right-0 mb-2 rounded-xl border border-white/[0.08] overflow-hidden min-w-max bg-zinc-900/95 backdrop-blur-md">
                         {publicNavItems.map((item) => (
                           <Link
                             key={item.page}
                             to={createPageUrl(item.page)}
                             onClick={() => setMobileMenuOpen(false)}
-                            className="block px-4 py-2 text-sm text-slate-300 hover:bg-slate-800 hover:text-cyan-400 transition-colors border-b border-slate-700 last:border-b-0"
+                            className="block px-4 py-2 text-sm text-zinc-300 hover:bg-zinc-800 hover:text-white transition-colors border-b border-white/[0.05] last:border-b-0"
                           >
                             {item.name}
                           </Link>
                         ))}
-                        <div className="border-t border-slate-700">
-                          <Link to={createPageUrl('Imprint')} onClick={() => setMobileMenuOpen(false)} className="block px-4 py-2 text-sm text-slate-400 hover:bg-slate-800 hover:text-slate-300 transition-colors">Impressum</Link>
-                          <Link to={createPageUrl('Privacy')} onClick={() => setMobileMenuOpen(false)} className="block px-4 py-2 text-sm text-slate-400 hover:bg-slate-800 hover:text-slate-300 transition-colors border-t border-slate-700">Datenschutz</Link>
-                          <Link to={createPageUrl('Terms')} onClick={() => setMobileMenuOpen(false)} className="block px-4 py-2 text-sm text-slate-400 hover:bg-slate-800 hover:text-slate-300 transition-colors border-t border-slate-700">AGB</Link>
+                        <div className="border-t border-white/[0.05]">
+                          <Link to={createPageUrl('Imprint')} onClick={() => setMobileMenuOpen(false)} className="block px-4 py-2 text-sm text-zinc-400 hover:bg-zinc-800 hover:text-zinc-200 transition-colors">Impressum</Link>
+                          <Link to={createPageUrl('Privacy')} onClick={() => setMobileMenuOpen(false)} className="block px-4 py-2 text-sm text-zinc-400 hover:bg-zinc-800 hover:text-zinc-200 transition-colors border-t border-white/[0.05]">Datenschutz</Link>
+                          <Link to={createPageUrl('Terms')} onClick={() => setMobileMenuOpen(false)} className="block px-4 py-2 text-sm text-zinc-400 hover:bg-zinc-800 hover:text-zinc-200 transition-colors border-t border-white/[0.05]">AGB</Link>
                         </div>
                       </div>
                     )}
