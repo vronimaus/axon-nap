@@ -1,0 +1,268 @@
+{
+  "name": "UserNeuroProfile",
+  "type": "object",
+  "properties": {
+    "user_email": {
+      "type": "string",
+      "description": "Email des Users (Foreign Key zu User Entity)"
+    },
+    "date_of_birth": {
+      "type": "string",
+      "format": "date",
+      "description": "Geburtsdatum f\u00fcr Altersbestimmung"
+    },
+    "biological_sex": {
+      "type": "string",
+      "enum": [
+        "male",
+        "female",
+        "diverse"
+      ],
+      "description": "Biologisches Geschlecht f\u00fcr hormonelle Einflussfaktoren"
+    },
+    "height_cm": {
+      "type": "number",
+      "description": "K\u00f6rpergr\u00f6\u00dfe in cm"
+    },
+    "weight_kg": {
+      "type": "number",
+      "description": "K\u00f6rpergewicht in kg"
+    },
+    "activity_level": {
+      "type": "string",
+      "enum": [
+        "sedentary",
+        "lightly_active",
+        "moderately_active",
+        "very_active",
+        "athlete"
+      ],
+      "default": "lightly_active",
+      "description": "Aktuelles Aktivit\u00e4tslevel (Anf\u00e4nger bis Athlet)"
+    },
+    "training_experience": {
+      "type": "string",
+      "enum": [
+        "beginner",
+        "intermediate",
+        "advanced",
+        "elite"
+      ],
+      "default": "beginner",
+      "description": "Trainings-Erfahrung und Hintergrund"
+    },
+    "primary_sport": {
+      "type": "string",
+      "description": "Prim\u00e4re Sportart wenn vorhanden (z.B. BJJ, CrossFit, Yoga)"
+    },
+    "training_frequency": {
+      "type": "string",
+      "enum": [
+        "none",
+        "1_2_times_week",
+        "3_4_times_week",
+        "5_6_times_week",
+        "daily"
+      ],
+      "default": "1_2_times_week",
+      "description": "Wie oft pro Woche trainiert der User aktuell"
+    },
+    "fitness_goals": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "improve_mobility",
+          "reduce_pain",
+          "build_strength",
+          "improve_performance",
+          "general_fitness",
+          "recovery"
+        ]
+      },
+      "description": "Pers\u00f6nliche Fitnessziele"
+    },
+    "complaint_history": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string",
+            "format": "date"
+          },
+          "location": {
+            "type": "string"
+          },
+          "intensity": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 10
+          },
+          "description": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "active",
+              "resolved",
+              "improving",
+              "worsening"
+            ]
+          }
+        },
+        "required": [
+          "date",
+          "location"
+        ]
+      },
+      "description": "Historie der Schmerzstellen und Beschwerden mit Status-Tracking"
+    },
+    "injury_history_major": {
+      "type": "string",
+      "description": "Historische Verletzungen (Br\u00fcche, Bandrisse, etc.)"
+    },
+    "scar_tissue_locations": {
+      "type": "string",
+      "description": "Narbengewebe-Lokalisationen (z.B. 'Knie-OP rechts, Blinddarm')"
+    },
+    "hand_dominance": {
+      "type": "string",
+      "enum": [
+        "left",
+        "right"
+      ],
+      "default": "right",
+      "description": "H\u00e4ndigkeit f\u00fcr Motorik-Drills"
+    },
+    "eye_dominance": {
+      "type": "string",
+      "enum": [
+        "left",
+        "right"
+      ],
+      "default": "right",
+      "description": "Augendominanz f\u00fcr visuelle Drills"
+    },
+    "visual_status": {
+      "type": "string",
+      "enum": [
+        "no_correction",
+        "glasses",
+        "contacts",
+        "lasered"
+      ],
+      "default": "no_correction",
+      "description": "Sehkorrektion-Status"
+    },
+    "vestibular_sensitivity": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 5,
+      "default": 3,
+      "description": "Gleichgewichtssystem-Empfindlichkeit (1=keine, 5=sehr)"
+    },
+    "jaw_tension_history": {
+      "type": "boolean",
+      "default": false,
+      "description": "Z\u00e4hneknirschen oder Spangen-Historie"
+    },
+    "primary_posture": {
+      "type": "string",
+      "enum": [
+        "mostly_sitting",
+        "mostly_standing",
+        "very_active"
+      ],
+      "default": "mostly_sitting",
+      "description": "Prim\u00e4re K\u00f6rperhaltung im Alltag"
+    },
+    "baseline_stress_level": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 10,
+      "default": 5,
+      "description": "Durchschnittliches Alltags-Stressniveau"
+    },
+    "sleep_quality_avg": {
+      "type": "string",
+      "enum": [
+        "poor",
+        "medium",
+        "good"
+      ],
+      "default": "medium",
+      "description": "Durchschnittliche Schlafqualit\u00e4t"
+    },
+    "previous_assessments": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "fms",
+          "gary_gray_3dmaps",
+          "movement_screening",
+          "other"
+        ]
+      },
+      "description": "Vorherige Assessments oder Testungen"
+    },
+    "training_preferences": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "strength",
+          "mobility",
+          "conditioning",
+          "functional",
+          "sport_specific"
+        ]
+      },
+      "description": "Trainings-Vorlieben"
+    },
+    "hrv_score": {
+      "type": "number",
+      "description": "Herzfrequenzvariabilit\u00e4t Score in ms (optional, manuell vom User)"
+    },
+    "strength_score": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100,
+      "description": "Subjektive Krafteinsch\u00e4tzung 0-100% (optional, manuell vom User)"
+    },
+    "preferred_coach": {
+      "type": "string",
+      "enum": [
+        "female",
+        "male",
+        "neuro"
+      ],
+      "default": "male",
+      "description": "Bevorzugter Coach-Avatar (female=Frau, male=Mann, neuro=Neuro-Modell)"
+    },
+    "profile_complete": {
+      "type": "boolean",
+      "default": false,
+      "description": "Markiert ob Profil vollst\u00e4ndig ausgef\u00fcllt wurde"
+    }
+  },
+  "required": [
+    "user_email"
+  ],
+  "rls": {
+    "create": {
+      "data.user_email": "{{user.email}}"
+    },
+    "read": {
+      "data.user_email": "{{user.email}}"
+    },
+    "update": {
+      "data.user_email": "{{user.email}}"
+    },
+    "delete": {
+      "data.user_email": "{{user.email}}"
+    }
+  }
+}

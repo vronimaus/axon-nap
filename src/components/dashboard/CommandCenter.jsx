@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import InteractiveBodyMapInput from '../diagnosis/InteractiveBodyMapInput';
 import ReadinessTrendChart from './ReadinessTrendChart';
@@ -267,6 +267,123 @@ function TileLabel({ children }) {
   return <p className="text-xs font-bold uppercase tracking-[0.2em] text-zinc-400 mb-1">{children}</p>;
 }
 
+// ── Wearables & Body Metrics Tile ─────────────────────────────────────────────
+function BiometricsTile({ user }) {
+  const queryClient = useQueryClient();
+  const [editing, setEditing] = useState(false);
+  const [saving, setSaving] = useState(false);
+
+  const { data: profile } = useQuery({
+    queryKey: ['neuroProfile', user?.email],
+    queryFn: () => base44.entities.UserNeuroProfile.filter({ user_email: user.email }).then(r => r[0] || null),
+    enabled: !!user?.email,
+  });
+
+  const [form, setForm] = useState({});
+  useEffect(() => {
+    if (profile) setForm({
+      height_cm: profile.height_cm || '',
+      weight_kg: profile.weight_kg || '',
+      hrv: profile.hrv_score || '',
+      biological_sex: profile.biological_sex || '',
+      date_of_birth: profile.date_of_birth || '',
+    });
+  }, [profile]);
+
+  const age = form.date_of_birth
+    ? Math.floor((new Date() - new Date(form.date_of_birth)) / (365.25 * 24 * 3600 * 1000))
+    : null;
+
+  const handleSave = async () => {
+    setSaving(true);
+    const data = {
+      user_email: user.email,
+      height_cm: form.height_cm ? Number(form.height_cm) : undefined,
+      weight_kg: form.weight_kg ? Number(form.weight_kg) : undefined,
+      hrv_score: form.hrv ? Number(form.hrv) : undefined,
+      biological_sex: form.biological_sex || undefined,
+      date_of_birth: form.date_of_birth || undefined,
+    };
+    if (profile?.id) await base44.entities.UserNeuroProfile.update(profile.id, data);
+    else await base44.entities.UserNeuroProfile.create(data);
+    queryClient.invalidateQueries({ queryKey: ['neuroProfile', user?.email] });
+    setSaving(false);
+    setEditing(false);
+  };
+
+  const metrics = [
+    { label: 'Größe',    value: form.height_cm ? `${form.height_cm} cm` : '–' },
+    { label: 'Gewicht',  value: form.weight_kg ? `${form.weight_kg} kg` : '–' },
+    { label: 'Alter',    value: age ? `${age} J` : '–' },
+    { label: 'HRV',      value: form.hrv ? `${form.hrv} ms` : '–' },
+  ];
+
+  return (
+    <div className="bg-zinc-900/80 border border-white/[0.06] rounded-2xl p-4 text-left">
+      <div className="flex items-center justify-between mb-3">
+        <TileLabel>Mein Körper</TileLabel>
+        <button onClick={() => setEditing(e => !e)} className="text-[10px] text-zinc-600 hover:text-zinc-400 uppercase tracking-widest transition-colors">
+          {editing ? 'Abbrechen' : 'Bearbeiten'}
+        </button>
+      </div>
+
+      {editing ? (
+        <div className="space-y-2">
+          {[
+            { key: 'height_cm', label: 'Größe (cm)', type: 'number', placeholder: '180' },
+            { key: 'weight_kg', label: 'Gewicht (kg)', type: 'number', placeholder: '80' },
+            { key: 'date_of_birth', label: 'Geburtsdatum', type: 'date', placeholder: '' },
+            { key: 'hrv', label: 'HRV (ms)', type: 'number', placeholder: '55' },
+          ].map(f => (
+            <div key={f.key}>
+              <label className="text-[10px] text-zinc-600 uppercase tracking-wider block mb-0.5">{f.label}</label>
+              <input
+                type={f.type}
+                value={form[f.key] || ''}
+                placeholder={f.placeholder}
+                onChange={e => setForm(v => ({ ...v, [f.key]: e.target.value }))}
+                className="w-full bg-zinc-800 border border-white/[0.06] rounded-lg px-3 py-1.5 text-sm text-zinc-200 focus:outline-none focus:border-[#398bf7]/50"
+              />
+            </div>
+          ))}
+          <div>
+            <label className="text-[10px] text-zinc-600 uppercase tracking-wider block mb-0.5">Geschlecht</label>
+            <select
+              value={form.biological_sex || ''}
+              onChange={e => setForm(v => ({ ...v, biological_sex: e.target.value }))}
+              className="w-full bg-zinc-800 border border-white/[0.06] rounded-lg px-3 py-1.5 text-sm text-zinc-200 focus:outline-none"
+            >
+              <option value="">–</option>
+              <option value="male">Männlich</option>
+              <option value="female">Weiblich</option>
+              <option value="diverse">Divers</option>
+            </select>
+          </div>
+          <button onClick={handleSave} disabled={saving}
+            className="w-full h-8 rounded-lg bg-[#398bf7]/20 hover:bg-[#398bf7]/30 text-[#398bf7] text-xs font-bold transition-all mt-1 disabled:opacity-50">
+            {saving ? 'Speichert…' : 'Speichern'}
+          </button>
+        </div>
+      ) : (
+        <div className="space-y-2">
+          {metrics.map(m => (
+            <div key={m.label} className="flex justify-between items-baseline">
+              <span className="text-[10px] text-zinc-600 uppercase tracking-wider">{m.label}</span>
+              <span className="text-sm font-bold text-zinc-400">{m.value}</span>
+            </div>
+          ))}
+          {form.biological_sex && (
+            <div className="flex justify-between items-baseline">
+              <span className="text-[10px] text-zinc-600 uppercase tracking-wider">Geschlecht</span>
+              <span className="text-sm font-bold text-zinc-400 capitalize">{form.biological_sex === 'male' ? 'Männlich' : form.biological_sex === 'female' ? 'Weiblich' : 'Divers'}</span>
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
 // ── Main CommandCenter ──────────────────────────────────────────────────────────
 export default function CommandCenter({ user, handleDestinationClick }) {
   const handleBodyMapSubmit = (mapData) => {
@@ -373,47 +490,31 @@ export default function CommandCenter({ user, handleDestinationClick }) {
               {/* Row 2: Quick Actions */}
               <div className={`grid gap-4 ${todayReadiness && todayReadiness.readiness_score >= 7 ? 'grid-cols-2' : 'grid-cols-3'}`}>
                 <Tile onClick={() => handleDestinationClick('Quick Sessions', () => window.location.href = createPageUrl('FitnessSnacks'))}>
-                  <div className="aspect-square flex flex-col justify-between">
-                    <p className="text-sm font-semibold text-zinc-300 leading-tight">Quick Sessions</p>
+                  <div className="flex items-center justify-between">
+                    <p className="text-sm font-semibold text-zinc-300">Quick Sessions</p>
                     <ChevronRight className="w-3 h-3 text-zinc-700" />
                   </div>
                 </Tile>
 
                 {(!todayReadiness || todayReadiness.readiness_score < 7) && (
                   <Tile onClick={() => window.location.href = createPageUrl('DiagnosisChat')}>
-                    <div className="aspect-square flex flex-col justify-between">
-                      <p className="text-sm font-semibold text-zinc-300 leading-tight">Tune-Up</p>
+                    <div className="flex items-center justify-between">
+                      <p className="text-sm font-semibold text-zinc-300">Tune-Up</p>
                       <ChevronRight className="w-3 h-3 text-zinc-700" />
                     </div>
                   </Tile>
                 )}
 
                 <Tile onClick={() => handleDestinationClick('Flow', () => window.location.href = createPageUrl('FlowRoutines'))}>
-                  <div className="aspect-square flex flex-col justify-between">
-                    <p className="text-sm font-semibold text-zinc-300 leading-tight">Routinen</p>
+                  <div className="flex items-center justify-between">
+                    <p className="text-sm font-semibold text-zinc-300">Routinen</p>
                     <ChevronRight className="w-3 h-3 text-zinc-700" />
                   </div>
                 </Tile>
               </div>
 
               <div className="grid grid-cols-2 gap-4">
-                {/* Wearables-Tile: HRV, VO2Max etc. */}
-                <div className="bg-zinc-900/80 border border-white/[0.06] rounded-2xl p-4 text-left">
-                  <TileLabel>Wearables</TileLabel>
-                  <div className="space-y-2.5 mt-2">
-                    {[
-                      { label: 'HRV',        value: '–', unit: 'ms' },
-                      { label: 'VO2Max',     value: '–', unit: 'ml/kg' },
-                      { label: 'Ruhe-HR',    value: '–', unit: 'bpm' },
-                    ].map(m => (
-                      <div key={m.label} className="flex justify-between items-baseline">
-                        <span className="text-[10px] text-zinc-600 uppercase tracking-wider">{m.label}</span>
-                        <span className="text-sm font-bold text-zinc-500">{m.value} <span className="text-[10px] font-normal text-zinc-700">{m.unit}</span></span>
-                      </div>
-                    ))}
-                  </div>
-                  <p className="text-[9px] text-zinc-700 mt-3 uppercase tracking-widest">Bald verfügbar</p>
-                </div>
+                <BiometricsTile user={user} />
 
                 <Tile onClick={() => window.location.href = createPageUrl('Wissen')}>
                   <BookOpen className="w-4 h-4 text-zinc-600 mb-2" />
