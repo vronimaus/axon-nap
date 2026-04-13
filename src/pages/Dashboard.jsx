@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { createPageUrl } from '@/utils';
-import { Activity, Target, Zap, Info, ArrowLeft, Loader2 } from 'lucide-react';
+import { Activity, Target, Zap, Info, ArrowLeft, Loader2, RotateCw } from 'lucide-react';
 import CombinedReadinessAssessment from '../components/dashboard/CombinedReadinessAssessment';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
@@ -204,7 +204,7 @@ export default function Dashboard() {
         {pullY > 0 && (
           <div className="fixed top-16 left-0 right-0 flex justify-center z-50 pointer-events-none">
             <div className={`flex items-center gap-2 px-4 py-2 rounded-full text-xs font-medium transition-all ${isRefreshing ? 'bg-cyan-500/30 text-cyan-300' : 'bg-slate-800/80 text-slate-400'}`} style={{ transform: `translateY(${pullY - 20}px)` }}>
-              <motion.div animate={{ rotate: isRefreshing ? 360 : pullY * 5 }} transition={isRefreshing ? { repeat: Infinity, duration: 0.6, ease: 'linear' } : {}}>↻</motion.div>
+              <motion.div animate={{ rotate: isRefreshing ? 360 : pullY * 5 }} transition={isRefreshing ? { repeat: Infinity, duration: 0.6, ease: 'linear' } : {}}><RotateCw className="w-3.5 h-3.5" /></motion.div>
               {isRefreshing ? 'Aktualisiert…' : pullY > 50 ? 'Loslassen zum Aktualisieren' : 'Ziehen zum Aktualisieren'}
             </div>
           </div>
@@ -281,24 +281,16 @@ export default function Dashboard() {
           <div className="mb-6">
             <p className="text-[10px] font-medium uppercase tracking-[0.2em] text-zinc-700 mb-3 text-center">Spürst du heute irgendwo Einschränkungen?</p>
             <div className="flex flex-wrap justify-center gap-2">
-              {[
-                { label: 'Nacken', icon: '🔝' },
-                { label: 'Schulter', icon: '🤷' },
-                { label: 'Rücken', icon: '⚡' },
-                { label: 'Hüfte', icon: '🦵' },
-                { label: 'Knie', icon: '🦿' },
-                { label: 'Anderes', icon: '📍' },
-              ].map(({ label, icon }) => (
+              {['Nacken', 'Schulter', 'Rücken', 'Hüfte', 'Knie', 'Anderes'].map((label) => (
                 <button
                   key={label}
                   onClick={() => {
                     const region = label === 'Anderes' ? '' : label;
                     window.location.href = createPageUrl('DiagnosisChat') + (region ? `?region=${encodeURIComponent(region)}` : '');
                   }}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-white/[0.06] bg-zinc-900/80 text-zinc-400 text-xs hover:border-white/[0.15] hover:text-white hover:bg-zinc-800 transition-all"
+                  className="px-3 py-1.5 rounded-full border border-white/[0.06] bg-zinc-900/80 text-zinc-400 text-xs hover:border-white/[0.15] hover:text-white hover:bg-zinc-800 transition-all"
                 >
-                  <span className="text-sm">{icon}</span>
-                  <span>{label}</span>
+                  {label}
                 </button>
               ))}
             </div>
@@ -314,7 +306,7 @@ export default function Dashboard() {
               <div className="absolute inset-0 bg-gradient-to-br from-amber-500/[0.04] to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
               <div className="relative">
                 <div className="w-9 h-9 rounded-xl bg-amber-500/10 border border-amber-500/15 flex items-center justify-center mb-4">
-                  <span className="text-base">⚡</span>
+                  <Zap className="w-4 h-4 text-amber-500/60" />
                 </div>
                 <h2 className="text-xs font-semibold text-zinc-300 mb-2 tracking-[0.15em] uppercase">Quick Sessions</h2>
                 <p className="text-xs text-zinc-600 mb-4 leading-relaxed">
@@ -460,7 +452,7 @@ export default function Dashboard() {
             <div className="flex items-center justify-between gap-2 sm:gap-4">
               <div className="min-w-0 flex-1">
                 <h1 className="text-base sm:text-xl md:text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-500 truncate">
-                  ⚡ AXON Command
+                  AXON Command
                 </h1>
                 <p className="text-xs text-slate-400 mt-0.5 sm:mt-1 hidden xs:block">
                   Hack Your Software. Free Your Hardware.
