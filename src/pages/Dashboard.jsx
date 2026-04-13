@@ -157,11 +157,11 @@ export default function Dashboard() {
 
 
   if (isLoading) {
-    return <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950" />;
+    return <div className="min-h-screen bg-[#111111]" />;
   }
 
   if (!user) {
-    return <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950" />;
+    return <div className="min-h-screen bg-[#111111]" />;
   }
 
   // Ambient Glow Colors
@@ -180,7 +180,7 @@ export default function Dashboard() {
       <motion.div 
         animate={{ boxShadow: `inset 0 0 120px ${glowColor}` }}
         transition={{ repeat: Infinity, duration: 4, repeatType: "reverse", ease: "easeInOut" }}
-        className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 flex items-center justify-center p-4 pb-28 md:pb-4 relative overflow-hidden"
+        className="min-h-screen bg-[#111111] flex items-center justify-center p-4 pb-28 md:pb-4 relative overflow-hidden"
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
@@ -242,7 +242,7 @@ export default function Dashboard() {
           className="max-w-5xl w-full"
         >
           <div className="text-center mb-10 sm:mb-14">
-            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-3 sm:mb-4">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-light text-white mb-3 sm:mb-4 tracking-tight">
               {(() => {
                 const h = new Date().getHours();
                 const greeting = h < 12 ? 'Guten Morgen' : h < 18 ? 'Hallo' : 'Guten Abend';
@@ -250,8 +250,8 @@ export default function Dashboard() {
                 return firstName ? `${greeting}, ${firstName}` : `${greeting}`;
               })()}
             </h1>
-            <p className="text-base sm:text-lg text-slate-300">
-              Drei Wege zu deinem optimalen Körper
+            <p className="text-xs text-zinc-600 uppercase tracking-[0.25em] font-medium">
+              Wähle deinen heutigen Modus
             </p>
           </div>
 
@@ -278,39 +278,45 @@ export default function Dashboard() {
             <motion.button
               whileTap={{ scale: 0.98 }}
               onClick={() => handleDestinationClick('Quick Sessions', () => window.location.href = createPageUrl('FitnessSnacks'))}
-              className="glass rounded-xl sm:rounded-2xl border border-orange-500/30 p-5 sm:p-6 hover:border-orange-500/60 active:border-orange-500/80 transition-all group touch-target text-left"
+              className="group relative bg-zinc-900 rounded-2xl border border-white/[0.06] p-5 sm:p-6 hover:border-white/[0.14] hover:bg-zinc-800/70 transition-all text-left overflow-hidden touch-target"
             >
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center mb-3 mx-auto group-hover:shadow-lg group-hover:shadow-orange-500/50 transition-all">
-                <span className="text-xl">⚡</span>
-              </div>
-              <h2 className="text-lg font-bold text-orange-400 mb-2 text-center">QUICK SESSIONS</h2>
-              <p className="text-xs text-slate-300 mb-3 leading-relaxed text-center">
-                1–10 Min. hormetische Micro-Workouts. Täglich personalisiert nach deinem Status.
-              </p>
-              <div className="flex flex-wrap gap-1 justify-center">
-                {['HIIT', 'Breathwork', 'Strength'].map(tag => (
-                  <span key={tag} className="text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-md bg-orange-500/10 text-orange-300 border border-orange-500/20">{tag}</span>
-                ))}
+              <div className="absolute inset-0 bg-gradient-to-br from-amber-500/[0.04] to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+              <div className="relative">
+                <div className="w-9 h-9 rounded-xl bg-amber-500/10 border border-amber-500/15 flex items-center justify-center mb-4">
+                  <span className="text-base">⚡</span>
+                </div>
+                <h2 className="text-xs font-semibold text-zinc-300 mb-2 tracking-[0.15em] uppercase">Quick Sessions</h2>
+                <p className="text-xs text-zinc-600 mb-4 leading-relaxed">
+                  1–10 Min. hormetische Micro-Workouts, täglich nach deinem Status.
+                </p>
+                <div className="flex flex-wrap gap-1.5">
+                  {['HIIT', 'Breathwork', 'Strength'].map(tag => (
+                    <span key={tag} className="text-[9px] font-medium uppercase tracking-wider px-2 py-0.5 rounded-md bg-white/[0.04] text-zinc-600 border border-white/[0.06]">{tag}</span>
+                  ))}
+                </div>
               </div>
             </motion.button>
 
-            {/* 3. REHAB */}
+            {/* 3. REHAB */
             <motion.button
               whileTap={{ scale: 0.98 }}
               onClick={() => handleDestinationClick('Rehab & Recovery', () => window.location.href = createPageUrl('DiagnosisChat'))}
-              className="glass rounded-xl sm:rounded-2xl border border-emerald-500/30 p-5 sm:p-6 hover:border-emerald-500/60 active:border-emerald-500/80 transition-all group touch-target text-left"
+              className="group relative bg-zinc-900 rounded-2xl border border-white/[0.06] p-5 sm:p-6 hover:border-white/[0.14] hover:bg-zinc-800/70 transition-all text-left overflow-hidden touch-target"
             >
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center mb-3 mx-auto group-hover:shadow-lg group-hover:shadow-emerald-500/50 transition-all">
-                <Target className="w-6 h-6 text-white" />
-              </div>
-              <h2 className="text-lg font-bold text-emerald-400 mb-2 text-center">REHAB & RECOVERY</h2>
-              <p className="text-xs text-slate-300 mb-3 leading-relaxed text-center">
-                Akuter Schmerz? AXON analysiert die Root Cause und erstellt deinen Reha-Plan.
-              </p>
-              <div className="flex flex-wrap gap-1 justify-center">
-                {['Diagnose', 'MFR-Release', 'Neuro-Reset'].map(tag => (
-                  <span key={tag} className="text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-md bg-emerald-500/10 text-emerald-300 border border-emerald-500/20">{tag}</span>
-                ))}
+              <div className="absolute inset-0 bg-gradient-to-br from-teal-500/[0.04] to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+              <div className="relative">
+                <div className="w-9 h-9 rounded-xl bg-teal-500/10 border border-teal-500/15 flex items-center justify-center mb-4">
+                  <Target className="w-4 h-4 text-teal-500/60" />
+                </div>
+                <h2 className="text-xs font-semibold text-zinc-300 mb-2 tracking-[0.15em] uppercase">Rehab & Recovery</h2>
+                <p className="text-xs text-zinc-600 mb-4 leading-relaxed">
+                  Akuter Schmerz? AXON analysiert die Root Cause und erstellt deinen Reha-Plan.
+                </p>
+                <div className="flex flex-wrap gap-1.5">
+                  {['Diagnose', 'MFR-Release', 'Neuro-Reset'].map(tag => (
+                    <span key={tag} className="text-[9px] font-medium uppercase tracking-wider px-2 py-0.5 rounded-md bg-white/[0.04] text-zinc-600 border border-white/[0.06]">{tag}</span>
+                  ))}
+                </div>
               </div>
             </motion.button>
 
@@ -318,19 +324,22 @@ export default function Dashboard() {
             <motion.button
               whileTap={{ scale: 0.98 }}
               onClick={() => handleDestinationClick('Flow', () => window.location.href = createPageUrl('FlowRoutines'))}
-              className="glass rounded-xl sm:rounded-2xl border border-purple-500/30 p-5 sm:p-6 hover:border-purple-500/60 active:border-purple-500/80 transition-all group touch-target text-left"
+              className="group relative bg-zinc-900 rounded-2xl border border-white/[0.06] p-5 sm:p-6 hover:border-white/[0.14] hover:bg-zinc-800/70 transition-all text-left overflow-hidden touch-target"
             >
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center mb-3 mx-auto group-hover:shadow-lg group-hover:shadow-purple-500/50 transition-all">
-                <Activity className="w-6 h-6 text-white" />
-              </div>
-              <h2 className="text-lg font-bold text-purple-400 mb-2 text-center">FLOW</h2>
-              <p className="text-xs text-slate-300 mb-3 leading-relaxed text-center">
-                Tägliche Pflegeroutinen: Faszien, Neuro-Drills, Mobility & Atem in 5–30 Min.
-              </p>
-              <div className="flex flex-wrap gap-1 justify-center">
-                {['MFR-Nodes', 'Mobility', 'Regeneration'].map(tag => (
-                  <span key={tag} className="text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-md bg-purple-500/10 text-purple-300 border border-purple-500/20">{tag}</span>
-                ))}
+              <div className="absolute inset-0 bg-gradient-to-br from-violet-500/[0.04] to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+              <div className="relative">
+                <div className="w-9 h-9 rounded-xl bg-violet-500/10 border border-violet-500/15 flex items-center justify-center mb-4">
+                  <Activity className="w-4 h-4 text-violet-500/60" />
+                </div>
+                <h2 className="text-xs font-semibold text-zinc-300 mb-2 tracking-[0.15em] uppercase">Flow</h2>
+                <p className="text-xs text-zinc-600 mb-4 leading-relaxed">
+                  Tägliche Pflegeroutinen: Faszien, Neuro-Drills, Mobility & Atem in 5–30 Min.
+                </p>
+                <div className="flex flex-wrap gap-1.5">
+                  {['MFR-Nodes', 'Mobility', 'Regeneration'].map(tag => (
+                    <span key={tag} className="text-[9px] font-medium uppercase tracking-wider px-2 py-0.5 rounded-md bg-white/[0.04] text-zinc-600 border border-white/[0.06]">{tag}</span>
+                  ))}
+                </div>
               </div>
             </motion.button>
           </div>
@@ -340,10 +349,10 @@ export default function Dashboard() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.3 }}
-            className="mt-8 glass rounded-xl border border-slate-700/60 p-4 text-center"
+            className="mt-8 rounded-xl border border-white/[0.04] p-4 text-center"
           >
-            <p className="text-sm text-slate-300">
-              AXON deckt den kompletten Lebenszyklus ab: Probleme lösen → Ziele erreichen → System pflegen
+            <p className="text-xs text-zinc-700">
+              Probleme lösen · Ziele erreichen · System pflegen
             </p>
           </motion.div>
 
@@ -357,11 +366,11 @@ export default function Dashboard() {
             >
               <button
                 onClick={() => window.location.href = createPageUrl('AdminDiagnostics')}
-                className="w-full glass rounded-xl border border-cyan-500/30 p-4 hover:border-cyan-500/60 transition-all group"
+                className="w-full rounded-xl border border-white/[0.04] p-3 hover:border-white/[0.08] transition-all group"
               >
-                <div className="flex items-center justify-center gap-2 text-cyan-400">
-                  <Activity className="w-4 h-4" />
-                  <span className="text-sm font-semibold">Coach Diagnose-Tool</span>
+                <div className="flex items-center justify-center gap-2 text-zinc-700 group-hover:text-zinc-500 transition-colors">
+                  <Activity className="w-3.5 h-3.5" />
+                  <span className="text-[10px] font-medium uppercase tracking-widest">Coach Diagnose-Tool</span>
                 </div>
               </button>
             </motion.div>
@@ -375,7 +384,7 @@ export default function Dashboard() {
         <motion.div 
         animate={{ boxShadow: `inset 0 0 120px ${glowColor}` }}
         transition={{ repeat: Infinity, duration: 4, repeatType: "reverse", ease: "easeInOut" }}
-        className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 flex flex-col relative"
+        className="min-h-screen bg-[#111111] flex flex-col relative"
         >
         {/* Kinetic Wave Background */}
         {sessionDecision && (
