@@ -373,54 +373,46 @@ export default function CommandCenter({ user, handleDestinationClick }) {
               {/* Row 2: Quick Actions */}
               <div className={`grid gap-4 ${todayReadiness && todayReadiness.readiness_score >= 7 ? 'grid-cols-2' : 'grid-cols-3'}`}>
                 <Tile onClick={() => handleDestinationClick('Quick Sessions', () => window.location.href = createPageUrl('FitnessSnacks'))}>
-                  <div className="flex flex-col justify-between h-full min-h-[80px]">
+                  <div className="aspect-square flex flex-col justify-between">
                     <p className="text-sm font-semibold text-zinc-300 leading-tight">Quick Sessions</p>
-                    <ChevronRight className="w-3 h-3 text-zinc-700 mt-auto" />
+                    <ChevronRight className="w-3 h-3 text-zinc-700" />
                   </div>
                 </Tile>
 
                 {(!todayReadiness || todayReadiness.readiness_score < 7) && (
                   <Tile onClick={() => window.location.href = createPageUrl('DiagnosisChat')}>
-                    <div className="flex flex-col justify-between h-full min-h-[80px]">
+                    <div className="aspect-square flex flex-col justify-between">
                       <p className="text-sm font-semibold text-zinc-300 leading-tight">Tune-Up</p>
-                      <ChevronRight className="w-3 h-3 text-zinc-700 mt-auto" />
+                      <ChevronRight className="w-3 h-3 text-zinc-700" />
                     </div>
                   </Tile>
                 )}
 
                 <Tile onClick={() => handleDestinationClick('Flow', () => window.location.href = createPageUrl('FlowRoutines'))}>
-                  <div className="flex flex-col justify-between h-full min-h-[80px]">
+                  <div className="aspect-square flex flex-col justify-between">
                     <p className="text-sm font-semibold text-zinc-300 leading-tight">Routinen</p>
-                    <ChevronRight className="w-3 h-3 text-zinc-700 mt-auto" />
+                    <ChevronRight className="w-3 h-3 text-zinc-700" />
                   </div>
                 </Tile>
               </div>
 
               <div className="grid grid-cols-2 gap-4">
-                {/* Status-Tile: Readiness-Werte oder Wearable-Placeholder */}
+                {/* Wearables-Tile: HRV, VO2Max etc. */}
                 <div className="bg-zinc-900/80 border border-white/[0.06] rounded-2xl p-4 text-left">
-                  <TileLabel>{todayReadiness ? 'Dein Status' : 'Wearables'}</TileLabel>
-                  {todayReadiness ? (
-                    <div className="space-y-2 mt-2">
-                      {[
-                        { label: 'Körper', value: todayReadiness.feeling_hardware },
-                        { label: 'Fokus',  value: todayReadiness.focus_software },
-                        { label: 'Energie',value: todayReadiness.energy_battery },
-                      ].map(b => (
-                        <div key={b.label}>
-                          <div className="flex justify-between mb-0.5">
-                            <span className="text-[10px] text-zinc-600 uppercase tracking-wider">{b.label}</span>
-                            <span className="text-[10px] text-zinc-400 font-bold">{b.value ?? '–'}/10</span>
-                          </div>
-                          <div className="h-1 bg-zinc-800 rounded-full overflow-hidden">
-                            <div className="h-full rounded-full" style={{ width: `${((b.value || 0) / 10) * 100}%`, backgroundColor: '#398bf7', opacity: 0.7 }} />
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  ) : (
-                    <p className="text-xs text-zinc-600 mt-1 leading-relaxed">Apple Watch · Garmin · Whoop · Oura</p>
-                  )}
+                  <TileLabel>Wearables</TileLabel>
+                  <div className="space-y-2.5 mt-2">
+                    {[
+                      { label: 'HRV',        value: '–', unit: 'ms' },
+                      { label: 'VO2Max',     value: '–', unit: 'ml/kg' },
+                      { label: 'Ruhe-HR',    value: '–', unit: 'bpm' },
+                    ].map(m => (
+                      <div key={m.label} className="flex justify-between items-baseline">
+                        <span className="text-[10px] text-zinc-600 uppercase tracking-wider">{m.label}</span>
+                        <span className="text-sm font-bold text-zinc-500">{m.value} <span className="text-[10px] font-normal text-zinc-700">{m.unit}</span></span>
+                      </div>
+                    ))}
+                  </div>
+                  <p className="text-[9px] text-zinc-700 mt-3 uppercase tracking-widest">Bald verfügbar</p>
                 </div>
 
                 <Tile onClick={() => window.location.href = createPageUrl('Wissen')}>
