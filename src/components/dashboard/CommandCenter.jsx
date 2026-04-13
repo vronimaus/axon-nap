@@ -382,14 +382,25 @@ export default function CommandCenter({ user, handleDestinationClick }) {
             <InlineReadinessWidget user={user} todayReadiness={todayReadiness} />
           </motion.div>
 
-          <div className="bg-zinc-900/80 border border-white/[0.06] rounded-2xl p-4 flex flex-col justify-between">
-            <TileLabel>Streak</TileLabel>
-            <div>
-              <p className="text-4xl font-black text-white tabular-nums leading-none">{streak}</p>
-              <p className="text-[10px] text-zinc-600 mt-1">Tage aktiv</p>
-            </div>
-            <div className="w-2 h-2 rounded-full bg-slate-500 mt-2" style={{ opacity: streak > 0 ? 1 : 0.2 }} />
-          </div>
+          <button
+            onClick={() => window.location.href = createPageUrl('DiagnosisChat')}
+            className="bg-zinc-900/80 border border-white/[0.06] rounded-2xl p-4 flex flex-col justify-between hover:border-white/[0.12] transition-all text-left"
+          >
+            <TileLabel>Körper</TileLabel>
+            <svg viewBox="0 0 60 120" className="w-full max-w-[44px] mx-auto mt-1" fill="none">
+              {/* Head */}
+              <circle cx="30" cy="10" r="8" stroke="#3f3f46" strokeWidth="1.5" />
+              {/* Torso */}
+              <line x1="30" y1="18" x2="30" y2="65" stroke="#3f3f46" strokeWidth="1.5" />
+              {/* Arms */}
+              <line x1="30" y1="28" x2="10" y2="50" stroke="#3f3f46" strokeWidth="1.5" />
+              <line x1="30" y1="28" x2="50" y2="50" stroke="#3f3f46" strokeWidth="1.5" />
+              {/* Legs */}
+              <line x1="30" y1="65" x2="16" y2="100" stroke="#3f3f46" strokeWidth="1.5" />
+              <line x1="30" y1="65" x2="44" y2="100" stroke="#3f3f46" strokeWidth="1.5" />
+            </svg>
+            <p className="text-[10px] text-zinc-600 mt-2">Schmerz lokalisieren</p>
+          </button>
         </div>
 
         {/* Row 2: Quick Actions */}
