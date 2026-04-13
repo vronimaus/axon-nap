@@ -130,8 +130,18 @@ function InlineReadinessWidget({ user, todayReadiness }) {
 
   return (
     <motion.div layout className="space-y-4 mt-2">
-      {todayReadiness && <ReadinessRing readiness={todayReadiness} />}
-      {metrics.map(({ icon: Icon, label, sublabel, value, setter, low, high }) => (
+      {todayReadiness && !forceShow && (
+        <>
+          <ReadinessRing readiness={todayReadiness} />
+          <button
+            onClick={() => setForceShow(true)}
+            className="mt-2 text-[10px] text-zinc-600 hover:text-zinc-400 uppercase tracking-widest transition-colors"
+          >
+            ↻ Check wiederholen
+          </button>
+        </>
+      )}
+      {(!todayReadiness || forceShow) && metrics.map(({ icon: Icon, label, sublabel, value, setter, low, high }) => (
         <motion.div key={label} layout className="bg-zinc-800/40 rounded-lg border border-zinc-700/50 p-3">
           <div className="flex items-center justify-between mb-2">
             <div className="flex items-center gap-2">
