@@ -294,26 +294,6 @@ export default function Dashboard() {
               </div>
             </motion.button>
 
-            {/* 2. PERFORMANCE (Goals) */}
-            <motion.button
-              whileTap={{ scale: 0.98 }}
-              onClick={() => handleDestinationClick('Performance', () => setMode('performance'))}
-              className="glass rounded-xl sm:rounded-2xl border border-blue-500/30 p-5 sm:p-6 hover:border-blue-500/60 active:border-blue-500/80 transition-all group touch-target text-left"
-            >
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center mb-3 mx-auto group-hover:shadow-lg group-hover:shadow-blue-500/50 transition-all">
-                <Zap className="w-6 h-6 text-white" />
-              </div>
-              <h2 className="text-lg font-bold text-blue-400 mb-2 text-center">PERFORMANCE</h2>
-              <p className="text-xs text-slate-300 mb-3 leading-relaxed text-center">
-                Schalte neue Skills frei. Von Klimmzügen bis Human Flag – dein personalisierter Plan.
-              </p>
-              <div className="flex flex-wrap gap-1 justify-center">
-                {['Skill-Progression', 'Kraft', 'Mobility'].map(tag => (
-                  <span key={tag} className="text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-md bg-blue-500/10 text-blue-300 border border-blue-500/20">{tag}</span>
-                ))}
-              </div>
-            </motion.button>
-
             {/* 3. REHAB */}
             <motion.button
               whileTap={{ scale: 0.98 }}
