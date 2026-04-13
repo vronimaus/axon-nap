@@ -371,43 +371,57 @@ export default function CommandCenter({ user, handleDestinationClick }) {
               </motion.div>
 
               {/* Row 2: Quick Actions */}
-              <div className={`grid gap-3 ${todayReadiness && todayReadiness.readiness_score >= 7 ? 'grid-cols-2' : 'grid-cols-3'}`}>
+              <div className={`grid gap-4 ${todayReadiness && todayReadiness.readiness_score >= 7 ? 'grid-cols-2' : 'grid-cols-3'}`}>
                 <Tile onClick={() => handleDestinationClick('Quick Sessions', () => window.location.href = createPageUrl('FitnessSnacks'))}>
-                  <Zap className="w-4 h-4 text-zinc-600 mb-3" />
-                  <p className="text-sm font-semibold text-zinc-300 leading-tight">Quick Sessions</p>
-                  <ChevronRight className="w-3 h-3 text-zinc-700 mt-2" />
+                  <div className="flex flex-col justify-between h-full min-h-[80px]">
+                    <p className="text-sm font-semibold text-zinc-300 leading-tight">Quick Sessions</p>
+                    <ChevronRight className="w-3 h-3 text-zinc-700 mt-auto" />
+                  </div>
                 </Tile>
 
                 {(!todayReadiness || todayReadiness.readiness_score < 7) && (
                   <Tile onClick={() => window.location.href = createPageUrl('DiagnosisChat')}>
-                    <Target className="w-4 h-4 text-zinc-600 mb-3" />
-                    <p className="text-sm font-semibold text-zinc-300 leading-tight">Tune-Up</p>
-                    <ChevronRight className="w-3 h-3 text-zinc-700 mt-2" />
+                    <div className="flex flex-col justify-between h-full min-h-[80px]">
+                      <p className="text-sm font-semibold text-zinc-300 leading-tight">Tune-Up</p>
+                      <ChevronRight className="w-3 h-3 text-zinc-700 mt-auto" />
+                    </div>
                   </Tile>
                 )}
 
                 <Tile onClick={() => handleDestinationClick('Flow', () => window.location.href = createPageUrl('FlowRoutines'))}>
-                  <Activity className="w-4 h-4 text-zinc-600 mb-3" />
-                  <p className="text-sm font-semibold text-zinc-300 leading-tight">Routinen</p>
-                  <ChevronRight className="w-3 h-3 text-zinc-700 mt-2" />
+                  <div className="flex flex-col justify-between h-full min-h-[80px]">
+                    <p className="text-sm font-semibold text-zinc-300 leading-tight">Routinen</p>
+                    <ChevronRight className="w-3 h-3 text-zinc-700 mt-auto" />
+                  </div>
                 </Tile>
               </div>
 
-              {/* Row 3: Rehab next + Wissen */}
-              <div className="grid grid-cols-2 gap-3">
-                <Tile onClick={() => window.location.href = createPageUrl('RehabPlan')}>
-                  <TileLabel>Nächste Übung</TileLabel>
-                  {nextExercise ? (
-                    <>
-                      <p className="text-sm font-semibold text-zinc-200 leading-tight mt-1">{nextExercise.name}</p>
-                      <p className="text-[10px] text-zinc-600 mt-1">{nextExercise.sets_reps_tempo || ''}</p>
-                    </>
-                  ) : activeRehabPlan ? (
-                    <p className="text-xs text-zinc-500 mt-1">Phase abgeschlossen ✓</p>
+              <div className="grid grid-cols-2 gap-4">
+                {/* Status-Tile: Readiness-Werte oder Wearable-Placeholder */}
+                <div className="bg-zinc-900/80 border border-white/[0.06] rounded-2xl p-4 text-left">
+                  <TileLabel>{todayReadiness ? 'Dein Status' : 'Wearables'}</TileLabel>
+                  {todayReadiness ? (
+                    <div className="space-y-2 mt-2">
+                      {[
+                        { label: 'Körper', value: todayReadiness.feeling_hardware },
+                        { label: 'Fokus',  value: todayReadiness.focus_software },
+                        { label: 'Energie',value: todayReadiness.energy_battery },
+                      ].map(b => (
+                        <div key={b.label}>
+                          <div className="flex justify-between mb-0.5">
+                            <span className="text-[10px] text-zinc-600 uppercase tracking-wider">{b.label}</span>
+                            <span className="text-[10px] text-zinc-400 font-bold">{b.value ?? '–'}/10</span>
+                          </div>
+                          <div className="h-1 bg-zinc-800 rounded-full overflow-hidden">
+                            <div className="h-full rounded-full" style={{ width: `${((b.value || 0) / 10) * 100}%`, backgroundColor: '#398bf7', opacity: 0.7 }} />
+                          </div>
+                        </div>
+                      ))}
+                    </div>
                   ) : (
-                    <p className="text-xs text-zinc-600 mt-1">Noch kein aktiver Plan</p>
+                    <p className="text-xs text-zinc-600 mt-1 leading-relaxed">Apple Watch · Garmin · Whoop · Oura</p>
                   )}
-                </Tile>
+                </div>
 
                 <Tile onClick={() => window.location.href = createPageUrl('Wissen')}>
                   <BookOpen className="w-4 h-4 text-zinc-600 mb-2" />
@@ -425,15 +439,7 @@ export default function CommandCenter({ user, handleDestinationClick }) {
                 </Tile>
               </div>
 
-              {/* Row 4: Wearables placeholder */}
-              <div className="bg-zinc-900/80 border border-white/[0.06] rounded-2xl p-4 flex items-center gap-4">
-                <Watch className="w-5 h-5 text-zinc-700 flex-shrink-0" />
-                <div className="flex-1 min-w-0">
-                  <TileLabel>Wearables</TileLabel>
-                  <p className="text-xs text-zinc-500">Apple Watch · Garmin · Whoop · Oura</p>
-                </div>
-                <span className="text-[9px] font-bold uppercase tracking-widest text-zinc-700 border border-white/[0.04] px-2 py-1 rounded-full whitespace-nowrap">Bald verfügbar</span>
-              </div>
+
 
               {/* Row 5: Readiness Trend */}
               <div className="bg-zinc-900/80 border border-white/[0.06] rounded-2xl p-4">
