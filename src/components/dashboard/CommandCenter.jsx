@@ -131,7 +131,7 @@ function InlineReadinessWidget({ user, todayReadiness }) {
 
   return (
     <motion.div layout className="space-y-4 mt-2">
-      {!expanded && <p className="text-xs text-zinc-500 uppercase tracking-wider">3 Inputs erforderlich</p>}
+      {!expanded && <p className="text-xs text-zinc-500 uppercase tracking-wider">4 Inputs erforderlich</p>}
       {metrics.map(({ icon: Icon, label, sublabel, value, setter, low, high }) => (
         <motion.div key={label} layout className="bg-zinc-800/40 rounded-lg border border-zinc-700/50 p-3">
           <div className="flex items-center justify-between mb-2">
