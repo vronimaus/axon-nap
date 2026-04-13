@@ -198,19 +198,18 @@ export default function Layout({ children, currentPageName }) {
                   {/* Center: Desktop nav links */}
                   <div className="hidden md:flex items-center gap-1">
                     {navItems.map((item) => (
-                      <Link
-                        key={item.page}
-                        to={createPageUrl(item.page)}
-                        className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all ${
-                          activeTab === item.page
-                            ? 'bg-zinc-800 text-white'
-                            : 'text-zinc-500 hover:text-zinc-300 hover:bg-zinc-800/50'
-                        }`}
-                      >
-                        <item.icon className="w-4 h-4" />
-                        <span>{item.name}</span>
-                      </Link>
-                    ))}
+                          <Link
+                            key={item.page}
+                            to={createPageUrl(item.page)}
+                            className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${
+                              activeTab === item.page
+                                ? 'bg-zinc-800 text-white'
+                                : 'text-zinc-500 hover:text-zinc-300 hover:bg-zinc-800/50'
+                            }`}
+                          >
+                            {item.name}
+                          </Link>
+                        ))}
                   </div>
 
                   {/* Right: user actions */}
@@ -277,15 +276,13 @@ export default function Layout({ children, currentPageName }) {
                   <button
                     key={item.page}
                     onClick={() => handleTabClick(item.page)}
-                    title={item.name}
-                    className={`flex flex-col items-center gap-1 px-3 py-2 rounded-xl transition-all touch-target ${
+                    className={`px-3 py-2 rounded-xl transition-all touch-target text-[11px] font-medium ${
                       activeTab === item.page
                         ? 'text-white'
                         : 'text-zinc-600'
                     }`}
                   >
-                    <item.icon className="w-5 h-5" />
-                    <span className="text-[9px] font-medium">{item.name}</span>
+                    {item.name}
                   </button>
                 ))}
 
