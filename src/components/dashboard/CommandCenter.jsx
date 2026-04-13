@@ -69,60 +69,61 @@ function ReadinessRing({ readiness }) {
 // ── Inline Readiness Widget ─────────────────────────────────────────────────────
 const SLIDER_SENTENCES = {
   feeling_hardware: [
-    '', // 0 unused
-    'Ich bin heute komplett blockiert und kann mich kaum bewegen.',
-    'Ich fühle mich sehr steif und unbeweglich.',
-    'Ich bin heute ziemlich steif und schwer.',
-    'Ich bin etwas eingeschränkt in meiner Beweglichkeit.',
-    'Geht so – ich bin nicht ganz locker, aber ok.',
-    'Ich bewege mich ganz ok, leichte Spannung noch.',
-    'Ich bin recht locker und beweglich.',
-    'Ich fühle mich gut beweglich und geschmeidig.',
-    'Ich bin fast optimal – Körper fühlt sich super an.',
-    'Ich bin total locker und fühle mich frei in jeder Bewegung.',
+    '',
+    'komplett blockiert',
+    'sehr steif und unbeweglich',
+    'ziemlich steif und schwer',
+    'etwas eingeschränkt',
+    'nicht ganz locker, aber ok',
+    'ganz ok, leichte Spannung',
+    'recht locker und beweglich',
+    'gut beweglich und geschmeidig',
+    'fast optimal, super Gefühl',
+    'total locker und frei',
   ],
   focus_software: [
     '',
-    'Ich bin heute geistig komplett weg und kann mich nicht sammeln.',
-    'Ich bin kaum präsent – Gedanken schweben überall.',
-    'Ich bin sehr zerstreut und unkonzentriert.',
-    'Ich kann mich schwer fokussieren.',
-    'Mein Fokus kommt und geht – mal da, mal weg.',
-    'Ich bin halbwegs klar, geht ganz ok.',
-    'Ich bin gut dabei und kann mich konzentrieren.',
-    'Ich bin fokussiert und klar im Kopf.',
-    'Ich bin sehr klar und mental leistungsfähig.',
-    'Ich bin scharf fokussiert – mental auf dem Punkt.',
+    'geistig komplett weg',
+    'kaum präsent, zerstreut',
+    'sehr unkonzentriert',
+    'Fokus fällt schwer',
+    'Fokus kommt und geht',
+    'halbwegs klar, geht ok',
+    'gut konzentriert und dabei',
+    'fokussiert und klar',
+    'sehr klar und leistungsfähig',
+    'scharf fokussiert, auf den Punkt',
   ],
   energy_battery: [
     '',
-    'Ich bin heute komplett ausgepowert und leer.',
-    'Ich habe kaum Energie – fühle mich ausgelaugt.',
-    'Ich bin sehr erschöpft und mein Körper fühlt sich schwer an.',
-    'Ich bin müde und träge.',
-    'Ich habe Energie, aber nicht wirklich viel.',
-    'Meine Energie ist ganz ok – geht.',
-    'Ich fühle mich gut geladen und bereit.',
-    'Ich bin kraftvoll und energiegeladen.',
-    'Ich bin sehr vital und spüre echte Kraft.',
-    'Ich könnte heute Bäume ausreißen – volle Kraft!',
+    'komplett ausgepowert, leer',
+    'kaum Energie, ausgelaugt',
+    'sehr erschöpft und schwer',
+    'müde und träge',
+    'Energie ok, aber wenig',
+    'Energie geht so',
+    'gut geladen und bereit',
+    'kraftvoll und energiegeladen',
+    'sehr vital, echte Kraft',
+    'volle Kraft, Bäume ausreißen',
   ],
   sleep_quality: [
     '',
-    'Ich habe so gut wie gar nicht geschlafen.',
-    'Mein Schlaf war kaum der Rede wert.',
-    'Ich habe sehr schlecht geschlafen und bin gerädert.',
-    'Mein Schlaf war schlecht – ich fühle mich nicht erholt.',
-    'Ich habe durchwachsen geschlafen.',
-    'Mein Schlaf war mittelmäßig, geht aber.',
-    'Ich habe ganz ok geschlafen.',
-    'Ich bin gut ausgeschlafen und erholt.',
-    'Ich habe sehr gut geschlafen und fühle mich fit.',
-    'Ich bin ausgeschlafen und starte energiegeladen in den Tag.',
+    'kaum geschlafen',
+    'nicht der Rede wert',
+    'sehr schlecht geschlafen',
+    'schlecht, nicht erholt',
+    'durchwachsen geschlafen',
+    'mittelmäßig, geht aber',
+    'ganz ok geschlafen',
+    'gut ausgeschlafen und erholt',
+    'sehr gut geschlafen, fit',
+    'ausgeschlafen, energiegeladen',
   ],
 };
 
 const SLIDERS = [
+
   { key: 'feeling_hardware', label: 'Beweglichkeit'   },
   { key: 'focus_software',   label: 'Geistiger Fokus' },
   { key: 'energy_battery',   label: 'Körperenergie'   },
@@ -185,7 +186,8 @@ function InlineReadinessWidget({ user, todayReadiness }) {
                   transition={{ duration: 0.18 }}
                   className="text-sm text-white leading-snug"
                 >
-                  {SLIDER_SENTENCES[s.key][values[s.key]]}
+                  <span className="text-zinc-500">{s.label} —</span>{' '}
+                  <span>{SLIDER_SENTENCES[s.key][values[s.key]]}</span>
                 </motion.p>
               ) : (
                 <motion.p key="label" className="text-xs text-zinc-600 uppercase tracking-wider">
