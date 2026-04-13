@@ -6,6 +6,7 @@ import { createPageUrl } from '@/utils';
 import { AlertCircle, ArrowLeft, Activity, Zap, Zap as ZapIcon, Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
+import DailyReadinessCheck from '@/components/dashboard/DailyReadinessCheck';
 import { Helmet } from 'react-helmet-async';
 import { useTrialStatus } from '@/components/useTrialStatus';
 import RehabIntroModal from '@/components/rehab/RehabIntroModal';
@@ -17,6 +18,7 @@ export default function RehabPlan() {
   const { hasAccess } = useTrialStatus();
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [showReadinessCheck, setShowReadinessCheck] = useState(false);
   const [readinessStatus, setReadinessStatus] = useState(null);
   const [preferredCoach, setPreferredCoach] = useState('male');
   const [activePhaseIdx, setActivePhaseIdx] = useState(0);
@@ -56,7 +58,7 @@ export default function RehabPlan() {
         if (checkDone !== today) {
           const lastCheck = currentUser.last_readiness_check;
           if (lastCheck !== today) {
-            // skip readiness check for now
+            setShowReadinessCheck(true);
           } else {
             setReadinessStatus(currentUser.current_readiness_status);
             sessionStorage.setItem('readiness_check_done', today);
@@ -211,6 +213,21 @@ export default function RehabPlan() {
     }
   };
 
+  const handleReadinessCheckClose = async () => {
+    setShowReadinessCheck(false);
+    // Mark check as done for today
+    const today = new Date().toISOString().split('T')[0];
+    sessionStorage.setItem('readiness_check_done', today);
+    // Refresh user data to get updated readiness status
+    try {
+      const updatedUser = await base44.auth.me();
+      setReadinessStatus(updatedUser.current_readiness_status);
+      setUser(updatedUser);
+    } catch (e) {
+      console.error('Error refreshing user:', e);
+    }
+  };
+
   if (isLoading) {
     return <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950" />;
   }
@@ -255,7 +272,7 @@ export default function RehabPlan() {
 
       {/* Rehab Intro Modal */}
       <RehabIntroModal
-        isOpen={showIntroModal}
+        isOpen={showIntroModal && !showReadinessCheck}
         onStart={handleStartSession}
         rehabPlan={rehabPlan}
         userName={user?.full_name}
@@ -278,6 +295,13 @@ export default function RehabPlan() {
         currentExerciseIdx={activeExerciseIdx}
         isSequential={true}
       />
+
+      {/* Readiness Check Modal */}
+      <AnimatePresence>
+        {showReadinessCheck && (
+          <DailyReadinessCheck user={user} onClose={handleReadinessCheckClose} />
+        )}
+      </AnimatePresence>
 
       {/* Header */}
       <div className="sticky top-0 z-40 bg-slate-900 border-b border-emerald-500/20">

@@ -2,11 +2,11 @@ import React, { useState, useMemo, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import InteractiveBodyMapInput from '../diagnosis/InteractiveBodyMapInput';
 import ReadinessTrendChart from './ReadinessTrendChart';
-import { X, Wrench, Brain, Zap, Moon } from 'lucide-react';
+import { X } from 'lucide-react';
 import { createPageUrl } from '@/utils';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
-import { ChevronRight, Activity, BookOpen } from 'lucide-react';
+import { ChevronRight, Zap, Activity, BookOpen, Target, Watch } from 'lucide-react';
 
 // ── Readiness Ring ──────────────────────────────────────────────────────────────
 function ReadinessRing({ readiness }) {
@@ -28,6 +28,7 @@ function ReadinessRing({ readiness }) {
     { label: 'Körper',  value: readiness?.feeling_hardware },
     { label: 'Fokus',   value: readiness?.focus_software },
     { label: 'Energie', value: readiness?.energy_battery },
+    { label: 'Schlaf',  value: readiness?.sleep_quality },
   ];
 
   return (
@@ -70,6 +71,68 @@ function ReadinessRing({ readiness }) {
 }
 
 // ── Inline Readiness Widget ─────────────────────────────────────────────────────
+const SLIDER_SENTENCES = {
+  feeling_hardware: [
+    '',
+    'komplett blockiert',
+    'sehr steif und unbeweglich',
+    'ziemlich steif und schwer',
+    'etwas eingeschränkt',
+    'nicht ganz locker, aber ok',
+    'ganz ok, leichte Spannung',
+    'recht locker und beweglich',
+    'gut beweglich und geschmeidig',
+    'fast optimal, super Gefühl',
+    'total locker und frei',
+  ],
+  focus_software: [
+    '',
+    'geistig komplett weg',
+    'kaum präsent, zerstreut',
+    'sehr unkonzentriert',
+    'Fokus fällt schwer',
+    'Fokus kommt und geht',
+    'halbwegs klar, geht ok',
+    'gut konzentriert und dabei',
+    'fokussiert und klar',
+    'sehr klar und leistungsfähig',
+    'scharf fokussiert, auf den Punkt',
+  ],
+  energy_battery: [
+    '',
+    'komplett ausgepowert, leer',
+    'kaum Energie, ausgelaugt',
+    'sehr erschöpft und schwer',
+    'müde und träge',
+    'Energie ok, aber wenig',
+    'Energie geht so',
+    'gut geladen und bereit',
+    'kraftvoll und energiegeladen',
+    'sehr vital, echte Kraft',
+    'volle Kraft, Bäume ausreißen',
+  ],
+  sleep_quality: [
+    '',
+    'kaum geschlafen',
+    'nicht der Rede wert',
+    'sehr schlecht geschlafen',
+    'schlecht, nicht erholt',
+    'durchwachsen geschlafen',
+    'mittelmäßig, geht aber',
+    'ganz ok geschlafen',
+    'gut ausgeschlafen und erholt',
+    'sehr gut geschlafen, fit',
+    'ausgeschlafen, energiegeladen',
+  ],
+};
+
+const SLIDERS = [
+  { key: 'feeling_hardware', label: 'Beweglichkeit'   },
+  { key: 'focus_software',   label: 'Geistiger Fokus' },
+  { key: 'energy_battery',   label: 'Körperenergie'   },
+  { key: 'sleep_quality',    label: 'Schlaf'           },
+];
+
 function InlineReadinessWidget({ user, todayReadiness }) {
   const [values, setValues] = useState({ feeling_hardware: 5, focus_software: 5, energy_battery: 5, sleep_quality: 5 });
   const [expanded, setExpanded] = useState(false);
@@ -77,22 +140,17 @@ function InlineReadinessWidget({ user, todayReadiness }) {
   const [forceShow, setForceShow] = useState(false);
   const queryClient = useQueryClient();
 
-  useEffect(() => {
-    if (todayReadiness) {
-      setValues({
-        feeling_hardware: todayReadiness.feeling_hardware || 5,
-        focus_software: todayReadiness.focus_software || 5,
-        energy_battery: todayReadiness.energy_battery || 5,
-        sleep_quality: todayReadiness.sleep_quality || 5,
-      });
-    }
-  }, [todayReadiness]);
-
-  const getBarColor = (value) => {
-    if (value <= 4) return '#ef4444';
-    if (value <= 7) return '#f59e0b';
-    return '#10b981';
-  };
+  if (todayReadiness && !forceShow) return (
+    <div>
+      <ReadinessRing readiness={todayReadiness} />
+      <button
+        onClick={() => { setForceShow(true); setExpanded(false); }}
+        className="mt-3 w-full text-[10px] text-zinc-600 hover:text-zinc-400 uppercase tracking-widest transition-colors"
+      >
+        ↺ Check wiederholen
+      </button>
+    </div>
+  );
 
   const handleChange = (key, val) => {
     if (!expanded) setExpanded(true);
@@ -102,15 +160,12 @@ function InlineReadinessWidget({ user, todayReadiness }) {
   const handleSave = async () => {
     setSaving(true);
     const today = new Date().toISOString().split('T')[0];
-    const avg = (values.feeling_hardware + values.focus_software + values.energy_battery) / 3;
-    const min = Math.min(values.feeling_hardware, values.focus_software, values.energy_battery);
+    const avg = (values.feeling_hardware + values.focus_software + values.energy_battery + values.sleep_quality) / 4;
+    const min = Math.min(values.feeling_hardware, values.focus_software, values.energy_battery, values.sleep_quality);
     const status = avg < 4 || min <= 2 ? 'red' : avg < 6.5 || min <= 4 ? 'yellow' : 'green';
     await base44.entities.ReadinessCheck.create({
       user_email: user.email,
-      feeling_hardware: values.feeling_hardware,
-      focus_software: values.focus_software,
-      energy_battery: values.energy_battery,
-      sleep_quality: values.sleep_quality,
+      ...values,
       readiness_status: status,
       readiness_score: Math.round(avg * 10) / 10,
       check_date: today,
@@ -121,61 +176,51 @@ function InlineReadinessWidget({ user, todayReadiness }) {
     setSaving(false);
   };
 
-  const metrics = [
-    { icon: Wrench, label: 'HARDWARE', sublabel: 'Körpergefühl', value: values.feeling_hardware, setter: (v) => handleChange('feeling_hardware', v), low: 'Steif', high: 'Geschmeidig' },
-    { icon: Brain, label: 'SOFTWARE', sublabel: 'Fokus', value: values.focus_software, setter: (v) => handleChange('focus_software', v), low: 'Müde', high: 'Hellwach' },
-    { icon: Zap, label: 'BATTERIE', sublabel: 'Energie', value: values.energy_battery, setter: (v) => handleChange('energy_battery', v), low: 'Leer', high: 'Voll' },
-    { icon: Moon, label: 'SCHLAF', sublabel: 'Schlafqualität', value: values.sleep_quality, setter: (v) => handleChange('sleep_quality', v), low: 'Kaum', high: 'Ausgeschlafen' },
-  ];
-
   return (
-    <motion.div layout className="space-y-4 mt-2">
-      {todayReadiness && !forceShow && (
-        <>
-          <ReadinessRing readiness={todayReadiness} />
-          <button
-            onClick={() => setForceShow(true)}
-            className="mt-2 text-[10px] text-zinc-600 hover:text-zinc-400 uppercase tracking-widest transition-colors"
-          >
-            ↻ Check wiederholen
-          </button>
-        </>
+    <motion.div layout className="space-y-3 mt-1">
+      {!expanded && (
+        <p className="text-sm text-zinc-400">Schieber bewegen zum Starten</p>
       )}
-      {(!todayReadiness || forceShow) && metrics.map(({ icon: Icon, label, sublabel, value, setter, low, high }) => (
-        <motion.div key={label} layout className="bg-zinc-800/40 rounded-lg border border-zinc-700/50 p-3">
-          <div className="flex items-center justify-between mb-2">
-            <div className="flex items-center gap-2">
-              <div className="w-6 h-6 rounded bg-zinc-700 flex items-center justify-center">
-                <Icon className="w-3 h-3 text-cyan-400" />
-              </div>
-              <div>
-                <p className="text-[9px] font-bold uppercase tracking-widest text-zinc-200">{label}</p>
-                <p className="text-[9px] text-zinc-500">{sublabel}</p>
-              </div>
-            </div>
-            <span className="text-lg font-bold text-white font-mono">{value}</span>
-          </div>
+      {SLIDERS.map(s => (
+        <div key={s.key} className="space-y-2">
           <input
             type="range" min={1} max={10} step={1}
-            value={value}
-            onChange={e => setter(Number(e.target.value))}
-            className="w-full h-1.5 rounded appearance-none bg-zinc-700 cursor-pointer"
-            style={{ accentColor: getBarColor(value) }}
+            value={values[s.key]}
+            onChange={e => handleChange(s.key, Number(e.target.value))}
+            className="w-full h-1.5 rounded-full appearance-none bg-zinc-800 cursor-pointer"
+            style={{ accentColor: '#94a3b8' }}
           />
-          <div className="flex justify-between text-[9px] text-zinc-500 mt-1 font-mono">
-            <span>{low}</span>
-            <span>{high}</span>
+          <div className="min-h-[1.5rem]">
+            <AnimatePresence mode="wait">
+              {expanded ? (
+                <motion.p
+                  key={values[s.key]}
+                  initial={{ opacity: 0, y: 4 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.18 }}
+                  className="text-sm text-white leading-snug"
+                >
+                  <span className="text-zinc-500">{s.label} —</span>{' '}
+                  <span>{SLIDER_SENTENCES[s.key][values[s.key]]}</span>
+                </motion.p>
+              ) : (
+                <motion.p key="label" className="text-xs text-zinc-600 uppercase tracking-wider">
+                  {s.label}
+                </motion.p>
+              )}
+            </AnimatePresence>
           </div>
-        </motion.div>
+        </div>
       ))}
       <AnimatePresence>
         {expanded && (
           <motion.button
-            initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }}
             onClick={handleSave} disabled={saving}
-            className="w-full h-9 rounded-lg bg-cyan-500/20 hover:bg-cyan-500/30 border border-cyan-500/40 text-cyan-400 text-xs font-bold uppercase tracking-widest transition-all disabled:opacity-50"
+            className="w-full h-9 rounded-xl bg-white/[0.06] hover:bg-white/[0.1] text-white text-xs font-bold transition-all disabled:opacity-50"
           >
-            {saving ? 'Speichert…' : '▶  System Kalibrieren'}
+            {saving ? 'Speichert…' : 'Speichern'}
           </motion.button>
         )}
       </AnimatePresence>
@@ -350,23 +395,7 @@ function BiometricsTile({ user }) {
 
 // ── Main CommandCenter ──────────────────────────────────────────────────────────
 export default function CommandCenter({ user, handleDestinationClick }) {
-  const handleBodyMapSubmit = async (mapData) => {
-    // Save selected region to UserNeuroProfile
-    if (user?.email) {
-      try {
-        const profiles = await base44.entities.UserNeuroProfile.filter({ user_email: user.email });
-        if (profiles.length > 0) {
-          await base44.entities.UserNeuroProfile.update(profiles[0].id, {
-            complaint_history: [{
-              date: new Date().toISOString().split('T')[0],
-              location: mapData.region || 'Unbekannt',
-              intensity: 5,
-              status: 'active'
-            }]
-          });
-        }
-      } catch (e) { console.error('Error saving region:', e); }
-    }
+  const handleBodyMapSubmit = (mapData) => {
     const params = new URLSearchParams({
       mapData: JSON.stringify(mapData),
       region: mapData.region || '',
@@ -518,30 +547,22 @@ export default function CommandCenter({ user, handleDestinationClick }) {
                 <BiometricsTile user={user} />
 
                 <Tile onClick={() => window.location.href = createPageUrl('Wissen')}>
-                  {knowledgeSnack?.image_url ? (
+                  <BookOpen className="w-4 h-4 text-zinc-600 mb-2" />
+                  <TileLabel>Wissen</TileLabel>
+                  {knowledgeSnack ? (
                     <>
-                      <img src={knowledgeSnack.image_url} alt={knowledgeSnack.title} className="w-full h-24 object-cover rounded-lg mb-2" />
-                      <TileLabel>{knowledgeSnack.node_name_de}</TileLabel>
                       <p className="text-xs font-semibold text-zinc-300 leading-snug line-clamp-2">{knowledgeSnack.title}</p>
+                      <p className="text-[10px] text-zinc-600 mt-1.5 line-clamp-2 leading-relaxed">
+                        {knowledgeSnack.summary || knowledgeSnack.content?.slice(0, 80)}
+                      </p>
                     </>
                   ) : (
-                    <>
-                      <BookOpen className="w-4 h-4 text-zinc-600 mb-2" />
-                      <TileLabel>Wissen</TileLabel>
-                      {knowledgeSnack ? (
-                        <>
-                          <p className="text-xs font-semibold text-zinc-300 leading-snug line-clamp-2">{knowledgeSnack.title}</p>
-                          <p className="text-[10px] text-zinc-600 mt-1.5 line-clamp-2 leading-relaxed">
-                            {knowledgeSnack.summary || knowledgeSnack.content?.slice(0, 80)}
-                          </p>
-                        </>
-                      ) : (
-                        <p className="text-xs text-zinc-600">Zur Wissensbibliothek →</p>
-                      )}
-                    </>
+                    <p className="text-xs text-zinc-600">Zur Wissensbibliothek →</p>
                   )}
                 </Tile>
               </div>
+
+
 
               {/* Row 5: Readiness Trend */}
               <div className="bg-zinc-900/80 border border-white/[0.06] rounded-2xl p-4">

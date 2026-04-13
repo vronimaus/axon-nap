@@ -10,6 +10,7 @@ import { toast } from 'sonner';
 import { useQueryClient } from '@tanstack/react-query';
 import GoalCard from '../components/performance/GoalCard';
 import TrainingPlanChat from '../components/performance/TrainingPlanChat';
+import DailyReadinessCheck from '../components/dashboard/DailyReadinessCheck';
 import { Helmet } from 'react-helmet-async';
 import PhaseCard from '../components/performance/PhaseCard';
 import { User } from 'lucide-react';
@@ -30,6 +31,7 @@ export default function TrainingPlan() {
   const [showComplementaryDrills, setShowComplementaryDrills] = useState(true);
   const [isAcceptingDrills, setIsAcceptingDrills] = useState(false);
   const [showChat, setShowChat] = useState(false);
+  const [showReadinessCheck, setShowReadinessCheck] = useState(false);
   const [readinessStatus, setReadinessStatus] = useState(null);
   
   const queryClient = useQueryClient();
@@ -61,7 +63,7 @@ export default function TrainingPlan() {
         if (checkDone !== today) {
           const lastCheck = currentUser.last_readiness_check;
           if (lastCheck !== today) {
-            // skip readiness check for now
+            setShowReadinessCheck(true);
           } else {
             setReadinessStatus(currentUser.current_readiness_status);
             sessionStorage.setItem('readiness_check_done', today);
@@ -151,6 +153,20 @@ export default function TrainingPlan() {
     return <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950" />;
   }
 
+  const handleReadinessCheckClose = async () => {
+    setShowReadinessCheck(false);
+    // Mark check as done for today
+    const today = new Date().toISOString().split('T')[0];
+    sessionStorage.setItem('readiness_check_done', today);
+    // Refresh user data to get updated readiness status
+    try {
+      const updatedUser = await base44.auth.me();
+      setReadinessStatus(updatedUser.current_readiness_status);
+    } catch (e) {
+      console.error('Error refreshing user:', e);
+    }
+  };
+
   const categoryLabels = {
     'mobility': 'Mobilität',
     'neuro_drill': 'Neuro-Drill',
@@ -196,6 +212,13 @@ export default function TrainingPlan() {
           </div>
         </div>
       </div>
+
+      {/* Readiness Check Modal */}
+      <AnimatePresence>
+        {showReadinessCheck && (
+          <DailyReadinessCheck user={user} onClose={handleReadinessCheckClose} />
+        )}
+      </AnimatePresence>
 
       {/* Main Content */}
       <div className="max-w-4xl mx-auto px-4 py-8 space-y-8">
@@ -248,7 +271,7 @@ export default function TrainingPlan() {
                          : readinessStatus === 'yellow'
                          ? "Dein System signalisiert Bedarf an Pflege. Fokus heute: Mobilität & Stabilität."
                          : "Rote Ampel. Fokus heute: Aktive Regeneration & Reset."
-                        }
+                       }
                     </p>
                   </div>
                 </div>
@@ -286,6 +309,7 @@ export default function TrainingPlan() {
                     />
                   </div>
                 </div>
+
 
 
 
@@ -396,6 +420,12 @@ export default function TrainingPlan() {
             )}
       </div>
 
-    </div>
-  );
-}
+      </div>
+      );
+      }
+
+
+
+// ReadinessBanner removed (replaced by Coach Message)
+
+// PhaseCard was here (moved to component)

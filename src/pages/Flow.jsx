@@ -8,7 +8,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Play, Pause, SkipForward, Check, Timer, Activity, AlertTriangle, ChevronDown, Brain } from 'lucide-react';
 import { createPageUrl } from '@/utils';
 import GlossaryTooltip from '../components/glossary/GlossaryTooltip';
-
+import DailyReadinessCheck from '../components/dashboard/DailyReadinessCheck';
 import { Helmet } from 'react-helmet-async';
 
 // Helper: Replace glossary terms in text with tooltips
@@ -117,21 +117,28 @@ export default function Flow() {
   const [expandedProgression, setExpandedProgression] = useState(null);
   const [currentNRS, setCurrentNRS] = useState(null);
 
-  // Check auth
-
+  // Check auth and readiness
   useEffect(() => {
-    const checkAuth = async () => {
+    const checkAuthAndReadiness = async () => {
       try {
         const currentUser = await base44.auth.me();
         setUser(currentUser);
-        if (currentUser?.current_readiness_status) {
-          setReadinessStatus(currentUser.current_readiness_status);
+        
+        // Check if readiness check needed for today
+        const today = new Date().toISOString().split('T')[0];
+        const lastCheck = currentUser?.last_readiness_check;
+        
+        if (lastCheck !== today) {
+          setShowReadinessCheck(true);
+        } else {
+          setReadinessStatus(currentUser?.current_readiness_status);
         }
       } catch (e) {
+        // User not logged in - that's ok for demo flows
         setUser(null);
       }
     };
-    checkAuth();
+    checkAuthAndReadiness();
   }, []);
 
   const { data: routine, isLoading } = useQuery({
@@ -289,7 +296,16 @@ export default function Flow() {
 
   const detailedContent = getDetailedInstruction();
 
-
+  const handleReadinessCheckClose = async () => {
+    setShowReadinessCheck(false);
+    // Refresh user data to get updated readiness status
+    try {
+      const updatedUser = await base44.auth.me();
+      setReadinessStatus(updatedUser?.current_readiness_status);
+    } catch (e) {
+      console.error('Error refreshing user:', e);
+    }
+  };
 
   // Generate completion message based on routine category
   const getCompletionMessage = () => {
@@ -385,7 +401,12 @@ export default function Flow() {
         <meta name="twitter:description" content={routine.description || `${routine.total_duration} Minuten ${routine.category} Training`} />
       </Helmet>
 
-
+      {/* Readiness Check Modal */}
+      <AnimatePresence>
+        {showReadinessCheck && user && (
+          <DailyReadinessCheck user={user} onClose={handleReadinessCheckClose} />
+        )}
+      </AnimatePresence>
 
       <div className="max-w-4xl mx-auto">
 
