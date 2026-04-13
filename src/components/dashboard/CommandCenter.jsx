@@ -2,7 +2,7 @@ import React, { useState, useMemo, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import InteractiveBodyMapInput from '../diagnosis/InteractiveBodyMapInput';
 import ReadinessTrendChart from './ReadinessTrendChart';
-import { X, Wrench, Brain, Zap } from 'lucide-react';
+import { X, Wrench, Brain, Zap, Moon } from 'lucide-react';
 import { createPageUrl } from '@/utils';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
@@ -71,7 +71,7 @@ function ReadinessRing({ readiness }) {
 
 // ── Inline Readiness Widget ─────────────────────────────────────────────────────
 function InlineReadinessWidget({ user, todayReadiness }) {
-  const [values, setValues] = useState({ feeling_hardware: 5, focus_software: 5, energy_battery: 5 });
+  const [values, setValues] = useState({ feeling_hardware: 5, focus_software: 5, energy_battery: 5, sleep_quality: 5 });
   const [expanded, setExpanded] = useState(false);
   const [saving, setSaving] = useState(false);
   const [forceShow, setForceShow] = useState(false);
@@ -111,6 +111,7 @@ function InlineReadinessWidget({ user, todayReadiness }) {
       feeling_hardware: values.feeling_hardware,
       focus_software: values.focus_software,
       energy_battery: values.energy_battery,
+      sleep_quality: values.sleep_quality,
       readiness_status: status,
       readiness_score: Math.round(avg * 10) / 10,
       check_date: today,
@@ -125,6 +126,7 @@ function InlineReadinessWidget({ user, todayReadiness }) {
     { icon: Wrench, label: 'HARDWARE', sublabel: 'Körpergefühl', value: values.feeling_hardware, setter: (v) => handleChange('feeling_hardware', v), low: 'Steif', high: 'Geschmeidig' },
     { icon: Brain, label: 'SOFTWARE', sublabel: 'Fokus', value: values.focus_software, setter: (v) => handleChange('focus_software', v), low: 'Müde', high: 'Hellwach' },
     { icon: Zap, label: 'BATTERIE', sublabel: 'Energie', value: values.energy_battery, setter: (v) => handleChange('energy_battery', v), low: 'Leer', high: 'Voll' },
+    { icon: Moon, label: 'SCHLAF', sublabel: 'Schlafqualität', value: values.sleep_quality, setter: (v) => handleChange('sleep_quality', v), low: 'Kaum', high: 'Ausgeschlafen' },
   ];
 
   return (
