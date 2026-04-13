@@ -82,19 +82,33 @@ function InlineReadinessWidget({ user, todayReadiness }) {
       <ReadinessRing readiness={todayReadiness} />
       
       {/* Bio-Sync Design — inherited from readiness data */}
-      <div className="space-y-2 pt-3 border-t border-zinc-700/50">
-        <p className="text-[10px] text-zinc-600 uppercase tracking-widest mb-3">Bio-Sync Status</p>
-        <div className="flex justify-between items-center">
-          <span className="text-[10px] text-zinc-600 uppercase tracking-wider">HRV</span>
-          <span className="text-sm font-bold text-cyan-400">{Array(Math.round(todayReadiness.feeling_hardware / 2)).fill('●').join('')}</span>
-        </div>
-        <div className="flex justify-between items-center">
-          <span className="text-[10px] text-zinc-600 uppercase tracking-wider">Nervale Balance</span>
-          <span className="text-sm font-bold text-emerald-400">{Array(Math.round(todayReadiness.focus_software / 2)).fill('▪').join('')}</span>
-        </div>
-        <div className="flex justify-between items-center">
-          <span className="text-[10px] text-zinc-600 uppercase tracking-wider">Erholung</span>
-          <span className="text-sm font-bold text-blue-400">{Array(Math.round(todayReadiness.energy_battery / 2)).fill('█').join('')}</span>
+      <div className="space-y-3 pt-3 border-t border-zinc-700/50">
+        <p className="text-[10px] text-zinc-600 uppercase tracking-widest">Bio-Sync</p>
+        <div className="space-y-2">
+          <div className="flex justify-between items-center">
+            <span className="text-[10px] text-zinc-600 uppercase tracking-wider">HRV</span>
+            <div className="flex gap-1">
+              {[...Array(5)].map((_, i) => (
+                <div key={i} className={`w-2 h-2 rounded-full ${i < Math.round(todayReadiness.feeling_hardware / 2) ? 'bg-cyan-400' : 'bg-zinc-700'}`} />
+              ))}
+            </div>
+          </div>
+          <div className="flex justify-between items-center">
+            <span className="text-[10px] text-zinc-600 uppercase tracking-wider">Balance</span>
+            <div className="flex gap-0.5">
+              {[...Array(5)].map((_, i) => (
+                <div key={i} className={`w-1.5 h-3 rounded-sm ${i < Math.round(todayReadiness.focus_software / 2) ? 'bg-emerald-400' : 'bg-zinc-700'}`} />
+              ))}
+            </div>
+          </div>
+          <div className="flex justify-between items-center">
+            <span className="text-[10px] text-zinc-600 uppercase tracking-wider">Recovery</span>
+            <div className="flex gap-0.5">
+              {[...Array(5)].map((_, i) => (
+                <div key={i} className={`w-2.5 h-2 rounded-sm ${i < Math.round(todayReadiness.energy_battery / 2) ? 'bg-blue-400' : 'bg-zinc-700'}`} />
+              ))}
+            </div>
+          </div>
         </div>
       </div>
       
