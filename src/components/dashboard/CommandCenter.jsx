@@ -68,10 +68,10 @@ function ReadinessRing({ readiness }) {
 
 // ── Inline Readiness Widget ─────────────────────────────────────────────────────
 const SLIDERS = [
-  { key: 'feeling_hardware', label: 'Körper',  left: 'Steif',     right: 'Geschmeidig' },
-  { key: 'focus_software',   label: 'Fokus',   left: 'Müde',      right: 'Hellwach'    },
-  { key: 'energy_battery',   label: 'Energie', left: 'Leer',      right: 'Voll'        },
-  { key: 'sleep_quality',    label: 'Schlaf',  left: 'Schlecht',  right: 'Erholt'      },
+  { key: 'feeling_hardware', label: 'Beweglichkeit', left: 'Steif & blockiert', right: 'Locker & frei'       },
+  { key: 'focus_software',   label: 'Geistiger Fokus', left: 'Zerstreut & nebelig', right: 'Klar & konzentriert' },
+  { key: 'energy_battery',   label: 'Körperenergie', left: 'Erschöpft & schwer', right: 'Vital & kraftvoll'    },
+  { key: 'sleep_quality',    label: 'Schlaf',       left: 'Schlecht geschlafen', right: 'Erholt aufgewacht'   },
 ];
 
 function InlineReadinessWidget({ user, todayReadiness }) {
@@ -108,13 +108,13 @@ function InlineReadinessWidget({ user, todayReadiness }) {
   return (
     <motion.div layout className="space-y-3 mt-1">
       {!expanded && (
-        <p className="text-[10px] text-zinc-600">Schieber bewegen zum Starten</p>
+        <p className="text-sm text-zinc-400">Schieber bewegen zum Starten</p>
       )}
       {SLIDERS.map(s => (
         <div key={s.key}>
           <div className="flex justify-between mb-1">
-            <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-500">{s.label}</span>
-            <span className="text-[10px] font-black text-white">{values[s.key]}</span>
+            <span className="text-xs font-semibold text-zinc-300">{s.label}</span>
+            <span className="text-xs font-black text-white">{values[s.key]}</span>
           </div>
           <input
             type="range" min={1} max={10} step={1}
@@ -126,8 +126,8 @@ function InlineReadinessWidget({ user, todayReadiness }) {
           <AnimatePresence>
             {expanded && (
               <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex justify-between mt-0.5">
-                <span className="text-[9px] text-zinc-700">{s.left}</span>
-                <span className="text-[9px] text-zinc-700">{s.right}</span>
+                <span className="text-[10px] text-zinc-500">{s.left}</span>
+                <span className="text-[10px] text-zinc-500">{s.right}</span>
               </motion.div>
             )}
           </AnimatePresence>
