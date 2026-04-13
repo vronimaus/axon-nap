@@ -328,7 +328,7 @@ function BiometricsTile({ user }) {
   return (
     <div className="bg-zinc-900/80 border border-white/[0.06] rounded-2xl p-4 text-left">
       <div className="flex items-center justify-between mb-3">
-        <TileLabel>Mein Körper</TileLabel>
+        <TileLabel>Körperdaten</TileLabel>
         <button onClick={() => setEditing(e => !e)} className="text-[10px] text-zinc-600 hover:text-zinc-400 uppercase tracking-widest transition-colors">
           {editing ? 'Abbrechen' : 'Bearbeiten'}
         </button>
