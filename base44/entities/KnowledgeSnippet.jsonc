@@ -1,0 +1,70 @@
+{
+  "name": "KnowledgeSnippet",
+  "type": "object",
+  "properties": {
+    "node_id": {
+      "type": "string",
+      "description": "MFR Node ID (z.B. 'N1', 'N5', 'N12')"
+    },
+    "node_name_de": {
+      "type": "string",
+      "description": "Deutsche Bezeichnung des Nodes (z.B. 'Kopf & Kiefer', 'Schulter-Arm')"
+    },
+    "title": {
+      "type": "string",
+      "description": "Kurzer Titel des Snippets (z.B. 'Nackensteife verstehen')"
+    },
+    "summary": {
+      "type": "string",
+      "description": "2-3 S\u00e4tze Kurzzusammenfassung"
+    },
+    "content": {
+      "type": "string",
+      "description": "Vollst\u00e4ndiger Text des Wissensm\u00e4ppchens"
+    },
+    "image_url": {
+      "type": "string",
+      "description": "URL zur anatomischen Illustration (dark cyber look)"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "anatomy",
+        "mechanism",
+        "prevention",
+        "recovery"
+      ],
+      "default": "anatomy",
+      "description": "Inhaltstyp des Snippets"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true,
+      "description": "Ist dieses Snippet aktiv und sichtbar"
+    }
+  },
+  "required": [
+    "node_id",
+    "node_name_de",
+    "title",
+    "summary"
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": {},
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

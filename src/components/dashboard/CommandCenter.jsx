@@ -452,27 +452,31 @@ export default function CommandCenter({ user, handleDestinationClick }) {
   const currentHour = new Date().getHours();
   const isPreTrough = troughPattern && currentHour >= troughPattern.hour - 2 && currentHour < troughPattern.hour;
 
-  // Map pain region to knowledge category
-  const getPainCategory = (problemSummary) => {
-    if (!problemSummary) return 'all';
+  // Map problem summary → Node ID
+  const getNodeIdFromProblem = (problemSummary) => {
+    if (!problemSummary) return null;
     const s = problemSummary.toLowerCase();
-    if (s.includes('nacken') || s.includes('hals') || s.includes('c')) return 'neck';
-    if (s.includes('rücken') || s.includes('wirbel') || s.includes('l')) return 'lower_back';
-    if (s.includes('knie')) return 'knee';
-    if (s.includes('schulter')) return 'shoulder';
-    if (s.includes('hüfte') || s.includes('hüft')) return 'hip';
-    if (s.includes('fuss') || s.includes('knöchel')) return 'ankle';
-    if (s.includes('wade')) return 'calf';
-    if (s.includes('ellbogen')) return 'elbow';
-    return 'all';
+    if (s.includes('nacken') || s.includes('hals')) return 'N1';
+    if (s.includes('schulter') || s.includes('arm')) return 'N2';
+    if (s.includes('brust') || s.includes('brustkorb')) return 'N3';
+    if (s.includes('rücken') || s.includes('wirbel') || s.includes('dorsal')) return 'N4';
+    if (s.includes('lenden') || s.includes('lendenwirbel')) return 'N5';
+    if (s.includes('knie')) return 'N6';
+    if (s.includes('hüfte') || s.includes('becken')) return 'N7';
+    if (s.includes('fuss') || s.includes('knöchel') || s.includes('fersen')) return 'N8';
+    if (s.includes('wade') || s.includes('waden')) return 'N9';
+    if (s.includes('ellbogen') || s.includes('unterarm')) return 'N10';
+    if (s.includes('hand') || s.includes('finger')) return 'N11';
+    if (s.includes('kopf') || s.includes('kiefer') || s.includes('atem')) return 'N12';
+    return null;
   };
 
   const { data: knowledgeSnack } = useQuery({
     queryKey: ['knowledgeSnack', activeRehabPlan?.problem_summary],
     queryFn: async () => {
-      const category = getPainCategory(activeRehabPlan?.problem_summary);
-      const query = category === 'all' ? {} : { category };
-      const res = await base44.entities.KnowledgeArticle.filter(query, '-created_date', 20);
+      const nodeId = getNodeIdFromProblem(activeRehabPlan?.problem_summary);
+      if (!nodeId) return null;
+      const res = await base44.entities.KnowledgeSnippet.filter({ node_id: nodeId, is_active: true }, '-created_date', 10);
       if (!res?.length) return null;
       return res[Math.floor(Math.random() * res.length)];
     },
