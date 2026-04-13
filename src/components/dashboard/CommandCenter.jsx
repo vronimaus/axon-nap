@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { createPageUrl } from '@/utils';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
-import { ChevronRight, Zap, Activity, BookOpen, Target, Watch, Waves } from 'lucide-react';
+import { ChevronRight, Zap, Activity, BookOpen, Target, Watch } from 'lucide-react';
 
 // ── Readiness Ring ──────────────────────────────────────────────────────────────
 function ReadinessRing({ readiness }) {
@@ -68,13 +68,14 @@ function ReadinessRing({ readiness }) {
 
 // ── Inline Readiness Widget ─────────────────────────────────────────────────────
 const SLIDERS = [
-  { key: 'feeling_hardware', label: 'Körper',  left: 'Steif', right: 'Geschmeidig' },
-  { key: 'focus_software',   label: 'Fokus',   left: 'Müde',  right: 'Hellwach'   },
-  { key: 'energy_battery',   label: 'Energie', left: 'Leer',  right: 'Voll'       },
+  { key: 'feeling_hardware', label: 'Körper',  left: 'Steif',     right: 'Geschmeidig' },
+  { key: 'focus_software',   label: 'Fokus',   left: 'Müde',      right: 'Hellwach'    },
+  { key: 'energy_battery',   label: 'Energie', left: 'Leer',      right: 'Voll'        },
+  { key: 'sleep_quality',    label: 'Schlaf',  left: 'Schlecht',  right: 'Erholt'      },
 ];
 
 function InlineReadinessWidget({ user, todayReadiness }) {
-  const [values, setValues] = useState({ feeling_hardware: 5, focus_software: 5, energy_battery: 5 });
+  const [values, setValues] = useState({ feeling_hardware: 5, focus_software: 5, energy_battery: 5, sleep_quality: 5 });
   const [expanded, setExpanded] = useState(false);
   const [saving, setSaving] = useState(false);
   const queryClient = useQueryClient();
@@ -89,8 +90,8 @@ function InlineReadinessWidget({ user, todayReadiness }) {
   const handleSave = async () => {
     setSaving(true);
     const today = new Date().toISOString().split('T')[0];
-    const avg = (values.feeling_hardware + values.focus_software + values.energy_battery) / 3;
-    const min = Math.min(values.feeling_hardware, values.focus_software, values.energy_battery);
+    const avg = (values.feeling_hardware + values.focus_software + values.energy_battery + values.sleep_quality) / 4;
+    const min = Math.min(values.feeling_hardware, values.focus_software, values.energy_battery, values.sleep_quality);
     const status = avg < 4 || min <= 2 ? 'red' : avg < 6.5 || min <= 4 ? 'yellow' : 'green';
     await base44.entities.ReadinessCheck.create({
       user_email: user.email,
@@ -312,27 +313,7 @@ export default function CommandCenter({ user, handleDestinationClick }) {
           </Tile>
         </div>
 
-        {/* Row 3: TuneUp + Wearables */}
-        <div className="grid grid-cols-2 gap-3">
-          <Tile onClick={() => handleDestinationClick('Daily TuneUp', () => window.location.href = createPageUrl('Flow'))}>
-            <Waves className="w-4 h-4 text-zinc-600 mb-3" />
-            <TileLabel>Daily TuneUp</TileLabel>
-            <p className="text-sm font-semibold text-zinc-300 leading-tight">MFR · Neuro · Integration</p>
-            <p className="text-[10px] text-zinc-600 mt-1">Körper-Reset in 5–10 Min</p>
-          </Tile>
-
-          <div className="bg-zinc-900/80 border border-white/[0.06] rounded-2xl p-4">
-            <Watch className="w-4 h-4 text-zinc-700 mb-3" />
-            <TileLabel>Wearables</TileLabel>
-            <p className="text-sm font-semibold text-zinc-500 leading-tight">Nicht verbunden</p>
-            <p className="text-[10px] text-zinc-700 mt-1">Apple Watch · Garmin · Whoop</p>
-            <span className="inline-block mt-2 text-[9px] font-bold uppercase tracking-widest text-zinc-700 border border-white/[0.04] px-2 py-0.5 rounded-full">
-              Bald verfügbar
-            </span>
-          </div>
-        </div>
-
-        {/* Row 4: Rehab next + Wissen */}
+        {/* Row 3: Rehab next + Wissen */}
         <div className="grid grid-cols-2 gap-3">
           <Tile onClick={() => window.location.href = createPageUrl('RehabPlan')}>
             <TileLabel>Nächste Übung</TileLabel>
@@ -362,6 +343,16 @@ export default function CommandCenter({ user, handleDestinationClick }) {
               <p className="text-xs text-zinc-600">Zur Wissensbibliothek →</p>
             )}
           </Tile>
+        </div>
+
+        {/* Row 4: Wearables placeholder */}
+        <div className="bg-zinc-900/80 border border-white/[0.06] rounded-2xl p-4 flex items-center gap-4">
+          <Watch className="w-5 h-5 text-zinc-700 flex-shrink-0" />
+          <div className="flex-1 min-w-0">
+            <TileLabel>Wearables</TileLabel>
+            <p className="text-xs text-zinc-500">Apple Watch · Garmin · Whoop · Oura</p>
+          </div>
+          <span className="text-[9px] font-bold uppercase tracking-widest text-zinc-700 border border-white/[0.04] px-2 py-1 rounded-full whitespace-nowrap">Bald verfügbar</span>
         </div>
 
         {/* Row 5: 7-Day Activity */}
