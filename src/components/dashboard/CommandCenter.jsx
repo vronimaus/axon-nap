@@ -77,7 +77,6 @@ function InlineReadinessWidget({ user, todayReadiness }) {
   const [forceShow, setForceShow] = useState(false);
   const queryClient = useQueryClient();
 
-  // Sync values from todayReadiness on mount
   useEffect(() => {
     if (todayReadiness) {
       setValues({
@@ -131,9 +130,7 @@ function InlineReadinessWidget({ user, todayReadiness }) {
 
   return (
     <motion.div layout className="space-y-4 mt-2">
-      {todayReadiness && !forceShow && <ReadinessRing readiness={todayReadiness} />}
-      {!forceShow && !todayReadiness && <p className="text-xs text-zinc-500 uppercase tracking-wider">4 Inputs erforderlich</p>}
-      {forceShow && <p className="text-xs text-zinc-500 uppercase tracking-wider">Inputs anpassen</p>}
+      {todayReadiness && <ReadinessRing readiness={todayReadiness} />}
       {metrics.map(({ icon: Icon, label, sublabel, value, setter, low, high }) => (
         <motion.div key={label} layout className="bg-zinc-800/40 rounded-lg border border-zinc-700/50 p-3">
           <div className="flex items-center justify-between mb-2">
