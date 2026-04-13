@@ -268,10 +268,7 @@ function TileLabel({ children }) {
 
 // ── Main CommandCenter ──────────────────────────────────────────────────────────
 export default function CommandCenter({ user, handleDestinationClick }) {
-  const [showBodyMap, setShowBodyMap] = useState(false);
-
   const handleBodyMapSubmit = (mapData) => {
-    setShowBodyMap(false);
     const params = new URLSearchParams({
       mapData: JSON.stringify(mapData),
       region: mapData.region || '',
@@ -377,28 +374,19 @@ export default function CommandCenter({ user, handleDestinationClick }) {
             </p>
           </div>
 
-          {/* Row 1: Readiness + Body Tile */}
-          <div className="grid grid-cols-3 gap-3 items-start">
-            <motion.div layout className="col-span-2 bg-zinc-900/80 border border-white/[0.06] rounded-2xl p-4">
+          {/* Row 1: Readiness full width */}
+          <div>
+            <motion.div layout className="bg-zinc-900/80 border border-white/[0.06] rounded-2xl p-4">
               <TileLabel>System-Status</TileLabel>
               <InlineReadinessWidget user={user} todayReadiness={todayReadiness} />
             </motion.div>
+          </div>
 
-            <button
-              onClick={() => setShowBodyMap(true)}
-              className="bg-zinc-900/80 border border-white/[0.06] rounded-2xl p-4 flex flex-col justify-between hover:border-white/[0.12] transition-all text-left"
-            >
-              <TileLabel>Körper</TileLabel>
-              <svg viewBox="0 0 60 120" className="w-full max-w-[44px] mx-auto mt-1" fill="none">
-                <circle cx="30" cy="10" r="8" stroke="#3f3f46" strokeWidth="1.5" />
-                <line x1="30" y1="18" x2="30" y2="65" stroke="#3f3f46" strokeWidth="1.5" />
-                <line x1="30" y1="28" x2="10" y2="50" stroke="#3f3f46" strokeWidth="1.5" />
-                <line x1="30" y1="28" x2="50" y2="50" stroke="#3f3f46" strokeWidth="1.5" />
-                <line x1="30" y1="65" x2="16" y2="100" stroke="#3f3f46" strokeWidth="1.5" />
-                <line x1="30" y1="65" x2="44" y2="100" stroke="#3f3f46" strokeWidth="1.5" />
-              </svg>
-              <p className="text-[10px] text-zinc-600 mt-2">Schmerz lokalisieren</p>
-            </button>
+          {/* Body Map embedded */}
+          <div className="bg-zinc-900/80 border border-white/[0.06] rounded-2xl p-4">
+            <TileLabel>Körper — Schmerz lokalisieren</TileLabel>
+            <p className="text-xs text-zinc-600 mb-3">Tippe auf die exakte Stelle deines Schmerzes</p>
+            <InteractiveBodyMapInput onSubmit={handleBodyMapSubmit} />
           </div>
 
           {/* Row 2: Quick Actions */}
@@ -512,33 +500,6 @@ export default function CommandCenter({ user, handleDestinationClick }) {
         </div>
       </div>
 
-      {/* Body Map Overlay */}
-      <AnimatePresence>
-        {showBodyMap && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 bg-[#111111] overflow-y-auto"
-          >
-            <div className="max-w-2xl mx-auto px-4 pt-6 pb-24">
-              <div className="flex items-center justify-between mb-6">
-                <div>
-                  <h2 className="text-xl font-bold text-white">Wo tut es weh?</h2>
-                  <p className="text-xs text-zinc-500 mt-0.5">Tippe auf die exakte Stelle</p>
-                </div>
-                <button
-                  onClick={() => setShowBodyMap(false)}
-                  className="p-2 rounded-xl bg-zinc-800 text-zinc-400 hover:text-white transition-colors"
-                >
-                  <X className="w-5 h-5" />
-                </button>
-              </div>
-              <InteractiveBodyMapInput onSubmit={handleBodyMapSubmit} />
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </>
   );
 }
