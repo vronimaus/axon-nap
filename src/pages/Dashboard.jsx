@@ -4,6 +4,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { createPageUrl } from '@/utils';
 import { Activity, Target, Zap, Info, ArrowLeft, Loader2 } from 'lucide-react';
+import CombinedReadinessAssessment from '../components/dashboard/CombinedReadinessAssessment';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 import SlingSpiderChart from '../components/dashboard/SlingSpiderChart';
@@ -22,6 +23,9 @@ export default function Dashboard() {
   const [showProgress, setShowProgress] = useState(false);
   const [isGeneratingPlan, setIsGeneratingPlan] = useState(false);
   const [showReadinessCheck, setShowReadinessCheck] = useState(false);
+  // Combined assessment state
+  const [pendingDestination, setPendingDestination] = useState(null); // { label, action }
+  const [showAssessment, setShowAssessment] = useState(false);
   const [pullY, setPullY] = useState(0);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const touchStartY = useRef(0);
@@ -39,13 +43,39 @@ export default function Dashboard() {
       return;
     }
 
-    // Check if readiness done today
+    // Don't auto-trigger readiness anymore — it's triggered by destination choice
+  }, [user, isLoading, hasAccess]);
+
+  // Called when user picks a destination card
+  const handleDestinationClick = (label, action) => {
     const today = new Date().toISOString().split('T')[0];
     const checkDone = sessionStorage.getItem('readiness_check_done');
-    if (checkDone !== today && user.last_readiness_check !== today) {
-      setShowReadinessCheck(true);
+    if (checkDone === today) {
+      // Already done today → go directly
+      action();
+    } else {
+      setPendingDestination({ label, action });
+      setShowAssessment(true);
     }
-  }, [user, isLoading, hasAccess]);
+  };
+
+  const handleAssessmentComplete = () => {
+    setShowAssessment(false);
+    if (pendingDestination) {
+      pendingDestination.action();
+      setPendingDestination(null);
+    }
+  };
+
+  const handleAssessmentSkip = () => {
+    const today = new Date().toISOString().split('T')[0];
+    sessionStorage.setItem('readiness_check_done', today);
+    setShowAssessment(false);
+    if (pendingDestination) {
+      pendingDestination.action();
+      setPendingDestination(null);
+    }
+  };
 
   const handleCloseOnboarding = () => {
     localStorage.setItem('axon_onboarding_seen', 'true');
@@ -156,10 +186,15 @@ export default function Dashboard() {
         onTouchEnd={handleTouchEnd}
         style={{ touchAction: pullY > 0 ? 'none' : 'auto' }}
       >
-        {/* Daily Readiness Check & Onboarding Modals — also shown on selection screen */}
+        {/* Combined Assessment Modal */}
         <AnimatePresence>
-          {showReadinessCheck && user && (
-            <DailyReadinessCheck user={user} onClose={handleReadinessClose} />
+          {showAssessment && user && pendingDestination && (
+            <CombinedReadinessAssessment
+              user={user}
+              destinationLabel={pendingDestination.label}
+              onComplete={handleAssessmentComplete}
+              onSkip={handleAssessmentSkip}
+            />
           )}
         </AnimatePresence>
         <AnimatePresence>
@@ -238,64 +273,83 @@ export default function Dashboard() {
             </AnimatePresence>
           </div>
 
-          <div className="grid sm:grid-cols-3 gap-5 sm:gap-7">
-            {/* 1. PERFORMANCE (Goals) - NOW FIRST */}
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
+            {/* 1. QUICK SESSIONS */}
             <motion.button
               whileTap={{ scale: 0.98 }}
-              onClick={() => setMode('performance')}
-              className="glass rounded-xl sm:rounded-2xl border border-blue-500/30 p-6 sm:p-8 hover:border-blue-500/60 active:border-blue-500/80 transition-all group touch-target relative"
+              onClick={() => handleDestinationClick('Quick Sessions', () => window.location.href = createPageUrl('FitnessSnacks'))}
+              className="glass rounded-xl sm:rounded-2xl border border-orange-500/30 p-5 sm:p-6 hover:border-orange-500/60 active:border-orange-500/80 transition-all group touch-target text-left"
             >
-            
-              <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-xl sm:rounded-2xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center mb-3 sm:mb-4 mx-auto group-hover:shadow-lg group-hover:shadow-blue-500/50 transition-all">
-                <Zap className="w-7 h-7 sm:w-8 sm:h-8 text-white" />
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center mb-3 mx-auto group-hover:shadow-lg group-hover:shadow-orange-500/50 transition-all">
+                <span className="text-xl">⚡</span>
               </div>
-              <h2 className="text-xl sm:text-2xl font-bold text-blue-400 mb-2 sm:mb-3">GOALS</h2>
-              <p className="text-sm sm:text-base text-slate-300 mb-4 leading-relaxed">
-                Schalte neue Fähigkeiten frei: Von ersten Klimmzügen bis zum Human Flag. Dein personalisierter Trainingsplan basiert auf deinen Baselines.
+              <h2 className="text-lg font-bold text-orange-400 mb-2 text-center">QUICK SESSIONS</h2>
+              <p className="text-xs text-slate-300 mb-3 leading-relaxed text-center">
+                1–10 Min. hormetische Micro-Workouts. Täglich personalisiert nach deinem Status.
               </p>
-              <div className="flex flex-wrap gap-1.5">
-                {['Skill-Progression', 'Trainingsplan', 'Kraft + Mobility'].map(tag => (
-                  <span key={tag} className="text-[10px] font-semibold uppercase tracking-wider px-2 py-1 rounded-md bg-blue-500/10 text-blue-300 border border-blue-500/20">{tag}</span>
+              <div className="flex flex-wrap gap-1 justify-center">
+                {['HIIT', 'Breathwork', 'Strength'].map(tag => (
+                  <span key={tag} className="text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-md bg-orange-500/10 text-orange-300 border border-orange-500/20">{tag}</span>
                 ))}
               </div>
             </motion.button>
 
-            {/* 2. REHAB (Schmerz) - NOW SECOND */}
+            {/* 2. PERFORMANCE (Goals) */}
             <motion.button
               whileTap={{ scale: 0.98 }}
-              onClick={() => window.location.href = createPageUrl('DiagnosisChat')}
-              className="glass rounded-xl sm:rounded-2xl border border-emerald-500/30 p-6 sm:p-8 hover:border-emerald-500/60 active:border-emerald-500/80 transition-all group touch-target"
+              onClick={() => handleDestinationClick('Performance', () => setMode('performance'))}
+              className="glass rounded-xl sm:rounded-2xl border border-blue-500/30 p-5 sm:p-6 hover:border-blue-500/60 active:border-blue-500/80 transition-all group touch-target text-left"
             >
-              <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-xl sm:rounded-2xl bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center mb-3 sm:mb-4 mx-auto group-hover:shadow-lg group-hover:shadow-emerald-500/50 transition-all animate-pulse">
-                <Target className="w-7 h-7 sm:w-8 sm:h-8 text-white" />
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center mb-3 mx-auto group-hover:shadow-lg group-hover:shadow-blue-500/50 transition-all">
+                <Zap className="w-6 h-6 text-white" />
               </div>
-              <h2 className="text-xl sm:text-2xl font-bold text-emerald-400 mb-2 sm:mb-3">REHAB</h2>
-              <p className="text-sm sm:text-base text-slate-300 mb-4 leading-relaxed">
-                Akuter Schmerz? AXON analysiert die Root Cause über Hardware-Tests und Neuro-Drills, dann gibt dir einen phasierten Reha-Plan.
+              <h2 className="text-lg font-bold text-blue-400 mb-2 text-center">PERFORMANCE</h2>
+              <p className="text-xs text-slate-300 mb-3 leading-relaxed text-center">
+                Schalte neue Skills frei. Von Klimmzügen bis Human Flag – dein personalisierter Plan.
               </p>
-              <div className="flex flex-wrap gap-1.5">
+              <div className="flex flex-wrap gap-1 justify-center">
+                {['Skill-Progression', 'Kraft', 'Mobility'].map(tag => (
+                  <span key={tag} className="text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-md bg-blue-500/10 text-blue-300 border border-blue-500/20">{tag}</span>
+                ))}
+              </div>
+            </motion.button>
+
+            {/* 3. REHAB */}
+            <motion.button
+              whileTap={{ scale: 0.98 }}
+              onClick={() => handleDestinationClick('Rehab & Recovery', () => window.location.href = createPageUrl('DiagnosisChat'))}
+              className="glass rounded-xl sm:rounded-2xl border border-emerald-500/30 p-5 sm:p-6 hover:border-emerald-500/60 active:border-emerald-500/80 transition-all group touch-target text-left"
+            >
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center mb-3 mx-auto group-hover:shadow-lg group-hover:shadow-emerald-500/50 transition-all">
+                <Target className="w-6 h-6 text-white" />
+              </div>
+              <h2 className="text-lg font-bold text-emerald-400 mb-2 text-center">REHAB & RECOVERY</h2>
+              <p className="text-xs text-slate-300 mb-3 leading-relaxed text-center">
+                Akuter Schmerz? AXON analysiert die Root Cause und erstellt deinen Reha-Plan.
+              </p>
+              <div className="flex flex-wrap gap-1 justify-center">
                 {['Diagnose', 'MFR-Release', 'Neuro-Reset'].map(tag => (
-                  <span key={tag} className="text-[10px] font-semibold uppercase tracking-wider px-2 py-1 rounded-md bg-emerald-500/10 text-emerald-300 border border-emerald-500/20">{tag}</span>
+                  <span key={tag} className="text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-md bg-emerald-500/10 text-emerald-300 border border-emerald-500/20">{tag}</span>
                 ))}
               </div>
             </motion.button>
 
-            {/* 3. FLOW (Daily Maintenance) - UNCHANGED */}
+            {/* 4. FLOW */}
             <motion.button
               whileTap={{ scale: 0.98 }}
-              onClick={() => window.location.href = createPageUrl('FlowRoutines')}
-              className="glass rounded-xl sm:rounded-2xl border border-purple-500/30 p-6 sm:p-8 hover:border-purple-500/60 active:border-purple-500/80 transition-all group touch-target"
+              onClick={() => handleDestinationClick('Flow', () => window.location.href = createPageUrl('FlowRoutines'))}
+              className="glass rounded-xl sm:rounded-2xl border border-purple-500/30 p-5 sm:p-6 hover:border-purple-500/60 active:border-purple-500/80 transition-all group touch-target text-left"
             >
-              <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-xl sm:rounded-2xl bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center mb-3 sm:mb-4 mx-auto group-hover:shadow-lg group-hover:shadow-purple-500/50 transition-all">
-                <Activity className="w-7 h-7 sm:w-8 sm:h-8 text-white" />
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center mb-3 mx-auto group-hover:shadow-lg group-hover:shadow-purple-500/50 transition-all">
+                <Activity className="w-6 h-6 text-white" />
               </div>
-              <h2 className="text-xl sm:text-2xl font-bold text-purple-400 mb-2 sm:mb-3">FLOW</h2>
-              <p className="text-sm sm:text-base text-slate-300 mb-4 leading-relaxed">
-                Tägliche Pflegeroutinen für dein System: Faszien-Release, Neuro-Drills, Mobility-Flows und Atemarbeit in 5-30 Min Sessions.
+              <h2 className="text-lg font-bold text-purple-400 mb-2 text-center">FLOW</h2>
+              <p className="text-xs text-slate-300 mb-3 leading-relaxed text-center">
+                Tägliche Pflegeroutinen: Faszien, Neuro-Drills, Mobility & Atem in 5–30 Min.
               </p>
-              <div className="flex flex-wrap gap-1.5">
-                {['MFR-Nodes', 'Mobility-CARs', 'Regeneration'].map(tag => (
-                  <span key={tag} className="text-[10px] font-semibold uppercase tracking-wider px-2 py-1 rounded-md bg-purple-500/10 text-purple-300 border border-purple-500/20">{tag}</span>
+              <div className="flex flex-wrap gap-1 justify-center">
+                {['MFR-Nodes', 'Mobility', 'Regeneration'].map(tag => (
+                  <span key={tag} className="text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-md bg-purple-500/10 text-purple-300 border border-purple-500/20">{tag}</span>
                 ))}
               </div>
             </motion.button>
@@ -306,7 +360,7 @@ export default function Dashboard() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.3 }}
-            className="mt-10 glass rounded-xl border border-slate-700/60 p-4 text-center"
+            className="mt-8 glass rounded-xl border border-slate-700/60 p-4 text-center"
           >
             <p className="text-sm text-slate-300">
               AXON deckt den kompletten Lebenszyklus ab: Probleme lösen → Ziele erreichen → System pflegen
