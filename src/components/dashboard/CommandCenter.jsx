@@ -339,7 +339,23 @@ function BiometricsTile({ user }) {
 
 // ── Main CommandCenter ──────────────────────────────────────────────────────────
 export default function CommandCenter({ user, handleDestinationClick }) {
-  const handleBodyMapSubmit = (mapData) => {
+  const handleBodyMapSubmit = async (mapData) => {
+    // Save selected region to UserNeuroProfile
+    if (user?.email) {
+      try {
+        const profiles = await base44.entities.UserNeuroProfile.filter({ user_email: user.email });
+        if (profiles.length > 0) {
+          await base44.entities.UserNeuroProfile.update(profiles[0].id, {
+            complaint_history: [{
+              date: new Date().toISOString().split('T')[0],
+              location: mapData.region || 'Unbekannt',
+              intensity: 5,
+              status: 'active'
+            }]
+          });
+        }
+      } catch (e) { console.error('Error saving region:', e); }
+    }
     const params = new URLSearchParams({
       mapData: JSON.stringify(mapData),
       region: mapData.region || '',
@@ -491,22 +507,51 @@ export default function CommandCenter({ user, handleDestinationClick }) {
                 <BiometricsTile user={user} />
 
                 <Tile onClick={() => window.location.href = createPageUrl('Wissen')}>
-                  <BookOpen className="w-4 h-4 text-zinc-600 mb-2" />
-                  <TileLabel>Wissen</TileLabel>
-                  {knowledgeSnack ? (
+                  {knowledgeSnack?.image_url ? (
                     <>
+                      <img src={knowledgeSnack.image_url} alt={knowledgeSnack.title} className="w-full h-24 object-cover rounded-lg mb-2" />
+                      <TileLabel>{knowledgeSnack.node_name_de}</TileLabel>
                       <p className="text-xs font-semibold text-zinc-300 leading-snug line-clamp-2">{knowledgeSnack.title}</p>
-                      <p className="text-[10px] text-zinc-600 mt-1.5 line-clamp-2 leading-relaxed">
-                        {knowledgeSnack.summary || knowledgeSnack.content?.slice(0, 80)}
-                      </p>
                     </>
                   ) : (
-                    <p className="text-xs text-zinc-600">Zur Wissensbibliothek →</p>
+                    <>
+                      <BookOpen className="w-4 h-4 text-zinc-600 mb-2" />
+                      <TileLabel>Wissen</TileLabel>
+                      {knowledgeSnack ? (
+                        <>
+                          <p className="text-xs font-semibold text-zinc-300 leading-snug line-clamp-2">{knowledgeSnack.title}</p>
+                          <p className="text-[10px] text-zinc-600 mt-1.5 line-clamp-2 leading-relaxed">
+                            {knowledgeSnack.summary || knowledgeSnack.content?.slice(0, 80)}
+                          </p>
+                        </>
+                      ) : (
+                        <p className="text-xs text-zinc-600">Zur Wissensbibliothek →</p>
+                      )}
+                    </>
                   )}
                 </Tile>
               </div>
 
-
+              {/* Bio-Sync Status Panel */}
+              {todayReadiness && (
+                <div className="bg-zinc-900/80 border border-white/[0.06] rounded-2xl p-4">
+                  <TileLabel>Bio-Sync</TileLabel>
+                  <div className="space-y-2">
+                    <div className="flex justify-between items-center">
+                      <span className="text-[10px] text-zinc-600 uppercase tracking-wider">HRV</span>
+                      <span className="text-sm font-bold text-cyan-400">●●●●●</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-[10px] text-zinc-600 uppercase tracking-wider">Nervale Balance</span>
+                      <span className="text-sm font-bold text-emerald-400">▪▪▪▪▪</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-[10px] text-zinc-600 uppercase tracking-wider">Erholung</span>
+                      <span className="text-sm font-bold text-blue-400">███</span>
+                    </div>
+                  </div>
+                </div>
+              )}
 
               {/* Row 5: Readiness Trend */}
               <div className="bg-zinc-900/80 border border-white/[0.06] rounded-2xl p-4">
