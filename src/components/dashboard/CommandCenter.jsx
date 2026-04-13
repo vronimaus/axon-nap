@@ -452,10 +452,27 @@ export default function CommandCenter({ user, handleDestinationClick }) {
   const currentHour = new Date().getHours();
   const isPreTrough = troughPattern && currentHour >= troughPattern.hour - 2 && currentHour < troughPattern.hour;
 
+  // Map pain region to knowledge category
+  const getPainCategory = (problemSummary) => {
+    if (!problemSummary) return 'all';
+    const s = problemSummary.toLowerCase();
+    if (s.includes('nacken') || s.includes('hals') || s.includes('c')) return 'neck';
+    if (s.includes('rücken') || s.includes('wirbel') || s.includes('l')) return 'lower_back';
+    if (s.includes('knie')) return 'knee';
+    if (s.includes('schulter')) return 'shoulder';
+    if (s.includes('hüfte') || s.includes('hüft')) return 'hip';
+    if (s.includes('fuss') || s.includes('knöchel')) return 'ankle';
+    if (s.includes('wade')) return 'calf';
+    if (s.includes('ellbogen')) return 'elbow';
+    return 'all';
+  };
+
   const { data: knowledgeSnack } = useQuery({
-    queryKey: ['knowledgeSnack'],
+    queryKey: ['knowledgeSnack', activeRehabPlan?.problem_summary],
     queryFn: async () => {
-      const res = await base44.entities.KnowledgeArticle.list('-created_date', 5);
+      const category = getPainCategory(activeRehabPlan?.problem_summary);
+      const query = category === 'all' ? {} : { category };
+      const res = await base44.entities.KnowledgeArticle.filter(query, '-created_date', 20);
       if (!res?.length) return null;
       return res[Math.floor(Math.random() * res.length)];
     },
