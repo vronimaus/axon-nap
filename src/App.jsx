@@ -1,4 +1,4 @@
-import { Toaster } from "@/components/ui/toaster"
+import { Toaster } from "sonner"
 import { QueryClientProvider } from '@tanstack/react-query'
 import { queryClientInstance } from '@/lib/query-client'
 import NavigationTracker from '@/lib/NavigationTracker'
@@ -9,7 +9,6 @@ import InviteRedeem from './pages/InviteRedeem';
 import FitnessSnacks from './pages/FitnessSnacks.jsx';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
-import { Navigate } from 'react-router-dom';
 
 const { Pages, Layout, mainPage } = pagesConfig;
 const mainPageKey = mainPage ?? Object.keys(Pages)[0];
