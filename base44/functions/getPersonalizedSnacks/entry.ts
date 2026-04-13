@@ -141,11 +141,79 @@ Deno.serve(async (req) => {
     };
   });
 
+  // ── Phase 3.2: Cross-Education Hack ──────────────────────────────────────
+  // Detect active unilateral injuries → fetch blocked exercises → warn on matching snack steps
+  const injuredSides = [];
+  if (profile?.complaint_history) {
+    for (const c of profile.complaint_history) {
+      if (c.status === 'active') {
+        const loc = (c.location || '').toLowerCase();
+        if (loc.includes('rechts') || loc.includes('right')) injuredSides.push('unilateral_right');
+        if (loc.includes('links') || loc.includes('left')) injuredSides.push('unilateral_left');
+      }
+    }
+  }
+
+  let blockedExerciseNames = new Set();
+  let crossEdAdaptation = null;
+
+  if (injuredSides.length > 0) {
+    // Fetch exercises with injured-side laterality (filter per side)
+    const blockedExercises = await Promise.all(
+      injuredSides.map(lat => base44.entities.Exercise.filter({ laterality: lat }, '-updated_date', 200))
+    );
+    for (const group of blockedExercises) {
+      for (const ex of group) {
+        if (ex.name) blockedExerciseNames.add(ex.name.toLowerCase());
+      }
+    }
+    crossEdAdaptation = {
+      active: true,
+      injured_sides: injuredSides,
+      principle: 'Cross-Education: Unilateral-Übungen der verletzten Seite werden vermieden',
+      note: 'Alternating-Varianten bevorzugt → kontralaterales Training hält neuronale Karte aktiv',
+    };
+  }
+
+  // Tag snacks that contain steps matching blocked exercises
+  const snacksWithCrossEd = snacksWithFascialTag.map(snack => {
+    if (blockedExerciseNames.size === 0) return snack;
+    const affectedSteps = (snack.sequence || []).filter(step =>
+      blockedExerciseNames.has((step.title || '').toLowerCase())
+    );
+    if (affectedSteps.length === 0) return snack;
+    return {
+      ...snack,
+      cross_education_adapted: true,
+      cross_education_warning: `${affectedSteps.length} Schritt(e) betreffen die verletzte Seite — alternating Variante empfohlen`,
+    };
+  });
+
+  // ── Phase 3.3: Sensory Contrast Snack ─────────────────────────────────────
+  // Green state only: detect complementary stability pairing across picked snacks
+  let sensoryContrast = null;
+  if (readinessStatus === 'green') {
+    const types = snacksWithCrossEd.map(s => s.type);
+    // Cortical Contrast: strength (high stability) + mobility/zone2 (lower stability) in same session
+    const hasHighDemand = types.some(t => ['hiit', 'sprint', 'strength_snack'].includes(t));
+    const hasLowDemand = types.some(t => ['mobility_snack', 'zone2', 'breathwork'].includes(t));
+    if (hasHighDemand && hasLowDemand) {
+      sensoryContrast = {
+        active: true,
+        principle: 'Cortical Contrast: Hochbelastung → Niedrigbelastung → Hochbelastung',
+        reason: 'Dein ZNS lernt durch den sensorischen Kontrast schneller — Rezeptoren-Resensitivierung nach Stabilität-Instabilität-Wechsel',
+        recommended_order: 'strength_snack zuerst → mobility/breathwork → zurück zu high-demand',
+      };
+    }
+  }
+
   return Response.json({
-    snacks: snacksWithFascialTag,
+    snacks: snacksWithCrossEd,
     readiness_status: readinessStatus,
     readiness_score: readiness?.readiness_score || null,
     has_readiness_today: !!readiness,
     total_eligible: filtered.length,
+    cross_education: crossEdAdaptation,
+    sensory_contrast: sensoryContrast,
   });
 });

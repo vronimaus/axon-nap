@@ -427,6 +427,22 @@ export default function FitnessSnacks() {
             </div>
           </div>
 
+          {/* Sensory Contrast Badge */}
+          {snackData?.sensory_contrast?.active && (
+            <div className="glass rounded-2xl border border-purple-500/30 p-4">
+              <p className="text-[10px] font-bold uppercase tracking-widest text-purple-400 mb-1">⚡ Cortical Contrast aktiv</p>
+              <p className="text-xs text-slate-300 leading-relaxed">{snackData.sensory_contrast.reason}</p>
+            </div>
+          )}
+
+          {/* Cross-Education Notice */}
+          {snackData?.cross_education?.active && (
+            <div className="glass rounded-2xl border border-yellow-500/30 p-4">
+              <p className="text-[10px] font-bold uppercase tracking-widest text-yellow-400 mb-1">🔄 Cross-Education Modus</p>
+              <p className="text-xs text-slate-300 leading-relaxed">{snackData.cross_education.note}</p>
+            </div>
+          )}
+
           {/* Snacks */}
           <div>
             <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-500 mb-3">
