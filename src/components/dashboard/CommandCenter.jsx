@@ -362,10 +362,10 @@ export default function CommandCenter({ user, handleDestinationClick }) {
   return (
     <>
       <div className="min-h-screen bg-[#111111] pb-28 md:pb-8">
-        <div className="max-w-2xl mx-auto px-4 pt-6 space-y-4">
+        <div className="max-w-5xl mx-auto px-4 pt-6">
 
           {/* Header */}
-          <div className="mb-2">
+          <div className="mb-4">
             <h1 className="text-2xl font-light text-white tracking-tight">
               {greeting}{firstName ? `, ${firstName}` : ''}.
             </h1>
@@ -374,129 +374,138 @@ export default function CommandCenter({ user, handleDestinationClick }) {
             </p>
           </div>
 
-          {/* Row 1: Readiness full width */}
-          <div>
-            <motion.div layout className="bg-zinc-900/80 border border-white/[0.06] rounded-2xl p-4">
-              <TileLabel>System-Status</TileLabel>
-              <InlineReadinessWidget user={user} todayReadiness={todayReadiness} />
-            </motion.div>
-          </div>
+          {/* Desktop: 2-column grid. Mobile: single column */}
+          <div className="flex flex-col md:flex-row gap-4 items-start">
 
-          {/* Body Map embedded */}
-          <div className="bg-zinc-900/80 border border-white/[0.06] rounded-2xl p-4">
-            <TileLabel>Körper — Schmerz lokalisieren</TileLabel>
-            <p className="text-xs text-zinc-600 mb-3">Tippe auf die exakte Stelle deines Schmerzes</p>
-            <InteractiveBodyMapInput onSubmit={handleBodyMapSubmit} />
-          </div>
+            {/* LEFT: main content */}
+            <div className="flex-1 min-w-0 space-y-4">
 
-          {/* Row 2: Quick Actions */}
-          <div className={`grid gap-3 ${todayReadiness && todayReadiness.readiness_score >= 7 ? 'grid-cols-2' : 'grid-cols-3'}`}>
-            <Tile onClick={() => handleDestinationClick('Quick Sessions', () => window.location.href = createPageUrl('FitnessSnacks'))}>
-              <Zap className="w-4 h-4 text-zinc-600 mb-3" />
-              <p className="text-sm font-semibold text-zinc-300 leading-tight">Quick Sessions</p>
-              <ChevronRight className="w-3 h-3 text-zinc-700 mt-2" />
-            </Tile>
+              {/* Row 1: Readiness */}
+              <motion.div layout className="bg-zinc-900/80 border border-white/[0.06] rounded-2xl p-4">
+                <TileLabel>System-Status</TileLabel>
+                <InlineReadinessWidget user={user} todayReadiness={todayReadiness} />
+              </motion.div>
 
-            {(!todayReadiness || todayReadiness.readiness_score < 7) && (
-              <Tile onClick={() => window.location.href = createPageUrl('DiagnosisChat')}>
-                <Target className="w-4 h-4 text-zinc-600 mb-3" />
-                <p className="text-sm font-semibold text-zinc-300 leading-tight">Körper entspannen</p>
-                <ChevronRight className="w-3 h-3 text-zinc-700 mt-2" />
-              </Tile>
-            )}
+              {/* Row 2: Quick Actions */}
+              <div className={`grid gap-3 ${todayReadiness && todayReadiness.readiness_score >= 7 ? 'grid-cols-2' : 'grid-cols-3'}`}>
+                <Tile onClick={() => handleDestinationClick('Quick Sessions', () => window.location.href = createPageUrl('FitnessSnacks'))}>
+                  <Zap className="w-4 h-4 text-zinc-600 mb-3" />
+                  <p className="text-sm font-semibold text-zinc-300 leading-tight">Quick Sessions</p>
+                  <ChevronRight className="w-3 h-3 text-zinc-700 mt-2" />
+                </Tile>
 
-            <Tile onClick={() => handleDestinationClick('Flow', () => window.location.href = createPageUrl('FlowRoutines'))}>
-              <Activity className="w-4 h-4 text-zinc-600 mb-3" />
-              <p className="text-sm font-semibold text-zinc-300 leading-tight">Routinen</p>
-              <ChevronRight className="w-3 h-3 text-zinc-700 mt-2" />
-            </Tile>
-          </div>
+                {(!todayReadiness || todayReadiness.readiness_score < 7) && (
+                  <Tile onClick={() => window.location.href = createPageUrl('DiagnosisChat')}>
+                    <Target className="w-4 h-4 text-zinc-600 mb-3" />
+                    <p className="text-sm font-semibold text-zinc-300 leading-tight">Körper entspannen</p>
+                    <ChevronRight className="w-3 h-3 text-zinc-700 mt-2" />
+                  </Tile>
+                )}
 
-          {/* Row 3: Rehab next + Wissen */}
-          <div className="grid grid-cols-2 gap-3">
-            <Tile onClick={() => window.location.href = createPageUrl('RehabPlan')}>
-              <TileLabel>Nächste Übung</TileLabel>
-              {nextExercise ? (
-                <>
-                  <p className="text-sm font-semibold text-zinc-200 leading-tight mt-1">{nextExercise.name}</p>
-                  <p className="text-[10px] text-zinc-600 mt-1">{nextExercise.sets_reps_tempo || ''}</p>
-                </>
-              ) : activeRehabPlan ? (
-                <p className="text-xs text-zinc-500 mt-1">Phase abgeschlossen ✓</p>
-              ) : (
-                <p className="text-xs text-zinc-600 mt-1">Noch kein aktiver Plan</p>
-              )}
-            </Tile>
+                <Tile onClick={() => handleDestinationClick('Flow', () => window.location.href = createPageUrl('FlowRoutines'))}>
+                  <Activity className="w-4 h-4 text-zinc-600 mb-3" />
+                  <p className="text-sm font-semibold text-zinc-300 leading-tight">Routinen</p>
+                  <ChevronRight className="w-3 h-3 text-zinc-700 mt-2" />
+                </Tile>
+              </div>
 
-            <Tile onClick={() => window.location.href = createPageUrl('Wissen')}>
-              <BookOpen className="w-4 h-4 text-zinc-600 mb-2" />
-              <TileLabel>Wissen</TileLabel>
-              {knowledgeSnack ? (
-                <>
-                  <p className="text-xs font-semibold text-zinc-300 leading-snug line-clamp-2">{knowledgeSnack.title}</p>
-                  <p className="text-[10px] text-zinc-600 mt-1.5 line-clamp-2 leading-relaxed">
-                    {knowledgeSnack.summary || knowledgeSnack.content?.slice(0, 80)}
+              {/* Row 3: Rehab next + Wissen */}
+              <div className="grid grid-cols-2 gap-3">
+                <Tile onClick={() => window.location.href = createPageUrl('RehabPlan')}>
+                  <TileLabel>Nächste Übung</TileLabel>
+                  {nextExercise ? (
+                    <>
+                      <p className="text-sm font-semibold text-zinc-200 leading-tight mt-1">{nextExercise.name}</p>
+                      <p className="text-[10px] text-zinc-600 mt-1">{nextExercise.sets_reps_tempo || ''}</p>
+                    </>
+                  ) : activeRehabPlan ? (
+                    <p className="text-xs text-zinc-500 mt-1">Phase abgeschlossen ✓</p>
+                  ) : (
+                    <p className="text-xs text-zinc-600 mt-1">Noch kein aktiver Plan</p>
+                  )}
+                </Tile>
+
+                <Tile onClick={() => window.location.href = createPageUrl('Wissen')}>
+                  <BookOpen className="w-4 h-4 text-zinc-600 mb-2" />
+                  <TileLabel>Wissen</TileLabel>
+                  {knowledgeSnack ? (
+                    <>
+                      <p className="text-xs font-semibold text-zinc-300 leading-snug line-clamp-2">{knowledgeSnack.title}</p>
+                      <p className="text-[10px] text-zinc-600 mt-1.5 line-clamp-2 leading-relaxed">
+                        {knowledgeSnack.summary || knowledgeSnack.content?.slice(0, 80)}
+                      </p>
+                    </>
+                  ) : (
+                    <p className="text-xs text-zinc-600">Zur Wissensbibliothek →</p>
+                  )}
+                </Tile>
+              </div>
+
+              {/* Row 4: Wearables placeholder */}
+              <div className="bg-zinc-900/80 border border-white/[0.06] rounded-2xl p-4 flex items-center gap-4">
+                <Watch className="w-5 h-5 text-zinc-700 flex-shrink-0" />
+                <div className="flex-1 min-w-0">
+                  <TileLabel>Wearables</TileLabel>
+                  <p className="text-xs text-zinc-500">Apple Watch · Garmin · Whoop · Oura</p>
+                </div>
+                <span className="text-[9px] font-bold uppercase tracking-widest text-zinc-700 border border-white/[0.04] px-2 py-1 rounded-full whitespace-nowrap">Bald verfügbar</span>
+              </div>
+
+              {/* Row 5: 7-Day Activity */}
+              <div className="bg-zinc-900/80 border border-white/[0.06] rounded-2xl p-4">
+                <TileLabel>Aktivität — letzte 7 Tage</TileLabel>
+                <div className="mt-3">
+                  <ActivityDots logs={allLogs} />
+                </div>
+              </div>
+
+              {/* Energie-Muster Banner */}
+              {troughPattern && (
+                <div className={`bg-zinc-900/80 border rounded-2xl p-4 ${isPreTrough ? 'border-amber-500/30' : 'border-white/[0.06]'}`}>
+                  <TileLabel>Energie-Muster erkannt</TileLabel>
+                  <p className="text-sm text-zinc-300 mt-1">
+                    Dein Tief liegt oft gegen{' '}
+                    <span className="text-amber-400 font-bold">{troughPattern.hour}:00 Uhr</span>
+                    {' '}(Ø {troughPattern.avg}/10)
                   </p>
-                </>
-              ) : (
-                <p className="text-xs text-zinc-600">Zur Wissensbibliothek →</p>
+                  {isPreTrough ? (
+                    <p className="text-xs text-amber-400 mt-2 font-medium leading-relaxed">
+                      → Jetzt präventiv handeln: Vagus Reset oder Quick Snack — bevor das Tief kommt.
+                    </p>
+                  ) : (
+                    <p className="text-xs text-zinc-600 mt-1">AXON erkennt deine Rhythmen und wird dich rechtzeitig warnen.</p>
+                  )}
+                  {isPreTrough && (
+                    <button
+                      onClick={() => window.location.href = createPageUrl('FitnessSnacks')}
+                      className="mt-3 text-[10px] font-bold uppercase tracking-widest text-amber-400 hover:text-amber-300 transition-colors"
+                    >
+                      Jetzt Quick Session starten →
+                    </button>
+                  )}
+                </div>
               )}
-            </Tile>
-          </div>
 
-          {/* Row 4: Wearables placeholder */}
-          <div className="bg-zinc-900/80 border border-white/[0.06] rounded-2xl p-4 flex items-center gap-4">
-            <Watch className="w-5 h-5 text-zinc-700 flex-shrink-0" />
-            <div className="flex-1 min-w-0">
-              <TileLabel>Wearables</TileLabel>
-              <p className="text-xs text-zinc-500">Apple Watch · Garmin · Whoop · Oura</p>
-            </div>
-            <span className="text-[9px] font-bold uppercase tracking-widest text-zinc-700 border border-white/[0.04] px-2 py-1 rounded-full whitespace-nowrap">Bald verfügbar</span>
-          </div>
-
-          {/* Row 5: 7-Day Activity */}
-          <div className="bg-zinc-900/80 border border-white/[0.06] rounded-2xl p-4">
-            <TileLabel>Aktivität — letzte 7 Tage</TileLabel>
-            <div className="mt-3">
-              <ActivityDots logs={allLogs} />
-            </div>
-          </div>
-
-          {/* Energie-Muster Banner */}
-          {troughPattern && (
-            <div className={`bg-zinc-900/80 border rounded-2xl p-4 ${isPreTrough ? 'border-amber-500/30' : 'border-white/[0.06]'}`}>
-              <TileLabel>Energie-Muster erkannt</TileLabel>
-              <p className="text-sm text-zinc-300 mt-1">
-                Dein Tief liegt oft gegen{' '}
-                <span className="text-amber-400 font-bold">{troughPattern.hour}:00 Uhr</span>
-                {' '}(Ø {troughPattern.avg}/10)
-              </p>
-              {isPreTrough ? (
-                <p className="text-xs text-amber-400 mt-2 font-medium leading-relaxed">
-                  → Jetzt präventiv handeln: Vagus Reset oder Quick Snack — bevor das Tief kommt.
-                </p>
-              ) : (
-                <p className="text-xs text-zinc-600 mt-1">AXON erkennt deine Rhythmen und wird dich rechtzeitig warnen.</p>
-              )}
-              {isPreTrough && (
+              {user?.role === 'admin' && (
                 <button
-                  onClick={() => window.location.href = createPageUrl('FitnessSnacks')}
-                  className="mt-3 text-[10px] font-bold uppercase tracking-widest text-amber-400 hover:text-amber-300 transition-colors"
+                  onClick={() => window.location.href = createPageUrl('AdminHub')}
+                  className="w-full rounded-xl border border-white/[0.04] p-3 hover:border-white/[0.08] transition-all text-zinc-700 hover:text-zinc-500 text-[10px] font-medium uppercase tracking-widest"
                 >
-                  Jetzt Quick Session starten →
+                  Admin Hub
                 </button>
               )}
             </div>
-          )}
 
-          {user?.role === 'admin' && (
-            <button
-              onClick={() => window.location.href = createPageUrl('AdminHub')}
-              className="w-full rounded-xl border border-white/[0.04] p-3 hover:border-white/[0.08] transition-all text-zinc-700 hover:text-zinc-500 text-[10px] font-medium uppercase tracking-widest"
-            >
-              Admin Hub
-            </button>
-          )}
+            {/* RIGHT: Body Map sidebar */}
+            <div className="w-full md:w-72 flex-shrink-0">
+              <div className="bg-zinc-900/80 border border-white/[0.06] rounded-2xl p-4 md:sticky md:top-20">
+                <TileLabel>Körper — Schmerz lokalisieren</TileLabel>
+                <p className="text-xs text-zinc-600 mb-3">Tippe auf die exakte Stelle</p>
+                <InteractiveBodyMapInput onSubmit={handleBodyMapSubmit} />
+              </div>
+            </div>
+
+          </div>
         </div>
       </div>
 
