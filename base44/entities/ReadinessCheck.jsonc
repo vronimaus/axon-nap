@@ -1,0 +1,72 @@
+{
+  "name": "ReadinessCheck",
+  "type": "object",
+  "properties": {
+    "user_email": {
+      "type": "string",
+      "description": "Email des Users"
+    },
+    "feeling_hardware": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 10,
+      "description": "Gef\u00fchl/Hardware: 1=steif (eingerostet), 10=geschmeidig (wie ge\u00f6lt)"
+    },
+    "focus_software": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 10,
+      "description": "Fokus/Software: 1=m\u00fcde (Tunnelblick), 10=hellwach (klar)"
+    },
+    "energy_battery": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 10,
+      "description": "Energie/Batterie: 1=akku leer, 10=volle kraft"
+    },
+    "sleep_quality": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 10,
+      "description": "Schlafqualit\u00e4t: 1=kaum geschlafen, 10=ausgeschlafen und energiegeladen"
+    },
+    "readiness_status": {
+      "type": "string",
+      "enum": [
+        "green",
+        "yellow",
+        "red"
+      ],
+      "description": "Berechneter Readiness Status"
+    },
+    "readiness_score": {
+      "type": "number",
+      "description": "Berechneter Score f\u00fcr Readiness (0-10)"
+    },
+    "check_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Datum des Daily Checks"
+    }
+  },
+  "required": [
+    "user_email",
+    "feeling_hardware",
+    "focus_software",
+    "energy_battery"
+  ],
+  "rls": {
+    "create": {
+      "data.user_email": "{{user.email}}"
+    },
+    "read": {
+      "data.user_email": "{{user.email}}"
+    },
+    "update": {
+      "data.user_email": "{{user.email}}"
+    },
+    "delete": {
+      "data.user_email": "{{user.email}}"
+    }
+  }
+}
