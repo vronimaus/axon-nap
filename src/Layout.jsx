@@ -12,7 +12,7 @@ import OfflineDetector from './components/OfflineDetector';
 import { HelmetProvider } from 'react-helmet-async';
 import { useQueryClient } from '@tanstack/react-query';
 
-const ROOT_TABS = ['Dashboard', 'FitnessSnacks', 'RehabPlan', 'Flow'];
+const ROOT_TABS = ['Dashboard', 'RehabPlan', 'Flow'];
 const PAGES_WITHOUT_NAV = ['Landing', 'Success', 'Checkout', 'Login'];
 
 // Map each tab to its "owned" pages so the tab stays highlighted
