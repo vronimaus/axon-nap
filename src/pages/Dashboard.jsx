@@ -241,17 +241,21 @@ export default function Dashboard() {
           animate={{ opacity: 1, y: 0 }}
           className="max-w-5xl w-full"
         >
-          <div className="text-center mb-10 sm:mb-14">
+          <div className="text-center mb-8 sm:mb-10">
             <h1 className="text-3xl sm:text-4xl md:text-5xl font-light text-white mb-3 sm:mb-4 tracking-tight">
               {(() => {
                 const h = new Date().getHours();
-                const greeting = h < 12 ? 'Guten Morgen' : h < 18 ? 'Hallo' : 'Guten Abend';
                 const firstName = user?.full_name?.split(' ')[0];
-                return firstName ? `${greeting}, ${firstName}` : `${greeting}`;
+                if (h < 6)  return firstName ? `Noch wach, ${firstName}?` : 'Noch wach?';
+                if (h < 12) return firstName ? `Guten Morgen, ${firstName}.` : 'Guten Morgen.';
+                if (h < 14) return firstName ? `Wie läuft dein Tag, ${firstName}?` : 'Wie läuft dein Tag?';
+                if (h < 18) return firstName ? `Nachmittag, ${firstName}.` : 'Nachmittag.';
+                if (h < 22) return firstName ? `Guten Abend, ${firstName}.` : 'Guten Abend.';
+                return firstName ? `Abend, ${firstName}.` : 'Guten Abend.';
               })()}
             </h1>
             <p className="text-xs text-zinc-600 uppercase tracking-[0.25em] font-medium">
-              Wähle deinen heutigen Modus
+              Was brauchst du gerade?
             </p>
           </div>
 
@@ -273,7 +277,34 @@ export default function Dashboard() {
             </AnimatePresence>
           </div>
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
+          {/* Quick Body Region Picker */}
+          <div className="mb-6">
+            <p className="text-[10px] font-medium uppercase tracking-[0.2em] text-zinc-700 mb-3 text-center">Spürst du heute irgendwo Einschränkungen?</p>
+            <div className="flex flex-wrap justify-center gap-2">
+              {[
+                { label: 'Nacken', icon: '🔝' },
+                { label: 'Schulter', icon: '🤷' },
+                { label: 'Rücken', icon: '⚡' },
+                { label: 'Hüfte', icon: '🦵' },
+                { label: 'Knie', icon: '🦿' },
+                { label: 'Anderes', icon: '📍' },
+              ].map(({ label, icon }) => (
+                <button
+                  key={label}
+                  onClick={() => {
+                    const region = label === 'Anderes' ? '' : label;
+                    window.location.href = createPageUrl('DiagnosisChat') + (region ? `?region=${encodeURIComponent(region)}` : '');
+                  }}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-white/[0.06] bg-zinc-900/80 text-zinc-400 text-xs hover:border-white/[0.15] hover:text-white hover:bg-zinc-800 transition-all"
+                >
+                  <span className="text-sm">{icon}</span>
+                  <span>{label}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
             {/* 1. QUICK SESSIONS */}
             <motion.button
               whileTap={{ scale: 0.98 }}
@@ -287,7 +318,7 @@ export default function Dashboard() {
                 </div>
                 <h2 className="text-xs font-semibold text-zinc-300 mb-2 tracking-[0.15em] uppercase">Quick Sessions</h2>
                 <p className="text-xs text-zinc-600 mb-4 leading-relaxed">
-                  1–10 Min. hormetische Micro-Workouts, täglich nach deinem Status.
+                  Kurze, wirkungsvolle Einheiten — abgestimmt auf deinen heutigen Zustand.
                 </p>
                 <div className="flex flex-wrap gap-1.5">
                   {['HIIT', 'Breathwork', 'Strength'].map(tag => (
@@ -297,7 +328,7 @@ export default function Dashboard() {
               </div>
             </motion.button>
 
-            {/* 3. REHAB */}
+            {/* REHAB */}
             <motion.button
               whileTap={{ scale: 0.98 }}
               onClick={() => handleDestinationClick('Rehab & Recovery', () => window.location.href = createPageUrl('DiagnosisChat'))}
@@ -310,7 +341,7 @@ export default function Dashboard() {
                 </div>
                 <h2 className="text-xs font-semibold text-zinc-300 mb-2 tracking-[0.15em] uppercase">Rehab & Recovery</h2>
                 <p className="text-xs text-zinc-600 mb-4 leading-relaxed">
-                  Akuter Schmerz? AXON analysiert die Root Cause und erstellt deinen Reha-Plan.
+                  Etwas zwickt? Wir finden gemeinsam heraus, woher es kommt — und was hilft.
                 </p>
                 <div className="flex flex-wrap gap-1.5">
                   {['Diagnose', 'MFR-Release', 'Neuro-Reset'].map(tag => (
@@ -320,7 +351,7 @@ export default function Dashboard() {
               </div>
             </motion.button>
 
-            {/* 4. FLOW */}
+            {/* FLOW */}
             <motion.button
               whileTap={{ scale: 0.98 }}
               onClick={() => handleDestinationClick('Flow', () => window.location.href = createPageUrl('FlowRoutines'))}
@@ -333,7 +364,7 @@ export default function Dashboard() {
                 </div>
                 <h2 className="text-xs font-semibold text-zinc-300 mb-2 tracking-[0.15em] uppercase">Flow</h2>
                 <p className="text-xs text-zinc-600 mb-4 leading-relaxed">
-                  Tägliche Pflegeroutinen: Faszien, Neuro-Drills, Mobility & Atem in 5–30 Min.
+                  Dein tägliches Körperpflege-Ritual. Faszien, Atmung, Beweglichkeit — in 5–30 Min.
                 </p>
                 <div className="flex flex-wrap gap-1.5">
                   {['MFR-Nodes', 'Mobility', 'Regeneration'].map(tag => (
@@ -352,7 +383,7 @@ export default function Dashboard() {
             className="mt-8 rounded-xl border border-white/[0.04] p-4 text-center"
           >
             <p className="text-xs text-zinc-700">
-              Probleme lösen · Ziele erreichen · System pflegen
+              Kein Druck. Kein Perfektionismus. Nur du und dein Körper — jeden Tag ein kleiner Schritt.
             </p>
           </motion.div>
 
