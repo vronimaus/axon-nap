@@ -67,11 +67,59 @@ function ReadinessRing({ readiness }) {
 }
 
 // ── Inline Readiness Widget ─────────────────────────────────────────────────────
-const SLIDER_LABELS = {
-  feeling_hardware: ['', 'Komplett blockiert', 'Sehr steif', 'Steif & schwer', 'Etwas eingeschränkt', 'Geht so', 'Ok, geht', 'Recht locker', 'Gut beweglich', 'Fast optimal', 'Locker & frei'],
-  focus_software:   ['', 'Total weg', 'Kaum präsent', 'Sehr zerstreut', 'Unkonzentriert', 'Kommt und geht', 'Halbwegs klar', 'Gut dabei', 'Fokussiert', 'Sehr klar', 'Scharf & klar'],
-  energy_battery:   ['', 'Komplett leer', 'Kaum da', 'Sehr erschöpft', 'Müde & schwer', 'Geht so', 'Ganz ok', 'Gut geladen', 'Kraftvoll', 'Sehr vital', 'Volle Kraft'],
-  sleep_quality:    ['', 'Kein Schlaf', 'Fast nicht', 'Sehr schlecht', 'Schlecht', 'Durchwachsen', 'Mittel', 'Ganz ok', 'Gut geschlafen', 'Sehr gut', 'Perfekt erholt'],
+const SLIDER_SENTENCES = {
+  feeling_hardware: [
+    '', // 0 unused
+    'Ich bin heute komplett blockiert und kann mich kaum bewegen.',
+    'Ich fühle mich sehr steif und unbeweglich.',
+    'Ich bin heute ziemlich steif und schwer.',
+    'Ich bin etwas eingeschränkt in meiner Beweglichkeit.',
+    'Geht so – ich bin nicht ganz locker, aber ok.',
+    'Ich bewege mich ganz ok, leichte Spannung noch.',
+    'Ich bin recht locker und beweglich.',
+    'Ich fühle mich gut beweglich und geschmeidig.',
+    'Ich bin fast optimal – Körper fühlt sich super an.',
+    'Ich bin total locker und fühle mich frei in jeder Bewegung.',
+  ],
+  focus_software: [
+    '',
+    'Ich bin heute geistig komplett weg und kann mich nicht sammeln.',
+    'Ich bin kaum präsent – Gedanken schweben überall.',
+    'Ich bin sehr zerstreut und unkonzentriert.',
+    'Ich kann mich schwer fokussieren.',
+    'Mein Fokus kommt und geht – mal da, mal weg.',
+    'Ich bin halbwegs klar, geht ganz ok.',
+    'Ich bin gut dabei und kann mich konzentrieren.',
+    'Ich bin fokussiert und klar im Kopf.',
+    'Ich bin sehr klar und mental leistungsfähig.',
+    'Ich bin scharf fokussiert – mental auf dem Punkt.',
+  ],
+  energy_battery: [
+    '',
+    'Ich bin heute komplett ausgepowert und leer.',
+    'Ich habe kaum Energie – fühle mich ausgelaugt.',
+    'Ich bin sehr erschöpft und mein Körper fühlt sich schwer an.',
+    'Ich bin müde und träge.',
+    'Ich habe Energie, aber nicht wirklich viel.',
+    'Meine Energie ist ganz ok – geht.',
+    'Ich fühle mich gut geladen und bereit.',
+    'Ich bin kraftvoll und energiegeladen.',
+    'Ich bin sehr vital und spüre echte Kraft.',
+    'Ich könnte heute Bäume ausreißen – volle Kraft!',
+  ],
+  sleep_quality: [
+    '',
+    'Ich habe so gut wie gar nicht geschlafen.',
+    'Mein Schlaf war kaum der Rede wert.',
+    'Ich habe sehr schlecht geschlafen und bin gerädert.',
+    'Mein Schlaf war schlecht – ich fühle mich nicht erholt.',
+    'Ich habe durchwachsen geschlafen.',
+    'Mein Schlaf war mittelmäßig, geht aber.',
+    'Ich habe ganz ok geschlafen.',
+    'Ich bin gut ausgeschlafen und erholt.',
+    'Ich habe sehr gut geschlafen und fühle mich fit.',
+    'Ich bin ausgeschlafen und starte energiegeladen in den Tag.',
+  ],
 };
 
 const SLIDERS = [
@@ -118,24 +166,7 @@ function InlineReadinessWidget({ user, todayReadiness }) {
         <p className="text-sm text-zinc-400">Schieber bewegen zum Starten</p>
       )}
       {SLIDERS.map(s => (
-        <div key={s.key}>
-          <div className="flex items-baseline justify-between mb-2">
-            <span className="text-xs font-semibold text-zinc-500 uppercase tracking-wider">{s.label}</span>
-            <AnimatePresence mode="wait">
-              {expanded && (
-                <motion.span
-                  key={values[s.key]}
-                  initial={{ opacity: 0, y: -4 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.15 }}
-                  className="text-sm font-bold text-white"
-                >
-                  {SLIDER_LABELS[s.key][values[s.key]]}
-                </motion.span>
-              )}
-            </AnimatePresence>
-          </div>
+        <div key={s.key} className="space-y-2">
           <input
             type="range" min={1} max={10} step={1}
             value={values[s.key]}
@@ -143,6 +174,26 @@ function InlineReadinessWidget({ user, todayReadiness }) {
             className="w-full h-1.5 rounded-full appearance-none bg-zinc-800 cursor-pointer"
             style={{ accentColor: '#94a3b8' }}
           />
+          <div className="min-h-[1.5rem]">
+            <AnimatePresence mode="wait">
+              {expanded ? (
+                <motion.p
+                  key={values[s.key]}
+                  initial={{ opacity: 0, y: 4 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.18 }}
+                  className="text-sm text-white leading-snug"
+                >
+                  {SLIDER_SENTENCES[s.key][values[s.key]]}
+                </motion.p>
+              ) : (
+                <motion.p key="label" className="text-xs text-zinc-600 uppercase tracking-wider">
+                  {s.label}
+                </motion.p>
+              )}
+            </AnimatePresence>
+          </div>
         </div>
       ))}
       <AnimatePresence>
