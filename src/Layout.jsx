@@ -61,10 +61,10 @@ export default function Layout({ children, currentPageName }) {
   const showBackButton = showNav && !isRootTab(currentPageName);
 
   const navItems = [
-    { name: 'Command', icon: LayoutDashboard, page: 'Dashboard' },
-    { name: 'Snacks',  icon: Zap,             page: 'FitnessSnacks' },
-    { name: 'Rehab',   icon: Activity,         page: 'RehabPlan' },
-    { name: 'Flow',    icon: Zap,              page: 'Flow' },
+    { name: 'Dashboard',     icon: LayoutDashboard, page: 'Dashboard' },
+    { name: 'Quick Sessions', icon: Zap,            page: 'FitnessSnacks' },
+    { name: 'Tune-Up',       icon: Activity,        page: 'RehabPlan' },
+    { name: 'Routinen',      icon: Zap,             page: 'Flow' },
   ];
 
   const activeTab = getActiveTab(currentPageName);
