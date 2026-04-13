@@ -12,7 +12,6 @@ import SlingSpiderChart from '../components/dashboard/SlingSpiderChart';
 import OnboardingModal from '../components/dashboard/OnboardingModal';
 import SessionDecision from '../components/dashboard/SessionDecision';
 import ProgressSyncView from '../components/dashboard/ProgressSyncView';
-import DailyReadinessCheck from '../components/dashboard/DailyReadinessCheck';
 import { Helmet } from 'react-helmet-async';
 
 import { useTrialStatus } from '../components/useTrialStatus';
@@ -246,12 +245,7 @@ export default function Dashboard() {
         <meta name="robots" content="noindex, nofollow" />
       </Helmet>
 
-      {/* Readiness Check Modal */}
-      <AnimatePresence>
-        {showReadinessCheck && user && (
-          <DailyReadinessCheck user={user} onClose={handleReadinessClose} />
-        )}
-      </AnimatePresence>
+
 
       {/* Onboarding Modal */}
       <AnimatePresence>
