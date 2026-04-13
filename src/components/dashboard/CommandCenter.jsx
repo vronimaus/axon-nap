@@ -1,5 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import InteractiveBodyMapInput from '../diagnosis/InteractiveBodyMapInput';
+import { X } from 'lucide-react';
 import { createPageUrl } from '@/utils';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
@@ -123,7 +125,6 @@ const SLIDER_SENTENCES = {
 };
 
 const SLIDERS = [
-
   { key: 'feeling_hardware', label: 'Beweglichkeit'   },
   { key: 'focus_software',   label: 'Geistiger Fokus' },
   { key: 'energy_battery',   label: 'Körperenergie'   },
@@ -267,6 +268,18 @@ function TileLabel({ children }) {
 
 // ── Main CommandCenter ──────────────────────────────────────────────────────────
 export default function CommandCenter({ user, handleDestinationClick }) {
+  const [showBodyMap, setShowBodyMap] = useState(false);
+
+  const handleBodyMapSubmit = (mapData) => {
+    setShowBodyMap(false);
+    const params = new URLSearchParams({
+      mapData: JSON.stringify(mapData),
+      region: mapData.region || '',
+      step: 'sfma',
+    });
+    window.location.href = `/DiagnosisChat?${params.toString()}`;
+  };
+
   const today = new Date().toISOString().split('T')[0];
 
   const { data: todayReadiness } = useQuery({
@@ -337,18 +350,6 @@ export default function CommandCenter({ user, handleDestinationClick }) {
     staleTime: 10 * 60 * 1000,
   });
 
-  // Streak
-  const allActivityDates = new Set([
-    ...routineLogs.map(l => l.created_date?.split('T')[0]).filter(Boolean),
-    ...snackLogs.map(l => l.completed_date).filter(Boolean),
-  ]);
-  let streak = 0;
-  for (let i = 0; i < 30; i++) {
-    const d = new Date(); d.setDate(d.getDate() - i);
-    if (allActivityDates.has(d.toISOString().split('T')[0])) streak++;
-    else if (i > 0) break;
-  }
-
   const allLogs = [
     ...routineLogs.map(l => ({ completed_date: l.created_date?.split('T')[0] })),
     ...snackLogs,
@@ -362,156 +363,182 @@ export default function CommandCenter({ user, handleDestinationClick }) {
   const greeting = h < 12 ? 'Guten Morgen' : h < 18 ? 'Guten Tag' : 'Guten Abend';
 
   return (
-    <div className="min-h-screen bg-[#111111] pb-28 md:pb-8">
-      <div className="max-w-2xl mx-auto px-4 pt-6 space-y-4">
+    <>
+      <div className="min-h-screen bg-[#111111] pb-28 md:pb-8">
+        <div className="max-w-2xl mx-auto px-4 pt-6 space-y-4">
 
-        {/* Header */}
-        <div className="mb-2">
-          <h1 className="text-2xl font-light text-white tracking-tight">
-            {greeting}{firstName ? `, ${firstName}` : ''}.
-          </h1>
-          <p className="text-[10px] text-zinc-700 uppercase tracking-[0.2em] mt-0.5">
-            {new Date().toLocaleDateString('de-DE', { weekday: 'long', day: 'numeric', month: 'long' })}
-          </p>
-        </div>
+          {/* Header */}
+          <div className="mb-2">
+            <h1 className="text-2xl font-light text-white tracking-tight">
+              {greeting}{firstName ? `, ${firstName}` : ''}.
+            </h1>
+            <p className="text-[10px] text-zinc-700 uppercase tracking-[0.2em] mt-0.5">
+              {new Date().toLocaleDateString('de-DE', { weekday: 'long', day: 'numeric', month: 'long' })}
+            </p>
+          </div>
 
-        {/* Row 1: Readiness (inline check) + Streak */}
-        <div className="grid grid-cols-3 gap-3 items-start">
-          <motion.div layout className="col-span-2 bg-zinc-900/80 border border-white/[0.06] rounded-2xl p-4">
-            <TileLabel>System-Status</TileLabel>
-            <InlineReadinessWidget user={user} todayReadiness={todayReadiness} />
-          </motion.div>
+          {/* Row 1: Readiness + Body Tile */}
+          <div className="grid grid-cols-3 gap-3 items-start">
+            <motion.div layout className="col-span-2 bg-zinc-900/80 border border-white/[0.06] rounded-2xl p-4">
+              <TileLabel>System-Status</TileLabel>
+              <InlineReadinessWidget user={user} todayReadiness={todayReadiness} />
+            </motion.div>
 
-          <button
-            onClick={() => window.location.href = createPageUrl('DiagnosisChat')}
-            className="bg-zinc-900/80 border border-white/[0.06] rounded-2xl p-4 flex flex-col justify-between hover:border-white/[0.12] transition-all text-left"
-          >
-            <TileLabel>Körper</TileLabel>
-            <svg viewBox="0 0 60 120" className="w-full max-w-[44px] mx-auto mt-1" fill="none">
-              {/* Head */}
-              <circle cx="30" cy="10" r="8" stroke="#3f3f46" strokeWidth="1.5" />
-              {/* Torso */}
-              <line x1="30" y1="18" x2="30" y2="65" stroke="#3f3f46" strokeWidth="1.5" />
-              {/* Arms */}
-              <line x1="30" y1="28" x2="10" y2="50" stroke="#3f3f46" strokeWidth="1.5" />
-              <line x1="30" y1="28" x2="50" y2="50" stroke="#3f3f46" strokeWidth="1.5" />
-              {/* Legs */}
-              <line x1="30" y1="65" x2="16" y2="100" stroke="#3f3f46" strokeWidth="1.5" />
-              <line x1="30" y1="65" x2="44" y2="100" stroke="#3f3f46" strokeWidth="1.5" />
-            </svg>
-            <p className="text-[10px] text-zinc-600 mt-2">Schmerz lokalisieren</p>
-          </button>
-        </div>
+            <button
+              onClick={() => setShowBodyMap(true)}
+              className="bg-zinc-900/80 border border-white/[0.06] rounded-2xl p-4 flex flex-col justify-between hover:border-white/[0.12] transition-all text-left"
+            >
+              <TileLabel>Körper</TileLabel>
+              <svg viewBox="0 0 60 120" className="w-full max-w-[44px] mx-auto mt-1" fill="none">
+                <circle cx="30" cy="10" r="8" stroke="#3f3f46" strokeWidth="1.5" />
+                <line x1="30" y1="18" x2="30" y2="65" stroke="#3f3f46" strokeWidth="1.5" />
+                <line x1="30" y1="28" x2="10" y2="50" stroke="#3f3f46" strokeWidth="1.5" />
+                <line x1="30" y1="28" x2="50" y2="50" stroke="#3f3f46" strokeWidth="1.5" />
+                <line x1="30" y1="65" x2="16" y2="100" stroke="#3f3f46" strokeWidth="1.5" />
+                <line x1="30" y1="65" x2="44" y2="100" stroke="#3f3f46" strokeWidth="1.5" />
+              </svg>
+              <p className="text-[10px] text-zinc-600 mt-2">Schmerz lokalisieren</p>
+            </button>
+          </div>
 
-        {/* Row 2: Quick Actions */}
-        <div className={`grid gap-3 ${todayReadiness && todayReadiness.readiness_score >= 7 ? 'grid-cols-2' : 'grid-cols-3'}`}>
-          <Tile onClick={() => handleDestinationClick('Quick Sessions', () => window.location.href = createPageUrl('FitnessSnacks'))}>
-            <Zap className="w-4 h-4 text-zinc-600 mb-3" />
-            <p className="text-sm font-semibold text-zinc-300 leading-tight">Quick Sessions</p>
-            <ChevronRight className="w-3 h-3 text-zinc-700 mt-2" />
-          </Tile>
-
-          {(!todayReadiness || todayReadiness.readiness_score < 7) && (
-            <Tile onClick={() => window.location.href = createPageUrl('DiagnosisChat')}>
-              <Target className="w-4 h-4 text-zinc-600 mb-3" />
-              <p className="text-sm font-semibold text-zinc-300 leading-tight">Körper entspannen</p>
+          {/* Row 2: Quick Actions */}
+          <div className={`grid gap-3 ${todayReadiness && todayReadiness.readiness_score >= 7 ? 'grid-cols-2' : 'grid-cols-3'}`}>
+            <Tile onClick={() => handleDestinationClick('Quick Sessions', () => window.location.href = createPageUrl('FitnessSnacks'))}>
+              <Zap className="w-4 h-4 text-zinc-600 mb-3" />
+              <p className="text-sm font-semibold text-zinc-300 leading-tight">Quick Sessions</p>
               <ChevronRight className="w-3 h-3 text-zinc-700 mt-2" />
             </Tile>
+
+            {(!todayReadiness || todayReadiness.readiness_score < 7) && (
+              <Tile onClick={() => window.location.href = createPageUrl('DiagnosisChat')}>
+                <Target className="w-4 h-4 text-zinc-600 mb-3" />
+                <p className="text-sm font-semibold text-zinc-300 leading-tight">Körper entspannen</p>
+                <ChevronRight className="w-3 h-3 text-zinc-700 mt-2" />
+              </Tile>
+            )}
+
+            <Tile onClick={() => handleDestinationClick('Flow', () => window.location.href = createPageUrl('FlowRoutines'))}>
+              <Activity className="w-4 h-4 text-zinc-600 mb-3" />
+              <p className="text-sm font-semibold text-zinc-300 leading-tight">Routinen</p>
+              <ChevronRight className="w-3 h-3 text-zinc-700 mt-2" />
+            </Tile>
+          </div>
+
+          {/* Row 3: Rehab next + Wissen */}
+          <div className="grid grid-cols-2 gap-3">
+            <Tile onClick={() => window.location.href = createPageUrl('RehabPlan')}>
+              <TileLabel>Nächste Übung</TileLabel>
+              {nextExercise ? (
+                <>
+                  <p className="text-sm font-semibold text-zinc-200 leading-tight mt-1">{nextExercise.name}</p>
+                  <p className="text-[10px] text-zinc-600 mt-1">{nextExercise.sets_reps_tempo || ''}</p>
+                </>
+              ) : activeRehabPlan ? (
+                <p className="text-xs text-zinc-500 mt-1">Phase abgeschlossen ✓</p>
+              ) : (
+                <p className="text-xs text-zinc-600 mt-1">Noch kein aktiver Plan</p>
+              )}
+            </Tile>
+
+            <Tile onClick={() => window.location.href = createPageUrl('Wissen')}>
+              <BookOpen className="w-4 h-4 text-zinc-600 mb-2" />
+              <TileLabel>Wissen</TileLabel>
+              {knowledgeSnack ? (
+                <>
+                  <p className="text-xs font-semibold text-zinc-300 leading-snug line-clamp-2">{knowledgeSnack.title}</p>
+                  <p className="text-[10px] text-zinc-600 mt-1.5 line-clamp-2 leading-relaxed">
+                    {knowledgeSnack.summary || knowledgeSnack.content?.slice(0, 80)}
+                  </p>
+                </>
+              ) : (
+                <p className="text-xs text-zinc-600">Zur Wissensbibliothek →</p>
+              )}
+            </Tile>
+          </div>
+
+          {/* Row 4: Wearables placeholder */}
+          <div className="bg-zinc-900/80 border border-white/[0.06] rounded-2xl p-4 flex items-center gap-4">
+            <Watch className="w-5 h-5 text-zinc-700 flex-shrink-0" />
+            <div className="flex-1 min-w-0">
+              <TileLabel>Wearables</TileLabel>
+              <p className="text-xs text-zinc-500">Apple Watch · Garmin · Whoop · Oura</p>
+            </div>
+            <span className="text-[9px] font-bold uppercase tracking-widest text-zinc-700 border border-white/[0.04] px-2 py-1 rounded-full whitespace-nowrap">Bald verfügbar</span>
+          </div>
+
+          {/* Row 5: 7-Day Activity */}
+          <div className="bg-zinc-900/80 border border-white/[0.06] rounded-2xl p-4">
+            <TileLabel>Aktivität — letzte 7 Tage</TileLabel>
+            <div className="mt-3">
+              <ActivityDots logs={allLogs} />
+            </div>
+          </div>
+
+          {/* Energie-Muster Banner */}
+          {troughPattern && (
+            <div className={`bg-zinc-900/80 border rounded-2xl p-4 ${isPreTrough ? 'border-amber-500/30' : 'border-white/[0.06]'}`}>
+              <TileLabel>Energie-Muster erkannt</TileLabel>
+              <p className="text-sm text-zinc-300 mt-1">
+                Dein Tief liegt oft gegen{' '}
+                <span className="text-amber-400 font-bold">{troughPattern.hour}:00 Uhr</span>
+                {' '}(Ø {troughPattern.avg}/10)
+              </p>
+              {isPreTrough ? (
+                <p className="text-xs text-amber-400 mt-2 font-medium leading-relaxed">
+                  → Jetzt präventiv handeln: Vagus Reset oder Quick Snack — bevor das Tief kommt.
+                </p>
+              ) : (
+                <p className="text-xs text-zinc-600 mt-1">AXON erkennt deine Rhythmen und wird dich rechtzeitig warnen.</p>
+              )}
+              {isPreTrough && (
+                <button
+                  onClick={() => window.location.href = createPageUrl('FitnessSnacks')}
+                  className="mt-3 text-[10px] font-bold uppercase tracking-widest text-amber-400 hover:text-amber-300 transition-colors"
+                >
+                  Jetzt Quick Session starten →
+                </button>
+              )}
+            </div>
           )}
 
-          <Tile onClick={() => handleDestinationClick('Flow', () => window.location.href = createPageUrl('FlowRoutines'))}>
-            <Activity className="w-4 h-4 text-zinc-600 mb-3" />
-            <p className="text-sm font-semibold text-zinc-300 leading-tight">Routinen</p>
-            <ChevronRight className="w-3 h-3 text-zinc-700 mt-2" />
-          </Tile>
+          {user?.role === 'admin' && (
+            <button
+              onClick={() => window.location.href = createPageUrl('AdminHub')}
+              className="w-full rounded-xl border border-white/[0.04] p-3 hover:border-white/[0.08] transition-all text-zinc-700 hover:text-zinc-500 text-[10px] font-medium uppercase tracking-widest"
+            >
+              Admin Hub
+            </button>
+          )}
         </div>
-
-        {/* Row 3: Rehab next + Wissen */}
-        <div className="grid grid-cols-2 gap-3">
-          <Tile onClick={() => window.location.href = createPageUrl('RehabPlan')}>
-            <TileLabel>Nächste Übung</TileLabel>
-            {nextExercise ? (
-              <>
-                <p className="text-sm font-semibold text-zinc-200 leading-tight mt-1">{nextExercise.name}</p>
-                <p className="text-[10px] text-zinc-600 mt-1">{nextExercise.sets_reps_tempo || ''}</p>
-              </>
-            ) : activeRehabPlan ? (
-              <p className="text-xs text-zinc-500 mt-1">Phase abgeschlossen ✓</p>
-            ) : (
-              <p className="text-xs text-zinc-600 mt-1">Noch kein aktiver Plan</p>
-            )}
-          </Tile>
-
-          <Tile onClick={() => window.location.href = createPageUrl('Wissen')}>
-            <BookOpen className="w-4 h-4 text-zinc-600 mb-2" />
-            <TileLabel>Wissen</TileLabel>
-            {knowledgeSnack ? (
-              <>
-                <p className="text-xs font-semibold text-zinc-300 leading-snug line-clamp-2">{knowledgeSnack.title}</p>
-                <p className="text-[10px] text-zinc-600 mt-1.5 line-clamp-2 leading-relaxed">
-                  {knowledgeSnack.summary || knowledgeSnack.content?.slice(0, 80)}
-                </p>
-              </>
-            ) : (
-              <p className="text-xs text-zinc-600">Zur Wissensbibliothek →</p>
-            )}
-          </Tile>
-        </div>
-
-        {/* Row 4: Wearables placeholder */}
-        <div className="bg-zinc-900/80 border border-white/[0.06] rounded-2xl p-4 flex items-center gap-4">
-          <Watch className="w-5 h-5 text-zinc-700 flex-shrink-0" />
-          <div className="flex-1 min-w-0">
-            <TileLabel>Wearables</TileLabel>
-            <p className="text-xs text-zinc-500">Apple Watch · Garmin · Whoop · Oura</p>
-          </div>
-          <span className="text-[9px] font-bold uppercase tracking-widest text-zinc-700 border border-white/[0.04] px-2 py-1 rounded-full whitespace-nowrap">Bald verfügbar</span>
-        </div>
-
-        {/* Row 5: 7-Day Activity */}
-        <div className="bg-zinc-900/80 border border-white/[0.06] rounded-2xl p-4">
-          <TileLabel>Aktivität — letzte 7 Tage</TileLabel>
-          <div className="mt-3">
-            <ActivityDots logs={allLogs} />
-          </div>
-        </div>
-
-        {/* Energie-Muster Banner */}
-        {troughPattern && (
-          <div className={`bg-zinc-900/80 border rounded-2xl p-4 ${isPreTrough ? 'border-amber-500/30' : 'border-white/[0.06]'}`}>
-            <TileLabel>Energie-Muster erkannt</TileLabel>
-            <p className="text-sm text-zinc-300 mt-1">
-              Dein Tief liegt oft gegen{' '}
-              <span className="text-amber-400 font-bold">{troughPattern.hour}:00 Uhr</span>
-              {' '}(Ø {troughPattern.avg}/10)
-            </p>
-            {isPreTrough ? (
-              <p className="text-xs text-amber-400 mt-2 font-medium leading-relaxed">
-                → Jetzt präventiv handeln: Vagus Reset oder Quick Snack — bevor das Tief kommt.
-              </p>
-            ) : (
-              <p className="text-xs text-zinc-600 mt-1">AXON erkennt deine Rhythmen und wird dich rechtzeitig warnen.</p>
-            )}
-            {isPreTrough && (
-              <button
-                onClick={() => window.location.href = createPageUrl('FitnessSnacks')}
-                className="mt-3 text-[10px] font-bold uppercase tracking-widest text-amber-400 hover:text-amber-300 transition-colors"
-              >
-                Jetzt Quick Session starten →
-              </button>
-            )}
-          </div>
-        )}
-
-        {user?.role === 'admin' && (
-          <button
-            onClick={() => window.location.href = createPageUrl('AdminHub')}
-            className="w-full rounded-xl border border-white/[0.04] p-3 hover:border-white/[0.08] transition-all text-zinc-700 hover:text-zinc-500 text-[10px] font-medium uppercase tracking-widest"
-          >
-            Admin Hub
-          </button>
-        )}
       </div>
-    </div>
+
+      {/* Body Map Overlay */}
+      <AnimatePresence>
+        {showBodyMap && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 bg-[#111111] overflow-y-auto"
+          >
+            <div className="max-w-2xl mx-auto px-4 pt-6 pb-24">
+              <div className="flex items-center justify-between mb-6">
+                <div>
+                  <h2 className="text-xl font-bold text-white">Wo tut es weh?</h2>
+                  <p className="text-xs text-zinc-500 mt-0.5">Tippe auf die exakte Stelle</p>
+                </div>
+                <button
+                  onClick={() => setShowBodyMap(false)}
+                  className="p-2 rounded-xl bg-zinc-800 text-zinc-400 hover:text-white transition-colors"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+              <InteractiveBodyMapInput onSubmit={handleBodyMapSubmit} />
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
   );
 }
