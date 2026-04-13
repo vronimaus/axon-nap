@@ -250,7 +250,7 @@ function Tile({ onClick, children }) {
 }
 
 function TileLabel({ children }) {
-  return <p className="text-[9px] font-bold uppercase tracking-[0.2em] text-zinc-600 mb-1">{children}</p>;
+  return <p className="text-xs font-bold uppercase tracking-[0.2em] text-zinc-400 mb-1">{children}</p>;
 }
 
 // ── Main CommandCenter ──────────────────────────────────────────────────────────
