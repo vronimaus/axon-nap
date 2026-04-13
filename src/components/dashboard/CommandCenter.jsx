@@ -28,6 +28,7 @@ function ReadinessRing({ readiness }) {
     { label: 'Körper',  value: readiness?.feeling_hardware },
     { label: 'Fokus',   value: readiness?.focus_software },
     { label: 'Energie', value: readiness?.energy_battery },
+    { label: 'Schlaf',  value: readiness?.sleep_quality },
   ];
 
   return (
