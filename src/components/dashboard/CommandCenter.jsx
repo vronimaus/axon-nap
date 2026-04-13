@@ -77,17 +77,17 @@ function InlineReadinessWidget({ user, todayReadiness }) {
   const [forceShow, setForceShow] = useState(false);
   const queryClient = useQueryClient();
 
-  if (todayReadiness && !forceShow) return (
-    <div className="space-y-3">
-      <ReadinessRing readiness={todayReadiness} />
-      <button
-        onClick={() => { setForceShow(true); setExpanded(false); }}
-        className="mt-3 w-full text-[10px] text-zinc-600 hover:text-zinc-400 uppercase tracking-widest transition-colors"
-      >
-        ↺ Check wiederholen
-      </button>
-    </div>
-  );
+  // Sync values from todayReadiness on mount
+  useEffect(() => {
+    if (todayReadiness) {
+      setValues({
+        feeling_hardware: todayReadiness.feeling_hardware || 5,
+        focus_software: todayReadiness.focus_software || 5,
+        energy_battery: todayReadiness.energy_battery || 5,
+        sleep_quality: todayReadiness.sleep_quality || 5,
+      });
+    }
+  }, [todayReadiness]);
 
   const getBarColor = (value) => {
     if (value <= 4) return '#ef4444';
@@ -131,7 +131,9 @@ function InlineReadinessWidget({ user, todayReadiness }) {
 
   return (
     <motion.div layout className="space-y-4 mt-2">
-      {!expanded && <p className="text-xs text-zinc-500 uppercase tracking-wider">4 Inputs erforderlich</p>}
+      {todayReadiness && !forceShow && <ReadinessRing readiness={todayReadiness} />}
+      {!forceShow && !todayReadiness && <p className="text-xs text-zinc-500 uppercase tracking-wider">4 Inputs erforderlich</p>}
+      {forceShow && <p className="text-xs text-zinc-500 uppercase tracking-wider">Inputs anpassen</p>}
       {metrics.map(({ icon: Icon, label, sublabel, value, setter, low, high }) => (
         <motion.div key={label} layout className="bg-zinc-800/40 rounded-lg border border-zinc-700/50 p-3">
           <div className="flex items-center justify-between mb-2">
