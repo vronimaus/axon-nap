@@ -78,11 +78,29 @@ function InlineReadinessWidget({ user, todayReadiness }) {
   const queryClient = useQueryClient();
 
   if (todayReadiness && !forceShow) return (
-    <div>
+    <div className="space-y-4">
       <ReadinessRing readiness={todayReadiness} />
+      
+      {/* Bio-Sync Design — inherited from readiness data */}
+      <div className="space-y-2 pt-3 border-t border-zinc-700/50">
+        <p className="text-[10px] text-zinc-600 uppercase tracking-widest mb-3">Bio-Sync Status</p>
+        <div className="flex justify-between items-center">
+          <span className="text-[10px] text-zinc-600 uppercase tracking-wider">HRV</span>
+          <span className="text-sm font-bold text-cyan-400">{Array(Math.round(todayReadiness.feeling_hardware / 2)).fill('●').join('')}</span>
+        </div>
+        <div className="flex justify-between items-center">
+          <span className="text-[10px] text-zinc-600 uppercase tracking-wider">Nervale Balance</span>
+          <span className="text-sm font-bold text-emerald-400">{Array(Math.round(todayReadiness.focus_software / 2)).fill('▪').join('')}</span>
+        </div>
+        <div className="flex justify-between items-center">
+          <span className="text-[10px] text-zinc-600 uppercase tracking-wider">Erholung</span>
+          <span className="text-sm font-bold text-blue-400">{Array(Math.round(todayReadiness.energy_battery / 2)).fill('█').join('')}</span>
+        </div>
+      </div>
+      
       <button
         onClick={() => { setForceShow(true); setExpanded(false); }}
-        className="mt-3 w-full text-[10px] text-zinc-600 hover:text-zinc-400 uppercase tracking-widest transition-colors"
+        className="mt-2 w-full text-[10px] text-zinc-600 hover:text-zinc-400 uppercase tracking-widest transition-colors"
       >
         ↺ Check wiederholen
       </button>
@@ -531,27 +549,6 @@ export default function CommandCenter({ user, handleDestinationClick }) {
                   )}
                 </Tile>
               </div>
-
-              {/* Bio-Sync Status Panel */}
-              {todayReadiness && (
-                <div className="bg-zinc-900/80 border border-white/[0.06] rounded-2xl p-4">
-                  <TileLabel>Bio-Sync</TileLabel>
-                  <div className="space-y-2">
-                    <div className="flex justify-between items-center">
-                      <span className="text-[10px] text-zinc-600 uppercase tracking-wider">HRV</span>
-                      <span className="text-sm font-bold text-cyan-400">●●●●●</span>
-                    </div>
-                    <div className="flex justify-between items-center">
-                      <span className="text-[10px] text-zinc-600 uppercase tracking-wider">Nervale Balance</span>
-                      <span className="text-sm font-bold text-emerald-400">▪▪▪▪▪</span>
-                    </div>
-                    <div className="flex justify-between items-center">
-                      <span className="text-[10px] text-zinc-600 uppercase tracking-wider">Erholung</span>
-                      <span className="text-sm font-bold text-blue-400">███</span>
-                    </div>
-                  </div>
-                </div>
-              )}
 
               {/* Row 5: Readiness Trend */}
               <div className="bg-zinc-900/80 border border-white/[0.06] rounded-2xl p-4">
