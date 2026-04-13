@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
@@ -126,7 +126,7 @@ export default function Dashboard() {
     enabled: !!user
   });
 
-   const { data: sessionDecision, isLoading: sessionLoading, isError: sessionError } = useQuery({
+  const { data: sessionDecision, isLoading: sessionLoading, isError: sessionError } = useQuery({
     queryKey: ['sessionDecision', user?.email],
     queryFn: async () => {
       if (!user?.email) return null;
@@ -145,15 +145,15 @@ export default function Dashboard() {
   });
 
   const { data: dashboardData = {} } = useQuery({
-     queryKey: ['dashboardData', user?.email],
-     queryFn: async () => {
-       if (!user?.email) return {};
-       const response = await base44.functions.invoke('dashboardDataAggregator', { daysBack: 30 });
-       return response?.data || {};
-     },
-     enabled: !!user?.email,
-     refetchInterval: 60000
-   });
+    queryKey: ['dashboardData', user?.email],
+    queryFn: async () => {
+      if (!user?.email) return {};
+      const response = await base44.functions.invoke('dashboardDataAggregator', { daysBack: 30 });
+      return response?.data || {};
+    },
+    enabled: !!user?.email,
+    refetchInterval: 60000
+  });
 
 
 
@@ -216,14 +216,14 @@ export default function Dashboard() {
     );
   }
 
-        return (
-        <motion.div 
-        animate={{ boxShadow: `inset 0 0 120px ${glowColor}` }}
-        transition={{ repeat: Infinity, duration: 4, repeatType: "reverse", ease: "easeInOut" }}
-        className="min-h-screen bg-[#111111] flex flex-col relative"
-        >
-        {/* Kinetic Wave Background */}
-        {sessionDecision && (
+  return (
+    <motion.div 
+      animate={{ boxShadow: `inset 0 0 120px ${glowColor}` }}
+      transition={{ repeat: Infinity, duration: 4, repeatType: "reverse", ease: "easeInOut" }}
+      className="min-h-screen bg-[#111111] flex flex-col relative"
+    >
+      {/* Kinetic Wave Background */}
+      {sessionDecision && (
         <motion.div 
           className="absolute inset-0 opacity-20 pointer-events-none"
           style={{
@@ -239,7 +239,7 @@ export default function Dashboard() {
             ease: "easeInOut" 
           }}
         />
-        )}
+      )}
       <Helmet>
         <title>{mode === 'rehab' ? 'REHAB' : 'PERFORMANCE'} - AXON Command</title>
         <meta name="description" content={mode === 'rehab' ? 'Analysiere und löse deine Beschwerden mit AXON Rehabilitation' : 'Erreiche deine Performance-Ziele mit AXON Training'} />
@@ -335,131 +335,131 @@ export default function Dashboard() {
 
       {/* Main Content - Centered */}
       <div className="max-w-4xl mx-auto px-3 sm:px-4 py-4 sm:py-6 pb-28 md:pb-6">
-            <motion.div
-              key={mode}
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.3 }}
-            >
-              {mode === 'rehab' && (
-                <div className="space-y-4">
-                  {/* Mode Title */}
-                  <div className="bg-gradient-to-r from-emerald-500/20 to-transparent border-l-4 border-emerald-500 px-6 py-3 rounded-r-xl">
-                    <h1 className="text-2xl sm:text-3xl font-bold text-emerald-400 tracking-tight">REHAB</h1>
-                  </div>
-                  
-                  {/* Instructions Card */}
-                  <div className="glass rounded-xl sm:rounded-2xl border border-emerald-500/30 p-4 sm:p-6 bg-gradient-to-r from-emerald-500/10 to-transparent">
-                    <h2 className="text-base sm:text-lg font-semibold text-emerald-400 mb-3">Schmerz präzise lokalisieren</h2>
-                    <div className="space-y-2 text-xs sm:text-sm text-slate-300">
-                      <p className="flex items-start gap-2">
-                        <span className="text-emerald-400 font-bold flex-shrink-0">1.</span>
-                        <span><strong>Punkt setzen:</strong> Tippe auf eine exakte Stelle – oder <strong>zeichne eine Linie</strong> entlang des Schmerzes für komplexe Muster</span>
-                      </p>
-                      <p className="flex items-start gap-2">
-                        <span className="text-emerald-400 font-bold flex-shrink-0">2.</span>
-                        <span>Wähle deine spezifischen Symptome aus der Liste aus</span>
-                      </p>
-                      <p className="flex items-start gap-2">
-                        <span className="text-emerald-400 font-bold flex-shrink-0">3.</span>
-                        <span>Starte die Analyse – AXON erkennt die Root Cause deines Problems</span>
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              )}
+        <motion.div
+          key={mode}
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.3 }}
+        >
+          {mode === 'rehab' && (
+            <div className="space-y-4">
+              {/* Mode Title */}
+              <div className="bg-gradient-to-r from-emerald-500/20 to-transparent border-l-4 border-emerald-500 px-6 py-3 rounded-r-xl">
+                <h1 className="text-2xl sm:text-3xl font-bold text-emerald-400 tracking-tight">REHAB</h1>
+              </div>
               
-              {mode === 'performance' && (
-                <div className="space-y-4">
-                  {/* Sling Spider Chart - Live Balance Monitor */}
-                  {dashboardData?.today_stats && (
-                    <SlingSpiderChart 
-                      anterior={dashboardData.today_stats.anterior_score || 0}
-                      posterior={dashboardData.today_stats.posterior_score || 0}
-                      lateral={dashboardData.today_stats.lateral_score || 0}
-                      alerts={dashboardData.sling_alerts || []}
-                    />
-                  )}
-
-                  {/* Mode Title */}
-                  <div className="bg-gradient-to-r from-blue-500/20 to-transparent border-l-4 border-blue-500 px-6 py-3 rounded-r-xl">
-                    <h1 className="text-2xl sm:text-3xl font-bold text-blue-400 tracking-tight">PERFORMANCE</h1>
-                  </div>
-                  
-                  {/* Instructions Card */}
-                  <div className="glass rounded-xl sm:rounded-2xl border border-blue-500/30 p-4 sm:p-6 bg-gradient-to-r from-blue-500/10 to-transparent">
-                    <h2 className="text-base sm:text-lg font-semibold text-blue-400 mb-3">Was möchtest du schaffen?</h2>
-                    <div className="space-y-2 text-xs sm:text-sm text-slate-300 mb-4">
-                      <p className="flex items-start gap-2">
-                        <span className="text-blue-400 font-bold flex-shrink-0">•</span>
-                        <span><strong>Konkrete Übung:</strong> "10 Klimmzüge", "Pistol Squat", "Handstand 30 Sekunden"</span>
-                      </p>
-                      <p className="flex items-start gap-2">
-                        <span className="text-blue-400 font-bold flex-shrink-0">•</span>
-                        <span><strong>Skill freischalten:</strong> "Front Lever", "Muscle-Up", "Human Flag"</span>
-                      </p>
-                      <p className="flex items-start gap-2">
-                        <span className="text-blue-400 font-bold flex-shrink-0">•</span>
-                        <span><strong>Mobility-Ziel:</strong> "Middle Split", "Pancake Stretch", "Bridge"</span>
-                      </p>
-                    </div>
-                    <input
-                      type="text"
-                      value={selectedBodyRegion || ''}
-                      onChange={(e) => setSelectedBodyRegion(e.target.value)}
-                      placeholder="Gib dein Ziel ein..."
-                      className="w-full px-4 py-3 rounded-lg bg-slate-800/50 border border-slate-700 text-white placeholder-slate-500 focus:outline-none focus:border-blue-400 text-sm sm:text-base"
-                    />
-                  </div>
-
-                  {/* Start Button — always shown when goal is entered */}
-                  {selectedBodyRegion?.trim() && (
-                    <motion.div
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                    >
-                      <Button
-                        disabled={isGeneratingPlan}
-                        onClick={() => {
-                          const goal = selectedBodyRegion.trim();
-                          window.location.href = createPageUrl('Discovery') + `?goal=${encodeURIComponent(goal)}`;
-                        }}
-                        className="w-full h-12 sm:h-14 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-bold text-sm sm:text-base"
-                      >
-                        {isGeneratingPlan ? (
-                          <span className="flex items-center gap-2 justify-center">
-                            <Loader2 className="w-5 h-5 animate-spin" />
-                            Plan wird erstellt…
-                          </span>
-                        ) : user?.baseline_completed ? (
-                          'Trainingsplan erstellen →'
-                        ) : (
-                          'Weiter zur Baseline-Messung →'
-                        )}
-                      </Button>
-                    </motion.div>
-                  )}
+              {/* Instructions Card */}
+              <div className="glass rounded-xl sm:rounded-2xl border border-emerald-500/30 p-4 sm:p-6 bg-gradient-to-r from-emerald-500/10 to-transparent">
+                <h2 className="text-base sm:text-lg font-semibold text-emerald-400 mb-3">Schmerz präzise lokalisieren</h2>
+                <div className="space-y-2 text-xs sm:text-sm text-slate-300">
+                  <p className="flex items-start gap-2">
+                    <span className="text-emerald-400 font-bold flex-shrink-0">1.</span>
+                    <span><strong>Punkt setzen:</strong> Tippe auf eine exakte Stelle – oder <strong>zeichne eine Linie</strong> entlang des Schmerzes für komplexe Muster</span>
+                  </p>
+                  <p className="flex items-start gap-2">
+                    <span className="text-emerald-400 font-bold flex-shrink-0">2.</span>
+                    <span>Wähle deine spezifischen Symptome aus der Liste aus</span>
+                  </p>
+                  <p className="flex items-start gap-2">
+                    <span className="text-emerald-400 font-bold flex-shrink-0">3.</span>
+                    <span>Starte die Analyse – AXON erkennt die Root Cause deines Problems</span>
+                  </p>
                 </div>
+              </div>
+            </div>
+          )}
+          
+          {mode === 'performance' && (
+            <div className="space-y-4">
+              {/* Sling Spider Chart - Live Balance Monitor */}
+              {dashboardData?.today_stats && (
+                <SlingSpiderChart 
+                  anterior={dashboardData.today_stats.anterior_score || 0}
+                  posterior={dashboardData.today_stats.posterior_score || 0}
+                  lateral={dashboardData.today_stats.lateral_score || 0}
+                  alerts={dashboardData.sling_alerts || []}
+                />
               )}
 
-              {/* Diagnose Button - Rehab Mode */}
-              {mode === 'rehab' && (
+              {/* Mode Title */}
+              <div className="bg-gradient-to-r from-blue-500/20 to-transparent border-l-4 border-blue-500 px-6 py-3 rounded-r-xl">
+                <h1 className="text-2xl sm:text-3xl font-bold text-blue-400 tracking-tight">PERFORMANCE</h1>
+              </div>
+              
+              {/* Instructions Card */}
+              <div className="glass rounded-xl sm:rounded-2xl border border-blue-500/30 p-4 sm:p-6 bg-gradient-to-r from-blue-500/10 to-transparent">
+                <h2 className="text-base sm:text-lg font-semibold text-blue-400 mb-3">Was möchtest du schaffen?</h2>
+                <div className="space-y-2 text-xs sm:text-sm text-slate-300 mb-4">
+                  <p className="flex items-start gap-2">
+                    <span className="text-blue-400 font-bold flex-shrink-0">•</span>
+                    <span><strong>Konkrete Übung:</strong> "10 Klimmzüge", "Pistol Squat", "Handstand 30 Sekunden"</span>
+                  </p>
+                  <p className="flex items-start gap-2">
+                    <span className="text-blue-400 font-bold flex-shrink-0">•</span>
+                    <span><strong>Skill freischalten:</strong> "Front Lever", "Muscle-Up", "Human Flag"</span>
+                  </p>
+                  <p className="flex items-start gap-2">
+                    <span className="text-blue-400 font-bold flex-shrink-0">•</span>
+                    <span><strong>Mobility-Ziel:</strong> "Middle Split", "Pancake Stretch", "Bridge"</span>
+                  </p>
+                </div>
+                <input
+                  type="text"
+                  value={selectedBodyRegion || ''}
+                  onChange={(e) => setSelectedBodyRegion(e.target.value)}
+                  placeholder="Gib dein Ziel ein..."
+                  className="w-full px-4 py-3 rounded-lg bg-slate-800/50 border border-slate-700 text-white placeholder-slate-500 focus:outline-none focus:border-blue-400 text-sm sm:text-base"
+                />
+              </div>
+
+              {/* Start Button — always shown when goal is entered */}
+              {selectedBodyRegion?.trim() && (
                 <motion.div
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="mt-4 sm:mt-6"
                 >
                   <Button
-                    onClick={() => window.location.href = createPageUrl('DiagnosisChat')}
-                    className="w-full h-12 sm:h-14 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white font-bold text-sm sm:text-base"
+                    disabled={isGeneratingPlan}
+                    onClick={() => {
+                      const goal = selectedBodyRegion.trim();
+                      window.location.href = createPageUrl('Discovery') + `?goal=${encodeURIComponent(goal)}`;
+                    }}
+                    className="w-full h-12 sm:h-14 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-bold text-sm sm:text-base"
                   >
-                    Zur Diagnose →
+                    {isGeneratingPlan ? (
+                      <span className="flex items-center gap-2 justify-center">
+                        <Loader2 className="w-5 h-5 animate-spin" />
+                        Plan wird erstellt…
+                      </span>
+                    ) : user?.baseline_completed ? (
+                      'Trainingsplan erstellen →'
+                    ) : (
+                      'Weiter zur Baseline-Messung →'
+                    )}
                   </Button>
                 </motion.div>
               )}
+            </div>
+          )}
 
+          {/* Diagnose Button - Rehab Mode */}
+          {mode === 'rehab' && (
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="mt-4 sm:mt-6"
+            >
+              <Button
+                onClick={() => window.location.href = createPageUrl('DiagnosisChat')}
+                className="w-full h-12 sm:h-14 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white font-bold text-sm sm:text-base"
+              >
+                Zur Diagnose →
+              </Button>
             </motion.div>
-          </div>
+          )}
+
+        </motion.div>
+      </div>
 
       {/* Mode Indicator Badge - Hidden on small mobile to avoid overlapping with bottom nav */}
       <AnimatePresence>
@@ -487,6 +487,6 @@ export default function Dashboard() {
           </motion.div>
         )}
       </AnimatePresence>
-      </motion.div>
-      );
-      }
+    </motion.div>
+  );
+}
