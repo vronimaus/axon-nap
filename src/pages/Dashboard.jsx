@@ -5,6 +5,7 @@ import { base44 } from '@/api/base44Client';
 import { createPageUrl } from '@/utils';
 import { Activity, Target, Zap, Info, ArrowLeft, Loader2, RotateCw } from 'lucide-react';
 import CombinedReadinessAssessment from '../components/dashboard/CombinedReadinessAssessment';
+import CommandCenter from '../components/dashboard/CommandCenter';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 import SlingSpiderChart from '../components/dashboard/SlingSpiderChart';
@@ -174,19 +175,16 @@ export default function Dashboard() {
 
   const glowColor = getGlowColor();
 
-  // Mode Selection Screen (3 Fronten)
+  // Command Center (default view)
   if (!mode) {
     return (
-      <motion.div 
-        animate={{ boxShadow: `inset 0 0 120px ${glowColor}` }}
-        transition={{ repeat: Infinity, duration: 4, repeatType: "reverse", ease: "easeInOut" }}
-        className="min-h-screen bg-[#111111] flex items-center justify-center p-4 pb-28 md:pb-4 relative overflow-hidden"
+      <motion.div
+        className="min-h-screen bg-[#111111] relative"
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
         style={{ touchAction: pullY > 0 ? 'none' : 'auto' }}
       >
-        {/* Combined Assessment Modal */}
         <AnimatePresence>
           {showAssessment && user && pendingDestination && (
             <CombinedReadinessAssessment
@@ -197,9 +195,7 @@ export default function Dashboard() {
             />
           )}
         </AnimatePresence>
-        <AnimatePresence>
-          {showOnboarding && <OnboardingModal onClose={handleCloseOnboarding} />}
-        </AnimatePresence>
+
         {/* Pull-to-Refresh Indicator */}
         {pullY > 0 && (
           <div className="fixed top-16 left-0 right-0 flex justify-center z-50 pointer-events-none">
@@ -209,199 +205,16 @@ export default function Dashboard() {
             </div>
           </div>
         )}
-        {/* Kinetic Wave Background */}
-        {sessionDecision && (
-          <motion.div 
-            className="absolute inset-0 opacity-20 pointer-events-none"
-            style={{
-              background: `radial-gradient(circle at 50% 0%, ${glowColor} 0%, transparent 70%)`
-            }}
-            animate={{ 
-              scale: [1, 1.1, 1],
-              opacity: [0.1, 0.3, 0.1]
-            }}
-            transition={{ 
-              repeat: Infinity, 
-              duration: sessionDecision.decision === 'training' ? 3 : 6, 
-              ease: "easeInOut" 
-            }}
-          />
-        )}
-        <Helmet>
-          <title>Command - AXON Dashboard</title>
-          <meta name="description" content="Dein persönliches AXON Command Center. Wähle zwischen Performance-Training, Rehabilitation oder Flow-Routinen." />
-          <meta name="robots" content="noindex, nofollow" />
-          <meta property="og:title" content="AXON Command Center" />
-          <meta property="og:description" content="Dein persönliches Training Dashboard" />
-          <meta property="og:type" content="website" />
-        </Helmet>
 
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="max-w-5xl w-full"
-        >
-          <div className="text-center mb-8 sm:mb-10">
-            <h1 className="text-3xl sm:text-4xl md:text-5xl font-light text-white mb-3 sm:mb-4 tracking-tight">
-              {(() => {
-                const h = new Date().getHours();
-                const firstName = user?.full_name?.split(' ')[0];
-                if (h < 6)  return firstName ? `Noch wach, ${firstName}?` : 'Noch wach?';
-                if (h < 12) return firstName ? `Guten Morgen, ${firstName}.` : 'Guten Morgen.';
-                if (h < 14) return firstName ? `Wie läuft dein Tag, ${firstName}?` : 'Wie läuft dein Tag?';
-                if (h < 18) return firstName ? `Nachmittag, ${firstName}.` : 'Nachmittag.';
-                if (h < 22) return firstName ? `Guten Abend, ${firstName}.` : 'Guten Abend.';
-                return firstName ? `Abend, ${firstName}.` : 'Guten Abend.';
-              })()}
-            </h1>
-            <p className="text-xs text-zinc-600 uppercase tracking-[0.25em] font-medium">
-              Was brauchst du gerade?
-            </p>
-          </div>
-
-          {/* Session Decision — AXON Triage */}
-          <div className="mb-10 relative z-10">
-            <AnimatePresence mode="wait">
-              {showProgress ? (
-                <ProgressSyncView 
-                  key="progress"
-                  dashboardData={dashboardData} 
-                  sessionDecision={sessionDecision} 
-                  onClose={() => setShowProgress(false)} 
-                />
-              ) : (
-                <motion.div key="decision" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} transition={{ duration: 0.2 }}>
-                  <SessionDecision user={user} data={sessionDecision} isLoading={sessionLoading} isError={sessionError} onClick={() => setShowProgress(true)} />
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
-
-          {/* Quick Body Region Picker */}
-          <div className="mb-6">
-            <p className="text-[10px] font-medium uppercase tracking-[0.2em] text-zinc-700 mb-3 text-center">Spürst du heute irgendwo Einschränkungen?</p>
-            <div className="flex flex-wrap justify-center gap-2">
-              {['Nacken', 'Schulter', 'Rücken', 'Hüfte', 'Knie', 'Anderes'].map((label) => (
-                <button
-                  key={label}
-                  onClick={() => {
-                    const region = label === 'Anderes' ? '' : label;
-                    window.location.href = createPageUrl('DiagnosisChat') + (region ? `?region=${encodeURIComponent(region)}` : '');
-                  }}
-                  className="px-3 py-1.5 rounded-full border border-white/[0.06] bg-zinc-900/80 text-zinc-400 text-xs hover:border-white/[0.15] hover:text-white hover:bg-zinc-800 transition-all"
-                >
-                  {label}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
-            {/* 1. QUICK SESSIONS */}
-            <motion.button
-              whileTap={{ scale: 0.98 }}
-              onClick={() => handleDestinationClick('Quick Sessions', () => window.location.href = createPageUrl('FitnessSnacks'))}
-              className="group relative bg-zinc-900 rounded-2xl border border-white/[0.06] p-5 sm:p-6 hover:border-white/[0.14] hover:bg-zinc-800/70 transition-all text-left overflow-hidden touch-target"
-            >
-              <div className="absolute inset-0 bg-gradient-to-br from-amber-500/[0.04] to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-              <div className="relative">
-                <div className="w-9 h-9 rounded-xl bg-amber-500/10 border border-amber-500/15 flex items-center justify-center mb-4">
-                  <Zap className="w-4 h-4 text-amber-500/60" />
-                </div>
-                <h2 className="text-xs font-semibold text-zinc-300 mb-2 tracking-[0.15em] uppercase">Quick Sessions</h2>
-                <p className="text-xs text-zinc-600 mb-4 leading-relaxed">
-                  Kurze, wirkungsvolle Einheiten — abgestimmt auf deinen heutigen Zustand.
-                </p>
-                <div className="flex flex-wrap gap-1.5">
-                  {['HIIT', 'Breathwork', 'Strength'].map(tag => (
-                    <span key={tag} className="text-[9px] font-medium uppercase tracking-wider px-2 py-0.5 rounded-md bg-white/[0.04] text-zinc-600 border border-white/[0.06]">{tag}</span>
-                  ))}
-                </div>
-              </div>
-            </motion.button>
-
-            {/* REHAB */}
-            <motion.button
-              whileTap={{ scale: 0.98 }}
-              onClick={() => handleDestinationClick('Rehab & Recovery', () => window.location.href = createPageUrl('DiagnosisChat'))}
-              className="group relative bg-zinc-900 rounded-2xl border border-white/[0.06] p-5 sm:p-6 hover:border-white/[0.14] hover:bg-zinc-800/70 transition-all text-left overflow-hidden touch-target"
-            >
-              <div className="absolute inset-0 bg-gradient-to-br from-teal-500/[0.04] to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-              <div className="relative">
-                <div className="w-9 h-9 rounded-xl bg-teal-500/10 border border-teal-500/15 flex items-center justify-center mb-4">
-                  <Target className="w-4 h-4 text-teal-500/60" />
-                </div>
-                <h2 className="text-xs font-semibold text-zinc-300 mb-2 tracking-[0.15em] uppercase">Rehab & Recovery</h2>
-                <p className="text-xs text-zinc-600 mb-4 leading-relaxed">
-                  Etwas zwickt? Wir finden gemeinsam heraus, woher es kommt — und was hilft.
-                </p>
-                <div className="flex flex-wrap gap-1.5">
-                  {['Diagnose', 'MFR-Release', 'Neuro-Reset'].map(tag => (
-                    <span key={tag} className="text-[9px] font-medium uppercase tracking-wider px-2 py-0.5 rounded-md bg-white/[0.04] text-zinc-600 border border-white/[0.06]">{tag}</span>
-                  ))}
-                </div>
-              </div>
-            </motion.button>
-
-            {/* FLOW */}
-            <motion.button
-              whileTap={{ scale: 0.98 }}
-              onClick={() => handleDestinationClick('Flow', () => window.location.href = createPageUrl('FlowRoutines'))}
-              className="group relative bg-zinc-900 rounded-2xl border border-white/[0.06] p-5 sm:p-6 hover:border-white/[0.14] hover:bg-zinc-800/70 transition-all text-left overflow-hidden touch-target"
-            >
-              <div className="absolute inset-0 bg-gradient-to-br from-violet-500/[0.04] to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-              <div className="relative">
-                <div className="w-9 h-9 rounded-xl bg-violet-500/10 border border-violet-500/15 flex items-center justify-center mb-4">
-                  <Activity className="w-4 h-4 text-violet-500/60" />
-                </div>
-                <h2 className="text-xs font-semibold text-zinc-300 mb-2 tracking-[0.15em] uppercase">Flow</h2>
-                <p className="text-xs text-zinc-600 mb-4 leading-relaxed">
-                  Dein tägliches Körperpflege-Ritual. Faszien, Atmung, Beweglichkeit — in 5–30 Min.
-                </p>
-                <div className="flex flex-wrap gap-1.5">
-                  {['MFR-Nodes', 'Mobility', 'Regeneration'].map(tag => (
-                    <span key={tag} className="text-[9px] font-medium uppercase tracking-wider px-2 py-0.5 rounded-md bg-white/[0.04] text-zinc-600 border border-white/[0.06]">{tag}</span>
-                  ))}
-                </div>
-              </div>
-            </motion.button>
-          </div>
-
-          {/* Info Box */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.3 }}
-            className="mt-8 rounded-xl border border-white/[0.04] p-4 text-center"
-          >
-            <p className="text-xs text-zinc-700">
-              Kein Druck. Kein Perfektionismus. Nur du und dein Körper — jeden Tag ein kleiner Schritt.
-            </p>
-          </motion.div>
-
-          {/* Admin-Tool Link */}
-          {user?.role === 'admin' && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.4 }}
-              className="mt-4"
-            >
-              <button
-                onClick={() => window.location.href = createPageUrl('AdminDiagnostics')}
-                className="w-full rounded-xl border border-white/[0.04] p-3 hover:border-white/[0.08] transition-all group"
-              >
-                <div className="flex items-center justify-center gap-2 text-zinc-700 group-hover:text-zinc-500 transition-colors">
-                  <Activity className="w-3.5 h-3.5" />
-                  <span className="text-[10px] font-medium uppercase tracking-widest">Coach Diagnose-Tool</span>
-                </div>
-              </button>
-            </motion.div>
-          )}
-        </motion.div>
-        </motion.div>
-        );
-        }
+        <CommandCenter
+          user={user}
+          sessionDecision={sessionDecision}
+          sessionLoading={sessionLoading}
+          handleDestinationClick={handleDestinationClick}
+        />
+      </motion.div>
+    );
+  }
 
         return (
         <motion.div 
