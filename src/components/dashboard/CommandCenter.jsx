@@ -67,11 +67,18 @@ function ReadinessRing({ readiness }) {
 }
 
 // ── Inline Readiness Widget ─────────────────────────────────────────────────────
+const SLIDER_LABELS = {
+  feeling_hardware: ['', 'Komplett blockiert', 'Sehr steif', 'Steif & schwer', 'Etwas eingeschränkt', 'Geht so', 'Ok, geht', 'Recht locker', 'Gut beweglich', 'Fast optimal', 'Locker & frei'],
+  focus_software:   ['', 'Total weg', 'Kaum präsent', 'Sehr zerstreut', 'Unkonzentriert', 'Kommt und geht', 'Halbwegs klar', 'Gut dabei', 'Fokussiert', 'Sehr klar', 'Scharf & klar'],
+  energy_battery:   ['', 'Komplett leer', 'Kaum da', 'Sehr erschöpft', 'Müde & schwer', 'Geht so', 'Ganz ok', 'Gut geladen', 'Kraftvoll', 'Sehr vital', 'Volle Kraft'],
+  sleep_quality:    ['', 'Kein Schlaf', 'Fast nicht', 'Sehr schlecht', 'Schlecht', 'Durchwachsen', 'Mittel', 'Ganz ok', 'Gut geschlafen', 'Sehr gut', 'Perfekt erholt'],
+};
+
 const SLIDERS = [
-  { key: 'feeling_hardware', label: 'Beweglichkeit', left: 'Steif & blockiert', right: 'Locker & frei'       },
-  { key: 'focus_software',   label: 'Geistiger Fokus', left: 'Zerstreut & nebelig', right: 'Klar & konzentriert' },
-  { key: 'energy_battery',   label: 'Körperenergie', left: 'Erschöpft & schwer', right: 'Vital & kraftvoll'    },
-  { key: 'sleep_quality',    label: 'Schlaf',       left: 'Schlecht geschlafen', right: 'Erholt aufgewacht'   },
+  { key: 'feeling_hardware', label: 'Beweglichkeit'   },
+  { key: 'focus_software',   label: 'Geistiger Fokus' },
+  { key: 'energy_battery',   label: 'Körperenergie'   },
+  { key: 'sleep_quality',    label: 'Schlaf'           },
 ];
 
 function InlineReadinessWidget({ user, todayReadiness }) {
@@ -112,9 +119,22 @@ function InlineReadinessWidget({ user, todayReadiness }) {
       )}
       {SLIDERS.map(s => (
         <div key={s.key}>
-          <div className="flex justify-between mb-1">
-            <span className="text-xs font-semibold text-zinc-300">{s.label}</span>
-            <span className="text-xs font-black text-white">{values[s.key]}</span>
+          <div className="flex items-baseline justify-between mb-2">
+            <span className="text-xs font-semibold text-zinc-500 uppercase tracking-wider">{s.label}</span>
+            <AnimatePresence mode="wait">
+              {expanded && (
+                <motion.span
+                  key={values[s.key]}
+                  initial={{ opacity: 0, y: -4 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.15 }}
+                  className="text-sm font-bold text-white"
+                >
+                  {SLIDER_LABELS[s.key][values[s.key]]}
+                </motion.span>
+              )}
+            </AnimatePresence>
           </div>
           <input
             type="range" min={1} max={10} step={1}
@@ -123,14 +143,6 @@ function InlineReadinessWidget({ user, todayReadiness }) {
             className="w-full h-1.5 rounded-full appearance-none bg-zinc-800 cursor-pointer"
             style={{ accentColor: '#94a3b8' }}
           />
-          <AnimatePresence>
-            {expanded && (
-              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex justify-between mt-0.5">
-                <span className="text-[10px] text-zinc-500">{s.left}</span>
-                <span className="text-[10px] text-zinc-500">{s.right}</span>
-              </motion.div>
-            )}
-          </AnimatePresence>
         </div>
       ))}
       <AnimatePresence>
