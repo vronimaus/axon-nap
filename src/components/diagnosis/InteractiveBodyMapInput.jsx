@@ -89,13 +89,13 @@ export default function InteractiveBodyMapInput({ onSubmit }) {
     
     markers.forEach(marker => {
       if (marker.type === 'point' && marker.x && marker.y) {
-        ctx.fillStyle = 'rgba(239, 68, 68, 0.8)';
+        ctx.fillStyle = 'rgba(57, 139, 247, 0.85)';
         ctx.beginPath();
         ctx.arc(marker.x, marker.y, 10, 0, Math.PI * 2);
         ctx.fill();
-        ctx.shadowColor = '#ef4444';
-        ctx.shadowBlur = 10;
-        ctx.strokeStyle = '#ef4444';
+        ctx.shadowColor = '#398bf7';
+        ctx.shadowBlur = 12;
+        ctx.strokeStyle = '#398bf7';
         ctx.lineWidth = 3;
         ctx.stroke();
         ctx.shadowBlur = 0;
@@ -154,9 +154,10 @@ export default function InteractiveBodyMapInput({ onSubmit }) {
           onClick={() => setView('front')}
           className={`flex-1 px-4 py-2 rounded-lg text-sm font-semibold transition-all ${
             view === 'front'
-              ? 'bg-red-600 text-white shadow'
+              ? 'text-white shadow'
               : 'text-zinc-400 hover:text-zinc-200'
           }`}
+          style={view === 'front' ? { backgroundColor: '#398bf7' } : {}}
         >
           Vorderseite
         </button>
@@ -164,9 +165,10 @@ export default function InteractiveBodyMapInput({ onSubmit }) {
           onClick={() => setView('back')}
           className={`flex-1 px-4 py-2 rounded-lg text-sm font-semibold transition-all ${
             view === 'back'
-              ? 'bg-red-600 text-white shadow'
+              ? 'text-white shadow'
               : 'text-zinc-400 hover:text-zinc-200'
           }`}
+          style={view === 'back' ? { backgroundColor: '#398bf7' } : {}}
         >
           Rückseite
         </button>
@@ -249,7 +251,8 @@ export default function InteractiveBodyMapInput({ onSubmit }) {
         <button
           onClick={handleSubmit}
           disabled={markers.length === 0 || isSubmitting}
-          className="flex-1 flex items-center justify-center gap-2 h-10 rounded-xl bg-gradient-to-r from-red-600 to-pink-600 hover:from-red-700 hover:to-pink-700 text-white text-sm font-bold transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+          className="flex-1 flex items-center justify-center gap-2 h-10 rounded-xl text-white text-sm font-bold transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+          style={{ background: '#398bf7' }}
         >
           {isSubmitting ? (
             <>

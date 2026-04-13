@@ -242,7 +242,7 @@ function ActivityDots({ logs }) {
         const isToday = i === 6;
         return (
           <div key={day} className="flex flex-col items-center gap-1.5">
-            <div className={`w-2.5 h-2.5 rounded-full transition-all ${active ? 'bg-slate-400' : isToday ? 'bg-slate-700 ring-1 ring-slate-600' : 'bg-slate-800'}`} />
+            <div className={`w-2.5 h-2.5 rounded-full transition-all`} style={{ backgroundColor: active ? '#398bf7' : isToday ? '#3f3f46' : '#27272a', boxShadow: active ? '0 0 6px rgba(57,139,247,0.5)' : 'none' }} />
             <span className="text-[9px] text-slate-600 uppercase">
               {['Mo','Di','Mi','Do','Fr','Sa','So'][(new Date(day).getDay() + 6) % 7]}
             </span>
