@@ -356,23 +356,20 @@ export default function CommandCenter({ user, handleDestinationClick }) {
         <div className="grid grid-cols-3 gap-3">
           <Tile onClick={() => handleDestinationClick('Quick Sessions', () => window.location.href = createPageUrl('FitnessSnacks'))}>
             <Zap className="w-4 h-4 text-zinc-600 mb-3" />
-            <TileLabel>Snacks</TileLabel>
             <p className="text-sm font-semibold text-zinc-300 leading-tight">Quick Sessions</p>
             <ChevronRight className="w-3 h-3 text-zinc-700 mt-2" />
           </Tile>
 
           <Tile onClick={() => handleDestinationClick('Rehab', () => window.location.href = createPageUrl('DiagnosisChat'))}>
             <Target className="w-4 h-4 text-zinc-600 mb-3" />
-            <TileLabel>Rehab</TileLabel>
             <p className="text-sm font-semibold text-zinc-300 leading-tight">
-              {activeRehabPlan ? `Phase ${activeRehabPlan.current_phase}` : 'Diagnose'}
+              {activeRehabPlan ? 'Plan ansehen' : 'Diagnose starten'}
             </p>
             <ChevronRight className="w-3 h-3 text-zinc-700 mt-2" />
           </Tile>
 
           <Tile onClick={() => handleDestinationClick('Flow', () => window.location.href = createPageUrl('FlowRoutines'))}>
             <Activity className="w-4 h-4 text-zinc-600 mb-3" />
-            <TileLabel>Flow</TileLabel>
             <p className="text-sm font-semibold text-zinc-300 leading-tight">Routinen</p>
             <ChevronRight className="w-3 h-3 text-zinc-700 mt-2" />
           </Tile>
