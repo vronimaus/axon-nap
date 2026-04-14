@@ -22,7 +22,8 @@ Deno.serve(async (req) => {
       region,
       affected_chains,
       pain_intensity,
-      feedback_summary
+      feedback_summary,
+      selected_causal_chains
     } = body;
 
     // Optionally fetch diagnosis session if ID provided
@@ -55,6 +56,23 @@ Deno.serve(async (req) => {
 
     const contextParts = [];
     if (affected_chains) contextParts.push(`Betroffene Faszien-Ketten: ${affected_chains}`);
+
+    // Build causal chain context from LLM-selected chains
+    let causalChainContext = '';
+    if (selected_causal_chains?.length > 0) {
+      causalChainContext = '\n===== LLM-AUSGEWÄHLTE KAUSAL-KETTEN (NUTZE DIESE ALS PRIMÄRE INTERVENTIONSBASIS) =====\n' +
+        selected_causal_chains.map((c, i) =>
+          `KETTE ${i + 1} (Priorität ${c.priority}, Konfidenz ${Math.round((c.confidence || 0) * 100)}%):
+Node: ${c.node_id} – ${c.node_name_de} | Zielkette: ${c.target_chain || '?'}
+Symptom: ${c.symptom}
+Biomechanische Ursache: ${c.biomechanische_ursache}
+MFR-Technik: ${c.hardware_reset?.technik || '-'}
+Neuro-Drill: ${c.software_update?.übung || '-'} – ${c.software_update?.ausführung || '-'}
+Integration: ${c.integration?.primär_bewegung || '-'}
+Auswahlgrund: ${c.selection_reason}
+Erwarteter Outcome: ${c.expected_outcome}`
+        ).join('\n\n');
+    }
     if (pain_intensity) contextParts.push(`Schmerzintensität: ${pain_intensity}/10`);
     if (feedback_summary) contextParts.push(`Feedback nach Übungen: ${feedback_summary}`);
     if (neuroProfile) {
@@ -182,6 +200,7 @@ GESAMT-SYNERGIE: ${primaryScenario.synergy_explanation || '-'}`
 
 PROBLEM: ${problemDescription}
 ${extraContext ? 'KONTEXT:\n' + extraContext : ''}
+${causalChainContext}
 
 ===== AXON KAUSALITÄTSKETTE (NUTZE DIESE FÜR ERKLÄRUNGEN) =====
 ${scenarioContext}

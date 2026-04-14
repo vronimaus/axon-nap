@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X } from 'lucide-react';
+import { X, ChevronRight } from 'lucide-react';
 import MFRResetScreenDynamic from './DailyTuneUp/MFRResetScreenDynamic';
 import NeuroDrillScreen from './DailyTuneUp/NeuroDrillScreen';
 import RetestScreen from './DailyTuneUp/RetestScreen';
@@ -85,7 +85,9 @@ export default function DailyTuneUpModal({
   sfmaValues = null, // { movement_level, pain_rest, pain_move } from SFMAQuickCheck
   selectedChains = null, // LLM-selected causal chains from selectCausalChain
 }) {
-  const nodeId = selectedChains?.[0]?.node_id || REGION_TO_NODE_ID[region] || 'N6';
+  const [activeChainIndex, setActiveChainIndex] = useState(0);
+  const activeChain = selectedChains?.[activeChainIndex] || null;
+  const nodeId = activeChain?.node_id || REGION_TO_NODE_ID[region] || 'N6';
   const [currentScreen, setCurrentScreen] = useState(0);
   const [mfrNodeCompleted, setMFRNodeCompleted] = useState(false);
   const [neuroDrillCompleted, setNeuroDrillCompleted] = useState(false);
@@ -100,15 +102,28 @@ export default function DailyTuneUpModal({
   // TTS disabled
 
   // Load TuneUp causal chain data — prefer LLM-selected chain, fallback to DB lookup
-  React.useEffect(() => {
-    if (selectedChains?.[0]) {
-      setTuneUpData(selectedChains[0]);
+  useEffect(() => {
+    if (activeChain) {
+      setTuneUpData(activeChain);
       return;
     }
     base44.entities.TuneUpCausalChain.filter({ node_id: nodeId })
       .then(results => { if (results.length > 0) setTuneUpData(results[0]); })
       .catch(err => console.error('Error loading TuneUp data:', err));
-  }, [nodeId, selectedChains]);
+  }, [activeChainIndex, selectedChains, nodeId]);
+
+  // Switch to next chain — resets the screen flow
+  const handleNextChain = () => {
+    if (!selectedChains || activeChainIndex >= selectedChains.length - 1) return;
+    setActiveChainIndex(prev => prev + 1);
+    setCurrentScreen(0);
+    setMFRNodeCompleted(false);
+    setNeuroDrillCompleted(false);
+    setRetestCompleted(false);
+    setIntegrationCompleted(false);
+    setNeuralPermission(null);
+    setInterventionFlow(null);
+  };
 
   // Calculate neural charge (0-100%)
   const neuralCharge = (() => {
@@ -247,24 +262,42 @@ export default function DailyTuneUpModal({
       >
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-4 bg-gradient-to-b from-slate-950 via-slate-950 to-transparent border-b border-cyan-500/20">
-          <div>
-            <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-cyan-500">
-              {SCREENS[currentScreen].label}
-            </span>
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-cyan-500">
+                {SCREENS[currentScreen].label}
+              </span>
+              {selectedChains?.length > 1 && (
+                <span className="text-[9px] font-mono text-slate-500 bg-slate-800 px-2 py-0.5 rounded-full">
+                  Kette {activeChainIndex + 1}/{selectedChains.length}
+                </span>
+              )}
+            </div>
             <h2 className="text-xl font-bold text-white tracking-tight">
-              {SCREENS[currentScreen].title}
+              {tuneUpData?.node_name_de || SCREENS[currentScreen].title}
             </h2>
-            <p className="text-xs text-slate-400 mt-0.5">
-              Schritt {currentScreen + 1} von {SCREENS.length}
+            <p className="text-xs text-slate-500 mt-0.5">
+              Schritt {currentScreen + 1}/{SCREENS.length}
+              {tuneUpData?.target_chain && <span className="ml-2 text-cyan-700">{tuneUpData.target_chain}</span>}
             </p>
           </div>
-          <button
-            onClick={onClose}
-            disabled={isSubmitting}
-            className="p-2 rounded-xl bg-slate-800 text-slate-400 hover:text-white transition-colors disabled:opacity-50"
-          >
-            <X className="w-5 h-5" />
-          </button>
+          <div className="flex items-center gap-2 ml-3">
+            {selectedChains?.length > 1 && activeChainIndex < selectedChains.length - 1 && currentScreen === 3 && (
+              <button
+                onClick={handleNextChain}
+                className="flex items-center gap-1 px-3 py-1.5 rounded-xl bg-cyan-500/10 text-cyan-400 text-xs font-bold hover:bg-cyan-500/20 transition-colors"
+              >
+                Nächste <ChevronRight className="w-3 h-3" />
+              </button>
+            )}
+            <button
+              onClick={onClose}
+              disabled={isSubmitting}
+              className="p-2 rounded-xl bg-slate-800 text-slate-400 hover:text-white transition-colors disabled:opacity-50"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
         </div>
 
         {/* Screen Content */}
@@ -276,6 +309,7 @@ export default function DailyTuneUpModal({
                 nodeId={nodeId}
                 screenId={0}
                 onComplete={handleScreenComplete}
+                tuneUpData={tuneUpData}
               />
             )}
             {currentScreen === 1 && (
@@ -284,6 +318,7 @@ export default function DailyTuneUpModal({
                 nodeId={nodeId}
                 screenId={1}
                 onComplete={handleScreenComplete}
+                tuneUpData={tuneUpData}
               />
             )}
             {currentScreen === 2 && (
@@ -302,6 +337,7 @@ export default function DailyTuneUpModal({
                 screenId={3}
                 onComplete={handleScreenComplete}
                 isSubmitting={isSubmitting}
+                tuneUpData={tuneUpData}
               />
             )}
             {currentScreen === 3 && interventionFlow && (

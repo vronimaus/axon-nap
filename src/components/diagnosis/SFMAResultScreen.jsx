@@ -48,7 +48,7 @@ function MetricBox({ label, value, max }) {
   );
 }
 
-export default function SFMAResultScreen({ region, type, nrs, movement_level, pain_rest, pain_move, isRedFlag, onContinue }) {
+export default function SFMAResultScreen({ region, type, nrs, movement_level, pain_rest, pain_move, isRedFlag, onContinue, selectedChains = null, isLoadingChains = false }) {
   const isStiffnessOnly = (pain_rest === 0 || pain_rest == null) && (pain_move === 0 || pain_move == null);
   const displayType = isStiffnessOnly ? 'steifigkeit' : 'schmerz';
   const cause = getCause(displayType, region);
@@ -98,11 +98,35 @@ export default function SFMAResultScreen({ region, type, nrs, movement_level, pa
         </div>
       </div>
 
+      {/* LLM-ausgewählte Ketten anzeigen */}
+      {!isRedFlag && selectedChains?.length > 0 && (
+        <div className="rounded-2xl border border-cyan-500/20 bg-slate-900/40 p-4 space-y-2">
+          <p className="text-[9px] font-bold uppercase tracking-widest text-cyan-600 mb-2">AXON Analyse — Kausalfaktor</p>
+          {selectedChains.slice(0, 2).map((chain, i) => (
+            <div key={chain.chain_id || i} className="flex items-start gap-3">
+              <span className="text-[9px] font-mono text-slate-600 mt-0.5 w-4 shrink-0">{i + 1}</span>
+              <div className="flex-1 min-w-0">
+                <p className="text-xs font-semibold text-slate-300 truncate">{chain.node_name_de}</p>
+                <p className="text-[10px] text-slate-500 leading-snug line-clamp-2">{chain.selection_reason}</p>
+              </div>
+              <span className="text-[9px] text-cyan-700 font-mono shrink-0">{Math.round((chain.confidence || 0) * 100)}%</span>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {!isRedFlag && isLoadingChains && (
+        <div className="rounded-2xl border border-slate-700/40 p-4 text-center">
+          <p className="text-[10px] text-slate-500 animate-pulse">Analysiere Faszien-Ketten…</p>
+        </div>
+      )}
+
       <Button
         onClick={onContinue}
-        className="w-full h-12 bg-cyan-500/20 hover:bg-cyan-500/30 border border-cyan-500/40 text-cyan-400 font-bold tracking-wide"
+        disabled={isLoadingChains}
+        className="w-full h-12 bg-cyan-500/20 hover:bg-cyan-500/30 border border-cyan-500/40 text-cyan-400 font-bold tracking-wide disabled:opacity-50"
       >
-        {isRedFlag ? 'Sicherheitsprotokoll ansehen' : 'Zum Tune-Up'}
+        {isRedFlag ? 'Sicherheitsprotokoll ansehen' : isLoadingChains ? 'Analysiere…' : 'Zum Tune-Up'}
         <ArrowRight className="w-4 h-4 ml-2" />
       </Button>
     </motion.div>

@@ -43,6 +43,7 @@ export default function DiagnosisChat() {
   const [user, setUser] = useState(null);
   const [rehabPlan, setRehabPlan] = useState(null);
   const [selectedChains, setSelectedChains] = useState(null); // LLM-selected causal chains
+  const [isLoadingChains, setIsLoadingChains] = useState(false);
 
   useEffect(() => {
     base44.auth.me().then(u => setUser(u)).catch(() => {});
@@ -81,33 +82,30 @@ export default function DiagnosisChat() {
     setStep('sfma');
   };
 
-  // SFMA Quick Check decision handler
+  // SFMA Quick Check decision handler — triggers LLM chain selection in background
   const handleSFMADecision = (decision) => {
     setSfmaDecision(decision);
-    setStep('sfma_result'); // always show result screen first
+    setStep('sfma_result');
+
+    if (decision?.type !== 'red_flag') {
+      // Start LLM chain selection immediately in background
+      setIsLoadingChains(true);
+      base44.functions.invoke('selectCausalChain', {
+        symptom_description: decision?.symptoms?.join(', ') || '',
+        body_region: cleanRegion(decision?.region || painMap?.region || ''),
+        pain_intensity: decision?.nrs || 5,
+        readiness_status: 'moderate'
+      }).then(res => {
+        if (res.data?.selected_chains?.length > 0) setSelectedChains(res.data.selected_chains);
+      }).catch(() => {}).finally(() => setIsLoadingChains(false));
+    }
   };
 
-  const handleResultContinue = async () => {
+  const handleResultContinue = () => {
     if (sfmaDecision?.type === 'red_flag') {
       setStep('red_flag');
       return;
     }
-
-    // LLM-Kettenauswahl vor dem TuneUp
-    try {
-      const res = await base44.functions.invoke('selectCausalChain', {
-        symptom_description: sfmaDecision?.symptoms?.join(', ') || '',
-        body_region: cleanRegion(painMap?.region),
-        pain_intensity: sfmaDecision?.nrs || 5,
-        readiness_status: 'moderate'
-      });
-      if (res.data?.selected_chains?.length > 0) {
-        setSelectedChains(res.data.selected_chains);
-      }
-    } catch (_e) {
-      // Fallback: TuneUp ohne LLM-Vorauswahl
-    }
-
     setShowTuneUp(true);
   };
 
@@ -157,8 +155,9 @@ export default function DiagnosisChat() {
         problem_summary: cleanRegion(finalRegion),
         region: cleanRegion(finalRegion),
         pain_intensity: sfmaDecision?.nrs || 5,
-        affected_chains: '',
-        feedback_summary: 'Tune-Up hat keine ausreichende Verbesserung gebracht.'
+        affected_chains: selectedChains?.map(c => c.node_id).join(', ') || '',
+        feedback_summary: 'Tune-Up hat keine ausreichende Verbesserung gebracht.',
+        selected_causal_chains: selectedChains || []
       });
 
       if (response.data?.plan_id || response.data?.success) {
@@ -231,6 +230,8 @@ export default function DiagnosisChat() {
           pain_move={sfmaDecision?.pain_move ?? 0}
           isRedFlag={sfmaDecision?.type === 'red_flag'}
           onContinue={handleResultContinue}
+          selectedChains={selectedChains}
+          isLoadingChains={isLoadingChains}
         />
         {showTuneUp && (
           <DailyTuneUpModal

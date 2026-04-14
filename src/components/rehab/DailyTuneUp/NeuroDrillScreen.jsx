@@ -5,20 +5,26 @@ import { Volume2, VolumeX, Loader2, Check } from 'lucide-react';
 import { useCachedAudio } from '@/hooks/useCachedAudio';
 import { base44 } from '@/api/base44Client';
 
-export default function NeuroDrillScreen({ onComplete, screenId = 1, nodeId = 'N6' }) {
+export default function NeuroDrillScreen({ onComplete, screenId = 1, nodeId = 'N6', tuneUpData = null }) {
   const [drillData, setDrillData] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(!tuneUpData);
   const [drillCompleted, setDrillCompleted] = useState(false);
   const { isPlaying, isLoading: isTTSLoading, playText, stop } = useCachedAudio();
 
   useEffect(() => {
+    // If tuneUpData passed directly, extract software_update immediately
+    if (tuneUpData) {
+      const sw = tuneUpData.software_update ?? null;
+      setDrillData(sw);
+      setIsLoading(false);
+      return;
+    }
     const fetchDrill = async () => {
       setIsLoading(true);
       try {
         const results = await base44.entities.TuneUpCausalChain.filter({ node_id: nodeId });
         if (results.length > 0) {
           const r = results[0];
-          // SDK wraps entity fields under .data — software_update lives at r.data.software_update
           const sw = r.data?.software_update ?? r.software_update ?? null;
           setDrillData(sw);
         }
@@ -29,7 +35,7 @@ export default function NeuroDrillScreen({ onComplete, screenId = 1, nodeId = 'N
       }
     };
     fetchDrill();
-  }, [nodeId]);
+  }, [nodeId, tuneUpData]);
 
   const handlePlayAudio = () => {
     if (isPlaying) { stop(); return; }

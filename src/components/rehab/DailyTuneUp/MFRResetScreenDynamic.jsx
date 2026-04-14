@@ -4,16 +4,32 @@ import { Button } from '@/components/ui/button';
 import { Loader2, Play, Check, MapPin, AlertCircle, CheckCircle, ChevronRight } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 
-export default function MFRResetScreenDynamic({ onComplete, nodeId = 'N1', screenId = 0 }) {
+export default function MFRResetScreenDynamic({ onComplete, nodeId = 'N1', screenId = 0, tuneUpData = null }) {
   const [causalChain, setCausalChain] = useState(null);
   const [timeElapsed, setTimeElapsed] = useState(0);
   const [isRunning, setIsRunning] = useState(false);
-  const [isLoadingData, setIsLoadingData] = useState(true);
+  const [isLoadingData, setIsLoadingData] = useState(!tuneUpData);
   const [step, setStep] = useState('pretest');
   const [pretestValue, setPretestValue] = useState(null);
   const MFR_DURATION = 90;
 
+  // If tuneUpData passed directly, use it immediately
   useEffect(() => {
+    if (tuneUpData) {
+      setCausalChain({
+        ...tuneUpData,
+        hardware_reset: {
+          ...tuneUpData.hardware_reset,
+          pretest_instruction: tuneUpData.hardware_reset?.pretest_instruction || tuneUpData.hardware_reset?.technik || ''
+        }
+      });
+      setIsLoadingData(false);
+      return;
+    }
+  }, [tuneUpData]);
+
+  useEffect(() => {
+    if (tuneUpData) return; // skip DB fetch if data already provided
     const testPretest = {
       'CP-A': 'Drehe deinen Kopf langsam nach links und rechts. Kannst du über deine Schulter hinwegsschauen? Oder schaust du nur zur Seite?',
       'CP-P': 'Blicke nach oben. Öffnet sich dein Nacken leicht? Oder blockiert dich ein Ziehen im Hinterkopf?',
@@ -122,7 +138,7 @@ export default function MFRResetScreenDynamic({ onComplete, nodeId = 'N1', scree
       }
     };
     loadCausalChain();
-  }, [nodeId]);
+  }, [nodeId, tuneUpData]);
 
   useEffect(() => {
     if (!isRunning) return;

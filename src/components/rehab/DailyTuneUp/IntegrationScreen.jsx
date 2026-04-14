@@ -11,14 +11,29 @@ export default function IntegrationScreen({
   screenId = 3,
   isSubmitting,
   nodeId = 'N6',
-  improvement = 0
+  improvement = 0,
+  tuneUpData = null
 }) {
   const [exerciseCompleted, setExerciseCompleted] = useState(false);
   const [integration, setIntegration] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(!tuneUpData);
   const { isPlaying, isLoading: isTTSLoading, playText, stop } = useCachedAudio();
 
   useEffect(() => {
+    // If tuneUpData passed directly, extract integration immediately
+    if (tuneUpData) {
+      const intg = tuneUpData.integration ?? null;
+      if (intg) {
+        setIntegration({
+          technicalName: intg['primär_bewegung'] || intg.primär_bewegung || '',
+          reps: intg['wiederholungen'] || intg.wiederholungen || '',
+          tweak1: intg['tweak_1'] || intg.tweak_1 || '',
+          tweak2: intg['tweak_2'] || intg.tweak_2 || '',
+        });
+      }
+      setIsLoading(false);
+      return;
+    }
     const fetchIntegration = async () => {
       setIsLoading(true);
       try {
@@ -42,7 +57,7 @@ export default function IntegrationScreen({
       }
     };
     fetchIntegration();
-  }, [nodeId]);
+  }, [nodeId, tuneUpData]);
 
   const handlePlayAudio = () => {
     if (isPlaying) { stop(); return; }
