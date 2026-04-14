@@ -2,10 +2,11 @@ import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronLeft, ChevronRight, X } from 'lucide-react';
+import { ChevronLeft, ChevronRight, CheckCircle2, Circle } from 'lucide-react';
 
 export default function KnowledgeSnippetCarousel({ activeRehabPlan }) {
   const [selectedSnippetId, setSelectedSnippetId] = useState(null);
+  const [testAnswers, setTestAnswers] = useState({});
 
   // Get node ID from problem summary
   const getNodeIdFromProblem = (problemSummary) => {
@@ -139,6 +140,46 @@ export default function KnowledgeSnippetCarousel({ activeRehabPlan }) {
             <ChevronRight className="w-3 h-3 text-zinc-400" />
           </button>
         </div>
+      )}
+
+      {/* Knowledge Test Section */}
+      {selectedSnippet?.content && (
+        <motion.div
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="rounded-xl border border-white/[0.06] bg-zinc-800/40 p-3 space-y-3"
+        >
+          <div>
+            <p className="text-[10px] font-bold uppercase tracking-widest text-zinc-500 mb-2">Wissenstest</p>
+            <p className="text-xs text-zinc-300 leading-relaxed">{selectedSnippet.content}</p>
+          </div>
+
+          {/* Simple True/False Test */}
+          <div className="flex gap-2">
+            <button
+              onClick={() => setTestAnswers(prev => ({ ...prev, [selectedSnippet.id]: true }))}
+              className={`flex-1 flex items-center justify-center gap-1.5 h-8 rounded-lg text-xs font-medium transition-all ${
+                testAnswers[selectedSnippet.id] === true
+                  ? 'bg-emerald-500/30 border border-emerald-500/50 text-emerald-300'
+                  : 'bg-zinc-800/50 border border-white/[0.06] text-zinc-400 hover:text-zinc-300'
+              }`}
+            >
+              <CheckCircle2 className="w-3 h-3" />
+              Verstanden
+            </button>
+            <button
+              onClick={() => setTestAnswers(prev => ({ ...prev, [selectedSnippet.id]: false }))}
+              className={`flex-1 flex items-center justify-center gap-1.5 h-8 rounded-lg text-xs font-medium transition-all ${
+                testAnswers[selectedSnippet.id] === false
+                  ? 'bg-amber-500/30 border border-amber-500/50 text-amber-300'
+                  : 'bg-zinc-800/50 border border-white/[0.06] text-zinc-400 hover:text-zinc-300'
+              }`}
+            >
+              <Circle className="w-3 h-3" />
+              Wiederholen
+            </button>
+          </div>
+        </motion.div>
       )}
     </div>
   );
