@@ -229,21 +229,21 @@ export default function RehabPlan() {
   };
 
   if (isLoading) {
-    return <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950" />;
+    return <div className="min-h-screen bg-[#111111]" />;
   }
 
   if (!rehabPlan) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 p-4 flex items-center justify-center">
-        <div className="max-w-md w-full glass rounded-2xl border border-slate-700 p-8 text-center">
-          <AlertCircle className="w-12 h-12 text-slate-400 mx-auto mb-4" />
+      <div className="min-h-screen bg-[#111111] p-4 flex items-center justify-center">
+        <div className="max-w-md w-full rounded-xl border border-white/[0.06] bg-zinc-900/60 p-8 text-center">
+          <AlertCircle className="w-10 h-10 text-zinc-500 mx-auto mb-4" />
           <h2 className="text-xl font-bold text-white mb-2">Noch kein Reha-Plan</h2>
-          <p className="text-slate-300 mb-6">
+          <p className="text-zinc-400 mb-6">
             Starte eine Diagnose im Command-Bereich, um einen personalisierten Plan zu erhalten.
           </p>
           <Button
             onClick={() => window.location.href = createPageUrl('Dashboard')}
-            className="w-full bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500/30"
+            className="w-full bg-zinc-800 hover:bg-zinc-700 border border-white/[0.06] text-white"
           >
             Zum Command
           </Button>
@@ -253,7 +253,7 @@ export default function RehabPlan() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 pb-20 md:pb-6">
+    <div className="min-h-screen bg-[#111111] pb-20 md:pb-6">
       <Helmet>
         <title>Rehabilitation - AXON Rehab</title>
         <meta name="description" content={rehabPlan?.problem_summary ? `Dein Wiederherstellungsplan für: ${rehabPlan.problem_summary}` : 'Dein personalisierter AXON Rehabilitationsplan.'} />
@@ -304,26 +304,25 @@ export default function RehabPlan() {
       </AnimatePresence>
 
       {/* Header */}
-      <div className="sticky top-0 z-40 bg-slate-900 border-b border-emerald-500/20">
+      <div className="sticky top-0 z-40 bg-[#111111] border-b border-white/[0.06]">
         <div className="max-w-4xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="text-xs font-bold text-emerald-500 uppercase tracking-widest mb-1">
+              <h2 className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest mb-1">
                 Rehabilitation
               </h2>
               {rehabPlan.problem_summary && (
-                <h1 className="text-xl md:text-2xl font-bold text-emerald-50">
+                <h1 className="text-xl md:text-2xl font-bold text-white">
                   {rehabPlan.problem_summary}
                 </h1>
               )}
-              {/* NMS-Shift Übersicht */}
               {rehabPlan.nms_trigger_input && rehabPlan.nms_trigger_output && (
                 <div className="flex items-center gap-2 mt-1">
-                  <span className="text-[10px] font-bold text-orange-400 bg-orange-500/10 border border-orange-500/30 px-2 py-0.5 rounded-full">
+                  <span className="text-[10px] font-medium text-zinc-500 border border-white/[0.06] px-2 py-0.5 rounded-full">
                     {rehabPlan.nms_trigger_input}
                   </span>
-                  <span className="text-[10px] text-slate-500">→</span>
-                  <span className="text-[10px] font-bold text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 px-2 py-0.5 rounded-full">
+                  <span className="text-[10px] text-zinc-600">→</span>
+                  <span className="text-[10px] font-medium text-zinc-400 border border-white/[0.06] px-2 py-0.5 rounded-full">
                     {rehabPlan.nms_trigger_output}
                   </span>
                 </div>
@@ -344,52 +343,45 @@ export default function RehabPlan() {
       {/* Main Content - Reorganized: Tune-Up Button oben */}
       <div className="max-w-4xl mx-auto px-4 py-6 space-y-6">
         
-        {/* 1. Daily Tune-Up CTA - OBEN */}
+        {/* 1. Daily Tune-Up CTA */}
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="glass rounded-xl border border-emerald-500/30 bg-gradient-to-r from-emerald-500/10 to-transparent p-5"
+          className="rounded-xl border border-white/[0.06] bg-zinc-900/60 p-5"
         >
           <div className="flex items-center gap-3 mb-3">
-            <Zap className="w-5 h-5 text-emerald-400" />
-            <h3 className="text-sm font-bold text-emerald-400 uppercase tracking-widest">Daily Tune-Up</h3>
+            <Zap className="w-4 h-4 text-zinc-400" />
+            <h3 className="text-sm font-bold text-zinc-300 uppercase tracking-widest">Daily Tune-Up</h3>
           </div>
-          <p className="text-xs text-slate-300 mb-4">
-            Starte eine 15-minütige Test-Reset-Retest-Session, um sofort zu spüren, wie effektiv der Protokoll ist.
+          <p className="text-xs text-zinc-500 mb-4">
+            Starte eine 15-minütige Test-Reset-Retest-Session, um sofort zu spüren, wie effektiv das Protokoll ist.
           </p>
           <Button
             onClick={() => setShowDailyTuneUp(true)}
-            className="w-full bg-emerald-500 hover:bg-emerald-600 text-slate-900 font-bold"
+            className="w-full bg-zinc-800 hover:bg-zinc-700 border border-white/[0.06] text-white font-bold"
           >
-            Tune-Up starten →
+            Tune-Up starten
           </Button>
         </motion.div>
 
-        {/* 2. Progress Indicator with Circular Chart */}
+        {/* 2. Progress Indicator */}
         <div className="flex items-center justify-between">
           <div className="flex flex-col flex-1">
-            <span className="text-[10px] uppercase tracking-widest text-slate-400 font-bold">Progress</span>
+            <span className="text-[10px] uppercase tracking-widest text-zinc-500 font-bold">Progress</span>
             <span className="text-sm font-bold text-white tracking-wide">
-              PHASE {rehabPlan.current_phase || 1} <span className="text-slate-600 mx-1">/</span> {rehabPlan.phases?.length || 3}
+              Phase {rehabPlan.current_phase || 1} <span className="text-zinc-600 mx-1">/</span> {rehabPlan.phases?.length || 3}
             </span>
           </div>
 
-          {/* Circular Progress Chart */}
           <motion.div
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             className="relative w-20 h-20 flex-shrink-0"
           >
             <svg className="w-full h-full" viewBox="0 0 100 100">
-              <circle cx="50" cy="50" r="45" fill="none" stroke="currentColor" strokeWidth="2" className="text-slate-700" />
+              <circle cx="50" cy="50" r="45" fill="none" stroke="currentColor" strokeWidth="2" className="text-zinc-800" />
               <motion.circle
-                cx="50"
-                cy="50"
-                r="45"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="3"
-                className="text-emerald-400"
+                cx="50" cy="50" r="45" fill="none" stroke="currentColor" strokeWidth="3" className="text-zinc-400"
                 strokeDasharray={2 * Math.PI * 45}
                 strokeDashoffset={2 * Math.PI * 45 * (1 - ((rehabPlan.current_phase || 1) / (rehabPlan.phases?.length || 3)))}
                 strokeLinecap="round"
@@ -397,10 +389,10 @@ export default function RehabPlan() {
               />
             </svg>
             <div className="absolute inset-0 flex items-center justify-center flex-col">
-              <span className="text-lg font-black text-emerald-400">
+              <span className="text-lg font-bold text-white">
                 {((rehabPlan.current_phase || 1) / (rehabPlan.phases?.length || 3) * 100).toFixed(0)}%
               </span>
-              <span className="text-[10px] text-slate-400 font-mono">recovered</span>
+              <span className="text-[10px] text-zinc-500 font-mono">recovered</span>
             </div>
           </motion.div>
         </div>
@@ -432,26 +424,26 @@ export default function RehabPlan() {
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="glass rounded-xl border border-purple-500/30 bg-gradient-to-r from-purple-500/10 to-transparent p-5"
+            className="rounded-xl border border-white/[0.06] bg-zinc-900/60 p-5"
           >
             <div className="flex items-center gap-2 mb-3">
-              <Activity className="w-5 h-5 text-purple-400" />
-              <h3 className="text-sm font-bold text-purple-400 uppercase tracking-widest">Empfohlene FLOW-Routinen</h3>
+              <Activity className="w-4 h-4 text-zinc-400" />
+              <h3 className="text-sm font-bold text-zinc-300 uppercase tracking-widest">Empfohlene FLOW-Routinen</h3>
             </div>
-            <p className="text-xs text-slate-300 mb-3">Diese Routinen unterstützen deine Rehabilitation:</p>
+            <p className="text-xs text-zinc-500 mb-3">Diese Routinen unterstützen deine Rehabilitation:</p>
             <div className="space-y-2">
               {rehabPlan.recommended_mfr_routines.map((r, i) => (
-                <div key={i} className="flex items-start gap-3 p-3 rounded-lg bg-slate-800/50 border border-slate-700">
+                <div key={i} className="flex items-start gap-3 p-3 rounded-lg bg-zinc-800/50 border border-white/[0.04]">
                   <div className="flex-1">
-                    <p className="text-sm font-semibold text-white">{r.routine_name}</p>
-                    {r.reason && <p className="text-xs text-slate-300 mt-0.5">{r.reason}</p>}
+                    <p className="text-sm font-semibold text-zinc-200">{r.routine_name}</p>
+                    {r.reason && <p className="text-xs text-zinc-500 mt-0.5">{r.reason}</p>}
                   </div>
                 </div>
               ))}
             </div>
             <Button
               onClick={() => window.location.href = createPageUrl('FlowRoutines')}
-              className="w-full mt-3 bg-purple-500/20 text-purple-400 hover:bg-purple-500/30 border border-purple-500/30"
+              className="w-full mt-3 bg-zinc-800 hover:bg-zinc-700 border border-white/[0.06] text-zinc-300"
               variant="ghost"
             >
               <Activity className="w-4 h-4 mr-2" />
@@ -460,23 +452,23 @@ export default function RehabPlan() {
           </motion.div>
         )}
 
-        {/* 5. Cross-Link: Rehab completed → suggest Goals */}
+        {/* 5. Cross-Link: Rehab completed */}
         {rehabPlan.status === 'completed' && (
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="glass rounded-xl border border-blue-500/30 bg-gradient-to-r from-blue-500/10 to-transparent p-5 text-center"
+            className="rounded-xl border border-white/[0.06] bg-zinc-900/60 p-5 text-center"
           >
-            <Zap className="w-10 h-10 text-blue-400 mx-auto mb-3" />
-            <h3 className="text-lg font-bold text-blue-400 mb-2">Bereit für die nächste Stufe?</h3>
-            <p className="text-sm text-slate-300 mb-4">
-              Dein Körper hat sich erholt – jetzt ist es Zeit, Performance-Ziele anzugehen!
+            <Zap className="w-8 h-8 text-zinc-400 mx-auto mb-3" />
+            <h3 className="text-lg font-bold text-white mb-2">Bereit für die nächste Stufe?</h3>
+            <p className="text-sm text-zinc-400 mb-4">
+              Dein Körper hat sich erholt – jetzt ist es Zeit, Performance-Ziele anzugehen.
             </p>
             <Button
               onClick={() => window.location.href = createPageUrl('Dashboard')}
-              className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white"
+              className="bg-zinc-800 hover:bg-zinc-700 border border-white/[0.06] text-white"
             >
-              GOALS freischalten →
+              Performance freischalten
             </Button>
           </motion.div>
         )}

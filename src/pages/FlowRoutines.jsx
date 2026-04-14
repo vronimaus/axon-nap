@@ -92,8 +92,8 @@ export default function FlowRoutines() {
 
   if (isLoading || !user) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 flex items-center justify-center">
-        <div className="animate-spin w-10 h-10 border-2 border-cyan-500 border-t-transparent rounded-full" />
+      <div className="min-h-screen bg-[#111111] flex items-center justify-center">
+        <div className="w-5 h-5 border-2 border-zinc-600 border-t-zinc-300 rounded-full animate-spin" />
       </div>
     );
   }
@@ -113,18 +113,18 @@ export default function FlowRoutines() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 pb-24 md:pb-8">
+    <div className="min-h-screen bg-[#111111] pb-24 md:pb-8">
       <Helmet>
         <title>Flow Routines – AXON</title>
         <meta name="robots" content="noindex, nofollow" />
       </Helmet>
 
       {/* Header */}
-      <div className="sticky top-0 z-40 bg-slate-900/95 backdrop-blur border-b border-cyan-500/20">
+      <div className="sticky top-0 z-40 bg-[#111111] border-b border-white/[0.06]">
         <div className="max-w-3xl mx-auto px-4 py-4 flex items-center justify-between">
           <div>
-            <h1 className="text-xl font-bold text-white">FLOW</h1>
-            <p className="text-xs text-slate-400 mt-0.5">Tägliche Systempflege</p>
+            <h1 className="text-xl font-bold text-white">Flow</h1>
+            <p className="text-xs text-zinc-500 mt-0.5">Tägliche Systempflege</p>
           </div>
           <Button
             variant="ghost"
@@ -144,17 +144,17 @@ export default function FlowRoutines() {
           <motion.div
             initial={{ opacity: 0, y: -8 }}
             animate={{ opacity: 1, y: 0 }}
-            className={`glass rounded-xl border ${triageConfig.border} p-4 bg-gradient-to-r ${triageConfig.bg} to-transparent`}
+            className="rounded-xl border border-white/[0.06] bg-zinc-900/60 p-4"
           >
             <div className="flex items-center gap-3">
-              <TriageIcon className={`w-5 h-5 flex-shrink-0 ${triageConfig.color}`} />
+              <TriageIcon className="w-4 h-4 flex-shrink-0 text-zinc-400" />
               <div>
-                <p className="text-xs text-slate-400 uppercase tracking-widest">AXON empfiehlt</p>
-                <p className={`font-semibold text-sm ${triageConfig.color}`}>{triageConfig.label}</p>
+                <p className="text-[10px] text-zinc-600 uppercase tracking-widest">AXON empfiehlt</p>
+                <p className="font-semibold text-sm text-zinc-200">{triageConfig.label}</p>
               </div>
             </div>
             {sessionData.reason && (
-              <p className="text-xs text-slate-400 mt-2 leading-relaxed">{sessionData.reason}</p>
+              <p className="text-xs text-zinc-500 mt-2 leading-relaxed">{sessionData.reason}</p>
             )}
           </motion.div>
         )}
@@ -162,7 +162,7 @@ export default function FlowRoutines() {
         {/* Recommended Routines */}
         {recommendedRoutines.length > 0 && (
           <section>
-            <h2 className="text-sm font-semibold text-slate-400 uppercase tracking-widest mb-3">
+            <h2 className="text-[10px] font-bold text-zinc-600 uppercase tracking-widest mb-3">
               Heute für dich
             </h2>
             <div className="space-y-3">
@@ -182,7 +182,7 @@ export default function FlowRoutines() {
 
         {/* Explore Routines */}
         <section>
-          <h2 className="text-sm font-semibold text-slate-400 uppercase tracking-widest mb-4">
+          <h2 className="text-[10px] font-bold text-zinc-600 uppercase tracking-widest mb-4">
             Entdecken
           </h2>
           
@@ -190,7 +190,7 @@ export default function FlowRoutines() {
           <div className="flex items-center gap-2 mb-4">
             {/* Mobile filter button */}
             <button
-              className="sm:hidden flex items-center gap-2 px-4 py-2 rounded-full bg-slate-800/70 text-xs font-medium text-slate-300 border border-slate-700"
+              className="sm:hidden flex items-center gap-2 px-4 py-2 rounded-full bg-zinc-800 text-xs font-medium text-zinc-300 border border-white/[0.06]"
               onClick={() => setFilterSheetOpen(true)}
             >
               <Filter className="w-3.5 h-3.5" />
@@ -212,8 +212,8 @@ export default function FlowRoutines() {
                   onClick={() => setSelectedCategory(cat.id)}
                   className={`whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-medium transition-colors ${
                     selectedCategory === cat.id
-                      ? 'bg-cyan-500 text-slate-950'
-                      : 'bg-slate-800/50 text-slate-400 hover:bg-slate-800 hover:text-slate-200'
+                      ? 'bg-zinc-200 text-zinc-900'
+                      : 'bg-zinc-800/50 text-zinc-500 hover:bg-zinc-800 hover:text-zinc-200'
                   }`}
                 >
                   {cat.label}
@@ -238,12 +238,12 @@ export default function FlowRoutines() {
                   onClick={() => { setSelectedCategory(cat.id); setFilterSheetOpen(false); }}
                   className={`w-full text-left px-4 py-3.5 rounded-xl text-sm font-medium transition-colors flex items-center justify-between ${
                     selectedCategory === cat.id
-                      ? 'bg-cyan-500/20 text-cyan-400 border border-cyan-500/30'
-                      : 'text-slate-300 hover:bg-slate-800'
+                      ? 'bg-zinc-700 text-white border border-white/[0.08]'
+                      : 'text-zinc-300 hover:bg-zinc-800'
                   }`}
                 >
                   {cat.label}
-                  {selectedCategory === cat.id && <span className="text-cyan-400">✓</span>}
+                  {selectedCategory === cat.id && <span className="text-zinc-300">✓</span>}
                 </button>
               ))}
             </div>
@@ -263,7 +263,7 @@ export default function FlowRoutines() {
             ))}
             
             {routines.filter(r => selectedCategory === 'all' || r.category === selectedCategory).length === 0 && (
-              <div className="text-center py-8 text-slate-400 text-sm glass rounded-xl border border-slate-700/50">
+              <div className="text-center py-8 text-zinc-500 text-sm rounded-xl border border-white/[0.06]">
                 Keine Routinen in dieser Kategorie gefunden.
               </div>
             )}
@@ -276,7 +276,7 @@ export default function FlowRoutines() {
 }
 
 function RoutineCard({ routine, idx, completed, highlighted, onClick }) {
-  const intensity = INTENSITY_LABELS[routine.intensity_level] || { label: 'Sanft', color: 'text-green-400' };
+  const intensity = INTENSITY_LABELS[routine.intensity_level] || { label: 'Sanft', color: 'text-zinc-500' };
   const categoryLabel = CATEGORY_LABELS[routine.category] || routine.category;
   const CategoryIcon = CATEGORY_ICONS[routine.category] || Activity;
 
@@ -286,47 +286,40 @@ function RoutineCard({ routine, idx, completed, highlighted, onClick }) {
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: idx * 0.05 }}
       onClick={onClick}
-      className={`w-full text-left glass rounded-xl border transition-all group ${
-        highlighted
-          ? 'border-cyan-500/30 hover:border-cyan-500/60'
-          : 'border-slate-700/50 hover:border-slate-600'
+      className={`w-full text-left rounded-xl border transition-all group bg-zinc-900/60 ${
+        highlighted ? 'border-white/[0.1] hover:border-white/[0.15]' : 'border-white/[0.06] hover:border-white/[0.1]'
       }`}
     >
       <div className="p-4 flex items-start gap-4">
-        {/* Icon */}
-        <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${
-          highlighted ? 'bg-slate-800 text-amber-400' : 'bg-slate-800/50 text-slate-400'
-        }`}>
+        <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 bg-zinc-800 text-zinc-400">
           <CategoryIcon className="w-5 h-5" />
         </div>
 
-        {/* Content */}
         <div className="flex-1 min-w-0">
           <div className="flex items-start justify-between gap-2">
-            <h3 className={`font-semibold text-sm leading-snug ${highlighted ? 'text-white' : 'text-slate-200'}`}>
+            <h3 className="font-semibold text-sm leading-snug text-zinc-200">
               {routine.routine_name}
             </h3>
             {completed && (
-              <span className="text-xs text-green-400 flex-shrink-0">✓ Erledigt</span>
+              <span className="text-[10px] text-zinc-500 flex-shrink-0">Erledigt</span>
             )}
           </div>
-          <p className="text-xs text-slate-400 mt-1 line-clamp-2 leading-relaxed">
+          <p className="text-xs text-zinc-500 mt-1 line-clamp-2 leading-relaxed">
             {routine.description}
           </p>
           <div className="flex items-center gap-3 mt-2">
-            <span className="flex items-center gap-1 text-xs text-slate-400">
+            <span className="flex items-center gap-1 text-xs text-zinc-500">
               <Clock className="w-3 h-3" />
               {routine.total_duration} Min.
             </span>
-            <span className="text-xs text-slate-500">·</span>
-            <span className="text-xs text-slate-400">{categoryLabel}</span>
-            <span className="text-xs text-slate-500">·</span>
-            <span className={`text-xs ${intensity.color}`}>{intensity.label}</span>
+            <span className="text-xs text-zinc-700">·</span>
+            <span className="text-xs text-zinc-500">{categoryLabel}</span>
+            <span className="text-xs text-zinc-700">·</span>
+            <span className="text-xs text-zinc-500">{intensity.label}</span>
           </div>
         </div>
 
-        {/* Arrow */}
-        <Play className="w-4 h-4 text-slate-500 group-hover:text-cyan-400 transition-colors flex-shrink-0 mt-1" />
+        <Play className="w-4 h-4 text-zinc-600 group-hover:text-zinc-300 transition-colors flex-shrink-0 mt-1" />
       </div>
     </motion.button>
   );
