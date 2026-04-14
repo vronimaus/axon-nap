@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, AlertTriangle } from 'lucide-react';
+import { base44 } from '@/api/base44Client';
 
 const CAUSE_MAP = {
   schmerz: {
@@ -49,9 +50,33 @@ function MetricBox({ label, value, max }) {
 }
 
 export default function SFMAResultScreen({ region, type, nrs, movement_level, pain_rest, pain_move, isRedFlag, onContinue, selectedChains = null, isLoadingChains = false }) {
+  const [snippets, setSnippets] = useState([]);
+  const [loadingSnippets, setLoadingSnippets] = useState(false);
+
   const isStiffnessOnly = (pain_rest === 0 || pain_rest == null) && (pain_move === 0 || pain_move == null);
   const displayType = isStiffnessOnly ? 'steifigkeit' : 'schmerz';
   const cause = getCause(displayType, region);
+
+  // Load KnowledgeSnippets for selected chains
+  useEffect(() => {
+    if (!selectedChains || selectedChains.length === 0 || isLoadingChains) return;
+    
+    setLoadingSnippets(true);
+    const nodeIds = selectedChains.map(c => c.node_id).filter(Boolean);
+    
+    Promise.all(
+      nodeIds.map(nodeId =>
+        base44.entities.KnowledgeSnippet.filter({ node_id: nodeId, is_active: true })
+          .catch(() => [])
+      )
+    )
+      .then(results => {
+        const snippetList = results.flat();
+        setSnippets(snippetList);
+      })
+      .catch(() => setSnippets([]))
+      .finally(() => setLoadingSnippets(false));
+  }, [selectedChains, isLoadingChains]);
 
   // Detect pattern: pain only on movement
   const onlyOnMove = (pain_rest === 0 || pain_rest == null) && pain_move > 0;
@@ -111,6 +136,34 @@ export default function SFMAResultScreen({ region, type, nrs, movement_level, pa
               </div>
               <span className="text-[9px] text-cyan-700 font-mono shrink-0">{Math.round((chain.confidence || 0) * 100)}%</span>
             </div>
+          ))}
+        </div>
+      )}
+
+      {/* Knowledge Snippets für ausgewählte Nodes */}
+      {!isRedFlag && snippets.length > 0 && (
+        <div className="space-y-3">
+          {snippets.map((snippet) => (
+            <motion.div
+              key={snippet.id}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="rounded-xl border border-cyan-500/20 bg-slate-900/40 overflow-hidden"
+            >
+              {snippet.image_url && (
+                <img
+                  src={snippet.image_url}
+                  alt={snippet.node_name_de}
+                  className="w-full h-32 object-cover"
+                />
+              )}
+              <div className="p-3">
+                <p className="text-xs font-bold text-cyan-400 mb-1.5">{snippet.title}</p>
+                <p className="text-[10px] text-slate-400 leading-relaxed line-clamp-3">
+                  {snippet.summary}
+                </p>
+              </div>
+            </motion.div>
           ))}
         </div>
       )}
