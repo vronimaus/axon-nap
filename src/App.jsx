@@ -6,6 +6,7 @@ import { pagesConfig } from './pages.config'
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import PageNotFound from './lib/PageNotFound';
 import InviteRedeem from './pages/InviteRedeem';
+import SystemReport from './pages/SystemReport';
 import FitnessSnacks from './pages/FitnessSnacks.jsx';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
@@ -62,6 +63,7 @@ const AuthenticatedApp = () => {
         />
       ))}
       <Route path="/InviteRedeem" element={<InviteRedeem />} />
+      <Route path="/SystemReport" element={<LayoutWrapper currentPageName="SystemReport"><SystemReport /></LayoutWrapper>} />
       <Route path="/FitnessSnacks" element={<LayoutWrapper currentPageName="FitnessSnacks"><FitnessSnacks /></LayoutWrapper>} />
 
       <Route path="*" element={<PageNotFound />} />

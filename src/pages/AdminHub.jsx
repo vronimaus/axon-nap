@@ -403,6 +403,16 @@ export default function AdminHub() {
             </TabsList>
           </div>
 
+          {/* Quick Link: System Report */}
+          <div className="mb-4">
+            <button
+              onClick={() => window.location.href = createPageUrl('SystemReport')}
+              className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-zinc-800/60 border border-white/[0.06] hover:bg-zinc-700/60 transition-colors text-sm text-zinc-300 font-medium"
+            >
+              📄 Systembericht (NotebookLM-Quelle)
+            </button>
+          </div>
+
           {/* Snacks Tab */}
           <TabsContent value="snacks" className="mt-0">
             <FitnessSnackAdminTab />
