@@ -368,10 +368,35 @@ export default function RehabPlan() {
             Starte eine 15-minütige Test-Reset-Retest-Session, um sofort zu spüren, wie effektiv das Protokoll ist.
           </p>
           {readinessStatus === 'red' && (
-            <div className="mb-3 flex items-start gap-2 rounded-lg bg-red-500/10 border border-red-500/20 px-3 py-2">
-              <AlertCircle className="w-4 h-4 text-red-400 flex-shrink-0 mt-0.5" />
-              <p className="text-xs text-red-300">
-                <strong>ROT-Status:</strong> Dein System braucht heute Ruhe. Nur sanfte MFR empfohlen — kein aktives Training.
+            <div className="mb-3 rounded-lg bg-red-500/10 border border-red-500/20 px-4 py-3 space-y-2">
+              <div className="flex items-center gap-2">
+                <AlertCircle className="w-4 h-4 text-red-400 flex-shrink-0" />
+                <p className="text-xs font-bold text-red-300 uppercase tracking-widest">System im Erholungsmodus</p>
+              </div>
+              <p className="text-xs text-red-200/80 leading-relaxed">
+                Das ist kein Rückschlag — das ist dein Körper, der dir gerade etwas sehr Wichtiges sagt. 
+                Erholung <em>ist</em> Training. Ohne sie stapeln sich Mikro-Stressmuster und du bremst 
+                deinen eigenen Fortschritt aus.
+              </p>
+              <p className="text-xs text-red-200/60 leading-relaxed">
+                Heute reicht ein sanfter MFR-Release, um dein Nervensystem zu beruhigen und 
+                morgen wieder mit voller Kapazität starten zu können. Du machst genau das Richtige.
+              </p>
+            </div>
+          )}
+          {readinessStatus === 'yellow' && (
+            <div className="mb-3 rounded-lg bg-amber-500/10 border border-amber-500/20 px-4 py-3 space-y-2">
+              <div className="flex items-center gap-2">
+                <AlertCircle className="w-4 h-4 text-amber-400 flex-shrink-0" />
+                <p className="text-xs font-bold text-amber-300 uppercase tracking-widest">Eingeschränkte Kapazität</p>
+              </div>
+              <p className="text-xs text-amber-200/80 leading-relaxed">
+                Dein System ist heute nicht auf 100 % — und das ist völlig normal. Du kannst trainieren, 
+                aber hör genau in deinen Körper hinein. Reduziere Intensität und Tempo wo nötig, 
+                das schützt dich vor unnötigen Rückschritten.
+              </p>
+              <p className="text-xs text-amber-200/60 leading-relaxed">
+                Fokus heute: Technik über Last, Qualität über Quantität.
               </p>
             </div>
           )}
