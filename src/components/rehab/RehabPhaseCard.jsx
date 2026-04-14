@@ -86,42 +86,40 @@ export default function RehabPhaseCard({ phase, index, totalPhases, isCompleted,
         initial={{ opacity: 0, x: 20 }}
         animate={{ opacity: 1, x: 0 }}
         exit={{ opacity: 0, x: -20 }}
-        className="space-y-8"
+        className="space-y-6"
       >
-      {/* Phase Info Card (Modern/Dark) */}
-      <div className="relative rounded-2xl border border-slate-800 bg-slate-900/80 p-6 overflow-hidden shadow-2xl">
-         {/* Tech Background Elements - Green Theme */}
-         <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/5 rounded-full blur-3xl pointer-events-none" />
-         <div className="absolute bottom-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-emerald-500/20 to-transparent" />
-         
-         <div className="relative z-10 flex items-center justify-between">
-            <div>
+      {/* Phase Info Card */}
+      <div className="rounded-2xl border border-white/[0.06] bg-zinc-900/80 p-5">
+         <div className="flex items-center justify-between">
+            <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 mb-1">
-                <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-emerald-500">
-                   Rehab Phase {index + 1}
+                <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-500">
+                   Phase {index + 1}
                 </span>
-                {isCompleted && <span className="text-[10px] text-emerald-400 font-bold tracking-wider">✓ COMPLETED</span>}
+                {isCompleted && (
+                  <span className="text-[10px] text-zinc-400 font-bold tracking-wider border border-white/[0.06] px-1.5 py-0.5 rounded">
+                    Abgeschlossen
+                  </span>
+                )}
               </div>
-              <h3 className="text-2xl font-bold text-white tracking-tight">{phase.title}</h3>
+              <h3 className="text-xl font-bold text-white tracking-tight">{phase.title}</h3>
               {(phase.estimated_minutes || phase.duration_days) && (
-                <p className="text-sm text-slate-400 mt-1 font-medium flex items-center gap-2 flex-wrap">
-                  <span className="bg-slate-800/80 px-2 py-0.5 rounded text-emerald-400 text-xs border border-emerald-500/20">
-                    ⏱ {phase.estimated_minutes
+                <div className="flex flex-wrap gap-2 mt-2">
+                  <span className="text-[10px] font-bold uppercase tracking-widest text-zinc-500 border border-white/[0.06] px-2 py-0.5 rounded">
+                    {phase.estimated_minutes
                       ? phase.estimated_minutes >= 60
                         ? `${Math.floor(phase.estimated_minutes / 60)}h ${phase.estimated_minutes % 60 > 0 ? phase.estimated_minutes % 60 + ' Min' : ''}`.trim()
                         : `${phase.estimated_minutes} Min`
                       : `~${phase.duration_days * 10} Min`} · pro Session
                   </span>
-                  {phase.phase_rationale && (
-                    <span className="text-[10px] text-slate-500 italic">{phase.phase_rationale}</span>
-                  )}
-                </p>
+                </div>
+              )}
+              {phase.phase_rationale && (
+                <p className="text-xs text-zinc-600 mt-2 leading-relaxed">{phase.phase_rationale}</p>
               )}
             </div>
-            
-            {/* Minimal Circular Progress or Icon */}
-            <div className="w-12 h-12 rounded-full border border-slate-700 bg-slate-800/50 flex items-center justify-center shadow-inner">
-               <span className="text-sm font-bold text-slate-300">{index + 1}/{totalPhases}</span>
+            <div className="w-10 h-10 rounded-xl border border-white/[0.06] bg-zinc-800 flex items-center justify-center ml-4 flex-shrink-0">
+               <span className="text-xs font-bold text-zinc-400">{index + 1}/{totalPhases}</span>
             </div>
          </div>
       </div>
@@ -130,20 +128,20 @@ export default function RehabPhaseCard({ phase, index, totalPhases, isCompleted,
       <AxonJourneyCard phase={phase} />
 
       {/* Sections & Exercises */}
-      <div className="space-y-12">
+      <div className="space-y-8">
         {sections.map((section, secIdx) => (
-          <div key={section.key} className="space-y-6">
-            {/* Modern Section Header */}
-            <div className="flex items-center gap-3 pl-1 mt-6">
-               <h4 className="text-xs font-bold uppercase tracking-[0.15em] text-emerald-400 flex items-center gap-2">
-                  <section.icon className="w-3.5 h-3.5" />
+          <div key={section.key} className="space-y-4">
+            {/* Section Header */}
+            <div className="flex items-center gap-3">
+               <h4 className="text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-500 flex items-center gap-2">
+                  <section.icon className="w-3 h-3" />
                   {section.label}
                </h4>
-               <div className="h-px flex-1 bg-gradient-to-r from-emerald-500/20 to-transparent" />
+               <div className="h-px flex-1 bg-white/[0.04]" />
             </div>
 
-            {/* Horizontal Button Selector */}
-            <div className="flex flex-wrap gap-2 px-1">
+            {/* Exercise Buttons */}
+            <div className="flex flex-wrap gap-2">
               {section.exercises.map((exercise, exIdx) => {
                 const uniqueKey = `${section.key}-${exIdx}`;
                 const isExCompleted = completedExercises[uniqueKey] || exercise.completed;
@@ -163,17 +161,21 @@ export default function RehabPhaseCard({ phase, index, totalPhases, isCompleted,
                     key={uniqueKey}
                     onClick={handleClick}
                     className={`
-                      w-12 h-12 rounded-xl flex items-center justify-center text-sm font-bold transition-all duration-300 relative
+                      w-11 h-11 rounded-xl flex items-center justify-center text-xs font-bold transition-all duration-200 relative border
                       ${isExCompleted
-                        ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
+                        ? 'bg-zinc-700 text-zinc-300 border-white/[0.1]'
                         : isLocked
-                          ? 'bg-slate-800/50 text-slate-600 border border-slate-700 opacity-50 cursor-not-allowed'
-                          : 'bg-slate-800 text-slate-500 border border-slate-700 hover:border-emerald-500/50 hover:text-emerald-400 active:scale-95'}
+                          ? 'bg-zinc-900 text-zinc-700 border-white/[0.04] opacity-50 cursor-not-allowed'
+                          : 'bg-zinc-800 text-zinc-400 border-white/[0.06] hover:border-white/[0.15] hover:text-zinc-200 active:scale-95'}
                     `}
                     disabled={isLocked}
                   >
-                    {isExCompleted ? <CheckCircle2 className="w-5 h-5" /> : exIdx + 1}
-                    {isLocked && <div className="absolute inset-0 flex items-center justify-center rounded-xl bg-black/20"><span className="text-[10px] font-bold text-slate-400">🔒</span></div>}
+                    {isExCompleted ? <CheckCircle2 className="w-4 h-4" /> : exIdx + 1}
+                    {isLocked && (
+                      <div className="absolute inset-0 flex items-center justify-center rounded-xl">
+                        <span className="text-[9px] font-bold text-zinc-600">—</span>
+                      </div>
+                    )}
                   </button>
                 );
               })}
@@ -199,10 +201,10 @@ export default function RehabPhaseCard({ phase, index, totalPhases, isCompleted,
       />
 
       {/* Footer Navigation */}
-      <div className="flex flex-col-reverse sm:flex-row gap-3 pt-12 items-center sm:justify-between">
+      <div className="flex flex-col-reverse sm:flex-row gap-3 pt-8 items-center sm:justify-between border-t border-white/[0.04]">
         {index > 0 ? (
-          <Button variant="outline" onClick={onPrev} className="w-full sm:w-auto border-slate-700 text-slate-400 hover:text-white">
-            ← Zurück
+          <Button variant="ghost" onClick={onPrev} className="w-full sm:w-auto text-zinc-500 hover:text-zinc-300">
+            Zurück
           </Button>
         ) : <div className="hidden sm:block" />}
 
@@ -210,16 +212,16 @@ export default function RehabPhaseCard({ phase, index, totalPhases, isCompleted,
           <div className="w-full sm:w-auto flex flex-col items-center gap-1">
             <Button
               onClick={onComplete}
-              className="w-full sm:w-auto bg-emerald-500 hover:bg-emerald-600 text-slate-900 font-bold shadow-[0_0_20px_rgba(16,185,129,0.3)] hover:shadow-[0_0_30px_rgba(16,185,129,0.5)] transition-all px-8 py-5 text-base"
+              className="w-full sm:w-auto bg-zinc-200 hover:bg-white text-zinc-900 font-bold px-8 py-5 text-sm"
             >
-              <CheckCircle2 className="w-5 h-5 mr-2" />
-              Ich bin bereit für die nächste Phase ✓
+              <CheckCircle2 className="w-4 h-4 mr-2" />
+              Bereit für die nächste Phase
             </Button>
-            <p className="text-[10px] text-slate-500 text-center">Nur weiter, wenn du dich wirklich besser fühlst</p>
+            <p className="text-[10px] text-zinc-600 text-center">Nur weiter, wenn du dich wirklich besser fühlst</p>
           </div>
         ) : index < totalPhases - 1 ? (
-          <Button onClick={onNext} className="w-full sm:w-auto bg-emerald-500 hover:bg-emerald-600 text-slate-900 font-bold px-8 py-6">
-            Nächste Phase →
+          <Button onClick={onNext} className="w-full sm:w-auto bg-zinc-800 hover:bg-zinc-700 border border-white/[0.06] text-white font-bold px-8">
+            Nächste Phase
           </Button>
         ) : null}
       </div>

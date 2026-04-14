@@ -175,9 +175,9 @@ export default function RehabPlan() {
       });
       
       if (result.isLastPhase) {
-        toast.success('🎉 Glückwunsch! Du hast alle Phasen abgeschlossen!');
+        toast.success('Glückwunsch! Du hast alle Phasen abgeschlossen!');
       } else {
-        toast.success(`✅ Phase abgeschlossen! Willkommen in Phase ${result.updateData.current_phase}.`);
+        toast.success(`Phase abgeschlossen. Willkommen in Phase ${result.updateData.current_phase}.`);
       }
     },
     onError: (error) => {
@@ -206,7 +206,7 @@ export default function RehabPlan() {
       // All exercises done
       setActiveModalExercise(null);
       setSessionStarted(false);
-      toast.success('🎉 Session abgeschlossen! Gut gemacht!');
+      toast.success('Session abgeschlossen.');
     }
     if (data?.exercise_id) {
       submitFeedbackMutation.mutate({ exerciseId: data.exercise_id, metricValue: data.pain_level || 0, notes: 'Completed' });
