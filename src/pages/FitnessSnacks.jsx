@@ -192,7 +192,7 @@ function SnackPlayer({ snack, onClose, onFinish }) {
 
 // ─── Snack Card ─────────────────────────────────────────────────────────────────
 
-function SnackCard({ snack, isDoneToday, onStart }) {
+function SnackCard({ snack, isDoneToday, onStart, isLocked = false }) {
   const cfg = TYPE_CONFIG[snack.type] || { label: snack.type };
   const mainSteps = snack.sequence?.filter(s => s.type === 'exercise' || s.type === 'rest') || [];
   const cooldownSteps = snack.sequence?.filter(s => s.type === 'mfr_cooldown' || s.type === 'breath_cooldown') || [];
@@ -249,7 +249,13 @@ function SnackCard({ snack, isDoneToday, onStart }) {
         )}
       </div>
 
-      {!isDoneToday ? (
+      {isLocked ? (
+        <div className="px-5 pb-4">
+          <p className="text-[10px] text-zinc-600 font-medium uppercase tracking-widest">
+            🔒 Nur bei höherem Readiness-Status verfügbar
+          </p>
+        </div>
+      ) : !isDoneToday ? (
         <div className="px-5 pb-5">
           <button onClick={() => onStart(snack)}
             className="w-full h-11 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-all active:scale-95 bg-zinc-800 hover:bg-zinc-700 border border-white/[0.06] text-white">
@@ -302,6 +308,16 @@ export default function FitnessSnacks() {
   const doneTodayIds = new Set(todayLogs.map(l => l.snack_id));
   const readiness = snackData?.readiness_status || 'green';
   const rdCfg = READINESS_CONFIG[readiness] || READINESS_CONFIG.green;
+
+  // Lücke 5.3: readiness_gate konsequent filtern
+  const isSnackAllowed = (snack) => {
+    const gate = snack.readiness_gate || 'any';
+    if (gate === 'any') return true;
+    if (gate === 'green') return readiness === 'green';
+    if (gate === 'yellow') return readiness === 'green' || readiness === 'yellow';
+    if (gate === 'red') return true; // red-gate = passt bei jedem Status
+    return true;
+  };
 
   const streakDays = (() => {
     if (!allLogs.length) return 0;
@@ -422,8 +438,20 @@ export default function FitnessSnacks() {
               <div className="space-y-3">
                 {allSnacks
                   .filter(s => !snackData?.snacks?.find(r => r.id === s.id))
+                  .sort((a, b) => {
+                    // Erlaubte Snacks zuerst, gesperrte ans Ende
+                    const aOk = isSnackAllowed(a) ? 0 : 1;
+                    const bOk = isSnackAllowed(b) ? 0 : 1;
+                    return aOk - bOk;
+                  })
                   .map(snack => (
-                    <SnackCard key={snack.id} snack={snack} isDoneToday={doneTodayIds.has(snack.id)} onStart={setActiveSnack} />
+                    <SnackCard
+                      key={snack.id}
+                      snack={snack}
+                      isDoneToday={doneTodayIds.has(snack.id)}
+                      onStart={setActiveSnack}
+                      isLocked={!isSnackAllowed(snack)}
+                    />
                   ))}
               </div>
             </div>

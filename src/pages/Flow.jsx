@@ -240,10 +240,22 @@ export default function Flow() {
     );
   }
 
-  if (!routine) {
+  // Lücke 6.3: kein routine_id → sofort zu FlowRoutines
+  if (!routineId) {
+    window.location.href = createPageUrl('FlowRoutines');
+    return null;
+  }
+
+  if (!isLoading && !routine) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 flex items-center justify-center">
-        <p className="text-slate-400">Routine nicht gefunden</p>
+      <div className="min-h-screen bg-[#111111] flex flex-col items-center justify-center gap-4 p-6">
+        <p className="text-zinc-400 text-sm">Routine nicht gefunden.</p>
+        <button
+          onClick={() => window.location.href = createPageUrl('FlowRoutines')}
+          className="px-5 py-2.5 rounded-xl bg-zinc-800 text-zinc-200 text-sm font-medium hover:bg-zinc-700 transition-colors"
+        >
+          ← Zur Routinen-Übersicht
+        </button>
       </div>
     );
   }
