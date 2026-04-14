@@ -10,38 +10,41 @@
       "type": "integer",
       "minimum": 1,
       "maximum": 10,
-      "description": "Gef\u00fchl/Hardware: 1=steif (eingerostet), 10=geschmeidig (wie ge\u00f6lt)"
+      "description": "Gef\u00fchl/Hardware: 1=steif, 10=geschmeidig"
     },
     "focus_software": {
       "type": "integer",
       "minimum": 1,
       "maximum": 10,
-      "description": "Fokus/Software: 1=m\u00fcde (Tunnelblick), 10=hellwach (klar)"
+      "description": "Fokus/Software: 1=m\u00fcde, 10=hellwach"
     },
     "energy_battery": {
       "type": "integer",
       "minimum": 1,
       "maximum": 10,
-      "description": "Energie/Batterie: 1=akku leer, 10=volle kraft"
+      "description": "Energie/Batterie: 1=leer, 10=voll"
     },
     "sleep_quality": {
       "type": "integer",
       "minimum": 1,
       "maximum": 10,
-      "description": "Schlafqualit\u00e4t: 1=kaum geschlafen, 10=ausgeschlafen und energiegeladen"
+      "description": "Schlafqualit\u00e4t: 1=kaum geschlafen, 10=ausgeschlafen"
     },
     "readiness_status": {
       "type": "string",
       "enum": [
         "low",
         "moderate",
-        "high"
+        "high",
+        "red",
+        "yellow",
+        "green"
       ],
       "description": "Berechneter Readiness Status"
     },
     "readiness_score": {
       "type": "number",
-      "description": "Berechneter Score f\u00fcr Readiness (0-10)"
+      "description": "Berechneter Score (0-10)"
     },
     "check_date": {
       "type": "string",
@@ -57,36 +60,16 @@
   ],
   "rls": {
     "create": {
-      "logic": "or",
-      "conditions": [
-        {
-          "data.user_email": "{{user.email}}"
-        },
-        {
-          "user_condition": {
-            "role": "admin"
-          }
-        }
-      ]
+      "created_by": "{{user.email}}"
     },
     "read": {
-      "data.user_email": "{{user.email}}"
+      "created_by": "{{user.email}}"
     },
     "update": {
-      "logic": "or",
-      "conditions": [
-        {
-          "data.user_email": "{{user.email}}"
-        },
-        {
-          "user_condition": {
-            "role": "admin"
-          }
-        }
-      ]
+      "created_by": "{{user.email}}"
     },
     "delete": {
-      "data.user_email": "{{user.email}}"
+      "created_by": "{{user.email}}"
     }
   }
 }

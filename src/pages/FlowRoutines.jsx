@@ -8,13 +8,13 @@ import { Button } from '@/components/ui/button';
 import { Helmet } from 'react-helmet-async';
 import BottomSheet from '../components/ui/BottomSheet';
 
-// Triage → welche Routinen passen
+// Triage → welche Routinen passen (deutsche Namen, passend zu DB)
 const TRIAGE_ROUTINE_MAP = {
-  training: ['Neural Primer', 'Pre-Session Power-Up', 'Posterior Chain Activation'],
-  rehab_override: ['Joint Integrity Protocol', 'MFR Faszien-Release (Oberkörper)', 'Structural Reset (Unterkörper)', 'Vagus Reset'],
-  rehab_first: ['Joint Integrity Protocol', 'MFR Faszien-Release (Oberkörper)', 'Structural Reset (Unterkörper)'],
-  rest: ['Deep Recovery Protocol', 'Vagus Reset', 'Morning System Reboot'],
-  no_plan: ['Morning System Reboot', 'Neural Primer'],
+  training: ['Pre-Sport Aktivierung', 'Morgen-Erwachen'],
+  rehab_override: ['Schreibtisch-Befreiung', 'Mittags-Reset', 'Abend Wind-Down'],
+  rehab_first: ['Schreibtisch-Befreiung', 'Mittags-Reset'],
+  rest: ['Abend Wind-Down', 'Tiefer Schlaf Prep'],
+  no_plan: [],
 };
 
 const TRIAGE_LABELS = {
@@ -112,9 +112,10 @@ export default function FlowRoutines() {
     return ['Tiefer Schlaf Prep', 'Abend Wind-Down'];
   };
 
-  const recommendedNames = TRIAGE_ROUTINE_MAP[decision]?.length
-    ? TRIAGE_ROUTINE_MAP[decision]
-    : getTimeBasedRoutines();
+  // Tageszeit-basiert immer als Basis, triage ergänzt
+  const timeBasedNames = getTimeBasedRoutines();
+  const triageNames = TRIAGE_ROUTINE_MAP[decision] || [];
+  const recommendedNames = [...new Set([...timeBasedNames, ...triageNames])];
 
   const recommendedRoutines = routines.filter(r => recommendedNames.includes(r.routine_name));
   const otherRoutines = routines.filter(r => !recommendedNames.includes(r.routine_name));

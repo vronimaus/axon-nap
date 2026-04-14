@@ -9,7 +9,6 @@ import { toast } from 'sonner';
 import DailyReadinessCheck from '@/components/dashboard/DailyReadinessCheck';
 import { Helmet } from 'react-helmet-async';
 import { useTrialStatus } from '@/components/useTrialStatus';
-import RehabIntroModal from '@/components/rehab/RehabIntroModal';
 import ExerciseDetailModal from '@/components/rehab/ExerciseDetailModal';
 import RehabPhaseCard from '@/components/rehab/RehabPhaseCard';
 import DailyTuneUpModal from '@/components/rehab/DailyTuneUpModal';
@@ -20,10 +19,9 @@ export default function RehabPlan() {
   const [isLoading, setIsLoading] = useState(true);
   const [showReadinessCheck, setShowReadinessCheck] = useState(false);
   const [readinessStatus, setReadinessStatus] = useState(null);
-  const [preferredCoach, setPreferredCoach] = useState('male');
   const [activePhaseIdx, setActivePhaseIdx] = useState(0);
   const [completedPhases, setCompletedPhases] = useState({});
-  const [showIntroModal, setShowIntroModal] = useState(true);
+  const [showIntroModal, setShowIntroModal] = useState(false);
   const [activeExerciseIdx, setActiveExerciseIdx] = useState(0);
   const [activeModalExercise, setActiveModalExercise] = useState(null);
   const [sessionExercises, setSessionExercises] = useState([]);
@@ -40,16 +38,6 @@ export default function RehabPlan() {
           return;
         }
         setUser(currentUser);
-        
-        // Load preferred coach from UserNeuroProfile
-        try {
-          const profiles = await base44.entities.UserNeuroProfile.filter({ user_email: currentUser.email });
-          if (profiles.length > 0 && profiles[0].preferred_coach) {
-            setPreferredCoach(profiles[0].preferred_coach);
-          }
-        } catch (_e) {
-          // Use default if profile not found
-        }
         
         // Check if readiness check already done today (via sessionStorage)
         const today = new Date().toISOString().split('T')[0];
@@ -270,14 +258,7 @@ export default function RehabPlan() {
         region={rehabPlan?.problem_summary || 'Lenden / Unterer Rücken'}
       />
 
-      {/* Rehab Intro Modal */}
-      <RehabIntroModal
-        isOpen={showIntroModal && !showReadinessCheck}
-        onStart={handleStartSession}
-        rehabPlan={rehabPlan}
-        userName={user?.full_name}
-        preferredCoach={preferredCoach}
-      />
+      {/* Rehab Intro Modal - deactivated, session starts directly */}
 
       {/* Sequential Exercise Modal */}
       <ExerciseDetailModal
