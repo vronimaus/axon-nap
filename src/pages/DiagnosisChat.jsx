@@ -42,6 +42,7 @@ export default function DiagnosisChat() {
   const [showTuneUp, setShowTuneUp] = useState(false);
   const [user, setUser] = useState(null);
   const [rehabPlan, setRehabPlan] = useState(null);
+  const [selectedChains, setSelectedChains] = useState(null); // LLM-selected causal chains
 
   useEffect(() => {
     base44.auth.me().then(u => setUser(u)).catch(() => {});
@@ -86,12 +87,28 @@ export default function DiagnosisChat() {
     setStep('sfma_result'); // always show result screen first
   };
 
-  const handleResultContinue = () => {
+  const handleResultContinue = async () => {
     if (sfmaDecision?.type === 'red_flag') {
       setStep('red_flag');
-    } else {
-      setShowTuneUp(true);
+      return;
     }
+
+    // LLM-Kettenauswahl vor dem TuneUp
+    try {
+      const res = await base44.functions.invoke('selectCausalChain', {
+        symptom_description: sfmaDecision?.symptoms?.join(', ') || '',
+        body_region: cleanRegion(painMap?.region),
+        pain_intensity: sfmaDecision?.nrs || 5,
+        readiness_status: 'moderate'
+      });
+      if (res.data?.selected_chains?.length > 0) {
+        setSelectedChains(res.data.selected_chains);
+      }
+    } catch (_e) {
+      // Fallback: TuneUp ohne LLM-Vorauswahl
+    }
+
+    setShowTuneUp(true);
   };
 
   // After TuneUp: user can continue to plan generation or go to flow
@@ -190,6 +207,7 @@ export default function DiagnosisChat() {
             user={user}
             region={painMap?.region}
             sfmaValues={sfmaDecision}
+            selectedChains={selectedChains}
           />
         )}
       </FocusScreenContainer>
@@ -222,6 +240,7 @@ export default function DiagnosisChat() {
             user={user}
             region={painMap?.region}
             sfmaValues={sfmaDecision}
+            selectedChains={selectedChains}
           />
         )}
       </FocusScreenContainer>

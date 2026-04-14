@@ -83,10 +83,9 @@ export default function DailyTuneUpModal({
   queryClient,
   region = 'Lenden / Unterer Rücken',
   sfmaValues = null, // { movement_level, pain_rest, pain_move } from SFMAQuickCheck
+  selectedChains = null, // LLM-selected causal chains from selectCausalChain
 }) {
-  console.log('🔍 DailyTuneUpModal region prop:', region);
-  const nodeId = REGION_TO_NODE_ID[region] || 'N6'; // Default zu N6 (Lendenwirbelsäule)
-  console.log('🔍 Mapped nodeId:', nodeId);
+  const nodeId = selectedChains?.[0]?.node_id || REGION_TO_NODE_ID[region] || 'N6';
   const [currentScreen, setCurrentScreen] = useState(0);
   const [mfrNodeCompleted, setMFRNodeCompleted] = useState(false);
   const [neuroDrillCompleted, setNeuroDrillCompleted] = useState(false);
@@ -100,21 +99,16 @@ export default function DailyTuneUpModal({
 
   // TTS disabled
 
-  // Load TuneUp causal chain data
-  const loadTuneUpData = async () => {
-    try {
-      const results = await base44.entities.TuneUpCausalChain.filter({ node_id: nodeId });
-      if (results.length > 0) {
-        setTuneUpData(results[0]);
-      }
-    } catch (err) {
-      console.error('Error loading TuneUp data:', err);
-    }
-  };
-
+  // Load TuneUp causal chain data — prefer LLM-selected chain, fallback to DB lookup
   React.useEffect(() => {
-    loadTuneUpData();
-  }, [nodeId]);
+    if (selectedChains?.[0]) {
+      setTuneUpData(selectedChains[0]);
+      return;
+    }
+    base44.entities.TuneUpCausalChain.filter({ node_id: nodeId })
+      .then(results => { if (results.length > 0) setTuneUpData(results[0]); })
+      .catch(err => console.error('Error loading TuneUp data:', err));
+  }, [nodeId, selectedChains]);
 
   // Calculate neural charge (0-100%)
   const neuralCharge = (() => {
