@@ -48,7 +48,13 @@ export default function RehabPhaseCard({ phase, index, totalPhases, isCompleted,
 
     phase.exercises.forEach((ex, globalIndex) => {
         let cat = 'other';
-        if (ex.category) {
+        // Priority: nms_category > category > section
+        if (ex.nms_category) {
+            if (ex.nms_category === 'neural_calm' || ex.nms_category === 'neural_activate' || ex.nms_category === 'vagus' || ex.nms_category === 'visual') cat = 'neuro';
+            else if (ex.nms_category === 'breath') cat = 'breath';
+            else if (ex.nms_category === 'mobility') cat = 'mobility';
+            else if (ex.nms_category === 'strength') cat = 'strength';
+        } else if (ex.category) {
             if (ex.category === 'mfr') cat = 'mfr';
             else if (ex.category === 'neuro') cat = 'neuro';
             else if (ex.category === 'breath') cat = 'breath';
@@ -140,17 +146,18 @@ export default function RehabPhaseCard({ phase, index, totalPhases, isCompleted,
                <div className="h-px flex-1 bg-white/[0.04]" />
             </div>
 
-            {/* Exercise Buttons */}
-            <div className="flex flex-wrap gap-2">
+            {/* Exercise Cards */}
+            <div className="space-y-2">
               {section.exercises.map((exercise, exIdx) => {
                 const uniqueKey = `${section.key}-${exIdx}`;
                 const isExCompleted = completedExercises[uniqueKey] || exercise.completed;
                 const canPlay = canPlayExercise(exercise.exercise_id, phases, hasAccess);
                 const isLocked = !canPlay && !isExCompleted;
+                const exerciseName = exercise.name || exercise.exercise_name || `Übung ${exIdx + 1}`;
 
                 const handleClick = () => {
                   if (isLocked) {
-                    setLockedExerciseName(exercise.name || exercise.exercise_name || 'Übung');
+                    setLockedExerciseName(exerciseName);
                     return;
                   }
                   setModalExercise({ ...exercise, uniqueKey });
@@ -160,21 +167,28 @@ export default function RehabPhaseCard({ phase, index, totalPhases, isCompleted,
                   <button
                     key={uniqueKey}
                     onClick={handleClick}
-                    className={`
-                      w-11 h-11 rounded-xl flex items-center justify-center text-xs font-bold transition-all duration-200 relative border
-                      ${isExCompleted
-                        ? 'bg-zinc-700 text-zinc-300 border-white/[0.1]'
-                        : isLocked
-                          ? 'bg-zinc-900 text-zinc-700 border-white/[0.04] opacity-50 cursor-not-allowed'
-                          : 'bg-zinc-800 text-zinc-400 border-white/[0.06] hover:border-white/[0.15] hover:text-zinc-200 active:scale-95'}
-                    `}
                     disabled={isLocked}
+                    className={`
+                      w-full flex items-center gap-3 px-4 py-3 rounded-xl border transition-all text-left
+                      ${isExCompleted
+                        ? 'bg-zinc-700/50 text-zinc-300 border-white/[0.1]'
+                        : isLocked
+                          ? 'bg-zinc-900/50 text-zinc-600 border-white/[0.04] opacity-50 cursor-not-allowed'
+                          : 'bg-zinc-800/60 text-zinc-400 border-white/[0.06] hover:bg-zinc-800 hover:border-white/[0.12] hover:text-zinc-200 active:scale-95'}
+                    `}
                   >
-                    {isExCompleted ? <CheckCircle2 className="w-4 h-4" /> : exIdx + 1}
+                    <div className="flex-shrink-0 w-6 h-6 flex items-center justify-center rounded bg-zinc-700/50">
+                      {isExCompleted ? (
+                        <CheckCircle2 className="w-4 h-4 text-green-400" />
+                      ) : (
+                        <span className="text-xs font-bold text-zinc-500">{exIdx + 1}</span>
+                      )}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-semibold truncate">{exerciseName}</p>
+                    </div>
                     {isLocked && (
-                      <div className="absolute inset-0 flex items-center justify-center rounded-xl">
-                        <span className="text-[9px] font-bold text-zinc-600">—</span>
-                      </div>
+                      <span className="text-[9px] font-bold text-zinc-600">Blockiert</span>
                     )}
                   </button>
                 );
