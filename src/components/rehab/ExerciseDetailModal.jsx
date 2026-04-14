@@ -43,6 +43,7 @@ export default function ExerciseDetailModal({
   isOpen,
   onClose,
   onComplete,
+  onSubstituted,
   rehabPlanId,
   queryClient,
   phaseContext,
@@ -387,10 +388,14 @@ export default function ExerciseDetailModal({
             exerciseId={fullExercise.exercise_id}
             exerciseName={fullExercise.name}
             rehabPlanId={rehabPlanId}
-            onExerciseSubstituted={() => {
-              if (queryClient) queryClient.invalidateQueries({ queryKey: ['rehabPlan'] });
+            onExerciseSubstituted={(newExerciseId) => {
               setIsOuchModalOpen(false);
-              onClose();
+              if (onSubstituted) {
+                onSubstituted(newExerciseId);
+              } else {
+                if (queryClient) queryClient.invalidateQueries({ queryKey: ['rehabPlan'] });
+                onClose();
+              }
             }}
           />
         </>

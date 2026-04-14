@@ -191,7 +191,6 @@ export default function RehabPlan() {
       setActiveExerciseIdx(nextIdx);
       setActiveModalExercise(sessionExercises[nextIdx]);
     } else {
-      // All exercises done
       setActiveModalExercise(null);
       setSessionStarted(false);
       toast.success('Session abgeschlossen.');
@@ -199,6 +198,36 @@ export default function RehabPlan() {
     if (data?.exercise_id) {
       submitFeedbackMutation.mutate({ exerciseId: data.exercise_id, metricValue: data.pain_level || 0, notes: 'Completed' });
     }
+  };
+
+  // Live-Adjust: Übung in laufender Session austauschen
+  const handleExerciseSubstituted = async (newExerciseId) => {
+    try {
+      const results = await base44.entities.Exercise.filter({ exercise_id: newExerciseId });
+      const newEx = results?.[0];
+      if (newEx) {
+        // Ersetze die aktuelle Übung in der Session-Liste
+        const updatedSession = [...sessionExercises];
+        updatedSession[activeExerciseIdx] = {
+          ...updatedSession[activeExerciseIdx],
+          exercise_id: newEx.exercise_id,
+          name: newEx.name,
+          description: newEx.description,
+          instruction: newEx.description,
+          axon_moment: newEx.axon_moment,
+          category: newEx.category,
+        };
+        setSessionExercises(updatedSession);
+        setActiveModalExercise(updatedSession[activeExerciseIdx]);
+        toast.success(`Übung getauscht: ${newEx.name}`);
+      } else {
+        // Kein Exercise-Record gefunden → einfach weiter
+        handleExerciseComplete({ exercise_id: sessionExercises[activeExerciseIdx]?.exercise_id });
+      }
+    } catch (e) {
+      console.error('Substitution load error:', e);
+    }
+    queryClient.invalidateQueries({ queryKey: ['rehabPlan'] });
   };
 
   const handleReadinessCheckClose = async () => {
@@ -270,6 +299,7 @@ export default function RehabPlan() {
           setSessionStarted(false);
         }}
         onComplete={handleExerciseComplete}
+        onSubstituted={handleExerciseSubstituted}
         rehabPlanId={rehabPlan?.id}
         queryClient={queryClient}
         totalExercises={sessionExercises.length}
@@ -337,11 +367,19 @@ export default function RehabPlan() {
           <p className="text-xs text-zinc-500 mb-4">
             Starte eine 15-minütige Test-Reset-Retest-Session, um sofort zu spüren, wie effektiv das Protokoll ist.
           </p>
+          {readinessStatus === 'red' && (
+            <div className="mb-3 flex items-start gap-2 rounded-lg bg-red-500/10 border border-red-500/20 px-3 py-2">
+              <AlertCircle className="w-4 h-4 text-red-400 flex-shrink-0 mt-0.5" />
+              <p className="text-xs text-red-300">
+                <strong>ROT-Status:</strong> Dein System braucht heute Ruhe. Nur sanfte MFR empfohlen — kein aktives Training.
+              </p>
+            </div>
+          )}
           <Button
             onClick={() => setShowDailyTuneUp(true)}
-            className="w-full bg-zinc-800 hover:bg-zinc-700 border border-white/[0.06] text-white font-bold"
+            className={`w-full border border-white/[0.06] text-white font-bold ${readinessStatus === 'red' ? 'bg-zinc-900 hover:bg-zinc-800 opacity-70' : 'bg-zinc-800 hover:bg-zinc-700'}`}
           >
-            Tune-Up starten
+            {readinessStatus === 'red' ? 'Nur MFR-Release starten' : 'Tune-Up starten'}
           </Button>
         </motion.div>
 
