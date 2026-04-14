@@ -109,16 +109,11 @@ export default function DiagnosisChat() {
     setShowTuneUp(true);
   };
 
-  // After TuneUp: user can continue to plan generation or go to flow
+  // After TuneUp: always generate rehab plan (TuneUp is part of diagnosis flow)
   const handleTuneUpClose = (outcome) => {
     setShowTuneUp(false);
-    if (outcome?.noImprovement) {
-      // No improvement → generate rehab plan
-      handleGeneratePlan();
-    } else {
-      // Improvement → go to flow routines
-      window.location.href = createPageUrl('FlowRoutines');
-    }
+    // In diagnosis flow, TuneUp is always followed by plan generation
+    handleGeneratePlan();
   };
 
   const handleGeneratePlan = async () => {
@@ -320,15 +315,15 @@ export default function DiagnosisChat() {
           animate={{ opacity: 1, y: 0 }}
           className="w-full max-w-md mx-auto space-y-4"
         >
-          <div className="rounded-2xl border border-slate-700/80 bg-slate-900/70 overflow-hidden">
-            <div className="bg-slate-900 border-b border-slate-800 px-4 py-3 flex items-center gap-2">
-              <div className="w-1.5 h-1.5 rounded-full bg-cyan-400 shadow-[0_0_6px_rgba(6,182,212,0.8)]" />
-              <p className="text-[10px] font-bold tracking-widest uppercase text-white">AXON-nap Reha-Protokoll</p>
-              <span className="ml-auto text-[9px] font-mono text-emerald-400 tracking-widest uppercase">Bereit</span>
+          <div className="rounded-2xl border border-white/[0.06] bg-zinc-900 overflow-hidden">
+            <div className="border-b border-white/[0.06] px-4 py-3 flex items-center gap-2">
+              <div className="w-1.5 h-1.5 rounded-full bg-zinc-400" />
+              <p className="text-[10px] font-bold tracking-widest uppercase text-white">AXON Reha-Protokoll</p>
+              <span className="ml-auto text-[9px] font-mono text-zinc-400 tracking-widest uppercase">Bereit</span>
             </div>
             <div className="p-5 space-y-4">
-              <p className="text-slate-400 text-sm leading-relaxed">
-                Schmerzbereich: <span className="text-cyan-400 font-mono">{painMap?.region}</span>
+              <p className="text-zinc-500 text-sm">
+                Bereich: <span className="text-zinc-300 font-medium">{painMap?.region}</span>
               </p>
               <div className="space-y-2">
                 {[
@@ -336,9 +331,9 @@ export default function DiagnosisChat() {
                   { phase: 'Phase 2', label: 'Aufbau & Stabilität' },
                   { phase: 'Phase 3', label: 'Integration & Prävention' },
                 ].map(({ phase, label }) => (
-                  <div key={phase} className="flex items-center gap-3 bg-slate-950/60 border border-slate-800 rounded-xl px-4 py-3">
-                    <span className="text-[10px] font-bold tracking-widest text-cyan-400 font-mono uppercase">{phase}</span>
-                    <span className="text-sm text-slate-300">{label}</span>
+                  <div key={phase} className="flex items-center gap-3 bg-zinc-800/60 border border-white/[0.04] rounded-xl px-4 py-3">
+                    <span className="text-[10px] font-bold tracking-widest text-zinc-500 uppercase">{phase}</span>
+                    <span className="text-sm text-zinc-300">{label}</span>
                   </div>
                 ))}
               </div>
@@ -346,7 +341,7 @@ export default function DiagnosisChat() {
           </div>
           <Button
             onClick={() => window.location.href = createPageUrl('RehabPlan')}
-            className="w-full h-12 bg-cyan-500/10 hover:bg-cyan-500/20 border border-cyan-500/40 text-cyan-400 font-bold tracking-widest uppercase text-sm"
+            className="w-full h-12 bg-zinc-200 hover:bg-white text-zinc-900 font-bold tracking-widest uppercase text-sm"
           >
             Zum Reha-Plan
             <ArrowRight className="w-4 h-4 ml-2" />
