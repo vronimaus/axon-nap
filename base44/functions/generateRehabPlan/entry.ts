@@ -226,11 +226,13 @@ ${nmsShiftContext}
 
 WEITERE REGELN:
 1. Nur exercise_ids aus den jeweiligen IDs-Listen unten verwenden – exakt kopieren!
-2. Jede Phase: 5-6 Übungen, VERSCHIEDENE von anderen Phasen
-3. sets_reps_tempo konkret: z.B. "3×60s langsam", "2×10 tief einatmen", "4×8 kontrolliert"
-4. nms_shift_explanation: Erkläre in 2-3 Sätzen was in DIESER Phase im Körper passiert (Mechanismus) und wohin sich der Zustand verschiebt. Nutze die AXON Kausalitätskette oben!
-5. synergy_highlight: Erkläre in 1-2 Sätzen warum die Übungen DIESER Phase zusammen stärker wirken
-6. phase_rationale: 1 Satz – warum diese Dauer
+2. Jede Phase: 5-6 Übungen, VERSCHIEDENE Übungen von anderen Phasen – KEINE Wiederholungen über alle 3 Phasen!
+3. ABWECHSLUNG INNERHALB JEDER PHASE: Wähle Übungen aus VERSCHIEDENEN Kategorien (z.B. nicht 3× MFR hintereinander, sondern MFR + Neuro + Breath + Mobility = Variation). Das hält die Motivation hoch!
+4. sets_reps_tempo konkret und motivierend: z.B. "3×60s ruhig & fokussiert", "2×10 tief einatmen – spür die Veränderung", "4×8 kontrolliert und kraftvoll"
+5. estimated_minutes: Gib die REALISTISCHE Gesamtdauer der Phase in Minuten an (alle Übungen inkl. Pausen zusammengezählt). Typisch: Phase 1 = 12–20 Min, Phase 2 = 15–25 Min, Phase 3 = 20–35 Min. KEINE Tagesangaben!
+6. nms_shift_explanation: Erkläre in 2-3 Sätzen was in DIESER Phase im Körper passiert (Mechanismus) und wohin sich der Zustand verschiebt. Nutze die AXON Kausalitätskette oben!
+7. synergy_highlight: Erkläre in 1-2 Sätzen warum die Übungen DIESER Phase zusammen stärker wirken
+8. phase_rationale: 1 motivierender Satz – zeig dem User den konkreten Zeitgewinn und Fortschritt (z.B. "In nur 15 Minuten reaktivierst du die dorsale Kette – spürbar nach der ersten Session")
 
 ===== PHASE 1 ERLAUBTE IDs =====
 ${buildIdList(safePhase1)}
@@ -266,7 +268,7 @@ ${availableFaqIds.join(', ')}`,
                 phase_number: { type: 'integer' },
                 title: { type: 'string' },
                 description: { type: 'string' },
-                duration_days: { type: 'integer' },
+                estimated_minutes: { type: 'integer' },
                 exercises: {
                   type: 'array',
                   items: {
@@ -285,7 +287,7 @@ ${availableFaqIds.join(', ')}`,
                 nms_shift_explanation: { type: 'string' },
                 synergy_highlight: { type: 'string' }
               },
-              required: ['phase_number', 'title', 'description', 'duration_days', 'exercises', 'phase_rationale', 'nms_shift_explanation']
+              required: ['phase_number', 'title', 'description', 'estimated_minutes', 'exercises', 'phase_rationale', 'nms_shift_explanation']
             }
           },
           recommended_mfr_routines: {

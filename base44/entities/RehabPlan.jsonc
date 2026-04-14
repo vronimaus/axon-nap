@@ -12,7 +12,7 @@
     },
     "three_d_assessment_id": {
       "type": "string",
-      "description": "Referenz zur ThreeDMAPSAssessment Entity mit detaillierten 3DMAPS-Diagnose-Daten"
+      "description": "Referenz zur ThreeDMAPSAssessment Entity"
     },
     "problem_summary": {
       "type": "string",
@@ -20,14 +20,14 @@
     },
     "three_d_assessment_summary": {
       "type": "string",
-      "description": "Zusammenfassende Beschreibung der 3DMAPS-Diagnose (z.B. 'Defizit in Anterior Chain Mobility, Sagittalebene rechts')"
+      "description": "Zusammenfassende Beschreibung der 3DMAPS-Diagnose"
     },
     "three_d_assessment_gaps": {
       "type": "array",
       "items": {
         "type": "string"
       },
-      "description": "Array von identifizierten Engp\u00e4ssen (Gaposis) aus dem 3DMAPS-Assessment"
+      "description": "Array von identifizierten Engp\u00e4ssen aus dem 3DMAPS-Assessment"
     },
     "status": {
       "type": "string",
@@ -66,7 +66,7 @@
         "stuck",
         "weak_pain"
       ],
-      "description": "NMS-Zustand des Users VOR der Intervention (IF-Zustand)"
+      "description": "NMS-Zustand VOR der Intervention"
     },
     "nms_trigger_output": {
       "type": "string",
@@ -79,7 +79,7 @@
         "bulletproof",
         "peak"
       ],
-      "description": "Erwarteter NMS-Zustand des Users NACH der Intervention (WHICH LEADS TO)"
+      "description": "Erwarteter NMS-Zustand NACH der Intervention"
     },
     "phases": {
       "type": "array",
@@ -95,8 +95,21 @@
           "description": {
             "type": "string"
           },
-          "duration_days": {
-            "type": "integer"
+          "estimated_minutes": {
+            "type": "integer",
+            "description": "Gesch\u00e4tzte Gesamtdauer der Phase in Minuten (alle \u00dcbungen + Pausen)"
+          },
+          "phase_rationale": {
+            "type": "string",
+            "description": "Motivierender Satz \u2013 zeigt den konkreten Zeitgewinn und Fortschritt"
+          },
+          "nms_shift_explanation": {
+            "type": "string",
+            "description": "Was passiert im K\u00f6rper in dieser Phase (Mechanismus + NMS-Shift)"
+          },
+          "synergy_highlight": {
+            "type": "string",
+            "description": "Warum die \u00dcbungen dieser Phase zusammen st\u00e4rker wirken"
           },
           "exercises": {
             "type": "array",
@@ -164,16 +177,13 @@
         "type": "object",
         "properties": {
           "routine_id": {
-            "type": "string",
-            "description": "ID der empfohlenen Routine"
+            "type": "string"
           },
           "routine_name": {
-            "type": "string",
-            "description": "Name der Routine"
+            "type": "string"
           },
           "reason": {
-            "type": "string",
-            "description": "Warum diese Routine empfohlen wird"
+            "type": "string"
           }
         }
       },
@@ -186,16 +196,13 @@
         "type": "object",
         "properties": {
           "faq_id": {
-            "type": "string",
-            "description": "ID der FAQ"
+            "type": "string"
           },
           "question": {
-            "type": "string",
-            "description": "Die Frage"
+            "type": "string"
           },
           "reason": {
-            "type": "string",
-            "description": "Warum diese FAQ relevant ist"
+            "type": "string"
           }
         }
       },
@@ -209,26 +216,21 @@
         "properties": {
           "timestamp": {
             "type": "string",
-            "format": "date-time",
-            "description": "Zeitstempel der Intervention"
+            "format": "date-time"
           },
           "exercise_id": {
-            "type": "string",
-            "description": "ID der betroffenen \u00dcbung"
+            "type": "string"
           },
           "exercise_name": {
-            "type": "string",
-            "description": "Name der \u00dcbung"
+            "type": "string"
           },
           "node_feedback": {
-            "type": "string",
-            "description": "Node-ID bei Discomfort (z.B. 'N5', 'N10')"
+            "type": "string"
           },
           "pain_nrs": {
             "type": "integer",
             "minimum": 1,
-            "maximum": 10,
-            "description": "NRS-Schmerz-Score bei Intervention"
+            "maximum": 10
           },
           "action_taken": {
             "type": "string",
@@ -239,20 +241,16 @@
               "stop_exercise",
               "tempo_adjustment",
               "load_reduction"
-            ],
-            "description": "Durchgef\u00fchrte Ma\u00dfnahme"
+            ]
           },
           "new_exercise_id": {
-            "type": "string",
-            "description": "ID der neuen \u00dcbung (falls Pivot)"
+            "type": "string"
           },
           "reasoning": {
-            "type": "string",
-            "description": "AI-Begr\u00fcndung der Anpassung"
+            "type": "string"
           },
           "user_feedback_post_adjustment": {
-            "type": "string",
-            "description": "Wie hat sich der User nach der Anpassung gef\u00fchlt"
+            "type": "string"
           }
         }
       },
@@ -265,27 +263,22 @@
         "paused_intervention",
         "completed"
       ],
-      "default": "active",
-      "description": "Aktueller Status der Live-Session"
+      "default": "active"
     },
     "current_exercise_substituted": {
       "type": "boolean",
-      "default": false,
-      "description": "Wurde die aktuelle \u00dcbung durch 'Ouch!' ersetzt?"
+      "default": false
     },
     "substituted_exercise_id": {
-      "type": "string",
-      "description": "ID der Ersatz-\u00dcbung (falls current_exercise_substituted = true)"
+      "type": "string"
     },
     "pain_feedback_node": {
-      "type": "string",
-      "description": "Node ID, wo der Schmerz gemeldet wurde (z.B. 'N10')"
+      "type": "string"
     },
     "pain_nrs": {
       "type": "integer",
       "minimum": 1,
-      "maximum": 10,
-      "description": "NRS-Schmerz-Score der letzten 'Ouch!'-Intervention"
+      "maximum": 10
     },
     "intervention_mode": {
       "type": "string",
@@ -294,22 +287,18 @@
         "yellow_pivot",
         "red_stop"
       ],
-      "default": "none",
-      "description": "Welcher Decision-Tree-Modus wurde aktiviert?"
+      "default": "none"
     },
     "neural_permission_failures": {
       "type": "integer",
-      "default": 0,
-      "description": "Anzahl der fehlgeschlagenen Neural Permission Checks (Neurological Guarding Events)"
+      "default": 0
     },
     "active_tweaks": {
-      "type": "object",
-      "description": "Aktuell aktive Regressionen/Tweaks (z.B. Position-Regression, Ebenen-Wechsel) f\u00fcr zuk\u00fcnftige Sessions"
+      "type": "object"
     },
     "last_neural_permission_check": {
       "type": "string",
-      "format": "date-time",
-      "description": "Zeitstempel des letzten Neural Permission Checks"
+      "format": "date-time"
     },
     "neural_permission_trend": {
       "type": "string",
@@ -317,8 +306,7 @@
         "improving",
         "stable",
         "declining"
-      ],
-      "description": "Trend der Neural Permission \u00fcber die letzten Sessions"
+      ]
     }
   },
   "required": [

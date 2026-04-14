@@ -103,11 +103,18 @@ export default function RehabPhaseCard({ phase, index, totalPhases, isCompleted,
                 {isCompleted && <span className="text-[10px] text-emerald-400 font-bold tracking-wider">✓ COMPLETED</span>}
               </div>
               <h3 className="text-2xl font-bold text-white tracking-tight">{phase.title}</h3>
-              {phase.duration_days && phase.duration_days !== 7 && phase.duration_days !== 14 && (
+              {(phase.estimated_minutes || phase.duration_days) && (
                 <p className="text-sm text-slate-400 mt-1 font-medium flex items-center gap-2 flex-wrap">
                   <span className="bg-slate-800/80 px-2 py-0.5 rounded text-emerald-400 text-xs border border-emerald-500/20">
-                    ~{phase.duration_days} Tage empfohlen
+                    ⏱ {phase.estimated_minutes
+                      ? phase.estimated_minutes >= 60
+                        ? `${Math.floor(phase.estimated_minutes / 60)}h ${phase.estimated_minutes % 60 > 0 ? phase.estimated_minutes % 60 + ' Min' : ''}`.trim()
+                        : `${phase.estimated_minutes} Min`
+                      : `~${phase.duration_days * 10} Min`} · pro Session
                   </span>
+                  {phase.phase_rationale && (
+                    <span className="text-[10px] text-slate-500 italic">{phase.phase_rationale}</span>
+                  )}
                 </p>
               )}
             </div>
