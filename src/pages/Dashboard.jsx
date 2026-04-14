@@ -199,7 +199,7 @@ export default function Dashboard() {
         {/* Pull-to-Refresh Indicator */}
         {pullY > 0 && (
           <div className="fixed top-16 left-0 right-0 flex justify-center z-50 pointer-events-none">
-            <div className={`flex items-center gap-2 px-4 py-2 rounded-full text-xs font-medium transition-all ${isRefreshing ? 'bg-cyan-500/30 text-cyan-300' : 'bg-slate-800/80 text-slate-400'}`} style={{ transform: `translateY(${pullY - 20}px)` }}>
+            <div className="flex items-center gap-2 px-4 py-2 rounded-full text-xs font-medium transition-all bg-zinc-800/80 text-zinc-400" style={{ transform: `translateY(${pullY - 20}px)` }}>
               <motion.div animate={{ rotate: isRefreshing ? 360 : pullY * 5 }} transition={isRefreshing ? { repeat: Infinity, duration: 0.6, ease: 'linear' } : {}}><RotateCw className="w-3.5 h-3.5" /></motion.div>
               {isRefreshing ? 'Aktualisiert…' : pullY > 50 ? 'Loslassen zum Aktualisieren' : 'Ziehen zum Aktualisieren'}
             </div>
@@ -260,11 +260,11 @@ export default function Dashboard() {
 
       {/* Header with Mode Switch - only show when mode is selected */}
       {mode && (
-        <div className="sticky top-0 z-40 bg-slate-900 border-b border-cyan-500/20">
+        <div className="sticky top-0 z-40 bg-[#111111] border-b border-white/[0.06]">
           <div className="max-w-7xl mx-auto px-3 sm:px-4 py-3 sm:py-4">
             <div className="flex items-center justify-between gap-2 sm:gap-4">
               <div className="min-w-0 flex-1">
-                <h1 className="text-base sm:text-xl md:text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-500 truncate">
+                <h1 className="text-base sm:text-xl md:text-2xl font-bold text-white truncate">
                   AXON Command
                 </h1>
                 <p className="text-xs text-slate-400 mt-0.5 sm:mt-1 hidden xs:block">
@@ -284,8 +284,8 @@ export default function Dashboard() {
                     size="sm"
                     className={`text-xs sm:text-sm ${
                       mode === 'rehab'
-                        ? 'bg-emerald-500/30 text-emerald-400 hover:bg-emerald-500/40'
-                        : 'text-slate-400 hover:text-slate-200'
+                        ? 'bg-zinc-700 text-white'
+                        : 'text-zinc-500 hover:text-zinc-200'
                     }`}
                   >
                     REHAB
@@ -299,8 +299,8 @@ export default function Dashboard() {
                     size="sm"
                     className={`text-xs sm:text-sm ${
                       mode === 'performance'
-                        ? 'bg-blue-500/30 text-blue-400 hover:bg-blue-500/40'
-                        : 'text-slate-400 hover:text-slate-200'
+                        ? 'bg-zinc-700 text-white'
+                        : 'text-zinc-500 hover:text-zinc-200'
                     }`}
                   >
                     PERFORMANCE
@@ -344,24 +344,24 @@ export default function Dashboard() {
               {mode === 'rehab' && (
                 <div className="space-y-4">
                   {/* Mode Title */}
-                  <div className="bg-gradient-to-r from-emerald-500/20 to-transparent border-l-4 border-emerald-500 px-6 py-3 rounded-r-xl">
-                    <h1 className="text-2xl sm:text-3xl font-bold text-emerald-400 tracking-tight">REHAB</h1>
+                  <div className="border-l-4 border-zinc-600 px-6 py-3">
+                    <h1 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">REHAB</h1>
                   </div>
                   
                   {/* Instructions Card */}
-                  <div className="glass rounded-xl sm:rounded-2xl border border-emerald-500/30 p-4 sm:p-6 bg-gradient-to-r from-emerald-500/10 to-transparent">
-                    <h2 className="text-base sm:text-lg font-semibold text-emerald-400 mb-3">Schmerz präzise lokalisieren</h2>
-                    <div className="space-y-2 text-xs sm:text-sm text-slate-300">
+                  <div className="rounded-xl sm:rounded-2xl border border-white/[0.06] p-4 sm:p-6 bg-zinc-900/80">
+                    <h2 className="text-base sm:text-lg font-semibold text-zinc-200 mb-3">Schmerz präzise lokalisieren</h2>
+                    <div className="space-y-2 text-xs sm:text-sm text-zinc-400">
                       <p className="flex items-start gap-2">
-                        <span className="text-emerald-400 font-bold flex-shrink-0">1.</span>
+                        <span className="text-zinc-400 font-bold flex-shrink-0">1.</span>
                         <span><strong>Punkt setzen:</strong> Tippe auf eine exakte Stelle – oder <strong>zeichne eine Linie</strong> entlang des Schmerzes für komplexe Muster</span>
                       </p>
                       <p className="flex items-start gap-2">
-                        <span className="text-emerald-400 font-bold flex-shrink-0">2.</span>
+                        <span className="text-zinc-400 font-bold flex-shrink-0">2.</span>
                         <span>Wähle deine spezifischen Symptome aus der Liste aus</span>
                       </p>
                       <p className="flex items-start gap-2">
-                        <span className="text-emerald-400 font-bold flex-shrink-0">3.</span>
+                        <span className="text-zinc-400 font-bold flex-shrink-0">3.</span>
                         <span>Starte die Analyse – AXON erkennt die Root Cause deines Problems</span>
                       </p>
                     </div>
@@ -382,24 +382,24 @@ export default function Dashboard() {
                   )}
 
                   {/* Mode Title */}
-                  <div className="bg-gradient-to-r from-blue-500/20 to-transparent border-l-4 border-blue-500 px-6 py-3 rounded-r-xl">
-                    <h1 className="text-2xl sm:text-3xl font-bold text-blue-400 tracking-tight">PERFORMANCE</h1>
+                  <div className="border-l-4 border-zinc-600 px-6 py-3">
+                    <h1 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">PERFORMANCE</h1>
                   </div>
                   
                   {/* Instructions Card */}
-                  <div className="glass rounded-xl sm:rounded-2xl border border-blue-500/30 p-4 sm:p-6 bg-gradient-to-r from-blue-500/10 to-transparent">
-                    <h2 className="text-base sm:text-lg font-semibold text-blue-400 mb-3">Was möchtest du schaffen?</h2>
-                    <div className="space-y-2 text-xs sm:text-sm text-slate-300 mb-4">
+                  <div className="rounded-xl sm:rounded-2xl border border-white/[0.06] p-4 sm:p-6 bg-zinc-900/80">
+                    <h2 className="text-base sm:text-lg font-semibold text-zinc-200 mb-3">Was möchtest du schaffen?</h2>
+                    <div className="space-y-2 text-xs sm:text-sm text-zinc-400 mb-4">
                       <p className="flex items-start gap-2">
-                        <span className="text-blue-400 font-bold flex-shrink-0">•</span>
+                        <span className="text-zinc-500 font-bold flex-shrink-0">—</span>
                         <span><strong>Konkrete Übung:</strong> "10 Klimmzüge", "Pistol Squat", "Handstand 30 Sekunden"</span>
                       </p>
                       <p className="flex items-start gap-2">
-                        <span className="text-blue-400 font-bold flex-shrink-0">•</span>
+                        <span className="text-zinc-500 font-bold flex-shrink-0">—</span>
                         <span><strong>Skill freischalten:</strong> "Front Lever", "Muscle-Up", "Human Flag"</span>
                       </p>
                       <p className="flex items-start gap-2">
-                        <span className="text-blue-400 font-bold flex-shrink-0">•</span>
+                        <span className="text-zinc-500 font-bold flex-shrink-0">—</span>
                         <span><strong>Mobility-Ziel:</strong> "Middle Split", "Pancake Stretch", "Bridge"</span>
                       </p>
                     </div>
@@ -424,7 +424,7 @@ export default function Dashboard() {
                           const goal = selectedBodyRegion.trim();
                           window.location.href = createPageUrl('Discovery') + `?goal=${encodeURIComponent(goal)}`;
                         }}
-                        className="w-full h-12 sm:h-14 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-bold text-sm sm:text-base"
+                        className="w-full h-12 sm:h-14 bg-zinc-800 hover:bg-zinc-700 border border-white/[0.08] text-white font-bold text-sm sm:text-base"
                       >
                         {isGeneratingPlan ? (
                           <span className="flex items-center gap-2 justify-center">
@@ -451,7 +451,7 @@ export default function Dashboard() {
                 >
                   <Button
                     onClick={() => window.location.href = createPageUrl('DiagnosisChat')}
-                    className="w-full h-12 sm:h-14 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white font-bold text-sm sm:text-base"
+                    className="w-full h-12 sm:h-14 bg-zinc-800 hover:bg-zinc-700 border border-white/[0.08] text-white font-bold text-sm sm:text-base"
                   >
                     Zur Diagnose →
                   </Button>
@@ -471,16 +471,10 @@ export default function Dashboard() {
             className="hidden sm:block fixed bottom-6 right-6 z-50"
           >
             <div
-              className={`px-3 sm:px-4 py-2 rounded-full backdrop-blur-xl border font-mono text-xs font-bold ${
-                mode === 'rehab'
-                  ? 'bg-emerald-500/20 border-emerald-500/50 text-emerald-400'
-                  : 'bg-blue-500/20 border-blue-500/50 text-blue-400'
-              }`}
+              className="px-3 sm:px-4 py-2 rounded-full backdrop-blur-xl border border-white/[0.08] bg-zinc-900/80 font-mono text-xs font-bold text-zinc-400"
             >
               <div className="flex items-center gap-2">
-                <div className={`w-2 h-2 rounded-full animate-pulse ${
-                  mode === 'rehab' ? 'bg-emerald-400' : 'bg-blue-400'
-                }`} />
+                <div className="w-2 h-2 rounded-full animate-pulse bg-zinc-500" />
                 <span className="whitespace-nowrap">{mode === 'rehab' ? 'STEP 1: REHAB' : 'STEP 2: PERFORMANCE'}</span>
               </div>
             </div>
