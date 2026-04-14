@@ -7,6 +7,7 @@ import { createPageUrl } from '@/utils';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { ChevronRight, Zap, Activity, BookOpen, Target, Watch, Clock, Play } from 'lucide-react';
+import KnowledgeSnippetCarousel from './KnowledgeSnippetCarousel';
 
 // ── Readiness Ring ──────────────────────────────────────────────────────────────
 function ReadinessRing({ readiness }) {
@@ -593,20 +594,17 @@ export default function CommandCenter({ user, handleDestinationClick }) {
               <div className="grid grid-cols-2 gap-4">
                 <BiometricsTile user={user} />
 
-                <Tile onClick={() => window.location.href = createPageUrl('Wissen')}>
-                  <BookOpen className="w-4 h-4 text-zinc-600 mb-2" />
-                  <TileLabel>Wissen</TileLabel>
-                  {knowledgeSnack ? (
-                    <>
-                      <p className="text-xs font-semibold text-zinc-300 leading-snug line-clamp-2">{knowledgeSnack.title}</p>
-                      <p className="text-[10px] text-zinc-600 mt-1.5 line-clamp-2 leading-relaxed">
-                        {knowledgeSnack.summary || knowledgeSnack.content?.slice(0, 80)}
-                      </p>
-                    </>
+                <div className="bg-zinc-900/80 border border-white/[0.06] rounded-2xl p-4">
+                  <div className="flex items-center gap-2 mb-3">
+                    <BookOpen className="w-4 h-4 text-zinc-600" />
+                    <TileLabel className="mb-0">Wissen</TileLabel>
+                  </div>
+                  {activeRehabPlan ? (
+                    <KnowledgeSnippetCarousel activeRehabPlan={activeRehabPlan} />
                   ) : (
-                    <p className="text-xs text-zinc-600">Zur Wissensbibliothek →</p>
+                    <p className="text-xs text-zinc-600">Starte einen Rehab-Plan, um personalisiertes Wissen zu sehen.</p>
                   )}
-                </Tile>
+                </div>
               </div>
 
 
