@@ -281,6 +281,12 @@ export default function FitnessSnacks() {
     refetchOnWindowFocus: false,
   });
 
+  const { data: allSnacks = [], isLoading: allLoading } = useQuery({
+    queryKey: ['allSnacks'],
+    queryFn: () => base44.entities.FitnessSnack.filter({ is_active: true }),
+    enabled: !!user?.email,
+  });
+
   const today = new Date().toISOString().split('T')[0];
   const { data: todayLogs = [] } = useQuery({
     queryKey: ['snackLogs', user?.email, today],
@@ -387,9 +393,9 @@ export default function FitnessSnacks() {
             </div>
           )}
 
-          {/* Snacks */}
+          {/* Heute empfohlen (3 NMS-personalisierte) */}
           <div>
-            <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-600 mb-3">Deine heutigen Doses</p>
+            <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-600 mb-3">Heute empfohlen</p>
 
             {isLoading ? (
               <div className="rounded-xl border border-white/[0.06] p-12 flex items-center justify-center">
@@ -408,6 +414,20 @@ export default function FitnessSnacks() {
               </div>
             )}
           </div>
+
+          {/* Alle Snacks – Bibliothek */}
+          {allSnacks.length > 0 && (
+            <div>
+              <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-600 mb-3">Alle Sessions</p>
+              <div className="space-y-3">
+                {allSnacks
+                  .filter(s => !snackData?.snacks?.find(r => r.id === s.id))
+                  .map(snack => (
+                    <SnackCard key={snack.id} snack={snack} isDoneToday={doneTodayIds.has(snack.id)} onStart={setActiveSnack} />
+                  ))}
+              </div>
+            </div>
+          )}
 
           {/* Science Note */}
           <div className="rounded-xl border border-white/[0.06] bg-zinc-900/40 p-5">
