@@ -5,7 +5,7 @@ import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Play, Pause, SkipForward, Check, Timer, Activity, AlertTriangle, ChevronDown, Brain } from 'lucide-react';
+import { Play, Pause, SkipForward, Check, Timer, Activity, AlertTriangle, ChevronDown, Brain, Wind, Zap, Layers } from 'lucide-react';
 import { createPageUrl } from '@/utils';
 import GlossaryTooltip from '../components/glossary/GlossaryTooltip';
 import DailyReadinessCheck from '../components/dashboard/DailyReadinessCheck';
@@ -116,6 +116,8 @@ export default function Flow() {
   const [user, setUser] = useState(null);
   const [expandedProgression, setExpandedProgression] = useState(null);
   const [currentNRS, setCurrentNRS] = useState(null);
+  const [feedbackStars, setFeedbackStars] = useState(0);
+  const [feedbackSaved, setFeedbackSaved] = useState(false);
 
   // Check auth and readiness
   useEffect(() => {
@@ -196,7 +198,6 @@ export default function Flow() {
       setCurrentStep(prev => prev + 1);
     } else {
       setCompleted(true);
-      saveHistory();
     }
   };
 
@@ -207,27 +208,28 @@ export default function Flow() {
     }
   };
 
-  const saveHistory = async () => {
+  const saveHistory = async (stars = 0) => {
     try {
       await base44.entities.RoutineHistory.create({
         routine_id: routine.id,
         routine_name: routine.routine_name,
         completed: true,
-        duration_actual: routine.total_duration
+        duration_actual: routine.total_duration,
+        feedback: stars ? { stars } : undefined
       });
-      
-      // Track completion
       base44.analytics.track({
         eventName: 'flow_completed',
-        properties: { 
-          routine_name: routine.routine_name,
-          category: routine.category,
-          duration: routine.total_duration
-        }
+        properties: { routine_name: routine.routine_name, category: routine.category, duration: routine.total_duration, stars }
       });
     } catch (error) {
       console.error('Fehler beim Speichern:', error);
     }
+  };
+
+  const handleFeedback = async (stars) => {
+    setFeedbackStars(stars);
+    setFeedbackSaved(true);
+    await saveHistory(stars);
   };
 
   if (isLoading) {
@@ -248,6 +250,16 @@ export default function Flow() {
 
   const currentSequence = routine.sequence[currentStep];
   const progress = ((currentStep + 1) / routine.sequence.length) * 100;
+
+  // Phase-Labels und Farben für Kategorien
+  const TYPE_CONFIG = {
+    mfr:      { label: 'Faszien-Release',     color: 'text-emerald-400', border: 'border-emerald-500/20', bg: 'bg-emerald-500/10', icon: Layers },
+    neuro:    { label: 'Neuro-Drill',         color: 'text-purple-400',  border: 'border-purple-500/20',  bg: 'bg-purple-500/10',  icon: Brain },
+    strength: { label: 'Integration',         color: 'text-cyan-400',    border: 'border-cyan-500/20',    bg: 'bg-cyan-500/10',    icon: Zap },
+    mobility: { label: 'Bewegungsflow',       color: 'text-blue-400',    border: 'border-blue-500/20',    bg: 'bg-blue-500/10',    icon: Activity },
+    breath:   { label: 'Atemübung',           color: 'text-teal-400',    border: 'border-teal-500/20',    bg: 'bg-teal-500/10',    icon: Wind },
+  };
+  const typeConfig = TYPE_CONFIG[currentSequence?.type] || TYPE_CONFIG.mobility;
 
   // Get detailed instruction - extract title from instruction
   const getDetailedInstruction = () => {
@@ -359,16 +371,45 @@ export default function Flow() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
-            className="text-slate-200 text-base leading-relaxed mb-8 max-w-xl mx-auto"
+            className="text-slate-200 text-base leading-relaxed mb-6 max-w-xl mx-auto"
           >
             {getCompletionMessage()}
           </motion.p>
 
-          {/* Action Buttons */}
+          {/* Feedback Stars */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5 }}
+            className="mb-8"
+          >
+            {!feedbackSaved ? (
+              <div>
+                <p className="text-xs text-slate-400 uppercase tracking-widest mb-3">Wie war die Session?</p>
+                <div className="flex justify-center gap-3">
+                  {[1, 2, 3, 4, 5].map(star => (
+                    <button
+                      key={star}
+                      onClick={() => handleFeedback(star)}
+                      className={`text-3xl transition-transform hover:scale-125 ${feedbackStars >= star ? 'opacity-100' : 'opacity-30'}`}
+                    >
+                      ⭐
+                    </button>
+                  ))}
+                </div>
+              </div>
+            ) : (
+              <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}>
+                <p className="text-sm text-cyan-400 font-medium">{'⭐'.repeat(feedbackStars)} Danke für dein Feedback!</p>
+              </motion.div>
+            )}
+          </motion.div>
+
+          {/* Action Button */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.6 }}
           >
             <Button
               onClick={() => window.history.back()}
@@ -497,28 +538,57 @@ export default function Flow() {
             <div className="glass rounded-2xl border border-cyan-500/20 p-8 mb-6 bg-slate-900/50 backdrop-blur-xl neuro-glow">
               {/* Exercise Image removed temporarily */}
               
-              {/* Step Type Badge */}
-              <div className="flex items-center justify-between mb-6">
-                <div className={`px-3 py-1 rounded text-[10px] uppercase tracking-widest font-bold border ${
-                  currentSequence.type === 'mfr' ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' :
-                  currentSequence.type === 'neuro' ? 'bg-purple-500/10 text-purple-400 border-purple-500/20' :
-                  currentSequence.type === 'strength' ? 'bg-cyan-500/10 text-cyan-400 border-cyan-500/20' :
-                  currentSequence.type === 'mobility' ? 'bg-blue-500/10 text-blue-400 border-blue-500/20' :
-                  'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
-                }`}>
-                  {currentSequence.type === 'mfr' ? 'Hardware (MFR)' :
-                   currentSequence.type === 'neuro' ? 'Software (Neuro)' :
-                   currentSequence.type === 'strength' ? 'Integration' :
-                   currentSequence.type === 'mobility' ? 'Mobility (CARs)' :
-                   'Breathing'}
+              {/* Phase Label + Timer */}
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-2">
+                  {currentSequence.phase && (
+                    <span className="text-[9px] text-zinc-600 uppercase tracking-[0.2em]">{currentSequence.phase}</span>
+                  )}
+                  {currentSequence.phase && <span className="text-zinc-700">·</span>}
+                  <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] uppercase tracking-widest font-bold border ${typeConfig.bg} ${typeConfig.color} ${typeConfig.border}`}>
+                    <typeConfig.icon className="w-3 h-3" />
+                    {typeConfig.label}
+                  </div>
                 </div>
-                <div className="flex items-center gap-2 text-cyan-400">
-                  <Timer className="w-5 h-5" />
-                  <span className="text-3xl font-mono font-bold">
+                <div className={`flex items-center gap-2 ${typeConfig.color}`}>
+                  <Timer className="w-4 h-4" />
+                  <span className="text-2xl font-mono font-bold">
                     {Math.floor(timeRemaining / 60)}:{(timeRemaining % 60).toString().padStart(2, '0')}
                   </span>
                 </div>
               </div>
+
+              {/* Atemanimation für breath-Schritte */}
+              {currentSequence.type === 'breath' && isPlaying && (
+                <div className="flex flex-col items-center my-4">
+                  <motion.div
+                    className="rounded-full border-2 border-teal-400/60 bg-teal-500/10 flex items-center justify-center"
+                    animate={{ width: ['80px', '140px', '140px', '80px'], height: ['80px', '140px', '140px', '80px'], opacity: [0.5, 1, 1, 0.5] }}
+                    transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut', times: [0, 0.4, 0.55, 1] }}
+                  >
+                    <motion.div
+                      className="rounded-full bg-teal-500/20"
+                      animate={{ width: ['40px', '80px', '80px', '40px'], height: ['40px', '80px', '80px', '40px'] }}
+                      transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut', times: [0, 0.4, 0.55, 1] }}
+                    />
+                  </motion.div>
+                  <motion.p
+                    animate={{ opacity: [0, 1, 1, 0] }}
+                    transition={{ duration: 8, repeat: Infinity, times: [0, 0.1, 0.35, 0.5] }}
+                    className="text-xs text-teal-400 mt-2 font-medium tracking-widest uppercase"
+                  >
+                    Einatmen
+                  </motion.p>
+                  <motion.p
+                    animate={{ opacity: [0, 0, 1, 1, 0] }}
+                    transition={{ duration: 8, repeat: Infinity, times: [0, 0.5, 0.6, 0.9, 1] }}
+                    className="text-xs text-teal-300 mt-0.5 font-medium tracking-widest uppercase absolute"
+                    style={{ marginTop: '1.5rem' }}
+                  >
+                    Ausatmen
+                  </motion.p>
+                </div>
+              )}
 
               <h2 className="text-2xl font-black text-white uppercase tracking-tight leading-none mb-6 shadow-cyan-glow">
                 {detailedContent.title}
@@ -696,7 +766,6 @@ export default function Flow() {
               if (currentStep === routine.sequence.length - 1) {
                 setCompleted(true);
                 setIsPlaying(false);
-                saveHistory();
               } else {
                 handleNextStep();
               }

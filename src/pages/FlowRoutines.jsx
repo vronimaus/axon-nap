@@ -102,7 +102,20 @@ export default function FlowRoutines() {
   const triageConfig = TRIAGE_LABELS[decision] || TRIAGE_LABELS.no_plan;
   const TriageIcon = triageConfig.icon;
 
-  const recommendedNames = TRIAGE_ROUTINE_MAP[decision] || [];
+  // Tageszeit-basierte Empfehlung
+  const hour = new Date().getHours();
+  const getTimeBasedRoutines = () => {
+    if (hour >= 5 && hour < 10) return ['Morgen-Erwachen'];
+    if (hour >= 10 && hour < 15) return ['Mittags-Reset', 'Schreibtisch-Befreiung'];
+    if (hour >= 15 && hour < 18) return ['Pre-Sport Aktivierung', 'Schreibtisch-Befreiung'];
+    if (hour >= 18 && hour < 21) return ['Abend Wind-Down'];
+    return ['Tiefer Schlaf Prep', 'Abend Wind-Down'];
+  };
+
+  const recommendedNames = TRIAGE_ROUTINE_MAP[decision]?.length
+    ? TRIAGE_ROUTINE_MAP[decision]
+    : getTimeBasedRoutines();
+
   const recommendedRoutines = routines.filter(r => recommendedNames.includes(r.routine_name));
   const otherRoutines = routines.filter(r => !recommendedNames.includes(r.routine_name));
 
