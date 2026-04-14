@@ -4,7 +4,7 @@ import { createPageUrl } from '@/utils';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { AlertCircle, Zap, Dumbbell, Palette, ArrowLeft, KeyRound, Megaphone, Kanban, Mic, ShieldCheck, Trash2 } from 'lucide-react';
+import { AlertCircle, Zap, Dumbbell, Palette, ArrowLeft, KeyRound, Megaphone, Kanban, Mic, ShieldCheck, Trash2, Volume2, PlayCircle, CheckCircle, XCircle, RefreshCw, Map } from 'lucide-react';
 import ExerciseEditorTab from '../components/admin/ExerciseEditorTab';
 import ExerciseAuditTab from '../components/admin/ExerciseAuditTab';
 import InviteCodesTab from '../components/admin/InviteCodesTab';
@@ -34,6 +34,130 @@ function getPrefix(exercise_id) {
     }
   }
   return null;
+}
+
+function AudioCacheTab() {
+  const [results, setResults] = useState(null);
+  const [isRunning, setIsRunning] = useState(false);
+  const [isDryRun, setIsDryRun] = useState(true);
+  const [selectedEntities, setSelectedEntities] = useState(['Exercise', 'MFRNode', 'AxonScenario', 'TuneUpCausalChain', 'FitnessSnack', 'Routine']);
+
+  const allEntities = ['Exercise', 'MFRNode', 'AxonScenario', 'TuneUpCausalChain', 'FitnessSnack', 'Routine'];
+
+  const toggleEntity = (name) => {
+    setSelectedEntities(prev =>
+      prev.includes(name) ? prev.filter(e => e !== name) : [...prev, name]
+    );
+  };
+
+  const handleRun = async () => {
+    setIsRunning(true);
+    setResults(null);
+    try {
+      const { data } = await base44.functions.invoke('bulkGenerateAllAudio', {
+        entity_types: selectedEntities,
+        dry_run: isDryRun
+      });
+      setResults(data);
+    } catch (err) {
+      setResults({ error: err.message });
+    } finally {
+      setIsRunning(false);
+    }
+  };
+
+  return (
+    <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
+      <div className="glass rounded-2xl border border-cyan-500/30 p-8">
+        <div className="flex items-center gap-3 mb-2">
+          <Volume2 className="w-6 h-6 text-cyan-400" />
+          <h2 className="text-2xl font-bold text-cyan-400">Audio-Cache Manager</h2>
+        </div>
+        <p className="text-slate-400 text-sm mb-6">
+          Generiert Audio für alle Textfelder der Content-Entities und speichert sie im TTSCache.
+          Automationen halten den Cache automatisch aktuell — dieser Button ist für den einmaligen initialen Bulk-Run.
+        </p>
+
+        {/* Entity-Auswahl */}
+        <div className="mb-6">
+          <p className="text-xs text-slate-500 uppercase tracking-widest mb-3">Entities auswählen</p>
+          <div className="flex flex-wrap gap-2">
+            {allEntities.map(name => (
+              <button key={name} onClick={() => toggleEntity(name)}
+                className={`px-3 py-1.5 rounded-lg text-sm font-medium border transition-all ${
+                  selectedEntities.includes(name)
+                    ? 'bg-cyan-500/20 text-cyan-400 border-cyan-500/40'
+                    : 'bg-slate-800 text-slate-500 border-slate-700 hover:border-slate-600'
+                }`}>
+                {name}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Dry Run Toggle */}
+        <div className="flex items-center gap-3 mb-6">
+          <button onClick={() => setIsDryRun(!isDryRun)}
+            className={`w-10 h-5 rounded-full transition-all ${isDryRun ? 'bg-amber-500' : 'bg-slate-700'}`}>
+            <div className={`w-4 h-4 rounded-full bg-white mx-auto transition-transform ${isDryRun ? '-translate-x-2' : 'translate-x-2'}`} />
+          </button>
+          <div>
+            <p className="text-sm text-slate-300 font-medium">Dry Run: {isDryRun ? 'AN' : 'AUS'}</p>
+            <p className="text-xs text-slate-500">{isDryRun ? 'Zählt nur Texte, generiert kein Audio' : '⚠️ Generiert echtes Audio – verbraucht Gemini-Credits!'}</p>
+          </div>
+        </div>
+
+        <button onClick={handleRun} disabled={isRunning || selectedEntities.length === 0}
+          className={`flex items-center gap-2 px-6 py-3 rounded-xl font-semibold transition-all ${
+            isDryRun
+              ? 'bg-amber-500/20 text-amber-400 hover:bg-amber-500/30 border border-amber-500/40'
+              : 'bg-red-500/20 text-red-400 hover:bg-red-500/30 border border-red-500/40'
+          } disabled:opacity-50`}>
+          {isRunning ? <RefreshCw className="w-4 h-4 animate-spin" /> : <PlayCircle className="w-4 h-4" />}
+          {isRunning ? 'Läuft...' : isDryRun ? 'Dry Run starten' : '🔥 Echten Run starten'}
+        </button>
+      </div>
+
+      {/* Ergebnisse */}
+      {results && !results.error && (
+        <div className="glass rounded-2xl border border-green-500/30 p-6">
+          <h3 className="text-lg font-bold text-green-400 mb-4">
+            {results.dry_run ? '📊 Dry Run Ergebnis' : '✅ Run abgeschlossen'}
+          </h3>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-4">
+            {[
+              { label: 'Records', value: results.summary?.total_records, color: 'text-slate-300' },
+              { label: 'Texte', value: results.summary?.total_texts, color: 'text-cyan-400' },
+              { label: 'Neu generiert', value: results.summary?.total_generated, color: 'text-green-400' },
+              { label: 'Aus Cache', value: results.summary?.total_cached, color: 'text-blue-400' },
+            ].map(m => (
+              <div key={m.label} className="bg-slate-800/50 rounded-xl p-3 text-center">
+                <p className={`text-2xl font-bold ${m.color}`}>{m.value ?? 0}</p>
+                <p className="text-xs text-slate-500 mt-1">{m.label}</p>
+              </div>
+            ))}
+          </div>
+          <div className="space-y-2">
+            {Object.entries(results.results || {}).map(([entity, r]) => (
+              <div key={entity} className="flex items-center justify-between bg-slate-800/30 rounded-lg px-3 py-2">
+                <span className="text-sm text-slate-300 font-medium">{entity}</span>
+                <div className="flex items-center gap-3 text-xs text-slate-500">
+                  <span>{r.records} Records</span>
+                  <span className="text-cyan-400">{r.total_texts} Texte</span>
+                  {r.errors > 0 && <span className="text-red-400">{r.errors} Fehler</span>}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+      {results?.error && (
+        <div className="glass rounded-2xl border border-red-500/30 p-6">
+          <p className="text-red-400 font-medium">Fehler: {results.error}</p>
+        </div>
+      )}
+    </motion.div>
+  );
 }
 
 function RoadmapTab() {
@@ -268,6 +392,14 @@ export default function AdminHub() {
                 <ShieldCheck className="w-3.5 h-3.5 shrink-0" />
                 <span>Audit</span>
               </TabsTrigger>
+              <TabsTrigger value="audio" className="flex items-center gap-1.5 whitespace-nowrap px-3 py-2 text-xs sm:text-sm">
+                <Volume2 className="w-3.5 h-3.5 shrink-0" />
+                <span>Audio-Cache</span>
+              </TabsTrigger>
+              <TabsTrigger value="roadmap" className="flex items-center gap-1.5 whitespace-nowrap px-3 py-2 text-xs sm:text-sm">
+                <Map className="w-3.5 h-3.5 shrink-0" />
+                <span>Roadmap</span>
+              </TabsTrigger>
             </TabsList>
           </div>
 
@@ -313,6 +445,16 @@ export default function AdminHub() {
           {/* Audit Tab */}
           <TabsContent value="audit" className="mt-0">
             <ExerciseAuditTab />
+          </TabsContent>
+
+          {/* Audio Cache Tab */}
+          <TabsContent value="audio" className="mt-0">
+            <AudioCacheTab />
+          </TabsContent>
+
+          {/* Roadmap Tab */}
+          <TabsContent value="roadmap" className="mt-0">
+            <RoadmapTab />
           </TabsContent>
           </Tabs>
       </div>
