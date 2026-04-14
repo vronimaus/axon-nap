@@ -12,6 +12,10 @@ import { useTrialStatus } from '@/components/useTrialStatus';
 import ExerciseDetailModal from '@/components/rehab/ExerciseDetailModal';
 import RehabPhaseCard from '@/components/rehab/RehabPhaseCard';
 import DailyTuneUpModal from '@/components/rehab/DailyTuneUpModal';
+import RehabPhaseSidebar from '@/components/rehab/RehabPhaseSidebar';
+import SessionSummaryCard from '@/components/rehab/SessionSummaryCard';
+import PhaseCompletionCard from '@/components/rehab/PhaseCompletionCard';
+import ExpertNotesSection from '@/components/rehab/ExpertNotesSection';
 
 export default function RehabPlan() {
   const { hasAccess } = useTrialStatus();
@@ -351,8 +355,20 @@ export default function RehabPlan() {
         </div>
       </div>
 
-      {/* Main Content - Reorganized: Tune-Up Button oben */}
-      <div className="max-w-4xl mx-auto px-4 py-6 space-y-6">
+      {/* Main Content with Sidebar */}
+      <div className="flex gap-6">
+        {/* Left Sidebar - Phase Navigation */}
+        <div className="hidden lg:flex w-48 flex-col flex-shrink-0 border-r border-white/[0.06] pr-6 pt-6">
+          <RehabPhaseSidebar
+            phases={rehabPlan.phases}
+            activePhaseIdx={activePhaseIdx}
+            currentPhaseNum={rehabPlan.current_phase || 1}
+            onSelectPhase={setActivePhaseIdx}
+          />
+        </div>
+
+        {/* Main Content */}
+        <div className="flex-1 max-w-4xl px-4 py-6 space-y-6">
         
         {/* 1. Daily Tune-Up CTA */}
         <motion.div
@@ -409,39 +425,80 @@ export default function RehabPlan() {
         </motion.div>
 
         {/* 2. Progress Indicator */}
-        <div className="flex items-center justify-between">
-          <div className="flex flex-col flex-1">
-            <span className="text-[10px] uppercase tracking-widest text-zinc-500 font-bold">Progress</span>
-            <span className="text-sm font-bold text-white tracking-wide">
-              Phase {rehabPlan.current_phase || 1} <span className="text-zinc-600 mx-1">/</span> {rehabPlan.phases?.length || 3}
-            </span>
-          </div>
-
-          <motion.div
-            initial={{ scale: 0.8, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            className="relative w-20 h-20 flex-shrink-0"
-          >
-            <svg className="w-full h-full" viewBox="0 0 100 100">
-              <circle cx="50" cy="50" r="45" fill="none" stroke="currentColor" strokeWidth="2" className="text-zinc-800" />
-              <motion.circle
-                cx="50" cy="50" r="45" fill="none" stroke="currentColor" strokeWidth="3" className="text-zinc-400"
-                strokeDasharray={2 * Math.PI * 45}
-                strokeDashoffset={2 * Math.PI * 45 * (1 - ((rehabPlan.current_phase || 1) / (rehabPlan.phases?.length || 3)))}
-                strokeLinecap="round"
-                style={{ transformOrigin: '50% 50%', transform: 'rotate(-90deg)' }}
-              />
-            </svg>
-            <div className="absolute inset-0 flex items-center justify-center flex-col">
-              <span className="text-lg font-bold text-white">
-                {((rehabPlan.current_phase || 1) / (rehabPlan.phases?.length || 3) * 100).toFixed(0)}%
+        <div className="rounded-xl border border-white/[0.06] bg-zinc-900/60 p-5">
+          <div className="flex items-center justify-between">
+            <div className="flex flex-col flex-1">
+              <span className="text-[10px] uppercase tracking-widest text-zinc-500 font-bold">Progress</span>
+              <span className="text-sm font-bold text-white tracking-wide">
+                Phase {rehabPlan.current_phase || 1} <span className="text-zinc-600 mx-1">/</span> {rehabPlan.phases?.length || 3}
               </span>
-              <span className="text-[10px] text-zinc-500 font-mono">recovered</span>
             </div>
-          </motion.div>
+
+            <motion.div
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              className="relative w-20 h-20 flex-shrink-0"
+            >
+              <svg className="w-full h-full" viewBox="0 0 100 100">
+                <circle cx="50" cy="50" r="45" fill="none" stroke="currentColor" strokeWidth="2" className="text-zinc-800" />
+                <motion.circle
+                  cx="50" cy="50" r="45" fill="none" stroke="currentColor" strokeWidth="3" className="text-zinc-400"
+                  strokeDasharray={2 * Math.PI * 45}
+                  strokeDashoffset={2 * Math.PI * 45 * (1 - ((rehabPlan.current_phase || 1) / (rehabPlan.phases?.length || 3)))}
+                  strokeLinecap="round"
+                  style={{ transformOrigin: '50% 50%', transform: 'rotate(-90deg)' }}
+                />
+              </svg>
+              <div className="absolute inset-0 flex items-center justify-center flex-col">
+                <span className="text-lg font-bold text-white">
+                  {((rehabPlan.current_phase || 1) / (rehabPlan.phases?.length || 3) * 100).toFixed(0)}%
+                </span>
+                <span className="text-[10px] text-zinc-500 font-mono">recovered</span>
+              </div>
+            </motion.div>
+          </div>
         </div>
 
-        {/* 3. Active Phase Card */}
+        {/* 3. Session Summary Card */}
+        {rehabPlan.phases && rehabPlan.phases[activePhaseIdx] && (
+          <SessionSummaryCard
+            phase={rehabPlan.phases[activePhaseIdx]}
+            readinessStatus={readinessStatus}
+            onStartSession={handleStartSession}
+          />
+        )}
+
+        {/* 4. Expert Notes Section */}
+        {rehabPlan.phases && rehabPlan.phases[activePhaseIdx] && (
+          <ExpertNotesSection phase={rehabPlan.phases[activePhaseIdx]} />
+        )}
+
+        {/* 5. Recommended FLOW Routines - before Phase Card */}
+        {rehabPlan.recommended_mfr_routines && rehabPlan.recommended_mfr_routines.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="rounded-xl border border-white/[0.06] bg-zinc-900/60 p-5"
+          >
+            <div className="flex items-center gap-2 mb-3">
+              <Activity className="w-4 h-4 text-zinc-400" />
+              <h3 className="text-sm font-bold text-zinc-300 uppercase tracking-widest">Unterstützende Routinen</h3>
+            </div>
+            <p className="text-xs text-zinc-500 mb-3">Diese FLOW-Routinen unterstützen diese Phase:</p>
+            <div className="space-y-2">
+              {rehabPlan.recommended_mfr_routines.map((r, i) => (
+                <div key={i} className="flex items-start gap-3 p-3 rounded-lg bg-zinc-800/50 border border-white/[0.04]">
+                  <div className="flex-1">
+                    <p className="text-sm font-semibold text-zinc-200">{r.routine_name}</p>
+                    {r.reason && <p className="text-xs text-zinc-500 mt-0.5">{r.reason}</p>}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </motion.div>
+        )}
+
+        {/* 6. Phase Detail Card */}
         {rehabPlan.phases && rehabPlan.phases[activePhaseIdx] && (
           <RehabPhaseCard
             phase={rehabPlan.phases[activePhaseIdx]}
@@ -463,58 +520,14 @@ export default function RehabPlan() {
           />
         )}
 
-        {/* 4. Recommended FLOW Routines */}
-        {rehabPlan.recommended_mfr_routines && rehabPlan.recommended_mfr_routines.length > 0 && (
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="rounded-xl border border-white/[0.06] bg-zinc-900/60 p-5"
-          >
-            <div className="flex items-center gap-2 mb-3">
-              <Activity className="w-4 h-4 text-zinc-400" />
-              <h3 className="text-sm font-bold text-zinc-300 uppercase tracking-widest">Empfohlene FLOW-Routinen</h3>
-            </div>
-            <p className="text-xs text-zinc-500 mb-3">Diese Routinen unterstützen deine Rehabilitation:</p>
-            <div className="space-y-2">
-              {rehabPlan.recommended_mfr_routines.map((r, i) => (
-                <div key={i} className="flex items-start gap-3 p-3 rounded-lg bg-zinc-800/50 border border-white/[0.04]">
-                  <div className="flex-1">
-                    <p className="text-sm font-semibold text-zinc-200">{r.routine_name}</p>
-                    {r.reason && <p className="text-xs text-zinc-500 mt-0.5">{r.reason}</p>}
-                  </div>
-                </div>
-              ))}
-            </div>
-            <Button
-              onClick={() => window.location.href = createPageUrl('FlowRoutines')}
-              className="w-full mt-3 bg-zinc-800 hover:bg-zinc-700 border border-white/[0.06] text-zinc-300"
-              variant="ghost"
-            >
-              <Activity className="w-4 h-4 mr-2" />
-              Zu den FLOW-Routinen
-            </Button>
-          </motion.div>
-        )}
-
-        {/* 5. Cross-Link: Rehab completed */}
-        {rehabPlan.status === 'completed' && (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="rounded-xl border border-white/[0.06] bg-zinc-900/60 p-5 text-center"
-          >
-            <Zap className="w-8 h-8 text-zinc-400 mx-auto mb-3" />
-            <h3 className="text-lg font-bold text-white mb-2">Bereit für die nächste Stufe?</h3>
-            <p className="text-sm text-zinc-400 mb-4">
-              Dein Körper hat sich erholt – jetzt ist es Zeit, Performance-Ziele anzugehen.
-            </p>
-            <Button
-              onClick={() => window.location.href = createPageUrl('Dashboard')}
-              className="bg-zinc-800 hover:bg-zinc-700 border border-white/[0.06] text-white"
-            >
-              Performance freischalten
-            </Button>
-          </motion.div>
+        {/* 7. Phase Completion Card - show when phase completed */}
+        {rehabPlan.phases && rehabPlan.phases[activePhaseIdx] && (activePhaseIdx + 1) < (rehabPlan.current_phase || 1) && (
+          <PhaseCompletionCard
+            currentPhase={activePhaseIdx + 1}
+            nextPhase={rehabPlan.phases[activePhaseIdx + 1]}
+            isLastPhase={activePhaseIdx + 1 >= rehabPlan.phases.length}
+            onNext={() => setActivePhaseIdx(activePhaseIdx + 1)}
+          />
         )}
 
       </div>
