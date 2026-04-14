@@ -4,7 +4,6 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { createPageUrl } from '@/utils';
 import { Activity, Target, Zap, Info, ArrowLeft, Loader2, RotateCw } from 'lucide-react';
-import CombinedReadinessAssessment from '../components/dashboard/CombinedReadinessAssessment';
 import CommandCenter from '../components/dashboard/CommandCenter';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
@@ -24,9 +23,6 @@ export default function Dashboard() {
   const [showProgress, setShowProgress] = useState(false);
   const [isGeneratingPlan, setIsGeneratingPlan] = useState(false);
   const [showReadinessCheck, setShowReadinessCheck] = useState(false);
-  // Combined assessment state
-  const [pendingDestination, setPendingDestination] = useState(null); // { label, action }
-  const [showAssessment, setShowAssessment] = useState(false);
   const [pullY, setPullY] = useState(0);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const touchStartY = useRef(0);
@@ -61,35 +57,9 @@ export default function Dashboard() {
     }
   }, [user, isLoading, hasAccess]);
 
-  // Called when user picks a destination card
+  // Called when user picks a destination card — always navigate directly
   const handleDestinationClick = (label, action) => {
-    const todayStr = new Date().toISOString().split('T')[0];
-    const checkDone = sessionStorage.getItem('readiness_check_done');
-    // Skip assessment if: sessionStorage set OR DB already has today's check
-    if (checkDone === todayStr || todayReadinessDb) {
-      action();
-      return;
-    }
-    setPendingDestination({ label, action });
-    setShowAssessment(true);
-  };
-
-  const handleAssessmentComplete = () => {
-    setShowAssessment(false);
-    if (pendingDestination) {
-      pendingDestination.action();
-      setPendingDestination(null);
-    }
-  };
-
-  const handleAssessmentSkip = () => {
-    const today = new Date().toISOString().split('T')[0];
-    sessionStorage.setItem('readiness_check_done', today);
-    setShowAssessment(false);
-    if (pendingDestination) {
-      pendingDestination.action();
-      setPendingDestination(null);
-    }
+    action();
   };
 
   const handleCloseOnboarding = () => {
@@ -199,17 +169,6 @@ export default function Dashboard() {
         onTouchEnd={handleTouchEnd}
         style={{ touchAction: pullY > 0 ? 'none' : 'auto' }}
       >
-        <AnimatePresence>
-          {showAssessment && user && pendingDestination && (
-            <CombinedReadinessAssessment
-              user={user}
-              destinationLabel={pendingDestination.label}
-              onComplete={handleAssessmentComplete}
-              onSkip={handleAssessmentSkip}
-            />
-          )}
-        </AnimatePresence>
-
         {/* Pull-to-Refresh Indicator */}
         {pullY > 0 && (
           <div className="fixed top-16 left-0 right-0 flex justify-center z-50 pointer-events-none">
