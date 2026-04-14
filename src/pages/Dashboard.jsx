@@ -36,28 +36,42 @@ export default function Dashboard() {
   
   const { user, isLoading, hasAccess } = useTrialStatus();
 
+  // Check if readiness already done today (from DB)
+  const today = new Date().toISOString().split('T')[0];
+  const { data: todayReadinessDb } = useQuery({
+    queryKey: ['readinessToday', user?.email, today],
+    queryFn: async () => {
+      const res = await base44.entities.ReadinessCheck.filter({ user_email: user.email, check_date: today });
+      return res?.[0] || null;
+    },
+    enabled: !!user?.email,
+  });
+
+  // Sync DB result to sessionStorage so handleDestinationClick works correctly
+  useEffect(() => {
+    if (todayReadinessDb) {
+      sessionStorage.setItem('readiness_check_done', today);
+    }
+  }, [todayReadinessDb, today]);
+
   useEffect(() => {
     if (isLoading || !user) return;
-    
     if (!hasAccess) {
       window.location.href = createPageUrl('Landing');
-      return;
     }
-
-    // Don't auto-trigger readiness anymore — it's triggered by destination choice
   }, [user, isLoading, hasAccess]);
 
   // Called when user picks a destination card
   const handleDestinationClick = (label, action) => {
-    const today = new Date().toISOString().split('T')[0];
+    const todayStr = new Date().toISOString().split('T')[0];
     const checkDone = sessionStorage.getItem('readiness_check_done');
-    if (checkDone === today) {
-      // Already done today → go directly
+    // Skip assessment if: sessionStorage set OR DB already has today's check
+    if (checkDone === todayStr || todayReadinessDb) {
       action();
-    } else {
-      setPendingDestination({ label, action });
-      setShowAssessment(true);
+      return;
     }
+    setPendingDestination({ label, action });
+    setShowAssessment(true);
   };
 
   const handleAssessmentComplete = () => {

@@ -171,6 +171,8 @@ function InlineReadinessWidget({ user, todayReadiness }) {
       check_date: today,
     });
     sessionStorage.setItem('readiness_check_done', today);
+    // Notify other components that check is done (Dashboard handleDestinationClick reads this)
+    window.dispatchEvent(new Event('readiness_check_saved'));
     queryClient.invalidateQueries({ queryKey: ['readinessToday'], exact: false });
     queryClient.invalidateQueries({ queryKey: ['allReadinessChecks'], exact: false });
     setForceShow(false);

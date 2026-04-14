@@ -57,13 +57,19 @@ export default function DailyReadinessCheck({ user, onClose }) {
 
       await base44.entities.ReadinessCheck.create(checkData);
 
-      // Update user metadata with last check date
-      await base44.auth.updateMe({
-        last_readiness_check: today,
-        current_readiness_status: readiness.status
-      });
+      // Update user metadata (best-effort, don't block on failure)
+      try {
+        await base44.auth.updateMe({
+          last_readiness_check: today,
+          current_readiness_status: readiness.status
+        });
+      } catch (_e) {}
+
+      // Mark as done in sessionStorage so other components don't re-trigger
+      sessionStorage.setItem('readiness_check_done', today);
 
       toast.success('Bio-Sync abgeschlossen!');
+      setIsSubmitting(false);
       setShowResults(true);
     } catch (error) {
       console.error('Error saving readiness check:', error);
