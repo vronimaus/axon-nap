@@ -171,7 +171,8 @@ function InlineReadinessWidget({ user, todayReadiness }) {
       check_date: today,
     });
     sessionStorage.setItem('readiness_check_done', today);
-    queryClient.invalidateQueries({ queryKey: ['readinessToday'] });
+    queryClient.invalidateQueries({ queryKey: ['readinessToday'], exact: false });
+    queryClient.invalidateQueries({ queryKey: ['allReadinessChecks'], exact: false });
     setForceShow(false);
     setSaving(false);
   };
