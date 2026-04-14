@@ -6,7 +6,7 @@ import { X } from 'lucide-react';
 import { createPageUrl } from '@/utils';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
-import { ChevronRight, Zap, Activity, BookOpen, Target, Watch } from 'lucide-react';
+import { ChevronRight, Zap, Activity, BookOpen, Target, Watch, Clock, Play } from 'lucide-react';
 
 // ── Readiness Ring ──────────────────────────────────────────────────────────────
 function ReadinessRing({ readiness }) {
@@ -415,6 +415,14 @@ export default function CommandCenter({ user, handleDestinationClick }) {
     enabled: !!user?.email,
   });
 
+  const { data: snackData } = useQuery({
+    queryKey: ['personalizedSnacks', user?.email],
+    queryFn: () => base44.functions.invoke('getPersonalizedSnacks', {}).then(r => r.data),
+    enabled: !!user?.email,
+    staleTime: 5 * 60 * 1000,
+    refetchOnWindowFocus: false,
+  });
+
   const { data: activeRehabPlan } = useQuery({
     queryKey: ['activeRehabPlan', user?.email],
     queryFn: async () => {
@@ -542,6 +550,42 @@ export default function CommandCenter({ user, handleDestinationClick }) {
                   </div>
                 </Tile>
               </div>
+
+              {/* Row 3: Heutige Quick-Snacks */}
+              {snackData?.snacks?.length > 0 && (
+                <div className="bg-zinc-900/80 border border-white/[0.06] rounded-2xl p-4">
+                  <div className="flex items-center justify-between mb-3">
+                    <TileLabel>Heute empfohlen</TileLabel>
+                    <button
+                      onClick={() => window.location.href = createPageUrl('FitnessSnacks')}
+                      className="text-[10px] text-zinc-600 hover:text-zinc-400 uppercase tracking-widest transition-colors"
+                    >
+                      Alle →
+                    </button>
+                  </div>
+                  <div className="space-y-2">
+                    {snackData.snacks.map(snack => (
+                      <button
+                        key={snack.id}
+                        onClick={() => window.location.href = createPageUrl('FitnessSnacks')}
+                        className="w-full flex items-center gap-3 p-3 rounded-xl bg-zinc-800/50 border border-white/[0.04] hover:border-white/[0.1] hover:bg-zinc-800 transition-all text-left group"
+                      >
+                        <div className="w-7 h-7 rounded-lg bg-zinc-700/60 flex items-center justify-center flex-shrink-0">
+                          <Zap className="w-3.5 h-3.5 text-zinc-400" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-medium text-zinc-200 truncate">{snack.name}</p>
+                          <p className="text-[10px] text-zinc-600 flex items-center gap-1 mt-0.5">
+                            <Clock className="w-2.5 h-2.5" />
+                            {snack.duration_minutes} Min.
+                          </p>
+                        </div>
+                        <Play className="w-3.5 h-3.5 text-zinc-700 group-hover:text-zinc-400 transition-colors flex-shrink-0" />
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
 
               <div className="grid grid-cols-2 gap-4">
                 <BiometricsTile user={user} />
