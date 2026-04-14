@@ -530,6 +530,7 @@ export default function RehabPlan() {
           />
         )}
 
+        </div>
       </div>
     </div>
   );
