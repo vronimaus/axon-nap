@@ -198,13 +198,30 @@ function SnackPlayer({ snack, onClose, onFinish }) {
             <div className="w-full flex flex-col items-center gap-4">
               <div className="w-56 h-56 mx-auto rounded-full flex flex-col items-center justify-center border-2 border-white/[0.1] bg-gradient-to-br from-zinc-900 to-zinc-800">
                 <p className="text-7xl font-black tabular-nums text-white">{formatTime(timeLeft)}</p>
-                {(currentStep?.sets || currentStep?.reps) && (
-                  <p className="text-sm text-zinc-400 mt-3 font-mono">
-                    {currentStep?.sets && `${currentStep.sets}×`}{currentStep?.reps && `${currentStep.reps}`}
-                    {currentStep?.rest_seconds && ` + ${currentStep.rest_seconds}s Pause`}
-                  </p>
-                )}
               </div>
+              
+              {/* Step-Übersicht */}
+              <div className="w-full text-center">
+                <p className="text-xs text-zinc-500 uppercase tracking-widest mb-2">Step {stepIdx + 1} von {totalSteps}</p>
+                <div className="flex gap-1.5 justify-center flex-wrap">
+                  {steps.map((s, i) => (
+                    <button
+                      key={i}
+                      onClick={() => setStepIdx(i)}
+                      className={`px-2 py-1 rounded text-xs font-mono transition-all ${
+                        i === stepIdx
+                          ? 'bg-zinc-200 text-zinc-900'
+                          : i < stepIdx
+                          ? 'bg-zinc-600 text-zinc-300'
+                          : 'bg-zinc-800 text-zinc-500 hover:bg-zinc-700'
+                      }`}
+                    >
+                      {s.title}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              
               {detailedStep?._exercise?.audio_url && (
                 <button className="flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-500/20 border border-cyan-500/40 text-cyan-400 hover:bg-cyan-500/30 transition-colors">
                   <Volume2 className="w-4 h-4" />
