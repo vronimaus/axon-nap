@@ -46,10 +46,39 @@ function SnackPlayer({ snack, onClose, onFinish }) {
   const [done, setDone] = useState(false);
   const [feeling, setFeeling] = useState(null);
   const intervalRef = useRef(null);
+  const { data: exercises = [] } = useQuery({
+    queryKey: ['exercises-snack-player'],
+    queryFn: () => base44.entities.Exercise.list(),
+    staleTime: 5 * 60 * 1000
+  });
 
   const currentStep = steps[stepIdx];
   const totalSteps = steps.length;
   const isCooldown = currentStep?.type === 'mfr_cooldown' || currentStep?.type === 'breath_cooldown';
+
+  // Try to find Exercise data by title keyword match
+  const getDetailedStep = () => {
+    if (!currentStep) return currentStep;
+    const stepTitle = (currentStep.title || '').toLowerCase();
+    const matched = exercises.find(ex =>
+      stepTitle.includes((ex.name || '').toLowerCase()) ||
+      (ex.exercise_id || '').toLowerCase().includes(stepTitle.split(' ')[0].toLowerCase())
+    );
+    if (matched) {
+      return {
+        ...currentStep,
+        description: matched.description || currentStep.instruction,
+        axon_moment: matched.axon_moment,
+        cues: matched.cues,
+        breathing_instruction: matched.breathing_instruction,
+        purpose_explanation: matched.purpose_explanation,
+        benefits: matched.benefits,
+        _exercise: matched
+      };
+    }
+    return currentStep;
+  };
+  const detailedStep = getDetailedStep();
 
   useEffect(() => {
     if (running && timeLeft > 0) {
@@ -156,16 +185,67 @@ function SnackPlayer({ snack, onClose, onFinish }) {
             <div className="w-36 h-36 mx-auto rounded-full flex items-center justify-center border border-white/[0.08] bg-zinc-900">
               <div>
                 <p className="text-4xl font-black tabular-nums text-white">{formatTime(timeLeft)}</p>
-                {currentStep?.sets && currentStep?.reps && (
-                  <p className="text-xs text-zinc-500 mt-1">{currentStep.sets}×{currentStep.reps}</p>
+                {detailedStep?.sets && detailedStep?.reps && (
+                  <p className="text-xs text-zinc-500 mt-1">{detailedStep.sets}×{detailedStep.reps}</p>
                 )}
               </div>
             </div>
-            <p className="text-base text-zinc-200 leading-relaxed font-medium">{currentStep?.instruction}</p>
-            {currentStep?.cue && (
-              <div className="rounded-xl border border-white/[0.06] bg-zinc-900 px-4 py-3">
-                <p className="text-[10px] text-zinc-500 uppercase tracking-widest mb-1">Coach-Cue</p>
-                <p className="text-sm text-zinc-300 font-medium italic">"{currentStep.cue}"</p>
+
+            {/* AXON Moment */}
+            {detailedStep?.axon_moment && (
+              <div className="relative overflow-hidden rounded-xl border border-cyan-500/50 bg-cyan-950/10 p-4 shadow-[0_0_20px_rgba(6,182,212,0.15)]">
+                <div className="flex items-start gap-3 relative z-10">
+                  <div className="w-6 h-6 rounded-lg bg-cyan-500/20 flex items-center justify-center flex-shrink-0">
+                    <span className="text-xs font-bold text-cyan-400">💡</span>
+                  </div>
+                  <div className="text-left">
+                    <h5 className="text-xs font-bold text-cyan-400 uppercase tracking-widest mb-1">AXON Moment</h5>
+                    <p className="text-sm font-medium text-cyan-100 italic leading-relaxed">"{detailedStep.axon_moment}"</p>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Ausführung */}
+            <div className="bg-slate-900/50 rounded-xl p-4 border border-slate-800 text-left">
+              <h5 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3">Ausführung</h5>
+              <p className="text-sm text-slate-200 leading-relaxed">{detailedStep?.description || detailedStep?.instruction}</p>
+              {detailedStep?.breathing_instruction && (
+                <div className="mt-4 pt-4 border-t border-slate-800">
+                  <p className="text-[10px] font-bold text-teal-400 uppercase tracking-widest mb-1">Atmung</p>
+                  <p className="text-xs text-slate-300 leading-relaxed">{detailedStep.breathing_instruction}</p>
+                </div>
+              )}
+            </div>
+
+            {/* Coach-Hinweise */}
+            {(detailedStep?.cue || detailedStep?.cues?.length > 0) && (
+              <div className="rounded-xl border border-white/[0.06] bg-zinc-900 px-4 py-3 text-left">
+                <p className="text-[10px] text-zinc-500 uppercase tracking-widest mb-2">Coach-Hinweise</p>
+                {detailedStep?.cue && (
+                  <p className="text-sm text-zinc-300 font-medium italic mb-2">"{detailedStep.cue}"</p>
+                )}
+                {detailedStep?.cues?.map((cue, i) => (
+                  <p key={i} className="text-xs text-zinc-400 leading-relaxed mb-1">• {cue}</p>
+                ))}
+              </div>
+            )}
+
+            {/* Purpose & Benefits */}
+            {(detailedStep?.purpose_explanation || detailedStep?.benefits) && (
+              <div className="grid grid-cols-1 gap-3">
+                {detailedStep?.purpose_explanation && (
+                  <div className="bg-slate-800/50 border border-slate-700/50 rounded-xl p-3 text-left">
+                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Warum?</p>
+                    <p className="text-xs text-slate-300 leading-relaxed">{detailedStep.purpose_explanation}</p>
+                  </div>
+                )}
+                {detailedStep?.benefits && (
+                  <div className="bg-slate-800/50 border border-slate-700/50 rounded-xl p-3 text-left">
+                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Du wirst spüren</p>
+                    <p className="text-xs text-slate-300 leading-relaxed">{detailedStep.benefits}</p>
+                  </div>
+                )}
               </div>
             )}
           </motion.div>
