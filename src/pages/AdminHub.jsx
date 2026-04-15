@@ -4,7 +4,7 @@ import { createPageUrl } from '@/utils';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { AlertCircle, Zap, Dumbbell, Palette, ArrowLeft, KeyRound, Megaphone, Kanban, Mic, ShieldCheck, Trash2, Volume2, PlayCircle, CheckCircle, XCircle, RefreshCw, Map } from 'lucide-react';
+import { AlertCircle, Zap, Dumbbell, Palette, ArrowLeft, KeyRound, Megaphone, Kanban, Mic, ShieldCheck, Trash2, Volume2, PlayCircle, CheckCircle, XCircle, RefreshCw, Map, Link2 } from 'lucide-react';
 import ExerciseEditorTab from '../components/admin/ExerciseEditorTab';
 import ExerciseAuditTab from '../components/admin/ExerciseAuditTab';
 import InviteCodesTab from '../components/admin/InviteCodesTab';
@@ -12,6 +12,7 @@ import MarketingTab from '../components/admin/MarketingTab';
 import ContentKanban from '../components/admin/ContentKanban';
 import MFRNodeTab from '../components/admin/MFRNodeTab';
 import FitnessSnackAdminTab from '../components/admin/FitnessSnackAdminTab';
+import RoutineMFRMappingTab from '../components/admin/RoutineMFRMappingTab';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
 // Prefix-Definitionen
@@ -400,6 +401,10 @@ export default function AdminHub() {
                 <Map className="w-3.5 h-3.5 shrink-0" />
                 <span>Roadmap</span>
               </TabsTrigger>
+              <TabsTrigger value="mfr-mapping" className="flex items-center gap-1.5 whitespace-nowrap px-3 py-2 text-xs sm:text-sm">
+                <Link2 className="w-3.5 h-3.5 shrink-0" />
+                <span>MFR-Mapping</span>
+              </TabsTrigger>
             </TabsList>
           </div>
 
@@ -465,6 +470,11 @@ export default function AdminHub() {
           {/* Roadmap Tab */}
           <TabsContent value="roadmap" className="mt-0">
             <RoadmapTab />
+          </TabsContent>
+
+          {/* MFR Mapping Tab */}
+          <TabsContent value="mfr-mapping" className="mt-0">
+            <RoutineMFRMappingTab />
           </TabsContent>
           </Tabs>
       </div>
