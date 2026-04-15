@@ -35,10 +35,11 @@ export default function RehabPlan() {
 
   useEffect(() => {
     const checkAuth = async () => {
+      const isBuilderPreview = window.self !== window.top;
       try {
         const currentUser = await base44.auth.me();
         if (!currentUser) {
-          window.location.href = createPageUrl('Landing');
+          if (!isBuilderPreview) window.location.href = createPageUrl('Landing');
           return;
         }
         setUser(currentUser);
@@ -59,7 +60,8 @@ export default function RehabPlan() {
           setReadinessStatus(currentUser.current_readiness_status);
         }
       } catch (e) {
-        window.location.href = createPageUrl('Landing');
+        const isBuilderPreview = window.self !== window.top;
+        if (!isBuilderPreview) window.location.href = createPageUrl('Landing');
       } finally {
         setIsLoading(false);
       }

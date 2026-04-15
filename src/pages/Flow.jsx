@@ -122,6 +122,7 @@ export default function Flow() {
   // Check auth and readiness
   useEffect(() => {
     const checkAuthAndReadiness = async () => {
+      const isBuilderPreview = window.self !== window.top;
       try {
         const currentUser = await base44.auth.me();
         setUser(currentUser);
@@ -136,7 +137,7 @@ export default function Flow() {
           setReadinessStatus(currentUser?.current_readiness_status);
         }
       } catch (e) {
-        // User not logged in - that's ok for demo flows
+        if (!isBuilderPreview) window.location.href = createPageUrl('Landing');
         setUser(null);
       }
     };

@@ -55,22 +55,17 @@ export default function FlowRoutines() {
 
   useEffect(() => {
     const checkAuth = async () => {
+      const isBuilderPreview = window.self !== window.top;
       try {
         const currentUser = await base44.auth.me();
-        if (!currentUser) { 
-          window.location.href = createPageUrl('Landing'); 
-          return; 
+        if (!currentUser) {
+          if (!isBuilderPreview) window.location.href = createPageUrl('Landing');
+          setIsLoading(false);
+          return;
         }
         setUser(currentUser);
       } catch (e) {
-        // Only redirect if it's an auth error, not other errors
-        const status = e?.response?.status || e?.status;
-        if (status === 401 || status === 403) {
-          window.location.href = createPageUrl('Landing');
-          return;
-        }
-        // For other errors (network etc), still show the page if possible
-        console.error('Auth check error:', e);
+        if (!isBuilderPreview) window.location.href = createPageUrl('Landing');
       } finally {
         setIsLoading(false);
       }
