@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { jsPDF } from 'jspdf';
-import autoTable from 'jspdf-autotable';
 
 const VALID_NODES = [
   'CP-P', 'CL-P', 'TH-P', 'LU-P', 'PV-P', 'HU-A', 'CU-A', 'CA-A',
@@ -118,19 +117,50 @@ export default function ExerciseNodeMappingTab() {
       (ex.affected_nodes || []).join(', ') || '—',
     ]);
 
-    autoTable(doc, {
-      startY: 26,
-      head: [['Exercise ID', 'Name', 'Kategorie', 'Affected Nodes']],
-      body: rows,
-      styles: { fontSize: 7.5, cellPadding: 2 },
-      headStyles: { fillColor: [30, 30, 30], textColor: 255, fontStyle: 'bold' },
-      alternateRowStyles: { fillColor: [248, 248, 248] },
-      columnStyles: {
-        0: { cellWidth: 48, font: 'courier' },
-        1: { cellWidth: 90 },
-        2: { cellWidth: 28 },
-        3: { cellWidth: 'auto', font: 'courier' },
-      },
+    // Draw table manually
+    const cols = [50, 100, 30, 97]; // widths in mm
+    const headers = ['Exercise ID', 'Name', 'Kategorie', 'Affected Nodes'];
+    const rowH = 7;
+    const marginL = 14;
+    let y = 26;
+    const pageH = 210; // A4 landscape height
+    const pageW = 297;
+
+    const drawRow = (cells, isHeader) => {
+      if (y + rowH > pageH - 10) {
+        doc.addPage();
+        y = 14;
+      }
+      if (isHeader) {
+        doc.setFillColor(30, 30, 30);
+        doc.rect(marginL, y, cols.reduce((a, b) => a + b, 0), rowH, 'F');
+        doc.setTextColor(255, 255, 255);
+        doc.setFontSize(7.5);
+        doc.setFont('helvetica', 'bold');
+      } else {
+        doc.setTextColor(40, 40, 40);
+        doc.setFontSize(7);
+        doc.setFont('helvetica', 'normal');
+      }
+      let x = marginL;
+      cells.forEach((cell, i) => {
+        const text = doc.splitTextToSize(String(cell), cols[i] - 2);
+        doc.text(text[0] || '', x + 1, y + 4.5);
+        x += cols[i];
+      });
+      // row border
+      doc.setDrawColor(220, 220, 220);
+      doc.rect(marginL, y, cols.reduce((a, b) => a + b, 0), rowH);
+      y += rowH;
+    };
+
+    drawRow(headers, true);
+    rows.forEach((row, i) => {
+      if (i % 2 === 1) {
+        doc.setFillColor(248, 248, 248);
+        doc.rect(marginL, y, cols.reduce((a, b) => a + b, 0), rowH, 'F');
+      }
+      drawRow(row, false);
     });
 
     const filename = showNoNodes
