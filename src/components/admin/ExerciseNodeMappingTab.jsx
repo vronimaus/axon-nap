@@ -96,71 +96,87 @@ export default function ExerciseNodeMappingTab() {
 
   const downloadPDF = () => {
     const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
+    const pageW = 297;
+    const margin = 14;
+    const colWidths = [50, 95, 28, 100]; // ID, Name, Kategorie, Nodes
+    const rowH = 7;
+    const headerH = 8;
 
-    doc.setFontSize(16);
-    doc.setTextColor(40, 40, 40);
-    doc.text('AXON – Exercise Node Mapping', 14, 16);
+    // Title
+    doc.setFontSize(15);
+    doc.setTextColor(30, 30, 30);
+    doc.text('AXON – Exercise Node Mapping', margin, 14);
 
-    doc.setFontSize(9);
+    // Subtitle
+    doc.setFontSize(8);
     doc.setTextColor(120, 120, 120);
     const filterLabel = showNoNodes
       ? 'Ohne Nodes'
       : selectedNode === 'ALL'
       ? 'Alle Exercises'
       : `Node: ${selectedNode} – ${NODE_LABELS[selectedNode] || ''}`;
-    doc.text(`Filter: ${filterLabel}  |  ${displayed.length} Exercises  |  Generiert: ${new Date().toLocaleDateString('de-DE')}`, 14, 22);
+    doc.text(`Filter: ${filterLabel}  |  ${displayed.length} Exercises  |  ${new Date().toLocaleDateString('de-DE')}`, margin, 20);
 
-    const rows = displayed.map(ex => [
-      ex.exercise_id || '',
-      ex.name || '',
-      ex.category || '',
-      (ex.affected_nodes || []).join(', ') || '—',
-    ]);
-
-    // Draw table manually
-    const cols = [50, 100, 30, 97]; // widths in mm
-    const headers = ['Exercise ID', 'Name', 'Kategorie', 'Affected Nodes'];
-    const rowH = 7;
-    const marginL = 14;
+    // Draw header row
     let y = 26;
-    const pageH = 210; // A4 landscape height
-    const pageW = 297;
+    const headers = ['Exercise ID', 'Name', 'Kategorie', 'Affected Nodes'];
+    doc.setFillColor(30, 30, 30);
+    doc.rect(margin, y, pageW - margin * 2, headerH, 'F');
+    doc.setFontSize(8);
+    doc.setTextColor(255, 255, 255);
+    doc.setFont('helvetica', 'bold');
+    let x = margin;
+    headers.forEach((h, i) => {
+      doc.text(h, x + 2, y + 5.5);
+      x += colWidths[i];
+    });
+    y += headerH;
 
-    const drawRow = (cells, isHeader) => {
-      if (y + rowH > pageH - 10) {
+    // Draw data rows
+    doc.setFont('helvetica', 'normal');
+    displayed.forEach((ex, idx) => {
+      if (y > 195) {
         doc.addPage();
         y = 14;
       }
-      if (isHeader) {
-        doc.setFillColor(30, 30, 30);
-        doc.rect(marginL, y, cols.reduce((a, b) => a + b, 0), rowH, 'F');
-        doc.setTextColor(255, 255, 255);
-        doc.setFontSize(7.5);
-        doc.setFont('helvetica', 'bold');
-      } else {
-        doc.setTextColor(40, 40, 40);
-        doc.setFontSize(7);
-        doc.setFont('helvetica', 'normal');
+      // alternating background
+      if (idx % 2 === 0) {
+        doc.setFillColor(248, 248, 248);
+        doc.rect(margin, y, pageW - margin * 2, rowH, 'F');
       }
-      let x = marginL;
-      cells.forEach((cell, i) => {
-        const text = doc.splitTextToSize(String(cell), cols[i] - 2);
-        doc.text(text[0] || '', x + 1, y + 4.5);
-        x += cols[i];
-      });
+
+      doc.setFontSize(7.5);
+      doc.setTextColor(80, 80, 80);
+      x = margin;
+
+      // ID (monospace-like with courier)
+      doc.setFont('courier', 'normal');
+      doc.text((ex.exercise_id || '').substring(0, 28), x + 2, y + 5);
+      x += colWidths[0];
+
+      // Name
+      doc.setFont('helvetica', 'normal');
+      doc.setTextColor(30, 30, 30);
+      const name = (ex.name || '').substring(0, 45);
+      doc.text(name, x + 2, y + 5);
+      x += colWidths[1];
+
+      // Category
+      doc.setTextColor(80, 80, 80);
+      doc.text(ex.category || '', x + 2, y + 5);
+      x += colWidths[2];
+
+      // Nodes
+      doc.setFont('courier', 'normal');
+      doc.setTextColor(60, 120, 80);
+      const nodes = (ex.affected_nodes || []).join(', ') || '—';
+      doc.text(nodes.substring(0, 55), x + 2, y + 5);
+
       // row border
       doc.setDrawColor(220, 220, 220);
-      doc.rect(marginL, y, cols.reduce((a, b) => a + b, 0), rowH);
-      y += rowH;
-    };
+      doc.line(margin, y + rowH, pageW - margin, y + rowH);
 
-    drawRow(headers, true);
-    rows.forEach((row, i) => {
-      if (i % 2 === 1) {
-        doc.setFillColor(248, 248, 248);
-        doc.rect(marginL, y, cols.reduce((a, b) => a + b, 0), rowH, 'F');
-      }
-      drawRow(row, false);
+      y += rowH;
     });
 
     const filename = showNoNodes
