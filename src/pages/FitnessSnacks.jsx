@@ -162,16 +162,23 @@ function SnackPlayer({ snack, onClose, onFinish }) {
   return (
     <div className="fixed inset-0 z-50 bg-[#111111] flex flex-col">
       {/* Header */}
-      <div className="flex items-center justify-between px-5 py-4 border-b border-white/[0.06]">
-        <div>
-          <p className="text-[10px] font-bold uppercase tracking-widest text-zinc-500">
-            {isCooldown ? 'COOL-DOWN' : 'WORKOUT'} · {stepIdx + 1} / {totalSteps}
-          </p>
-          <h2 className="text-lg font-bold text-white">{currentStep?.title}</h2>
+      <div className="px-5 py-6 border-b border-white/[0.06]">
+        <div className="flex items-start justify-between mb-4">
+          <div className="flex-1">
+            <p className="text-[10px] font-bold uppercase tracking-widest text-zinc-500 mb-2">Snack Session</p>
+            <h2 className="text-xl font-bold text-white">{snack.name}</h2>
+          </div>
+          <button onClick={onClose} className="p-2 rounded-xl bg-zinc-800 text-zinc-400 hover:text-white flex-shrink-0">
+            <X className="w-5 h-5" />
+          </button>
         </div>
-        <button onClick={onClose} className="p-2 rounded-xl bg-zinc-800 text-zinc-400 hover:text-white">
-          <X className="w-5 h-5" />
-        </button>
+        <div className="text-sm text-zinc-400 mb-4">{snack.subtitle}</div>
+        <div className="flex items-center justify-between">
+          <div className="text-xs text-zinc-500">
+            <span className="font-mono font-bold text-zinc-300">Step {stepIdx + 1}/{totalSteps}</span>
+            {isCooldown && <span className="ml-2 text-teal-400">• COOL-DOWN</span>}
+          </div>
+        </div>
       </div>
 
       {/* Progress bar */}
@@ -228,6 +235,14 @@ function SnackPlayer({ snack, onClose, onFinish }) {
                   <span className="text-xs font-medium">Audio abspielen</span>
                 </button>
               )}
+            </div>
+
+            {/* Exercise Title + Phase */}
+            <div className="text-center mb-2">
+              <p className="text-xs text-zinc-500 font-mono uppercase tracking-widest mb-1">{currentStep?.phase}</p>
+              <h2 className="text-2xl font-bold text-white uppercase tracking-tight leading-none">
+                {detailedContent.title}
+              </h2>
             </div>
 
             {/* AXON Moment */}
