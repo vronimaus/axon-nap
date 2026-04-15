@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { base44 } from '@/api/base44Client';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Clock, CheckCircle2, Play, X, SkipForward, AlertTriangle, TrendingUp } from 'lucide-react';
+import { Clock, CheckCircle2, Play, X, SkipForward, AlertTriangle, TrendingUp, Volume2 } from 'lucide-react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 
 // ─── Config ────────────────────────────────────────────────────────────────────
@@ -79,6 +79,17 @@ function SnackPlayer({ snack, onClose, onFinish }) {
     return currentStep;
   };
   const detailedStep = getDetailedStep();
+
+  // Parse markdown formatting
+  const parseMarkdown = (text) => {
+    if (!text) return text;
+    return text.split(/(\*\*.*?\*\*)/g).map((part, i) => {
+      if (part.startsWith('**') && part.endsWith('**')) {
+        return <strong key={i}>{part.slice(2, -2)}</strong>;
+      }
+      return part;
+    });
+  };
 
   useEffect(() => {
     if (running && timeLeft > 0) {
@@ -183,13 +194,23 @@ function SnackPlayer({ snack, onClose, onFinish }) {
           <AnimatePresence mode="wait">
             <motion.div key={stepIdx} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}
               className="space-y-6 w-full">
-            <div className="w-36 h-36 mx-auto rounded-full flex items-center justify-center border border-white/[0.08] bg-zinc-900">
-              <div>
-                <p className="text-4xl font-black tabular-nums text-white">{formatTime(timeLeft)}</p>
-                {detailedStep?.sets && detailedStep?.reps && (
-                  <p className="text-xs text-zinc-500 mt-1">{detailedStep.sets}×{detailedStep.reps}</p>
+            {/* Timer + Sets/Reps – Großer & zentriert */}
+            <div className="w-full flex flex-col items-center gap-4">
+              <div className="w-56 h-56 mx-auto rounded-full flex flex-col items-center justify-center border-2 border-white/[0.1] bg-gradient-to-br from-zinc-900 to-zinc-800">
+                <p className="text-7xl font-black tabular-nums text-white">{formatTime(timeLeft)}</p>
+                {(currentStep?.sets || currentStep?.reps) && (
+                  <p className="text-sm text-zinc-400 mt-3 font-mono">
+                    {currentStep?.sets && `${currentStep.sets}×`}{currentStep?.reps && `${currentStep.reps}`}
+                    {currentStep?.rest_seconds && ` + ${currentStep.rest_seconds}s Pause`}
+                  </p>
                 )}
               </div>
+              {detailedStep?._exercise?.audio_url && (
+                <button className="flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-500/20 border border-cyan-500/40 text-cyan-400 hover:bg-cyan-500/30 transition-colors">
+                  <Volume2 className="w-4 h-4" />
+                  <span className="text-xs font-medium">Audio abspielen</span>
+                </button>
+              )}
             </div>
 
             {/* AXON Moment */}
@@ -212,7 +233,7 @@ function SnackPlayer({ snack, onClose, onFinish }) {
               <h5 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3">Ausführung</h5>
               <div className="text-sm text-slate-200 leading-relaxed space-y-2">
                 {(detailedStep?.description || detailedStep?.instruction)?.split('\n').map((line, i) => (
-                  line.trim() && <p key={i}>{line}</p>
+                  line.trim() && <p key={i}>{parseMarkdown(line)}</p>
                 ))}
               </div>
               {detailedStep?.breathing_instruction && (
