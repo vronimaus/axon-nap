@@ -179,9 +179,18 @@ Deno.serve(async (req) => {
       }
     }
 
-    // Create all snacks in DB
-    if (snacksToCreate.length > 0) {
-      await base44.entities.FitnessSnack.bulkCreate(snacksToCreate);
+    // Create all snacks in DB - ensure all required fields are present
+    const finalSnacks = snacksToCreate.map(snack => ({
+      ...snack,
+      subtitle: snack.subtitle || `${snack.type === 'strength_snack' ? 'Kraft' : snack.type === 'mobility_snack' ? 'Mobilität' : 'Trainings'}-Einheit für ${snack.readiness_gate} Status`,
+      description: snack.description || snack.sequence?.map(s => s.title).join(' → ') || 'Kurz und intensiv',
+      rhonda_patrick_principle: snack.rhonda_patrick_principle || snack.longevity_benefit || 'Hormetischer Reiz für zelluläre Adaption',
+      icon: snack.icon || '⚡',
+      color_class: snack.color_class || (snack.readiness_gate === 'red' ? 'red' : snack.readiness_gate === 'yellow' ? 'yellow' : 'emerald')
+    }));
+
+    if (finalSnacks.length > 0) {
+      await base44.entities.FitnessSnack.bulkCreate(finalSnacks);
     }
 
     return Response.json({
