@@ -274,7 +274,7 @@ export default function Flow() {
   };
   const typeConfig = TYPE_CONFIG[currentSequence?.type] || TYPE_CONFIG.mobility;
 
-  // Get detailed instruction - extract title from instruction
+  // Get detailed instruction - prioritize full Exercise entity data when available
   const getDetailedInstruction = () => {
     const instruction = currentSequence.instruction || '';
     
@@ -290,6 +290,19 @@ export default function Flow() {
       };
     }
     
+    // If a full Exercise entity is found (by exercise_id), use its complete data
+    if (currentExercise) {
+      return {
+        title: currentExercise.name || currentSequence.exercise_name || `Übung ${currentStep + 1}`,
+        instruction: currentExercise.description || currentSequence.exercise_description || instruction,
+        axonMoment: currentExercise.axon_moment || currentSequence.axon_moment,
+        expertTip: currentExercise.cues?.join('\n') || null,
+        purposeExplanation: currentExercise.purpose_explanation || currentSequence.purpose_explanation,
+        benefits: currentExercise.benefits || currentSequence.benefits,
+        breathingInstruction: currentExercise.breathing_instruction,
+      };
+    }
+
     // If exercise details are in the sequence, use them
     if (currentSequence.exercise_name) {
       return {
@@ -630,6 +643,12 @@ export default function Flow() {
               <div className="bg-slate-900/50 rounded-xl p-4 border border-slate-800 mb-6">
                  <h5 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">Ausführung</h5>
                  <InstructionWithGlossary instruction={detailedContent.instruction} />
+                 {detailedContent.breathingInstruction && (
+                   <div className="mt-4 pt-4 border-t border-slate-800">
+                     <p className="text-[10px] font-bold text-teal-400 uppercase tracking-widest mb-1">Atmung</p>
+                     <p className="text-xs text-slate-300 leading-relaxed">{detailedContent.breathingInstruction}</p>
+                   </div>
+                 )}
               </div>
 
               {/* Additional Context Grid */}
