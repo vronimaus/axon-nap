@@ -355,7 +355,8 @@ function SnackCard({ snack, isDoneToday, onStart, isLocked = false }) {
               <span className="text-[10px] font-bold uppercase tracking-widest text-zinc-500">{cfg.label}</span>
             </div>
             <h3 className="text-base font-bold text-white leading-tight">{snack.name}</h3>
-            {snack.subtitle && <p className="text-xs text-zinc-500 mt-0.5">{snack.subtitle}</p>}
+            {snack.subtitle && <p className="text-xs text-zinc-400 mt-0.5">{snack.subtitle}</p>}
+            {snack.description && <p className="text-xs text-zinc-500 mt-1 leading-relaxed">{snack.description}</p>}
           </div>
           <div className="flex flex-col items-end gap-1 flex-shrink-0">
             <div className="flex items-center gap-1">
