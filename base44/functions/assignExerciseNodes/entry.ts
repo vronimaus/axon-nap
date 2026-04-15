@@ -143,6 +143,18 @@ Deno.serve(async (req) => {
       }
     }
 
+    // Build report: group all exercises by their affected_nodes
+    const report = {};
+    for (const ex of exercises) {
+      const nodes = (ex.affected_nodes || []).length > 0 ? ex.affected_nodes : ['(keine Nodes)'];
+      for (const node of nodes) {
+        if (!report[node]) report[node] = [];
+        report[node].push({ exercise_id: ex.exercise_id, name: ex.name, category: ex.category });
+      }
+    }
+    // Sort keys
+    const sortedReport = Object.fromEntries(Object.entries(report).sort(([a], [b]) => a.localeCompare(b)));
+
     return Response.json({
       success: true,
       dry_run,
@@ -151,6 +163,7 @@ Deno.serve(async (req) => {
       skipped_count: skipped.length,
       updates,
       skipped,
+      report: sortedReport,
       message: dry_run
         ? `Dry Run: ${updates.length} Exercises würden aktualisiert.`
         : `Migriert: ${updates.length} Exercises aktualisiert.`

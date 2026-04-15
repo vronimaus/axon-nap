@@ -13,6 +13,7 @@ import ContentKanban from '../components/admin/ContentKanban';
 import MFRNodeTab from '../components/admin/MFRNodeTab';
 import FitnessSnackAdminTab from '../components/admin/FitnessSnackAdminTab';
 import RoutineMFRMappingTab from '../components/admin/RoutineMFRMappingTab';
+import ExerciseNodeMappingTab from '../components/admin/ExerciseNodeMappingTab';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
 // Prefix-Definitionen
@@ -405,6 +406,10 @@ export default function AdminHub() {
                 <Link2 className="w-3.5 h-3.5 shrink-0" />
                 <span>MFR-Mapping</span>
               </TabsTrigger>
+              <TabsTrigger value="node-mapping" className="flex items-center gap-1.5 whitespace-nowrap px-3 py-2 text-xs sm:text-sm">
+                <Map className="w-3.5 h-3.5 shrink-0" />
+                <span>Exercise-Nodes</span>
+              </TabsTrigger>
             </TabsList>
           </div>
 
@@ -475,6 +480,11 @@ export default function AdminHub() {
           {/* MFR Mapping Tab */}
           <TabsContent value="mfr-mapping" className="mt-0">
             <RoutineMFRMappingTab />
+          </TabsContent>
+
+          {/* Exercise-Node Mapping Tab */}
+          <TabsContent value="node-mapping" className="mt-0">
+            <ExerciseNodeMappingTab />
           </TabsContent>
           </Tabs>
       </div>
