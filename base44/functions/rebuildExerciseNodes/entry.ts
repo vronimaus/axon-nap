@@ -13,9 +13,9 @@ const CATEGORY_BASE_NODES = {
   squat:    ['GE-A', 'CX-P', 'TA-A'],
   carry:    ['CA-A', 'PV-P', 'LU-P', 'HU-A'],
   core:     ['LU-A', 'LU-P', 'PV-P', 'TH-P'],
-  mobility: ['TH-A', 'TH-P', 'CX-A'],   // Fallback; Keyword-Rules überschreiben spezifisch
+  mobility: [],  // Kein Fallback – Keyword-Rules müssen greifen, sonst leer
   mfr:      [],  // MFR-Nodes bleiben unverändert
-  neuro:    [],
+  neuro:    [],  // Kein Fallback – nur via Keyword (Gaze, Vestibular, Sakkaden, etc.)
   breath:   ['TH-A', 'LU-A'],
   other:    [],
 };
@@ -156,6 +156,39 @@ const KEYWORD_RULES = [
   { match: 'jump',               nodes: ['GE-A', 'TA-A', 'CX-P'],              replace: false },
   { match: 'box jump',           nodes: ['GE-A', 'TA-A', 'CX-P'],              replace: true },
   { match: 'broad jump',         nodes: ['GE-A', 'TA-A', 'CX-P'],              replace: true },
+  // KNÖCHEL / FUSS / WADE – spezifisch (bisher fehlend → Offset-Fehler)
+  { match: 'calf lower',         nodes: ['TA-P', 'PE-A'],                       replace: true },
+  { match: 'eccentric calf',     nodes: ['TA-P', 'PE-A'],                       replace: true },
+  { match: 'ankle',              nodes: ['TA-A', 'TA-P', 'PE-A'],              replace: true },
+  { match: 'toe raise',          nodes: ['TA-A', 'PE-A'],                       replace: true },
+  { match: 'dorsiflexion',       nodes: ['TA-A', 'PE-A'],                       replace: true },
+  { match: 'plantar',            nodes: ['TA-P', 'PE-A'],                       replace: true },
+  { match: 'achilles',           nodes: ['TA-P', 'PE-A'],                       replace: true },
+  { match: 'inversion',          nodes: ['TA-A', 'TA-P', 'PE-A'],              replace: true },
+  // SUSPENSION / SLING (bisher fehlend)
+  { match: 'suspended',          nodes: ['TH-A', 'HU-A', 'CA-A'],              replace: false },
+  { match: 'trx',                nodes: ['TH-A', 'HU-A', 'CA-A'],              replace: false },
+  // NEURO DRILLS – spezifische (gaze/vestibular bereits drin, aber weitere)
+  { match: 'stability drill',    nodes: ['CP-P'],                               replace: true },
+  { match: 'gaze stability',     nodes: ['CP-P', 'CL-P'],                      replace: true },
+  { match: 'propriozept',        nodes: ['CP-P', 'CL-P'],                      replace: true },
+  { match: 'reaktion',           nodes: ['CP-P'],                               replace: true },
+  // BWS / THORAX MOBILITY
+  { match: 'bws',                nodes: ['TH-A', 'TH-P', 'LU-A'],              replace: true },
+  { match: 'thoracic',           nodes: ['TH-A', 'TH-P'],                      replace: true },
+  { match: 'thorax',             nodes: ['TH-A', 'TH-P'],                      replace: true },
+  { match: 'extension drill',    nodes: ['TH-P', 'LU-P', 'CP-P'],             replace: true },
+  // MOBILITÄT HÜFTE – spezifisch
+  { match: 'hip mobility',       nodes: ['CX-A', 'CX-P', 'LA-CX'],            replace: true },
+  { match: 'groin',              nodes: ['CX-A', 'LA-CX', 'GE-A'],            replace: true },
+  { match: 'adductor',           nodes: ['CX-A', 'LA-CX'],                     replace: true },
+  { match: 'abductor',           nodes: ['LA-CX', 'CX-P'],                     replace: true },
+  { match: 'it band',            nodes: ['LA-CX', 'GE-P'],                     replace: true },
+  { match: 'it-band',            nodes: ['LA-CX', 'GE-P'],                     replace: true },
+  // WIRBELSÄULE / RÜCKEN
+  { match: 'spine',              nodes: ['TH-P', 'LU-A', 'LU-P'],             replace: false },
+  { match: 'lumbar',             nodes: ['LU-A', 'LU-P', 'PV-P'],             replace: true },
+  { match: 'lower back',        nodes: ['LU-A', 'LU-P', 'PV-P'],             replace: true },
 ];
 
 // ============================================================
