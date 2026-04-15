@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
+import { jsPDF } from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 const VALID_NODES = [
   'CP-P', 'CL-P', 'TH-P', 'LU-P', 'PV-P', 'HU-A', 'CU-A', 'CA-A',
@@ -93,6 +95,53 @@ export default function ExerciseNodeMappingTab() {
 
   const displayed = getDisplayedExercises();
 
+  const downloadPDF = () => {
+    const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
+
+    doc.setFontSize(16);
+    doc.setTextColor(40, 40, 40);
+    doc.text('AXON – Exercise Node Mapping', 14, 16);
+
+    doc.setFontSize(9);
+    doc.setTextColor(120, 120, 120);
+    const filterLabel = showNoNodes
+      ? 'Ohne Nodes'
+      : selectedNode === 'ALL'
+      ? 'Alle Exercises'
+      : `Node: ${selectedNode} – ${NODE_LABELS[selectedNode] || ''}`;
+    doc.text(`Filter: ${filterLabel}  |  ${displayed.length} Exercises  |  Generiert: ${new Date().toLocaleDateString('de-DE')}`, 14, 22);
+
+    const rows = displayed.map(ex => [
+      ex.exercise_id || '',
+      ex.name || '',
+      ex.category || '',
+      (ex.affected_nodes || []).join(', ') || '—',
+    ]);
+
+    autoTable(doc, {
+      startY: 26,
+      head: [['Exercise ID', 'Name', 'Kategorie', 'Affected Nodes']],
+      body: rows,
+      styles: { fontSize: 7.5, cellPadding: 2 },
+      headStyles: { fillColor: [30, 30, 30], textColor: 255, fontStyle: 'bold' },
+      alternateRowStyles: { fillColor: [248, 248, 248] },
+      columnStyles: {
+        0: { cellWidth: 48, font: 'courier' },
+        1: { cellWidth: 90 },
+        2: { cellWidth: 28 },
+        3: { cellWidth: 'auto', font: 'courier' },
+      },
+    });
+
+    const filename = showNoNodes
+      ? 'axon_exercises_ohne_nodes.pdf'
+      : selectedNode === 'ALL'
+      ? 'axon_exercises_alle.pdf'
+      : `axon_exercises_${selectedNode}.pdf`;
+
+    doc.save(filename);
+  };
+
   if (isLoading) {
     return <div className="text-zinc-500 text-sm p-6">Lade Exercises…</div>;
   }
@@ -117,6 +166,12 @@ export default function ExerciseNodeMappingTab() {
 
       {/* Filter bar */}
       <div className="flex flex-wrap gap-2 items-center">
+        <button
+          onClick={downloadPDF}
+          className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-emerald-600/20 border border-emerald-500/30 text-emerald-400 text-xs font-medium hover:bg-emerald-600/30 transition-colors"
+        >
+          ⬇ PDF Download ({displayed.length})
+        </button>
         <input
           type="text"
           placeholder="Suche nach Name, ID, Kategorie…"
