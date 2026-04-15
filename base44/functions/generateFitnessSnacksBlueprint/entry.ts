@@ -83,14 +83,21 @@ Deno.serve(async (req) => {
       if (!step.title) return step;
       
       const titleLower = step.title.toLowerCase();
-      // Try to find matching exercise by name or description similarity
-      const matched = allExercises.find(ex => {
+      const instructionLower = (step.instruction || '').toLowerCase();
+      
+      // Try exact or partial name match first
+      let matched = allExercises.find(ex => {
         const nameLower = (ex.name || '').toLowerCase();
-        const idLower = (ex.exercise_id || '').toLowerCase();
-        return nameLower.includes(titleLower) || 
-               titleLower.includes(nameLower) ||
-               idLower.includes(titleLower.split(' ')[0]);
+        return nameLower.includes(titleLower) || titleLower.includes(nameLower);
       });
+
+      // If no match, try keyword matching in description/instruction
+      if (!matched && step.instruction) {
+        matched = allExercises.find(ex => {
+          const nameLower = (ex.name || '').toLowerCase();
+          return instructionLower.includes(nameLower) || nameLower.split(' ').some(word => instructionLower.includes(word));
+        });
+      }
 
       if (matched) {
         return {
@@ -98,14 +105,20 @@ Deno.serve(async (req) => {
           exercise_id: matched.exercise_id,
           exercise_name: matched.name,
           exercise_description: matched.description || step.instruction,
-          axon_moment: matched.axon_moment,
+          axon_moment: matched.axon_moment || step.axon_moment,
           cues: matched.cues,
           breathing_instruction: matched.breathing_instruction,
           purpose_explanation: matched.purpose_explanation,
           benefits: matched.benefits
         };
       }
-      return step;
+      
+      // If still no match, keep the original instruction as fallback
+      return {
+        ...step,
+        exercise_description: step.instruction,
+        exercise_name: step.title
+      };
     };
 
     for (const state of readinessStates) {
