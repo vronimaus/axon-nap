@@ -56,29 +56,28 @@ function SnackPlayer({ snack, onClose, onFinish }) {
   const totalSteps = steps.length;
   const isCooldown = currentStep?.type === 'mfr_cooldown' || currentStep?.type === 'breath_cooldown';
 
-  // Try to find Exercise data by title keyword match
-  const getDetailedStep = () => {
-    if (!currentStep) return currentStep;
-    const stepTitle = (currentStep.title || '').toLowerCase();
+  // Enrich current step with Exercise data from entity
+  const enrichStepData = (step) => {
+    if (!step || !exercises.length) return step;
+    const stepTitle = (step.title || '').toLowerCase();
     const matched = exercises.find(ex =>
       stepTitle.includes((ex.name || '').toLowerCase()) ||
       (ex.exercise_id || '').toLowerCase().includes(stepTitle.split(' ')[0].toLowerCase())
     );
-    if (matched) {
-      return {
-        ...currentStep,
-        description: matched.description || currentStep.instruction,
-        axon_moment: matched.axon_moment,
-        cues: matched.cues,
-        breathing_instruction: matched.breathing_instruction,
-        purpose_explanation: matched.purpose_explanation,
-        benefits: matched.benefits,
-        _exercise: matched
-      };
-    }
-    return currentStep;
+    return matched ? {
+      ...step,
+      name: matched.name,
+      description: matched.description || step.instruction || step.description,
+      axon_moment: matched.axon_moment || step.axon_moment,
+      cues: matched.cues || step.cues,
+      breathing_instruction: matched.breathing_instruction || step.breathing_instruction,
+      purpose_explanation: matched.purpose_explanation || step.purpose_explanation,
+      benefits: matched.benefits || step.benefits,
+      audio_url: matched.audio_url,
+      _exercise: matched
+    } : step;
   };
-  const detailedStep = getDetailedStep();
+  const detailedStep = enrichStepData(currentStep);
 
   // Parse markdown formatting
   const parseMarkdown = (text) => {
@@ -161,151 +160,161 @@ function SnackPlayer({ snack, onClose, onFinish }) {
 
   return (
     <div className="fixed inset-0 z-50 bg-[#111111] flex flex-col">
-      {/* Header */}
-      <div className="px-5 py-6 border-b border-white/[0.06]">
-        <div className="flex items-start justify-between mb-4">
-          <div className="flex-1">
-            <p className="text-[10px] font-bold uppercase tracking-widest text-zinc-500 mb-2">Snack Session</p>
-            <h2 className="text-xl font-bold text-white">{snack.name}</h2>
+      {/* ─── HEADER: Snack Info + Step Counter ─── */}
+      <div className="px-6 py-5 border-b border-white/[0.06] bg-gradient-to-b from-zinc-800/20 to-transparent">
+        <div className="flex items-start justify-between gap-4 mb-3">
+          <div className="flex-1 min-w-0">
+            <p className="text-[9px] font-bold uppercase tracking-[0.15em] text-zinc-600 mb-1">Snack Session</p>
+            <h1 className="text-lg font-black text-white truncate">{snack.name}</h1>
+            {snack.subtitle && <p className="text-xs text-zinc-500 mt-0.5 truncate">{snack.subtitle}</p>}
           </div>
-          <button onClick={onClose} className="p-2 rounded-xl bg-zinc-800 text-zinc-400 hover:text-white flex-shrink-0">
+          <button onClick={onClose} className="p-2 rounded-xl hover:bg-zinc-800 text-zinc-500 hover:text-zinc-300 flex-shrink-0 transition-colors">
             <X className="w-5 h-5" />
           </button>
         </div>
-        <div className="text-sm text-zinc-400 mb-4">{snack.subtitle}</div>
-        <div className="flex items-center justify-between">
-          <div className="text-xs text-zinc-500">
-            <span className="font-mono font-bold text-zinc-300">Step {stepIdx + 1}/{totalSteps}</span>
-            {isCooldown && <span className="ml-2 text-teal-400">• COOL-DOWN</span>}
-          </div>
+        
+        {/* Step Indicator */}
+        <div className="flex items-center justify-between text-xs">
+          <span className="font-mono font-bold text-zinc-300">
+            Step {stepIdx + 1} / {totalSteps}
+          </span>
+          {isCooldown && <span className="text-teal-400 font-medium">• Cool-Down</span>}
         </div>
       </div>
 
-      {/* Progress bar */}
-      <div className="h-px bg-zinc-800">
-        <motion.div className="h-full bg-zinc-400" style={{ width: `${progress}%` }} transition={{ duration: 0.5 }} />
+      {/* ─── PROGRESS ─── */}
+      <div className="h-1 bg-zinc-800/50">
+        <motion.div className="h-full bg-gradient-to-r from-cyan-500 to-zinc-400" initial={{ width: 0 }} animate={{ width: `${progress}%` }} transition={{ duration: 0.3 }} />
       </div>
 
-      {/* Step dots */}
-      <div className="flex gap-1.5 px-5 py-3 overflow-x-auto">
-        {steps.map((s, i) => (
-          <div key={i} className={`h-1 flex-1 rounded-full transition-all ${
-            i < stepIdx ? 'bg-zinc-400' : i === stepIdx ? 'bg-zinc-200' : 'bg-zinc-800'
-          }`} />
-        ))}
-      </div>
-
-      {/* Main */}
-      <div className="flex-1 flex flex-col overflow-y-auto px-6 py-6">
-        <div className="flex flex-col items-center justify-start space-y-6 w-full max-w-sm mx-auto">
+      {/* ─── CONTENT AREA ─── */}
+      <div className="flex-1 overflow-y-auto px-6 py-8">
+        <div className="max-w-2xl mx-auto">
           <AnimatePresence mode="wait">
-            <motion.div key={stepIdx} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}
-              className="space-y-6 w-full">
-            {/* Timer + Sets/Reps – Großer & zentriert */}
-            <div className="w-full flex flex-col items-center gap-4">
-              <div className="w-56 h-56 mx-auto rounded-full flex flex-col items-center justify-center border-2 border-white/[0.1] bg-gradient-to-br from-zinc-900 to-zinc-800">
-                <p className="text-7xl font-black tabular-nums text-white">{formatTime(timeLeft)}</p>
+            <motion.div
+              key={stepIdx}
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -12 }}
+              transition={{ duration: 0.25 }}
+              className="space-y-6"
+            >
+              {/* ─── 1. TIMER (Hero) ─── */}
+              <div className="flex justify-center">
+                <div className="relative w-48 h-48 rounded-full border-2 border-white/10 bg-gradient-to-br from-zinc-900 to-zinc-800 flex items-center justify-center shadow-lg">
+                  <div className="text-center">
+                    <p className="text-6xl font-black tabular-nums text-white leading-none">{formatTime(timeLeft)}</p>
+                    <p className="text-xs text-zinc-500 mt-2 uppercase tracking-widest font-semibold">{currentStep?.type || 'Exercise'}</p>
+                  </div>
+                </div>
               </div>
-              
-              {/* Step-Übersicht */}
-              <div className="w-full text-center">
-                <p className="text-xs text-zinc-500 uppercase tracking-widest mb-2">Step {stepIdx + 1} von {totalSteps}</p>
-                <div className="flex gap-1.5 justify-center flex-wrap">
+
+              {/* ─── 2. EXERCISE TITLE + METADATA ─── */}
+              <div className="text-center space-y-2">
+                <h2 className="text-3xl font-black text-white uppercase tracking-tight leading-tight">
+                  {detailedStep?.name || currentStep?.title}
+                </h2>
+                {currentStep?.phase && (
+                  <p className="text-sm text-zinc-400 font-semibold">{currentStep.phase}</p>
+                )}
+                {(currentStep?.sets || currentStep?.reps) && (
+                  <div className="inline-flex items-center gap-4 px-4 py-2 rounded-lg bg-zinc-800/50 border border-white/5">
+                    {currentStep.sets && <span className="text-xs text-zinc-300"><span className="font-bold text-white">{currentStep.sets}</span> Sets</span>}
+                    {currentStep.reps && <span className="text-xs text-zinc-300"><span className="font-bold text-white">{currentStep.reps}</span> Reps</span>}
+                  </div>
+                )}
+              </div>
+
+              {/* ─── 3. STEP NAVIGATOR ─── */}
+              <div className="space-y-2">
+                <p className="text-xs text-zinc-500 font-bold uppercase tracking-widest text-center">Alle Steps</p>
+                <div className="flex flex-wrap gap-1.5 justify-center">
                   {steps.map((s, i) => (
                     <button
                       key={i}
                       onClick={() => setStepIdx(i)}
-                      className={`px-2 py-1 rounded text-xs font-mono transition-all ${
+                      className={`px-2.5 py-1 rounded-lg text-xs font-mono font-bold transition-all ${
                         i === stepIdx
-                          ? 'bg-zinc-200 text-zinc-900'
+                          ? 'bg-zinc-100 text-zinc-900'
                           : i < stepIdx
-                          ? 'bg-zinc-600 text-zinc-300'
-                          : 'bg-zinc-800 text-zinc-500 hover:bg-zinc-700'
+                          ? 'bg-zinc-700 text-zinc-300'
+                          : 'bg-zinc-800 text-zinc-500 hover:bg-zinc-700 hover:text-zinc-400'
                       }`}
                     >
-                      {s.title}
+                      {i + 1}
                     </button>
                   ))}
                 </div>
               </div>
-              
-              {detailedStep?._exercise?.audio_url && (
-                <button className="flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-500/20 border border-cyan-500/40 text-cyan-400 hover:bg-cyan-500/30 transition-colors">
-                  <Volume2 className="w-4 h-4" />
-                  <span className="text-xs font-medium">Audio abspielen</span>
-                </button>
-              )}
-            </div>
 
-            {/* Exercise Title + Phase */}
-            <div className="text-center mb-2">
-              <p className="text-xs text-zinc-500 font-mono uppercase tracking-widest mb-1">{currentStep?.phase}</p>
-              <h2 className="text-2xl font-bold text-white uppercase tracking-tight leading-none">
-                {detailedStep?.name || currentStep?.title}
-              </h2>
-            </div>
-
-            {/* AXON Moment */}
-            {detailedStep?.axon_moment && (
-              <div className="relative overflow-hidden rounded-xl border border-cyan-500/50 bg-cyan-950/10 p-4 shadow-[0_0_20px_rgba(6,182,212,0.15)]">
-                <div className="flex items-start gap-3 relative z-10">
-                  <div className="w-6 h-6 rounded-lg bg-cyan-500/20 flex items-center justify-center flex-shrink-0">
-                    <span className="text-xs font-bold text-cyan-400">💡</span>
-                  </div>
-                  <div className="text-left">
-                    <h5 className="text-xs font-bold text-cyan-400 uppercase tracking-widest mb-1">AXON Moment</h5>
-                    <p className="text-sm font-medium text-cyan-100 italic leading-relaxed">"{detailedStep.axon_moment}"</p>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* Ausführung */}
-            <div className="bg-slate-900/50 rounded-xl p-4 border border-slate-800 text-left">
-              <h5 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3">Ausführung</h5>
-              <div className="text-sm text-slate-200 leading-relaxed space-y-2">
-                {(detailedStep?.description || detailedStep?.instruction)?.split('\n').map((line, i) => (
-                  line.trim() && <p key={i}>{parseMarkdown(line)}</p>
-                ))}
-              </div>
-              {detailedStep?.breathing_instruction && (
-                <div className="mt-4 pt-4 border-t border-slate-800">
-                  <p className="text-[10px] font-bold text-teal-400 uppercase tracking-widest mb-1">Atmung</p>
-                  <p className="text-xs text-slate-300 leading-relaxed">{detailedStep.breathing_instruction}</p>
+              {/* ─── 4. AUDIO BUTTON ─── */}
+              {detailedStep?.audio_url && (
+                <div className="flex justify-center">
+                  <button className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-cyan-500/20 border border-cyan-500/40 text-cyan-400 hover:bg-cyan-500/30 hover:border-cyan-500/60 transition-all font-semibold text-sm">
+                    <Volume2 className="w-4 h-4" />
+                    Audio abspielen
+                  </button>
                 </div>
               )}
-            </div>
 
-            {/* Coach-Hinweise */}
-            {(detailedStep?.cue || detailedStep?.cues?.length > 0) && (
-              <div className="rounded-xl border border-white/[0.06] bg-zinc-900 px-4 py-3 text-left">
-                <p className="text-[10px] text-zinc-500 uppercase tracking-widest mb-2">Coach-Hinweise</p>
-                {detailedStep?.cue && (
-                  <p className="text-sm text-zinc-300 font-medium italic mb-2">"{detailedStep.cue}"</p>
-                )}
-                {detailedStep?.cues?.map((cue, i) => (
-                  <p key={i} className="text-xs text-zinc-400 leading-relaxed mb-1">• {cue}</p>
-                ))}
-              </div>
-            )}
+              {/* ─── 5. AXON MOMENT ─── */}
+              {detailedStep?.axon_moment && (
+                <div className="rounded-xl border border-cyan-500/50 bg-cyan-950/10 p-4 space-y-2">
+                  <p className="text-xs font-bold text-cyan-400 uppercase tracking-widest">💡 AXON Moment</p>
+                  <p className="text-sm text-cyan-100 italic leading-relaxed">"{detailedStep.axon_moment}"</p>
+                </div>
+              )}
 
-            {/* Purpose & Benefits */}
-            {(detailedStep?.purpose_explanation || detailedStep?.benefits) && (
-              <div className="grid grid-cols-1 gap-3">
-                {detailedStep?.purpose_explanation && (
-                  <div className="bg-slate-800/50 border border-slate-700/50 rounded-xl p-3 text-left">
-                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Warum?</p>
-                    <p className="text-xs text-slate-300 leading-relaxed">{detailedStep.purpose_explanation}</p>
+              {/* ─── 6. DESCRIPTION ─── */}
+              <div className="space-y-3">
+                <div className="rounded-lg bg-slate-900/50 border border-slate-800/80 p-4">
+                  <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3">Ausführung</p>
+                  <div className="text-sm text-slate-200 leading-relaxed space-y-2">
+                    {(detailedStep?.description || detailedStep?.instruction)?.split('\n').map((line, i) => (
+                      line.trim() && <p key={i}>{parseMarkdown(line)}</p>
+                    ))}
                   </div>
-                )}
-                {detailedStep?.benefits && (
-                  <div className="bg-slate-800/50 border border-slate-700/50 rounded-xl p-3 text-left">
-                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Du wirst spüren</p>
-                    <p className="text-xs text-slate-300 leading-relaxed">{detailedStep.benefits}</p>
+                </div>
+                
+                {/* ─── 7. BREATHING ─── */}
+                {detailedStep?.breathing_instruction && (
+                  <div className="rounded-lg bg-teal-950/30 border border-teal-800/50 p-3">
+                    <p className="text-xs font-bold text-teal-400 uppercase tracking-widest mb-2">🫁 Atmung</p>
+                    <p className="text-sm text-teal-100">{detailedStep.breathing_instruction}</p>
                   </div>
                 )}
               </div>
-            )}
+
+              {/* ─── 8. CUES ─── */}
+              {(detailedStep?.cue || detailedStep?.cues?.length > 0) && (
+                <div className="rounded-lg border border-white/5 bg-zinc-800/30 p-4 space-y-2">
+                  <p className="text-xs font-bold text-zinc-400 uppercase tracking-widest">Coach Cues</p>
+                  {detailedStep?.cue && (
+                    <p className="text-sm text-zinc-300 italic">"{detailedStep.cue}"</p>
+                  )}
+                  {detailedStep?.cues?.map((cue, i) => (
+                    <p key={i} className="text-sm text-zinc-400">• {cue}</p>
+                  ))}
+                </div>
+              )}
+
+              {/* ─── 9. PURPOSE & BENEFITS ─── */}
+              {(detailedStep?.purpose_explanation || detailedStep?.benefits) && (
+                <div className="grid grid-cols-1 gap-3">
+                  {detailedStep?.purpose_explanation && (
+                    <div className="rounded-lg bg-slate-800/40 border border-slate-700/50 p-3">
+                      <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Warum?</p>
+                      <p className="text-sm text-slate-300">{detailedStep.purpose_explanation}</p>
+                    </div>
+                  )}
+                  {detailedStep?.benefits && (
+                    <div className="rounded-lg bg-slate-800/40 border border-slate-700/50 p-3">
+                      <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Du wirst spüren</p>
+                      <p className="text-sm text-slate-300">{detailedStep.benefits}</p>
+                    </div>
+                  )}
+                </div>
+              )}
             </motion.div>
           </AnimatePresence>
         </div>
