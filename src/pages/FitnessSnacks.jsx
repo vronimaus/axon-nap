@@ -178,10 +178,11 @@ function SnackPlayer({ snack, onClose, onFinish }) {
       </div>
 
       {/* Main */}
-      <div className="flex-1 flex flex-col items-center justify-center px-6 text-center space-y-6">
-        <AnimatePresence mode="wait">
-          <motion.div key={stepIdx} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}
-            className="space-y-6 w-full max-w-sm">
+      <div className="flex-1 flex flex-col overflow-y-auto px-6 py-6">
+        <div className="flex flex-col items-center justify-start space-y-6 w-full max-w-sm mx-auto">
+          <AnimatePresence mode="wait">
+            <motion.div key={stepIdx} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}
+              className="space-y-6 w-full">
             <div className="w-36 h-36 mx-auto rounded-full flex items-center justify-center border border-white/[0.08] bg-zinc-900">
               <div>
                 <p className="text-4xl font-black tabular-nums text-white">{formatTime(timeLeft)}</p>
@@ -209,7 +210,11 @@ function SnackPlayer({ snack, onClose, onFinish }) {
             {/* Ausführung */}
             <div className="bg-slate-900/50 rounded-xl p-4 border border-slate-800 text-left">
               <h5 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3">Ausführung</h5>
-              <p className="text-sm text-slate-200 leading-relaxed">{detailedStep?.description || detailedStep?.instruction}</p>
+              <div className="text-sm text-slate-200 leading-relaxed space-y-2">
+                {(detailedStep?.description || detailedStep?.instruction)?.split('\n').map((line, i) => (
+                  line.trim() && <p key={i}>{line}</p>
+                ))}
+              </div>
               {detailedStep?.breathing_instruction && (
                 <div className="mt-4 pt-4 border-t border-slate-800">
                   <p className="text-[10px] font-bold text-teal-400 uppercase tracking-widest mb-1">Atmung</p>
@@ -248,8 +253,9 @@ function SnackPlayer({ snack, onClose, onFinish }) {
                 )}
               </div>
             )}
-          </motion.div>
-        </AnimatePresence>
+            </motion.div>
+          </AnimatePresence>
+        </div>
       </div>
 
       {/* Controls */}
