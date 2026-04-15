@@ -15,6 +15,36 @@ Deno.serve(async (req) => {
       base44.entities.MFRNode.list()
     ]);
 
+    // Helper: Fuzzy string similarity
+    const similarity = (str1, str2) => {
+      const s1 = (str1 || '').toLowerCase().trim();
+      const s2 = (str2 || '').toLowerCase().trim();
+      if (s1 === s2) return 1;
+      const longer = s1.length > s2.length ? s1 : s2;
+      const shorter = s1.length > s2.length ? s2 : s1;
+      if (longer.length === 0) return 1;
+      const editDistance = levenshteinDistance(longer, shorter);
+      return (longer.length - editDistance) / longer.length;
+    };
+
+    const levenshteinDistance = (s1, s2) => {
+      const costs = [];
+      for (let i = 0; i <= s1.length; i++) {
+        let lastValue = i;
+        for (let j = 0; j <= s2.length; j++) {
+          if (i === 0) costs[j] = j;
+          else if (j > 0) {
+            let newValue = costs[j - 1];
+            if (s1.charAt(i - 1) !== s2.charAt(j - 1)) newValue = Math.min(Math.min(newValue, lastValue), costs[j]) + 1;
+            costs[j - 1] = lastValue;
+            lastValue = newValue;
+          }
+        }
+        if (i > 0) costs[s2.length] = lastValue;
+      }
+      return costs[s2.length];
+    };
+
     // Helper to categorize exercises
     const getExercisesByCategory = (categories) => {
       return exercises.filter(ex => categories.includes(ex.category));
@@ -85,17 +115,41 @@ Deno.serve(async (req) => {
       const titleLower = step.title.toLowerCase();
       const instructionLower = (step.instruction || '').toLowerCase();
       
-      // Try exact or partial name match first
+      // Strategy 1: Exact name match
       let matched = allExercises.find(ex => {
         const nameLower = (ex.name || '').toLowerCase();
-        return nameLower.includes(titleLower) || titleLower.includes(nameLower);
+        return nameLower === titleLower;
       });
 
-      // If no match, try keyword matching in description/instruction
+      // Strategy 2: Partial name match (one contains the other)
+      if (!matched) {
+        matched = allExercises.find(ex => {
+          const nameLower = (ex.name || '').toLowerCase();
+          return nameLower.includes(titleLower) || titleLower.includes(nameLower);
+        });
+      }
+
+      // Strategy 3: Fuzzy matching on name + instruction keywords
+      if (!matched) {
+        let bestScore = 0;
+        allExercises.forEach(ex => {
+          const nameScore = similarity(ex.name || '', step.title);
+          const descScore = step.instruction ? similarity(ex.description || '', step.instruction) : 0;
+          const avgScore = (nameScore + descScore) / 2;
+          if (avgScore > bestScore && avgScore > 0.6) {
+            bestScore = avgScore;
+            matched = ex;
+          }
+        });
+      }
+
+      // Strategy 4: Keyword matching in instruction (if instruction mentions exercise name)
       if (!matched && step.instruction) {
         matched = allExercises.find(ex => {
           const nameLower = (ex.name || '').toLowerCase();
-          return instructionLower.includes(nameLower) || nameLower.split(' ').some(word => instructionLower.includes(word));
+          const idLower = (ex.exercise_id || '').toLowerCase();
+          return instructionLower.includes(nameLower) || instructionLower.includes(idLower) || 
+                 nameLower.split(' ').some(word => word.length > 2 && instructionLower.includes(word));
         });
       }
 
@@ -106,14 +160,16 @@ Deno.serve(async (req) => {
           exercise_name: matched.name,
           exercise_description: matched.description || step.instruction,
           axon_moment: matched.axon_moment || step.axon_moment,
-          cues: matched.cues,
+          cues: matched.cues || [],
           breathing_instruction: matched.breathing_instruction,
           purpose_explanation: matched.purpose_explanation,
-          benefits: matched.benefits
+          benefits: matched.benefits,
+          category: matched.category,
+          difficulty: matched.difficulty
         };
       }
       
-      // If still no match, keep the original instruction as fallback
+      // Fallback: Keep original instruction
       return {
         ...step,
         exercise_description: step.instruction,
@@ -169,8 +225,12 @@ Deno.serve(async (req) => {
               ...response,
               sequence: enrichedSequence,
               is_active: true,
-              required_equipment: 'none',
-              color_class: state === 'red' ? 'red' : state === 'yellow' ? 'yellow' : 'emerald'
+              required_equipment: response.required_equipment || 'none',
+              color_class: state === 'red' ? 'red' : state === 'yellow' ? 'yellow' : 'emerald',
+              type: response.type || 'strength_snack',
+              hormesis_type: response.hormesis_type || 'mechanical',
+              intensity: response.intensity || 'medium',
+              readiness_gate: response.readiness_gate || state
             });
           }
         } catch (err) {
@@ -179,14 +239,23 @@ Deno.serve(async (req) => {
       }
     }
 
-    // Create all snacks in DB - ensure all required fields are present
+    // Create all snacks in DB - ensure all required fields are present with fallbacks
     const finalSnacks = snacksToCreate.map(snack => ({
-      ...snack,
+      name: snack.name || 'Unnamed Snack',
       subtitle: snack.subtitle || `${snack.type === 'strength_snack' ? 'Kraft' : snack.type === 'mobility_snack' ? 'Mobilität' : 'Trainings'}-Einheit für ${snack.readiness_gate} Status`,
-      description: snack.description || snack.sequence?.map(s => s.title).join(' → ') || 'Kurz und intensiv',
+      description: snack.description || snack.sequence?.map(s => s.exercise_name || s.title).join(' → ') || 'Kurz und intensiv',
+      duration_minutes: snack.duration_minutes || 5,
+      type: snack.type || 'strength_snack',
+      hormesis_type: snack.hormesis_type || 'mechanical',
+      intensity: snack.intensity || 'medium',
+      readiness_gate: snack.readiness_gate || 'green',
+      sequence: snack.sequence || [],
+      longevity_benefit: snack.longevity_benefit || 'Zelluläre Adaptivität',
       rhonda_patrick_principle: snack.rhonda_patrick_principle || snack.longevity_benefit || 'Hormetischer Reiz für zelluläre Adaption',
       icon: snack.icon || '⚡',
-      color_class: snack.color_class || (snack.readiness_gate === 'red' ? 'red' : snack.readiness_gate === 'yellow' ? 'yellow' : 'emerald')
+      color_class: snack.color_class || (snack.readiness_gate === 'red' ? 'red' : snack.readiness_gate === 'yellow' ? 'yellow' : 'emerald'),
+      required_equipment: snack.required_equipment || 'none',
+      is_active: true
     }));
 
     if (finalSnacks.length > 0) {
