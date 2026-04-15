@@ -58,24 +58,45 @@ function SnackPlayer({ snack, onClose, onFinish }) {
 
   // Enrich current step with Exercise data from entity
   const enrichStepData = (step) => {
-    if (!step || !exercises.length) return step;
-    const stepTitle = (step.title || '').toLowerCase();
+    if (!step) return step;
+    
+    // Use enriched data from snack sequence first (already has exercise_description from backend)
+    const enrichedStep = {
+      ...step,
+      name: step.exercise_name || step.title,
+      description: step.exercise_description || step.instruction || step.description,
+      axon_moment: step.axon_moment,
+      cues: step.cues || [],
+      breathing_instruction: step.breathing_instruction,
+      purpose_explanation: step.purpose_explanation,
+      benefits: step.benefits,
+    };
+
+    // Try to enhance with full Exercise entity if we have it
+    if (!exercises.length) return enrichedStep;
+    
+    const stepTitle = (step.exercise_name || step.title || '').toLowerCase();
     const matched = exercises.find(ex =>
       stepTitle.includes((ex.name || '').toLowerCase()) ||
       (ex.exercise_id || '').toLowerCase().includes(stepTitle.split(' ')[0].toLowerCase())
     );
-    return matched ? {
-      ...step,
-      name: matched.name,
-      description: matched.description || step.instruction || step.description,
-      axon_moment: matched.axon_moment || step.axon_moment,
-      cues: matched.cues || step.cues,
-      breathing_instruction: matched.breathing_instruction || step.breathing_instruction,
-      purpose_explanation: matched.purpose_explanation || step.purpose_explanation,
-      benefits: matched.benefits || step.benefits,
-      audio_url: matched.audio_url,
-      _exercise: matched
-    } : step;
+
+    if (matched) {
+      return {
+        ...enrichedStep,
+        name: matched.name,
+        description: matched.description || enrichedStep.description,
+        axon_moment: matched.axon_moment || enrichedStep.axon_moment,
+        cues: matched.cues || enrichedStep.cues,
+        breathing_instruction: matched.breathing_instruction || enrichedStep.breathing_instruction,
+        purpose_explanation: matched.purpose_explanation || enrichedStep.purpose_explanation,
+        benefits: matched.benefits || enrichedStep.benefits,
+        audio_url: matched.audio_url,
+        _exercise: matched
+      };
+    }
+
+    return enrichedStep;
   };
   const detailedStep = enrichStepData(currentStep);
 
