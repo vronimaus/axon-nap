@@ -78,6 +78,36 @@ Deno.serve(async (req) => {
     const readinessStates = ['red', 'yellow', 'green'];
     const snacksPerState = 2; // 2 Snacks pro State = 6 total
 
+    // Helper: match and enrich step with Exercise entity data
+    const enrichStepWithExerciseData = (step, allExercises) => {
+      if (!step.title) return step;
+      
+      const titleLower = step.title.toLowerCase();
+      // Try to find matching exercise by name or description similarity
+      const matched = allExercises.find(ex => {
+        const nameLower = (ex.name || '').toLowerCase();
+        const idLower = (ex.exercise_id || '').toLowerCase();
+        return nameLower.includes(titleLower) || 
+               titleLower.includes(nameLower) ||
+               idLower.includes(titleLower.split(' ')[0]);
+      });
+
+      if (matched) {
+        return {
+          ...step,
+          exercise_id: matched.exercise_id,
+          exercise_name: matched.name,
+          exercise_description: matched.description || step.instruction,
+          axon_moment: matched.axon_moment,
+          cues: matched.cues,
+          breathing_instruction: matched.breathing_instruction,
+          purpose_explanation: matched.purpose_explanation,
+          benefits: matched.benefits
+        };
+      }
+      return step;
+    };
+
     for (const state of readinessStates) {
       for (let i = 0; i < snacksPerState; i++) {
         try {
@@ -117,8 +147,14 @@ Deno.serve(async (req) => {
           });
 
           if (response && response.name) {
+            // Enrich each step with full Exercise entity data
+            const enrichedSequence = response.sequence.map(step => 
+              enrichStepWithExerciseData(step, exercises)
+            );
+
             snacksToCreate.push({
               ...response,
+              sequence: enrichedSequence,
               is_active: true,
               required_equipment: 'none',
               color_class: state === 'red' ? 'red' : state === 'yellow' ? 'yellow' : 'emerald'
