@@ -241,7 +241,7 @@ function SnackPlayer({ snack, onClose, onFinish }) {
             <div className="text-center mb-2">
               <p className="text-xs text-zinc-500 font-mono uppercase tracking-widest mb-1">{currentStep?.phase}</p>
               <h2 className="text-2xl font-bold text-white uppercase tracking-tight leading-none">
-                {detailedContent.title}
+                {detailedStep?.name || currentStep?.title}
               </h2>
             </div>
 
