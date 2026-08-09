@@ -502,169 +502,183 @@ export default function CommandCenter({ user, handleDestinationClick }) {
   const greeting = h < 12 ? 'Guten Morgen' : h < 18 ? 'Guten Tag' : 'Guten Abend';
 
   return (
-    <>
-      <div className="min-h-screen bg-[#111111] pb-28 md:pb-8">
-        <div className="max-w-5xl mx-auto px-4 pt-6">
+    <div className="min-h-screen bg-[#111111] pb-28 md:pb-8">
+      <div className="max-w-2xl mx-auto px-4 pt-6">
 
-          {/* Header */}
-          <div className="mb-4">
-            <h1 className="text-2xl font-light text-white tracking-tight">
-              {greeting}{firstName ? `, ${firstName}` : ''}.
-            </h1>
-            <p className="text-[10px] text-zinc-700 uppercase tracking-[0.2em] mt-0.5">
-              {new Date().toLocaleDateString('de-DE', { weekday: 'long', day: 'numeric', month: 'long' })}
-            </p>
-          </div>
-
-          {/* Desktop: 2-column grid. Mobile: single column */}
-          <div className="flex flex-col md:flex-row gap-4 items-start">
-
-            {/* LEFT: main content */}
-            <div className="flex-1 min-w-0 space-y-4">
-
-              {/* Row 1: Readiness */}
-              <motion.div layout className="bg-zinc-900/80 border border-white/[0.06] rounded-2xl p-4">
-                <TileLabel>System-Status</TileLabel>
-                <InlineReadinessWidget user={user} todayReadiness={todayReadiness} />
-              </motion.div>
-
-              {/* Row 2: Quick Actions */}
-              <div className={`grid gap-4 ${todayReadiness && todayReadiness.readiness_score >= 7 ? 'grid-cols-2' : 'grid-cols-3'}`}>
-                <Tile onClick={() => handleDestinationClick('Quick Sessions', () => window.location.href = createPageUrl('FitnessSnacks'))}>
-                  <div className="flex items-center justify-between">
-                    <p className="text-sm font-semibold text-zinc-300">Quick Sessions</p>
-                    <ChevronRight className="w-3 h-3 text-zinc-700" />
-                  </div>
-                </Tile>
-
-                {(!todayReadiness || todayReadiness.readiness_score < 7) && (
-                  <Tile onClick={() => window.location.href = createPageUrl('DiagnosisChat')}>
-                    <div className="flex items-center justify-between">
-                      <p className="text-sm font-semibold text-zinc-300">Tune-Up</p>
-                      <ChevronRight className="w-3 h-3 text-zinc-700" />
-                    </div>
-                  </Tile>
-                )}
-
-                <Tile onClick={() => handleDestinationClick('Flow', () => window.location.href = createPageUrl('FlowRoutines'))}>
-                  <div className="flex items-center justify-between">
-                    <p className="text-sm font-semibold text-zinc-300">Routinen</p>
-                    <ChevronRight className="w-3 h-3 text-zinc-700" />
-                  </div>
-                </Tile>
-              </div>
-
-              {/* Row 3: Heutige Quick-Snacks */}
-              {snackData?.snacks?.length > 0 && (
-                <div className="bg-zinc-900/80 border border-white/[0.06] rounded-2xl p-4">
-                  <div className="flex items-center justify-between mb-3">
-                    <TileLabel>Heute empfohlen</TileLabel>
-                    <button
-                      onClick={() => window.location.href = createPageUrl('FitnessSnacks')}
-                      className="text-[10px] text-zinc-600 hover:text-zinc-400 uppercase tracking-widest transition-colors"
-                    >
-                      Alle →
-                    </button>
-                  </div>
-                  <div className="space-y-2">
-                    {snackData.snacks.map(snack => (
-                      <button
-                        key={snack.id}
-                        onClick={() => window.location.href = createPageUrl('FitnessSnacks')}
-                        className="w-full flex items-center gap-3 p-3 rounded-xl bg-zinc-800/50 border border-white/[0.04] hover:border-white/[0.1] hover:bg-zinc-800 transition-all text-left group"
-                      >
-                        <div className="w-7 h-7 rounded-lg bg-zinc-700/60 flex items-center justify-center flex-shrink-0">
-                          <Zap className="w-3.5 h-3.5 text-zinc-400" />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <p className="text-sm font-medium text-zinc-200 truncate">{snack.name}</p>
-                          <p className="text-[10px] text-zinc-600 flex items-center gap-1 mt-0.5">
-                            <Clock className="w-2.5 h-2.5" />
-                            {snack.duration_minutes} Min.
-                          </p>
-                        </div>
-                        <Play className="w-3.5 h-3.5 text-zinc-700 group-hover:text-zinc-400 transition-colors flex-shrink-0" />
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              <div className="grid grid-cols-2 gap-4">
-                <BiometricsTile user={user} />
-
-                <div className="bg-zinc-900/80 border border-white/[0.06] rounded-2xl p-4">
-                  <div className="flex items-center gap-2 mb-3">
-                    <BookOpen className="w-4 h-4 text-zinc-600" />
-                    <TileLabel className="mb-0">Wissen</TileLabel>
-                  </div>
-                  {activeRehabPlan ? (
-                    <KnowledgeSnippetCarousel activeRehabPlan={activeRehabPlan} />
-                  ) : (
-                    <p className="text-xs text-zinc-600">Starte einen Rehab-Plan, um personalisiertes Wissen zu sehen.</p>
-                  )}
-                </div>
-              </div>
-
-
-
-              {/* Row 5: Readiness Trend */}
-              <div className="bg-zinc-900/80 border border-white/[0.06] rounded-2xl p-4">
-                <TileLabel>Readiness-Trend — 7 Tage</TileLabel>
-                <p className="text-[10px] text-zinc-600 mb-2">Körper · Fokus · Energie</p>
-                <ReadinessTrendChart checks={allChecks} />
-              </div>
-
-              {/* Energie-Muster Banner */}
-              {troughPattern && (
-                <div className={`bg-zinc-900/80 border rounded-2xl p-4 ${isPreTrough ? 'border-amber-500/30' : 'border-white/[0.06]'}`}>
-                  <TileLabel>Energie-Muster erkannt</TileLabel>
-                  <p className="text-sm text-zinc-300 mt-1">
-                    Dein Tief liegt oft gegen{' '}
-                    <span className="text-amber-400 font-bold">{troughPattern.hour}:00 Uhr</span>
-                    {' '}(Ø {troughPattern.avg}/10)
-                  </p>
-                  {isPreTrough ? (
-                    <p className="text-xs text-amber-400 mt-2 font-medium leading-relaxed">
-                      → Jetzt präventiv handeln: Vagus Reset oder Quick Snack — bevor das Tief kommt.
-                    </p>
-                  ) : (
-                    <p className="text-xs text-zinc-600 mt-1">AXON erkennt deine Rhythmen und wird dich rechtzeitig warnen.</p>
-                  )}
-                  {isPreTrough && (
-                    <button
-                      onClick={() => window.location.href = createPageUrl('FitnessSnacks')}
-                      className="mt-3 text-[10px] font-bold uppercase tracking-widest text-amber-400 hover:text-amber-300 transition-colors"
-                    >
-                      Jetzt Quick Session starten →
-                    </button>
-                  )}
-                </div>
-              )}
-
-              {user?.role === 'admin' && (
-                <button
-                  onClick={() => window.location.href = createPageUrl('AdminHub')}
-                  className="w-full rounded-xl border border-white/[0.04] p-3 hover:border-white/[0.08] transition-all text-zinc-700 hover:text-zinc-500 text-[10px] font-medium uppercase tracking-widest"
-                >
-                  Admin Hub
-                </button>
-              )}
-            </div>
-
-            {/* RIGHT: Body Map sidebar */}
-            <div className="w-full md:w-72 flex-shrink-0">
-              <div className="bg-zinc-900/80 border border-white/[0.06] rounded-2xl p-4 md:sticky md:top-20">
-                <TileLabel>Körper — Schmerz lokalisieren</TileLabel>
-                <p className="text-xs text-zinc-600 mb-3">Tippe auf die exakte Stelle</p>
-                <InteractiveBodyMapInput onSubmit={handleBodyMapSubmit} />
-              </div>
-            </div>
-
-          </div>
+        {/* Header */}
+        <div className="mb-6">
+          <h1 className="text-2xl font-light text-white tracking-tight">
+            {greeting}{firstName ? `, ${firstName}` : ''}.
+          </h1>
+          <p className="text-[10px] text-zinc-700 uppercase tracking-[0.2em] mt-0.5">
+            {new Date().toLocaleDateString('de-DE', { weekday: 'long', day: 'numeric', month: 'long' })}
+          </p>
         </div>
-      </div>
 
-    </>
+        {/* ── STEP 1: Readiness Check ── */}
+        <div className="mb-4">
+          <div className="flex items-center gap-2 mb-2">
+            <div className={`w-6 h-6 rounded-full flex items-center justify-center text-[11px] font-bold flex-shrink-0 ${
+              todayReadiness ? 'bg-emerald-500/20 text-emerald-400' : 'bg-cyan-500/20 text-cyan-400'
+            }`}>
+              {todayReadiness ? '✓' : '1'}
+            </div>
+            <TileLabel className="mb-0">Schritt 1 — System-Check</TileLabel>
+          </div>
+          <motion.div layout className="bg-zinc-900/80 border border-white/[0.06] rounded-2xl p-4">
+            <InlineReadinessWidget user={user} todayReadiness={todayReadiness} />
+          </motion.div>
+        </div>
+
+        {/* ── STEP 2: Body Map (appears after readiness) ── */}
+        <AnimatePresence>
+          {todayReadiness && (
+            <motion.div
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="mb-6"
+            >
+              <div className="flex items-center gap-2 mb-2">
+                <div className="w-6 h-6 rounded-full bg-cyan-500/20 text-cyan-400 flex items-center justify-center text-[11px] font-bold flex-shrink-0">2</div>
+                <TileLabel className="mb-0">Schritt 2 — Schmerz lokalisieren</TileLabel>
+              </div>
+              <div className="bg-zinc-900/80 border border-white/[0.06] rounded-2xl p-4">
+                <p className="text-base font-medium text-white mb-1">Markiere die Stelle, wo du die meisten Beschwerden hast.</p>
+                <p className="text-xs text-zinc-600 mb-4">Tippe auf die exakte Stelle — oder zeichne eine Linie entlang des Schmerzes.</p>
+                <InteractiveBodyMapInput onSubmit={handleBodyMapSubmit} />
+                <button
+                  onClick={() => handleBodyMapSubmit({ region: '' })}
+                  className="w-full mt-3 text-xs text-zinc-600 hover:text-zinc-400 uppercase tracking-widest transition-colors py-2"
+                >
+                  Keine Schmerzen — weiter zum Training →
+                </button>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* ── SECONDARY CONTENT (collapsible) ── */}
+        <details className="group mb-4">
+          <summary className="cursor-pointer list-none">
+            <div className="flex items-center justify-between p-3 bg-zinc-900/80 border border-white/[0.06] rounded-2xl">
+              <span className="text-xs font-bold uppercase tracking-[0.2em] text-zinc-500">Mehr — Routinen, Snacks, Verlauf</span>
+              <ChevronRight className="w-4 h-4 text-zinc-600 group-open:rotate-90 transition-transform flex-shrink-0" />
+            </div>
+          </summary>
+          <div className="mt-3 space-y-4">
+
+            {/* Quick Actions */}
+            <div className="grid grid-cols-2 gap-4">
+              <Tile onClick={() => handleDestinationClick('Quick Sessions', () => window.location.href = createPageUrl('FitnessSnacks'))}>
+                <div className="flex items-center justify-between">
+                  <p className="text-sm font-semibold text-zinc-300">Quick Sessions</p>
+                  <ChevronRight className="w-3 h-3 text-zinc-700" />
+                </div>
+              </Tile>
+              <Tile onClick={() => handleDestinationClick('Flow', () => window.location.href = createPageUrl('FlowRoutines'))}>
+                <div className="flex items-center justify-between">
+                  <p className="text-sm font-semibold text-zinc-300">Routinen</p>
+                  <ChevronRight className="w-3 h-3 text-zinc-700" />
+                </div>
+              </Tile>
+            </div>
+
+            {/* Snacks */}
+            {snackData?.snacks?.length > 0 && (
+              <div className="bg-zinc-900/80 border border-white/[0.06] rounded-2xl p-4">
+                <div className="flex items-center justify-between mb-3">
+                  <TileLabel>Heute empfohlen</TileLabel>
+                  <button
+                    onClick={() => window.location.href = createPageUrl('FitnessSnacks')}
+                    className="text-[10px] text-zinc-600 hover:text-zinc-400 uppercase tracking-widest transition-colors"
+                  >Alle →</button>
+                </div>
+                <div className="space-y-2">
+                  {snackData.snacks.map(snack => (
+                    <button
+                      key={snack.id}
+                      onClick={() => window.location.href = createPageUrl('FitnessSnacks')}
+                      className="w-full flex items-center gap-3 p-3 rounded-xl bg-zinc-800/50 border border-white/[0.04] hover:border-white/[0.1] hover:bg-zinc-800 transition-all text-left group"
+                    >
+                      <div className="w-7 h-7 rounded-lg bg-zinc-700/60 flex items-center justify-center flex-shrink-0">
+                        <Zap className="w-3.5 h-3.5 text-zinc-400" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium text-zinc-200 truncate">{snack.name}</p>
+                        <p className="text-[10px] text-zinc-600 flex items-center gap-1 mt-0.5">
+                          <Clock className="w-2.5 h-2.5" />
+                          {snack.duration_minutes} Min.
+                        </p>
+                      </div>
+                      <Play className="w-3.5 h-3.5 text-zinc-700 group-hover:text-zinc-400 transition-colors flex-shrink-0" />
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Biometrics + Knowledge */}
+            <div className="grid grid-cols-2 gap-4">
+              <BiometricsTile user={user} />
+              <div className="bg-zinc-900/80 border border-white/[0.06] rounded-2xl p-4">
+                <div className="flex items-center gap-2 mb-3">
+                  <BookOpen className="w-4 h-4 text-zinc-600" />
+                  <TileLabel className="mb-0">Wissen</TileLabel>
+                </div>
+                {activeRehabPlan ? (
+                  <KnowledgeSnippetCarousel activeRehabPlan={activeRehabPlan} />
+                ) : (
+                  <p className="text-xs text-zinc-600">Starte einen Rehab-Plan, um personalisiertes Wissen zu sehen.</p>
+                )}
+              </div>
+            </div>
+
+            {/* Readiness Trend */}
+            <div className="bg-zinc-900/80 border border-white/[0.06] rounded-2xl p-4">
+              <TileLabel>Readiness-Trend — 7 Tage</TileLabel>
+              <p className="text-[10px] text-zinc-600 mb-2">Körper · Fokus · Energie</p>
+              <ReadinessTrendChart checks={allChecks} />
+            </div>
+
+            {/* Energie-Muster Banner */}
+            {troughPattern && (
+              <div className={`bg-zinc-900/80 border rounded-2xl p-4 ${isPreTrough ? 'border-amber-500/30' : 'border-white/[0.06]'}`}>
+                <TileLabel>Energie-Muster erkannt</TileLabel>
+                <p className="text-sm text-zinc-300 mt-1">
+                  Dein Tief liegt oft gegen{' '}
+                  <span className="text-amber-400 font-bold">{troughPattern.hour}:00 Uhr</span>
+                  {' '}(Ø {troughPattern.avg}/10)
+                </p>
+                {isPreTrough ? (
+                  <p className="text-xs text-amber-400 mt-2 font-medium leading-relaxed">
+                    → Jetzt präventiv handeln: Vagus Reset oder Quick Snack — bevor das Tief kommt.
+                  </p>
+                ) : (
+                  <p className="text-xs text-zinc-600 mt-1">AXON erkennt deine Rhythmen und wird dich rechtzeitig warnen.</p>
+                )}
+                {isPreTrough && (
+                  <button
+                    onClick={() => window.location.href = createPageUrl('FitnessSnacks')}
+                    className="mt-3 text-[10px] font-bold uppercase tracking-widest text-amber-400 hover:text-amber-300 transition-colors"
+                  >
+                    Jetzt Quick Session starten →
+                  </button>
+                )}
+              </div>
+            )}
+
+            {user?.role === 'admin' && (
+              <button
+                onClick={() => window.location.href = createPageUrl('AdminHub')}
+                className="w-full rounded-xl border border-white/[0.04] p-3 hover:border-white/[0.08] transition-all text-zinc-700 hover:text-zinc-500 text-[10px] font-medium uppercase tracking-widest"
+              >
+                Admin Hub
+              </button>
+            )}
+          </div>
+        </details>
+
+      </div>
+    </div>
   );
 }

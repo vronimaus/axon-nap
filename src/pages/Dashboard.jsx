@@ -4,6 +4,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { createPageUrl } from '@/utils';
 import { Activity, Target, Zap, Info, ArrowLeft, Loader2, RotateCw } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import CommandCenter from '../components/dashboard/CommandCenter';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
@@ -29,6 +30,7 @@ export default function Dashboard() {
   const isPulling = useRef(false);
   const pullContainerRef = useRef(null);
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
   
   const { user, isLoading, hasAccess } = useTrialStatus();
 
@@ -53,7 +55,7 @@ export default function Dashboard() {
   useEffect(() => {
     if (isLoading || !user) return;
     if (!hasAccess) {
-      window.location.href = createPageUrl('Landing');
+      navigate(createPageUrl('Landing'));
     }
   }, [user, isLoading, hasAccess]);
 
