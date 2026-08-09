@@ -26,26 +26,60 @@ export default function MFRResetScreenDynamic({ onComplete, nodeId = 'N1', scree
   const MFR_DURATION = extractDuration(causalChain);
 
   // ── Audio Coach ──
-  const { isMuted, toggleMute, coach, isPlaying: isCoaching, isLoading: isCoachLoading } = useAudioCoach();
+  const { isMuted, toggleMute, coach, isPlaying: isCoaching, isLoading: isCoachLoading, stop: stopAudio, preloadNext } = useAudioCoach();
 
-  // Auto-narrate each sub-step
+  // Alle Narration-Texte für diesen Node berechnen
+  const getNarrationTexts = (chain) => {
+    if (!chain) return {};
+    return {
+      pretest: `Beweglichkeitstest für ${chain.node_name_de}. ${chain.hardware_reset?.pretest_instruction || 'Teste deine aktuelle Beweglichkeit.'}`,
+      compression: `Faszien-Entlastung für ${chain.node_name_de}. ${chain.hardware_reset?.technik || ''}. ${chain.hardware_reset?.mechanismus || ''}`,
+      warning: 'Achtung, ich starte den Timer in 3 Sekunden',
+      info: `Die Wissenschaft dahinter. ${chain.biomechanische_ursache || ''}. ${chain.hardware_reset?.mechanismus || ''}. ${chain.hardware_reset?.biologischer_zweck || ''}`,
+    };
+  };
+
+  // Alle Audio-Texte sofort vorgenerieren, sobald Daten laden → keine Wartezeit beim Abspielen
   useEffect(() => {
     if (!causalChain) return;
+    const texts = getNarrationTexts(causalChain);
+    Object.values(texts).forEach(t => preloadNext(t));
+  }, [causalChain]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Auto-narrate each sub-step — Audio ist bereits vorgeneriert → sofortige Wiedergabe
+  useEffect(() => {
+    if (!causalChain) return;
+    const texts = getNarrationTexts(causalChain);
     if (step === 'pretest') {
-      coach(`Beweglichkeitstest für ${causalChain.node_name_de}. ${causalChain.hardware_reset?.pretest_instruction || 'Teste deine aktuelle Beweglichkeit.'}`);
+      coach(texts.pretest);
     } else if (step === 'compression') {
       // 1. Anweisung vorlesen → 2. Timer-Warnung → 3. Countdown → 4. Autostart
-      coach(`Faszien-Entlastung für ${causalChain.node_name_de}. ${causalChain.hardware_reset?.technik || ''}. ${causalChain.hardware_reset?.mechanismus || ''}`, {
+      coach(texts.compression, {
         onEnded: () => {
-          coach('Achtung, ich starte den Timer in 3 Sekunden', {
+          coach(texts.warning, {
             onEnded: () => setCountdown(3),
           });
         },
       });
     } else if (step === 'info') {
-      coach(`Die Wissenschaft dahinter. ${causalChain.biomechanische_ursache || ''}. ${causalChain.hardware_reset?.mechanismus || ''}. ${causalChain.hardware_reset?.biologischer_zweck || ''}`);
+      coach(texts.info);
     }
   }, [step, causalChain]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Unterbrechen: Audio stoppen + Countdown abbrechen
+  const handleInterruptAudio = () => {
+    stopAudio();
+    setCountdown(null);
+  };
+
+  // Wiederholen: aktuelle Schritt-Audio neu abspielen
+  const handleReplayAudio = () => {
+    if (!causalChain) return;
+    const texts = getNarrationTexts(causalChain);
+    if (step === 'pretest') coach(texts.pretest);
+    else if (step === 'compression') coach(texts.compression);
+    else if (step === 'info') coach(texts.info);
+  };
 
   // Countdown → bei 0 Timer automatisch starten
   useEffect(() => {
@@ -238,7 +272,27 @@ export default function MFRResetScreenDynamic({ onComplete, nodeId = 'N1', scree
       exit={{ opacity: 0, y: -20 }}
       className="w-full max-w-sm mx-auto px-4 space-y-6 max-h-[80vh] overflow-y-auto"
     >
-      <AudioCoachToggle isMuted={isMuted} onToggle={toggleMute} isLoading={isCoachLoading} isPlaying={isCoaching} />
+      <div className="flex items-center justify-between gap-2">
+        <AudioCoachToggle isMuted={isMuted} onToggle={toggleMute} isLoading={isCoachLoading} isPlaying={isCoaching} />
+        {isCoaching && (
+          <button
+            onClick={handleInterruptAudio}
+            className="flex items-center gap-1.5 px-3 py-2 rounded-lg border border-red-500/30 bg-red-500/10 text-red-400 hover:bg-red-500/20 transition-all text-xs font-medium"
+          >
+            <span className="w-2 h-2 rounded-sm bg-red-400" />
+            Stoppen
+          </button>
+        )}
+        {!isCoaching && !isMuted && (
+          <button
+            onClick={handleReplayAudio}
+            className="flex items-center gap-1.5 px-3 py-2 rounded-lg border border-slate-700/60 bg-slate-800/50 text-slate-400 hover:text-slate-200 hover:bg-slate-800 transition-all text-xs font-medium"
+          >
+            <Play className="w-3 h-3" />
+            Wiederholen
+          </button>
+        )}
+      </div>
 
 
       {/* PRETEST */}
