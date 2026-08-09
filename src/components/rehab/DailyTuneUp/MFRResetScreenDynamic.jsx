@@ -13,6 +13,7 @@ export default function MFRResetScreenDynamic({ onComplete, nodeId = 'N1', scree
   const [isLoadingData, setIsLoadingData] = useState(!tuneUpData);
   const [step, setStep] = useState('pretest');
   const [pretestValue, setPretestValue] = useState(null);
+  const [countdown, setCountdown] = useState(null);
 
   // Duration aus dem Anweisungstext extrahieren (z.B. "60 Sekunden" → 60)
   // Fallback: 90, wenn kein Wert im Text steht
@@ -30,16 +31,33 @@ export default function MFRResetScreenDynamic({ onComplete, nodeId = 'N1', scree
   // Auto-narrate each sub-step
   useEffect(() => {
     if (!causalChain) return;
-    let text = '';
     if (step === 'pretest') {
-      text = `Beweglichkeitstest für ${causalChain.node_name_de}. ${causalChain.hardware_reset?.pretest_instruction || 'Teste deine aktuelle Beweglichkeit.'}`;
+      coach(`Beweglichkeitstest für ${causalChain.node_name_de}. ${causalChain.hardware_reset?.pretest_instruction || 'Teste deine aktuelle Beweglichkeit.'}`);
     } else if (step === 'compression') {
-      text = `Faszien-Entlastung für ${causalChain.node_name_de}. ${causalChain.hardware_reset?.technik || ''}. ${causalChain.hardware_reset?.mechanismus || ''}`;
+      // 1. Anweisung vorlesen → 2. Timer-Warnung → 3. Countdown → 4. Autostart
+      coach(`Faszien-Entlastung für ${causalChain.node_name_de}. ${causalChain.hardware_reset?.technik || ''}. ${causalChain.hardware_reset?.mechanismus || ''}`, {
+        onEnded: () => {
+          coach('Achtung, ich starte den Timer in 3 Sekunden', {
+            onEnded: () => setCountdown(3),
+          });
+        },
+      });
     } else if (step === 'info') {
-      text = `Die Wissenschaft dahinter. ${causalChain.biomechanische_ursache || ''}. ${causalChain.hardware_reset?.mechanismus || ''}. ${causalChain.hardware_reset?.biologischer_zweck || ''}`;
+      coach(`Die Wissenschaft dahinter. ${causalChain.biomechanische_ursache || ''}. ${causalChain.hardware_reset?.mechanismus || ''}. ${causalChain.hardware_reset?.biologischer_zweck || ''}`);
     }
-    if (text) coach(text);
   }, [step, causalChain]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Countdown → bei 0 Timer automatisch starten
+  useEffect(() => {
+    if (countdown === null) return;
+    if (countdown === 0) {
+      setCountdown(null);
+      setIsRunning(true);
+      return;
+    }
+    const t = setTimeout(() => setCountdown(c => c - 1), 1000);
+    return () => clearTimeout(t);
+  }, [countdown]);
 
   // If tuneUpData passed directly, use it immediately
   useEffect(() => {
@@ -311,29 +329,40 @@ export default function MFRResetScreenDynamic({ onComplete, nodeId = 'N1', scree
             )}
           </div>
           <div className="flex flex-col items-center gap-4">
-            <motion.div animate={{ scale: isRunning ? [0.98, 1.02, 0.98] : 1 }} transition={{ duration: 1.2, repeat: isRunning ? Infinity : 0 }} className="relative w-36 h-36 rounded-full border-4 border-cyan-500/40 flex items-center justify-center bg-gradient-to-br from-cyan-500/10 to-transparent shadow-lg shadow-cyan-500/20">
+            <motion.div animate={{ scale: isRunning ? [0.98, 1.02, 0.98] : countdown !== null ? [1.1, 1, 1.1] : 1 }} transition={{ duration: isRunning ? 1.2 : 0.8, repeat: isRunning || countdown !== null ? Infinity : 0 }} className="relative w-36 h-36 rounded-full border-4 border-cyan-500/40 flex items-center justify-center bg-gradient-to-br from-cyan-500/10 to-transparent shadow-lg shadow-cyan-500/20">
               <div className="text-center">
-                <span className="text-4xl font-black text-cyan-400 font-mono">{String(Math.floor(remainingTime / 60)).padStart(1, '0')}:{String(remainingTime % 60).padStart(2, '0')}</span>
-                <p className="text-xs text-slate-500 mt-2 tracking-widest font-bold">{isRunning ? 'AKTIV' : 'BEREIT'}</p>
+                {countdown !== null ? (
+                  <>
+                    <span className="text-5xl font-black text-cyan-400 font-mono animate-pulse">{countdown === 0 ? 'GO' : countdown}</span>
+                    <p className="text-xs text-slate-500 mt-2 tracking-widest font-bold">STARTET...</p>
+                  </>
+                ) : (
+                  <>
+                    <span className="text-4xl font-black text-cyan-400 font-mono">{String(Math.floor(remainingTime / 60)).padStart(1, '0')}:{String(remainingTime % 60).padStart(2, '0')}</span>
+                    <p className="text-xs text-slate-500 mt-2 tracking-widest font-bold">{isRunning ? 'AKTIV' : 'BEREIT'}</p>
+                  </>
+                )}
               </div>
               <svg className="absolute inset-0 w-full h-full">
                 <circle cx="50%" cy="50%" r="72" fill="none" stroke="currentColor" strokeWidth="2" className="text-slate-800" />
                 <motion.circle cx="50%" cy="50%" r="72" fill="none" stroke="currentColor" strokeWidth="3" className="text-cyan-500" strokeDasharray={2 * Math.PI * 72} strokeDashoffset={2 * Math.PI * 72 * (1 - progress / 100)} strokeLinecap="round" style={{ transformOrigin: '50% 50%', transform: 'rotate(-90deg)' }} />
               </svg>
             </motion.div>
-            <div className="flex gap-2 w-full">
-              {!isRunning ? (
-                <Button onClick={handleStartTimer} className="flex-1 h-12 bg-gradient-to-r from-cyan-500 to-cyan-600 hover:from-cyan-600 hover:to-cyan-700 text-white font-bold rounded-lg text-sm flex items-center justify-center gap-2 shadow-lg shadow-cyan-500/40 active:scale-95 transition-transform">
-                  <Play className="w-4 h-4" />
-                  Starten
-                </Button>
-              ) : (
-                <>
-                  <Button onClick={() => setIsRunning(false)} variant="outline" className="flex-1 h-12 border-slate-600 text-slate-300 hover:bg-slate-800 rounded-lg text-sm">Pause</Button>
-                  <Button onClick={handleReset} variant="outline" className="flex-1 h-12 border-slate-600 text-slate-300 hover:bg-slate-800 rounded-lg text-sm">Reset</Button>
-                </>
-              )}
-            </div>
+            {countdown === null && (
+              <div className="flex gap-2 w-full">
+                {!isRunning ? (
+                  <Button onClick={handleStartTimer} className="flex-1 h-12 bg-gradient-to-r from-cyan-500 to-cyan-600 hover:from-cyan-600 hover:to-cyan-700 text-white font-bold rounded-lg text-sm flex items-center justify-center gap-2 shadow-lg shadow-cyan-500/40 active:scale-95 transition-transform">
+                    <Play className="w-4 h-4" />
+                    Starten
+                  </Button>
+                ) : (
+                  <>
+                    <Button onClick={() => setIsRunning(false)} variant="outline" className="flex-1 h-12 border-slate-600 text-slate-300 hover:bg-slate-800 rounded-lg text-sm">Pause</Button>
+                    <Button onClick={handleReset} variant="outline" className="flex-1 h-12 border-slate-600 text-slate-300 hover:bg-slate-800 rounded-lg text-sm">Reset</Button>
+                  </>
+                )}
+              </div>
+            )}
           </div>
 
         </motion.div>

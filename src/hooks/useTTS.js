@@ -46,7 +46,7 @@ export function useTTS() {
     }
   }, []);
 
-  const playText = useCallback(async (text) => {
+  const playText = useCallback(async (text, { onEnded } = {}) => {
     if (!text?.trim()) return;
 
     if (isPlaying) {
@@ -54,13 +54,17 @@ export function useTTS() {
       return;
     }
 
+    const attachHandlers = (audio) => {
+      audio.onended = () => { setIsPlaying(false); audioRef.current = null; onEnded?.(); };
+      audio.onerror = () => { setIsPlaying(false); audioRef.current = null; };
+    };
+
     // Use preloaded URL if available
     const cached = preloadCacheRef.current[text];
     if (cached && cached !== 'loading') {
       const audio = new Audio(cached);
       audioRef.current = audio;
-      audio.onended = () => { setIsPlaying(false); audioRef.current = null; };
-      audio.onerror = () => { setIsPlaying(false); audioRef.current = null; };
+      attachHandlers(audio);
       await audio.play();
       setIsPlaying(true);
       return;
@@ -75,8 +79,7 @@ export function useTTS() {
 
       const audio = new Audio(data.signed_url);
       audioRef.current = audio;
-      audio.onended = () => { setIsPlaying(false); audioRef.current = null; };
-      audio.onerror = () => { setIsPlaying(false); audioRef.current = null; };
+      attachHandlers(audio);
       await audio.play();
       setIsPlaying(true);
     } catch (error) {

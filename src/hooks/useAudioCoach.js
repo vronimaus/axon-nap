@@ -47,11 +47,11 @@ export function useAudioCoach() {
     });
   }, [stop]);
 
-  const coach = useCallback((text) => {
+  const coach = useCallback((text, { onEnded } = {}) => {
     if (!text?.trim()) return;
-    // If muted, just preload silently so it's ready when unmuted
+    // If muted, just preload silently so it's ready when unmuted — no auto-callback
     if (isMuted) { preload(text); return; }
-    playText(text);
+    playText(text, { onEnded });
   }, [isMuted, playText, preload]);
 
   const preloadNext = useCallback((text) => {
