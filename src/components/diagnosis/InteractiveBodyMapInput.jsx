@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { RotateCcw, ArrowRight } from 'lucide-react';
+import { detectRegionFromMarkers } from '@/components/diagnosis/bodyMapRegions';
 
 export default function InteractiveBodyMapInput({ onSubmit }) {
   const [view, setView] = useState('front');
@@ -21,64 +22,8 @@ export default function InteractiveBodyMapInput({ onSubmit }) {
     return () => cancelAnimationFrame(id);
   }, [markers]);
 
-  // EXAKT die gleiche Region Detection wie im Dashboard
-  const detectRegionFromCoordinates = (markers, view, canvasWidth = 400, canvasHeight = 600) => {
-    if (markers.length === 0) return 'systemisch';
-
-    let totalY = 0, totalX = 0, totalPoints = 0;
-    markers.forEach(marker => {
-      if (marker.type === 'point') {
-        totalX += marker.x;
-        totalY += marker.y;
-        totalPoints += 1;
-      }
-    });
-
-    const avgY = totalPoints > 0 ? totalY / totalPoints : 0;
-    const avgX = totalPoints > 0 ? totalX / totalPoints : 0;
-
-    const normalizedY = avgY / canvasHeight;
-    const normalizedX = avgX / canvasWidth;
-
-    let laterality = '';
-    if (normalizedX < 0.35) laterality = 'links';
-    else if (normalizedX > 0.65) laterality = 'rechts';
-
-    let region = '';
-    if (view === 'front') {
-      if (normalizedY < 0.06) region = 'Kopf/Stirn';
-      else if (normalizedY < 0.11) region = (normalizedX < 0.47 || normalizedX > 0.53) ? 'Ohr/Kiefergelenk' : 'Hals vorne';
-      else if (normalizedY < 0.16) region = (normalizedX < 0.40 || normalizedX > 0.60) ? 'Schulter vorne/Acromion' : 'obere Brust/Schlüsselbein';
-      else if (normalizedY < 0.26) region = (normalizedX < 0.30 || normalizedX > 0.70) ? 'Oberarm' : 'mittlere Brust';
-      else if (normalizedY < 0.35) region = (normalizedX < 0.40 || normalizedX > 0.60) ? 'Ellenbogen-Beuge' : 'Bauch oben';
-      else if (normalizedY < 0.42) region = 'Bauch Mitte/Bauchnabel';
-      else if (normalizedY < 0.50) region = (normalizedX < 0.35 || normalizedX > 0.65) ? 'Unterarm/Handgelenk' : 'Unterbauch/Becken';
-      else if (normalizedY < 0.56) region = 'Becken/Hüfte';
-      else if (normalizedY < 0.68) region = 'Oberschenkel vorne';
-      else if (normalizedY < 0.78) region = 'Knie vorne';
-      else if (normalizedY < 0.88) region = 'Unterschenkel/Schienbein';
-      else region = 'Fuß/Knöchel vorne';
-    } else {
-      if (normalizedY < 0.06) region = 'Hinterkopf';
-      else if (normalizedY < 0.12) {
-        // Nacken-Zone: seitlich vs. zentral unterscheiden
-        if (normalizedX < 0.35 || normalizedX > 0.65) region = 'Nacken seitlich';
-        else region = 'Nacken/obere Halswirbelsäule';
-      }
-      else if (normalizedY < 0.20) region = (normalizedX < 0.40 || normalizedX > 0.60) ? 'Schulter hinten/Acromion' : 'oberer Rücken/Nacken';
-      else if (normalizedY < 0.30) region = (normalizedX < 0.30 || normalizedX > 0.70) ? 'Schulterblatt' : 'oberer Rücken';
-      else if (normalizedY < 0.38) region = (normalizedX < 0.40 || normalizedX > 0.60) ? 'Ellenbogen' : 'mittlerer Rücken';
-      else if (normalizedY < 0.45) region = 'unterer Rücken/Lendenwirbelsäule';
-      else if (normalizedY < 0.54) region = (normalizedX < 0.35 || normalizedX > 0.65) ? 'Unterarm/Handgelenk' : 'Gesäß';
-      else if (normalizedY < 0.60) region = 'Becken/Hüfte';
-      else if (normalizedY < 0.70) region = 'Oberschenkel hinten';
-      else if (normalizedY < 0.78) region = 'Kniekehle';
-      else if (normalizedY < 0.90) region = 'Wade';
-      else region = 'Ferse/Achillessehne';
-    }
-
-    return laterality ? `${region} ${laterality}` : region;
-  };
+  // Region-Erkennung jetzt polygon-basiert (shared module)
+  // Siehe: src/components/diagnosis/bodyMapRegions.js
 
   const drawMarkers = () => {
     const canvas = canvasRef.current;
@@ -127,7 +72,7 @@ export default function InteractiveBodyMapInput({ onSubmit }) {
   const handleSubmit = () => {
     if (markers.length === 0 || isSubmitting) return;
     
-    const detectedRegion = detectRegionFromCoordinates(markers, view, 400, 600);
+    const detectedRegion = detectRegionFromMarkers(markers, view, 400, 600);
     
     // DEBUG: Log die tatsächlichen Werte
     if (markers[0]) {

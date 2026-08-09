@@ -6,6 +6,7 @@ import { FlipHorizontal, MapPin, Pencil, Send, RotateCcw } from 'lucide-react';
 import { createPageUrl } from '@/utils';
 import { base44 } from '@/api/base44Client';
 import { toast } from 'sonner';
+import { detectRegionFromMarkers } from '@/components/diagnosis/bodyMapRegions';
 
 // KRITISCH: Diese Bilder sind final kalibriert - NICHT ändern!
 const BODY_IMAGE_FRONT = "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/ad6e52b61_generated_image.png";
@@ -187,74 +188,8 @@ export default function InteractiveBodyMap({ mode, onRegionSelect, sessions }) {
     setCurrentPath([]);
   };
 
-  // KRITISCH: Region-Detection - Final kalibriert - NICHT ändern!
-  // Koordinaten basieren auf den finalen Body-Bildern (Canvas-Dimensionen)
-  const detectRegionFromCoordinates = (markers, view, canvasWidth = 400, canvasHeight = 600) => {
-    if (markers.length === 0) return 'systemisch';
-
-    // Calculate average position of all markers
-    let totalY = 0, totalX = 0, totalPoints = 0;
-
-    markers.forEach(marker => {
-      if (marker.type === 'point') {
-        totalX += marker.x;
-        totalY += marker.y;
-        totalPoints += 1;
-      } else if (marker.points) {
-        marker.points.forEach(p => {
-          totalX += p.x;
-          totalY += p.y;
-          totalPoints += 1;
-        });
-      }
-    });
-
-    const avgY = totalPoints > 0 ? totalY / totalPoints : 0;
-    const avgX = totalPoints > 0 ? totalX / totalPoints : 0;
-
-    // Normalized Y position (0 = top, 1 = bottom)
-    const normalizedY = avgY / canvasHeight;
-    const normalizedX = avgX / canvasWidth;
-
-    // Laterality detection
-    let laterality = '';
-    if (normalizedX < 0.35) laterality = 'links';
-    else if (normalizedX > 0.65) laterality = 'rechts';
-
-    // Region detection - basierend auf dem anatomischen Rendering
-    let region = '';
-    
-    if (view === 'front') {
-      // Basiert auf dem tatsächlichen Körper-Rendering im Bild
-      if (normalizedY < 0.06) region = 'Kopf/Stirn';
-      else if (normalizedY < 0.11) region = (normalizedX < 0.47 || normalizedX > 0.53) ? 'Ohr/Kiefergelenk' : 'Hals vorne';
-      else if (normalizedY < 0.20) region = (normalizedX < 0.40 || normalizedX > 0.60) ? 'Schulter vorne/Acromion' : 'obere Brust/Schlüsselbein';
-      else if (normalizedY < 0.30) region = (normalizedX < 0.30 || normalizedX > 0.70) ? 'Oberarm' : 'mittlere Brust';
-      else if (normalizedY < 0.37) region = (normalizedX < 0.40 || normalizedX > 0.60) ? 'Ellenbogen-Beuge' : 'Bauch oben';
-      else if (normalizedY < 0.42) region = 'Bauch Mitte/Bauchnabel';
-      else if (normalizedY < 0.50) region = (normalizedX < 0.35 || normalizedX > 0.65) ? 'Unterarm/Handgelenk' : 'Unterbauch/Becken';
-      else if (normalizedY < 0.56) region = 'Becken/Hüfte';
-      else if (normalizedY < 0.68) region = 'Oberschenkel vorne';
-      else if (normalizedY < 0.76) region = 'Knie vorne';
-      else if (normalizedY < 0.88) region = 'Unterschenkel/Schienbein';
-      else region = 'Fuß/Knöchel vorne';
-    } else { // back view
-      if (normalizedY < 0.06) region = 'Hinterkopf';
-      else if (normalizedY < 0.12) region = 'Nacken/obere Halswirbelsäule';
-      else if (normalizedY < 0.22) region = (normalizedX < 0.40 || normalizedX > 0.60) ? 'Schulter hinten/Acromion' : 'oberer Rücken/Nacken';
-      else if (normalizedY < 0.32) region = (normalizedX < 0.30 || normalizedX > 0.70) ? 'Schulterblatt' : 'oberer Rücken';
-      else if (normalizedY < 0.38) region = (normalizedX < 0.40 || normalizedX > 0.60) ? 'Ellenbogen' : 'mittlerer Rücken';
-      else if (normalizedY < 0.45) region = 'unterer Rücken/Lendenwirbelsäule';
-      else if (normalizedY < 0.54) region = (normalizedX < 0.35 || normalizedX > 0.65) ? 'Unterarm/Handgelenk' : 'Gesäß';
-      else if (normalizedY < 0.60) region = 'Becken/Hüfte';
-      else if (normalizedY < 0.70) region = 'Oberschenkel hinten';
-      else if (normalizedY < 0.78) region = 'Kniekehle';
-      else if (normalizedY < 0.90) region = 'Wade';
-      else region = 'Ferse/Achillessehne';
-    }
-
-    return laterality ? `${region} ${laterality}` : region;
-  };
+  // Region-Erkennung jetzt polygon-basiert (shared module)
+  // Siehe: src/components/diagnosis/bodyMapRegions.js
 
   const handleAnalyze = async () => {
     if (markers.length === 0) {
@@ -264,7 +199,7 @@ export default function InteractiveBodyMap({ mode, onRegionSelect, sessions }) {
 
     setIsAnalyzing(true);
     try {
-      const region = detectRegionFromCoordinates(markers, view, 400, 600);
+      const region = detectRegionFromMarkers(markers, view, 400, 600);
       sessionStorage.setItem('bodyMapData', JSON.stringify({ view, markers, mode }));
 
       // Navigate to DiagnosisChat with region — SFMA Quick Check happens there
