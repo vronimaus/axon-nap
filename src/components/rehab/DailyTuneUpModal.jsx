@@ -35,7 +35,6 @@ const REGION_TO_NODE_ID = {
   'Obere Brust/Schlüsselbein': 'TH-A',
   'Brust': 'TH-A',
   'Oberer Rücken': 'TH-P',
-  'Schulterblatt': 'TH-P',
   'Mittlerer Rücken': 'TH-P',
 
   // LU - Lende / Lumbar
@@ -47,8 +46,12 @@ const REGION_TO_NODE_ID = {
   'Unterbauch/Becken': 'LU-A',
   'Gesäß': 'PV-P',
 
-  // HU - Schulter & Oberarm / Humerus
-  'Schulter/Acromion': 'HU-A',
+  // SC - Schulter / Scapula (Acromion, Deltoid, Schultergelenk)
+  'front:Schulter/Acromion': 'SC-A',
+  'back:Schulter/Acromion': 'SC-P',
+  'Schulterblatt': 'SC-P',
+
+  // HU - Oberarm / Humerus (nur der eigentliche Oberarm, nicht die Schulter)
   'Oberarm': 'HU-A',
 
   // CU - Ellenbogen / Cubitus
