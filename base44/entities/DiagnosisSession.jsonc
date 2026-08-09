@@ -1,0 +1,67 @@
+{
+  "name": "DiagnosisSession",
+  "type": "object",
+  "properties": {
+    "symptom_location": {
+      "type": "string",
+      "description": "Ausgew\u00e4hlte Schmerzregion"
+    },
+    "symptom_description": {
+      "type": "string",
+      "description": "Symptom-Beschreibung"
+    },
+    "tested_chains": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Getestete Ketten-Codes"
+    },
+    "hardware_results": {
+      "type": "object",
+      "description": "Ergebnisse der Hardware-Tests pro Kette"
+    },
+    "software_results": {
+      "type": "object",
+      "description": "Ergebnisse der Neuro-Drills pro Kette"
+    },
+    "diagnosis_type": {
+      "type": "string",
+      "enum": [
+        "hardware",
+        "software",
+        "mixed",
+        "unclear"
+      ],
+      "description": "Finale Diagnose-Kategorie"
+    },
+    "recommendations": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Empfohlene Ma\u00dfnahmen"
+    },
+    "completed": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "required": [
+    "symptom_location"
+  ],
+  "rls": {
+    "create": {
+      "created_by": "{{user.email}}"
+    },
+    "read": {
+      "created_by": "{{user.email}}"
+    },
+    "update": {
+      "created_by": "{{user.email}}"
+    },
+    "delete": {
+      "created_by": "{{user.email}}"
+    }
+  }
+}

@@ -1,0 +1,71 @@
+{
+  "name": "FMSProtocol",
+  "type": "object",
+  "properties": {
+    "exercise_id": {
+      "type": "string",
+      "description": "Foreign Key zur Exercise Entity"
+    },
+    "fms_pattern": {
+      "type": "string",
+      "enum": [
+        "squat_pattern",
+        "hurdle_step",
+        "inline_lunge",
+        "shoulder_mobility",
+        "active_straight_leg",
+        "trunk_stability_pushup",
+        "rotational_stability",
+        "other"
+      ],
+      "description": "FMS Pattern Category (Gray Cook)"
+    },
+    "fms_level": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 3,
+      "description": "FMS Score (0=Pain, 1=Dysfunctional, 2=Compensation, 3=Functional)"
+    },
+    "mobility_vs_stability": {
+      "type": "string",
+      "enum": [
+        "mobility",
+        "stability",
+        "combination"
+      ],
+      "description": "Fokus: Mobilit\u00e4t oder Stabilit\u00e4t trainieren"
+    },
+    "gray_cook_principle": {
+      "type": "string",
+      "description": "Kern-Prinzip nach Gray Cook (z.B. 'Mobility before Stability')"
+    },
+    "assessment_cue": {
+      "type": "string",
+      "description": "Wie die \u00dcbung als Assessment verwendet wird"
+    },
+    "dysfunction_indicator": {
+      "type": "string",
+      "description": "Zeichen von Dysfunktion (was deutet auf Score 1 oder 2 hin)"
+    },
+    "correction_approach": {
+      "type": "string",
+      "description": "Wie diese \u00dcbung zur Korrektur verwendet wird"
+    },
+    "prerequisite_mobility": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Erforderliche Mobilit\u00e4t vor dieser \u00dcbung"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Gray Cook-spezifische Notizen"
+    }
+  },
+  "required": [
+    "exercise_id",
+    "fms_pattern",
+    "mobility_vs_stability"
+  ]
+}

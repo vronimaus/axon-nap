@@ -1,0 +1,51 @@
+{
+  "name": "ExerciseEnrichmentLog",
+  "type": "object",
+  "properties": {
+    "exercise_id": {
+      "type": "string",
+      "description": "ID der angereicherten \u00dcbung"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "success",
+        "error"
+      ],
+      "description": "Status der Anreicherung"
+    },
+    "enrichment_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Zeitpunkt der Durchf\u00fchrung"
+    },
+    "enriched_fields": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Liste der Felder, die aktualisiert wurden"
+    },
+    "ai_model": {
+      "type": "string",
+      "description": "Verwendetes KI-Modell"
+    },
+    "input_prompt_context": {
+      "type": "string",
+      "description": "Kontext, der an die KI gesendet wurde (gek\u00fcrzt)"
+    },
+    "ai_response_json": {
+      "type": "string",
+      "description": "Die rohe JSON-Antwort der KI"
+    },
+    "error_details": {
+      "type": "string",
+      "description": "Fehlermeldung falls fehlgeschlagen"
+    }
+  },
+  "required": [
+    "exercise_id",
+    "status",
+    "enrichment_date"
+  ]
+}

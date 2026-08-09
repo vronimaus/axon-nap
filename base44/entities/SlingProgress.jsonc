@@ -1,0 +1,113 @@
+{
+  "name": "SlingProgress",
+  "type": "object",
+  "properties": {
+    "user_email": {
+      "type": "string",
+      "description": "Email des Users"
+    },
+    "date": {
+      "type": "string",
+      "format": "date",
+      "description": "Datum der Messung"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Zeitstempel der Berechnung"
+    },
+    "anterior_score": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 10,
+      "description": "Anterior Sling Score (0-10)"
+    },
+    "posterior_score": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 10,
+      "description": "Posterior Sling Score (0-10)"
+    },
+    "lateral_score": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 10,
+      "description": "Lateral Sling Score (0-10)"
+    },
+    "overall_readiness": {
+      "type": "string",
+      "enum": [
+        "green",
+        "yellow",
+        "red"
+      ],
+      "description": "Gesamtstatus basierend auf Sling-Balance"
+    },
+    "contributing_exercises": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "exercise_id": {
+            "type": "string"
+          },
+          "exercise_name": {
+            "type": "string"
+          },
+          "sling_type": {
+            "type": "string",
+            "enum": [
+              "anterior",
+              "posterior",
+              "lateral"
+            ]
+          },
+          "contribution_score": {
+            "type": "number",
+            "description": "Wie viel diese \u00dcbung zum Sling-Score beigetragen hat"
+          },
+          "quality_factor": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1,
+            "description": "Qualit\u00e4tsfaktor basierend auf NRS"
+          },
+          "pain_nrs": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 10,
+            "description": "Schmerz-Score w\u00e4hrend der \u00dcbung"
+          }
+        }
+      },
+      "description": "\u00dcbungen, die zu diesem Sling-Score beigetragen haben"
+    },
+    "trend": {
+      "type": "object",
+      "description": "Trend-Analyse vs. letztem Tag",
+      "properties": {
+        "anterior_trend": {
+          "type": "number",
+          "description": "\u00c4nderung seit gestern (+0.5, -0.3, etc)"
+        },
+        "posterior_trend": {
+          "type": "number"
+        },
+        "lateral_trend": {
+          "type": "number"
+        }
+      }
+    },
+    "session_count": {
+      "type": "integer",
+      "description": "Anzahl der Sessions an diesem Tag, die in die Berechnung flossen"
+    }
+  },
+  "required": [
+    "user_email",
+    "date",
+    "anterior_score",
+    "posterior_score",
+    "lateral_score"
+  ]
+}

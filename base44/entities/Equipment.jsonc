@@ -1,0 +1,148 @@
+{
+  "name": "Equipment",
+  "type": "object",
+  "properties": {
+    "equipment_id": {
+      "type": "string",
+      "description": "Eindeutige ID des Equipments (z.B. 'equip_kb_001')"
+    },
+    "name": {
+      "type": "string",
+      "description": "Name des Equipments (z.B. 'Kettlebell 12kg')"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "kettlebell",
+        "resistance_band",
+        "neuro_tool",
+        "flossing_band",
+        "slider",
+        "mobility_tool",
+        "other"
+      ],
+      "description": "Kategorie des Equipments"
+    },
+    "weight_kg": {
+      "type": "number",
+      "description": "Gewicht in kg (nur f\u00fcr Kettlebells und schwere Tools)"
+    },
+    "difficulty_level": {
+      "type": "string",
+      "enum": [
+        "beginner",
+        "beginner-intermediate",
+        "intermediate",
+        "intermediate-advanced",
+        "advanced"
+      ],
+      "description": "Schwierigkeitsgrad"
+    },
+    "target_demographics": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Zielgruppen (z.B. 'women', 'older_adults', 'post-injury', 'men_beginners')"
+    },
+    "description": {
+      "type": "string",
+      "description": "Detaillierte Beschreibung des Equipments und seines Nutzens im AXON-Kontext"
+    },
+    "image_url": {
+      "type": "string",
+      "description": "URL zum Bild des Equipments"
+    },
+    "affiliate_links": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string"
+          },
+          "reason": {
+            "type": "string"
+          }
+        }
+      },
+      "maxItems": 3,
+      "description": "Maximal 3 Affiliate-Links zu diesem Equipment"
+    },
+    "axon_benefits": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Spezifische Vorteile im AXON-System"
+    },
+    "primary_movements": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Hauptbewegungen/Exercises, die mit diesem Equipment durchgef\u00fchrt werden"
+    },
+    "keywords": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "SEO-Keywords f\u00fcr die Suche"
+    },
+    "pavel_principle": {
+      "type": "string",
+      "description": "Pavel Tsatsouline Prinzip oder relevant f\u00fcr Kettlebells"
+    },
+    "integration_with_axon": {
+      "type": "object",
+      "description": "Wie dieses Equipment in die AXON-Phasen integriert wird",
+      "properties": {
+        "phase_1": {
+          "type": "string"
+        },
+        "phase_2": {
+          "type": "string"
+        },
+        "phase_3": {
+          "type": "string"
+        },
+        "note": {
+          "type": "string"
+        }
+      }
+    },
+    "published": {
+      "type": "boolean",
+      "default": true,
+      "description": "Ist das Equipment ver\u00f6ffentlicht"
+    }
+  },
+  "required": [
+    "equipment_id",
+    "name",
+    "type",
+    "description"
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": {},
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

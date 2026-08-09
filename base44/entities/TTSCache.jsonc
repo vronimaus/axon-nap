@@ -1,0 +1,40 @@
+{
+  "name": "TTSCache",
+  "type": "object",
+  "properties": {
+    "text_hash": {
+      "type": "string",
+      "description": "SHA-256 Hash des Textes als Cache-Key"
+    },
+    "file_uri": {
+      "type": "string",
+      "description": "Private Storage URI der generierten Audio-Datei"
+    },
+    "text_preview": {
+      "type": "string",
+      "description": "Erste 100 Zeichen des Textes zur Identifikation"
+    }
+  },
+  "required": [
+    "text_hash",
+    "file_uri"
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": {},
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

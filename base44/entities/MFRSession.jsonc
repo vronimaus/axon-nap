@@ -1,0 +1,58 @@
+{
+  "name": "MFRSession",
+  "type": "object",
+  "properties": {
+    "diagnosis_session_id": {
+      "type": "string",
+      "description": "Referenz zur DiagnosisSession"
+    },
+    "step": {
+      "type": "string",
+      "enum": [
+        "identify",
+        "prepare",
+        "program",
+        "perform"
+      ],
+      "default": "identify",
+      "description": "Aktueller Schritt im MFR-Workflow"
+    },
+    "completed_nodes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Liste abgeschlossener Node-IDs"
+    },
+    "current_node_id": {
+      "type": "string",
+      "description": "Aktuell bearbeiteter Node"
+    },
+    "pressure_notes": {
+      "type": "object",
+      "description": "Notizen zu Druck/Gef\u00fchl pro Node"
+    },
+    "is_completed": {
+      "type": "boolean",
+      "default": false,
+      "description": "MFR-Phase abgeschlossen"
+    }
+  },
+  "required": [
+    "diagnosis_session_id"
+  ],
+  "rls": {
+    "create": {
+      "created_by": "{{user.email}}"
+    },
+    "read": {
+      "created_by": "{{user.email}}"
+    },
+    "update": {
+      "created_by": "{{user.email}}"
+    },
+    "delete": {
+      "created_by": "{{user.email}}"
+    }
+  }
+}

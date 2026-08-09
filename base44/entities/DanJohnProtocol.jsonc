@@ -1,0 +1,75 @@
+{
+  "name": "DanJohnProtocol",
+  "type": "object",
+  "properties": {
+    "exercise_id": {
+      "type": "string",
+      "description": "Foreign Key zur Exercise Entity"
+    },
+    "movement_pattern": {
+      "type": "string",
+      "enum": [
+        "push",
+        "pull",
+        "squat",
+        "hinge",
+        "carry",
+        "core"
+      ],
+      "description": "Eine der 5 Big Movements nach Dan John"
+    },
+    "dan_john_principle": {
+      "type": "string",
+      "enum": [
+        "easy_strength",
+        "40_30_30",
+        "intervention",
+        "complex_training",
+        "loaded_carry",
+        "foundation"
+      ],
+      "description": "Dan John's Kern-Prinzip f\u00fcr diese \u00dcbung"
+    },
+    "program_name": {
+      "type": "string",
+      "description": "Name des Programms (z.B. 'Easy Strength 5x5', 'Loaded Carry Protocol')"
+    },
+    "daily_frequency": {
+      "type": "string",
+      "description": "Wie oft pro Woche (z.B. 'Daily', '3-4x/week', '2x/week')"
+    },
+    "sets_reps": {
+      "type": "string",
+      "description": "Sets x Reps Format (z.B. '5x5', '10x2', '20 min EMOM')"
+    },
+    "rest_period": {
+      "type": "string",
+      "description": "Ruhezeit zwischen Sets"
+    },
+    "load_intensity": {
+      "type": "string",
+      "description": "Intensit\u00e4t (Light, Moderate, Heavy)"
+    },
+    "progression_rule": {
+      "type": "string",
+      "description": "Regel f\u00fcr Progression"
+    },
+    "dan_john_insight": {
+      "type": "string",
+      "description": "Wissenschaftlicher/Philosophischer Hintergrund nach Dan John"
+    },
+    "40_30_30_role": {
+      "type": "string",
+      "description": "Rolle im 40/30/30 Paradigma (Strength/Conditioning/Mobility)"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Zus\u00e4tzliche Dan John-spezifische Notizen"
+    }
+  },
+  "required": [
+    "exercise_id",
+    "movement_pattern",
+    "dan_john_principle"
+  ]
+}

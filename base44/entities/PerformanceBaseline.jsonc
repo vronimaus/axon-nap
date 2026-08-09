@@ -1,0 +1,81 @@
+{
+  "name": "PerformanceBaseline",
+  "type": "object",
+  "properties": {
+    "user_email": {
+      "type": "string",
+      "description": "Email des Users (Foreign Key zu User Entity)"
+    },
+    "test_name": {
+      "type": "string",
+      "description": "Name des Performance Tests (z.B. 'Deep Squat', 'Max Pull-ups', 'Plank Hold')"
+    },
+    "test_category": {
+      "type": "string",
+      "enum": [
+        "functional_movement",
+        "max_strength",
+        "endurance",
+        "mobility",
+        "athletic_power"
+      ],
+      "description": "Kategorie des Tests"
+    },
+    "result_value": {
+      "type": "number",
+      "description": "Gemessener Wert (Reps, Sekunden, cm, etc.)"
+    },
+    "result_unit": {
+      "type": "string",
+      "description": "Einheit des Ergebnisses (reps, seconds, cm, kg, etc.)"
+    },
+    "result_notes": {
+      "type": "string",
+      "description": "Notizen zum Test (z.B. Schmerzen, Kompensationsmuster)"
+    },
+    "fitness_goal_aligned": {
+      "type": "string",
+      "description": "Welches Fitnessziel dieser Test adressiert (reduce_pain, build_strength, etc.)"
+    },
+    "baseline_level": {
+      "type": "string",
+      "enum": [
+        "beginner",
+        "intermediate",
+        "advanced",
+        "elite"
+      ],
+      "description": "Abgeleitetes Level basierend auf Resultat"
+    },
+    "test_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Datum des Tests"
+    },
+    "retest_recommended": {
+      "type": "boolean",
+      "default": false,
+      "description": "Soll dieser Test wiederholt werden?"
+    }
+  },
+  "required": [
+    "user_email",
+    "test_name",
+    "result_value",
+    "result_unit"
+  ],
+  "rls": {
+    "create": {
+      "data.user_email": "{{user.email}}"
+    },
+    "read": {
+      "data.user_email": "{{user.email}}"
+    },
+    "update": {
+      "data.user_email": "{{user.email}}"
+    },
+    "delete": {
+      "data.user_email": "{{user.email}}"
+    }
+  }
+}

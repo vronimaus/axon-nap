@@ -1,0 +1,69 @@
+{
+  "name": "UserPerformanceProgress",
+  "type": "object",
+  "properties": {
+    "user_email": {
+      "type": "string",
+      "description": "Email des Users"
+    },
+    "goal_code": {
+      "type": "string",
+      "description": "Code des Performance-Ziels (z.B. 'pistol_squat', 'middle_split')"
+    },
+    "current_level": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 10,
+      "default": 1,
+      "description": "Aktuelles Progressions-Level (1 = Anf\u00e4nger, 10 = Gemeistert)"
+    },
+    "max_reps": {
+      "type": "integer",
+      "default": 0,
+      "description": "Maximale Anzahl geschaffter Wiederholungen (Highscore)"
+    },
+    "last_session_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Datum der letzten Trainingseinheit"
+    },
+    "last_intensity": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 10,
+      "description": "Intensit\u00e4t der letzten Session (1-10)"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Notizen und Feedback zur letzten Session"
+    },
+    "total_sessions": {
+      "type": "integer",
+      "default": 0,
+      "description": "Gesamtzahl der Trainingseinheiten f\u00fcr dieses Ziel"
+    },
+    "unlocked": {
+      "type": "boolean",
+      "default": false,
+      "description": "Wurde das Ziel vollst\u00e4ndig gemeistert (Level 10 erreicht)"
+    }
+  },
+  "required": [
+    "user_email",
+    "goal_code"
+  ],
+  "rls": {
+    "create": {
+      "data.user_email": "{{user.email}}"
+    },
+    "read": {
+      "data.user_email": "{{user.email}}"
+    },
+    "update": {
+      "data.user_email": "{{user.email}}"
+    },
+    "delete": {
+      "data.user_email": "{{user.email}}"
+    }
+  }
+}

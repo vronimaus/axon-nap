@@ -1,0 +1,21 @@
+{
+  "name": "User",
+  "type": "object",
+  "properties": {
+    "has_paid": {
+      "type": "boolean",
+      "default": false,
+      "description": "Hat der User die 59\u20ac bezahlt?"
+    },
+    "trial_start_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Startdatum der 7-Tage kostenlosen Trial"
+    },
+    "stripe_customer_id": {
+      "type": "string",
+      "description": "Stripe Customer ID f\u00fcr One-Time Payment"
+    }
+  },
+  "required": []
+}

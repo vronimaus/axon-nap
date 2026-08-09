@@ -1,0 +1,79 @@
+{
+  "name": "DeveloperNote",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string",
+      "description": "Titel der Note (z.B. 'TTS Feature mit Gemini')"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "feature",
+        "bug_fix",
+        "config",
+        "integration",
+        "ui_component",
+        "other"
+      ],
+      "default": "feature",
+      "description": "Kategorie der Note"
+    },
+    "description": {
+      "type": "string",
+      "description": "Beschreibung des Features/Problems"
+    },
+    "code_snippet": {
+      "type": "string",
+      "description": "Code-Snippet oder vollst\u00e4ndiger Code"
+    },
+    "file_paths": {
+      "type": "string",
+      "description": "Betroffene Dateipfade (z.B. 'functions/textToSpeech.js, pages/DiagnosisChat.js')"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "disabled",
+        "archived"
+      ],
+      "default": "active",
+      "description": "Status des Features"
+    },
+    "tags": {
+      "type": "string",
+      "description": "Tags f\u00fcr einfaches Filtern (kommagetrennt)"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Zus\u00e4tzliche Notizen, Gr\u00fcnde f\u00fcr Deaktivierung, etc."
+    }
+  },
+  "required": [
+    "title",
+    "description"
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

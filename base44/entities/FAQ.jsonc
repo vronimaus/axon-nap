@@ -1,0 +1,62 @@
+{
+  "name": "FAQ",
+  "type": "object",
+  "properties": {
+    "faq_id": {
+      "type": "string",
+      "description": "Eindeutige ID (z.B. 'SCI_Myers_01', 'MET_Audit_01')"
+    },
+    "question": {
+      "type": "string",
+      "description": "Die Frage"
+    },
+    "answer": {
+      "type": "string",
+      "description": "Die Antwort (kann Markdown enthalten)"
+    },
+    "pro_tip": {
+      "type": "string",
+      "description": "Optionaler Pro-Tipp der unter der Antwort angezeigt wird (z.B. '\ud83d\udca1 Kombiniere den Check mit einer 2-min Atem\u00fcbung...')"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "support",
+        "methodik",
+        "science",
+        "praxis"
+      ],
+      "description": "Hauptkategorie f\u00fcr Filterung"
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Zus\u00e4tzliche Tags f\u00fcr feingranulare Filterung (z.B. 'Myers', 'Schleip', 'Audit')"
+    },
+    "related_articles": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Slugs von verkn\u00fcpften Knowledge Articles"
+    },
+    "order": {
+      "type": "integer",
+      "default": 0,
+      "description": "Reihenfolge f\u00fcr die Anzeige (niedriger = h\u00f6her priorisiert)"
+    },
+    "published": {
+      "type": "boolean",
+      "default": true,
+      "description": "Ist die FAQ \u00f6ffentlich sichtbar"
+    }
+  },
+  "required": [
+    "faq_id",
+    "question",
+    "answer",
+    "category"
+  ]
+}

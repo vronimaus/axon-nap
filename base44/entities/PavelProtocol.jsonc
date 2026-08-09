@@ -1,0 +1,75 @@
+{
+  "name": "PavelProtocol",
+  "type": "object",
+  "properties": {
+    "exercise_id": {
+      "type": "string",
+      "description": "Foreign Key zur Exercise Entity"
+    },
+    "pavel_principle": {
+      "type": "string",
+      "enum": [
+        "simple",
+        "efficient",
+        "effective",
+        "combination"
+      ],
+      "description": "Pavel's Kern-Prinzip f\u00fcr diese \u00dcbung"
+    },
+    "pavel_method": {
+      "type": "string",
+      "enum": [
+        "gtg",
+        "heavy_light_medium",
+        "density",
+        "ladder",
+        "wave",
+        "isometric",
+        "emom",
+        "amrap"
+      ],
+      "description": "Pavel-Training-Methode (Grease the Groove, etc.)"
+    },
+    "strength_standard": {
+      "type": "string",
+      "description": "Minimale Kraft-Standard (z.B. '200 lbs = 25 Pull-ups')"
+    },
+    "protocol_name": {
+      "type": "string",
+      "description": "Name des Protokolls (z.B. '5x5 Strength', '10x3 Density')"
+    },
+    "protocol_sets_reps": {
+      "type": "string",
+      "description": "Sets x Reps Format (z.B. '5x5', '3x10', '1x1 + 2x3')"
+    },
+    "protocol_frequency": {
+      "type": "string",
+      "description": "Wie oft pro Woche (z.B. '5x/week', '3x/week', 'daily')"
+    },
+    "rest_period": {
+      "type": "string",
+      "description": "Ruhezeit zwischen Sets (z.B. '2-3 min', '60 sec')"
+    },
+    "progression_rule": {
+      "type": "string",
+      "description": "Regel f\u00fcr Progression zur n\u00e4chsten Stufe"
+    },
+    "pavel_insight": {
+      "type": "string",
+      "description": "Wissenschaftlicher Hintergrund nach Pavel"
+    },
+    "rep_quality_cue": {
+      "type": "string",
+      "description": "Quality > Quantity Mantra (z.B. 'Jede Rep wie die erste')"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Zus\u00e4tzliche Pavel-spezifische Notizen"
+    }
+  },
+  "required": [
+    "exercise_id",
+    "pavel_principle",
+    "pavel_method"
+  ]
+}

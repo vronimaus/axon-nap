@@ -1,0 +1,81 @@
+{
+  "name": "FascialChain",
+  "type": "object",
+  "properties": {
+    "code": {
+      "type": "string",
+      "description": "Kurzcode der Kette (SBL, SFL, etc.)"
+    },
+    "name_de": {
+      "type": "string",
+      "description": "Deutscher Name der Kette"
+    },
+    "name_en": {
+      "type": "string",
+      "description": "Englischer Name"
+    },
+    "description": {
+      "type": "string",
+      "description": "Beschreibung der Kette und ihrer Funktion"
+    },
+    "test_name": {
+      "type": "string",
+      "description": "Name des Hardware-Tests"
+    },
+    "test_instruction": {
+      "type": "string",
+      "description": "Detaillierte Testanleitung"
+    },
+    "test_positive_indicator": {
+      "type": "string",
+      "description": "Was zeigt ein positives (eingeschr\u00e4nktes) Testergebnis"
+    },
+    "neuro_marker": {
+      "type": "string",
+      "description": "Zugeh\u00f6riger Neuro-Drill"
+    },
+    "neuro_instruction": {
+      "type": "string",
+      "description": "Anleitung f\u00fcr den Neuro-Drill"
+    },
+    "body_regions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Betroffene K\u00f6rperregionen"
+    },
+    "color": {
+      "type": "string",
+      "description": "Farbcode f\u00fcr UI-Darstellung"
+    },
+    "image_url": {
+      "type": "string",
+      "description": "URL zur visuellen Darstellung der myofaszialen Leitbahn"
+    }
+  },
+  "required": [
+    "code",
+    "name_de",
+    "test_name",
+    "neuro_marker"
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": {},
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

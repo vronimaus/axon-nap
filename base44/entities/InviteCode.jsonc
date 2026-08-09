@@ -1,0 +1,61 @@
+{
+  "name": "InviteCode",
+  "type": "object",
+  "properties": {
+    "code": {
+      "type": "string",
+      "description": "Der einzigartige Einladungscode (z.B. AXON-BETA-2026)"
+    },
+    "description": {
+      "type": "string",
+      "description": "Interne Notiz f\u00fcr wen/wof\u00fcr dieser Code ist"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true,
+      "description": "Ist der Code noch aktiv?"
+    },
+    "max_uses": {
+      "type": "integer",
+      "default": 1,
+      "description": "Maximale Anzahl Einl\u00f6sungen (0 = unbegrenzt)"
+    },
+    "used_count": {
+      "type": "integer",
+      "default": 0,
+      "description": "Wie oft wurde der Code bereits eingel\u00f6st"
+    },
+    "used_by_emails": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Liste der E-Mails die diesen Code eingel\u00f6st haben"
+    }
+  },
+  "required": [
+    "code"
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

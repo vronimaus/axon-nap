@@ -1,0 +1,116 @@
+{
+  "name": "GaryGrayProtocol",
+  "type": "object",
+  "properties": {
+    "exercise_id": {
+      "type": "string",
+      "description": "Foreign Key zur Exercise Entity"
+    },
+    "movement_plane": {
+      "type": "string",
+      "enum": [
+        "sagittal",
+        "frontal",
+        "transverse",
+        "multi_planar"
+      ],
+      "description": "3D Movement Plane (Vorne/Seite/Rotation/Kombination)"
+    },
+    "primary_joint_action": {
+      "type": "string",
+      "description": "Prim\u00e4re Gelenkbewegung (z.B. 'Shoulder Flexion', 'Hip Extension')"
+    },
+    "force_couple_primary": {
+      "type": "string",
+      "description": "Prim\u00e4res Force-Couple (z.B. 'Lat + Pec + Shoulder Stabilizers')"
+    },
+    "force_couple_antagonist": {
+      "type": "string",
+      "description": "Antagonistisches Force-Couple (was muss resistieren)"
+    },
+    "load_direction": {
+      "type": "string",
+      "enum": [
+        "vertical",
+        "horizontal_push",
+        "horizontal_pull",
+        "rotational",
+        "diagonal",
+        "complex_diagonal"
+      ],
+      "description": "Richtung der Kraft-Anwendung nach Gary Gray"
+    },
+    "absorption_capacity": {
+      "type": "string",
+      "description": "F\u00e4higkeit Kraft zu absorbieren (z.B. 'Eccentric Load Tolerance')"
+    },
+    "production_capacity": {
+      "type": "string",
+      "description": "F\u00e4higkeit Kraft zu produzieren (z.B. 'Concentric Power Output')"
+    },
+    "movement_quality_indicator": {
+      "type": "string",
+      "description": "Wie man Movement Quality beurteilt (z.B. 'Symmetry Check', 'Plane Integrity')"
+    },
+    "compensation_patterns": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "M\u00f6gliche Kompensationsmuster (z.B. ['Shoulder Hiking', 'Lumbar Flexion'])"
+    },
+    "assessment_focus": {
+      "type": "string",
+      "description": "Worauf fokussiert sich 3DMAPS Assessment in dieser \u00dcbung"
+    },
+    "three_d_maps_level": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 5,
+      "description": "3DMAPS Komplexit\u00e4ts-Level (1=einfach, 5=expert)"
+    },
+    "integrated_vs_isolated": {
+      "type": "string",
+      "enum": [
+        "isolated",
+        "integrated",
+        "complex_integrated"
+      ],
+      "description": "Ist \u00dcbung isoliert oder integriert (multi-joint/multi-plane)"
+    },
+    "stability_demand": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high",
+        "extreme"
+      ],
+      "description": "Stabilit\u00e4t-Anforderung in dieser \u00dcbung"
+    },
+    "mobility_demand": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high",
+        "extreme"
+      ],
+      "description": "Mobilit\u00e4ts-Anforderung"
+    },
+    "gary_gray_insight": {
+      "type": "string",
+      "description": "Wissenschaftlicher/Konzeptioneller Hintergrund nach Gary Gray"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Zus\u00e4tzliche Gary Gray 3DMAPS-spezifische Notizen"
+    }
+  },
+  "required": [
+    "exercise_id",
+    "movement_plane",
+    "force_couple_primary",
+    "load_direction"
+  ]
+}

@@ -1,0 +1,102 @@
+{
+  "name": "ContentPost",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string",
+      "description": "Kurztitel des Posts (intern)"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "neuro_happen",
+        "deep_dive",
+        "mythos",
+        "praxis",
+        "weekend"
+      ],
+      "description": "Content-Kategorie (Wochentag)"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "idee",
+        "entwurf",
+        "review",
+        "bereit",
+        "veroeffentlicht"
+      ],
+      "default": "idee",
+      "description": "Kanban-Status des Posts"
+    },
+    "post_text": {
+      "type": "string",
+      "description": "Der fertige LinkedIn-Post-Text"
+    },
+    "carousel_slides": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "text": {
+            "type": "string"
+          },
+          "tag": {
+            "type": "string"
+          },
+          "theme": {
+            "type": "string"
+          }
+        }
+      },
+      "description": "Karussell-Folien (aus dem Carousel Builder)"
+    },
+    "planned_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Geplantes Ver\u00f6ffentlichungsdatum"
+    },
+    "hashtags": {
+      "type": "string",
+      "description": "Kommagetrennte Hashtags"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Interne Notizen"
+    },
+    "published_url": {
+      "type": "string",
+      "description": "LinkedIn URL des ver\u00f6ffentlichten Posts"
+    }
+  },
+  "required": [
+    "title",
+    "category",
+    "status"
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

@@ -1,0 +1,45 @@
+{
+  "name": "RoutineHistory",
+  "type": "object",
+  "properties": {
+    "routine_id": {
+      "type": "string",
+      "description": "Referenz zur Routine Entity"
+    },
+    "routine_name": {
+      "type": "string",
+      "description": "Name der durchgef\u00fchrten Routine"
+    },
+    "completed": {
+      "type": "boolean",
+      "default": true,
+      "description": "Wurde die Routine vollst\u00e4ndig abgeschlossen"
+    },
+    "duration_actual": {
+      "type": "integer",
+      "description": "Tats\u00e4chliche Dauer in Minuten"
+    },
+    "feedback": {
+      "type": "object",
+      "description": "User-Feedback pro Step (welche Nodes f\u00fchlten sich gut an, etc.)"
+    }
+  },
+  "required": [
+    "routine_id",
+    "routine_name"
+  ],
+  "rls": {
+    "create": {
+      "created_by": "{{user.email}}"
+    },
+    "read": {
+      "created_by": "{{user.email}}"
+    },
+    "update": {
+      "created_by": "{{user.email}}"
+    },
+    "delete": {
+      "created_by": "{{user.email}}"
+    }
+  }
+}

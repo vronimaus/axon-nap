@@ -1,0 +1,99 @@
+{
+  "name": "MovementAssessment",
+  "type": "object",
+  "properties": {
+    "region": {
+      "type": "string",
+      "enum": [
+        "foot_ankle",
+        "knee",
+        "hip",
+        "lumbar_spine",
+        "thoracic_spine",
+        "shoulder",
+        "neck",
+        "full_body"
+      ],
+      "description": "K\u00f6rperregion des Tests"
+    },
+    "test_name": {
+      "type": "string",
+      "description": "Name des Tests (z.B. 'Knie zur Wand Test')"
+    },
+    "test_name_en": {
+      "type": "string",
+      "description": "Englischer Name (z.B. 'Ankle Dorsiflexion Test')"
+    },
+    "test_instruction": {
+      "type": "string",
+      "description": "Wie f\u00fchrt man den Test durch? Schritt-f\u00fcr-Schritt Anleitung"
+    },
+    "observation_points": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Was zu beobachten ist - Stichpunkte f\u00fcr Coaches"
+    },
+    "findings_indicators": {
+      "type": "object",
+      "description": "Was kann festgestellt werden basierend auf Beobachtungen (Key: Beobachtung, Value: Bedeutung/Dysfunktion)"
+    },
+    "corrective_exercises": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Referenzen zu Exercise IDs f\u00fcr Korrektur\u00fcbungen"
+    },
+    "learning_notes": {
+      "type": "string",
+      "description": "Zus\u00e4tzliche Informationen f\u00fcr Coaches zum Lernen und Merken"
+    },
+    "difficulty_level": {
+      "type": "string",
+      "enum": [
+        "basic",
+        "intermediate",
+        "advanced"
+      ],
+      "default": "basic",
+      "description": "Schwierigkeitsgrad des Tests"
+    },
+    "required_equipment": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Ben\u00f6tigtes Equipment (z.B. 'Wand', 'Ma\u00dfband', 'Matte')"
+    },
+    "order": {
+      "type": "integer",
+      "description": "Reihenfolge innerhalb der Region"
+    }
+  },
+  "required": [
+    "region",
+    "test_name",
+    "test_instruction",
+    "observation_points"
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": {},
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

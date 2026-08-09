@@ -1,0 +1,109 @@
+{
+  "name": "ScientificKnowledge",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string",
+      "description": "Titel der Studie oder des Papers"
+    },
+    "source": {
+      "type": "string",
+      "description": "Quelle (Journal, Autor, DOI, etc.)"
+    },
+    "year": {
+      "type": "integer",
+      "description": "Publikationsjahr"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "hiit",
+        "fascia",
+        "neuro",
+        "strength",
+        "mobility",
+        "recovery",
+        "hormones",
+        "nutrition",
+        "other"
+      ],
+      "description": "Kategorie des Wissens"
+    },
+    "summary": {
+      "type": "string",
+      "description": "Kurze Zusammenfassung des Papers"
+    },
+    "key_findings": {
+      "type": "string",
+      "description": "Wichtigste Erkenntnisse (strukturiert)"
+    },
+    "axon_relevance": {
+      "type": "string",
+      "description": "Wie ist das f\u00fcr AXON relevant? Welche Features/Bereiche betrifft es?"
+    },
+    "target_audience": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "F\u00fcr wen ist das relevant? (z.B. 'postmenopausal women', 'athletes', 'beginners')"
+    },
+    "recommended_actions": {
+      "type": "string",
+      "description": "Konkrete Handlungsempfehlungen f\u00fcr AXON-Nutzer"
+    },
+    "protocol_details": {
+      "type": "string",
+      "description": "Spezifische Protokolle oder Methoden aus der Studie"
+    },
+    "file_url": {
+      "type": "string",
+      "description": "URL zum hochgeladenen PDF (falls vorhanden)"
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Tags f\u00fcr einfacheres Filtern"
+    },
+    "implementation_status": {
+      "type": "string",
+      "enum": [
+        "not_implemented",
+        "in_review",
+        "partially_implemented",
+        "fully_implemented"
+      ],
+      "default": "not_implemented",
+      "description": "Status der Umsetzung in AXON"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Zus\u00e4tzliche Notizen oder Gedanken"
+    }
+  },
+  "required": [
+    "title",
+    "summary",
+    "key_findings"
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": {},
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

@@ -1,0 +1,94 @@
+{
+  "name": "KnowledgeArticle",
+  "type": "object",
+  "properties": {
+    "slug": {
+      "type": "string",
+      "description": "URL-freundlicher Slug f\u00fcr die URL (z.B. 'thomas-myers')"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "experts",
+        "solutions",
+        "methods",
+        "sports"
+      ],
+      "description": "Silo-Kategorie f\u00fcr URL-Struktur"
+    },
+    "headline": {
+      "type": "string",
+      "description": "SEO-optimierte Haupt\u00fcberschrift (Intent-basiert)"
+    },
+    "summary": {
+      "type": "string",
+      "description": "TL;DR Box - Kurzzusammenfassung f\u00fcr schnelle Erfassung"
+    },
+    "expert_name": {
+      "type": "string",
+      "description": "Name des Experten (z.B. 'Dr. Robert Schleip', 'Thomas W. Myers')"
+    },
+    "expert_credentials": {
+      "type": "string",
+      "description": "Credentials und Authority des Experten"
+    },
+    "expert_image_url": {
+      "type": "string",
+      "description": "Profilbild des Experten"
+    },
+    "deep_dive_content": {
+      "type": "string",
+      "description": "Hauptinhalt des Artikels (Markdown-Format)"
+    },
+    "triage_red": {
+      "type": "string",
+      "description": "Rot-Ampel: Wann sofort zum Arzt"
+    },
+    "triage_yellow": {
+      "type": "string",
+      "description": "Gelb-Ampel: Wann AXON die richtige L\u00f6sung ist"
+    },
+    "triage_green": {
+      "type": "string",
+      "description": "Gr\u00fcn-Ampel: Optimale Nutzung f\u00fcr Performance"
+    },
+    "app_cta_text": {
+      "type": "string",
+      "description": "Call-to-Action Text f\u00fcr App-Download"
+    },
+    "related_routines": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "IDs von verkn\u00fcpften Routinen in der App"
+    },
+    "related_faqs": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "IDs von verkn\u00fcpften FAQ-Eintr\u00e4gen"
+    },
+    "meta_title": {
+      "type": "string",
+      "description": "SEO Meta Title"
+    },
+    "meta_description": {
+      "type": "string",
+      "description": "SEO Meta Description"
+    },
+    "published": {
+      "type": "boolean",
+      "default": false,
+      "description": "Ist der Artikel \u00f6ffentlich sichtbar"
+    }
+  },
+  "required": [
+    "slug",
+    "category",
+    "headline",
+    "summary",
+    "deep_dive_content"
+  ]
+}

@@ -1,0 +1,115 @@
+{
+  "name": "KellyStarrettProtocol",
+  "type": "object",
+  "properties": {
+    "exercise_id": {
+      "type": "string",
+      "description": "Foreign Key zur Exercise Entity"
+    },
+    "starrett_principle": {
+      "type": "string",
+      "enum": [
+        "bracing",
+        "torque",
+        "position_first",
+        "joint_by_joint",
+        "mobility_wod",
+        "tissue_quality",
+        "movement_archetype"
+      ],
+      "description": "Kelly Starrett's Kern-Prinzip f\u00fcr diese \u00dcbung"
+    },
+    "movement_archetype": {
+      "type": "string",
+      "enum": [
+        "squat",
+        "hinge",
+        "lunge",
+        "press",
+        "pull",
+        "carry",
+        "rotation"
+      ],
+      "description": "Fundamentales Bewegungs-Archetyp nach Starrett"
+    },
+    "tissue_work_method": {
+      "type": "string",
+      "enum": [
+        "smash",
+        "floss",
+        "contract_relax",
+        "tack_and_stretch",
+        "voodoo_band",
+        "compression"
+      ],
+      "description": "Tissue-Qualit\u00e4t-Methode (Smash & Floss System)"
+    },
+    "bracing_cue": {
+      "type": "string",
+      "description": "Spezifischer Bracing-Cue f\u00fcr Rumpfstabilit\u00e4t (z.B. '20% Tension', 'Neutral Spine')"
+    },
+    "torque_instruction": {
+      "type": "string",
+      "description": "Torque-Anweisung f\u00fcr Gelenk-Stabilit\u00e4t (z.B. 'External Rotation Shoulder', 'Screw Feet into Ground')"
+    },
+    "position_standard": {
+      "type": "string",
+      "description": "Position-Standard nach Starrett (z.B. 'Full Depth Squat with Neutral Spine')"
+    },
+    "ten_minute_test": {
+      "type": "string",
+      "description": "Zugeh\u00f6riger 10-Minute Mobility Test (z.B. 'Couch Stretch', 'Overhead Squat Test')"
+    },
+    "prerequisite_mobility": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Erforderliche Mobility-Standards vor dieser \u00dcbung (z.B. ['Ankle Dorsiflexion', 'Hip Flexion'])"
+    },
+    "joint_by_joint_focus": {
+      "type": "string",
+      "enum": [
+        "ankle_mobility",
+        "knee_stability",
+        "hip_mobility",
+        "lumbar_stability",
+        "thoracic_mobility",
+        "scapular_stability",
+        "shoulder_mobility",
+        "elbow_stability",
+        "wrist_mobility"
+      ],
+      "description": "Joint-by-Joint Fokus dieser \u00dcbung"
+    },
+    "mobility_prescription": {
+      "type": "string",
+      "description": "Mobility-Rx (z.B. '2 min each side', '10 passes', '5 breaths')"
+    },
+    "daily_maintenance_time": {
+      "type": "integer",
+      "description": "Empfohlene t\u00e4gliche Maintenance-Zeit in Minuten"
+    },
+    "starrett_insight": {
+      "type": "string",
+      "description": "Wissenschaftlicher/Philosophischer Hintergrund nach Kelly Starrett"
+    },
+    "supple_leopard_reference": {
+      "type": "string",
+      "description": "Referenz zu 'Becoming a Supple Leopard' Buch (z.B. 'Page 234, Hip Mobilization #5')"
+    },
+    "pain_indicator": {
+      "type": "string",
+      "description": "Was zeigt eine Einschr\u00e4nkung/Problem (z.B. 'Knee cave in squat = Hip mobility issue')"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Zus\u00e4tzliche Kelly Starrett-spezifische Notizen"
+    }
+  },
+  "required": [
+    "exercise_id",
+    "starrett_principle",
+    "movement_archetype"
+  ]
+}

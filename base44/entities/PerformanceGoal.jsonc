@@ -1,0 +1,80 @@
+{
+  "name": "PerformanceGoal",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Name des Performance-Ziels"
+    },
+    "code": {
+      "type": "string",
+      "description": "Kurzcode (backbend, middle_split, etc.)"
+    },
+    "description": {
+      "type": "string",
+      "description": "Beschreibung des Ziels"
+    },
+    "mobilisation_name": {
+      "type": "string",
+      "description": "Name der Mobilisations-\u00dcbung"
+    },
+    "mobilisation_instruction": {
+      "type": "string",
+      "description": "Anleitung f\u00fcr Mobilisation"
+    },
+    "stretch_name": {
+      "type": "string",
+      "description": "Name der Dehnungs-\u00dcbung"
+    },
+    "stretch_instruction": {
+      "type": "string",
+      "description": "Anleitung f\u00fcr Dehnung"
+    },
+    "strength_name": {
+      "type": "string",
+      "description": "Name der Kr\u00e4ftigungs-\u00dcbung"
+    },
+    "strength_instruction": {
+      "type": "string",
+      "description": "Anleitung f\u00fcr Kr\u00e4ftigung"
+    },
+    "neuro_fix_name": {
+      "type": "string",
+      "description": "Name des Neuro-Fixes"
+    },
+    "neuro_fix_instruction": {
+      "type": "string",
+      "description": "Anleitung f\u00fcr Neuro-Fix"
+    },
+    "icon": {
+      "type": "string",
+      "description": "Icon-Emoji f\u00fcr das Ziel"
+    },
+    "color": {
+      "type": "string",
+      "description": "Farbcode f\u00fcr UI"
+    }
+  },
+  "required": [
+    "name",
+    "code"
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": {},
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

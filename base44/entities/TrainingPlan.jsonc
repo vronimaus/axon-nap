@@ -1,0 +1,228 @@
+{
+  "name": "TrainingPlan",
+  "type": "object",
+  "properties": {
+    "user_email": {
+      "type": "string",
+      "description": "Foreign Key zur User Entity"
+    },
+    "goal_description": {
+      "type": "string",
+      "description": "Beschreibung des Performance-Ziels"
+    },
+    "estimated_duration_weeks": {
+      "type": "integer",
+      "default": 8,
+      "description": "Gesch\u00e4tzte Dauer des Plans in Wochen"
+    },
+    "current_phase": {
+      "type": "integer",
+      "default": 1,
+      "description": "Aktuelle Phase des Plans"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "paused",
+        "completed"
+      ],
+      "default": "active",
+      "description": "Status des Plans"
+    },
+    "plan_generated_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Datum der Plan-Generierung"
+    },
+    "phase_start_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Startdatum der aktuellen Phase"
+    },
+    "phases": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "phase_number": {
+            "type": "integer"
+          },
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "duration_weeks": {
+            "type": "integer"
+          },
+          "completed": {
+            "type": "boolean",
+            "default": false,
+            "description": "Phase vom User als abgeschlossen markiert"
+          },
+          "exercises": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "exercise_id": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "sets_reps_tempo": {
+                  "type": "string"
+                },
+                "instruction": {
+                  "type": "string"
+                },
+                "notes": {
+                  "type": "string"
+                },
+                "section": {
+                  "type": "string",
+                  "enum": [
+                    "neuro_primer",
+                    "sling_activation",
+                    "performance",
+                    "resilience"
+                  ],
+                  "description": "Die 4 Bl\u00f6cke der AXON Fluid Logic V2 Session"
+                },
+                "completed": {
+                  "type": "boolean",
+                  "default": false
+                },
+                "rehab_proxy": {
+                  "type": "string"
+                },
+                "intensity_factor": {
+                  "type": "number",
+                  "default": 1
+                },
+                "target_nodes": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "sling_id": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "description": "Phasen des Trainingsplans"
+    },
+    "progression_matrix": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "level": {
+            "type": "integer"
+          },
+          "exercise_id": {
+            "type": "string"
+          },
+          "threshold": {
+            "type": "string"
+          },
+          "rehab_proxy": {
+            "type": "string"
+          },
+          "intensity_factor": {
+            "type": "number",
+            "default": 1
+          }
+        },
+        "required": [
+          "level",
+          "exercise_id"
+        ]
+      }
+    },
+    "target_nodes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "primary_sling": {
+      "type": "string"
+    },
+    "suggested_complementary_drills": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "complementary_drills_accepted": {
+      "type": "boolean",
+      "default": false
+    },
+    "plan_metadata": {
+      "type": "object"
+    },
+    "recommended_routines": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "routine_id": {
+            "type": "string"
+          },
+          "routine_name": {
+            "type": "string"
+          },
+          "reason": {
+            "type": "string"
+          },
+          "frequency": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "recommended_faqs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "faq_id": {
+            "type": "string"
+          },
+          "question": {
+            "type": "string"
+          },
+          "reason": {
+            "type": "string"
+          }
+        }
+      },
+      "maxItems": 3
+    }
+  },
+  "required": [
+    "user_email",
+    "goal_description",
+    "phases"
+  ],
+  "rls": {
+    "create": {},
+    "read": {
+      "data.user_email": "{{user.email}}"
+    },
+    "update": {
+      "data.user_email": "{{user.email}}"
+    },
+    "delete": {
+      "data.user_email": "{{user.email}}"
+    }
+  }
+}
