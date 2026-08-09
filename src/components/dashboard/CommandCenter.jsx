@@ -406,6 +406,7 @@ export default function CommandCenter({ user, handleDestinationClick }) {
       region: mapData.region || '',
       view: mapData.view || 'front',
     });
+    if (mapData.nodeId) params.set('nodeId', mapData.nodeId);
     window.location.href = createPageUrl('RehabPlan') + `?${params.toString()}`;
   };
 

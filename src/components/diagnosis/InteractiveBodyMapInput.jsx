@@ -3,6 +3,8 @@ import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { RotateCcw, ArrowRight } from 'lucide-react';
 import { detectRegionFromMarkers } from '@/components/diagnosis/bodyMapRegions';
+import { getDisambiguation } from '@/components/diagnosis/ambiguousRegions';
+import RegionDisambiguation from '@/components/diagnosis/RegionDisambiguation';
 
 export default function InteractiveBodyMapInput({ onSubmit }) {
   const [view, setView] = useState('front');
@@ -10,6 +12,7 @@ export default function InteractiveBodyMapInput({ onSubmit }) {
   const [imageLoaded, setImageLoaded] = useState(false);
   const [imageError, setImageError] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [disambiguation, setDisambiguation] = useState(null);
   const canvasRef = useRef(null);
 
   // EXAKT die gleichen Bilder wie im Dashboard
@@ -80,7 +83,14 @@ export default function InteractiveBodyMapInput({ onSubmit }) {
       const normalizedX = markers[0].x / 400;
       console.log(`[DEBUG] Y: ${markers[0].y} (norm: ${normalizedY.toFixed(3)}), X: ${markers[0].x} (norm: ${normalizedX.toFixed(3)}) → ${detectedRegion}`);
     }
-    
+
+    // Disambiguation: wenn die Region mehrdeutig ist, erst nachfragen
+    const options = getDisambiguation(detectedRegion, view);
+    if (options) {
+      setDisambiguation({ region: detectedRegion, options });
+      return;
+    }
+
     const mapData = {
       view,
       markers,
@@ -91,8 +101,28 @@ export default function InteractiveBodyMapInput({ onSubmit }) {
     onSubmit(mapData);
   };
 
+  const handleDisambiguationSelect = (option) => {
+    if (option.switchView) {
+      // Ansicht umschalten und neu markieren lassen
+      setView(option.switchView);
+      setMarkers([]);
+      setDisambiguation(null);
+      return;
+    }
+    // Mit aufgelöstem Node weiter
+    const mapData = {
+      view,
+      markers,
+      mode: 'rehab',
+      region: option.label,
+      nodeId: option.nodeId,
+    };
+    setDisambiguation(null);
+    onSubmit(mapData);
+  };
+
   return (
-    <div className="w-full space-y-6">
+    <div className="relative w-full space-y-6">
       {/* View Toggle */}
       <div className="flex items-center justify-center gap-1 bg-zinc-800/60 rounded-xl p-1">
         <button
@@ -183,6 +213,26 @@ export default function InteractiveBodyMapInput({ onSubmit }) {
 
         </div>
       </div>
+
+      {/* Disambiguation Overlay */}
+      {disambiguation && (
+        <RegionDisambiguation
+          region={disambiguation.region}
+          options={disambiguation.options}
+          onSelect={handleDisambiguationSelect}
+          onSkip={() => {
+            // Mit ursprünglicher Auto-Erkennung weiter
+            const mapData = {
+              view,
+              markers,
+              mode: 'rehab',
+              region: disambiguation.region
+            };
+            setDisambiguation(null);
+            onSubmit(mapData);
+          }}
+        />
+      )}
 
       {/* Action Buttons */}
       <div className="flex gap-3">

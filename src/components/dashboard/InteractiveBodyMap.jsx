@@ -7,6 +7,8 @@ import { createPageUrl } from '@/utils';
 import { base44 } from '@/api/base44Client';
 import { toast } from 'sonner';
 import { detectRegionFromMarkers } from '@/components/diagnosis/bodyMapRegions';
+import { getDisambiguation } from '@/components/diagnosis/ambiguousRegions';
+import RegionDisambiguation from '@/components/diagnosis/RegionDisambiguation';
 
 // KRITISCH: Diese Bilder sind final kalibriert - NICHT ändern!
 const BODY_IMAGE_FRONT = "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/ad6e52b61_generated_image.png";
@@ -21,6 +23,7 @@ export default function InteractiveBodyMap({ mode, onRegionSelect, sessions }) {
   const [isDrawing, setIsDrawing] = useState(false);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [debugOutput, setDebugOutput] = useState('');
+  const [disambiguation, setDisambiguation] = useState(null);
   const canvasRef = useRef(null);
   const containerRef = useRef(null);
 
@@ -200,23 +203,47 @@ export default function InteractiveBodyMap({ mode, onRegionSelect, sessions }) {
     setIsAnalyzing(true);
     try {
       const region = detectRegionFromMarkers(markers, view, 400, 600);
-      sessionStorage.setItem('bodyMapData', JSON.stringify({ view, markers, mode }));
 
-      // Navigate to DiagnosisChat with region — SFMA Quick Check happens there
-      const params = new URLSearchParams({
-        mapData: JSON.stringify({ view, markers, mode }),
-        region: region,
-        step: 'sfma'  // Signal: start with SFMA quick check, not direct plan generation
-      });
+      // Disambiguation: wenn die Region mehrdeutig ist, erst nachfragen
+      const options = getDisambiguation(region, view);
+      if (options) {
+        setDisambiguation({ region, options });
+        setIsAnalyzing(false);
+        return;
+      }
 
-      setTimeout(() => {
-        navigate(createPageUrl(`DiagnosisChat?${params.toString()}`));
-      }, 300);
+      proceedToDiagnosis(region);
     } catch (error) {
       console.error('Fehler:', error);
       toast.error('Fehler beim Starten der Analyse');
       setIsAnalyzing(false);
     }
+  };
+
+  const proceedToDiagnosis = (region, nodeId) => {
+    sessionStorage.setItem('bodyMapData', JSON.stringify({ view, markers, mode }));
+
+    const params = new URLSearchParams({
+      mapData: JSON.stringify({ view, markers, mode }),
+      region: region,
+      step: 'sfma'
+    });
+    if (nodeId) params.set('nodeId', nodeId);
+
+    setTimeout(() => {
+      navigate(createPageUrl(`DiagnosisChat?${params.toString()}`));
+    }, 300);
+  };
+
+  const handleDisambiguationSelect = (option) => {
+    if (option.switchView) {
+      setView(option.switchView);
+      setMarkers([]);
+      setDisambiguation(null);
+      return;
+    }
+    setDisambiguation(null);
+    proceedToDiagnosis(option.label, option.nodeId);
   };
 
   const modeColor = mode === 'rehab' ? 'red' : 'purple';
@@ -352,6 +379,20 @@ export default function InteractiveBodyMap({ mode, onRegionSelect, sessions }) {
       </div>
 
 
+    {/* Disambiguation Overlay */}
+    {disambiguation && (
+      <RegionDisambiguation
+        region={disambiguation.region}
+        options={disambiguation.options}
+        onSelect={handleDisambiguationSelect}
+        onSkip={() => {
+          setDisambiguation(null);
+          proceedToDiagnosis(disambiguation.region);
+        }}
+      />
+    )}
+
     </div>
-  );
-}
+
+    );
+    }
