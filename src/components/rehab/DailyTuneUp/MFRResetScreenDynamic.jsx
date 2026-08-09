@@ -3,6 +3,8 @@ import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Loader2, Play, Check, MapPin, AlertCircle, CheckCircle, ChevronRight } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
+import { useAudioCoach } from '@/hooks/useAudioCoach';
+import AudioCoachToggle from '@/components/AudioCoachToggle';
 
 export default function MFRResetScreenDynamic({ onComplete, nodeId = 'N1', screenId = 0, tuneUpData = null }) {
   const [causalChain, setCausalChain] = useState(null);
@@ -12,6 +14,23 @@ export default function MFRResetScreenDynamic({ onComplete, nodeId = 'N1', scree
   const [step, setStep] = useState('pretest');
   const [pretestValue, setPretestValue] = useState(null);
   const MFR_DURATION = 90;
+
+  // ── Audio Coach ──
+  const { isMuted, toggleMute, coach, isPlaying: isCoaching, isLoading: isCoachLoading } = useAudioCoach();
+
+  // Auto-narrate each sub-step
+  useEffect(() => {
+    if (!causalChain) return;
+    let text = '';
+    if (step === 'pretest') {
+      text = `Beweglichkeitstest für ${causalChain.node_name_de}. ${causalChain.hardware_reset?.pretest_instruction || 'Teste deine aktuelle Beweglichkeit.'}`;
+    } else if (step === 'compression') {
+      text = `Faszien-Entlastung für ${causalChain.node_name_de}. ${causalChain.hardware_reset?.technik || ''}. ${causalChain.hardware_reset?.mechanismus || ''}`;
+    } else if (step === 'info') {
+      text = `Die Wissenschaft dahinter. ${causalChain.biomechanische_ursache || ''}. ${causalChain.hardware_reset?.mechanismus || ''}. ${causalChain.hardware_reset?.biologischer_zweck || ''}`;
+    }
+    if (text) coach(text);
+  }, [step, causalChain]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // If tuneUpData passed directly, use it immediately
   useEffect(() => {
@@ -192,6 +211,7 @@ export default function MFRResetScreenDynamic({ onComplete, nodeId = 'N1', scree
       exit={{ opacity: 0, y: -20 }}
       className="w-full max-w-sm mx-auto px-4 space-y-6 max-h-[80vh] overflow-y-auto"
     >
+      <AudioCoachToggle isMuted={isMuted} onToggle={toggleMute} isLoading={isCoachLoading} isPlaying={isCoaching} />
 
 
       {/* PRETEST */}

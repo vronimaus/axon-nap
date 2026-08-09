@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Volume2, VolumeX, Loader2, CheckCircle2 } from 'lucide-react';
-import { useCachedAudio } from '@/hooks/useCachedAudio';
+import { useAudioCoach } from '@/hooks/useAudioCoach';
+import AudioCoachToggle from '@/components/AudioCoachToggle';
 import Confetti from 'canvas-confetti';
 import { base44 } from '@/api/base44Client';
 
@@ -17,7 +18,7 @@ export default function IntegrationScreen({
   const [exerciseCompleted, setExerciseCompleted] = useState(false);
   const [integration, setIntegration] = useState(null);
   const [isLoading, setIsLoading] = useState(!tuneUpData);
-  const { isPlaying, isLoading: isTTSLoading, playText, stop } = useCachedAudio();
+  const { isMuted, toggleMute, coach, isPlaying, isLoading: isTTSLoading, stop } = useAudioCoach();
 
   useEffect(() => {
     // If tuneUpData passed directly, extract integration immediately
@@ -69,8 +70,22 @@ export default function IntegrationScreen({
       integration.tweak2,
       'Das ist die neuronale Verankerung. Dein Gehirn myelinisiert die neuen Bewegungsmuster, wenn du sie sofort nach dem MFR und Neuro-Training nutzt.'
     ].filter(Boolean).join(' ');
-    playText(text);
+    coach(text);
   };
+
+  // Auto-play when integration data loads
+  useEffect(() => {
+    if (!integration) return;
+    const text = [
+      'Deine Integrationsübung.',
+      integration.reps,
+      integration.tweak1,
+      integration.tweak2,
+      'Das ist die neuronale Verankerung. Dein Gehirn myelinisiert die neuen Bewegungsmuster, wenn du sie sofort nach dem MFR und Neuro-Training nutzt.'
+    ].filter(Boolean).join(' ');
+    const timer = setTimeout(() => coach(text), 300);
+    return () => clearTimeout(timer);
+  }, [integration]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleCompleteExercise = () => {
     setExerciseCompleted(true);
@@ -178,21 +193,16 @@ export default function IntegrationScreen({
         </div>
       </motion.div>
 
-      {/* Audio Button */}
+      {/* Audio Coach Toggle + Replay */}
+      <AudioCoachToggle isMuted={isMuted} onToggle={toggleMute} isLoading={isTTSLoading} isPlaying={isPlaying} />
       <button
         onClick={handlePlayAudio}
         disabled={isTTSLoading}
-        className={`w-full h-14 flex items-center justify-center gap-3 rounded-2xl font-black text-sm transition-all active:scale-95 ${
-          isPlaying
-            ? 'bg-purple-500/20 border-2 border-purple-400 text-purple-300'
-            : 'bg-purple-500 hover:bg-purple-600 text-white shadow-lg shadow-purple-500/40'
-        }`}
+        className="w-full h-12 flex items-center justify-center gap-2 rounded-xl text-sm font-medium border border-purple-500/30 bg-purple-500/10 text-purple-400 hover:bg-purple-500/20 transition-all active:scale-95"
       >
         {isTTSLoading
-          ? <><Loader2 className="w-5 h-5 animate-spin" /> Lädt…</>
-          : isPlaying
-          ? <><VolumeX className="w-5 h-5" /> Stoppen</>
-          : <><Volume2 className="w-5 h-5" /> Audio-Anleitung</>
+          ? <><Loader2 className="w-4 h-4 animate-spin" /> Lädt…</>
+          : <><Volume2 className="w-4 h-4" /> {isPlaying ? 'Stoppen' : 'Wiederholen'}</>
         }
       </button>
 

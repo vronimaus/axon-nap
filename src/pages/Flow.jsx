@@ -10,6 +10,8 @@ import { createPageUrl } from '@/utils';
 import GlossaryTooltip from '../components/glossary/GlossaryTooltip';
 import DailyReadinessCheck from '../components/dashboard/DailyReadinessCheck';
 import { Helmet } from 'react-helmet-async';
+import { useAudioCoach } from '@/hooks/useAudioCoach';
+import AudioCoachToggle from '@/components/AudioCoachToggle';
 
 // Helper: Replace glossary terms in text with tooltips
 function InstructionWithGlossary({ instruction }) {
@@ -191,6 +193,30 @@ export default function Flow() {
 
     return () => clearInterval(interval);
   }, [isPlaying, currentStep, routine]);
+
+  // ── Audio Coach (auto-narration) ──
+  const { isMuted, toggleMute, coach, preloadNext, isPlaying: isCoaching, isLoading: isCoachLoading } = useAudioCoach();
+
+  useEffect(() => {
+    if (!routine) return;
+    const seq = routine.sequence?.[currentStep];
+    if (!seq) return;
+    const ex = exercises.find(e => e.exercise_id === seq.exercise_id);
+    const title = ex?.name || seq.exercise_name || `Übung ${currentStep + 1}`;
+    const instruction = ex?.description || seq.exercise_description || seq.instruction || '';
+    const axonMoment = ex?.axon_moment || seq.axon_moment;
+    const breathingInstruction = ex?.breathing_instruction;
+    const text = [title, axonMoment, instruction, breathingInstruction].filter(Boolean).join('. ');
+    if (text) coach(text);
+  }, [currentStep, routine, exercises]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    const nextSeq = routine?.sequence?.[currentStep + 1];
+    if (!nextSeq) return;
+    const nextEx = exercises.find(e => e.exercise_id === nextSeq.exercise_id);
+    const nextText = [nextEx?.name || nextSeq.exercise_name, nextEx?.description || nextSeq.exercise_description || nextSeq.instruction].filter(Boolean).join('. ');
+    if (nextText) preloadNext(nextText);
+  }, [currentStep, routine, exercises]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleNextStep = () => {
     if (!routine) return;
@@ -477,6 +503,7 @@ export default function Flow() {
       </AnimatePresence>
 
       <div className="max-w-4xl mx-auto">
+        <AudioCoachToggle isMuted={isMuted} onToggle={toggleMute} isLoading={isCoachLoading} isPlaying={isCoaching} />
 
 
         {/* Readiness Recommendation */}

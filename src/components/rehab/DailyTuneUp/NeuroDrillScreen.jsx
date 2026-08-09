@@ -2,14 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Volume2, VolumeX, Loader2, Check } from 'lucide-react';
-import { useCachedAudio } from '@/hooks/useCachedAudio';
+import { useAudioCoach } from '@/hooks/useAudioCoach';
+import AudioCoachToggle from '@/components/AudioCoachToggle';
 import { base44 } from '@/api/base44Client';
 
 export default function NeuroDrillScreen({ onComplete, screenId = 1, nodeId = 'N6', tuneUpData = null }) {
   const [drillData, setDrillData] = useState(null);
   const [isLoading, setIsLoading] = useState(!tuneUpData);
   const [drillCompleted, setDrillCompleted] = useState(false);
-  const { isPlaying, isLoading: isTTSLoading, playText, stop } = useCachedAudio();
+  const { isMuted, toggleMute, coach, isPlaying, isLoading: isTTSLoading, stop } = useAudioCoach();
 
   useEffect(() => {
     // If tuneUpData passed directly, extract software_update immediately
@@ -41,8 +42,16 @@ export default function NeuroDrillScreen({ onComplete, screenId = 1, nodeId = 'N
     if (isPlaying) { stop(); return; }
     if (!drillData) return;
     const text = `${drillData['übung']}. ${drillData['ausführung']}. ${drillData['warum'] || ''}`;
-    playText(text);
+    coach(text);
   };
+
+  // Auto-play when drill data loads
+  useEffect(() => {
+    if (!drillData) return;
+    const text = `${drillData['übung']}. ${drillData['ausführung']}. ${drillData['warum'] || ''}`;
+    const timer = setTimeout(() => coach(text), 300);
+    return () => clearTimeout(timer);
+  }, [drillData]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleComplete = () => {
     onComplete(screenId, { nodeId, neuroDrillsCompleted: true });
@@ -112,21 +121,16 @@ export default function NeuroDrillScreen({ onComplete, screenId = 1, nodeId = 'N
         )}
       </motion.div>
 
-      {/* Audio Button */}
+      {/* Audio Coach Toggle + Replay */}
+      <AudioCoachToggle isMuted={isMuted} onToggle={toggleMute} isLoading={isTTSLoading} isPlaying={isPlaying} />
       <button
         onClick={handlePlayAudio}
         disabled={isTTSLoading}
-        className={`w-full h-14 flex items-center justify-center gap-3 rounded-2xl font-black text-sm transition-all active:scale-95 ${
-          isPlaying
-            ? 'bg-cyan-500/20 border-2 border-cyan-400 text-cyan-300'
-            : 'bg-cyan-500 hover:bg-cyan-600 text-white shadow-lg shadow-cyan-500/40'
-        }`}
+        className="w-full h-12 flex items-center justify-center gap-2 rounded-xl text-sm font-medium border border-cyan-500/30 bg-cyan-500/10 text-cyan-400 hover:bg-cyan-500/20 transition-all active:scale-95"
       >
         {isTTSLoading
-          ? <><Loader2 className="w-6 h-6 animate-spin" /> Wird geladen…</>
-          : isPlaying
-          ? <><VolumeX className="w-6 h-6" /> Stoppen</>
-          : <><Volume2 className="w-6 h-6" /> Audio-Anleitung</>
+          ? <><Loader2 className="w-4 h-4 animate-spin" /> Lädt…</>
+          : <><Volume2 className="w-4 h-4" /> {isPlaying ? 'Stoppen' : 'Wiederholen'}</>
         }
       </button>
 
