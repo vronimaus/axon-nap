@@ -37,12 +37,11 @@ const FRONT_REGIONS = [
   { id: 'neck_front', label: 'Hals vorne', laterality: null,
     polygon: [[178, 42], [222, 42], [225, 68], [175, 68]] },
 
-  // Schultern — breite Trapezoide, die von aussen bis fast zur Mitte reichen
-  // KEY FIX: Schulter reicht bis X≈195 (links) bzw. X≈205 (rechts)
+  // Schultern — breite Trapezoide, erweitert nach unten für 600×600 Canvas
   { id: 'shoulder_left', label: 'Schulter/Acromion', laterality: 'links',
-    polygon: [[95, 58], [195, 58], [192, 95], [130, 112], [92, 88]] },
+    polygon: [[85, 65], [195, 65], [190, 115], [130, 140], [85, 120]] },
   { id: 'shoulder_right', label: 'Schulter/Acromion', laterality: 'rechts',
-    polygon: [[205, 58], [305, 58], [308, 88], [270, 112], [208, 95]] },
+    polygon: [[205, 65], [315, 65], [315, 120], [270, 140], [210, 115]] },
 
   // Obere Brust / Schlüsselbein — NUR zwischen den Schultern, schmal
   { id: 'upper_chest', label: 'Obere Brust/Schlüsselbein', laterality: null,
@@ -131,9 +130,9 @@ const BACK_REGIONS = [
 
   // Schulter hinten / Acromion — gleiche Breite wie vorne
   { id: 'shoulder_back_left', label: 'Schulter/Acromion', laterality: 'links',
-    polygon: [[95, 58], [195, 58], [192, 95], [130, 112], [92, 88]] },
+    polygon: [[85, 65], [195, 65], [190, 115], [130, 140], [85, 120]] },
   { id: 'shoulder_back_right', label: 'Schulter/Acromion', laterality: 'rechts',
-    polygon: [[205, 58], [305, 58], [308, 88], [270, 112], [208, 95]] },
+    polygon: [[205, 65], [315, 65], [315, 120], [270, 140], [210, 115]] },
 
   // Oberer Rücken / Nacken (zwischen Schultern, unter dem Nacken)
   { id: 'upper_back', label: 'Oberer Rücken', laterality: null,
