@@ -399,6 +399,7 @@ function BiometricsTile({ user }) {
 
 // ── Main CommandCenter ──────────────────────────────────────────────────────────
 export default function CommandCenter({ user, handleDestinationClick }) {
+  const [view, setView] = useState('guided'); // 'guided' | 'overview'
   const handleBodyMapSubmit = (mapData) => {
     const params = new URLSearchParams({
       tuneUp: 'true',
@@ -501,72 +502,29 @@ export default function CommandCenter({ user, handleDestinationClick }) {
   const firstName = user?.full_name?.split(' ')[0];
   const greeting = h < 12 ? 'Guten Morgen' : h < 18 ? 'Guten Tag' : 'Guten Abend';
 
-  return (
-    <div className="min-h-screen bg-[#111111] pb-28 md:pb-8">
-      <div className="max-w-2xl mx-auto px-4 pt-6">
-
-        {/* Header */}
-        <div className="mb-6">
-          <h1 className="text-2xl font-light text-white tracking-tight">
-            {greeting}{firstName ? `, ${firstName}` : ''}.
-          </h1>
-          <p className="text-[10px] text-zinc-700 uppercase tracking-[0.2em] mt-0.5">
-            {new Date().toLocaleDateString('de-DE', { weekday: 'long', day: 'numeric', month: 'long' })}
-          </p>
-        </div>
-
-        {/* ── STEP 1: Readiness Check ── */}
-        <div className="mb-4">
-          <div className="flex items-center gap-2 mb-2">
-            <div className={`w-6 h-6 rounded-full flex items-center justify-center text-[11px] font-bold flex-shrink-0 ${
-              todayReadiness ? 'bg-emerald-500/20 text-emerald-400' : 'bg-cyan-500/20 text-cyan-400'
-            }`}>
-              {todayReadiness ? '✓' : '1'}
+  // ── OVERVIEW VIEW (secondary content) ──
+  if (view === 'overview') {
+    return (
+      <div className="min-h-screen bg-[#111111] pb-28 md:pb-8">
+        <div className="max-w-2xl mx-auto px-4 pt-6">
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h1 className="text-2xl font-light text-white tracking-tight">
+                {greeting}{firstName ? `, ${firstName}` : ''}.
+              </h1>
+              <p className="text-[10px] text-zinc-700 uppercase tracking-[0.2em] mt-0.5">
+                {new Date().toLocaleDateString('de-DE', { weekday: 'long', day: 'numeric', month: 'long' })}
+              </p>
             </div>
-            <TileLabel className="mb-0">Schritt 1 — System-Check</TileLabel>
-          </div>
-          <motion.div layout className="bg-zinc-900/80 border border-white/[0.06] rounded-2xl p-4">
-            <InlineReadinessWidget user={user} todayReadiness={todayReadiness} />
-          </motion.div>
-        </div>
-
-        {/* ── STEP 2: Body Map (appears after readiness) ── */}
-        <AnimatePresence>
-          {todayReadiness && (
-            <motion.div
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="mb-6"
+            <button
+              onClick={() => setView('guided')}
+              className="text-xs text-zinc-600 hover:text-zinc-400 uppercase tracking-widest transition-colors flex-shrink-0"
             >
-              <div className="flex items-center gap-2 mb-2">
-                <div className="w-6 h-6 rounded-full bg-cyan-500/20 text-cyan-400 flex items-center justify-center text-[11px] font-bold flex-shrink-0">2</div>
-                <TileLabel className="mb-0">Schritt 2 — Schmerz lokalisieren</TileLabel>
-              </div>
-              <div className="bg-zinc-900/80 border border-white/[0.06] rounded-2xl p-4">
-                <p className="text-base font-medium text-white mb-1">Markiere die Stelle, wo du die meisten Beschwerden hast.</p>
-                <p className="text-xs text-zinc-600 mb-4">Tippe auf die exakte Stelle — oder zeichne eine Linie entlang des Schmerzes.</p>
-                <InteractiveBodyMapInput onSubmit={handleBodyMapSubmit} />
-                <button
-                  onClick={() => handleBodyMapSubmit({ region: '' })}
-                  className="w-full mt-3 text-xs text-zinc-600 hover:text-zinc-400 uppercase tracking-widest transition-colors py-2"
-                >
-                  Keine Schmerzen — weiter zum Training →
-                </button>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+              ← Zurück
+            </button>
+          </div>
 
-        {/* ── SECONDARY CONTENT (collapsible) ── */}
-        <details className="group mb-4">
-          <summary className="cursor-pointer list-none">
-            <div className="flex items-center justify-between p-3 bg-zinc-900/80 border border-white/[0.06] rounded-2xl">
-              <span className="text-xs font-bold uppercase tracking-[0.2em] text-zinc-500">Mehr — Routinen, Snacks, Verlauf</span>
-              <ChevronRight className="w-4 h-4 text-zinc-600 group-open:rotate-90 transition-transform flex-shrink-0" />
-            </div>
-          </summary>
-          <div className="mt-3 space-y-4">
-
+          <div className="space-y-4">
             {/* Quick Actions */}
             <div className="grid grid-cols-2 gap-4">
               <Tile onClick={() => handleDestinationClick('Quick Sessions', () => window.location.href = createPageUrl('FitnessSnacks'))}>
@@ -676,7 +634,79 @@ export default function CommandCenter({ user, handleDestinationClick }) {
               </button>
             )}
           </div>
-        </details>
+        </div>
+      </div>
+    );
+  }
+
+  // ── GUIDED VIEW — full-screen step flow ──
+  const showBodyMap = !!todayReadiness;
+
+  return (
+    <div className="min-h-screen bg-[#111111] flex flex-col pb-28 md:pb-8">
+      <div className="max-w-2xl mx-auto w-full px-4 flex-1 flex flex-col justify-center py-6">
+
+        {/* Step indicator */}
+        <div className="flex items-center justify-center gap-2 mb-8">
+          <div className={`h-1 rounded-full transition-all ${showBodyMap ? 'w-8 bg-emerald-500/50' : 'w-12 bg-cyan-400'}`} />
+          <div className={`h-1 rounded-full transition-all ${showBodyMap ? 'w-12 bg-cyan-400' : 'w-8 bg-zinc-700'}`} />
+        </div>
+
+        {/* Skip to overview */}
+        <button
+          onClick={() => setView('overview')}
+          className="absolute top-20 right-4 text-[10px] text-zinc-700 hover:text-zinc-400 uppercase tracking-widest transition-colors"
+        >
+          Übersicht →
+        </button>
+
+        <AnimatePresence mode="wait">
+          {!showBodyMap ? (
+            /* ── FULL-SCREEN STEP 1: Readiness Check ── */
+            <motion.div
+              key="readiness"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              transition={{ duration: 0.25 }}
+            >
+              <div className="text-center mb-6">
+                <h2 className="text-xl font-light text-white tracking-tight mb-1">
+                  Wie fühlst du dich{firstName ? `, ${firstName}` : ''}?
+                </h2>
+                <p className="text-sm text-zinc-600">Bewerte deine vier Systeme — dann geht's weiter zur Körperkarte.</p>
+              </div>
+              <div className="bg-zinc-900/80 border border-white/[0.06] rounded-2xl p-5">
+                <InlineReadinessWidget user={user} todayReadiness={todayReadiness} />
+              </div>
+            </motion.div>
+          ) : (
+            /* ── FULL-SCREEN STEP 2: Body Map ── */
+            <motion.div
+              key="bodymap"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              transition={{ duration: 0.25 }}
+            >
+              <div className="text-center mb-6">
+                <h2 className="text-xl font-light text-white tracking-tight mb-1">
+                  Wo tut es weh?
+                </h2>
+                <p className="text-sm text-zinc-600">Markiere die Stelle mit den meisten Beschwerden — AXON startet dann dein Tune-Up.</p>
+              </div>
+              <div className="bg-zinc-900/80 border border-white/[0.06] rounded-2xl p-5">
+                <InteractiveBodyMapInput onSubmit={handleBodyMapSubmit} />
+                <button
+                  onClick={() => handleBodyMapSubmit({ region: '' })}
+                  className="w-full mt-4 text-xs text-zinc-600 hover:text-zinc-400 uppercase tracking-widest transition-colors py-2"
+                >
+                  Keine Schmerzen — weiter zum Training →
+                </button>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
       </div>
     </div>
