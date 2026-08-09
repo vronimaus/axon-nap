@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
@@ -106,6 +106,7 @@ function InstructionWithGlossary({ instruction }) {
 
 export default function Flow() {
   const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
   const routineId = searchParams.get('routine_id');
   const [currentStep, setCurrentStep] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -137,7 +138,7 @@ export default function Flow() {
           setReadinessStatus(currentUser?.current_readiness_status);
         }
       } catch (e) {
-        if (!isBuilderPreview) window.location.href = createPageUrl('Landing');
+        if (!isBuilderPreview) navigate(createPageUrl('Landing'));
         setUser(null);
       }
     };
@@ -243,7 +244,7 @@ export default function Flow() {
 
   // Lücke 6.3: kein routine_id → sofort zu FlowRoutines
   if (!routineId) {
-    window.location.href = createPageUrl('FlowRoutines');
+    navigate(createPageUrl('FlowRoutines'));
     return null;
   }
 
@@ -252,7 +253,7 @@ export default function Flow() {
       <div className="min-h-screen bg-[#111111] flex flex-col items-center justify-center gap-4 p-6">
         <p className="text-zinc-400 text-sm">Routine nicht gefunden.</p>
         <button
-          onClick={() => window.location.href = createPageUrl('FlowRoutines')}
+          onClick={() => navigate(createPageUrl('FlowRoutines'))}
           className="px-5 py-2.5 rounded-xl bg-zinc-800 text-zinc-200 text-sm font-medium hover:bg-zinc-700 transition-colors"
         >
           ← Zur Routinen-Übersicht

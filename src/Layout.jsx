@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { LayoutDashboard, LogOut, User, Activity, Settings, Menu, X, ArrowLeft, Zap, Dumbbell, BookOpen } from 'lucide-react';
 import CookieBanner from './components/CookieBanner';
@@ -12,7 +12,7 @@ import OfflineDetector from './components/OfflineDetector';
 import { HelmetProvider } from 'react-helmet-async';
 import { useQueryClient } from '@tanstack/react-query';
 
-const ROOT_TABS = ['Dashboard', 'RehabPlan', 'Performance', 'Flow', 'Wissen'];
+const ROOT_TABS = ['Dashboard', 'RehabPlan', 'Performance', 'Flow', 'FlowRoutines', 'Wissen'];
 const PAGES_WITHOUT_NAV = ['Landing', 'Success', 'Checkout', 'Login'];
 
 const TAB_OWNERSHIP = {
@@ -38,6 +38,7 @@ export default function Layout({ children, currentPageName }) {
   const { user, isLoading: trialLoading, hasAccess } = useTrialStatus();
   const queryClient = useQueryClient();
   const location = useLocation();
+  const navigate = useNavigate();
   const [isChecking, setIsChecking] = useState(true);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -65,7 +66,7 @@ export default function Layout({ children, currentPageName }) {
     { name: 'Start',        icon: LayoutDashboard, page: 'Dashboard' },
     { name: 'Tune-Up',      icon: Activity,        page: 'RehabPlan' },
     { name: 'Trainieren',   icon: Dumbbell,        page: 'Performance' },
-    { name: 'Routinen',     icon: Zap,              page: 'Flow' },
+    { name: 'Routinen',     icon: Zap,              page: 'FlowRoutines' },
     { name: 'Wissen',       icon: BookOpen,         page: 'Wissen' },
   ];
 
@@ -75,10 +76,10 @@ export default function Layout({ children, currentPageName }) {
     const isCurrentTab = activeTab === page;
     if (isCurrentTab) {
       sessionStorage.removeItem(`axon_tab_stack_${page}`);
-      if (currentPageName !== page) window.location.href = createPageUrl(page);
+      if (currentPageName !== page) navigate(createPageUrl(page));
       return;
     }
-    window.location.href = createPageUrl(page);
+    navigate(createPageUrl(page));
   };
 
   const publicNavItems = [
@@ -93,11 +94,11 @@ export default function Layout({ children, currentPageName }) {
   useEffect(() => {
     if (trialLoading) return;
     const handleAuthSideEffects = async () => {
-      setIsChecking(true);
+      if (!user) setIsChecking(true);
       try {
         if (!user) {
           if (isBuilderPreview) { setIsChecking(false); return; }
-          if (!PUBLIC_PAGES.includes(currentPageName)) window.location.href = createPageUrl('Landing');
+          if (!PUBLIC_PAGES.includes(currentPageName)) navigate(createPageUrl('Landing'));
           setIsChecking(false);
           return;
         }
@@ -105,7 +106,7 @@ export default function Layout({ children, currentPageName }) {
         const onboardingSeen = localStorage.getItem('axon_howto_seen');
         if (!onboardingSeen && currentPageName !== 'HowToUse' && currentPageName !== 'Landing') {
           const profiles = await base44.entities.UserNeuroProfile.filter({ user_email: user.email });
-          if (profiles.length === 0) { window.location.href = createPageUrl('HowToUse'); return; }
+          if (profiles.length === 0) { navigate(createPageUrl('HowToUse')); return; }
           else localStorage.setItem('axon_howto_seen', 'true');
         }
         const onboardingStatus = localStorage.getItem('axon_onboarding_status');
@@ -131,7 +132,7 @@ export default function Layout({ children, currentPageName }) {
             // Trial starts immediately — no Stripe checkout needed
             try { await base44.auth.updateMe({ trial_start_date: new Date().toISOString() }); } catch (e) { console.error('Trial start error:', e); }
             const onboardingSeen = localStorage.getItem('axon_howto_seen');
-            window.location.href = createPageUrl(onboardingSeen ? 'Dashboard' : 'HowToUse');
+            navigate(createPageUrl(onboardingSeen ? 'Dashboard' : 'HowToUse'));
             return;
           } else if (selectedMode === 'direct') {
             try {
@@ -141,7 +142,7 @@ export default function Layout({ children, currentPageName }) {
           }
         }
         if (!hasAccess && !PUBLIC_PAGES.includes(currentPageName) && currentPageName !== 'HowToUse' && !isBuilderPreview) {
-          window.location.href = createPageUrl('Landing');
+          navigate(createPageUrl('Landing'));
           return;
         }
       } catch (e) { console.error(e); }
@@ -159,7 +160,7 @@ export default function Layout({ children, currentPageName }) {
     }
   }, [currentPageName, trialLoading, queryClient]);
 
-  const handleProfileClick = () => { window.location.href = createPageUrl('Profile'); };
+  const handleProfileClick = () => { navigate(createPageUrl('Profile')); };
 
   return (
     <HelmetProvider>
@@ -224,7 +225,7 @@ export default function Layout({ children, currentPageName }) {
                   <div className="flex items-center gap-2">
                     {user.role === 'admin' && (
                       <button
-                        onClick={() => window.location.href = createPageUrl('AdminHub')}
+                        onClick={() => navigate(createPageUrl('AdminHub'))}
                         className="p-2 rounded-xl text-zinc-600 hover:text-zinc-300 hover:bg-zinc-800/50 transition-all"
                         title="Admin Hub"
                       >
