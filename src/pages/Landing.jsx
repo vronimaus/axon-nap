@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { Button } from '@/components/ui/button';
 import { Menu, X } from 'lucide-react';
@@ -10,6 +10,7 @@ import { useUser } from '@/components/useUser';
 
 // Eager-loaded (above the fold)
 import HeroSection from '@/components/landing/HeroSection';
+import WhatItDoesSection from '@/components/landing/WhatItDoesSection';
 import PainAgitationSection from '@/components/landing/PainAgitationSection';
 import SystemAuditSection from '@/components/landing/SystemAuditSection';
 
@@ -29,6 +30,7 @@ export default function Landing() {
   const { data: user, isLoading: isUserLoading } = useUser();
   const [isLoading, setIsLoading] = useState(true);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (isUserLoading) return;
@@ -38,10 +40,10 @@ export default function Landing() {
       const previewMode = urlParams.get('preview') === 'true';
       if (!user) { setIsLoading(false); return; }
       if (stayOnLanding || previewMode) { setIsLoading(false); return; }
-      if (user.has_paid) { window.location.href = createPageUrl('Dashboard'); return; }
+      if (user.has_paid) { navigate(createPageUrl('Dashboard')); return; }
       if (user.trial_start_date) {
         const daysElapsed = Math.floor((new Date() - new Date(user.trial_start_date)) / (1000 * 60 * 60 * 24));
-        if (daysElapsed < 7) { window.location.href = createPageUrl('Dashboard'); return; }
+        if (daysElapsed < 7) { navigate(createPageUrl('Dashboard')); return; }
       }
     } catch (e) {
       // ignore
@@ -86,8 +88,8 @@ export default function Landing() {
   return (
     <div className="min-h-screen bg-slate-950 text-slate-50 selection:bg-amber-500/30 font-sans">
       <Helmet>
-        <title>AXON – Verspannungen & Schmerzen selbst lösen | Neuro-Athletic Protocol</title>
-        <meta name="description" content="Kein Physio. Keine Wartezeit. AXON gibt dir das Protokoll, das Physios anwenden – zum selbst machen." />
+        <title>AXON – Diagnose- & Trainings-Tool für Verspannungen | Neuro-Athletic Protocol</title>
+        <meta name="description" content="Diagnose- und Trainings-Tool für muskuläre und neuronale Dysbalancen. Schmerzpunkt markieren, Ursache erkennen, 3-Schritt-Protokoll ausführen. Faszien-Release, Neuro-Drill, Integration." />
         <script type="application/ld+json">{JSON.stringify(productSchema)}</script>
       </Helmet>
 
@@ -157,6 +159,9 @@ export default function Landing() {
 
       {/* MODULE 1: Hero */}
       <HeroSection onCtaClick={handlePricingScroll} />
+
+      {/* MODULE 1b: Was AXON kann */}
+      <WhatItDoesSection />
 
       {/* MODULE 2: Problem Agitation */}
       <PainAgitationSection onFunnelClick={handlePricingScroll} />
