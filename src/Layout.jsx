@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { LayoutDashboard, LogOut, User, Activity, Settings, Menu, X, ArrowLeft, Zap } from 'lucide-react';
+import { LayoutDashboard, LogOut, User, Activity, Settings, Menu, X, ArrowLeft, Zap, Dumbbell, BookOpen } from 'lucide-react';
 import CookieBanner from './components/CookieBanner';
 import { useTrialStatus } from './components/useTrialStatus';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -12,14 +12,15 @@ import OfflineDetector from './components/OfflineDetector';
 import { HelmetProvider } from 'react-helmet-async';
 import { useQueryClient } from '@tanstack/react-query';
 
-const ROOT_TABS = ['Dashboard', 'RehabPlan', 'Flow'];
+const ROOT_TABS = ['Dashboard', 'RehabPlan', 'Performance', 'Flow', 'Wissen'];
 const PAGES_WITHOUT_NAV = ['Landing', 'Success', 'Checkout', 'Login'];
 
 const TAB_OWNERSHIP = {
-  Dashboard: ['Dashboard', 'DiagnosisChat', 'DiagnosisWizard', 'Discovery', 'Profile', 'HowToUse', 'AdminHub', 'AdminDiagnostics', 'DevNotes'],
-  FitnessSnacks: ['FitnessSnacks'],
+  Dashboard: ['Dashboard', 'DiagnosisChat', 'DiagnosisWizard', 'Discovery', 'Profile', 'HowToUse', 'AdminHub', 'AdminDiagnostics', 'DevNotes', 'FitnessSnacks'],
   RehabPlan: ['RehabPlan'],
+  Performance: ['Performance', 'TrainingPlan'],
   Flow: ['Flow', 'FlowRoutines'],
+  Wissen: ['Wissen', 'WissenArtikel', 'Faq', 'Glossar', 'Literatur'],
 };
 
 function getActiveTab(pageName) {
@@ -61,10 +62,11 @@ export default function Layout({ children, currentPageName }) {
   const showBackButton = showNav && !isRootTab(currentPageName);
 
   const navItems = [
-    { name: 'Dashboard',     icon: LayoutDashboard, page: 'Dashboard' },
-    { name: 'Quick Sessions', icon: Zap,            page: 'FitnessSnacks' },
-    { name: 'Tune-Up',       icon: Activity,        page: 'RehabPlan' },
-    { name: 'Routinen',      icon: Zap,             page: 'Flow' },
+    { name: 'Start',        icon: LayoutDashboard, page: 'Dashboard' },
+    { name: 'Tune-Up',      icon: Activity,        page: 'RehabPlan' },
+    { name: 'Trainieren',   icon: Dumbbell,        page: 'Performance' },
+    { name: 'Routinen',     icon: Zap,              page: 'Flow' },
+    { name: 'Wissen',       icon: BookOpen,         page: 'Wissen' },
   ];
 
   const activeTab = getActiveTab(currentPageName);
@@ -125,7 +127,13 @@ export default function Layout({ children, currentPageName }) {
         const selectedMode = localStorage.getItem('axon_selected_mode');
         if (selectedMode && currentPageName === 'Landing') {
           localStorage.removeItem('axon_selected_mode');
-          if (selectedMode === 'trial' || selectedMode === 'direct') {
+          if (selectedMode === 'trial') {
+            // Trial starts immediately — no Stripe checkout needed
+            try { await base44.auth.updateMe({ trial_start_date: new Date().toISOString() }); } catch (e) { console.error('Trial start error:', e); }
+            const onboardingSeen = localStorage.getItem('axon_howto_seen');
+            window.location.href = createPageUrl(onboardingSeen ? 'Dashboard' : 'HowToUse');
+            return;
+          } else if (selectedMode === 'direct') {
             try {
               const { data } = await base44.functions.invoke('createCheckoutSession', { mode: selectedMode, email: currentUser.email });
               if (data.url) { window.location.href = data.url; return; }
@@ -276,7 +284,7 @@ export default function Layout({ children, currentPageName }) {
                   <button
                     key={item.page}
                     onClick={() => handleTabClick(item.page)}
-                    className={`px-3 py-2 rounded-xl transition-all touch-target text-[11px] font-medium ${
+                    className={`px-1.5 py-2 rounded-xl transition-all touch-target text-[10px] font-medium ${
                       activeTab === item.page
                         ? 'text-white'
                         : 'text-zinc-600'
@@ -322,7 +330,7 @@ export default function Layout({ children, currentPageName }) {
           )}
 
           {/* ── Footer ── */}
-          <footer className="hidden md:block border-t border-white/[0.06] mt-auto mb-16 md:mb-0">
+          <footer className="block border-t border-white/[0.06] mt-auto mb-20 md:mb-0">
             <div className="max-w-6xl mx-auto px-4 py-8 text-center">
               <div className="flex justify-center items-center gap-6 mb-6 text-xs font-medium tracking-widest text-zinc-600 flex-wrap">
                 <Link to={createPageUrl('Literatur')} className="hover:text-zinc-400 transition-colors">Literatur</Link>

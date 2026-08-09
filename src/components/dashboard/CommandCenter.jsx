@@ -401,11 +401,10 @@ function BiometricsTile({ user }) {
 export default function CommandCenter({ user, handleDestinationClick }) {
   const handleBodyMapSubmit = (mapData) => {
     const params = new URLSearchParams({
-      mapData: JSON.stringify(mapData),
+      tuneUp: 'true',
       region: mapData.region || '',
-      step: 'sfma',
     });
-    window.location.href = `/DiagnosisChat?${params.toString()}`;
+    window.location.href = createPageUrl('RehabPlan') + `?${params.toString()}`;
   };
 
   const today = new Date().toISOString().split('T')[0];

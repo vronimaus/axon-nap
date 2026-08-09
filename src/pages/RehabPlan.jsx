@@ -31,6 +31,7 @@ export default function RehabPlan() {
   const [sessionExercises, setSessionExercises] = useState([]);
   const [sessionStarted, setSessionStarted] = useState(false);
   const [showDailyTuneUp, setShowDailyTuneUp] = useState(false);
+  const [tuneUpRegion, setTuneUpRegion] = useState(null);
   const queryClient = useQueryClient();
 
   useEffect(() => {
@@ -43,6 +44,14 @@ export default function RehabPlan() {
           return;
         }
         setUser(currentUser);
+        
+        // Check for Tune-Up trigger from Body Map URL params
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('tuneUp') === 'true') {
+          const region = urlParams.get('region');
+          if (region) setTuneUpRegion(region);
+          setShowDailyTuneUp(true);
+        }
         
         // Check if readiness check already done today (via sessionStorage)
         const today = new Date().toISOString().split('T')[0];
@@ -258,6 +267,14 @@ export default function RehabPlan() {
   if (!rehabPlan) {
     return (
       <div className="min-h-screen bg-[#111111] p-4 flex items-center justify-center">
+        <DailyTuneUpModal
+          isOpen={showDailyTuneUp}
+          onClose={() => setShowDailyTuneUp(false)}
+          rehabPlan={null}
+          user={user}
+          queryClient={queryClient}
+          region={tuneUpRegion || 'Lenden / Unterer Rücken'}
+        />
         <div className="max-w-md w-full rounded-xl border border-white/[0.06] bg-zinc-900/60 p-8 text-center">
           <AlertCircle className="w-10 h-10 text-zinc-500 mx-auto mb-4" />
           <h2 className="text-xl font-bold text-white mb-2">Noch kein Reha-Plan</h2>
@@ -290,7 +307,7 @@ export default function RehabPlan() {
         rehabPlan={rehabPlan}
         user={user}
         queryClient={queryClient}
-        region={rehabPlan?.problem_summary || 'Lenden / Unterer Rücken'}
+        region={tuneUpRegion || rehabPlan?.problem_summary || 'Lenden / Unterer Rücken'}
       />
 
       {/* Rehab Intro Modal - deactivated, session starts directly */}
