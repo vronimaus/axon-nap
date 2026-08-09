@@ -27,6 +27,7 @@ export default function DiagnosisChat() {
   const [searchParams] = useSearchParams();
   const mapDataParam = searchParams.get('mapData');
   const regionParam = searchParams.get('region');
+  const nodeIdParam = searchParams.get('nodeId'); // resolved nodeId from disambiguation
   const initialStep = searchParams.get('step'); // 'sfma' = come from body map
 
 
@@ -54,7 +55,7 @@ export default function DiagnosisChat() {
     if (mapDataParam && regionParam) {
       try {
         const parsed = JSON.parse(mapDataParam);
-        setPainMap({ ...parsed, region: regionParam });
+        setPainMap({ ...parsed, region: regionParam, nodeId: nodeIdParam || parsed.nodeId || null });
       } catch (_e) {
         setStep('body_map');
       }
@@ -78,7 +79,7 @@ export default function DiagnosisChat() {
   };
 
   const handleBodyMapSubmit = (mapData) => {
-    setPainMap({ ...mapData, region: mapData.region || 'unbekannte Region' });
+    setPainMap({ ...mapData, region: mapData.region || 'unbekannte Region', nodeId: mapData.nodeId || null });
     setStep('sfma');
   };
 
@@ -200,6 +201,7 @@ export default function DiagnosisChat() {
             rehabPlan={rehabPlan}
             user={user}
             region={painMap?.region}
+            explicitNodeId={painMap?.nodeId}
             sfmaValues={sfmaDecision}
             selectedChains={selectedChains}
           />
@@ -235,6 +237,7 @@ export default function DiagnosisChat() {
             rehabPlan={rehabPlan}
             user={user}
             region={painMap?.region}
+            explicitNodeId={painMap?.nodeId}
             sfmaValues={sfmaDecision}
             selectedChains={selectedChains}
           />

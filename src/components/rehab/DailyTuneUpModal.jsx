@@ -97,7 +97,11 @@ export default function DailyTuneUpModal({
   selectedChains = null, // LLM-selected causal chains from selectCausalChain
 }) {
   const [activeChainIndex, setActiveChainIndex] = useState(0);
-  const activeChain = selectedChains?.[activeChainIndex] || null;
+  // When explicitNodeId is set (from disambiguation), prefer the chain matching that nodeId
+  const matchingChain = explicitNodeId
+    ? selectedChains?.find(c => c.node_id === explicitNodeId)
+    : null;
+  const activeChain = matchingChain || (!explicitNodeId ? selectedChains?.[activeChainIndex] : null);
   const nodeId = explicitNodeId || activeChain?.node_id || lookupNodeId(region, bodyView) || 'LU-P';
   const [currentScreen, setCurrentScreen] = useState(0);
   const [mfrNodeCompleted, setMFRNodeCompleted] = useState(false);
