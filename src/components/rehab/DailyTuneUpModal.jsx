@@ -92,12 +92,13 @@ export default function DailyTuneUpModal({
   queryClient,
   region = 'Lenden / Unterer Rücken',
   bodyView = 'front',
+  explicitNodeId = null, // resolved nodeId from disambiguation (highest priority)
   sfmaValues = null, // { movement_level, pain_rest, pain_move } from SFMAQuickCheck
   selectedChains = null, // LLM-selected causal chains from selectCausalChain
 }) {
   const [activeChainIndex, setActiveChainIndex] = useState(0);
   const activeChain = selectedChains?.[activeChainIndex] || null;
-  const nodeId = activeChain?.node_id || lookupNodeId(region, bodyView) || 'LU-P';
+  const nodeId = explicitNodeId || activeChain?.node_id || lookupNodeId(region, bodyView) || 'LU-P';
   const [currentScreen, setCurrentScreen] = useState(0);
   const [mfrNodeCompleted, setMFRNodeCompleted] = useState(false);
   const [neuroDrillCompleted, setNeuroDrillCompleted] = useState(false);

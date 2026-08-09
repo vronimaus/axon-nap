@@ -315,6 +315,8 @@ export default function RehabPlan() {
         rehabPlan={rehabPlan}
         user={user}
         queryClient={queryClient}
+        explicitNodeId={tuneUpNodeId}
+        bodyView={tuneUpView}
         region={tuneUpRegion || rehabPlan?.problem_summary || 'Lenden / Unterer Rücken'}
       />
 
