@@ -13,7 +13,16 @@ export default function MFRResetScreenDynamic({ onComplete, nodeId = 'N1', scree
   const [isLoadingData, setIsLoadingData] = useState(!tuneUpData);
   const [step, setStep] = useState('pretest');
   const [pretestValue, setPretestValue] = useState(null);
-  const MFR_DURATION = 90;
+
+  // Duration aus dem Anweisungstext extrahieren (z.B. "60 Sekunden" → 60)
+  // Fallback: 90, wenn kein Wert im Text steht
+  const extractDuration = (chain) => {
+    const text = [chain?.hardware_reset?.technik, chain?.hardware_reset?.pretest_instruction]
+      .filter(Boolean).join(' ');
+    const match = text.match(/(\d{1,3})\s*Sekunden/i);
+    return match ? parseInt(match[1], 10) : 90;
+  };
+  const MFR_DURATION = extractDuration(causalChain);
 
   // ── Audio Coach ──
   const { isMuted, toggleMute, coach, isPlaying: isCoaching, isLoading: isCoachLoading } = useAudioCoach();
