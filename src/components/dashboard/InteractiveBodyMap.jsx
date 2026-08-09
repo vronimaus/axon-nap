@@ -202,7 +202,7 @@ export default function InteractiveBodyMap({ mode, onRegionSelect, sessions }) {
 
     setIsAnalyzing(true);
     try {
-      const region = detectRegionFromMarkers(markers, view, 400, 600);
+      const region = detectRegionFromMarkers(markers, view, 600, 600);
 
       // Disambiguation: wenn die Region mehrdeutig ist, erst nachfragen
       const options = getDisambiguation(region, view);
@@ -360,7 +360,7 @@ export default function InteractiveBodyMap({ mode, onRegionSelect, sessions }) {
         
         <canvas
           ref={canvasRef}
-          width={400}
+          width={600}
           height={600}
           className="absolute inset-0 w-full h-full"
           style={{ pointerEvents: 'none' }}

@@ -224,6 +224,11 @@ export function detectRegionFromMarkers(markers, view, canvasWidth = 400, canvas
 
   const regions = REGIONS_BY_VIEW[view] || FRONT_REGIONS;
 
+  // Polygone sind im 400×600 Raum definiert. Skaliere Punkt-Koordinaten
+  // dorthin, damit die Erkennung bei jedem Canvas-Seitenverhältnis stimmt.
+  const scaleX = 400 / canvasWidth;
+  const scaleY = 600 / canvasHeight;
+
   // Sammle alle Punkte
   const points = [];
   markers.forEach(marker => {
@@ -239,8 +244,9 @@ export function detectRegionFromMarkers(markers, view, canvasWidth = 400, canvas
   // Für jeden Punkt die Region finden, dann Mehrheitsentscheid
   const regionCounts = {};
   points.forEach(point => {
+    const scaled = [point[0] * scaleX, point[1] * scaleY];
     for (const region of regions) {
-      if (pointInPolygon(point, region.polygon)) {
+      if (pointInPolygon(scaled, region.polygon)) {
         const key = region.id;
         regionCounts[key] = (regionCounts[key] || 0) + 1;
         break;
@@ -250,8 +256,8 @@ export function detectRegionFromMarkers(markers, view, canvasWidth = 400, canvas
 
   // Keine Region gefunden → Fallback auf Y-basierte Grob-Erkennung
   if (Object.keys(regionCounts).length === 0) {
-    const avgY = points.reduce((s, p) => s + p[1], 0) / points.length;
-    const normalizedY = avgY / canvasHeight;
+    const avgY = points.reduce((s, p) => s + p[1] * scaleY, 0) / points.length;
+    const normalizedY = avgY / 600;
     if (normalizedY < 0.10) return 'Kopf';
     if (normalizedY < 0.18) return 'Nacken/Schulter';
     if (normalizedY < 0.30) return 'Brust/Rücken oben';

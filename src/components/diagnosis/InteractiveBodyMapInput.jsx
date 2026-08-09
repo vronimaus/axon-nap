@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { RotateCcw, ArrowRight } from 'lucide-react';
-import { detectRegionFromMarkers } from '@/components/diagnosis/bodyMapRegions';
+import { detectRegionFromMarkers, getRegionsForView } from '@/components/diagnosis/bodyMapRegions';
 import { getDisambiguation } from '@/components/diagnosis/ambiguousRegions';
 import RegionDisambiguation from '@/components/diagnosis/RegionDisambiguation';
 
@@ -13,6 +13,7 @@ export default function InteractiveBodyMapInput({ onSubmit }) {
   const [imageError, setImageError] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [disambiguation, setDisambiguation] = useState(null);
+  const [liveRegion, setLiveRegion] = useState('');
   const canvasRef = useRef(null);
 
   // EXAKT die gleichen Bilder wie im Dashboard
@@ -31,10 +32,33 @@ export default function InteractiveBodyMapInput({ onSubmit }) {
   const drawMarkers = () => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    
+
     const ctx = canvas.getContext('2d');
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    
+
+    // DEBUG: Zeichne alle Polygon-Grenzen (in 400×600 Raum → 600×600 Canvas skaliert)
+    if (window.__DEBUG_POLYGONS) {
+      const regions = getRegionsForView(view);
+      const sx = canvas.width / 400;
+      const sy = canvas.height / 600;
+      ctx.strokeStyle = 'rgba(255,255,0,0.4)';
+      ctx.lineWidth = 1;
+      ctx.font = '8px monospace';
+      ctx.fillStyle = 'rgba(255,255,0,0.6)';
+      regions.forEach(r => {
+        ctx.beginPath();
+        r.polygon.forEach(([px, py], i) => {
+          const cx = px * sx, cy = py * sy;
+          if (i === 0) ctx.moveTo(cx, cy); else ctx.lineTo(cx, cy);
+        });
+        ctx.closePath();
+        ctx.stroke();
+        const cx = r.polygon.reduce((s, p) => s + p[0], 0) / r.polygon.length * sx;
+        const cy = r.polygon.reduce((s, p) => s + p[1], 0) / r.polygon.length * sy;
+        ctx.fillText(r.id, cx - 15, cy);
+      });
+    }
+
     markers.forEach(marker => {
       if (marker.type === 'point' && marker.x && marker.y) {
         ctx.fillStyle = 'rgba(57, 139, 247, 0.85)';
@@ -70,17 +94,21 @@ export default function InteractiveBodyMapInput({ onSubmit }) {
     if (!imageLoaded) return;
     const coords = getCoordinates(e);
     setMarkers([{ type: 'point', x: coords.x, y: coords.y }]);
+    // Live-Region anzeigen zum Debuggen
+    const region = detectRegionFromMarkers([{ type: 'point', x: coords.x, y: coords.y }], view, 600, 600);
+    setLiveRegion(region);
+    console.log(`[DEBUG-CLICK] X:${Math.round(coords.x)} Y:${Math.round(coords.y)} → ${region}`);
   };
 
   const handleSubmit = () => {
     if (markers.length === 0 || isSubmitting) return;
     
-    const detectedRegion = detectRegionFromMarkers(markers, view, 400, 600);
+    const detectedRegion = detectRegionFromMarkers(markers, view, 600, 600);
     
     // DEBUG: Log die tatsächlichen Werte
     if (markers[0]) {
       const normalizedY = markers[0].y / 600;
-      const normalizedX = markers[0].x / 400;
+      const normalizedX = markers[0].x / 600;
       console.log(`[DEBUG] Y: ${markers[0].y} (norm: ${normalizedY.toFixed(3)}), X: ${markers[0].x} (norm: ${normalizedX.toFixed(3)}) → ${detectedRegion}`);
     }
 
@@ -123,6 +151,13 @@ export default function InteractiveBodyMapInput({ onSubmit }) {
 
   return (
     <div className="relative w-full space-y-6">
+      {/* Live Region Debug */}
+      {liveRegion && (
+        <div className="text-center text-xs font-mono py-1 px-3 rounded-lg bg-yellow-500/10 text-yellow-400 border border-yellow-500/20">
+          {liveRegion}
+        </div>
+      )}
+
       {/* View Toggle */}
       <div className="flex items-center justify-center gap-1 bg-zinc-800/60 rounded-xl p-1">
         <button
@@ -200,7 +235,7 @@ export default function InteractiveBodyMapInput({ onSubmit }) {
           
           <canvas
             ref={canvasRef}
-            width={400}
+            width={600}
             height={600}
             onClick={handleCanvasClick}
             onTouchStart={(e) => {
