@@ -17,63 +17,69 @@ const SCREENS = [
   { id: 3, label: 'Integration', title: 'Easy Strength' }
 ];
 
-// Map region names (from InteractiveBodyMapInput) to Node IDs
-// Based on Stecco 14-Segment System: CP, CL, TH, LU, PV, SC, HU, CU, CA, DI, CX, GE, TA, PE
+// Map region labels (from bodyMapRegions.js polygon detection) to Node IDs.
+// Labels may include a laterality suffix (" links" / " rechts") which is stripped before lookup.
+// Two-level keys allow front/back differentiation where needed: "front:Label" / "back:Label".
 const REGION_TO_NODE_ID = {
-  // CP - Kopf (Caput)
-  'Kopf/Stirn': 'CP-A',
-  'Ohr/Kiefergelenk': 'CP-A',
+  // CP - Kopf / Caput
+  'Kopf/Stirn': 'CP-P',
+  'Ohr/Kiefergelenk': 'CP-P',
   'Hinterkopf': 'CP-P',
 
-  // CL - Hals (Collum)
-  'Hals vorne': 'CL-A',
+  // CL - Hals / Collum
+  'Hals vorne': 'CL-P',
   'Nacken seitlich': 'CL-P',
-  'Nacken/obere Halswirbelsäule': 'CL-P',
+  'Nacken/HWS': 'CL-P',
 
-  // TH - Brustkorb (Thorax)
-  'obere Brust/Schlüsselbein': 'TH-A',
-  'mittlere Brust': 'TH-A',
-  'oberer Rücken/Nacken': 'TH-P',
-  'oberer Rücken': 'TH-P',
-  'mittlerer Rücken': 'TH-P',
+  // TH - Brustkorb / Thorax
+  'Obere Brust/Schlüsselbein': 'TH-A',
+  'Brust': 'TH-A',
+  'Oberer Rücken': 'TH-P',
+  'Schulterblatt': 'TH-P',
+  'Mittlerer Rücken': 'TH-P',
 
-  // LU - Lende (Lumbar)
-  'unterer Rücken/Lendenwirbelsäule': 'LU-P',
+  // LU - Lende / Lumbar
+  'Unterer Rücken/LWS': 'LU-P',
   'Bauch oben': 'LU-A',
-  'Bauch Mitte/Bauchnabel': 'LU-A',
+  'Bauch/Nabel': 'LU-A',
 
-  // PV - Becken (Pelvis)
-  'Unterbauch/Becken': 'PV-A',
-  'Becken/Hüfte': 'PV-A',
+  // PV - Becken / Pelvis
+  'Unterbauch/Becken': 'LU-A',
   'Gesäß': 'PV-P',
 
-  // SC - Schulter (Scapula)
-  'Schulter vorne/Acromion': 'SC-A',
-  'Schulter hinten/Acromion': 'SC-P',
-  'Schulterblatt': 'SC-P',
-
-  // HU - Oberarm (Humerus)
+  // HU - Schulter & Oberarm / Humerus
+  'Schulter/Acromion': 'HU-A',
   'Oberarm': 'HU-A',
 
-  // CU - Ellenbogen (Cubitus)
-  'Ellenbogen-Beuge': 'CU-A',
+  // CU - Ellenbogen / Cubitus
+  'Ellenbogen': 'CU-A',
 
-  // CX - Hüfte (Coxa)
-  'Vorderer Hüftbeuger': 'CX-A',
-  'Hinterer Hüftbereich': 'CX-P',
+  // CX - Hüfte / Coxa
+  'front:Hüfte/Becken': 'CX-A',
+  'back:Hüfte/Becken': 'CX-P',
+  'front:Oberschenkel': 'CX-A',
+  'back:Oberschenkel': 'CX-P',
 
-  // GE - Knie (Genu)
-  'Knie vorne': 'GE-A',
+  // GE - Knie / Genu
+  'Knie': 'GE-A',
   'Kniekehle': 'GE-P',
 
-  // TA - Sprunggelenk (Talus)
-  'Unterschenkel/Schienbein': 'TA-A',
+  // TA - Sprunggelenk / Talus
+  'Unterschenkel': 'TA-A',
   'Wade': 'TA-P',
   'Ferse/Achillessehne': 'TA-P',
 
-  // PE - Fuß (Pes)
-  'Fuß/Knöchel vorne': 'PE-A',
+  // Fuß
+  'Fuß/Knöchel': 'TA-A',
 };
+
+function lookupNodeId(region, view) {
+  if (!region) return null;
+  // Strip laterality suffix (" links" / " rechts")
+  const label = region.replace(/\s+(links|rechts)$/, '').trim();
+  // Try view-prefixed key first, then plain label
+  return REGION_TO_NODE_ID[`${view}:${label}`] || REGION_TO_NODE_ID[label] || null;
+}
 
 export default function DailyTuneUpModal({
   isOpen,
@@ -82,12 +88,13 @@ export default function DailyTuneUpModal({
   user,
   queryClient,
   region = 'Lenden / Unterer Rücken',
+  bodyView = 'front',
   sfmaValues = null, // { movement_level, pain_rest, pain_move } from SFMAQuickCheck
   selectedChains = null, // LLM-selected causal chains from selectCausalChain
 }) {
   const [activeChainIndex, setActiveChainIndex] = useState(0);
   const activeChain = selectedChains?.[activeChainIndex] || null;
-  const nodeId = activeChain?.node_id || REGION_TO_NODE_ID[region] || 'N6';
+  const nodeId = activeChain?.node_id || lookupNodeId(region, bodyView) || 'LU-P';
   const [currentScreen, setCurrentScreen] = useState(0);
   const [mfrNodeCompleted, setMFRNodeCompleted] = useState(false);
   const [neuroDrillCompleted, setNeuroDrillCompleted] = useState(false);

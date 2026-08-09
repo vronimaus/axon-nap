@@ -404,6 +404,7 @@ export default function CommandCenter({ user, handleDestinationClick }) {
     const params = new URLSearchParams({
       tuneUp: 'true',
       region: mapData.region || '',
+      view: mapData.view || 'front',
     });
     window.location.href = createPageUrl('RehabPlan') + `?${params.toString()}`;
   };

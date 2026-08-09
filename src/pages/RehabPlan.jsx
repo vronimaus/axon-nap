@@ -32,6 +32,7 @@ export default function RehabPlan() {
   const [sessionStarted, setSessionStarted] = useState(false);
   const [showDailyTuneUp, setShowDailyTuneUp] = useState(false);
   const [tuneUpRegion, setTuneUpRegion] = useState(null);
+  const [tuneUpView, setTuneUpView] = useState('front');
   const queryClient = useQueryClient();
 
   useEffect(() => {
@@ -49,7 +50,9 @@ export default function RehabPlan() {
         const urlParams = new URLSearchParams(window.location.search);
         if (urlParams.get('tuneUp') === 'true') {
           const region = urlParams.get('region');
+          const bodyView = urlParams.get('view') || 'front';
           if (region) setTuneUpRegion(region);
+          setTuneUpView(bodyView);
           setShowDailyTuneUp(true);
         }
         
@@ -269,6 +272,7 @@ export default function RehabPlan() {
       <div className="min-h-screen bg-[#111111] p-4 flex items-center justify-center">
         <DailyTuneUpModal
           isOpen={showDailyTuneUp}
+          bodyView={tuneUpView}
           onClose={() => setShowDailyTuneUp(false)}
           rehabPlan={null}
           user={user}
