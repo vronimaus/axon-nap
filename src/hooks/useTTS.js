@@ -97,7 +97,15 @@ export function useTTS() {
       audioRef.current = audio;
       attachHandlers(audio);
       setIsPlaying(true);
-      await audio.play();
+      try {
+        await audio.play();
+      } catch (err) {
+        // Browser blocked autoplay (NotAllowedError) — user hasn't interacted yet
+        if (playTokenRef.current === token) {
+          setIsPlaying(false);
+          audioRef.current = null;
+        }
+      }
       return;
     }
 

@@ -51,6 +51,9 @@ export function useAudioCoach() {
     if (!text?.trim()) return;
     // If muted, just preload silently so it's ready when unmuted — no auto-callback
     if (isMuted) { preload(text); return; }
+    // If browser hasn't seen a user interaction yet, autoplay will be blocked.
+    // Preload instead so audio is ready when the user taps play.
+    if (!hasInteractedRef.current) { preload(text); return; }
     playText(text, { onEnded });
   }, [isMuted, playText, preload]);
 
