@@ -3,6 +3,29 @@ import { useTTS } from './useTTS';
 
 const MUTE_KEY = 'axon_audio_muted';
 
+// Module-level flag — persists across component mounts/unmounts.
+// Captures ANY user interaction on the page, even before a useAudioCoach instance mounts.
+let _hasUserInteracted = false;
+
+function _markInteracted() {
+  _hasUserInteracted = true;
+  _removeInteractionListeners();
+}
+
+function _removeInteractionListeners() {
+  window.removeEventListener('click', _markInteracted);
+  window.removeEventListener('touchstart', _markInteracted);
+  window.removeEventListener('keydown', _markInteracted);
+}
+
+// Set up listeners once at module load — catches interactions before any component mounts
+if (typeof window !== 'undefined' && !_hasUserInteracted) {
+  const opts = { once: true, passive: true };
+  window.addEventListener('click', _markInteracted, opts);
+  window.addEventListener('touchstart', _markInteracted, opts);
+  window.addEventListener('keydown', _markInteracted, opts);
+}
+
 /**
  * useAudioCoach — Auto-playing TTS coach ("Jarvis mode")
  *
@@ -21,24 +44,9 @@ export function useAudioCoach() {
   const [isMuted, setIsMuted] = useState(() => {
     try { return localStorage.getItem(MUTE_KEY) === 'true'; } catch { return false; }
   });
-  const hasInteractedRef = useRef(false);
-
-  // Track first user interaction to satisfy browser autoplay policies
-  useEffect(() => {
-    const onFirstInteract = () => { hasInteractedRef.current = true; };
-    const opts = { once: true, passive: true };
-    window.addEventListener('click', onFirstInteract, opts);
-    window.addEventListener('touchstart', onFirstInteract, opts);
-    window.addEventListener('keydown', onFirstInteract, opts);
-    return () => {
-      window.removeEventListener('click', onFirstInteract, opts);
-      window.removeEventListener('touchstart', onFirstInteract, opts);
-      window.removeEventListener('keydown', onFirstInteract, opts);
-    };
-  }, []);
 
   const toggleMute = useCallback(() => {
-    hasInteractedRef.current = true;
+    _hasUserInteracted = true;
     setIsMuted(prev => {
       const next = !prev;
       try { localStorage.setItem(MUTE_KEY, String(next)); } catch {}
@@ -51,9 +59,6 @@ export function useAudioCoach() {
     if (!text?.trim()) return;
     // If muted, just preload silently so it's ready when unmuted — no auto-callback
     if (isMuted) { preload(text); return; }
-    // If browser hasn't seen a user interaction yet, autoplay will be blocked.
-    // Preload instead so audio is ready when the user taps play.
-    if (!hasInteractedRef.current) { preload(text); return; }
     playText(text, { onEnded });
   }, [isMuted, playText, preload]);
 

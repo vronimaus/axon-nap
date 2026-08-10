@@ -9,6 +9,10 @@ import { base44 } from '@/api/base44Client';
  *   - Returns a cached WAV file if the text was already generated
  *   - Otherwise generates, stores, and returns the audio
  * 
+ * Reuses a single Audio element across plays so that once the browser
+ * "unlocks" it (first play within a user gesture), subsequent programmatic
+ * plays work even without a recent gesture (e.g. after a 90s timer).
+ * 
  * Usage:
  *   const { isPlaying, isLoading, playText, stop } = useTTS();
  *   <button onClick={() => playText(someText)}>▶ Vorlesen</button>
@@ -16,11 +20,22 @@ import { base44 } from '@/api/base44Client';
 export function useTTS() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  // Single persistent Audio element — reused across plays so the browser's
+  // autoplay unlock persists (Safari/iOS require play() within a user gesture
+  // to "unlock" an element; once unlocked, it can be played programmatically).
   const audioRef = useRef(null);
   // Preload cache: text → signed_url
   const preloadCacheRef = useRef({});
-  // Synchronous playback token — prevents overlapping Audio objects (echo fix)
+  // Synchronous playback token — prevents overlapping playback (echo fix)
   const playTokenRef = useRef(0);
+
+  // Lazily create the shared Audio element (once per hook instance)
+  const getAudio = useCallback(() => {
+    if (!audioRef.current) {
+      audioRef.current = new Audio();
+    }
+    return audioRef.current;
+  }, []);
 
   const stop = useCallback(() => {
     playTokenRef.current++; // invalidate any in-flight playback
@@ -29,7 +44,7 @@ export function useTTS() {
       audioRef.current.onerror = null;
       audioRef.current.pause();
       audioRef.current.currentTime = 0;
-      audioRef.current = null;
+      // Keep the element — don't nullify (preserves the autoplay unlock)
     }
     setIsPlaying(false);
   }, []);
@@ -65,45 +80,40 @@ export function useTTS() {
   const playText = useCallback(async (text, { onEnded } = {}) => {
     if (!text?.trim()) return;
 
-    // Always stop any existing audio first (prevents echo from overlapping calls)
-    if (audioRef.current) {
-      audioRef.current.onended = null;
-      audioRef.current.onerror = null;
-      audioRef.current.pause();
-      audioRef.current.currentTime = 0;
-      audioRef.current = null;
-    }
+    // Stop any existing playback (prevents echo from overlapping calls)
+    const audio = getAudio();
+    audio.onended = null;
+    audio.onerror = null;
+    audio.pause();
+    audio.currentTime = 0;
 
     const token = ++playTokenRef.current;
 
-    const attachHandlers = (audio) => {
-      audio.onended = () => {
+    const attachHandlers = (au) => {
+      au.onended = () => {
         if (playTokenRef.current !== token) return; // stale — superseded
         setIsPlaying(false);
-        audioRef.current = null;
         onEnded?.();
       };
-      audio.onerror = () => {
+      au.onerror = () => {
         if (playTokenRef.current !== token) return; // stale
         setIsPlaying(false);
-        audioRef.current = null;
       };
     };
 
     // Use preloaded URL if available
     const cached = preloadCacheRef.current[text];
     if (cached && cached !== 'loading') {
-      const audio = new Audio(cached);
-      audioRef.current = audio;
+      audio.src = cached;
       attachHandlers(audio);
       setIsPlaying(true);
       try {
         await audio.play();
       } catch (err) {
-        // Browser blocked autoplay (NotAllowedError) — user hasn't interacted yet
+        // Browser blocked autoplay (NotAllowedError) — user hasn't interacted yet.
+        // The "Wiederholen" button will appear for manual replay.
         if (playTokenRef.current === token) {
           setIsPlaying(false);
-          audioRef.current = null;
         }
       }
       return;
@@ -117,8 +127,7 @@ export function useTTS() {
 
       preloadCacheRef.current[text] = data.signed_url;
 
-      const audio = new Audio(data.signed_url);
-      audioRef.current = audio;
+      audio.src = data.signed_url;
       attachHandlers(audio);
       setIsPlaying(true);
       await audio.play();
@@ -128,7 +137,7 @@ export function useTTS() {
     } finally {
       if (playTokenRef.current === token) setIsLoading(false);
     }
-  }, [stop]);
+  }, [getAudio]);
 
   return { isPlaying, isLoading, playText, stop, preload };
 }
