@@ -11,9 +11,12 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
  * Output: { signed_url: string, cached: boolean }
  */
 
+// Voice version — bump when voice/tone changes to invalidate old cache entries
+const VOICE_VERSION = 'kore-v1';
+
 async function hashText(text) {
   const encoder = new TextEncoder();
-  const data = encoder.encode(text.trim());
+  const data = encoder.encode(text.trim() + '|' + VOICE_VERSION);
   const hashBuffer = await crypto.subtle.digest('SHA-256', data);
   const hashArray = Array.from(new Uint8Array(hashBuffer));
   return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
@@ -39,10 +42,7 @@ function splitIntoChunks(text, maxChars = 500) {
 }
 
 async function generateChunkAudio(text, apiKey) {
-  const isCoaching = text.includes('Phase') || text.includes('Training') || text.includes('Übung') || text.includes('Atme') || text.includes('Halt');
-  const ttsPrompt = isCoaching
-    ? `Lies diesen Text vor als Fitness-Coach. Nutze natürliche Pausen zwischen Sätzen. Sprich klar und motivierend. Deutsche Sprache: ${text}`
-    : `Lies diesen Text vor in warmem, professionellem Ton auf Deutsch: ${text}`;
+  const ttsPrompt = `Lies diesen Text auf Deutsch vor. Du bist ein ruhiger, klarer und autoritärer Coach — wie ein erfahrener Therapeut. Sprich mit ruhiger, selbstbewusster Stimme. Keine Übertriebene Begeisterung, sondern freundliche Klarheit. Kurze Pause zwischen Sätzen. Text: ${text}`;
 
   const response = await fetch(
     `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent?key=${apiKey}`,
@@ -54,7 +54,7 @@ async function generateChunkAudio(text, apiKey) {
         generationConfig: {
           temperature: 1,
           responseModalities: ['AUDIO'],
-          speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: 'Charon' } } }
+          speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: 'Kore' } } }
         }
       })
     }

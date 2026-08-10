@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback } from 'react';
+import { useState, useRef, useCallback, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
 
 /**
@@ -19,14 +19,30 @@ export function useTTS() {
   const audioRef = useRef(null);
   // Preload cache: text → signed_url
   const preloadCacheRef = useRef({});
+  // Synchronous playback token — prevents overlapping Audio objects (echo fix)
+  const playTokenRef = useRef(0);
 
   const stop = useCallback(() => {
+    playTokenRef.current++; // invalidate any in-flight playback
     if (audioRef.current) {
+      audioRef.current.onended = null;
+      audioRef.current.onerror = null;
       audioRef.current.pause();
       audioRef.current.currentTime = 0;
       audioRef.current = null;
     }
     setIsPlaying(false);
+  }, []);
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      playTokenRef.current++;
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current = null;
+      }
+    };
   }, []);
 
   // Silently pre-fetches the TTS audio in the background without playing it.
@@ -49,14 +65,29 @@ export function useTTS() {
   const playText = useCallback(async (text, { onEnded } = {}) => {
     if (!text?.trim()) return;
 
-    if (isPlaying) {
-      stop();
-      return;
+    // Always stop any existing audio first (prevents echo from overlapping calls)
+    if (audioRef.current) {
+      audioRef.current.onended = null;
+      audioRef.current.onerror = null;
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0;
+      audioRef.current = null;
     }
 
+    const token = ++playTokenRef.current;
+
     const attachHandlers = (audio) => {
-      audio.onended = () => { setIsPlaying(false); audioRef.current = null; onEnded?.(); };
-      audio.onerror = () => { setIsPlaying(false); audioRef.current = null; };
+      audio.onended = () => {
+        if (playTokenRef.current !== token) return; // stale — superseded
+        setIsPlaying(false);
+        audioRef.current = null;
+        onEnded?.();
+      };
+      audio.onerror = () => {
+        if (playTokenRef.current !== token) return; // stale
+        setIsPlaying(false);
+        audioRef.current = null;
+      };
     };
 
     // Use preloaded URL if available
@@ -65,14 +96,15 @@ export function useTTS() {
       const audio = new Audio(cached);
       audioRef.current = audio;
       attachHandlers(audio);
-      await audio.play();
       setIsPlaying(true);
+      await audio.play();
       return;
     }
 
     setIsLoading(true);
     try {
       const { data } = await base44.functions.invoke('ttsWithCache', { text });
+      if (playTokenRef.current !== token) return; // superseded while fetching
       if (!data?.signed_url) throw new Error('No audio URL received');
 
       preloadCacheRef.current[text] = data.signed_url;
@@ -80,15 +112,15 @@ export function useTTS() {
       const audio = new Audio(data.signed_url);
       audioRef.current = audio;
       attachHandlers(audio);
-      await audio.play();
       setIsPlaying(true);
+      await audio.play();
     } catch (error) {
       console.error('[useTTS] Error:', error.message);
-      setIsPlaying(false);
+      if (playTokenRef.current === token) setIsPlaying(false);
     } finally {
-      setIsLoading(false);
+      if (playTokenRef.current === token) setIsLoading(false);
     }
-  }, [isPlaying, stop]);
+  }, [stop]);
 
   return { isPlaying, isLoading, playText, stop, preload };
 }
