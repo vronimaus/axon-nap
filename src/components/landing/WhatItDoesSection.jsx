@@ -1,24 +1,18 @@
 import { motion } from 'framer-motion';
-import { Search, Wrench, Dumbbell, Repeat, BookOpen } from 'lucide-react';
+import { Search, Wrench, Repeat, BookOpen } from 'lucide-react';
 
 const FEATURES = [
   {
     icon: Search,
     color: 'cyan',
-    title: 'Diagnose',
-    description: 'Schmerzpunkt auf der Körperkarte markieren. AXON zeigt die zugrundeliegende Ursache und die betroffene Faszienkette.',
+    title: 'Körperkarte',
+    description: 'Schmerzpunkt auf der Körperkarte markieren. AXON erkennt die Ursache und die betroffene Faszienkette.',
   },
   {
     icon: Wrench,
     color: 'emerald',
     title: 'Tune-Up',
-    description: '3-Schritt-Protokoll: Faszien-Release (90s Druckpunkt) → Neuro-Drill → Integrationsübung. Akute Verspannungen in 5 Minuten.',
-  },
-  {
-    icon: Dumbbell,
-    color: 'blue',
-    title: 'Training',
-    description: 'Progressive Pläne für Ziele wie Pull-up, Pistol Squat, Handstand. Mit Neural-Permission-Check gegen Überlastung.',
+    description: '3-Schritt-Protokoll: Faszien-Release → Neuro-Drill → Integration. Akute Verspannungen in 5 Minuten lösen.',
   },
   {
     icon: Repeat,
@@ -30,7 +24,7 @@ const FEATURES = [
     icon: BookOpen,
     color: 'amber',
     title: 'Wissen',
-    description: 'Faszien, Neurologie, Regeneration — verständlich erklärt. Kein Marketing, nur Mechanismen die funktionieren.',
+    description: 'Faszien, Neurologie, Regeneration — verständlich erklärt. Nur Mechanismen, die funktionieren.',
   },
 ];
 
@@ -55,7 +49,7 @@ export default function WhatItDoesSection() {
         >
           <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-slate-500 mb-2">Was AXON kann</p>
           <h2 className="text-xl md:text-3xl font-black text-white leading-tight">
-            Ein System. Fünf Funktionen.
+            Ein System. Vier Funktionen.
           </h2>
         </motion.div>
 

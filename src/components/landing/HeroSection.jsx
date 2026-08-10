@@ -21,7 +21,7 @@ export default function HeroSection({ onCtaClick }) {
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">und lösen.</span>
           </h1>
           <p className="text-slate-300 text-xs md:text-base mb-5 md:mb-6 leading-relaxed max-w-xl">
-            AXON ist ein Diagnose- und Trainings-Tool für muskuläre und neuronale Dysbalancen. Du markierst deinen Schmerzpunkt — AXON zeigt die Ursache und gibt dir das 3-Schritt-Protokoll, das ein Physio anwendet. Faszien-Release, Neuro-Drill, Integration. In 5 Minuten. Zum selbst machen.
+            Schmerzpunkt auf der Körperkarte markieren. AXON erkennt die Ursache und führt dich in 5 Minuten durch das Protokoll — per Audio-Coach, ohne Physio-Termin.
           </p>
           <div className="flex flex-col sm:flex-row gap-3 md:gap-4">
             <Button 

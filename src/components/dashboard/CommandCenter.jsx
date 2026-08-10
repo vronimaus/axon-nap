@@ -1,5 +1,6 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 import InteractiveBodyMapInput from '../diagnosis/InteractiveBodyMapInput';
 import ReadinessTrendChart from './ReadinessTrendChart';
 import { X } from 'lucide-react';
@@ -399,6 +400,7 @@ function BiometricsTile({ user }) {
 
 // ── Main CommandCenter ──────────────────────────────────────────────────────────
 export default function CommandCenter({ user, handleDestinationClick }) {
+  const navigate = useNavigate();
   const [view, setView] = useState('guided'); // 'guided' | 'overview'
   const handleBodyMapSubmit = (mapData) => {
     const params = new URLSearchParams({
@@ -407,7 +409,7 @@ export default function CommandCenter({ user, handleDestinationClick }) {
       view: mapData.view || 'front',
     });
     if (mapData.nodeId) params.set('nodeId', mapData.nodeId);
-    window.location.href = createPageUrl('RehabPlan') + `?${params.toString()}`;
+    navigate(createPageUrl('RehabPlan') + `?${params.toString()}`);
   };
 
   const today = new Date().toISOString().split('T')[0];
@@ -703,7 +705,7 @@ export default function CommandCenter({ user, handleDestinationClick }) {
                   onClick={() => handleBodyMapSubmit({ region: '' })}
                   className="w-full mt-4 text-xs text-zinc-600 hover:text-zinc-400 uppercase tracking-widest transition-colors py-2"
                 >
-                  Keine Schmerzen — weiter zum Training →
+                  Keine Schmerzen — Übersicht anzeigen →
                 </button>
               </div>
             </motion.div>

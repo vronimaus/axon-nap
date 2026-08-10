@@ -12,13 +12,12 @@ import OfflineDetector from './components/OfflineDetector';
 import { HelmetProvider } from 'react-helmet-async';
 import { useQueryClient } from '@tanstack/react-query';
 
-const ROOT_TABS = ['Dashboard', 'RehabPlan', 'Performance', 'Flow', 'FlowRoutines', 'Wissen'];
+const ROOT_TABS = ['Dashboard', 'RehabPlan', 'Flow', 'FlowRoutines', 'Wissen'];
 const PAGES_WITHOUT_NAV = ['Landing', 'Success', 'Checkout', 'Login'];
 
 const TAB_OWNERSHIP = {
   Dashboard: ['Dashboard', 'DiagnosisChat', 'DiagnosisWizard', 'Discovery', 'Profile', 'HowToUse', 'AdminHub', 'AdminDiagnostics', 'DevNotes', 'FitnessSnacks'],
   RehabPlan: ['RehabPlan'],
-  Performance: ['Performance', 'TrainingPlan'],
   Flow: ['Flow', 'FlowRoutines'],
   Wissen: ['Wissen', 'WissenArtikel', 'Faq', 'Glossar', 'Literatur'],
 };
@@ -65,7 +64,6 @@ export default function Layout({ children, currentPageName }) {
   const navItems = [
     { name: 'Start',        icon: LayoutDashboard, page: 'Dashboard' },
     { name: 'Tune-Up',      icon: Activity,        page: 'RehabPlan' },
-    { name: 'Trainieren',   icon: Dumbbell,        page: 'Performance' },
     { name: 'Routinen',     icon: Zap,              page: 'FlowRoutines' },
     { name: 'Wissen',       icon: BookOpen,         page: 'Wissen' },
   ];
