@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useSearchParams, useNavigate } from 'react-router-dom';
+import { useSearchParams, useNavigate, useLocation } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
@@ -109,7 +109,9 @@ function InstructionWithGlossary({ instruction }) {
 export default function Flow() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+  const location = useLocation();
   const routineId = searchParams.get('routine_id');
+  const stateRoutine = location.state?.routine;
   const [currentStep, setCurrentStep] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [timeRemaining, setTimeRemaining] = useState(0);
@@ -147,14 +149,16 @@ export default function Flow() {
     checkAuthAndReadiness();
   }, []);
 
-  const { data: routine, isLoading } = useQuery({
+  const { data: dbRoutine, isLoading } = useQuery({
     queryKey: ['routine', routineId],
     queryFn: async () => {
       const routines = await base44.entities.Routine.filter({ id: routineId });
       return routines[0];
     },
-    enabled: !!routineId
+    enabled: !!routineId && !stateRoutine
   });
+
+  const routine = stateRoutine || dbRoutine;
 
   // Load MFR Node data for detailed instructions
   const { data: mfrNodes = [] } = useQuery({
@@ -239,7 +243,7 @@ export default function Flow() {
   const saveHistory = async (stars = 0) => {
     try {
       await base44.entities.RoutineHistory.create({
-        routine_id: routine.id,
+        routine_id: routine.id || 'fascial_flow',
         routine_name: routine.routine_name,
         completed: true,
         duration_actual: routine.total_duration,
@@ -268,8 +272,8 @@ export default function Flow() {
     );
   }
 
-  // Lücke 6.3: kein routine_id → sofort zu FlowRoutines
-  if (!routineId) {
+  // Lücke 6.3: kein routine_id und keine stateRoutine → sofort zu FlowRoutines
+  if (!routineId && !stateRoutine) {
     navigate(createPageUrl('FlowRoutines'));
     return null;
   }

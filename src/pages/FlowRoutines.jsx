@@ -7,6 +7,7 @@ import { ArrowLeft, Clock, Play, Zap, Activity, Moon, Star, ChevronRight, Wind, 
 import { Button } from '@/components/ui/button';
 import { Helmet } from 'react-helmet-async';
 import BottomSheet from '../components/ui/BottomSheet';
+import FascialLineSection from '../components/flow/FascialLineSection';
 
 // Triage → welche Routinen passen (deutsche Namen, passend zu DB)
 const TRIAGE_ROUTINE_MAP = {
@@ -177,6 +178,9 @@ export default function FlowRoutines() {
             )}
           </motion.div>
         )}
+
+        {/* Fascial Lines */}
+        <FascialLineSection routines={routines} onNavigateToRoutine={navigateToRoutine} />
 
         {/* Recommended Routines */}
         {recommendedRoutines.length > 0 && (
