@@ -1,21 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
-import { Volume2, VolumeX, Loader2, CheckCircle2 } from 'lucide-react';
+import { Volume2, Loader2 } from 'lucide-react';
 import { useAudioCoach } from '@/hooks/useAudioCoach';
 import AudioCoachToggle from '@/components/AudioCoachToggle';
-import Confetti from 'canvas-confetti';
 import { base44 } from '@/api/base44Client';
 
 export default function IntegrationScreen({
   onComplete,
-  screenId = 3,
-  isSubmitting,
+  screenId = 4,
   nodeId = 'N6',
   improvement = 0,
   tuneUpData = null
 }) {
-  const [exerciseCompleted, setExerciseCompleted] = useState(false);
   const [integration, setIntegration] = useState(null);
   const [isLoading, setIsLoading] = useState(!tuneUpData);
   const { isMuted, toggleMute, coach, isPlaying, isLoading: isTTSLoading, stop } = useAudioCoach();
@@ -87,17 +84,7 @@ export default function IntegrationScreen({
     return () => clearTimeout(timer);
   }, [integration]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const handleCompleteExercise = () => {
-    setExerciseCompleted(true);
-    // Trigger confetti
-    Confetti({
-      particleCount: 100,
-      spread: 70,
-      origin: { y: 0.6 }
-    });
-  };
-
-  const handleFinalSubmit = () => {
+  const handleComplete = () => {
     onComplete(screenId, { nodeId, integrationCompleted: true });
   };
 
@@ -206,32 +193,12 @@ export default function IntegrationScreen({
         }
       </button>
 
-      {/* Fertig / Abschließen */}
-      {!exerciseCompleted ? (
-        <Button
-          onClick={handleCompleteExercise}
-          className="w-full h-14 bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white font-black rounded-2xl text-sm shadow-lg shadow-purple-500/40 active:scale-95 transition-transform"
-        >
-          Fertig ✓
-        </Button>
-      ) : (
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-3">
-          <div className="glass rounded-2xl border border-emerald-500/50 p-5 text-center shadow-[0_0_20px_rgba(52,211,153,0.2)]">
-            <motion.div animate={{ scale: [0.85, 1, 0.85] }} transition={{ duration: 1.5, repeat: Infinity }}>
-              <CheckCircle2 className="w-10 h-10 text-emerald-400 mx-auto mb-2" />
-            </motion.div>
-            <p className="text-sm font-black text-emerald-400">Permission Granted! ✓</p>
-            <p className="text-xs text-slate-400 mt-1">Neues Bewegungsmuster verankert</p>
-          </div>
-          <Button
-            onClick={handleFinalSubmit}
-            disabled={isSubmitting}
-            className="w-full h-14 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white font-black rounded-2xl text-sm shadow-lg shadow-emerald-500/40 active:scale-95 transition-transform"
-          >
-            {isSubmitting ? 'Speichert...' : 'Session abschließen 🎉'}
-          </Button>
-        </motion.div>
-      )}
+      <Button
+        onClick={handleComplete}
+        className="w-full h-14 bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white font-black rounded-2xl text-sm shadow-lg shadow-purple-500/40 active:scale-95 transition-transform"
+      >
+        Fertig ✓
+      </Button>
     </motion.div>
   );
 }

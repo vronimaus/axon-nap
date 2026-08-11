@@ -5,6 +5,8 @@ import MFRResetScreenDynamic from './DailyTuneUp/MFRResetScreenDynamic';
 import NeuroDrillScreen from './DailyTuneUp/NeuroDrillScreen';
 import RetestScreen from './DailyTuneUp/RetestScreen';
 import IntegrationScreen from './DailyTuneUp/IntegrationScreen';
+import CoachingBridgeScreen from './DailyTuneUp/CoachingBridgeScreen';
+import CompletionScreen from './DailyTuneUp/CompletionScreen';
 import NeuralChargeBarCompact from './DailyTuneUp/NeuralChargeBarCompact';
 import { buildInterventionFlow } from '@/lib/neuralPermissionEvaluation';
 
@@ -14,7 +16,9 @@ const SCREENS = [
   { id: 0, label: 'MFR Reset', title: 'Hardware-Reset' },
   { id: 1, label: 'Neuro Drill', title: 'Software-Update' },
   { id: 2, label: 'Retest', title: 'Vergleich' },
-  { id: 3, label: 'Integration', title: 'Easy Strength' }
+  { id: 3, label: 'Brücke', title: 'Anker setzen' },
+  { id: 4, label: 'Integration', title: 'Easy Strength' },
+  { id: 5, label: 'Abschluss', title: 'Fertig' }
 ];
 
 // Map region labels (from bodyMapRegions.js polygon detection) to Node IDs.
@@ -158,43 +162,37 @@ export default function DailyTuneUpModal({
     } else if (screenId === 1) {
       setNeuroDrillCompleted(true);
       setCurrentScreen(2);
-      // Silent transition
     } else if (screenId === 2) {
       setRetestCompleted(true);
-      // Evaluate Neural Permission
       if (data?.neuralPermissionEvaluation) {
         setNeuralPermission(data.neuralPermissionEvaluation);
         const flow = buildInterventionFlow(data.neuralPermissionEvaluation, tuneUpData);
         setInterventionFlow(flow);
-        
-        // Route based on permission
+
         if (data.neuralPermissionEvaluation.permissionGranted) {
-          setCurrentScreen(3); // Integration
+          setCurrentScreen(3); // Coaching Bridge
         } else {
-          // Trigger intervention instead of integration
-          handleIntervention(flow);
+          setCurrentScreen(3); // Intervention message at bridge position
         }
       } else {
-        setCurrentScreen(3); // Fallback
+        setCurrentScreen(3); // Bridge
       }
     } else if (screenId === 3) {
+      // Bridge → Integration
+      setCurrentScreen(4);
+    } else if (screenId === 4) {
+      // Integration → Completion
       setIntegrationCompleted(true);
+      setCurrentScreen(5);
+    } else if (screenId === 5) {
       await submitSession(data);
     }
   };
 
   const handleIntervention = (flow) => {
-    // Route to intervention screen based on recommendedAction
-    if (flow.nextScreen === 'PARASYMPATHETIC_DRILL') {
-      // Show parasympathetic drill screen
-      setCurrentScreen(4); // Will be added as new screen
-    } else if (flow.nextScreen === 'SENSORY_PRIMING') {
-      // Show sensory priming screen
-      setCurrentScreen(5);
-    } else if (flow.nextScreen === 'TWEAKOLOGY_POSITION_REGRESSION') {
-      // Show tweaked integration screen
-      setCurrentScreen(3);
-    }
+    // All interventions show a message at the bridge position (screen 3).
+    // After acknowledgment, the user proceeds to Integration (screen 4).
+    setCurrentScreen(3);
   };
 
   const submitSession = async (sessionData) => {
@@ -297,7 +295,7 @@ export default function DailyTuneUpModal({
             </p>
           </div>
           <div className="flex items-center gap-2 ml-3">
-            {selectedChains?.length > 1 && activeChainIndex < selectedChains.length - 1 && currentScreen === 3 && (
+            {selectedChains?.length > 1 && activeChainIndex < selectedChains.length - 1 && currentScreen === 5 && (
               <button
                 onClick={handleNextChain}
                 className="flex items-center gap-1 px-3 py-1.5 rounded-xl bg-cyan-500/10 text-cyan-400 text-xs font-bold hover:bg-cyan-500/20 transition-colors"
@@ -346,13 +344,10 @@ export default function DailyTuneUpModal({
               />
             )}
             {currentScreen === 3 && !interventionFlow && (
-              <IntegrationScreen
-                key="integration"
-                nodeId={nodeId}
+              <CoachingBridgeScreen
+                key="bridge"
                 screenId={3}
                 onComplete={handleScreenComplete}
-                isSubmitting={isSubmitting}
-                tuneUpData={tuneUpData}
               />
             )}
             {currentScreen === 3 && interventionFlow && (
@@ -365,7 +360,7 @@ export default function DailyTuneUpModal({
                   <p className="text-lg font-black text-yellow-300 mb-3">{interventionFlow.message}</p>
                   <p className="text-sm text-slate-300 mb-4">{interventionFlow.instruction}</p>
                   <motion.button
-                    onClick={() => setInterventionFlow(null)}
+                    onClick={() => { setInterventionFlow(null); setCurrentScreen(4); }}
                     whileTap={{ scale: 0.95 }}
                     className="px-6 py-3 rounded-xl bg-cyan-500/20 text-cyan-400 hover:bg-cyan-500/30 font-bold"
                   >
@@ -373,6 +368,23 @@ export default function DailyTuneUpModal({
                   </motion.button>
                 </div>
               </motion.div>
+            )}
+            {currentScreen === 4 && (
+              <IntegrationScreen
+                key="integration"
+                nodeId={nodeId}
+                screenId={4}
+                onComplete={handleScreenComplete}
+                tuneUpData={tuneUpData}
+              />
+            )}
+            {currentScreen === 5 && (
+              <CompletionScreen
+                key="completion"
+                screenId={5}
+                onComplete={handleScreenComplete}
+                isSubmitting={isSubmitting}
+              />
             )}
 
           </AnimatePresence>
