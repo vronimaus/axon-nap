@@ -198,52 +198,23 @@ export default function DailyTuneUpModal({
   const submitSession = async (sessionData) => {
     setIsSubmitting(true);
     try {
-      if (rehabPlan?.id && user?.email) {
-        const today = new Date().toISOString().split('T')[0];
-        const feedback = {
-          date: today,
-          session_type: 'daily_tune_up',
-          mfr_completed: mfrNodeCompleted,
-          neuro_completed: neuroDrillCompleted,
-          retest_completed: retestCompleted,
-          integration_completed: integrationCompleted,
-          neural_charge: neuralCharge,
-          neural_permission_granted: neuralPermission?.permissionGranted || true,
-          neural_permission_reason: neuralPermission?.reason || 'CLEAR',
-          intervention_applied: interventionFlow ? interventionFlow.nextScreen : null,
-          notes: 'Daily Tune-Up session completed'
-        };
-        const history = rehabPlan.feedback_history || [];
-        history.push(feedback);
-        
-        // Track guarding failures if permission was denied
-        if (!neuralPermission?.permissionGranted) {
-          const failures = (rehabPlan.neural_permission_failures || 0) + 1;
-          await base44.entities.RehabPlan.update(rehabPlan.id, { 
-            feedback_history: history,
-            neural_permission_failures: failures
-          });
-        } else {
-          await base44.entities.RehabPlan.update(rehabPlan.id, { feedback_history: history });
-        }
-      }
-
       base44.analytics.track({
         eventName: 'daily_tune_up_completed',
-        properties: { 
+        properties: {
           user_email: user?.email,
-          neural_permission_granted: neuralPermission?.permissionGranted || true,
+          node_id: nodeId,
+          neural_permission_granted: neuralPermission?.permissionGranted ?? true,
           intervention: interventionFlow?.nextScreen || 'NONE'
         }
       });
 
       if (queryClient) {
-        queryClient.invalidateQueries({ queryKey: ['rehabPlan'] });
+        queryClient.invalidateQueries({ queryKey: ['user'] });
       }
 
       setTimeout(() => {
         onClose({ success: true });
-      }, 2000);
+      }, 1500);
     } catch (error) {
       console.error('Session submission error:', error);
       setTimeout(() => onClose({ success: false }), 1000);
