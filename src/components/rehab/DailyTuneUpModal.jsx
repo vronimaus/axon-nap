@@ -91,7 +91,6 @@ function lookupNodeId(region, view) {
 export default function DailyTuneUpModal({
   isOpen,
   onClose,
-  rehabPlan,
   user,
   queryClient,
   region = 'Lenden / Unterer Rücken',

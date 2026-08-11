@@ -1,6 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useNavigate } from 'react-router-dom';
 import InteractiveBodyMapInput from '../diagnosis/InteractiveBodyMapInput';
 import ReadinessTrendChart from './ReadinessTrendChart';
 import { X } from 'lucide-react';
@@ -8,7 +7,7 @@ import { createPageUrl } from '@/utils';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { ChevronRight, Zap, Activity, BookOpen, Target, Watch, Clock, Play } from 'lucide-react';
-import KnowledgeSnippetCarousel from './KnowledgeSnippetCarousel';
+import DailyTuneUpModal from '@/components/rehab/DailyTuneUpModal';
 
 // ── Readiness Ring ──────────────────────────────────────────────────────────────
 function ReadinessRing({ readiness }) {
@@ -400,16 +399,17 @@ function BiometricsTile({ user }) {
 
 // ── Main CommandCenter ──────────────────────────────────────────────────────────
 export default function CommandCenter({ user, handleDestinationClick }) {
-  const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const [view, setView] = useState('guided'); // 'guided' | 'overview'
+  const [showDailyTuneUp, setShowDailyTuneUp] = useState(false);
+  const [tuneUpRegion, setTuneUpRegion] = useState(null);
+  const [tuneUpView, setTuneUpView] = useState('front');
+  const [tuneUpNodeId, setTuneUpNodeId] = useState(null);
   const handleBodyMapSubmit = (mapData) => {
-    const params = new URLSearchParams({
-      tuneUp: 'true',
-      region: mapData.region || '',
-      view: mapData.view || 'front',
-    });
-    if (mapData.nodeId) params.set('nodeId', mapData.nodeId);
-    navigate(createPageUrl('RehabPlan') + `?${params.toString()}`);
+    setTuneUpRegion(mapData.region || null);
+    setTuneUpView(mapData.view || 'front');
+    setTuneUpNodeId(mapData.nodeId || null);
+    setShowDailyTuneUp(true);
   };
 
   const today = new Date().toISOString().split('T')[0];
@@ -429,15 +429,6 @@ export default function CommandCenter({ user, handleDestinationClick }) {
     enabled: !!user?.email,
     staleTime: 5 * 60 * 1000,
     refetchOnWindowFocus: false,
-  });
-
-  const { data: activeRehabPlan } = useQuery({
-    queryKey: ['activeRehabPlan', user?.email],
-    queryFn: async () => {
-      const res = await base44.entities.RehabPlan.filter({ user_email: user.email, status: 'active' });
-      return res?.[0] || null;
-    },
-    enabled: !!user?.email,
   });
 
   const { data: allChecks = [] } = useQuery({
@@ -467,40 +458,6 @@ export default function CommandCenter({ user, handleDestinationClick }) {
 
   const currentHour = new Date().getHours();
   const isPreTrough = troughPattern && currentHour >= troughPattern.hour - 2 && currentHour < troughPattern.hour;
-
-  // Map problem summary → Node ID
-  const getNodeIdFromProblem = (problemSummary) => {
-    if (!problemSummary) return null;
-    const s = problemSummary.toLowerCase();
-    if (s.includes('nacken') || s.includes('hals')) return 'N1';
-    if (s.includes('schulter') || s.includes('arm')) return 'N2';
-    if (s.includes('brust') || s.includes('brustkorb')) return 'N3';
-    if (s.includes('rücken') || s.includes('wirbel') || s.includes('dorsal')) return 'N4';
-    if (s.includes('lenden') || s.includes('lendenwirbel')) return 'N5';
-    if (s.includes('knie')) return 'N6';
-    if (s.includes('hüfte') || s.includes('becken')) return 'N7';
-    if (s.includes('fuss') || s.includes('knöchel') || s.includes('fersen')) return 'N8';
-    if (s.includes('wade') || s.includes('waden')) return 'N9';
-    if (s.includes('ellbogen') || s.includes('unterarm')) return 'N10';
-    if (s.includes('hand') || s.includes('finger')) return 'N11';
-    if (s.includes('kopf') || s.includes('kiefer') || s.includes('atem')) return 'N12';
-    return null;
-  };
-
-  const { data: knowledgeSnack } = useQuery({
-    queryKey: ['knowledgeSnack', activeRehabPlan?.problem_summary],
-    queryFn: async () => {
-      const nodeId = getNodeIdFromProblem(activeRehabPlan?.problem_summary);
-      if (!nodeId) return null;
-      const res = await base44.entities.KnowledgeSnippet.filter({ node_id: nodeId, is_active: true }, '-created_date', 10);
-      if (!res?.length) return null;
-      return res[Math.floor(Math.random() * res.length)];
-    },
-    staleTime: 10 * 60 * 1000,
-  });
-
-  const rehabPhase = activeRehabPlan?.phases?.[activeRehabPlan.current_phase - 1];
-  const nextExercise = rehabPhase?.exercises?.find(e => !e.completed);
 
   const h = new Date().getHours();
   const firstName = user?.full_name?.split(' ')[0];
@@ -587,11 +544,7 @@ export default function CommandCenter({ user, handleDestinationClick }) {
                   <BookOpen className="w-4 h-4 text-zinc-600" />
                   <TileLabel className="mb-0">Wissen</TileLabel>
                 </div>
-                {activeRehabPlan ? (
-                  <KnowledgeSnippetCarousel activeRehabPlan={activeRehabPlan} />
-                ) : (
-                  <p className="text-xs text-zinc-600">Starte einen Rehab-Plan, um personalisiertes Wissen zu sehen.</p>
-                )}
+                <p className="text-xs text-zinc-600">Markiere eine Stelle auf der Körperkarte, um dein Tune-Up zu starten.</p>
               </div>
             </div>
 
@@ -639,6 +592,16 @@ export default function CommandCenter({ user, handleDestinationClick }) {
             )}
           </div>
         </div>
+
+        <DailyTuneUpModal
+          isOpen={showDailyTuneUp}
+          onClose={() => setShowDailyTuneUp(false)}
+          user={user}
+          queryClient={queryClient}
+          region={tuneUpRegion || 'Lenden / Unterer Rücken'}
+          bodyView={tuneUpView}
+          explicitNodeId={tuneUpNodeId}
+        />
       </div>
     );
   }
@@ -713,6 +676,16 @@ export default function CommandCenter({ user, handleDestinationClick }) {
         </AnimatePresence>
 
       </div>
+
+      <DailyTuneUpModal
+        isOpen={showDailyTuneUp}
+        onClose={() => setShowDailyTuneUp(false)}
+        user={user}
+        queryClient={queryClient}
+        region={tuneUpRegion || 'Lenden / Unterer Rücken'}
+        bodyView={tuneUpView}
+        explicitNodeId={tuneUpNodeId}
+      />
     </div>
   );
 }

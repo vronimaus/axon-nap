@@ -70,7 +70,6 @@ import MFRIntegration from './pages/MFRIntegration';
 import Performance from './pages/Performance';
 import Privacy from './pages/Privacy';
 import Profile from './pages/Profile';
-import RehabPlan from './pages/RehabPlan';
 import Success from './pages/Success';
 import Terms from './pages/Terms';
 import TrainingPlan from './pages/TrainingPlan';
@@ -104,7 +103,6 @@ export const PAGES = {
     "Performance": Performance,
     "Privacy": Privacy,
     "Profile": Profile,
-    "RehabPlan": RehabPlan,
     "Success": Success,
     "Terms": Terms,
     "TrainingPlan": TrainingPlan,
