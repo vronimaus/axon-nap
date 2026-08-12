@@ -8,8 +8,8 @@ import AudioCoachToggle from '@/components/AudioCoachToggle';
 const METRICS = [
   {
     key: 'pain_level',
-    label: 'Schmerzlevel (0-10)',
-    question: 'Wie hoch ist dein Schmerz bei dieser Bewegung aktuell?',
+    label: 'Spannungslevel (0-10)',
+    question: 'Wie hoch ist deine Spannung bei dieser Bewegung aktuell?',
     type: 'slider',
     min: 0,
     max: 10,
@@ -69,7 +69,7 @@ export function evaluateNeuralPermission(results) {
 }
 
 const STEP_AUDIO = [
-  'Lass uns checken, was sich verändert hat. Bewege dich wie am Anfang. Erste Frage: Wie hoch ist dein Schmerz bei dieser Bewegung aktuell?',
+  'Lass uns checken, was sich verändert hat. Bewege dich wie am Anfang. Erste Frage: Wie hoch ist deine Spannung bei dieser Bewegung aktuell?',
   'Gut. Kommt dein Körper jetzt weiter in die Bewegung? Deutlich weiter, etwas weiter, gleich geblieben, oder schlechter?',
   'Letzte Frage: Wie stabil fühlte sich die Bewegung an? Perfekt und stabil, teilweise instabil, oder sehr instabil?',
 ];
@@ -139,8 +139,8 @@ export default function RetestScreen({ onComplete, screenId = 2, nodeId = 'N6', 
           className="glass rounded-2xl border border-cyan-500/30 p-6 space-y-4"
         >
           <div className="flex justify-between items-center">
-            <span className="text-sm text-slate-400">0 = Kein Schmerz</span>
-            <span className="text-sm text-slate-400">10 = Stärkster Schmerz</span>
+            <span className="text-sm text-slate-400">0 = Keine Spannung</span>
+            <span className="text-sm text-slate-400">10 = Stärkste Spannung</span>
           </div>
           <div className="flex gap-2 flex-wrap justify-center">
             {Array.from({ length: 11 }, (_, i) => (

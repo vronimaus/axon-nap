@@ -113,7 +113,7 @@ export default function OnboardingWizard({ user, onComplete }) {
             Willkommen zu AXON! 🧠
           </h1>
           <p className="text-slate-400">
-            Lass uns dein Profil erstellen für präzisere Diagnosen.
+            Lass uns dein Profil erstellen für präzisere Empfehlungen.
           </p>
         </div>
 
@@ -289,7 +289,7 @@ export default function OnboardingWizard({ user, onComplete }) {
                         <span className="text-slate-300 text-sm">
                           {{
                             'improve_mobility': 'Mobilität verbessern',
-                            'reduce_pain': 'Schmerzen reduzieren',
+                            'reduce_pain': 'Spannungen reduzieren',
                             'build_strength': 'Kraft aufbauen',
                             'improve_performance': 'Leistung verbessern',
                             'general_fitness': 'Allgemeine Fitness',
@@ -301,11 +301,11 @@ export default function OnboardingWizard({ user, onComplete }) {
                   </div>
                 </div>
                 <Field
-                  label="Aktuelle Beschwerden oder Schmerzen"
+                  label="Aktuelle Beschwerden oder Spannungen"
                   type="textarea"
                   value={formData.current_complaints}
                   onChange={(e) => handleChange('current_complaints', e.target.value)}
-                  placeholder="z.B. Knieschmerz beim Hocken, Schulterverspannungen, Rückenschmerz nach langem Sitzen"
+                  placeholder="z.B. Kniespannung beim Hocken, Schulterverspannungen, Rückenspannung nach langem Sitzen"
                 />
               </div>
             </motion.div>
