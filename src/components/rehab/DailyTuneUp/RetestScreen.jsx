@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Zap, ChevronRight } from 'lucide-react';
+import { useAudioCoach } from '@/hooks/useAudioCoach';
+import AudioCoachToggle from '@/components/AudioCoachToggle';
 
 const METRICS = [
   {
@@ -66,12 +68,27 @@ export function evaluateNeuralPermission(results) {
   return { permissionGranted: true, reason: 'CLEAR', score: { pain_level, rom_improvement, movement_quality } };
 }
 
+const STEP_AUDIO = [
+  'Lass uns checken, was sich verändert hat. Bewege dich wie am Anfang. Erste Frage: Wie hoch ist dein Schmerz bei dieser Bewegung aktuell?',
+  'Gut. Kommt dein Körper jetzt weiter in die Bewegung? Deutlich weiter, etwas weiter, gleich geblieben, oder schlechter?',
+  'Letzte Frage: Wie stabil fühlte sich die Bewegung an? Perfekt und stabil, teilweise instabil, oder sehr instabil?',
+];
+
 export default function RetestScreen({ onComplete, screenId = 2, nodeId = 'N6', sfmaValues = null }) {
   const [step, setStep] = useState(0);
   const [afterValues, setAfterValues] = useState({});
+  const { coach, stop, isPlaying } = useAudioCoach();
 
   const currentMetric = METRICS[step];
   const allDone = step >= METRICS.length;
+
+  // Auto-play coach prompt for each step
+  useEffect(() => {
+    if (allDone) return;
+    const text = STEP_AUDIO[step];
+    const timer = setTimeout(() => coach(text), 200);
+    return () => { clearTimeout(timer); stop(); };
+  }, [step, allDone]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleSelect = (val) => {
     const updated = { ...afterValues, [currentMetric.key]: val };
@@ -99,6 +116,8 @@ export default function RetestScreen({ onComplete, screenId = 2, nodeId = 'N6', 
       exit={{ opacity: 0, x: 16 }}
       className="w-full max-w-sm mx-auto px-4 space-y-5 max-h-[80vh] overflow-y-auto"
     >
+      <AudioCoachToggle isMuted={false} isLoading={false} isPlaying={isPlaying} onToggle={() => isPlaying ? stop() : coach(STEP_AUDIO[step])} />
+
       {/* Header */}
       <motion.div
         initial={{ opacity: 0, y: -10 }}

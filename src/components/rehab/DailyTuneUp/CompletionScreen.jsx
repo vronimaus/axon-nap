@@ -3,6 +3,8 @@ import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Check } from 'lucide-react';
 import Confetti from 'canvas-confetti';
+import { useAudioCoach } from '@/hooks/useAudioCoach';
+import AudioCoachToggle from '@/components/AudioCoachToggle';
 
 const CHECKLIST = [
   'Faszie freigemacht',
@@ -10,10 +12,16 @@ const CHECKLIST = [
   'Bewegung verankert',
 ];
 
+const COMPLETION_AUDIO = 'Perfekt gemacht. Faszie freigemacht, Nervensystem kalibriert, Bewegung verankert. Wiederhole das drei Mal pro Woche. Wenn es stabil und flüssig läuft, steiger die Frequenz.';
+
 export default function CompletionScreen({ onComplete, screenId = 5, isSubmitting = false }) {
+  const { coach, isPlaying, stop } = useAudioCoach();
+
   useEffect(() => {
     Confetti({ particleCount: 80, spread: 60, origin: { y: 0.6 } });
-  }, []);
+    const timer = setTimeout(() => coach(COMPLETION_AUDIO), 400);
+    return () => { clearTimeout(timer); stop(); };
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <motion.div
@@ -22,6 +30,7 @@ export default function CompletionScreen({ onComplete, screenId = 5, isSubmittin
       exit={{ opacity: 0, y: -20 }}
       className="w-full max-w-sm mx-auto px-4 space-y-6"
     >
+      <AudioCoachToggle isMuted={false} isLoading={false} isPlaying={isPlaying} onToggle={() => isPlaying ? stop() : coach(COMPLETION_AUDIO)} />
       <motion.div
         initial={{ scale: 0.9, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
