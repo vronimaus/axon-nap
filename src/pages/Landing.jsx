@@ -10,14 +10,9 @@ import { useUser } from '@/components/useUser';
 
 // Eager-loaded (above the fold)
 import HeroSection from '@/components/landing/HeroSection';
-import WhatItDoesSection from '@/components/landing/WhatItDoesSection';
-import PainAgitationSection from '@/components/landing/PainAgitationSection';
-import SystemAuditSection from '@/components/landing/SystemAuditSection';
+import BentoSection from '@/components/landing/BentoSection';
 
 // Lazy-loaded (below the fold)
-const ThreeSystemSection = lazy(() => import('@/components/landing/ThreeSystemSection'));
-const AudioCoachSection = lazy(() => import('@/components/landing/AudioCoachSection'));
-const FounderStorySection = lazy(() => import('@/components/landing/FounderStorySection'));
 const FairnessSection = lazy(() => import('@/components/landing/FairnessSection'));
 
 const LazyFallback = () => (
@@ -109,8 +104,7 @@ export default function Landing() {
            </div>
 
           <div className="hidden md:flex items-center space-x-8 text-xs font-bold uppercase tracking-widest text-slate-400">
-            <a href="#audit" className="hover:text-cyan-400 transition-colors">System-Audit</a>
-            <a href="#system" className="hover:text-cyan-400 transition-colors">Das System</a>
+            <a href="#system" className="hover:text-cyan-400 transition-colors">Funktionen</a>
             <a href="#pricing" className="hover:text-cyan-400 transition-colors">Preis</a>
             <Link to={createPageUrl('Wissen')} className="hover:text-cyan-400 transition-colors">Wissen</Link>
             <Link to={createPageUrl('FAQ')} className="hover:text-cyan-400 transition-colors">FAQ</Link>
@@ -145,8 +139,7 @@ export default function Landing() {
       {/* Mobile Menu */}
       {mobileMenuOpen && (
         <div className="md:hidden fixed top-[60px] left-0 right-0 bg-slate-950/95 backdrop-blur-md border-b border-white/5 z-40 p-6 flex flex-col gap-5">
-          <a href="#audit" onClick={() => setMobileMenuOpen(false)} className="text-sm font-bold uppercase tracking-widest text-slate-300">System-Audit</a>
-          <a href="#system" onClick={() => setMobileMenuOpen(false)} className="text-sm font-bold uppercase tracking-widest text-slate-300">Das System</a>
+          <a href="#system" onClick={() => setMobileMenuOpen(false)} className="text-sm font-bold uppercase tracking-widest text-slate-300">Funktionen</a>
           <a href="#pricing" onClick={() => setMobileMenuOpen(false)} className="text-sm font-bold uppercase tracking-widest text-slate-300">Preis</a>
           <Link to={createPageUrl('Wissen')} onClick={() => setMobileMenuOpen(false)} className="text-sm font-bold uppercase tracking-widest text-cyan-400">Wissen</Link>
           <Link to={createPageUrl('FAQ')} onClick={() => setMobileMenuOpen(false)} className="text-sm font-bold uppercase tracking-widest text-cyan-400">FAQ</Link>
@@ -160,31 +153,10 @@ export default function Landing() {
       {/* MODULE 1: Hero */}
       <HeroSection onCtaClick={handlePricingScroll} />
 
-      {/* MODULE 1b: Was AXON kann */}
-      <WhatItDoesSection />
+      {/* MODULE 2: Bento-Grid — Protokoll, Stufen, Audio-Coach */}
+      <BentoSection onCtaClick={handlePricingScroll} />
 
-      {/* MODULE 2: Problem Agitation */}
-      <PainAgitationSection onFunnelClick={handlePricingScroll} />
-
-      {/* MODULE 3: Interaktives System-Audit */}
-      <SystemAuditSection onPricingClick={handlePricingScroll} />
-
-      {/* MODULE 4: Das System (3 Säulen) */}
-      <Suspense fallback={<LazyFallback />}>
-        <ThreeSystemSection />
-      </Suspense>
-
-      {/* MODULE 5: Audio-Coaching USP */}
-      <Suspense fallback={<LazyFallback />}>
-        <AudioCoachSection onCtaClick={handlePricingScroll} />
-      </Suspense>
-
-      {/* MODULE 6: Founder Story + Social Proof */}
-      <Suspense fallback={<LazyFallback />}>
-        <FounderStorySection onCtaClick={handlePricingScroll} />
-      </Suspense>
-
-      {/* MODULE 7: Fairness / Pricing */}
+      {/* MODULE 3: Preis */}
       <Suspense fallback={<LazyFallback />}>
         <FairnessSection onCtaClick={handleSelectOption} />
       </Suspense>
