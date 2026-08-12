@@ -1,7 +1,7 @@
 import React from 'react';
-import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
+import MagneticButton from './MagneticButton';
 
 export default function HeroSection({ onCtaClick }) {
   return (
@@ -56,13 +56,13 @@ export default function HeroSection({ onCtaClick }) {
           </p>
 
           <div className="flex flex-col sm:flex-row gap-3">
-            <Button
+            <MagneticButton
               onClick={onCtaClick}
-              className="bg-cyan-400 hover:bg-cyan-300 text-black px-6 md:px-8 py-4 md:py-6 rounded-2xl font-black text-xs md:text-base uppercase tracking-wide transition-all shadow-[0_0_30px_rgba(6,224,226,0.3)] hover:shadow-[0_0_50px_rgba(6,224,226,0.5)] whitespace-nowrap"
+              className="inline-flex items-center justify-center gap-2 bg-cyan-400 hover:bg-cyan-300 text-black px-6 md:px-8 py-4 md:py-6 rounded-2xl font-black text-xs md:text-base uppercase tracking-wide transition-colors shadow-[0_0_30px_rgba(6,224,226,0.3)] hover:shadow-[0_0_50px_rgba(6,224,226,0.5)] whitespace-nowrap"
             >
               7 Tage kostenlos testen
               <ArrowRight className="w-4 h-4" />
-            </Button>
+            </MagneticButton>
             <div className="flex items-center gap-2 px-4 py-3 bg-black/40 backdrop-blur-sm rounded-2xl border border-white/10">
               <span className="text-xs text-slate-300 font-medium">
                 Danach 59€ einmalig · Kein Abo

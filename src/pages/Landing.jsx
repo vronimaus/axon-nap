@@ -11,6 +11,7 @@ import { useUser } from '@/components/useUser';
 // Eager-loaded (above the fold)
 import HeroSection from '@/components/landing/HeroSection';
 import BentoSection from '@/components/landing/BentoSection';
+import CursorGlow from '@/components/landing/CursorGlow';
 
 // Lazy-loaded (below the fold)
 const TestimonialSection = lazy(() => import('@/components/landing/TestimonialSection'));
@@ -83,6 +84,7 @@ export default function Landing() {
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-50 selection:bg-amber-500/30 font-sans">
+      <CursorGlow />
       <Helmet>
         <title>AXON – Mobility- & Trainings-Tool für Athleten | Neuro-Athletic Protocol</title>
         <meta name="description" content="Mobility- und Trainings-Tool für Athleten. Spannungspunkt markieren, Ursache erkennen, 3-Schritt-Protokoll ausführen. Faszien-Release, Neuro-Drill, Integration." />

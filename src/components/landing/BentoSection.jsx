@@ -1,5 +1,7 @@
 import { motion } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
+import TiltCard from './TiltCard';
+import MagneticButton from './MagneticButton';
 
 const CARDS = [
   {
@@ -58,10 +60,12 @@ export default function BentoSection({ onCtaClick }) {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.1 }}
+            >
+            <TiltCard
               className="relative rounded-2xl overflow-hidden group cursor-pointer"
-              style={{ aspectRatio: '3 / 4' }}
               onClick={onCtaClick}
             >
+              <div style={{ aspectRatio: '3 / 4' }}>
               {/* Background image */}
               <img
                 src={card.image}
@@ -87,14 +91,17 @@ export default function BentoSection({ onCtaClick }) {
                 <p className="text-white/80 text-xs md:text-[13px] leading-relaxed mb-4">
                   {card.line}
                 </p>
-                <button
-                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wide text-black transition-transform group-hover:scale-105"
+                <MagneticButton
+                  strength={0.35}
+                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wide text-black"
                   style={{ backgroundColor: '#6de0e2', alignSelf: 'flex-start' }}
                 >
                   Start
                   <ArrowRight className="w-3 h-3" />
-                </button>
+                </MagneticButton>
               </div>
+              </div>
+            </TiltCard>
             </motion.div>
           ))}
         </div>
