@@ -8,6 +8,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { ChevronRight, Zap, Activity, BookOpen, Target, Watch, Clock, Play } from 'lucide-react';
 import DailyTuneUpModal from '@/components/rehab/DailyTuneUpModal';
+import ReadinessSessionSelector from './ReadinessSessionSelector';
 
 // ── Readiness Ring ──────────────────────────────────────────────────────────────
 function ReadinessRing({ readiness }) {
@@ -405,6 +406,7 @@ export default function CommandCenter({ user, handleDestinationClick }) {
   const [tuneUpRegion, setTuneUpRegion] = useState(null);
   const [tuneUpView, setTuneUpView] = useState('front');
   const [tuneUpNodeId, setTuneUpNodeId] = useState(null);
+  const [showBodyMap, setShowBodyMap] = useState(false);
   const handleBodyMapSubmit = (mapData) => {
     setTuneUpRegion(mapData.region || null);
     setTuneUpView(mapData.view || 'front');
@@ -566,7 +568,7 @@ export default function CommandCenter({ user, handleDestinationClick }) {
   }
 
   // ── GUIDED VIEW — full-screen step flow ──
-  const showBodyMap = !!todayReadiness;
+  const readinessDone = !!todayReadiness;
 
   return (
     <div className="min-h-screen bg-[#111111] flex flex-col pb-28 md:pb-8">
@@ -574,8 +576,8 @@ export default function CommandCenter({ user, handleDestinationClick }) {
 
         {/* Step indicator */}
         <div className="flex items-center justify-center gap-2 mb-8">
-          <div className={`h-1 rounded-full transition-all ${showBodyMap ? 'w-8 bg-emerald-500/50' : 'w-12 bg-cyan-400'}`} />
-          <div className={`h-1 rounded-full transition-all ${showBodyMap ? 'w-12 bg-cyan-400' : 'w-8 bg-zinc-700'}`} />
+          <div className={`h-1 rounded-full transition-all ${readinessDone ? 'w-8 bg-emerald-500/50' : 'w-12 bg-cyan-400'}`} />
+          <div className={`h-1 rounded-full transition-all ${readinessDone ? 'w-12 bg-cyan-400' : 'w-8 bg-zinc-700'}`} />
         </div>
 
         {/* Skip to overview */}
@@ -587,8 +589,8 @@ export default function CommandCenter({ user, handleDestinationClick }) {
         </button>
 
         <AnimatePresence mode="wait">
-          {!showBodyMap ? (
-            /* ── FULL-SCREEN STEP 1: Readiness Check ── */
+          {!readinessDone ? (
+            /* ── STEP 1: Readiness Check ── */
             <motion.div
               key="readiness"
               initial={{ opacity: 0, x: 20 }}
@@ -600,14 +602,14 @@ export default function CommandCenter({ user, handleDestinationClick }) {
                 <h2 className="text-xl font-light text-white tracking-tight mb-1">
                   Wie fühlst du dich{firstName ? `, ${firstName}` : ''}?
                 </h2>
-                <p className="text-sm text-zinc-600">Bewerte deine vier Systeme — dann geht's weiter zur Körperkarte.</p>
+                <p className="text-sm text-zinc-600">Bewerte deine vier Systeme — dann gibt's deinen personalisierten Plan.</p>
               </div>
               <div className="bg-zinc-900/80 border border-white/[0.06] rounded-2xl p-5">
                 <InlineReadinessWidget user={user} todayReadiness={todayReadiness} />
               </div>
             </motion.div>
-          ) : (
-            /* ── FULL-SCREEN STEP 2: Body Map ── */
+          ) : showBodyMap ? (
+            /* ── STEP 2b: Body Map (secondary option) ── */
             <motion.div
               key="bodymap"
               initial={{ opacity: 0, x: 20 }}
@@ -615,20 +617,38 @@ export default function CommandCenter({ user, handleDestinationClick }) {
               exit={{ opacity: 0, x: -20 }}
               transition={{ duration: 0.25 }}
             >
+              <button
+                onClick={() => setShowBodyMap(false)}
+                className="mb-4 text-[10px] text-zinc-600 hover:text-zinc-400 uppercase tracking-widest transition-colors"
+              >
+                ← Zurück zum Plan
+              </button>
               <div className="text-center mb-6">
                 <h2 className="text-xl font-light text-white tracking-tight mb-1">
                   Wo ist die Spannung?
                 </h2>
-                <p className="text-sm text-zinc-600">Markiere die Stelle mit der meisten Spannung — AXON startet dann dein Tune-Up.</p>
+                <p className="text-sm text-zinc-600">Markiere die Stelle — AXON startet dein gezieltes Tune-Up.</p>
               </div>
               <div className="bg-zinc-900/80 border border-white/[0.06] rounded-2xl p-5">
                 <InteractiveBodyMapInput onSubmit={handleBodyMapSubmit} />
-                <button
-                  onClick={() => handleBodyMapSubmit({ region: '' })}
-                  className="w-full mt-4 text-xs text-zinc-600 hover:text-zinc-400 uppercase tracking-widest transition-colors py-2"
-                >
-                  Keine Spannung — Übersicht anzeigen →
-                </button>
+              </div>
+            </motion.div>
+          ) : (
+            /* ── STEP 2a: Readiness-based session selector ── */
+            <motion.div
+              key="selector"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              transition={{ duration: 0.25 }}
+            >
+              <div className="bg-zinc-900/80 border border-white/[0.06] rounded-2xl p-5">
+                <ReadinessSessionSelector
+                  readiness={todayReadiness}
+                  user={user}
+                  onOpenBodyMap={() => setShowBodyMap(true)}
+                  onStartTuneUp={() => handleBodyMapSubmit({ region: '' })}
+                />
               </div>
             </motion.div>
           )}
