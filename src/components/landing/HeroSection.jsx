@@ -1,142 +1,86 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
+import { ArrowRight } from 'lucide-react';
 
 export default function HeroSection({ onCtaClick }) {
   return (
-    <header className="pt-24 pb-10 px-6 overflow-hidden relative" id="vision">
-      <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-        
-        {/* Text Content */}
-        <motion.div 
-            initial={{ opacity: 0, x: -50 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6 }}
+    <header className="relative min-h-[88vh] md:min-h-[92vh] flex items-end overflow-hidden" id="vision">
+      {/* Full-bleed background image */}
+      <img
+        src="https://media.base44.com/images/public/69790ebfa6f94c6c3f1450bc/7a88677be_generated_image.png"
+        alt=""
+        className="absolute inset-0 w-full h-full object-cover"
+      />
+
+      {/* Cinematic gradient overlays */}
+      <div
+        className="absolute inset-0"
+        style={{
+          background:
+            'linear-gradient(to top, rgba(11,15,15,0.97) 0%, rgba(11,15,15,0.6) 40%, rgba(11,15,15,0.3) 70%, rgba(11,15,15,0.5) 100%)',
+        }}
+      />
+      <div
+        className="absolute inset-0"
+        style={{
+          background:
+            'linear-gradient(to right, rgba(11,15,15,0.7) 0%, transparent 60%)',
+        }}
+      />
+
+      {/* Content */}
+      <div className="relative z-10 w-full max-w-7xl mx-auto px-6 pb-12 md:pb-20 pt-24">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7 }}
+          className="max-w-2xl"
         >
-          <div className="inline-block px-4 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-[10px] font-bold uppercase tracking-widest mb-4 md:mb-6">
+          <div className="inline-block px-4 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 text-[10px] font-bold uppercase tracking-widest mb-5 backdrop-blur-sm">
             Neuro-Athletic Protocol
           </div>
-          <h1 className="text-2xl md:text-5xl font-black mb-3 md:mb-4 leading-[1.1] text-white">
-            Was blockiert,<br />liegt selten dort,<br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">wo du es spürst.</span>
+
+          <h1 className="text-3xl md:text-6xl font-black mb-4 md:mb-5 leading-[1.05] text-white">
+            Finde die Ursache.
+            <br />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 to-cyan-500">
+              Löse sie in 5 Minuten.
+            </span>
           </h1>
-          <p className="text-slate-300 text-xs md:text-base mb-5 md:mb-6 leading-relaxed max-w-xl">
-            Dein Nacken zieht — aber die Ursache sitzt oft in einer myofaszialen Kette, die quer durch den Körper verläuft. AXON lokalisiert den Druckpunkt dahinter und führt dich durch ein 3-Schritt-Protokoll: Faszien-Release, Neuro-Drill, Integration. In 5 Minuten. Per Audio-Coach.
+
+          <p className="text-slate-200 text-sm md:text-lg mb-6 md:mb-8 leading-relaxed max-w-xl">
+            AXON lokalisiert den Druckpunkt hinter deiner Blockade und führt dich
+            durch ein 3-Schritt-Protokoll — Faszien-Release, Neuro-Drill,
+            Integration. Per Audio-Coach.
           </p>
-          <div className="flex flex-col sm:flex-row gap-3 md:gap-4">
-            <Button 
-                onClick={onCtaClick}
-                className="bg-white hover:bg-cyan-50 text-black px-4 md:px-8 py-3 md:py-6 rounded-2xl font-black text-xs md:text-base uppercase tracking-wide transition-all shadow-[0_0_20px_rgba(255,255,255,0.1)] hover:shadow-[0_0_30px_rgba(6,182,212,0.4)] whitespace-nowrap"
+
+          <div className="flex flex-col sm:flex-row gap-3">
+            <Button
+              onClick={onCtaClick}
+              className="bg-cyan-400 hover:bg-cyan-300 text-black px-6 md:px-8 py-4 md:py-6 rounded-2xl font-black text-xs md:text-base uppercase tracking-wide transition-all shadow-[0_0_30px_rgba(6,224,226,0.3)] hover:shadow-[0_0_50px_rgba(6,224,226,0.5)] whitespace-nowrap"
             >
-                7 Tage kostenlos testen
+              7 Tage kostenlos testen
+              <ArrowRight className="w-4 h-4" />
             </Button>
-            <div className="flex items-center gap-2 px-4 py-3 bg-slate-900/50 rounded-2xl border border-white/5">
-              <span className="text-xs text-slate-400 font-medium">Danach 59€ einmalig · Kein Abo</span>
+            <div className="flex items-center gap-2 px-4 py-3 bg-black/40 backdrop-blur-sm rounded-2xl border border-white/10">
+              <span className="text-xs text-slate-300 font-medium">
+                Danach 59€ einmalig · Kein Abo
+              </span>
             </div>
-          </div>
-        </motion.div>
-
-        {/* App Mockup — decorative, compact — hidden on mobile/tablet */}
-        <motion.div 
-            initial={{ opacity: 0, scale: 0.9, rotate: 5 }}
-            animate={{ opacity: 1, scale: 1, rotate: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            className="relative hidden lg:block"
-        >
-          <div className="absolute -top-20 -right-20 w-96 h-96 bg-cyan-500/10 blur-[120px] rounded-full pointer-events-none"></div>
-          
-          <div className="relative z-10 bg-slate-900 border-[6px] border-slate-800 rounded-[2rem] shadow-2xl shadow-cyan-900/20 max-w-[200px] mx-auto overflow-hidden aspect-[9/18.5] flex flex-col">
-            
-            {/* Mockup Header */}
-            <div className="bg-slate-950 p-6 pb-4">
-                <div className="flex justify-between items-center mb-4">
-                    <div className="text-[10px] font-bold text-slate-400 tracking-widest">AXON · Dein Plan heute</div>
-                    <div className="flex space-x-1.5">
-                        <div className="w-1.5 h-1.5 rounded-full bg-slate-700"></div>
-                        <div className="w-3 h-1.5 rounded-full bg-cyan-500"></div>
-                    </div>
-                </div>
-                <div className="bg-slate-800/60 border border-white/5 p-3 rounded-2xl">
-                    <div className="text-[9px] text-slate-400 uppercase tracking-widest mb-1 font-bold">Ziel · Schulter-Mobilität</div>
-                    <div className="flex gap-2">
-                      <span className="text-[9px] bg-emerald-500/20 text-emerald-400 px-2 py-0.5 rounded-full font-bold">MFR</span>
-                      <span className="text-[9px] bg-blue-500/20 text-blue-400 px-2 py-0.5 rounded-full font-bold">Functional</span>
-                      <span className="text-[9px] bg-purple-500/20 text-purple-400 px-2 py-0.5 rounded-full font-bold">Neuro</span>
-                    </div>
-                </div>
-            </div>
-
-            {/* Mockup Body — 3 steps */}
-            <div className="flex-1 bg-slate-900 p-4 pt-2 overflow-hidden flex flex-col gap-2">
-                
-                {/* Step 1: MFR */}
-                <div className="bg-slate-800/50 p-3 rounded-2xl border border-emerald-500/20 flex gap-3 items-start">
-                    <div className="w-7 h-7 rounded-xl bg-emerald-500/20 flex items-center justify-center shrink-0 mt-0.5">
-                        <span className="text-[10px] font-black text-emerald-400">1</span>
-                    </div>
-                    <div>
-                        <div className="text-[9px] font-black text-emerald-400 uppercase tracking-widest mb-0.5">Faszien · MFR</div>
-                        <div className="text-[11px] font-bold text-white leading-tight">Pectoralis Minor lösen</div>
-                        <div className="text-[9px] text-slate-500 mt-0.5">90 Sek. · Druckpunkt N8</div>
-                    </div>
-                </div>
-
-                {/* Step 2: Functional */}
-                <div className="bg-slate-800/50 p-3 rounded-2xl border border-blue-500/20 flex gap-3 items-start">
-                    <div className="w-7 h-7 rounded-xl bg-blue-500/20 flex items-center justify-center shrink-0 mt-0.5">
-                        <span className="text-[10px] font-black text-blue-400">2</span>
-                    </div>
-                    <div>
-                        <div className="text-[9px] font-black text-blue-400 uppercase tracking-widest mb-0.5">Functional</div>
-                        <div className="text-[11px] font-bold text-white leading-tight">Wall Slides · 3×10</div>
-                        <div className="text-[9px] text-slate-500 mt-0.5">Skapula-Kontrolle aktivieren</div>
-                    </div>
-                </div>
-
-                {/* Step 3: Neuro */}
-                <div className="bg-slate-800/50 p-3 rounded-2xl border border-purple-500/20 flex gap-3 items-start">
-                    <div className="w-7 h-7 rounded-xl bg-purple-500/20 flex items-center justify-center shrink-0 mt-0.5">
-                        <span className="text-[10px] font-black text-purple-400">3</span>
-                    </div>
-                    <div>
-                        <div className="text-[9px] font-black text-purple-400 uppercase tracking-widest mb-0.5">Neuro · Verankerung</div>
-                        <div className="text-[11px] font-bold text-white leading-tight">Horizontale Sakkaden</div>
-                        <div className="text-[9px] text-slate-500 mt-0.5">30 Sek. · Bewegungsmuster festigen</div>
-                    </div>
-                </div>
-
-                <div className="mt-auto pt-1">
-                    <div className="w-full h-1 bg-slate-800 rounded-full overflow-hidden">
-                        <motion.div 
-                            initial={{ width: "0%" }}
-                            animate={{ width: "66%" }}
-                            transition={{ duration: 2, delay: 1 }}
-                            className="bg-gradient-to-r from-emerald-500 via-blue-500 to-purple-500 h-full rounded-full"
-                        />
-                    </div>
-                    <div className="text-[9px] text-slate-500 text-right mt-1">2 / 3 abgeschlossen</div>
-                </div>
-            </div>
-
-            {/* Mockup Footer */}
-            <div className="bg-slate-950 p-4 border-t border-white/5">
-                <div className="flex justify-around text-slate-600 items-center">
-                    <div className="w-6 h-6 grid grid-cols-2 gap-0.5 hover:text-white transition-colors cursor-pointer">
-                        <div className="w-2.5 h-2.5 rounded-sm bg-slate-600"></div>
-                        <div className="w-2.5 h-2.5 rounded-sm bg-slate-600"></div>
-                        <div className="w-2.5 h-2.5 rounded-sm bg-slate-600"></div>
-                        <div className="w-2.5 h-2.5 rounded-sm bg-slate-600"></div>
-                    </div>
-                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center text-white shadow-lg shadow-cyan-500/20">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="3"></circle></svg>
-                    </div>
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-slate-600"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline><polyline points="16 7 22 7 22 13"></polyline></svg>
-                </div>
-            </div>
-
           </div>
         </motion.div>
       </div>
+
+      {/* Scroll indicator */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 1.2 }}
+        className="absolute bottom-4 left-1/2 -translate-x-1/2 z-10 hidden md:block"
+      >
+        <div className="w-px h-10 bg-gradient-to-b from-transparent via-cyan-400/40 to-transparent" />
+      </motion.div>
     </header>
   );
 }

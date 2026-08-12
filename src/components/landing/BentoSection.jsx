@@ -6,19 +6,19 @@ const CARDS = [
     key: 'protocol',
     headline: 'DAS PROTOKOLL',
     line: 'Faszien-Release · Neuro-Drill · Integration',
-    image: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=900&q=80&auto=format&fit=crop',
+    image: 'https://media.base44.com/images/public/69790ebfa6f94c6c3f1450bc/bc1fda538_generated_image.png',
   },
   {
     key: 'stages',
     headline: 'DREI STUFEN',
     line: 'Soforthilfe → Flow → Goals',
-    image: 'https://images.unsplash.com/photo-1546483875-ad9014c88eba?w=900&q=80&auto=format&fit=crop',
+    image: 'https://media.base44.com/images/public/69790ebfa6f94c6c3f1450bc/bac22bc8d_generated_image.png',
   },
   {
     key: 'audio',
     headline: 'AUDIO-COACH',
     line: 'Präzise Cues. Augen zu. Körper spüren.',
-    image: 'https://images.unsplash.com/photo-1487215078519-e21cc028cb29?w=900&q=80&auto=format&fit=crop',
+    image: 'https://media.base44.com/images/public/69790ebfa6f94c6c3f1450bc/9fce38861_generated_image.png',
   },
 ];
 
