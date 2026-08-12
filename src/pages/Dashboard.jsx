@@ -425,7 +425,7 @@ export default function Dashboard() {
                   className="mt-4 sm:mt-6"
                 >
                   <Button
-                    onClick={() => window.location.href = createPageUrl('DiagnosisChat')}
+                    onClick={() => window.location.href = createPageUrl('FlowRoutines')}
                     className="w-full h-12 sm:h-14 bg-zinc-800 hover:bg-zinc-700 border border-white/[0.08] text-white font-bold text-sm sm:text-base"
                   >
                     Zum Assessment →

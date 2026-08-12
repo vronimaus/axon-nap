@@ -16,7 +16,7 @@ const ROOT_TABS = ['Dashboard', 'Flow', 'FlowRoutines', 'Wissen'];
 const PAGES_WITHOUT_NAV = ['Landing', 'Success', 'Checkout', 'Login'];
 
 const TAB_OWNERSHIP = {
-  Dashboard: ['Dashboard', 'DiagnosisChat', 'DiagnosisWizard', 'Discovery', 'Profile', 'HowToUse', 'AdminHub', 'AdminDiagnostics', 'DevNotes'],
+  Dashboard: ['Dashboard', 'Discovery', 'Profile', 'HowToUse', 'AdminHub', 'AdminDiagnostics', 'DevNotes'],
   Flow: ['Flow', 'FlowRoutines'],
   Wissen: ['Wissen', 'WissenArtikel', 'Faq', 'Glossar', 'Literatur'],
 };

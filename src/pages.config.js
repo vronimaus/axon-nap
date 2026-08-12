@@ -52,8 +52,6 @@ import AdminHub from './pages/AdminHub';
 import AdminTestCenter from './pages/AdminTestCenter';
 import Dashboard from './pages/Dashboard';
 import DevNotes from './pages/DevNotes';
-import DiagnosisChat from './pages/DiagnosisChat';
-import DiagnosisWizard from './pages/DiagnosisWizard';
 import Discovery from './pages/Discovery';
 import ExerciseImageGenerator from './pages/ExerciseImageGenerator';
 import ExerciseImageUpload from './pages/ExerciseImageUpload';
@@ -85,8 +83,6 @@ export const PAGES = {
     "AdminTestCenter": AdminTestCenter,
     "Dashboard": Dashboard,
     "DevNotes": DevNotes,
-    "DiagnosisChat": DiagnosisChat,
-    "DiagnosisWizard": DiagnosisWizard,
     "Discovery": Discovery,
     "ExerciseImageGenerator": ExerciseImageGenerator,
     "ExerciseImageUpload": ExerciseImageUpload,
