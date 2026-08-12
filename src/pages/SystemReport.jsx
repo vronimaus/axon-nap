@@ -317,7 +317,7 @@ Daily Tune-Up wählt automatisch den relevanten Node basierend auf dem Problemge
 
 **Diagnose & Planung:**
 - DiagnosisSession: Symptom, getestete Ketten, Hardware/Software-Ergebnisse
-- RehabPlan: 3-phasiger Plan mit Übungen, NMS-Trigger, Live-Adjust-Log, Feedback-History
+- RoutineHistory: Abgeschlossene Tune-Up Sessions mit Neural-Permission-Feedback, Spannungs-Level, Mobilitäts-Score
 - ThreeDMAPSAssessment: Bewegungsebenen-Assessment nach Gary Gray
 - MovementAssessment: FMS-basierte Bewegungsanalyse
 

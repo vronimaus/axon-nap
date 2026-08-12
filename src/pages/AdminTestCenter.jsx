@@ -32,12 +32,12 @@ const TEST_MATRIX = [
     ]
   },
   {
-    path: 'PFAD 3: Tune-Up / RehabPlan',
+    path: 'PFAD 3: Tune-Up / Body Map',
     color: 'border-emerald-500/30',
     headerColor: 'text-emerald-400',
     tests: [
-      { id: '3.1', label: 'RehabPlan ohne bestehenden Plan öffnen', expected: '"Noch kein Reha-Plan" + Button zur Diagnose' },
-      { id: '3.2', label: 'RehabPlan mit Plan öffnen', expected: 'Plan lädt direkt, NMS-Tags (Input→Output) im Header' },
+      { id: '3.1', label: 'Body Map ohne Session öffnen', expected: '"Noch keine Session" + Body Map zur Auswahl' },
+      { id: '3.2', label: 'Body Map öffnen, Node auswählen', expected: 'Tune-Up-Modal öffnet sich mit Node-Info' },
       { id: '3.3', label: '"Tune-Up starten" klicken', expected: 'DailyTuneUp-Modal öffnet sich' },
       { id: '3.4', label: 'Tune-Up vollständig durchführen', expected: 'Alle 4 Phasen: MFR → Neuro → Retest → Integration' },
       { id: '3.5', label: 'Phase als abgeschlossen markieren', expected: 'Fortschritt erhöht sich, Toast erscheint' },
@@ -75,9 +75,9 @@ const TEST_MATRIX = [
     headerColor: 'text-amber-400',
     tests: [
       { id: '6.1', label: 'Diagnose ohne Beschreibung starten', expected: 'Validierung verhindert leeres Absenden' },
-      { id: '6.2', label: 'RehabPlan ohne Plan öffnen', expected: 'CTA-Button führt direkt zur Diagnose' },
+      { id: '6.2', label: 'Body Map ohne Tune-Up öffnen', expected: 'Body Map wird angezeigt, Node-Auswahl möglich' },
       { id: '6.3', label: 'Flow öffnen ohne routine_id in URL', expected: '🐛 Lücke: sollte auf FlowRoutines zurückleiten', isBug: true },
-      { id: '6.4', label: 'Logout → /RehabPlan direkt aufrufen', expected: 'Weiterleitung zur Landing Page' },
+      { id: '6.4', label: 'Logout → /Dashboard direkt aufrufen', expected: 'Weiterleitung zur Landing Page' },
       { id: '6.5', label: 'Abgeschl. Plan → "Performance freischalten"', expected: 'Weiterleitung zum Dashboard' },
     ]
   },
