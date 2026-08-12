@@ -11,7 +11,7 @@ import InviteCodesTab from '../components/admin/InviteCodesTab';
 import MarketingTab from '../components/admin/MarketingTab';
 import ContentKanban from '../components/admin/ContentKanban';
 import MFRNodeTab from '../components/admin/MFRNodeTab';
-import FitnessSnackAdminTab from '../components/admin/FitnessSnackAdminTab';
+
 import RoutineMFRMappingTab from '../components/admin/RoutineMFRMappingTab';
 import ExerciseNodeMappingTab from '../components/admin/ExerciseNodeMappingTab';
 import NodeRebuildTab from '../components/admin/NodeRebuildTab';
@@ -43,9 +43,9 @@ function AudioCacheTab() {
   const [results, setResults] = useState(null);
   const [isRunning, setIsRunning] = useState(false);
   const [isDryRun, setIsDryRun] = useState(true);
-  const [selectedEntities, setSelectedEntities] = useState(['Exercise', 'MFRNode', 'AxonScenario', 'TuneUpCausalChain', 'FitnessSnack', 'Routine']);
+  const [selectedEntities, setSelectedEntities] = useState(['Exercise', 'MFRNode', 'AxonScenario', 'TuneUpCausalChain', 'Routine']);
 
-  const allEntities = ['Exercise', 'MFRNode', 'AxonScenario', 'TuneUpCausalChain', 'FitnessSnack', 'Routine'];
+  const allEntities = ['Exercise', 'MFRNode', 'AxonScenario', 'TuneUpCausalChain', 'Routine'];
 
   const toggleEntity = (name) => {
     setSelectedEntities(prev =>
@@ -282,7 +282,7 @@ function RoadmapTab() {
 export default function AdminHub() {
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState('snacks');
+  const [activeTab, setActiveTab] = useState('exercise-editor');
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -363,10 +363,6 @@ export default function AdminHub() {
           {/* Mobile: horizontal scroll, Desktop: wrap */}
           <div className="overflow-x-auto pb-2 mb-6 -mx-1 px-1">
             <TabsList className="flex w-max gap-1 bg-slate-900 border border-cyan-500/20 p-1 rounded-xl">
-              <TabsTrigger value="snacks" className="flex items-center gap-1.5 whitespace-nowrap px-3 py-2 text-xs sm:text-sm">
-                <Zap className="w-3.5 h-3.5 shrink-0" />
-                <span>Snacks</span>
-              </TabsTrigger>
               <TabsTrigger value="flow" className="flex items-center gap-1.5 whitespace-nowrap px-3 py-2 text-xs sm:text-sm">
                 <Palette className="w-3.5 h-3.5 shrink-0" />
                 <span>Flow</span>
@@ -427,11 +423,6 @@ export default function AdminHub() {
               📄 Systembericht (NotebookLM-Quelle)
             </button>
           </div>
-
-          {/* Snacks Tab */}
-          <TabsContent value="snacks" className="mt-0">
-            <FitnessSnackAdminTab />
-          </TabsContent>
 
           {/* Flow Tab */}
           <TabsContent value="flow" className="mt-0">

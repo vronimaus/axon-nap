@@ -217,7 +217,7 @@ function extractTexts(entityName, data) {
   return [...new Set(texts)].filter(t => t && t.trim().length > 10);
 }
 
-const ENTITY_CONFIG = ['TuneUpCausalChain', 'Exercise', 'MFRNode', 'AxonScenario', 'Routine', 'FitnessSnack'];
+const ENTITY_CONFIG = ['TuneUpCausalChain', 'Exercise', 'MFRNode', 'AxonScenario', 'Routine'];
 
 Deno.serve(async (req) => {
   try {
