@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronRight, ChevronLeft, Zap, Activity, Target, Brain, Wrench, CheckCircle2, Search, Wind, Layers, ArrowRight, UserCircle2, MessageSquare } from 'lucide-react';
+import { ChevronRight, ChevronLeft, Zap, Activity, Target, Brain, Wrench, CheckCircle2, Search, Wind, Layers, ArrowRight, UserCircle2, MessageSquare, ShieldCheck } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { createPageUrl } from '@/utils';
 import { base44 } from '@/api/base44Client';
+import SafetyCheck from '@/components/onboarding/SafetyCheck';
 
 const steps = [
   {
@@ -41,6 +42,15 @@ const steps = [
         </div>
       </div>
     )
+  },
+  {
+    id: 2,
+    icon: ShieldCheck,
+    title: 'Sicherheits-Check',
+    subtitle: '2 Sekunden · Einmalig',
+    description: 'Bevor wir starten, kurz gecheckt — deine Sicherheit geht vor.',
+    isSafetyCheck: true,
+    visual: null
   },
   {
     id: 2,
@@ -395,7 +405,14 @@ export default function HowToUse() {
               </div>
             </div>
 
-            {step.isNameInput ? (
+            {step.isSafetyCheck ? (
+              <div className="py-2">
+                <SafetyCheck onConfirm={() => {
+                  localStorage.setItem('axon_safety_check_done', 'true');
+                  setCurrentStep(s => s + 1);
+                }} />
+              </div>
+            ) : step.isNameInput ? (
               <div className="py-4 space-y-4">
                 <div className="flex items-center gap-3 bg-slate-800/60 rounded-xl border border-slate-700 px-4 py-3">
                   <MessageSquare className="w-5 h-5 text-cyan-400 flex-shrink-0" />
