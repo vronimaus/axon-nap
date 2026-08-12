@@ -5,7 +5,7 @@ const PAINS = [
   { tag: 'HWS', short: 'Nacken steif' },
   { tag: 'LWS', short: 'Rücken zieht' },
   { tag: 'SHD', short: 'Schulter knackt' },
-  { tag: 'KNE', short: 'Knie schmerzt' },
+  { tag: 'KNE', short: 'Knie spannt' },
   { tag: 'MFR', short: 'Physio zu teuer' },
 ];
 
@@ -60,7 +60,7 @@ export default function PainAgitationSection({ onFunnelClick }) {
             onClick={onFunnelClick}
             className="inline-flex items-center gap-3 bg-white hover:bg-cyan-50 text-black font-black text-sm px-8 py-4 rounded-2xl transition-all duration-200 hover:scale-105 uppercase tracking-wide"
           >
-            Beschwerden analysieren
+            Spannungen analysieren
             <ArrowRight className="w-4 h-4" />
           </button>
           <p className="text-xs text-slate-500 mt-3">Kostenlos · Kein Account · 60 Sek.</p>

@@ -325,15 +325,15 @@ export default function Dashboard() {
                   
                   {/* Instructions Card */}
                   <div className="rounded-xl sm:rounded-2xl border border-white/[0.06] p-4 sm:p-6 bg-zinc-900/80">
-                    <h2 className="text-base sm:text-lg font-semibold text-zinc-200 mb-3">Schmerz präzise lokalisieren</h2>
+                    <h2 className="text-base sm:text-lg font-semibold text-zinc-200 mb-3">Spannung präzise lokalisieren</h2>
                     <div className="space-y-2 text-xs sm:text-sm text-zinc-400">
                       <p className="flex items-start gap-2">
                         <span className="text-zinc-400 font-bold flex-shrink-0">1.</span>
-                        <span><strong>Punkt setzen:</strong> Tippe auf eine exakte Stelle – oder <strong>zeichne eine Linie</strong> entlang des Schmerzes für komplexe Muster</span>
+                        <span><strong>Punkt setzen:</strong> Tippe auf eine exakte Stelle – oder <strong>zeichne eine Linie</strong> entlang der Spannung für komplexe Muster</span>
                       </p>
                       <p className="flex items-start gap-2">
                         <span className="text-zinc-400 font-bold flex-shrink-0">2.</span>
-                        <span>Wähle deine spezifischen Symptome aus der Liste aus</span>
+                        <span>Wähle deine spezifischen Einschränkungen aus der Liste aus</span>
                       </p>
                       <p className="flex items-start gap-2">
                         <span className="text-zinc-400 font-bold flex-shrink-0">3.</span>
@@ -428,7 +428,7 @@ export default function Dashboard() {
                     onClick={() => window.location.href = createPageUrl('DiagnosisChat')}
                     className="w-full h-12 sm:h-14 bg-zinc-800 hover:bg-zinc-700 border border-white/[0.08] text-white font-bold text-sm sm:text-base"
                   >
-                    Zur Diagnose →
+                    Zum Assessment →
                   </Button>
                 </motion.div>
               )}
