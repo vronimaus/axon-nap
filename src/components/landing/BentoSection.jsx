@@ -1,145 +1,102 @@
 import { motion } from 'framer-motion';
-import { Wrench, Zap, Target, Volume2, ArrowRight } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 
-const STEPS = [
-  { num: '1', label: 'Faszien-Release', desc: 'Druckpunkt lösen', color: 'emerald' },
-  { num: '2', label: 'Neuro-Drill', desc: 'Nervensystem kalibrieren', color: 'blue' },
-  { num: '3', label: 'Integration', desc: 'Bewegung verankern', color: 'purple' },
+const CARDS = [
+  {
+    key: 'protocol',
+    headline: 'DAS PROTOKOLL',
+    line: 'Faszien-Release · Neuro-Drill · Integration',
+    image: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=900&q=80&auto=format&fit=crop',
+  },
+  {
+    key: 'stages',
+    headline: 'DREI STUFEN',
+    line: 'Soforthilfe → Flow → Goals',
+    image: 'https://images.unsplash.com/photo-1546483875-ad9014c88eba?w=900&q=80&auto=format&fit=crop',
+  },
+  {
+    key: 'audio',
+    headline: 'AUDIO-COACH',
+    line: 'Präzise Cues. Augen zu. Körper spüren.',
+    image: 'https://images.unsplash.com/photo-1487215078519-e21cc028cb29?w=900&q=80&auto=format&fit=crop',
+  },
 ];
-
-const STAGES = [
-  { tag: '01', label: 'Soforthilfe', desc: 'Akute Blockade in 5 Min', color: 'emerald' },
-  { tag: '02', label: 'Flow', desc: 'Tägliche 5–15 Min. Routinen', color: 'purple' },
-  { tag: '03', label: 'Goals', desc: 'Progression zu deinem Ziel', color: 'blue' },
-];
-
-const colorClasses = {
-  emerald: { text: 'text-emerald-400', bg: 'bg-emerald-500/10', border: 'border-emerald-500/30' },
-  blue: { text: 'text-blue-400', bg: 'bg-blue-500/10', border: 'border-blue-500/30' },
-  purple: { text: 'text-purple-400', bg: 'bg-purple-500/10', border: 'border-purple-500/30' },
-};
-
-const DEMO_CUE = '"Schließe die Augen. Atme tief ein. Beim Ausatmen lasse die Schultern nach unten fallen. Spüre, wie sich der Raum zwischen Ohr und Schulter vergrößert."';
 
 export default function BentoSection({ onCtaClick }) {
   return (
-    <section id="system" className="py-12 md:py-16 px-6 bg-slate-950 border-t border-white/5">
+    <section
+      id="system"
+      className="relative py-16 md:py-24 px-6"
+      style={{
+        background: 'linear-gradient(to top, #0b0f0f 0%, #141c1c 100%)',
+      }}
+    >
       <div className="max-w-5xl mx-auto">
-
+        {/* Headline */}
         <motion.div
-          initial={{ opacity: 0, y: 12 }}
+          initial={{ opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center mb-8"
+          className="text-center mb-10 md:mb-14"
         >
-          <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-slate-500 mb-2">Wie AXON funktioniert</p>
-          <h2 className="text-xl md:text-3xl font-black text-white leading-tight">
-            Ein Protokoll. Drei Stufen. <span className="text-cyan-400">Ein Audio-Coach.</span>
+          <h2
+            className="text-2xl md:text-4xl font-black uppercase tracking-tight leading-tight"
+            style={{ color: '#a5c4c4' }}
+          >
+            Ein Protokoll. Drei Stufen.
+            <br />
+            Ein Audio-Coach.
           </h2>
         </motion.div>
 
-        {/* Bento Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+        {/* Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-5">
+          {CARDS.map((card, i) => (
+            <motion.div
+              key={card.key}
+              initial={{ opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.1 }}
+              className="relative rounded-2xl overflow-hidden group cursor-pointer"
+              style={{ aspectRatio: '3 / 4' }}
+              onClick={onCtaClick}
+            >
+              {/* Background image */}
+              <img
+                src={card.image}
+                alt=""
+                className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                loading="lazy"
+              />
 
-          {/* Tile 1: Das 3-Schritt-Protokoll */}
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="md:col-span-1 bg-slate-900/60 border border-slate-800 rounded-2xl p-5 flex flex-col"
-          >
-            <div className="flex items-center gap-2 mb-3">
-              <div className="w-8 h-8 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center">
-                <Wrench className="w-4 h-4 text-cyan-400" />
+              {/* Dark gradient overlay */}
+              <div
+                className="absolute inset-0"
+                style={{
+                  background:
+                    'linear-gradient(to top, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.5) 45%, rgba(0,0,0,0.15) 100%)',
+                }}
+              />
+
+              {/* Content */}
+              <div className="absolute inset-0 flex flex-col justify-end p-5 md:p-6">
+                <h3 className="text-white font-black uppercase tracking-wide text-sm md:text-base mb-1.5">
+                  {card.headline}
+                </h3>
+                <p className="text-white/80 text-xs md:text-[13px] leading-relaxed mb-4">
+                  {card.line}
+                </p>
+                <button
+                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wide text-black transition-transform group-hover:scale-105"
+                  style={{ backgroundColor: '#6de0e2', alignSelf: 'flex-start' }}
+                >
+                  Start
+                  <ArrowRight className="w-3 h-3" />
+                </button>
               </div>
-              <h3 className="font-bold text-sm text-white">Das Protokoll</h3>
-            </div>
-            <p className="text-slate-400 text-xs leading-relaxed mb-4">
-              Jede Session folgt demselben Ablauf — drei Schritte, die aufeinander aufbauen.
-            </p>
-            <div className="space-y-2 flex-1">
-              {STEPS.map((s) => {
-                const c = colorClasses[s.color];
-                return (
-                  <div key={s.num} className={`flex items-center gap-3 ${c.bg} border ${c.border} rounded-xl p-2.5`}>
-                    <div className={`w-6 h-6 rounded-lg ${c.bg} flex items-center justify-center shrink-0`}>
-                      <span className={`text-[10px] font-black ${c.text}`}>{s.num}</span>
-                    </div>
-                    <div className="min-w-0">
-                      <div className={`text-xs font-bold ${c.text}`}>{s.label}</div>
-                      <div className="text-[10px] text-slate-500">{s.desc}</div>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </motion.div>
-
-          {/* Tile 2: Drei Stufen */}
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.06 }}
-            className="md:col-span-1 bg-slate-900/60 border border-slate-800 rounded-2xl p-5 flex flex-col"
-          >
-            <div className="flex items-center gap-2 mb-3">
-              <div className="w-8 h-8 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center">
-                <Target className="w-4 h-4 text-purple-400" />
-              </div>
-              <h3 className="font-bold text-sm text-white">Drei Stufen</h3>
-            </div>
-            <p className="text-slate-400 text-xs leading-relaxed mb-4">
-              Vom akuten Problem zur langfristigen Performance — jede Stufe baut auf der vorigen auf.
-            </p>
-            <div className="space-y-2 flex-1">
-              {STAGES.map((s) => {
-                const c = colorClasses[s.color];
-                return (
-                  <div key={s.tag} className="flex items-center gap-3 bg-slate-800/40 border border-slate-700/50 rounded-xl p-2.5">
-                    <span className={`text-[10px] font-black ${c.text}`}>{s.tag}</span>
-                    <div className="min-w-0 flex-1">
-                      <div className="text-xs font-bold text-white">{s.label}</div>
-                      <div className="text-[10px] text-slate-500">{s.desc}</div>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-            <div className="flex items-center justify-center gap-1.5 mt-3 pt-3 border-t border-white/5">
-              <span className="text-[10px] text-emerald-400 font-bold">Soforthilfe</span>
-              <ArrowRight className="w-2.5 h-2.5 text-slate-600" />
-              <span className="text-[10px] text-purple-400 font-bold">Flow</span>
-              <ArrowRight className="w-2.5 h-2.5 text-slate-600" />
-              <span className="text-[10px] text-blue-400 font-bold">Goals</span>
-            </div>
-          </motion.div>
-
-          {/* Tile 3: Audio-Coach */}
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.12 }}
-            className="md:col-span-1 bg-gradient-to-br from-slate-900 to-slate-900/40 border border-cyan-500/20 rounded-2xl p-5 flex flex-col relative overflow-hidden"
-          >
-            <div className="absolute -top-10 -right-10 w-32 h-32 bg-cyan-500/5 blur-[60px] rounded-full pointer-events-none" />
-
-            <div className="flex items-center gap-2 mb-3 relative">
-              <div className="w-8 h-8 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center">
-                <Volume2 className="w-4 h-4 text-cyan-400" />
-              </div>
-              <h3 className="font-bold text-sm text-white">Audio-Coach</h3>
-            </div>
-            <p className="text-slate-400 text-xs leading-relaxed mb-4 relative">
-              Kein Video-Starren. Präzise Cues führen dich durch jede Übung — deine Aufmerksamkeit bleibt im Körper.
-            </p>
-
-            <div className="bg-slate-800/50 rounded-xl p-3 border border-slate-700/50 relative flex-1">
-              <p className="text-slate-300 text-[11px] italic leading-relaxed">{DEMO_CUE}</p>
-            </div>
-          </motion.div>
-
+            </motion.div>
+          ))}
         </div>
       </div>
     </section>
