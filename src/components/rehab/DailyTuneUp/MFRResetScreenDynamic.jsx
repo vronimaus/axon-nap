@@ -14,6 +14,7 @@ export default function MFRResetScreenDynamic({ onComplete, nodeId = 'N1', scree
   const [step, setStep] = useState('pretest');
   const [pretestValue, setPretestValue] = useState(null);
   const [countdown, setCountdown] = useState(null);
+  const [safetyWarning, setSafetyWarning] = useState(null);
 
   // Duration aus dem Anweisungstext extrahieren (z.B. "60 Sekunden" → 60)
   // Fallback: 90, wenn kein Wert im Text steht
@@ -139,6 +140,11 @@ export default function MFRResetScreenDynamic({ onComplete, nodeId = 'N1', scree
         const chains = await base44.entities.TuneUpCausalChain.filter({ node_id: nodeId });
         const chain = chains?.[0];
         if (chain) {
+          // Fetch MFRNode for safety warning
+          try {
+            const nodes = await base44.entities.MFRNode.filter({ node_id: nodeId });
+            if (nodes?.[0]?.safety_warning) setSafetyWarning(nodes[0].safety_warning);
+          } catch (e) { /* non-critical */ }
           // Merge with pretest instruction from MFRNode
           setCausalChain({
             ...chain,
@@ -382,6 +388,16 @@ export default function MFRResetScreenDynamic({ onComplete, nodeId = 'N1', scree
               </div>
             )}
           </div>
+          {safetyWarning && (
+            <div className="rounded-xl border border-amber-500/30 bg-amber-500/10 p-4 flex items-start gap-3">
+              <AlertCircle className="w-5 h-5 text-amber-400 flex-shrink-0 mt-0.5" />
+              <div>
+                <p className="text-xs font-bold text-amber-400 uppercase tracking-widest mb-1">Sicherheitshinweis</p>
+                <p className="text-sm text-amber-100/90">{safetyWarning}</p>
+              </div>
+            </div>
+          )}
+
           <div className="flex flex-col items-center gap-4">
             <motion.div animate={{ scale: isRunning ? [0.98, 1.02, 0.98] : countdown !== null ? [1.1, 1, 1.1] : 1 }} transition={{ duration: isRunning ? 1.2 : 0.8, repeat: isRunning || countdown !== null ? Infinity : 0 }} className="relative w-36 h-36 rounded-full border-4 border-cyan-500/40 flex items-center justify-center bg-gradient-to-br from-cyan-500/10 to-transparent shadow-lg shadow-cyan-500/20">
               <div className="text-center">

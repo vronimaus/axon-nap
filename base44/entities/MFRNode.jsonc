@@ -71,6 +71,17 @@
       "type": "string",
       "description": "Kelly Starrett's spezifisches Mobilit\u00e4tsprinzip f\u00fcr diesen Node (z.B. 'Voodoo Flossing', 'Upstream/Downstream', 'Tissue Quality')"
     },
+    "safety_warning": {
+      "type": "string",
+      "description": "Sicherheitswarnhinweis f\u00fcr diesen Node \u2013 wird vor Timer-Start angezeigt. Besonders wichtig f\u00fcr zervikale Nodes (Carotis, Schwindel, Nervenwurzel). Leer lassen wenn keine spezifische Warnung n\u00f6tig."
+    },
+    "contraindications": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Gegenanzeigen-Liste f\u00fcr diesen Node (z.B. ['Akute Entz\u00fcndung', 'Schwangerschaft', 'Frische Narben'])"
+    },
     "linked_scenarios": {
       "type": "array",
       "items": {
