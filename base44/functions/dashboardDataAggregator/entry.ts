@@ -11,13 +11,14 @@ Deno.serve(async (req) => {
     const { daysBack = 30 } = await req.json().catch(() => ({}));
 
     // Fetch data from all relevant sources in parallel
-    const [readinessChecks, rehabPlans, trainingPlans] = await Promise.all([
+    // RoutineHistory uses created_by RLS — no user_email filter needed
+    const [readinessChecks, routineHistory, trainingPlans] = await Promise.all([
       base44.entities.ReadinessCheck.filter({ user_email: user.email }, '-check_date', daysBack),
-      base44.entities.RehabPlan.filter({ user_email: user.email }, '-updated_date', 5),
+      base44.entities.RoutineHistory.filter({}, '-created_date', 20),
       base44.entities.TrainingPlan.filter({ user_email: user.email }, '-updated_date', 5),
     ]);
 
-    const hasNoData = readinessChecks.length === 0 && rehabPlans.length === 0 && trainingPlans.length === 0;
+    const hasNoData = readinessChecks.length === 0 && routineHistory.length === 0 && trainingPlans.length === 0;
 
     if (hasNoData) {
       return Response.json({
@@ -36,7 +37,6 @@ Deno.serve(async (req) => {
     }
 
     // --- Historical data from ReadinessChecks ---
-    // Readiness score is 1-10, we normalize to 0-100
     const historicalData = [...readinessChecks]
       .sort((a, b) => new Date(a.check_date) - new Date(b.check_date))
       .map(r => ({
@@ -48,13 +48,11 @@ Deno.serve(async (req) => {
         status: r.readiness_status,
       }));
 
-    // Latest readiness check for current stats
     const latestCheck = readinessChecks[0] || null;
 
     // --- MCS Score: weighted average of the latest readiness check ---
     let mcs = 0;
     if (latestCheck) {
-      // Weighted: hardware 40%, focus 30%, energy 30%
       const weighted =
         (latestCheck.feeling_hardware * 0.4) +
         (latestCheck.focus_software * 0.3) +
@@ -62,11 +60,11 @@ Deno.serve(async (req) => {
       mcs = Math.round((weighted / 10) * 100);
     }
 
-    // --- Heatmap nodes: derived from rehab plan live_adjust_log ---
-    const heatmapNodes = buildHeatmapFromPlans(rehabPlans, latestCheck);
+    // --- Heatmap nodes: derived from RoutineHistory feedback ---
+    const heatmapNodes = buildHeatmapFromHistory(routineHistory);
 
-    // --- Alerts from training plan & rehab feedback ---
-    const alerts = buildAlerts(rehabPlans, trainingPlans, latestCheck);
+    // --- Alerts from recent sessions & readiness ---
+    const alerts = buildAlerts(routineHistory, latestCheck);
 
     // --- Latest stats ---
     const latestStats = latestCheck ? {
@@ -101,8 +99,7 @@ Deno.serve(async (req) => {
   }
 });
 
-function buildHeatmapFromPlans(rehabPlans, latestCheck) {
-  const nodes = [];
+function buildHeatmapFromHistory(routineHistory) {
   const NODE_SLING_MAP = {
     N1: 'lateral', N2: 'anterior', N3: 'posterior',
     N5: 'lateral', N6: 'lateral', N7: 'anterior',
@@ -110,41 +107,28 @@ function buildHeatmapFromPlans(rehabPlans, latestCheck) {
     N11: 'anterior', N12: 'posterior'
   };
 
-  // Collect pain nodes from rehab plan live_adjust_log
-  const painNodeMap = {};
-  for (const plan of rehabPlans) {
-    if (plan.live_adjust_log && Array.isArray(plan.live_adjust_log)) {
-      for (const entry of plan.live_adjust_log) {
-        if (entry.node_feedback) {
-          const nodeId = entry.node_feedback;
-          if (!painNodeMap[nodeId]) painNodeMap[nodeId] = { count: 0, maxPain: 0 };
-          painNodeMap[nodeId].count++;
-          painNodeMap[nodeId].maxPain = Math.max(painNodeMap[nodeId].maxPain, entry.pain_nrs || 0);
-        }
-      }
-    }
-    // Also check pain_feedback_node field
-    if (plan.pain_feedback_node) {
-      const nodeId = plan.pain_feedback_node;
-      if (!painNodeMap[nodeId]) painNodeMap[nodeId] = { count: 0, maxPain: 0 };
-      painNodeMap[nodeId].count++;
-      painNodeMap[nodeId].maxPain = Math.max(painNodeMap[nodeId].maxPain, plan.pain_nrs || 0);
-    }
+  // Collect tension data from RoutineHistory feedback
+  const nodeMap = {};
+  for (const session of routineHistory) {
+    const fb = session.feedback;
+    if (!fb || !fb.node_id) continue;
+    const nodeId = fb.node_id;
+    if (!nodeMap[nodeId]) nodeMap[nodeId] = { count: 0, maxTension: 0, permissionFailures: 0 };
+    nodeMap[nodeId].count++;
+    nodeMap[nodeId].maxTension = Math.max(nodeMap[nodeId].maxTension, fb.tension_level || 0);
+    if (fb.neural_permission === false) nodeMap[nodeId].permissionFailures++;
   }
 
-  // If no rehab data, return empty (no heatmap)
-  if (Object.keys(painNodeMap).length === 0) {
-    return [];
-  }
+  if (Object.keys(nodeMap).length === 0) return [];
 
-  // Build node list with status
+  const nodes = [];
   for (const [nodeId, sling] of Object.entries(NODE_SLING_MAP)) {
-    const painData = painNodeMap[nodeId];
+    const data = nodeMap[nodeId];
     let status = 'green';
-    if (painData) {
-      if (painData.maxPain >= 7) status = 'red';
-      else if (painData.maxPain >= 5) status = 'orange';
-      else if (painData.maxPain >= 3) status = 'yellow';
+    if (data) {
+      if (data.maxTension >= 7) status = 'red';
+      else if (data.maxTension >= 5) status = 'orange';
+      else if (data.maxTension >= 4 || data.permissionFailures > 0) status = 'yellow';
     }
     nodes.push({ node_id: nodeId, sling, status });
   }
@@ -152,10 +136,9 @@ function buildHeatmapFromPlans(rehabPlans, latestCheck) {
   return nodes;
 }
 
-function buildAlerts(rehabPlans, trainingPlans, latestCheck) {
+function buildAlerts(routineHistory, latestCheck) {
   const alerts = [];
 
-  // Alert if readiness is red
   if (latestCheck?.readiness_status === 'red') {
     alerts.push({
       type: 'low_readiness',
@@ -170,16 +153,15 @@ function buildAlerts(rehabPlans, trainingPlans, latestCheck) {
     });
   }
 
-  // Alert if active rehab plan has recent pain intervention
-  for (const plan of rehabPlans) {
-    if (plan.intervention_mode && plan.intervention_mode !== 'none') {
-      alerts.push({
-        type: 'rehab_intervention',
-        severity: plan.intervention_mode === 'red_stop' ? 'critical' : 'warning',
-        message: `Aktiver Rehab-Plan meldet Schmerz-Intervention (${plan.pain_feedback_node || 'unbekannt'}). Bitte Übungen anpassen.`,
-      });
-      break;
-    }
+  // Alert if most recent session had neural permission failure
+  const latestSession = routineHistory[0];
+  if (latestSession?.feedback?.neural_permission === false) {
+    const reason = latestSession.feedback.neural_permission_reason || 'unknown';
+    alerts.push({
+      type: 'neural_guarding',
+      severity: 'warning',
+      message: `Letzte Session: Neural Guarding erkannt (${reason}). Bei der nächsten Session Intensität reduzieren.`,
+    });
   }
 
   return alerts;
