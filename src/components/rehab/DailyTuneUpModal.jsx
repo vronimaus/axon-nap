@@ -116,6 +116,7 @@ export default function DailyTuneUpModal({
   const [tuneUpData, setTuneUpData] = useState(null);
   const [neuralPermission, setNeuralPermission] = useState(null);
   const [interventionFlow, setInterventionFlow] = useState(null);
+  const [retestResults, setRetestResults] = useState(null);
 
   // TTS disabled
 
@@ -163,6 +164,7 @@ export default function DailyTuneUpModal({
       setCurrentScreen(2);
     } else if (screenId === 2) {
       setRetestCompleted(true);
+      if (data?.retestResults) setRetestResults(data.retestResults);
       if (data?.neuralPermissionEvaluation) {
         setNeuralPermission(data.neuralPermissionEvaluation);
         const flow = buildInterventionFlow(data.neuralPermissionEvaluation, tuneUpData);
@@ -197,6 +199,22 @@ export default function DailyTuneUpModal({
   const submitSession = async (sessionData) => {
     setIsSubmitting(true);
     try {
+      // Save session to RoutineHistory for mobility trend tracking
+      try {
+        await base44.entities.RoutineHistory.create({
+          routine_id: nodeId,
+          routine_name: tuneUpData?.node_name_de || region || 'Tune-Up',
+          completed: true,
+          feedback: {
+            tension_level: retestResults?.tension_level ?? null,
+            rom_improvement: retestResults?.rom_improvement ?? null,
+            movement_quality: retestResults?.movement_quality ?? null,
+            neural_permission: neuralPermission?.permissionGranted ?? null,
+            node_id: nodeId,
+          },
+        });
+      } catch (e) { console.error('RoutineHistory save error:', e); }
+
       base44.analytics.track({
         eventName: 'daily_tune_up_completed',
         properties: {

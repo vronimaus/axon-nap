@@ -7,7 +7,7 @@ import AudioCoachToggle from '@/components/AudioCoachToggle';
 
 const METRICS = [
   {
-    key: 'pain_level',
+    key: 'tension_level',
     label: 'Spannungslevel (0-10)',
     question: 'Wie hoch ist deine Spannung bei dieser Bewegung aktuell?',
     type: 'slider',
@@ -41,10 +41,10 @@ const METRICS = [
 
 // FMS-based Neural Permission Evaluation
 export function evaluateNeuralPermission(results) {
-  const { pain_level, rom_improvement, movement_quality } = results;
+  const { tension_level, rom_improvement, movement_quality } = results;
 
-  // FMS-Regel: Jeglicher Schmerz = sofortiger Abbruch (Score 0)
-  const hasPain = pain_level > 0;
+  // FMS-Regel: Jegliche Spannung = sofortiger Abbruch (Score 0)
+  const hasHighTension = tension_level > 0;
 
   // ROM muss sich verbessern (Score >= 2 ist akzeptabel)
   const noRomImprovement = rom_improvement <= 1;
@@ -52,20 +52,20 @@ export function evaluateNeuralPermission(results) {
   // FMS-Regel: Qualität Score 3 = voll funktional, Score 2 = Kompensation, Score 1 = blockiert
   const isUnstable = movement_quality <= 2;
 
-  if (hasPain || noRomImprovement || isUnstable) {
+  if (hasHighTension || noRomImprovement || isUnstable) {
     let reason = 'CLEAR';
-    if (hasPain) reason = 'PAIN';
+    if (hasHighTension) reason = 'TENSION';
     else if (noRomImprovement) reason = 'NO_ROM';
     else if (isUnstable) reason = 'INSTABILITY';
 
     return {
       permissionGranted: false,
       reason,
-      score: { pain_level, rom_improvement, movement_quality }
+      score: { tension_level, rom_improvement, movement_quality }
     };
   }
 
-  return { permissionGranted: true, reason: 'CLEAR', score: { pain_level, rom_improvement, movement_quality } };
+  return { permissionGranted: true, reason: 'CLEAR', score: { tension_level, rom_improvement, movement_quality } };
 }
 
 const STEP_AUDIO = [

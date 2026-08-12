@@ -9,6 +9,7 @@ import { base44 } from '@/api/base44Client';
 import { ChevronRight, Zap, Activity, BookOpen, Target, Watch, Clock, Play } from 'lucide-react';
 import DailyTuneUpModal from '@/components/rehab/DailyTuneUpModal';
 import ReadinessSessionSelector from './ReadinessSessionSelector';
+import MobilityTrendChart from './MobilityTrendChart';
 
 // ── Readiness Ring ──────────────────────────────────────────────────────────────
 function ReadinessRing({ readiness }) {
@@ -433,6 +434,13 @@ export default function CommandCenter({ user, handleDestinationClick }) {
     staleTime: 10 * 60 * 1000,
   });
 
+  const { data: routineHistory = [] } = useQuery({
+    queryKey: ['routineHistory', user?.email],
+    queryFn: () => base44.entities.RoutineHistory.filter({}, '-created_date', 20),
+    enabled: !!user?.email,
+    staleTime: 5 * 60 * 1000,
+  });
+
   const troughPattern = useMemo(() => {
     if (allChecks.length < 5) return null;
     const buckets = {};
@@ -514,6 +522,13 @@ export default function CommandCenter({ user, handleDestinationClick }) {
               <TileLabel>Readiness-Trend — 7 Tage</TileLabel>
               <p className="text-[10px] text-zinc-600 mb-2">Körper · Fokus · Energie</p>
               <ReadinessTrendChart checks={allChecks} />
+            </div>
+
+            {/* Mobility Trend */}
+            <div className="bg-zinc-900/80 border border-white/[0.06] rounded-2xl p-4">
+              <TileLabel>Mobilitäts-Trend — letzte Sessions</TileLabel>
+              <p className="text-[10px] text-zinc-600 mb-2">Bewegungsqualität · Spannung</p>
+              <MobilityTrendChart sessions={routineHistory} />
             </div>
 
             {/* Energie-Muster Banner */}

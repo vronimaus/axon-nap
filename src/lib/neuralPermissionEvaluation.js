@@ -5,10 +5,10 @@
  */
 
 export function evaluateNeuralPermission(results) {
-  const { pain_level, rom_improvement, movement_quality } = results;
+  const { tension_level, rom_improvement, movement_quality } = results;
 
-  // FMS-Regel: Jeglicher Schmerz = sofortiger Abbruch (Score 0)
-  const hasPain = pain_level > 0;
+  // FMS-Regel: Jegliche Spannung = sofortiger Abbruch (Score 0)
+  const hasHighTension = tension_level > 0;
 
   // ROM muss sich verbessern (Score >= 2 ist akzeptabel: "Etwas weiter" oder besser)
   const noRomImprovement = rom_improvement <= 1;
@@ -16,16 +16,16 @@ export function evaluateNeuralPermission(results) {
   // FMS-Regel: Qualität Score 3 = voll funktional, Score 2 oder weniger = Kompensation/Instabilität
   const isUnstable = movement_quality < 3;
 
-  if (hasPain || noRomImprovement || isUnstable) {
+  if (hasHighTension || noRomImprovement || isUnstable) {
     let reason = 'CLEAR';
-    if (hasPain) reason = 'PAIN';
+    if (hasHighTension) reason = 'TENSION';
     else if (noRomImprovement) reason = 'NO_ROM';
     else if (isUnstable) reason = 'INSTABILITY';
 
     return {
       permissionGranted: false,
       reason,
-      score: { pain_level, rom_improvement, movement_quality },
+      score: { tension_level, rom_improvement, movement_quality },
       recommendedAction: getRecommendedAction(reason),
       message: getBlockMessage(reason)
     };
@@ -34,7 +34,7 @@ export function evaluateNeuralPermission(results) {
   return {
     permissionGranted: true,
     reason: 'CLEAR',
-    score: { pain_level, rom_improvement, movement_quality },
+    score: { tension_level, rom_improvement, movement_quality },
     recommendedAction: 'PROCEED_TO_INTEGRATION',
     message: '✅ Neural Permission erteilt! Dein Nervensystem hat die Bewegung freigegeben.'
   };
@@ -42,7 +42,7 @@ export function evaluateNeuralPermission(results) {
 
 export function getRecommendedAction(reason) {
   switch (reason) {
-    case 'PAIN':
+    case 'TENSION':
     case 'NO_ROM':
       // Strong guarding signal: parasympathetic emergency exit
       return 'PARASYMPATHETIC_EXIT';
@@ -56,7 +56,7 @@ export function getRecommendedAction(reason) {
 
 export function getBlockMessage(reason) {
   const messages = {
-    PAIN: '⚠️ Schmerz erkannt! Dein Nervensystem sagt STOP. Wir aktivieren einen Beruhigungs-Drill (Vagus), um die Schutzspannung zu senken.',
+    TENSION: '⚠️ Spannung erkannt! Dein Nervensystem sagt STOP. Wir aktivieren einen Beruhigungs-Drill (Vagus), um die Schutzspannung zu senken.',
     NO_ROM: '⚠️ Keine ROM-Verbesserung. Dein Gehirn braucht weniger mechanische Herausforderung. Wir reduzieren die Position und versuchen es erneut.',
     INSTABILITY: '⚠️ Instabilität erkannt. Deine propriozeptive Landkarte ist zu unscharf. Wir aktivieren Tapping-Priming, um deine Wahrnehmung zu schärfen.'
   };
@@ -74,7 +74,7 @@ export function buildInterventionFlow(evaluation, tuneUpData) {
 
   const { reason } = evaluation;
 
-  if (reason === 'PAIN') {
+  if (reason === 'TENSION') {
     return {
       nextScreen: 'PARASYMPATHETIC_DRILL',
       instruction: tuneUpData?.parasympathetic_vagus_drill || 'Tiefe Zwerchfellatmung: 5 Zyklen à 5 Sekunden Einatmen, 5 Sekunden Ausatmen',
