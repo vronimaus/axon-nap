@@ -7,8 +7,8 @@
 export function evaluateNeuralPermission(results) {
   const { tension_level, rom_improvement, movement_quality } = results;
 
-  // FMS-Regel: Jegliche Spannung = sofortiger Abbruch (Score 0)
-  const hasHighTension = tension_level > 0;
+  // FMS-Regel: Moderate bis starke Spannung (>=4) = neurologischer Schutz (Guarding)
+  const hasHighTension = tension_level >= 4;
 
   // ROM muss sich verbessern (Score >= 2 ist akzeptabel: "Etwas weiter" oder besser)
   const noRomImprovement = rom_improvement <= 1;

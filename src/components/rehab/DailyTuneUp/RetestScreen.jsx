@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Zap, ChevronRight } from 'lucide-react';
 import { useAudioCoach } from '@/hooks/useAudioCoach';
 import AudioCoachToggle from '@/components/AudioCoachToggle';
+import { evaluateNeuralPermission } from '@/lib/neuralPermissionEvaluation';
 
 const METRICS = [
   {
@@ -39,34 +40,7 @@ const METRICS = [
   },
 ];
 
-// FMS-based Neural Permission Evaluation
-export function evaluateNeuralPermission(results) {
-  const { tension_level, rom_improvement, movement_quality } = results;
 
-  // FMS-Regel: Jegliche Spannung = sofortiger Abbruch (Score 0)
-  const hasHighTension = tension_level > 0;
-
-  // ROM muss sich verbessern (Score >= 2 ist akzeptabel)
-  const noRomImprovement = rom_improvement <= 1;
-
-  // FMS-Regel: Qualität Score 3 = voll funktional, Score 2 = Kompensation, Score 1 = blockiert
-  const isUnstable = movement_quality <= 2;
-
-  if (hasHighTension || noRomImprovement || isUnstable) {
-    let reason = 'CLEAR';
-    if (hasHighTension) reason = 'TENSION';
-    else if (noRomImprovement) reason = 'NO_ROM';
-    else if (isUnstable) reason = 'INSTABILITY';
-
-    return {
-      permissionGranted: false,
-      reason,
-      score: { tension_level, rom_improvement, movement_quality }
-    };
-  }
-
-  return { permissionGranted: true, reason: 'CLEAR', score: { tension_level, rom_improvement, movement_quality } };
-}
 
 const STEP_AUDIO = [
   'Lass uns checken, was sich verändert hat. Bewege dich wie am Anfang. Erste Frage: Wie hoch ist deine Spannung bei dieser Bewegung aktuell?',
@@ -131,7 +105,7 @@ export default function RetestScreen({ onComplete, screenId = 2, nodeId = 'N6', 
         )}
       </motion.div>
 
-      {/* Slider für Pain Level */}
+      {/* Slider für Spannungslevel */}
       {!allDone && currentMetric.type === 'slider' && (
         <motion.div
           initial={{ opacity: 0, y: 10 }}
