@@ -13,6 +13,7 @@ import HeroSection from '@/components/landing/HeroSection';
 import BentoSection from '@/components/landing/BentoSection';
 
 // Lazy-loaded (below the fold)
+const TestimonialSection = lazy(() => import('@/components/landing/TestimonialSection'));
 const FairnessSection = lazy(() => import('@/components/landing/FairnessSection'));
 
 const LazyFallback = () => (
@@ -155,6 +156,11 @@ export default function Landing() {
 
       {/* MODULE 2: Bento-Grid — Protokoll, Stufen, Audio-Coach */}
       <BentoSection onCtaClick={handlePricingScroll} />
+
+      {/* MODULE 2.5: Testimonials — erscheint nur wenn Einträge existieren */}
+      <Suspense fallback={<LazyFallback />}>
+        <TestimonialSection />
+      </Suspense>
 
       {/* MODULE 3: Preis */}
       <Suspense fallback={<LazyFallback />}>
