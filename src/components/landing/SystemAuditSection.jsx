@@ -141,9 +141,9 @@ function DiagnosisPanel({ regionData, selectedRegion, onPricingClick, onContinue
 
       {/* Root Cause Card */}
       <div className="rounded-2xl border border-red-500/20 bg-red-500/5 p-4 space-y-2">
-        <p className="text-[10px] font-black uppercase tracking-[0.2em] text-red-400">Root Cause</p>
+        <p className="text-[10px] font-black uppercase tracking-[0.2em] text-red-400">Ursache</p>
         <p className="text-white font-semibold text-sm leading-snug">{regionData.root}</p>
-        <p className="text-slate-400 text-xs">Symptom: <span className="text-slate-300">{regionData.symptom}</span></p>
+        <p className="text-slate-400 text-xs">Was du spürst: <span className="text-slate-300">{regionData.symptom}</span></p>
       </div>
 
       {/* Fascial Chain */}
@@ -218,11 +218,11 @@ export default function SystemAuditSection({ onPricingClick }) {
         >
           <p className="text-[10px] font-black uppercase tracking-[0.35em] text-cyan-400 mb-3">Interaktiver System-Audit</p>
           <h2 className="text-3xl md:text-4xl font-black text-white leading-tight mb-4 text-balance">
-            Dein Spannungspunkt ist<br />
-            <span className="text-slate-400">nicht die Ursache.</span>
+            Probier es aus.<br />
+            <span className="text-slate-400">Klick, wo es spannt.</span>
           </h2>
-          <p className="text-slate-400 max-w-md mx-auto text-base leading-relaxed">
-            Klicke auf deine Spannungsstelle — AXON zeigt Root Cause, betroffene Faszialkette und dein Protokoll.
+          <p className="text-slate-400 max-w-lg mx-auto text-base leading-relaxed">
+            Markiere deine Spannungsstelle auf der Körperkarte. AXON zeigt dir sofort die Ursache, die betroffene Faszienkette und das Protokoll, das sie löst.
           </p>
         </motion.div>
 
@@ -237,8 +237,8 @@ export default function SystemAuditSection({ onPricingClick }) {
           {/* Left: Body Map Module */}
           <div className="bg-slate-900/60 border border-slate-800 rounded-3xl p-5">
             <div className="mb-4">
-              <p className="text-white font-bold text-base mb-1">Wo drückt der Schuh?</p>
-              <p className="text-slate-400 text-xs">Markiere deine Spannungsstelle — AXON zeigt Root-Cause + Protokoll.</p>
+              <p className="text-white font-bold text-base mb-1">Wo spannt es?</p>
+              <p className="text-slate-400 text-xs">Tippe auf den Punkt — AXON zeigt dir die Ursache und das Protokoll.</p>
             </div>
             <InteractiveBodyMapInput onSubmit={handleBodyMapSubmit} />
           </div>

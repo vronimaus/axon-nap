@@ -23,13 +23,15 @@ export default function FounderStorySection({ onCtaClick }) {
           <p className="text-[10px] font-black uppercase tracking-[0.35em] text-slate-500">Warum AXON existiert</p>
 
           <h2 className="text-xl md:text-2xl font-black text-white leading-snug">
-            Das Wissen der Mobility-Experten —<br />
-            <span className="text-cyan-400">endlich selbst anwendbar.</span>
+            Das Wissen aus Jahren der Forschung —<br />
+            <span className="text-cyan-400">in 5 Minuten anwendbar.</span>
           </h2>
 
           <p className="text-slate-400 text-sm leading-relaxed">
-            Myofasziale Ketten, neurologische Verankerung, funktionelle Bewegungsmuster — peer-reviewed, wirksam, aber hinter Fachbüchern versteckt.
-            AXON übersetzt dieses Wissen in 5–15 Minuten Protokolle. Nicht als Ersatz für den Experten, sondern als dein tägliches Werkzeug, das bisher niemand gebaut hat.
+            Myofasziale Ketten, neurologische Verankerung, funktionelle Bewegungsmuster — das ist kein Geheimwissen. Es ist in Hunderten von Studien belegt und wird täglich von Therapeuten und Trainern angewendet. Aber es steckt hinter Fachbüchern, Fortbildungen und teuren Terminen.
+          </p>
+          <p className="text-slate-400 text-sm leading-relaxed">
+            AXON übersetzt dieses Wissen in 5–15 Minuten Protokolle, die jeder Athlet selbst durchführen kann. Nicht als Ersatz für den Experten — sondern als das tägliche Werkzeug, das bisher einfach niemand gebaut hat.
           </p>
 
           {/* Science Badges */}

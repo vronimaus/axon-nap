@@ -42,12 +42,11 @@ export default function AudioCoachSection({ onCtaClick }) {
         >
           <p className="text-xs font-bold uppercase tracking-[0.3em] text-slate-400 mb-4">Audio-Coaching</p>
           <h2 className="text-3xl md:text-4xl font-black text-white leading-tight mb-4">
-            Dein Trainer im Ohr.<br />
-            <span className="text-cyan-400">Dein Gehirn am Steuer.</span>
+            Warum AXON dich per Stimme führt,<br />
+            <span className="text-cyan-400">statt per Video.</span>
           </h2>
           <p className="text-slate-400 max-w-xl mx-auto text-base leading-relaxed">
-            AXON führt dich mit präzisen Audio-Cues durch jede Übung. Kein Smartphone-Starren. 
-            Kein Video-Nachahmen. Nur du, die Stimme — und dein Körper.
+            Bei neuro-faszialen Übungen muss deine Aufmerksamkeit im Körper sein, nicht auf dem Bildschirm. AXON führt dich mit präzisen Audio-Cues durch jede Übung — Atmung, Körperspannung, Bewegungsrhythmus. Du spürst, was sich verändert, statt nur nachzuahmen, was du siehst.
           </p>
         </motion.div>
 
@@ -136,19 +135,16 @@ export default function AudioCoachSection({ onCtaClick }) {
           viewport={{ once: true }}
           className="bg-slate-900/40 border border-slate-700/50 rounded-3xl p-6 md:p-8"
         >
-          <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-slate-400 mb-3">Neuro-Minimalismus</p>
+          <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-slate-400 mb-3">Warum Audio funktioniert</p>
           <h3 className="text-xl md:text-2xl font-black text-white mb-4">
-            Warum AXON keine Videos hat — und warum das kein Fehler ist.
+            Videos zeigen dir eine Bewegung. Audio lehrt dich, sie zu spüren.
           </h3>
           <div className="space-y-3 text-sm text-slate-300 leading-relaxed">
             <p>
-              Videos zwingen dich zur <strong className="text-white">externen Imitation</strong> — du schaust nach, statt zu spüren. 
-              Bei neuro-faszialen Übungen ist das kontraproduktiv: Dein Blick soll nicht auf dem Bildschirm sein, 
-              wenn du Augenmobilität trainierst.
+              Videos zwingen dich zur <strong className="text-white">äußeren Nachahmung</strong> — du schaust jemandem dabei zu und versuchst, es gleich zu machen. Bei neuro-faszialen Übungen ist das kontraproduktiv: Wie solltest du Augenmobilität trainieren, während du auf einen Bildschirm starrst?
             </p>
             <p>
-              Audio erzwingt <strong className="text-white">interne Ansteuerung</strong>. Dein Gehirn fokussiert auf das Gewebe, 
-              nicht auf das Nachahmen einer Bewegung. Das ist der Unterschied zwischen Training und echtem neurologischem Lernen.
+              Stattdessen erzwingt Audio eine <strong className="text-white">innere Ansteuerung</strong>. Dein Gehirn konzentriert sich auf das Gewebe, auf die Position, auf die Spannung — nicht auf das Kopieren einer Bewegung. Das ist der Unterschied zwischen Imitation und echtem neurologischem Lernen.
             </p>
           </div>
         </motion.div>

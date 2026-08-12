@@ -6,25 +6,25 @@ const FEATURES = [
     icon: Search,
     color: 'cyan',
     title: 'Körperkarte',
-    description: 'Spannungspunkt auf der Körperkarte markieren. AXON erkennt die Ursache und die betroffene Faszienkette.',
+    description: 'Du markierst, wo du Spannung spürst. AXON erkennt die Ursache und die betroffene myofasziale Kette — das Bindegewebsnetz, das deinen Körper durchzieht.',
   },
   {
     icon: Wrench,
     color: 'emerald',
     title: 'Tune-Up',
-    description: '3-Schritt-Protokoll: Faszien-Release → Neuro-Drill → Integration. Akute Verspannungen in 5 Minuten lösen.',
+    description: 'Ein 3-Schritt-Protokoll löst die Blockade: Faszien-Release → Neuro-Drill → Integration. Akute Verspannungen, in 5 Minuten gelöst.',
   },
   {
     icon: Repeat,
     color: 'purple',
     title: 'Routinen',
-    description: '5–15 Min. täglich: Mobility, Atemarbeit, neurologische Aktivierung. Basierend auf deinem Tageszustand.',
+    description: 'Tägliche 5–15 Min. Sessions aus Mobility, Atemarbeit und neurologischer Aktivierung — abgestimmt auf deinen Tageszustand.',
   },
   {
     icon: BookOpen,
     color: 'amber',
     title: 'Wissen',
-    description: 'Faszien, Neurologie, Regeneration — verständlich erklärt. Nur Mechanismen, die funktionieren.',
+    description: 'Die Wissenschaft dahinter — verständlich erklärt. Nur Mechanismen, die in der Praxis funktionieren.',
   },
 ];
 
@@ -48,9 +48,12 @@ export default function WhatItDoesSection() {
           className="text-center mb-10"
         >
           <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-slate-500 mb-2">Was AXON kann</p>
-          <h2 className="text-xl md:text-3xl font-black text-white leading-tight">
-            Ein System. Vier Funktionen.
+          <h2 className="text-xl md:text-3xl font-black text-white leading-tight mb-3">
+            Vier Schritte. Ein Prinzip.
           </h2>
+          <p className="text-slate-400 text-sm leading-relaxed max-w-xl mx-auto">
+            AXON übersetzt die myofasziale Kettenlehre in ein System, das jeder Athlet anwenden kann — ohne Vorwissen, ohne Therapeut, nur mit dem Handy.
+          </p>
         </motion.div>
 
         <div className="space-y-3">

@@ -4,9 +4,9 @@ import { ShieldCheck, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 const BULLETS = [
-  'Einmalzahlung — nie wieder Abo',
+  'Einmalzahlung — nie wieder ein Abo',
   'Alle zukünftigen Updates inklusive',
-  'Personalisierter KI-Plan in 60 Sek.',
+  'Personalisierter Plan, erstellt in 60 Sek.',
 ];
 
 export default function FairnessSection({ onCtaClick }) {
@@ -21,7 +21,7 @@ export default function FairnessSection({ onCtaClick }) {
           viewport={{ once: true }}
           className="bg-gradient-to-br from-cyan-600 to-blue-700 rounded-3xl p-7 text-center border border-white/10 shadow-2xl shadow-cyan-500/20"
         >
-          <p className="text-[10px] font-black uppercase tracking-[0.3em] text-cyan-200/70 mb-3">Kein Abo. Einmalig.</p>
+          <p className="text-[10px] font-black uppercase tracking-[0.3em] text-cyan-200/70 mb-3">Einmalig. Kein Abo.</p>
 
           <div className="mb-1">
             <span className="text-5xl font-black text-white tracking-tight">59,90 €</span>

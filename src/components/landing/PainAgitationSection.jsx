@@ -21,13 +21,13 @@ export default function PainAgitationSection({ onFunnelClick }) {
           viewport={{ once: true }}
           className="text-center mb-8"
         >
-          <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-slate-400 mb-3">Kennst du das?</p>
+          <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-slate-400 mb-3">Jeder Athlet kennt das</p>
           <h2 className="text-2xl md:text-3xl font-black text-white leading-tight mb-3">
-            Nicht verletzt genug für Pause.<br />
-            <span className="text-slate-400">Aber blockiert genug fürs Training.</span>
+            Du trainierst weiter.<br />
+            <span className="text-slate-400">Aber irgendwo hängt's.</span>
           </h2>
-          <p className="text-slate-400 text-sm">
-            Du willst den <strong className="text-white">Hebel finden und drehen.</strong>
+          <p className="text-slate-400 text-sm leading-relaxed">
+            Der Nacken ist steif beim Aufwärmen. Die Schulter knackt beim Drücken. Das Knie spannt nach dem Laufen. Nicht schlimm genug für den Arzt — aber genug, um dich zu bremsen. Du spürst, dass etwas nicht stimmt. Du weiß nur nicht, <strong className="text-white">wo der Hebel sitzt.</strong>
           </p>
         </motion.div>
 
@@ -60,7 +60,7 @@ export default function PainAgitationSection({ onFunnelClick }) {
             onClick={onFunnelClick}
             className="inline-flex items-center gap-3 bg-white hover:bg-cyan-50 text-black font-black text-sm px-8 py-4 rounded-2xl transition-all duration-200 hover:scale-105 uppercase tracking-wide"
           >
-            Spannungen analysieren
+            Hebel finden
             <ArrowRight className="w-4 h-4" />
           </button>
           <p className="text-xs text-slate-500 mt-3">Kostenlos · Kein Account · 60 Sek.</p>

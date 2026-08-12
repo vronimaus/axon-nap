@@ -6,18 +6,18 @@ const PILLARS = [
     icon: Activity,
     color: 'emerald',
     tag: '01 · Soforthilfe',
-    title: 'Blockaden lokalisieren & lösen',
+    title: 'Akute Blockaden lösen',
     description:
-      'Markiere deinen Spannungspunkt auf der Body-Map. AXON identifiziert den myofaszialen Druckpunkt dahinter und gibt dir ein Protokoll: Kompression → Neuro-Drill → Integration. 5 Minuten. Sofortwirkung.',
+      'Etwas zieht, etwas spannt — jetzt. Du markierst den Punkt auf der Körperkarte, AXON identifiziert den myofaszialen Druckpunkt dahinter und gibt dir ein Protokoll: Faszien-Release, Neuro-Drill, Integration. 5 Minuten, sofortige Wirkung.',
     keywords: ['MFR-Druckpunkte', 'Neuro-Drills', 'Faszien-Release'],
   },
   {
     icon: Zap,
     color: 'purple',
     tag: '02 · Flow',
-    title: 'Beweglichkeit täglich aufbauen',
+    title: 'Bewegungsfreiheit täglich aufbauen',
     description:
-      'Kuratierte 5–15 Min. Routinen aus Mobilisation, Atemarbeit und neuronaler Aktivierung. Kein Aufwärmen das dich nichts kostet – sondern gezielte Investitionen in dein Nervensystem.',
+      'Wenn die akute Blockade gelöst ist, geht es um Regelmäßigkeit: 5–15 Min. Routinen aus Mobilisation, Atemarbeit und neurologischer Aktivierung, abgestimmt auf deinen Tageszustand. Kein Aufwärmen, das nichts bringt — sondern gezielte Investitionen in dein Nervensystem.',
     keywords: ['Mobility Routinen', 'Atemarbeit', 'Neuro-Aktivierung'],
   },
   {
@@ -26,7 +26,7 @@ const PILLARS = [
     tag: '03 · Goals',
     title: 'Trainingsziele sicher erreichen',
     description:
-      'Pull-up, Pistol Squat, Handstand – AXON baut deinen Progressionsplan auf Basis deiner Körperdaten. Kein Überlasten mehr. Kein Stillstand. Der nächste Schritt ist immer klar.',
+      'Pull-up, Pistol Squat, Handstand — AXON baut deinen Progressionsplan auf Basis deiner Körperdaten und Bewegungstests. Kein Überlasten, kein Stillstand. Der nächste Schritt ist immer klar definiert.',
     keywords: ['Trainingsplan KI', 'Progression', 'Verletzungsprävention'],
   },
 ];
@@ -64,9 +64,12 @@ export default function ThreeSystemSection() {
           className="text-center mb-8"
         >
           <p className="text-xs font-bold uppercase tracking-[0.3em] text-slate-400 mb-2">Das System</p>
-          <h2 className="text-2xl md:text-3xl font-black text-white leading-tight">
-            Drei Module. <span className="text-cyan-400">Ein Körper.</span>
+          <h2 className="text-2xl md:text-3xl font-black text-white leading-tight mb-3">
+            Drei Stufen. <span className="text-cyan-400">Ein Weg.</span>
           </h2>
+          <p className="text-slate-400 text-sm leading-relaxed max-w-xl mx-auto">
+            AXON funktioniert nach einem einfachen Prinzip: erst die akute Blockade lösen, dann täglich Bewegungsfreiheit aufbauen, dann gezielt an deinen Zielen arbeiten. Jede Stufe baut auf der vorherigen auf.
+          </p>
         </motion.div>
 
         {/* Pillar Cards — compact horizontal on mobile */}
