@@ -227,29 +227,34 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Admin-Zugriff erforderlich' }, { status: 403 });
     }
 
-    const { entity_types, dry_run = false } = await req.json().catch(() => ({}));
+    const { entity_types, dry_run = false, max_texts = 0 } = await req.json().catch(() => ({}));
     const toProcess = entity_types ? ENTITY_CONFIG.filter(e => entity_types.includes(e)) : ENTITY_CONFIG;
 
-    console.log(`[BulkAudio] Start: ${toProcess.join(', ')} | dry_run=${dry_run}`);
+    console.log(`[BulkAudio] Start: ${toProcess.join(', ')} | dry_run=${dry_run} | max_texts=${max_texts}`);
     const results = {};
     let totalGenerated = 0, totalCached = 0, totalErrors = 0;
+    let budgetLeft = max_texts > 0 ? max_texts : Infinity;
+    let hitBudget = false;
 
     for (const entityName of toProcess) {
+      if (hitBudget) break;
       const records = await base44.asServiceRole.entities[entityName].list('-created_date', 500);
       let entityTexts = 0, generated = 0, cached = 0, errors = 0;
 
       for (const record of records) {
+        if (hitBudget) break;
         const texts = extractTexts(entityName, record);
         entityTexts += texts.length;
 
         if (dry_run) continue;
 
         for (const text of texts) {
+          if (budgetLeft <= 0) { hitBudget = true; break; }
           try {
             const result = await generateAndCacheAudio(text, base44);
             if (result.cached) cached++;
-            else if (result.generated) generated++;
-            await new Promise(r => setTimeout(r, 300));
+            else if (result.generated) { generated++; budgetLeft--; }
+            await new Promise(r => setTimeout(r, 200));
           } catch (err) {
             console.error(`[BulkAudio] ${entityName}: "${text.substring(0, 50)}" → ${err.message}`);
             errors++;
@@ -262,22 +267,24 @@ Deno.serve(async (req) => {
       console.log(`[BulkAudio] ${entityName}: ${records.length} records, ${entityTexts} texts, ${generated} new, ${cached} cached, ${errors} errors`);
     }
 
-    // Process static screen texts
-    let staticGenerated = 0, staticCached = 0, staticErrors = 0;
-    for (const text of STATIC_TEXTS) {
-      if (dry_run) continue;
-      try {
-        const result = await generateAndCacheAudio(text, base44);
-        if (result.cached) staticCached++;
-        else if (result.generated) staticGenerated++;
-        await new Promise(r => setTimeout(r, 300));
-      } catch (err) {
-        console.error(`[BulkAudio] Static: "${text.substring(0, 50)}" → ${err.message}`);
-        staticErrors++;
+    // Process static screen texts (only if budget allows)
+    if (!hitBudget && !dry_run) {
+      let staticGenerated = 0, staticCached = 0, staticErrors = 0;
+      for (const text of STATIC_TEXTS) {
+        if (budgetLeft <= 0) break;
+        try {
+          const result = await generateAndCacheAudio(text, base44);
+          if (result.cached) staticCached++;
+          else if (result.generated) { staticGenerated++; budgetLeft--; }
+          await new Promise(r => setTimeout(r, 200));
+        } catch (err) {
+          console.error(`[BulkAudio] Static: "${text.substring(0, 50)}" → ${err.message}`);
+          staticErrors++;
+        }
       }
+      results['StaticScreenTexts'] = { texts: STATIC_TEXTS.length, generated: staticGenerated, cached: staticCached, errors: staticErrors };
+      totalGenerated += staticGenerated; totalCached += staticCached; totalErrors += staticErrors;
     }
-    results['StaticScreenTexts'] = { texts: STATIC_TEXTS.length, generated: staticGenerated, cached: staticCached, errors: staticErrors };
-    totalGenerated += staticGenerated; totalCached += staticCached; totalErrors += staticErrors;
 
     return Response.json({
       success: true,
@@ -287,6 +294,7 @@ Deno.serve(async (req) => {
         total_generated: totalGenerated,
         total_cached: totalCached,
         total_errors: totalErrors,
+        hit_budget: hitBudget,
       }
     });
 
