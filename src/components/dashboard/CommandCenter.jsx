@@ -423,13 +423,6 @@ export default function CommandCenter({ user, handleDestinationClick }) {
     enabled: !!user?.email,
   });
 
-  const { data: snackData } = useQuery({
-    queryKey: ['personalizedSnacks', user?.email],
-    queryFn: () => base44.functions.invoke('getPersonalizedSnacks', {}).then(r => r.data),
-    enabled: !!user?.email,
-    staleTime: 5 * 60 * 1000,
-    refetchOnWindowFocus: false,
-  });
 
   const { data: allChecks = [] } = useQuery({
     queryKey: ['allReadinessChecks', user?.email],
@@ -488,53 +481,19 @@ export default function CommandCenter({ user, handleDestinationClick }) {
           <div className="space-y-4">
             {/* Quick Actions */}
             <div className="grid grid-cols-2 gap-4">
-              <Tile onClick={() => handleDestinationClick('Quick Sessions', () => window.location.href = createPageUrl('FitnessSnacks'))}>
-                <div className="flex items-center justify-between">
-                  <p className="text-sm font-semibold text-zinc-300">Quick Sessions</p>
-                  <ChevronRight className="w-3 h-3 text-zinc-700" />
-                </div>
-              </Tile>
-              <Tile onClick={() => handleDestinationClick('Flow', () => window.location.href = createPageUrl('FlowRoutines'))}>
+              <Tile onClick={() => handleDestinationClick('Routinen', () => window.location.href = createPageUrl('FlowRoutines'))}>
                 <div className="flex items-center justify-between">
                   <p className="text-sm font-semibold text-zinc-300">Routinen</p>
                   <ChevronRight className="w-3 h-3 text-zinc-700" />
                 </div>
               </Tile>
+              <Tile onClick={() => handleDestinationClick('Wissen', () => window.location.href = createPageUrl('Wissen'))}>
+                <div className="flex items-center justify-between">
+                  <p className="text-sm font-semibold text-zinc-300">Wissen</p>
+                  <ChevronRight className="w-3 h-3 text-zinc-700" />
+                </div>
+              </Tile>
             </div>
-
-            {/* Snacks */}
-            {snackData?.snacks?.length > 0 && (
-              <div className="bg-zinc-900/80 border border-white/[0.06] rounded-2xl p-4">
-                <div className="flex items-center justify-between mb-3">
-                  <TileLabel>Heute empfohlen</TileLabel>
-                  <button
-                    onClick={() => window.location.href = createPageUrl('FitnessSnacks')}
-                    className="text-[10px] text-zinc-600 hover:text-zinc-400 uppercase tracking-widest transition-colors"
-                  >Alle →</button>
-                </div>
-                <div className="space-y-2">
-                  {snackData.snacks.map(snack => (
-                    <button
-                      key={snack.id}
-                      onClick={() => window.location.href = createPageUrl('FitnessSnacks')}
-                      className="w-full flex items-center gap-3 p-3 rounded-xl bg-zinc-800/50 border border-white/[0.04] hover:border-white/[0.1] hover:bg-zinc-800 transition-all text-left group"
-                    >
-                      <div className="w-7 h-7 rounded-lg bg-zinc-700/60 flex items-center justify-center flex-shrink-0">
-                        <Zap className="w-3.5 h-3.5 text-zinc-400" />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium text-zinc-200 truncate">{snack.name}</p>
-                        <p className="text-[10px] text-zinc-600 flex items-center gap-1 mt-0.5">
-                          <Clock className="w-2.5 h-2.5" />
-                          {snack.duration_minutes} Min.
-                        </p>
-                      </div>
-                      <Play className="w-3.5 h-3.5 text-zinc-700 group-hover:text-zinc-400 transition-colors flex-shrink-0" />
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
 
             {/* Biometrics + Knowledge */}
             <div className="grid grid-cols-2 gap-4">
@@ -566,17 +525,17 @@ export default function CommandCenter({ user, handleDestinationClick }) {
                 </p>
                 {isPreTrough ? (
                   <p className="text-xs text-amber-400 mt-2 font-medium leading-relaxed">
-                    → Jetzt präventiv handeln: Vagus Reset oder Quick Snack — bevor das Tief kommt.
+                    → Jetzt präventiv handeln: Vagus Reset oder kurze Routine — bevor das Tief kommt.
                   </p>
                 ) : (
                   <p className="text-xs text-zinc-600 mt-1">AXON erkennt deine Rhythmen und wird dich rechtzeitig warnen.</p>
                 )}
                 {isPreTrough && (
                   <button
-                    onClick={() => window.location.href = createPageUrl('FitnessSnacks')}
+                    onClick={() => window.location.href = createPageUrl('FlowRoutines')}
                     className="mt-3 text-[10px] font-bold uppercase tracking-widest text-amber-400 hover:text-amber-300 transition-colors"
                   >
-                    Jetzt Quick Session starten →
+                    Jetzt Routine starten →
                   </button>
                 )}
               </div>
@@ -658,9 +617,9 @@ export default function CommandCenter({ user, handleDestinationClick }) {
             >
               <div className="text-center mb-6">
                 <h2 className="text-xl font-light text-white tracking-tight mb-1">
-                  Wo tut es weh?
+                  Wo ist die Spannung?
                 </h2>
-                <p className="text-sm text-zinc-600">Markiere die Stelle mit den meisten Beschwerden — AXON startet dann dein Tune-Up.</p>
+                <p className="text-sm text-zinc-600">Markiere die Stelle mit der meisten Spannung — AXON startet dann dein Tune-Up.</p>
               </div>
               <div className="bg-zinc-900/80 border border-white/[0.06] rounded-2xl p-5">
                 <InteractiveBodyMapInput onSubmit={handleBodyMapSubmit} />
@@ -668,7 +627,7 @@ export default function CommandCenter({ user, handleDestinationClick }) {
                   onClick={() => handleBodyMapSubmit({ region: '' })}
                   className="w-full mt-4 text-xs text-zinc-600 hover:text-zinc-400 uppercase tracking-widest transition-colors py-2"
                 >
-                  Keine Schmerzen — Übersicht anzeigen →
+                  Keine Spannung — Übersicht anzeigen →
                 </button>
               </div>
             </motion.div>

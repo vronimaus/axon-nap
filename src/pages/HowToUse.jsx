@@ -23,7 +23,7 @@ const steps = [
         <div className="mt-2 grid grid-cols-3 gap-2 w-full">
           {[
             { color: 'border-blue-500/40 text-blue-400', label: 'GOALS', sub: 'Skills freischalten' },
-            { color: 'border-emerald-500/40 text-emerald-400', label: 'REHAB', sub: 'Schmerz lösen' },
+            { color: 'border-emerald-500/40 text-emerald-400', label: 'REHAB', sub: 'Spannung lösen' },
             { color: 'border-purple-500/40 text-purple-400', label: 'FLOW', sub: 'Täglich pflegen' },
           ].map(({ color, label, sub }) => (
             <div key={label} className={`bg-slate-900 rounded-xl border ${color} px-2 py-2 text-center`}>
@@ -151,14 +151,14 @@ const steps = [
   {
     id: 5,
     icon: Search,
-    title: 'REHAB: Detective-Diagnose',
+    title: 'REHAB: Detective-Assessment',
     subtitle: 'Root Cause finden · Ouch!-Button · Live-Anpassung',
-    description: 'Hast du Schmerzen? AXON startet eine Diagnose: Body-Map → Hardware-Tests → Neuro-Drills → Reha-Plan. Der "Ouch!"-Button pausiert jederzeit und passt den Plan in Echtzeit an.',
+    description: 'Hast du Spannungen? AXON startet ein Assessment: Body-Map → Hardware-Tests → Neuro-Drills → Reha-Plan. Der "Ouch!"-Button pausiert jederzeit und passt den Plan in Echtzeit an.',
     visual: (
       <div className="space-y-2 py-2">
         <div className="space-y-1.5">
           {[
-            { step: '1', color: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/30', label: 'Body-Map', desc: 'Punkt setzen oder Linie entlang des Schmerzes zeichnen' },
+            { step: '1', color: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/30', label: 'Body-Map', desc: 'Punkt setzen oder Linie entlang der Spannung zeichnen' },
             { step: '2', color: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/30', label: 'Hardware-Test', desc: 'AXON testet Mobilität & Bewegungsfreiheit der Kette' },
             { step: '3', color: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/30', label: 'Neuro-Drill', desc: 'Nervensystem-Check → Root Cause Analyse' },
             { step: '4', color: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/30', label: 'Reha-Plan', desc: 'Phasierter Plan: MFR → Kraft → Neuro-Integration' },
@@ -178,7 +178,7 @@ const steps = [
           </div>
           <div>
             <p className="text-[10px] font-bold text-red-400">Ouch!-Button</p>
-            <p className="text-[9px] text-slate-500">Schmerz während Übung → App pausiert & passt Plan sofort an</p>
+            <p className="text-[9px] text-slate-500">Spannung während Übung → App pausiert & passt Plan sofort an</p>
           </div>
         </div>
       </div>
@@ -218,13 +218,13 @@ const steps = [
     icon: Target,
     title: 'Das Zusammenspiel',
     subtitle: 'Ein integriertes System',
-    description: 'GOALS, REHAB und FLOW greifen ineinander. Wer Schmerzen hat, startet mit REHAB. Wer fit ist, arbeitet an GOALS. FLOW ist die tägliche Pflege, die alles am Laufen hält.',
+    description: 'GOALS, REHAB und FLOW greifen ineinander. Wer Spannungen hat, startet mit REHAB. Wer fit ist, arbeitet an GOALS. FLOW ist die tägliche Pflege, die alles am Laufen hält.',
     visual: (
       <div className="flex flex-col gap-2 py-2">
         <div className="flex items-center gap-2">
           <div className="flex-1 bg-red-500/10 border border-red-500/30 rounded-xl px-3 py-2 text-center">
-            <p className="text-[10px] font-bold text-red-400">Schmerz?</p>
-            <p className="text-[9px] text-slate-500">Symptom da</p>
+            <p className="text-[10px] font-bold text-red-400">Spannung?</p>
+            <p className="text-[9px] text-slate-500">Einschränkung da</p>
           </div>
           <ArrowRight className="w-4 h-4 text-slate-600 flex-shrink-0" />
           <div className="flex-1 bg-emerald-500/10 border border-emerald-500/30 rounded-xl px-3 py-2 text-center">
@@ -284,7 +284,7 @@ const steps = [
           {[
             { icon: Wrench, text: 'Täglicher Bio-Sync → passende Empfehlungen', color: 'text-cyan-400' },
             { icon: Zap, text: 'GOALS → dein Skill-Progressionsplan', color: 'text-blue-400' },
-            { icon: Target, text: 'REHAB → bei Schmerz sofort starten', color: 'text-emerald-400' },
+            { icon: Target, text: 'REHAB → bei Spannung sofort starten', color: 'text-emerald-400' },
             { icon: Activity, text: 'FLOW → 5-30 Min täglich Pflege', color: 'text-purple-400' },
           ].map(({ icon: Icon, text, color }) => (
             <div key={text} className="flex items-center gap-3 bg-slate-900/60 rounded-xl border border-slate-800 px-3 py-2">
