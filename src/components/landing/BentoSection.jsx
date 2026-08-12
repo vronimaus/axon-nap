@@ -1,6 +1,5 @@
 import { motion } from 'framer-motion';
-import { Wrench, Zap, Target, Volume2, ArrowRight, Play, Pause } from 'lucide-react';
-import { useState } from 'react';
+import { Wrench, Zap, Target, Volume2, ArrowRight } from 'lucide-react';
 
 const STEPS = [
   { num: '1', label: 'Faszien-Release', desc: 'Druckpunkt lösen', color: 'emerald' },
@@ -23,13 +22,6 @@ const colorClasses = {
 const DEMO_CUE = '"Schließe die Augen. Atme tief ein. Beim Ausatmen lasse die Schultern nach unten fallen. Spüre, wie sich der Raum zwischen Ohr und Schulter vergrößert."';
 
 export default function BentoSection({ onCtaClick }) {
-  const [isPlaying, setIsPlaying] = useState(false);
-
-  const handlePlay = () => {
-    setIsPlaying(!isPlaying);
-    if (!isPlaying) setTimeout(() => setIsPlaying(false), 15000);
-  };
-
   return (
     <section id="system" className="py-12 md:py-16 px-6 bg-slate-950 border-t border-white/5">
       <div className="max-w-5xl mx-auto">
@@ -143,21 +135,9 @@ export default function BentoSection({ onCtaClick }) {
               Kein Video-Starren. Präzise Cues führen dich durch jede Übung — deine Aufmerksamkeit bleibt im Körper.
             </p>
 
-            <div className="bg-slate-800/50 rounded-xl p-3 mb-3 border border-slate-700/50 relative flex-1">
+            <div className="bg-slate-800/50 rounded-xl p-3 border border-slate-700/50 relative flex-1">
               <p className="text-slate-300 text-[11px] italic leading-relaxed">{DEMO_CUE}</p>
             </div>
-
-            <button
-              onClick={handlePlay}
-              className={`flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl font-bold text-xs transition-all relative ${
-                isPlaying
-                  ? 'bg-cyan-500/20 border border-cyan-500/50 text-cyan-400'
-                  : 'bg-white hover:bg-cyan-50 text-black hover:scale-105'
-              } uppercase tracking-wide`}
-            >
-              {isPlaying ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5" />}
-              {isPlaying ? 'Läuft…' : 'Demo-Cue hören'}
-            </button>
           </motion.div>
 
         </div>
