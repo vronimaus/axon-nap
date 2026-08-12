@@ -72,7 +72,7 @@ export default function Landing() {
     "@context": "https://schema.org/",
     "@type": "Product",
     "name": "AXON Protocol - Lebenslanger Zugriff",
-    "description": "Neuro-Athletic Training App mit personalisierten Rehab-, Flow- und Trainingsplänen.",
+    "description": "Neuro-Athletic Training App mit personalisierten Mobility-, Flow- und Trainingsplänen.",
     "image": "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69790ebfa6f94c6c3f1450bc/f960cb731_AxonnapLogo500x180Neu.png",
     "brand": { "@type": "Brand", "name": "AXON" },
     "offers": {
@@ -88,8 +88,8 @@ export default function Landing() {
   return (
     <div className="min-h-screen bg-slate-950 text-slate-50 selection:bg-amber-500/30 font-sans">
       <Helmet>
-        <title>AXON – Diagnose- & Trainings-Tool für Verspannungen | Neuro-Athletic Protocol</title>
-        <meta name="description" content="Diagnose- und Trainings-Tool für muskuläre und neuronale Dysbalancen. Schmerzpunkt markieren, Ursache erkennen, 3-Schritt-Protokoll ausführen. Faszien-Release, Neuro-Drill, Integration." />
+        <title>AXON – Mobility- & Trainings-Tool für Athleten | Neuro-Athletic Protocol</title>
+        <meta name="description" content="Mobility- und Trainings-Tool für Athleten. Spannungspunkt markieren, Ursache erkennen, 3-Schritt-Protokoll ausführen. Faszien-Release, Neuro-Drill, Integration." />
         <script type="application/ld+json">{JSON.stringify(productSchema)}</script>
       </Helmet>
 
@@ -203,8 +203,11 @@ export default function Landing() {
             <span>·</span>
             <Link to={createPageUrl('Terms')} className="hover:text-cyan-400 transition-colors">AGB</Link>
           </div>
-          <p className="text-slate-500 text-[10px] uppercase tracking-[0.3em]">
+          <p className="text-slate-500 text-[10px] uppercase tracking-[0.3em] mb-3">
             AXON<span className="lowercase" style={{ color: '#398bf7' }}>-nap</span> · Intelligent Training System · Early Stage 2026
+          </p>
+          <p className="text-slate-600 text-[10px] max-w-md mx-auto leading-relaxed">
+            AXON ist ein Performance- und Mobility-Tool. Kein medizinisches Gerät, keine medizinische Diagnose oder Behandlung. Bei akuten oder anhaltenden Beschwerden konsultiere eine medizinische Fachperson.
           </p>
         </div>
       </footer>

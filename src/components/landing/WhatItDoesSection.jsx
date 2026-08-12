@@ -6,7 +6,7 @@ const FEATURES = [
     icon: Search,
     color: 'cyan',
     title: 'Körperkarte',
-    description: 'Schmerzpunkt auf der Körperkarte markieren. AXON erkennt die Ursache und die betroffene Faszienkette.',
+    description: 'Spannungspunkt auf der Körperkarte markieren. AXON erkennt die Ursache und die betroffene Faszienkette.',
   },
   {
     icon: Wrench,

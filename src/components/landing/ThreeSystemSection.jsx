@@ -5,11 +5,11 @@ const PILLARS = [
   {
     icon: Activity,
     color: 'emerald',
-    tag: '01 · Rehab',
-    title: 'Schmerz lokalisieren & lösen',
+    tag: '01 · Soforthilfe',
+    title: 'Blockaden lokalisieren & lösen',
     description:
-      'Markiere deinen Schmerzpunkt auf der Body-Map. AXON identifiziert den myofaszialen Druckpunkt dahinter und gibt dir ein Protokoll: Kompression → Neuro-Drill → Integration. 5 Minuten. Sofortwirkung.',
-    keywords: ['MFR-Druckpunkte', 'Neuro-Drills', 'Faszientherapie'],
+      'Markiere deinen Spannungspunkt auf der Body-Map. AXON identifiziert den myofaszialen Druckpunkt dahinter und gibt dir ein Protokoll: Kompression → Neuro-Drill → Integration. 5 Minuten. Sofortwirkung.',
+    keywords: ['MFR-Druckpunkte', 'Neuro-Drills', 'Faszien-Release'],
   },
   {
     icon: Zap,
@@ -103,7 +103,7 @@ export default function ThreeSystemSection() {
           className="text-center"
         >
           <p className="text-slate-500 text-sm flex items-center justify-center gap-3">
-            <span className="text-emerald-400 font-bold">Rehab</span>
+            <span className="text-emerald-400 font-bold">Soforthilfe</span>
             <ArrowRight className="w-3 h-3 text-slate-600" />
             <span className="text-purple-400 font-bold">Flow</span>
             <ArrowRight className="w-3 h-3 text-slate-600" />

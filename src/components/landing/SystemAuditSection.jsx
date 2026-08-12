@@ -218,11 +218,11 @@ export default function SystemAuditSection({ onPricingClick }) {
         >
           <p className="text-[10px] font-black uppercase tracking-[0.35em] text-cyan-400 mb-3">Interaktiver System-Audit</p>
           <h2 className="text-3xl md:text-4xl font-black text-white leading-tight mb-4 text-balance">
-            Dein Schmerzpunkt ist<br />
+            Dein Spannungspunkt ist<br />
             <span className="text-slate-400">nicht die Ursache.</span>
           </h2>
           <p className="text-slate-400 max-w-md mx-auto text-base leading-relaxed">
-            Klicke auf deine Schmerzstelle — AXON zeigt Root Cause, betroffene Faszialkette und dein Protokoll.
+            Klicke auf deine Spannungsstelle — AXON zeigt Root Cause, betroffene Faszialkette und dein Protokoll.
           </p>
         </motion.div>
 
@@ -238,7 +238,7 @@ export default function SystemAuditSection({ onPricingClick }) {
           <div className="bg-slate-900/60 border border-slate-800 rounded-3xl p-5">
             <div className="mb-4">
               <p className="text-white font-bold text-base mb-1">Wo drückt der Schuh?</p>
-              <p className="text-slate-400 text-xs">Markiere deine Schmerzstelle — AXON zeigt Root-Cause + Protokoll.</p>
+              <p className="text-slate-400 text-xs">Markiere deine Spannungsstelle — AXON zeigt Root-Cause + Protokoll.</p>
             </div>
             <InteractiveBodyMapInput onSubmit={handleBodyMapSubmit} />
           </div>

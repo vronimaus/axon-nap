@@ -17,11 +17,11 @@ export default function HeroSection({ onCtaClick }) {
             Neuro-Athletic Protocol
           </div>
           <h1 className="text-2xl md:text-5xl font-black mb-3 md:mb-4 leading-[1.1] text-white">
-            Verspannungen selbst<br />analysieren<br />
+            Blockaden selbst<br />finden<br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">und lösen.</span>
           </h1>
           <p className="text-slate-300 text-xs md:text-base mb-5 md:mb-6 leading-relaxed max-w-xl">
-            Spannungspunkt auf der Körperkarte markieren. AXON erkennt die Ursache und führt dich in 5 Minuten durch das Protokoll — per Audio-Coach, ohne Physio-Termin.
+            Spannungspunkt auf der Körperkarte markieren. AXON erkennt die Ursache und führt dich in 5 Minuten durch das Protokoll — per Audio-Coach, ohne Wartezeit.
           </p>
           <div className="flex flex-col sm:flex-row gap-3 md:gap-4">
             <Button 

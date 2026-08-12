@@ -6,7 +6,7 @@ const PAINS = [
   { tag: 'LWS', short: 'Rücken zieht' },
   { tag: 'SHD', short: 'Schulter knackt' },
   { tag: 'KNE', short: 'Knie spannt' },
-  { tag: 'MFR', short: 'Physio zu teuer' },
+  { tag: 'MOB', short: 'Mobilisation fehlt' },
 ];
 
 export default function PainAgitationSection({ onFunnelClick }) {
@@ -23,8 +23,8 @@ export default function PainAgitationSection({ onFunnelClick }) {
         >
           <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-slate-400 mb-3">Kennst du das?</p>
           <h2 className="text-2xl md:text-3xl font-black text-white leading-tight mb-3">
-            Nicht krank genug für den Arzt.<br />
-            <span className="text-slate-400">Aber nervig genug für jeden Tag.</span>
+            Nicht verletzt genug für Pause.<br />
+            <span className="text-slate-400">Aber blockiert genug fürs Training.</span>
           </h2>
           <p className="text-slate-400 text-sm">
             Du willst den <strong className="text-white">Hebel finden und drehen.</strong>
