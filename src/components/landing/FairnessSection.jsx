@@ -40,15 +40,22 @@ export default function FairnessSection({ onCtaClick }) {
           </ul>
 
           <Button
-            onClick={() => onCtaClick('direct')}
+            onClick={() => onCtaClick('trial')}
             className="w-full bg-white hover:bg-cyan-50 text-black py-5 rounded-2xl font-black text-sm hover:scale-105 transition-all shadow-xl uppercase tracking-wide"
           >
-            Jetzt kaufen
+            7 Tage kostenlos testen
           </Button>
 
-          <div className="flex items-center justify-center gap-1.5 mt-4 text-cyan-200/60 text-[11px]">
+          <button
+            onClick={() => onCtaClick('direct')}
+            className="w-full mt-3 text-cyan-200/80 hover:text-white py-2 text-xs font-bold uppercase tracking-wide transition-colors"
+          >
+            Direkt kaufen — 59,90 €
+          </button>
+
+          <div className="flex items-center justify-center gap-1.5 mt-3 text-cyan-200/60 text-[11px]">
             <ShieldCheck className="w-3.5 h-3.5 shrink-0" />
-            <span>30-Tage Geld-zurück-Garantie</span>
+            <span>Keine Zahlungsdaten nötig · 30-Tage Geld-zurück-Garantie</span>
           </div>
         </motion.div>
       </div>
