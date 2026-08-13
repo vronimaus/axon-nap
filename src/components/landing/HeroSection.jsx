@@ -8,37 +8,10 @@ export default function HeroSection({ onCtaClick }) {
     <header className="relative min-h-[88vh] md:min-h-[92vh] flex items-end overflow-hidden" id="vision">
       {/* Full-bleed background image */}
       <img
-        src="https://media.base44.com/images/public/69790ebfa6f94c6c3f1450bc/37b9c611f_generated_image.png"
+        src="https://media.base44.com/images/public/69790ebfa6f94c6c3f1450bc/f1188c931_generated_image.png"
         alt=""
         className="absolute inset-0 w-full h-full object-cover"
       />
-
-      {/* Scientific anatomical callout labels (HTML overlay for correct spelling) */}
-      <div className="absolute inset-0 z-[5] hidden lg:block pointer-events-none">
-        <div className="absolute right-[8%] top-[30%] flex flex-col gap-3">
-          {[
-            { label: 'THORACOLUMBAR FASCIA', tone: 'cyan' },
-            { label: 'LATISSIMUS DORSI', tone: 'orange' },
-            { label: 'MYOFASCIAL CHAIN', tone: 'cyan' },
-            { label: 'FASCIA PATHWAY', tone: 'orange' },
-          ].map((item, i) => (
-            <motion.div
-              key={item.label}
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 0.9, x: 0 }}
-              transition={{ delay: 0.8 + i * 0.15, duration: 0.5 }}
-              className="flex items-center gap-2"
-            >
-              <span
-                className={`block w-2 h-2 rounded-full ${item.tone === 'cyan' ? 'bg-cyan-400' : 'bg-orange-500'} shadow-[0_0_8px_currentColor]`}
-              />
-              <span className="text-[10px] font-mono uppercase tracking-[0.15em] text-cyan-200/90 whitespace-nowrap">
-                {item.label}
-              </span>
-            </motion.div>
-          ))}
-        </div>
-      </div>
 
       {/* Cinematic gradient overlays */}
       <div
