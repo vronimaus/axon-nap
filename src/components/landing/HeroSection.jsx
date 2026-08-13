@@ -2,6 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
 import MagneticButton from './MagneticButton';
+import HeroParticles from './HeroParticles';
 
 export default function HeroSection({ onCtaClick }) {
   return (
@@ -28,6 +29,9 @@ export default function HeroSection({ onCtaClick }) {
             'linear-gradient(to right, rgba(11,15,15,0.7) 0%, transparent 60%)',
         }}
       />
+
+      {/* Neural particle field */}
+      <HeroParticles />
 
       {/* Content */}
       <div className="relative z-10 w-full max-w-7xl mx-auto px-6 pb-12 md:pb-20 pt-24">
