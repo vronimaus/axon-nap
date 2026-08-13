@@ -11,6 +11,8 @@ import { useUser } from '@/components/useUser';
 // Eager-loaded (above the fold)
 import HeroSection from '@/components/landing/HeroSection';
 import BentoSection from '@/components/landing/BentoSection';
+import AppMockupSection from '@/components/landing/AppMockupSection';
+import InlineFAQ from '@/components/landing/InlineFAQ';
 import CursorGlow from '@/components/landing/CursorGlow';
 
 // Lazy-loaded (below the fold)
@@ -156,15 +158,21 @@ export default function Landing() {
       {/* MODULE 1: Hero */}
       <HeroSection onCtaClick={handlePricingScroll} />
 
-      {/* MODULE 2: Bento-Grid — Protokoll, Stufen, Audio-Coach */}
-      <BentoSection onCtaClick={handlePricingScroll} />
-
-      {/* MODULE 2.5: Testimonials — erscheint nur wenn Einträge existieren */}
+      {/* MODULE 2: Social Proof — direkt nach Hero */}
       <Suspense fallback={<LazyFallback />}>
         <TestimonialSection />
       </Suspense>
 
-      {/* MODULE 3: Preis */}
+      {/* MODULE 3: Bento-Grid — Protokoll, Stufen, Audio-Coach */}
+      <BentoSection onCtaClick={handlePricingScroll} />
+
+      {/* MODULE 4: App-Mockup + 60-Sek-Personalisierung */}
+      <AppMockupSection onCtaClick={handlePricingScroll} />
+
+      {/* MODULE 5: Inline-FAQ — letzte Zweifel ausräumen */}
+      <InlineFAQ />
+
+      {/* MODULE 6: Preis */}
       <Suspense fallback={<LazyFallback />}>
         <FairnessSection onCtaClick={handleSelectOption} />
       </Suspense>
