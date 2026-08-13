@@ -8,19 +8,22 @@ const CARDS = [
     key: 'protocol',
     headline: 'DAS PROTOKOLL',
     line: 'Faszien-Release · Neuro-Drill · Integration',
-    image: 'https://media.base44.com/images/public/69790ebfa6f94c6c3f1450bc/bc1fda538_generated_image.png',
+    description: 'Sanfter, kontrollierter Druck löst Gewebespannungen. Ein Neuro-Drill kalibriert das Nervensystem. Integration festigt das neue Bewegungsmuster langfristig.',
+    image: 'https://media.base44.com/images/public/69790ebfa6f94c6c3f1450bc/6ed6c824e_generated_image.png',
   },
   {
     key: 'stages',
     headline: 'DREI STUFEN',
     line: 'Soforthilfe → Flow → Goals',
+    description: 'Soforthilfe reduziert Spannung in 5 Minuten. Flow gibt dir Leichtigkeit und Koordination zurück. Goals steigern deine sportliche Leistung.',
     image: 'https://media.base44.com/images/public/69790ebfa6f94c6c3f1450bc/bac22bc8d_generated_image.png',
   },
   {
     key: 'audio',
     headline: 'AUDIO-COACH',
     line: 'Präzise Cues. Augen zu. Körper spüren.',
-    image: 'https://media.base44.com/images/public/69790ebfa6f94c6c3f1450bc/9fce38861_generated_image.png',
+    description: 'Taktische Anweisungen für jeden Schritt — ohne auf den Bildschirm zu schauen. Augen zu, Fokus nach innen, tiefe Körperwahrnehmung.',
+    image: 'https://media.base44.com/images/public/69790ebfa6f94c6c3f1450bc/933b1f4f6_generated_image.png',
   },
 ];
 
@@ -88,8 +91,11 @@ export default function BentoSection({ onCtaClick }) {
                 <h3 className="text-white font-black uppercase tracking-wide text-sm md:text-base mb-1.5">
                   {card.headline}
                 </h3>
-                <p className="text-white/80 text-xs md:text-[13px] leading-relaxed mb-4">
+                <p className="text-cyan-300/90 text-[11px] md:text-xs font-semibold uppercase tracking-wide mb-2">
                   {card.line}
+                </p>
+                <p className="text-white/70 text-xs leading-relaxed mb-4">
+                  {card.description}
                 </p>
                 <MagneticButton
                   strength={0.35}
