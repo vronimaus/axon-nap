@@ -8,7 +8,7 @@ export default function HeroSection({ onCtaClick }) {
     <header className="relative min-h-[88vh] md:min-h-[92vh] flex items-end overflow-hidden" id="vision">
       {/* Full-bleed background image */}
       <img
-        src="https://media.base44.com/images/public/69790ebfa6f94c6c3f1450bc/b455699b5_generated_image.png"
+        src="https://media.base44.com/images/public/69790ebfa6f94c6c3f1450bc/751425479_generated_image.png"
         alt=""
         className="absolute inset-0 w-full h-full object-cover"
       />
