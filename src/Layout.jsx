@@ -326,7 +326,8 @@ export default function Layout({ children, currentPageName }) {
             </nav>
           )}
 
-          {/* ── Footer ── */}
+          {/* ── Footer ── (nur auf Seiten mit Nav; Landing/Success/Checkout haben eigene) ── */}
+          {showNav && (
           <footer className="block border-t border-white/[0.06] mt-auto mb-20 md:mb-0">
             <div className="max-w-6xl mx-auto px-4 py-8 text-center">
               <div className="flex justify-center items-center gap-6 mb-6 text-xs font-medium tracking-widest text-zinc-600 flex-wrap">
@@ -347,6 +348,7 @@ export default function Layout({ children, currentPageName }) {
               </p>
             </div>
           </footer>
+          )}
 
           <CookieBanner />
           <Toaster position="top-center" theme="dark" />
