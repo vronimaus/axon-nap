@@ -45,8 +45,15 @@ export default function HeroSection({ onCtaClick }) {
             Neuro-Athletic Protocol
           </div>
 
+          {/* Problem */}
+          <p className="text-slate-300 text-sm md:text-lg mb-3 md:mb-4 leading-relaxed max-w-xl font-medium">
+            Verspannter Nacken. Steifer Rücken. Immer wieder dieselbe Stelle,
+            die nie wirklich weggeht — egal wie viel du dehnst.
+          </p>
+
+          {/* Lösung */}
           <h1 className="text-3xl md:text-6xl font-black mb-4 md:mb-5 leading-[1.05] text-white">
-            Finde die Ursache.
+            Finde die wahre Ursache.
             <br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 to-cyan-500">
               Löse sie in 5 Minuten.
