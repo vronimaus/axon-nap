@@ -1,0 +1,38 @@
+{
+  "name": "Auto-Audio: AxonScenario",
+  "description": "Generiert Audio f\u00fcr Hardware-, Software- und Integrations-Beschreibungen eines Szenarios.",
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "entity",
+      "events": [
+        "create",
+        "update"
+      ],
+      "entity_name": "AxonScenario"
+    }
+  },
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "auto_audio_axonscenario",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "run_function": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "autoGenerateEntityAudio",
+            "args": {}
+          },
+          "then": "end"
+        }
+      }
+    ]
+  },
+  "x-base44-migrated-from-automation": {
+    "legacy_payload_function": "autoGenerateEntityAudio"
+  }
+}
