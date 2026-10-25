@@ -1,0 +1,19 @@
+# AXON-nap (Neuro-Athletic-Protocol)
+
+> AXON-nap ist ein Mobility- und Trainings-Tool für Athleten und Bewegungsinteressierte: Spannungspunkt markieren, Ursache erkennen, 3-Schritt-Protokoll ausführen (Faszien-Release, Neuro-Drill, Integration). Der öffentliche Wissensbereich erklärt Neuroathletik, Faszien, Schmerzmechanismen und sportartspezifische Protokolle auf Deutsch.
+
+## Vollständiger, tagesaktueller Index
+- [llms.txt mit allen Wissensartikeln](https://axon-nap.de/functions/llmsTxt): Alle veröffentlichten Artikel mit Kurzbeschreibung
+
+## Seiten
+- [AXON-nap – Mobility- & Trainings-Tool für Athleten](https://axon-nap.de/Landing)
+- [Wissen: Neuroathletik & Faszien](https://axon-nap.de/Wissen): Experten, Lösungen für Beschwerden, Methoden, Sportarten
+- [FAQ – Häufige Fragen](https://axon-nap.de/Faq)
+- [Glossar – Fachbegriffe Neuroathletik](https://axon-nap.de/Glossar)
+- [Wissenschaftliche Quellen & Literatur](https://axon-nap.de/Literatur)
+- [Impressum](https://axon-nap.de/Imprint)
+
+## Hinweise
+- Sprache: Deutsch (de-DE)
+- Die Inhalte ersetzen keine ärztliche Diagnose.
+- Sitemap: https://axon-nap.de/functions/sitemap
