@@ -1,0 +1,41 @@
+{
+  "name": "IndexNow bei ver\u00f6ffentlichten Wissensartikeln",
+  "description": "Meldet neu angelegte oder \u00fcberarbeitete Wissensartikel (KnowledgeArticle) an IndexNow - nur wenn published = true. Die Funktion pr\u00fcft den Status zus\u00e4tzlich am frisch geladenen Datensatz.",
+  "trigger": {
+    "config": {
+      "trigger_type": "entity",
+      "entity_name": "KnowledgeArticle",
+      "events": [
+        "create",
+        "update"
+      ]
+    },
+    "condition": "${ (.trigger.data.published // false) == true }"
+  },
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "indexnow_knowledge_article",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "melde_artikel": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "pingIndexNow",
+            "args": {
+              "entity_id": "${ .trigger.entity_id }"
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Artikel an IndexNow melden",
+            "description": "Nur ver\u00f6ffentlichte Artikel"
+          }
+        }
+      }
+    ]
+  }
+}
