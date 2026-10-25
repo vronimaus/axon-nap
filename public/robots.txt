@@ -1,0 +1,78 @@
+# robots.txt — axon-nap.de
+
+# Öffentlich: /Landing, /Wissen, /WissenArtikel, /Faq, /Glossar, /Literatur,
+# /Imprint, /Privacy, /Terms. Alles andere ist App-Bereich (Login nötig) oder Admin.
+# Hinweis: Ein Crawler folgt nur der Gruppe, die ihn namentlich nennt - deshalb
+# stehen die Sperren in beiden Gruppen.
+
+User-agent: *
+Allow: /
+Disallow: /AdminDiagnostics
+Disallow: /AdminHub
+Disallow: /AdminTestCenter
+Disallow: /DevNotes
+Disallow: /ExerciseImageGenerator
+Disallow: /ExerciseImageUpload
+Disallow: /KnowledgeUpload
+Disallow: /SystemReport
+Disallow: /Dashboard
+Disallow: /Discovery
+Disallow: /Flow
+Disallow: /FlowRoutines
+Disallow: /MFRIntegration
+Disallow: /Performance
+Disallow: /Profile
+Disallow: /TrainingPlan
+Disallow: /TrialInfo
+Disallow: /HowToUse
+Disallow: /Success
+Disallow: /InviteRedeem
+Disallow: /login
+Disallow: /api/
+Disallow: /functions/
+Allow: /functions/sitemap
+Allow: /functions/llmsTxt
+
+# KI-Crawler und KI-Suchassistenten ausdrücklich erlaubt
+User-agent: GPTBot
+User-agent: OAI-SearchBot
+User-agent: ChatGPT-User
+User-agent: ClaudeBot
+User-agent: Claude-SearchBot
+User-agent: Claude-User
+User-agent: anthropic-ai
+User-agent: PerplexityBot
+User-agent: Perplexity-User
+User-agent: Google-Extended
+User-agent: Applebot-Extended
+User-agent: CCBot
+User-agent: Bytespider
+Allow: /
+Disallow: /AdminDiagnostics
+Disallow: /AdminHub
+Disallow: /AdminTestCenter
+Disallow: /DevNotes
+Disallow: /ExerciseImageGenerator
+Disallow: /ExerciseImageUpload
+Disallow: /KnowledgeUpload
+Disallow: /SystemReport
+Disallow: /Dashboard
+Disallow: /Discovery
+Disallow: /Flow
+Disallow: /FlowRoutines
+Disallow: /MFRIntegration
+Disallow: /Performance
+Disallow: /Profile
+Disallow: /TrainingPlan
+Disallow: /TrialInfo
+Disallow: /HowToUse
+Disallow: /Success
+Disallow: /InviteRedeem
+Disallow: /login
+Disallow: /api/
+Disallow: /functions/
+Allow: /functions/sitemap
+Allow: /functions/llmsTxt
+
+# KI-Index: https://axon-nap.de/llms.txt (vollständig: https://axon-nap.de/functions/llmsTxt)
+Sitemap: https://axon-nap.de/functions/sitemap
