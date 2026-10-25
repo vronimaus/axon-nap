@@ -97,7 +97,9 @@ export default function WissenArtikel() {
       <Helmet>
         <title>{article.meta_title || article.headline}</title>
         <meta name="description" content={article.meta_description || article.summary} />
-        <link rel="canonical" href={`https://axon-nap.de/WissenArtikel?slug=${slug}&category=${category}`} />
+        {/* MUSS zeichengleich mit articleUrl() in base44/shared/seo.ts sein (Sitemap + IndexNow). */}
+        <link rel="canonical" href={`https://axon-nap.de/WissenArtikel?category=${encodeURIComponent(article.category)}&slug=${encodeURIComponent(article.slug)}`} />
+        <meta property="og:url" content={`https://axon-nap.de/WissenArtikel?category=${encodeURIComponent(article.category)}&slug=${encodeURIComponent(article.slug)}`} />
 
         <meta property="og:title" content={article.meta_title || article.headline} />
         <meta property="og:description" content={article.meta_description || article.summary} />
