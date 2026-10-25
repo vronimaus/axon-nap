@@ -90,6 +90,7 @@ export default function Landing() {
       <Helmet>
         <title>AXON – Mobility- & Trainings-Tool für Athleten | Neuro-Athletic Protocol</title>
         <meta name="description" content="Mobility- und Trainings-Tool für Athleten. Spannungspunkt markieren, Ursache erkennen, 3-Schritt-Protokoll ausführen. Faszien-Release, Neuro-Drill, Integration." />
+        <link rel="canonical" href="https://axon-nap.de/Landing" />
         <script type="application/ld+json">{JSON.stringify(productSchema)}</script>
       </Helmet>
 
