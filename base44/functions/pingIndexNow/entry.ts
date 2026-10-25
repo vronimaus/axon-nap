@@ -1,5 +1,5 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.57';
-import { HOST, ORIGIN, INDEXNOW_KEY, articleUrl } from '../../shared/seo.ts';
+import { HOST, ORIGIN, INDEXNOW_KEY, STATIC_PAGES, articleUrl, loadPublishedArticles } from '../../shared/seo.ts';
 
 // Meldet einen veröffentlichten KnowledgeArticle an IndexNow (Bing, Yandex,
 // Seznam, Naver …). Ausgelöst vom Workflow "IndexNow bei veröffentlichten
@@ -33,7 +33,6 @@ Deno.serve(async (req) => {
     if (body.all === true) {
       const user = await base44.auth.me().catch(() => null);
       if (user?.role !== 'admin') return Response.json({ error: 'Forbidden' }, { status: 403 });
-      const { loadPublishedArticles, STATIC_PAGES } = await import('../../shared/seo.ts');
       const articles = await loadPublishedArticles(db.entities.KnowledgeArticle);
       const urls = [...STATIC_PAGES.map((p) => `${ORIGIN}${p.path}`), ...articles.map(articleUrl)];
       return Response.json({ urls: urls.length, result: await submit(urls) });
