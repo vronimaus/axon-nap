@@ -422,7 +422,7 @@ export default function Literatur() {
         <title>Wissenschaftliche Quellen & Literatur | AXON-nap Neuro-Athletic-Protocol</title>
         <meta name="description" content="Das vollständige Quellenverzeichnis hinter AXON-nap: Huberman, McGill, Stecco, Myers, Schleip, Tsatsouline – alle wissenschaftlichen Grundlagen des Neuro-Athletic-Protocols." />
         <meta name="keywords" content="AXON Quellen, Faszienforschung, Huberman Lab, Stuart McGill, Carla Stecco, Thomas Myers, Robert Schleip, Pavel Tsatsouline, Neuroathletik, Atemforschung" />
-        <link rel="canonical" href="https://axon-nap.com/literatur" />
+        <link rel="canonical" href="https://axon-nap.de/Literatur" />
         <meta property="og:title" content="Wissenschaftliche Quellen | AXON-nap" />
         <meta property="og:description" content="Alle wissenschaftlichen Grundlagen des AXON Neuro-Athletic-Protocols – peer-reviewed, evidenzbasiert." />
         <script type="application/ld+json">{JSON.stringify(schemaData)}</script>
