@@ -103,7 +103,7 @@ export default function Faq() {
         <title>FAQ - Häufig gestellte Fragen | AXON Protocol</title>
         <meta name="description" content="Alle Antworten zu AXON: Funktionsweise, Training, MFR-Nodes, Daily Readiness Check und mehr. Deine Bedienungsanleitung für optimales Training." />
         <meta name="keywords" content="AXON FAQ, Neuro-Training Anleitung, MFR erklärt, Faszienmobilität Tutorial, Training FAQ" />
-        <link rel="canonical" href="https://axon-nap.de/faq" />
+        <link rel="canonical" href="https://axon-nap.de/Faq" />
 
         <meta property="og:title" content="FAQ - AXON Protocol" />
         <meta property="og:description" content="Alle Antworten zu AXON Training, MFR-Nodes, Readiness Check und mehr" />
